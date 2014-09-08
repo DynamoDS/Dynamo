@@ -38,6 +38,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom01()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -50,6 +51,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom02()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -62,6 +64,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom03()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -78,6 +81,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom04()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -100,6 +104,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom05()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -109,6 +114,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom06()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -121,6 +127,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFunctionNodeFrom07()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -140,6 +147,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateVarArgFunctionNodeFrom00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -149,6 +157,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateVarArgFunctionNodeFrom01()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -162,6 +171,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateVarArgFunctionNodeFrom02()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -182,6 +192,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateVarArgFunctionNodeFrom03()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -199,6 +210,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestVersionFromString()
         {
             var versionString = "1.20.300.4000";
@@ -211,19 +223,20 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestShouldMigrateFile()
         {
             Version oldVer = new Version(0, 7, 0);
             Version newVer = new Version(0, 7, 1);
             Version newestVer = new Version(0, 7, 2);
 
-            DynamoController.IsTestMode = false;
+            DynamoModel.IsTestMode = false;
             var decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
             var decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
-            Assert.AreEqual(MigrationManager.Decision.Abort, decision1);
+            Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
             Assert.AreEqual(MigrationManager.Decision.Retain, decision2);
 
-            DynamoController.IsTestMode = true;
+            DynamoModel.IsTestMode = true;
             decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
             decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
             Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
@@ -231,6 +244,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateCodeBlockNodeFrom00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -240,6 +254,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateCodeBlockNodeFrom01()
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
@@ -263,6 +278,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateDummyNode00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -272,6 +288,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateDummyNode01()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -282,6 +299,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateDummyNode02()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -292,6 +310,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateDummyNode03()
         {
             XmlElement srcElement = xmlDocument.CreateElement("OldNamespace.OldClass");
@@ -317,6 +336,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateMissingNode00()
         {
             XmlElement srcElement = xmlDocument.CreateElement("OldNamespace.OldClass");
@@ -342,6 +362,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -351,6 +372,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode01()
         {
             XmlElement element = xmlDocument.CreateElement("InvalidName");
@@ -362,6 +384,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode02()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -374,6 +397,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode03()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -387,6 +411,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode04()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -401,6 +426,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode05()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -415,6 +441,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode06()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -430,6 +457,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode07()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -445,6 +473,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode08()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -460,6 +489,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode09()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -475,6 +505,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode10()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -490,6 +521,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode11()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -510,6 +542,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode12()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
@@ -530,6 +563,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode13()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
@@ -544,6 +578,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreateUnresolvedFunctionNode14()
         {
             XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
@@ -558,6 +593,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void NodeMigrationData00()
         {
             // Should have a default list that is empty.
@@ -566,6 +602,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void NodeMigrationData01()
         {
             NodeMigrationData data = new NodeMigrationData(xmlDocument);
@@ -581,6 +618,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetBackupFolder00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -590,6 +628,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetBackupFolder01()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -599,6 +638,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetBackupFolder02()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -610,6 +650,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetBackupFolder03()
         {
             var location = Assembly.GetCallingAssembly().Location;
@@ -619,6 +660,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -628,6 +670,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex01()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -637,6 +680,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex02()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -647,6 +691,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex03()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -657,6 +702,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex04()
         {
             Assert.Throws<FormatException>(() =>
@@ -667,24 +713,28 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestExtractFileIndex05()
         {
             Assert.AreEqual(123, MigrationManager.ExtractFileIndex("abc.123.backup"));
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetUniqueIndex00()
         {
             Assert.AreEqual(0, MigrationManager.GetUniqueIndex(null));
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetUniqueIndex01()
         {
             Assert.AreEqual(0, MigrationManager.GetUniqueIndex(new string[] { }));
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetUniqueIndex02()
         {
             var fileNames = new string[]

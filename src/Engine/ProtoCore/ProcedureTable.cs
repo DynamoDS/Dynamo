@@ -66,6 +66,11 @@ namespace ProtoCore.DSASM
         public Dictionary<string, List<UpdateNodeRef>> updatedArgumentProperties { get; set; }
         public Dictionary<string, List<UpdateNode>> updatedArgumentArrays { get; set; }
 
+        /// <summary>
+        /// The list of graphnodes that this function owns
+        /// </summary>
+        public List<GraphNode> GraphNodeList { get; private set; }
+
         public ProcedureNode()
         {
             procId = DSASM.Constants.kInvalidIndex;
@@ -84,14 +89,21 @@ namespace ProtoCore.DSASM
             updatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
             updatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
             updatedArgumentArrays = new Dictionary<string, List<AssociativeGraph.UpdateNode>>();
+            GraphNodeList = new List<GraphNode>();
         }
 
-        public bool IsEqual(ProcedureNode rhs)
+        public override bool Equals(object obj)
         {
+            var rhs = obj as ProcedureNode;
+            if (rhs == null)
+            {
+                return false;
+            }
+
             return procId == rhs.procId && 
                    classScope == rhs.classScope && 
                    localCount == rhs.localCount && 
-                   name == rhs.name;
+                   name.Equals(rhs.name);
         }
     }
 

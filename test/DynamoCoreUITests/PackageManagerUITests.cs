@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class PackageManagerUITests : DynamoTestUI
+    public class PackageManagerUITests : DynamoTestUIBase
     {
         #region Utility functions
 
@@ -26,35 +26,35 @@ namespace DynamoCoreUITests
 
         public void AssertWindowOwnedByDynamoView<T>()
         {
-            var windows = GetWindowEnumerable(Ui.OwnedWindows);
+            var windows = GetWindowEnumerable(View.OwnedWindows);
             Assert.AreEqual(1, windows.Count(x => x is T));
 
             var window = windows.FirstOrDefault(x => x is T);
             Assert.IsNotNull(window);
 
-            Assert.IsTrue(window.Owner == (Window)Ui);
+            Assert.IsTrue(window.Owner == (Window)View);
         }
 
         public void AssertWindowClosedWithDynamoView<T>()
         {
-            var windows = GetWindowEnumerable(Ui.OwnedWindows);
+            var windows = GetWindowEnumerable(View.OwnedWindows);
             Assert.AreEqual(1, windows.Count(x => x is T));
 
             var window = windows.FirstOrDefault(x => x is T);
             Assert.IsNotNull(window);
 
-            Assert.IsTrue(window.Owner == (Window)Ui);
+            Assert.IsTrue(window.Owner == (Window)View);
         }
 
         #endregion
 
         #region PackageManagerPublishView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenPackagePublishDialogAndWindowIsOwned()
         {
-            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
-            Vm.OnRequestPackagePublishDialog(l);
+            var l = new PublishPackageViewModel(ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(l);
 
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
         }
@@ -62,20 +62,20 @@ namespace DynamoCoreUITests
         [Test,Ignore]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
-            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
+            var l = new PublishPackageViewModel(ViewModel);
             for (var i = 0; i < 10; i++)
             {
-                Vm.OnRequestPackagePublishDialog(l);
+                ViewModel.OnRequestPackagePublishDialog(l);
             }
 
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void PackagePublishWindowClosesWithDynamo()
         {
-            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
-            Vm.OnRequestPackagePublishDialog(l);
+            var l = new PublishPackageViewModel(ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(l);
 
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
             AssertWindowClosedWithDynamoView<PackageManagerPublishView>();
@@ -86,10 +86,10 @@ namespace DynamoCoreUITests
 
         #region InstalledPackagesView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenManagePackagesDialogAndWindowIsOwned()
         {
-            Vm.OnRequestManagePackagesDialog(null, null);
+            ViewModel.OnRequestManagePackagesDialog(null, null);
 
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         }
@@ -105,10 +105,10 @@ namespace DynamoCoreUITests
         //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         //}
 
-        [Test, Category("Failing")]
+        [Test]
         public void ManagePackagesDialogClosesWithDynamo()
         {
-            Vm.OnRequestManagePackagesDialog(null, null);
+            ViewModel.OnRequestManagePackagesDialog(null, null);
 
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
             AssertWindowClosedWithDynamoView<InstalledPackagesView>();
@@ -119,30 +119,30 @@ namespace DynamoCoreUITests
 
         #region PackageManagerSearchView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
-            Vm.OnRequestPackageManagerSearchDialog(null, null);
+            ViewModel.OnRequestPackageManagerSearchDialog(null, null);
             Thread.Sleep(500);
 
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void CannotCreateDuplicatePackageSearchDialogs()
         {
             for (var i = 0; i < 10; i++)
             {
-                Vm.OnRequestPackageManagerSearchDialog(null, null);
+                ViewModel.OnRequestPackageManagerSearchDialog(null, null);
             }
 
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void PackageSearchDialogClosesWithDynamo()
         {
-            Vm.OnRequestPackageManagerSearchDialog(null, null);
+            ViewModel.OnRequestPackageManagerSearchDialog(null, null);
 
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
             AssertWindowClosedWithDynamoView<PackageManagerSearchView>();

@@ -17,7 +17,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    class PackageLoaderTests : DynamoUnitTest
+    class PackageLoaderTests : DynamoViewModelUnitTest
     {
         public string PackagesDirectory { get { return Path.Combine(this.GetTestDirectory(), "pkgs"); } }
 
@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = new PackageLoader();
+            var loader = ViewModel.Model.Loader.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -44,23 +44,23 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = new PackageLoader();
+            var loader = ViewModel.Model.Loader.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
         }
 
         [Test]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var loader = new PackageLoader(ViewModel.Model);
             loader.LoadPackages();
-            Assert.AreEqual(4, loader.LocalPackages.Count);
+            Assert.AreEqual(1, loader.LocalPackages.Count);
         }
 
         [Test]
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(pkgDir);
+            var loader = new PackageLoader(ViewModel.Model, pkgDir);
             loader.LoadPackages();
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
@@ -68,16 +68,16 @@ namespace Dynamo.Tests
         [Test]
         public void GetOwnerPackageReturnsPackageForValidFunctionDefinition()
         {
-            Assert.Inconclusive("Porting : Formula");
+            //Assert.Inconclusive("Porting : Formula");
 
-            var loader = new PackageLoader(PackagesDirectory);
+            var loader = new PackageLoader(ViewModel.Model, PackagesDirectory);
             loader.LoadPackages();
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
-            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count );
+            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
-                var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
                 Assert.IsNotNull(funcDef);
 
                 var foundPkg = loader.GetOwnerPackage(funcDef);
@@ -92,10 +92,12 @@ namespace Dynamo.Tests
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(PackagesDirectory);
-            var info = dynSettings.CustomNodeManager.AddFileToPath(
+            var loader = new PackageLoader(ViewModel.Model, PackagesDirectory);
+
+            var info = ViewModel.Model.CustomNodeManager.AddFileToPath(
                 Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));
-            var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(info.Guid);
+
+            var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(info.Guid);
             Assert.IsNotNull(funcDef);
             var foundPkg = loader.GetOwnerPackage(funcDef);
             Assert.IsNull(foundPkg);
@@ -137,7 +139,7 @@ namespace Dynamo.Tests
         }
     }
 
-    class PackageManagerClientTests : DynamoUnitTest
+    class PackageManagerClientTests : DynamoViewModelUnitTest
     {
         // All of these tests do not require authentication
 
@@ -165,9 +167,9 @@ namespace Dynamo.Tests
         [Test]
         public void ListAllReturnsAllPackages()
         {
-            var elements = dynSettings.PackageManagerClient.ListAll();
-            Assert.AreNotEqual(0, elements.Count);
-            Console.WriteLine(elements.Count);
+            var elements = ViewModel.Model.PackageManagerClient.ListAll();
+            Assert.AreNotEqual(0, elements.Count());
+            Console.WriteLine(elements.Count());
         }
 
         [Test]
@@ -196,7 +198,7 @@ namespace Dynamo.Tests
 
     }
 
-    class PackageUploadBuilderTests : DynamoUnitTest
+    class PackageUploadBuilderTests : DynamoViewModelUnitTest
     {
 
         [Test]

@@ -14,23 +14,23 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class VisualizationManagerUITests : DynamoTestUI
+    public class VisualizationManagerUITests : DynamoTestUIBase
     {
         private Watch3DView BackgroundPreview
         {
             get
             {
-                return (Watch3DView)Ui.background_grid.FindName("background_preview");
+                return (Watch3DView)View.background_grid.FindName("background_preview");
             }
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
-            var viz = dynSettings.Controller.VisualizationManager;
+            var viz = ViewModel.VisualizationManager;
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
@@ -40,17 +40,17 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void BackgroundPreviewDrawsOnOpen()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            //var model = ViewModel.Model;
+            //var viz = ViewModel.VisualizationManager;
 
             //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             //model.Open(openPath);
 
             //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            //ViewModel.Model.RunExpression();
 
             ////graphics will have been updated at this point
             ////enabled the background preview and ensure that it 
@@ -58,14 +58,14 @@ namespace DynamoCoreUITests
             Assert.Inconclusive("Finish me!");
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CleansUpGeometryWhenNodeFails()
         {
             Assert.Inconclusive("Can not test post-failure visualization state as we need to " +
                                 "throwing testing exception which avoid OnEvaluationComplete being called.");
 
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            //var model = ViewModel.Model;
+            //var viz = ViewModel.VisualizationManager;
 
             //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             //model.Open(openPath);
@@ -75,7 +75,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            //ViewModel.Model.RunExpression();
 
             ////adjust the number node's value - currently set to 0..5 to something that makes the XYZ error
             //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
@@ -83,22 +83,22 @@ namespace DynamoCoreUITests
 
             //// run the expression
             //// it will fail
-            //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => dynSettings.Controller.RunExpression(null));
+            //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => ViewModel.Model.RunExpression());
             //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
             //Assert.AreEqual(0, renderables.Count());
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreview()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            var viz = dynSettings.Controller.VisualizationManager;
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -134,19 +134,19 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            var viz = dynSettings.Controller.VisualizationManager;
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+            ViewModel.Model.OnRequestLayoutUpdate(this, EventArgs.Empty);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
             Thread.Sleep(1000);
 
             //we start with all previews disabled
@@ -171,11 +171,11 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizePoints()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            //var model = ViewModel.Model;
+            //var viz = ViewModel.VisualizationManager;
 
             //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             //model.Open(openPath);
@@ -185,7 +185,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            //ViewModel.Model.RunExpression();
 
             ////ensure that the number of visualizations matches the 
             ////number of pieces of geometry in the collection
@@ -194,26 +194,26 @@ namespace DynamoCoreUITests
             ////adjust the number node's value - currently set to 0..5 (6 elements)
             //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
             //numNode.Value = "0..10";
-            //dynSettings.Controller.RunExpression(null);
+            //ViewModel.Model.RunExpression();
 
             //Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
 
             Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CleansUpGeometryWhenNodesAreDisconnected()
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = dynSettings.Controller.DynamoModel;
-            var viz = dynSettings.Controller.VisualizationManager;
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //ensure the correct representations
 
@@ -234,63 +234,63 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeASMSolids()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(BackgroundPreview.Mesh.TriangleIndices.Count > 0);
 
             model.HomeSpace.HasUnsavedChanges = false;
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeASMSurfaces()
         {
-            var viz = dynSettings.Controller.VisualizationManager;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_cuboid.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
             Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeCoordinateSystems()
         {
-            var viz = dynSettings.Controller.VisualizationManager;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_coordinateSystem.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.AreEqual(2, BackgroundPreview.XAxes.Count);
             Assert.AreEqual(2, BackgroundPreview.YAxes.Count);
             Assert.AreEqual(2, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeGeometryFromPython()
         {
-            var viz = dynSettings.Controller.VisualizationManager;
+            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_python.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
@@ -299,20 +299,20 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.AreEqual(6, BackgroundPreview.Points.Count);
 
@@ -326,16 +326,16 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //ensure that we have some visualizations
             Assert.Greater(BackgroundPreview.Points.Count, 0);
@@ -347,45 +347,43 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationsAreCreatedForCustomNodes()
         {
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
+                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
                 != null);
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //ensure that we have some visualizations
             Assert.Greater(BackgroundPreview.Points.Count, 0);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void HonorsPreviewSaveState()
         {
-            var viz = dynSettings.Controller.VisualizationManager;
-
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanDrawNodeLabels()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Labels.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
@@ -399,7 +397,7 @@ namespace DynamoCoreUITests
             cbn.Code = "Point.ByCoordinates(a<1>,a<1>,a<1>);";
             
             // run the expression
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
             Assert.AreEqual(4, BackgroundPreview.Points.Count());
 
             //label displayed should be possible now because
@@ -412,7 +410,7 @@ namespace DynamoCoreUITests
             //change the lacing to cross product 
             //ensure that the labels update to match
             //ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
             Assert.AreEqual(64, BackgroundPreview.Points.Count());
             Assert.AreEqual(64, BackgroundPreview.Text.Count());
 
@@ -420,13 +418,13 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Text.Count());
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanDrawNodeLabelsOnCurves()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
@@ -436,7 +434,7 @@ namespace DynamoCoreUITests
             Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
 
             // run the expression
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             //10 lines segments in this file
             Assert.AreEqual(60, BackgroundPreview.Lines.Count());
@@ -452,7 +450,7 @@ namespace DynamoCoreUITests
 
         private int GetTotalDrawablesInModel()
         {
-            return dynSettings.Controller.DynamoModel.Nodes
+            return ViewModel.Model.Nodes
                 .SelectMany(x=>x.RenderPackages)
                 .Cast<RenderPackage>()
                 .Where(x=>x.IsNotEmpty())

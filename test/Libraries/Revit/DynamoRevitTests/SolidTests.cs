@@ -14,15 +14,15 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void BlendSolid()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\BlendSolid.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
-            //var blendNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateBlendGeometry);
+            //var blendNode = ViewModel.Model.Nodes.First(x => x is CreateBlendGeometry);
             //var result = (Solid)VisualizationManager.GetDrawablesFromNode(blendNode).Values.First();
             //double volumeMin = 3700000.0;
             //double volumeMax = 3900000.0;
@@ -35,15 +35,15 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Loft()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\Loft.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
-            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //var fec = new FilteredElementCollector( DocumentManager.Instance.CurrentDBDocument );
             //fec.OfClass(typeof(GenericForm));
 
             ////verify one loft created
@@ -56,15 +56,15 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void RevolveSolid()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\RevolveSolid.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
-            //var revolveNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateRevolvedGeometry);
+            //var revolveNode = ViewModel.Model.Nodes.First(x => x is CreateRevolvedGeometry);
             //var result = (Solid)VisualizationManager.GetDrawablesFromNode(revolveNode).Values.First();
             //double volumeMin = 13300.0;
             //double volumeMax = 13550.0;
@@ -80,15 +80,15 @@ namespace Dynamo.Tests
             //if (!DocumentManager.GetInstance().CurrentUIApplication.Application.VersionNumber.Contains("2013") &&
             //                 DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName.Contains("Vasari"))
             //{
-            //    var model = dynSettings.Controller.DynamoModel;
+            //    var model = ViewModel.Model;
 
             //    string samplePath = Path.Combine(_testPath, @".\Solid\SolidBySkeleton.dyn");
             //    string testPath = Path.GetFullPath(samplePath);
 
             //    model.Open(testPath);
-            //    dynSettings.Controller.RunExpression(true);
+            //    ViewModel.Model.RunExpression();
 
-            //    var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is SkinCurveLoops);
+            //    var skeletonNode = ViewModel.Model.Nodes.First(x => x is SkinCurveLoops);
             //    var result = (Solid)VisualizationManager.GetDrawablesFromNode(skeletonNode).Values.First();
             //    double volumeMin = 82500.0;
             //    double volumeMax = 84500.0;
@@ -102,15 +102,15 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void SweepToMakeSolid()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\SweepToMakeSolid.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
-            //var sweepNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateSweptGeometry);
+            //var sweepNode = ViewModel.Model.Nodes.First(x => x is CreateSweptGeometry);
             //var result = (Solid)VisualizationManager.GetDrawablesFromNode(sweepNode).Values.First();
             //double volumeMin = 11800.0;
             //double volumeMax = 12150.0;
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void SweptBlend()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
             //var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", false);
             //if (FreeFormType == null)
@@ -133,9 +133,9 @@ namespace Dynamo.Tests
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
-            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //var fec = new FilteredElementCollector( DocumentManager.Instance.CurrentDBDocument );
             //fec.OfClass(typeof(GenericForm));
 
             ////verify one loft created
@@ -149,26 +149,26 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void BoxByCenterAndDimensions()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\BoxByCenterAndDimensions.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //model.OpenWorkspace(testPath);
+            //Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
         [TestModel(@".\empty.rfa")]
         public void BoxByTwoCorners()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Solid\BoxByTwoCorners.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //model.OpenWorkspace(testPath);
+            //Assert.DoesNotThrow(() =>  ViewModel.Model.RunExpression());
         }
     }
 }

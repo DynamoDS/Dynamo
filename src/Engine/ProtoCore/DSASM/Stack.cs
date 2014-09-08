@@ -217,6 +217,18 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
+        /// <summary>
+        /// Deep comparison for two StackValue. 
+        /// </summary>
+        /// <param name="sv1"></param>
+        /// <param name="sv2"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core core)
+        {
+            return CompareStackValues(sv1, sv2, core, core);
+        }
+
         //this method compares the values of the stack variables passed
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
         {
@@ -246,7 +258,7 @@ namespace ProtoCore.DSASM
                         return false;
                     if (Object.ReferenceEquals(c1, c2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    ClassNode classnode = c1.DSExecutable.classTable.ClassNodes[(int)sv1.metaData.type];
+                    ClassNode classnode = c1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
                     if (classnode.IsImportedClass)
                     {
                         var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);

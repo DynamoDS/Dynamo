@@ -39,7 +39,8 @@ namespace DSCoreNodesUI
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
 
-        protected BasicInteractive()
+        protected BasicInteractive(WorkspaceModel workspace)
+            : base(workspace)
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
@@ -75,7 +76,13 @@ namespace DSCoreNodesUI
         {
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
+
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
@@ -120,6 +127,8 @@ namespace DSCoreNodesUI
 
     public abstract class Double : BasicInteractive<double>
     {
+        protected Double(WorkspaceModel workspace) : base(workspace) { }
+
         public override bool IsConvertible
         {
             get { return true; }
@@ -153,6 +162,8 @@ namespace DSCoreNodesUI
 
     public abstract class Integer : BasicInteractive<int>
     {
+        protected Integer(WorkspaceModel workspace) : base(workspace) { }
+
         protected override int DeserializeValue(string val)
         {
             try
@@ -181,6 +192,8 @@ namespace DSCoreNodesUI
 
     public abstract class Bool : BasicInteractive<bool>
     {
+        protected Bool(WorkspaceModel workspace) : base(workspace) { }
+
         protected override bool DeserializeValue(string val)
         {
             try
@@ -209,6 +222,8 @@ namespace DSCoreNodesUI
 
     public abstract class String : BasicInteractive<string>
     {
+        protected String(WorkspaceModel workspace) : base(workspace) { }
+
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
@@ -216,7 +231,8 @@ namespace DSCoreNodesUI
 
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")

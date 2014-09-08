@@ -29,6 +29,16 @@ namespace Revit.GeometryConversion
             return rbb;
         }
 
+        public static Autodesk.Revit.DB.XYZ ToRevitType(this Autodesk.DesignScript.Geometry.Point pt, bool convertUnits = true)
+        {
+            return pt.ToXyz(convertUnits);
+        }
+
+        public static Autodesk.Revit.DB.XYZ ToRevitType(this Vector vec, bool convertUnits = false)
+        {
+            return vec.ToXyz(convertUnits);
+        }
+
         public static Autodesk.Revit.DB.XYZ ToXyz(this Autodesk.DesignScript.Geometry.Point pt, bool convertUnits = true)
         {
             if (convertUnits) pt = pt.InHostUnits();

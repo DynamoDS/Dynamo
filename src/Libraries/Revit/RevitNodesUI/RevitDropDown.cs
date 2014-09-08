@@ -6,6 +6,8 @@ using System.Xml;
 using Autodesk.Revit.DB;
 using DSCore;
 using DSCoreNodesUI;
+
+using Dynamo.Applications.Models;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -17,14 +19,18 @@ namespace DSRevitNodesUI
 {
     public abstract class RevitDropDownBase : DSDropDownBase
     {
-        protected RevitDropDownBase(string value) : base(value)
+
+        protected RevitDropDownBase(WorkspaceModel workspaceModel, string value) : base(workspaceModel, value)
         {
-            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            var revModel = workspaceModel.DynamoModel as RevitDynamoModel;
+            if (revModel != null) 
+                revModel.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
             PopulateItems();
+
             if (Items.Any())
             {
                 SelectedIndex = 0;
@@ -40,7 +46,8 @@ namespace DSRevitNodesUI
     {
         private const string noFamilyTypes = "No family types available.";
 
-        public FamilyTypes():base("Family Type"){ }
+        public FamilyTypes(WorkspaceModel workspaceModel) : base(workspaceModel, "Family Type")
+        {}
         
         protected override void PopulateItems()
         {
@@ -101,7 +108,8 @@ namespace DSRevitNodesUI
         private Element element;
         private ElementId storedId = null;
 
-        public FamilyInstanceParameters() : base("Parameter") 
+        public FamilyInstanceParameters(WorkspaceModel workspaceModel)
+            : base(workspaceModel, "Parameter") 
         {
             this.AddPort(PortType.INPUT, new PortData("f", "Family Symbol or Instance"), 0);
             this.PropertyChanged += OnPropertyChanged;
@@ -200,7 +208,7 @@ namespace DSRevitNodesUI
             var index = InPorts[0].Connectors[0].Start.Index;
             
             var identifier = inputNode.GetAstIdentifierForOutputIndex(index).Name;
-            var data = dynSettings.Controller.EngineController.GetMirror(identifier).GetData();
+            var data = this.Workspace.DynamoModel.EngineController.GetMirror(identifier).GetData();
             object family = null;
             if (data.IsCollection)
                 family = data.GetElements().FirstOrDefault();
@@ -279,7 +287,8 @@ namespace DSRevitNodesUI
     {
         private const string noFloorTypes = "No floor types available.";
 
-        public FloorTypes() : base("Floor Type") { }
+        public FloorTypes(WorkspaceModel workspaceModel)
+            : base(workspaceModel, "Floor Type") { }
 
         protected override void PopulateItems()
         {
@@ -333,7 +342,8 @@ namespace DSRevitNodesUI
     {
         private const string noWallTypes = "No wall types available.";
 
-        public WallTypes() : base("Wall Type") { }
+        public WallTypes(WorkspaceModel workspaceModel)
+            : base(workspaceModel, "Wall Type") { }
 
         protected override void PopulateItems()
         {
@@ -384,6 +394,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class Categories : EnumBase<BuiltInCategory>
     {
+        public Categories(WorkspaceModel workspace) : base(workspace) { }
+
         protected override void PopulateItems()
         {
             Items.Clear();
@@ -417,14 +429,8 @@ namespace DSRevitNodesUI
     {
         private const string noLevels = "No levels available.";
 
-        public Levels():base("Levels"){}
-        //{
-        //    OutPortData.Add(new PortData("Level", "The level."));
-
-        //    RegisterAllPorts();
-
-        //    PopulateItems();
-        //}
+        public Levels(WorkspaceModel workspaceModel)
+            : base(workspaceModel, "Levels"){}
 
         protected override void PopulateItems()
         {
@@ -475,14 +481,8 @@ namespace DSRevitNodesUI
     {
         private const string noFraming = "No structural framing types available.";
 
-        public StructuralFramingTypes():base("Framing Types"){}
-        //{
-        //    OutPortData.Add(new PortData("type", "The selected structural framing type."));
-
-        //    RegisterAllPorts();
-
-        //    PopulateItems();
-        //}
+        public StructuralFramingTypes(WorkspaceModel workspaceModel)
+            : base(workspaceModel, "Framing Types"){}
 
         protected override void PopulateItems()
         {
@@ -532,7 +532,9 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("A spacing rule layout for calculating divided paths.")]
     [IsDesignScriptCompatible]
-    public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> { }
+    public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> {
+        public SpacingRuleLayouts(WorkspaceModel workspace) : base(workspace) { }
+    }
 
     [NodeName("Element Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -540,6 +542,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class ElementTypes : AllChildrenOfType<Element>
     {
+        public ElementTypes(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);

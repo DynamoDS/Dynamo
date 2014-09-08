@@ -9,6 +9,8 @@ using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
 
+using Dynamo.ViewModels;
+
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -195,20 +197,20 @@ namespace Dynamo.Nodes
         /// qualified name. This method performs the search with the following 
         /// order:</para>
         /// <para>1. Search among the built-in types registered with 
-        /// DynamoController.BuiltInTypesByName dictionary</para>
+        /// DynamoModel.BuiltInTypesByName dictionary</para>
         /// <para>2. Search among the available .NET runtime types</para>
         /// <para>3. Search among built-in types, taking their "also-known-as" 
         /// attributes into consideration when matching the type name</para>
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <returns></returns>
-        public static System.Type ResolveType(string fullyQualifiedName)
+        public static System.Type ResolveType(DynamoModel dynamoModel, string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
                 throw new ArgumentNullException("fullyQualifiedName");
 
             TypeLoadData tData = null;
-            var builtInTypes = dynSettings.Controller.BuiltInTypesByName;
+            var builtInTypes = dynamoModel.BuiltInTypesByName;
             if (builtInTypes.TryGetValue(fullyQualifiedName, out tData))
                 return tData.Type; // Found among built-in types, return it.
 
@@ -218,7 +220,7 @@ namespace Dynamo.Nodes
                 return type;
 
             // If we still can't find the type, try the also known as attributes.
-            foreach (var builtInType in dynSettings.Controller.BuiltInTypesByName)
+            foreach (var builtInType in dynamoModel.BuiltInTypesByName)
             {
                 var attribs = builtInType.Value.Type.GetCustomAttributes(
                     typeof(AlsoKnownAsAttribute), false);
@@ -229,7 +231,7 @@ namespace Dynamo.Nodes
                 AlsoKnownAsAttribute akaAttrib = attribs[0] as AlsoKnownAsAttribute;
                 if (akaAttrib.Values.Contains(fullyQualifiedName))
                 {
-                    dynSettings.DynamoLogger.Log(string.Format(
+                    dynamoModel.Logger.Log(string.Format(
                         "Found matching node for {0} also known as {1}",
                         builtInType.Key, fullyQualifiedName));
 
@@ -237,10 +239,10 @@ namespace Dynamo.Nodes
                 }
             }
 
-            dynSettings.DynamoLogger.Log(string.Format(
+            dynamoModel.Logger.Log(string.Format(
                 "Could not load node of type: {0}", fullyQualifiedName));
 
-            dynSettings.DynamoLogger.Log("Loading will continue but nodes " +
+            dynamoModel.Logger.Log("Loading will continue but nodes " +
                 "might be missing from your workflow.");
 
             return null;
@@ -461,7 +463,12 @@ namespace Dynamo.Nodes
             Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
             var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            return relativeUri.OriginalString.Replace('/', '\\');
+            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            if (!HasPathInformation(relativePath))
+            {
+                relativePath = ".\\" + relativePath;
+            }
+            return relativePath;
         }
 
         /// <summary>
@@ -499,7 +506,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="fileVersion">Version of the input file.</param>
         /// <param name="currVersion">Current version of the Dynamo.</param>
-        internal static void DisplayObsoleteFileMessage(
+        internal static void DisplayObsoleteFileMessage( DynamoModel dynamoModel,
             string fullFilePath, Version fileVersion, Version currVersion)
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
@@ -507,7 +514,6 @@ namespace Dynamo.Nodes
 
             InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -520,7 +526,7 @@ namespace Dynamo.Nodes
 
             args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "OK");
 
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
         }
 
         /// <summary>
@@ -529,7 +535,7 @@ namespace Dynamo.Nodes
         /// message instructs user to save their work and restart Dynamo.
         /// </summary>
         /// <param name="exception">The exception to display.</param>
-        internal static void DisplayEngineFailureMessage(Exception exception)
+        internal static void DisplayEngineFailureMessage(DynamoModel dynamoModel, Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
             InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
@@ -563,9 +569,9 @@ namespace Dynamo.Nodes
             args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "Arrrrg, ok");
             args.Exception = exception;
 
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
-                dynSettings.Controller.ReportABug(null);
+                DynamoViewModel.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -586,7 +592,7 @@ namespace Dynamo.Nodes
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
         /// <returns> true if the file must be opened and false otherwise </returns>
-        internal static bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        internal static bool DisplayFutureFileMessage(DynamoModel dynamoModel, string fullFilePath, Version fileVersion, Version currVersion)
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
             var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
@@ -608,10 +614,11 @@ namespace Dynamo.Nodes
             args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
             args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
             
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
-                dynSettings.Controller.DownloadDynamo();
+                // this should be an event on DynamoModel
+                DynamoViewModel.DownloadDynamo();
                 return false;
             }
 
@@ -621,6 +628,11 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInput : NodeModel
     {
+        public VariableInput(WorkspaceModel ws)
+            : base(ws)
+        {
+        }
+
         protected abstract string GetInputRootName();
         protected abstract string GetTooltipRootName();
 
@@ -723,7 +735,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInputAndOutput : NodeModel
     {
-        protected VariableInputAndOutput()
+        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
         {
         }
 
@@ -877,7 +889,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
-        public Sublists()
+        public Sublists(WorkspaceModel ws): base(ws)
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists."));
             InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
@@ -1146,7 +1158,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeModel
     { 
-        public ComposeFunctions()
+        public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("f", "A Function"));
             InPortData.Add(new PortData("g", "A Function"));
@@ -1186,8 +1198,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Applies a function to arguments.")]
     public class Apply1 : VariableInput
     {
-        public Apply1()
-        {
+        public Apply1(WorkspaceModel ws) : base(ws)
+        { 
             InPortData.Add(new PortData("func", "Function"));
             OutPortData.Add(new PortData("result", "Result of function application."));
 
@@ -1279,7 +1291,7 @@ namespace Dynamo.Nodes
                 if (_value == null || !_value.Equals(value))
                 {
                     _value = value;
-                    //dynSettings.DynamoLogger.Log("Value changed to: " + _value);
+                    //dynamoModel.Logger.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
                     RaisePropertyChanged("Value");
                 }
@@ -1289,7 +1301,8 @@ namespace Dynamo.Nodes
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue(T val);
 
-        protected BasicInteractive()
+        protected BasicInteractive(WorkspaceModel ws)
+            : base(ws)
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
@@ -1359,10 +1372,7 @@ namespace Dynamo.Nodes
             get { return true; }
         }
 
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value);
-        //}
+        public Double(WorkspaceModel ws) : base(ws) { }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -1382,10 +1392,7 @@ namespace Dynamo.Nodes
 
     public abstract class Integer : BasicInteractive<int>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value);
-        //}
+        public Integer(WorkspaceModel ws) : base(ws) { }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -1397,18 +1404,12 @@ namespace Dynamo.Nodes
 
     public abstract class Bool : BasicInteractive<bool>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value ? 1 : 0);
-        //}
+        public Bool(WorkspaceModel ws) : base(ws) { }
     }
 
     public abstract partial class AbstractString : BasicInteractive<string>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewString(Value);
-        //}
+        public AbstractString(WorkspaceModel ws) : base(ws) { }
 
         public override string PrintExpression()
         {
@@ -1446,8 +1447,6 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class StringInput : AbstractString
     {
-        //dynTextBox tb;
-
         public override string Value
         {
             get
@@ -1460,7 +1459,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public StringInput()
+        public StringInput(WorkspaceModel ws): base(ws)
         {
             RegisterAllPorts();
             Value = "";
@@ -1538,7 +1537,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class DoubleInput : NodeModel
     {
-        public DoubleInput()
+        public DoubleInput(WorkspaceModel ws)
+            : base(ws)
         {
             OutPortData.Add(new PortData("", ""));
             RegisterAllPorts();
@@ -2220,7 +2220,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected DropDrownBase()
+        protected DropDrownBase(WorkspaceModel ws) : base(ws)
         {
             Items.CollectionChanged += Items_CollectionChanged;
         }

@@ -57,12 +57,13 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        public DSFunction() 
+        public DSFunction(WorkspaceModel ws) : base(ws)
         {
             ArgumentLacing = LacingStrategy.Shortest;
         }
 
-        public DSFunction(FunctionDescriptor definition)
+        public DSFunction(WorkspaceModel ws, FunctionDescriptor definition)
+            : base(ws)
         {
             ArgumentLacing = LacingStrategy.Shortest;
             Definition = definition;
@@ -180,7 +181,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynSettings.Controller.EngineController;
+            var engine = this.Workspace.DynamoModel.EngineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {
@@ -444,9 +445,10 @@ namespace Dynamo.Nodes
 
         // A 'DSVarArgFunction' function cannot live without its 'Definition'
         // (a 'FunctionDescriptor'), therefore this constructor shouldn't be used.
-        private DSVarArgFunction() { }
+        private DSVarArgFunction(WorkspaceModel ws) : base(ws) { }
 
-        public DSVarArgFunction(FunctionDescriptor definition)
+        public DSVarArgFunction(WorkspaceModel ws, FunctionDescriptor definition)
+            : base(ws) 
         {
             Definition = definition;
             Initialize();
@@ -585,7 +587,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynSettings.Controller.EngineController;
+            var engine = this.Workspace.DynamoModel.EngineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {

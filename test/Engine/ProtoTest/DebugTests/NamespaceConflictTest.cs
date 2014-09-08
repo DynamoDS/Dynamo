@@ -14,6 +14,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("Trace")]
+        [Category("Failure")]
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
@@ -25,8 +26,10 @@ b = B.DupTargetTest.DupTargetTest();
 bO = b.Foo();
 "
 );
-            Assert.IsTrue((Int64)mirror.GetFirstValue("aO").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("bO").Payload == 2);
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
+            string defectID = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
+            Assert.IsTrue((Int64)mirror.GetFirstValue("aO").Payload == 1, defectID);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("bO").Payload == 2, defectID);
 
         }
 

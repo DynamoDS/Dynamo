@@ -1,7 +1,8 @@
 ﻿using System;
+
+using Dynamo;
+using Dynamo.Interfaces;
 using Dynamo.Python;
-using IronPython.Hosting;
-using Microsoft.Scripting;
 using NUnit.Framework;
 
 namespace DynamoPythonTests
@@ -9,13 +10,74 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class CodeCompletionTests
     {
+        private class SimpleLogger : ILogger
+        {
+
+            public string LogPath
+            {
+                get { return ""; }
+            }
+
+            public void Log(string message)
+            {
+                
+            }
+
+            public void Log(string message, LogLevel level)
+            {
+                
+            }
+
+            public void Log(string tag, string message)
+            {
+                
+            }
+
+            public void LogError(string error)
+            {
+                
+            }
+
+            public void LogWarning(string warning, WarningLevel level)
+            {
+                
+            }
+
+            public void Log(Exception e)
+            {
+                
+            }
+
+            public void ClearLog()
+            {
+                
+            }
+
+            public string LogText
+            {
+                get { return ""; }
+            }
+
+            public string Warning
+            {
+                get
+                {
+                    return "";
+                }
+                set { return; }
+            }
+        }
+
+        private ILogger logger;
+
         [SetUp]
         public void SetupPythonTests()
         {
-            Dynamo.DynamoController.IsTestMode = true;
+            this.logger = new SimpleLogger();
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
         {
             var matchNumVar = "a = 5.0";
@@ -26,6 +88,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicArrayVarSingleLine()
         {
             var matchArray = "a = []";
@@ -36,6 +99,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicDictVarSingleLine()
         {
             var matchDict = "a = {}";
@@ -46,6 +110,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchIntSingleLine()
         {
             var matchDict = "a = 2";
@@ -56,6 +121,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchComplexDictVarSingleLine()
         {
             var matchDict2 = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
@@ -66,6 +132,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchComplexDictVarMultiLine()
         {
             var matchDict2 = "\n\na = { 'Alice': 7, 'Toby': 'Nuts' }\nb = 5.0";
@@ -76,6 +143,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DoesntMatchBadVariable()
         {
             var matchDict2 = "a! = { 'Alice': 7, 'Toby': 'Nuts' }";
@@ -84,10 +152,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchAllVariablesSingleLine()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -96,10 +165,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchAllVariableTypes()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }\nb = {}\nc = 5.0\nd = 'pete'\ne = []";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -112,6 +182,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicImportStatement()
         {
             var str = "import System";
@@ -122,6 +193,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicImportStatementMultiLine()
         {
             var str = "\nimport System\n";
@@ -132,10 +204,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportLibrary()
         {
             var str = "\nimport System\n";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -143,10 +216,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DuplicateCallsToImportShouldBeFine()
         {
             var str = "\nimport System\nimport System";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -154,10 +228,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportSystemLibraryAndGetCompletionData()
         {
             var str = "\nimport System\nSystem.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
 
             var completionData = completionProvider.GetCompletionData(str);
 
@@ -168,10 +243,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
 
             var completionData = completionProvider.GetCompletionData(str);
 
@@ -179,6 +255,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchImportSystemLibraryWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
@@ -188,10 +265,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchImportSystemAndLoadLibraryAndWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -199,11 +277,12 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanIdentifyVariableTypeAndGetCompletionData()
         {
             var str = "a = 5.0\na.";
 
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
@@ -211,6 +290,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificImportsMultipleTypesSingleLine()
         {
             var str = "from math import sin, cos\n";
@@ -224,6 +304,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificImportsSingleTypeSingleLine()
         {
             var str = "from math import sin\n";
@@ -235,6 +316,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificAutodeskImportsSingleTypeSingleLine()
         {
             var str = "from Autodesk.Revit.DB import Events\n";
@@ -246,6 +328,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindAllTypeImports()
         {
             var str = "from Autodesk.Revit.DB import *\n";
@@ -257,11 +340,12 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindDifferentTypesOfImportsAndLoad()
         {
             var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
 
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
@@ -272,10 +356,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindSystemCollectionsAssignmentAndType()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\n";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             completionProvider.UpdateImportedTypes(str);
             completionProvider.UpdateVariableTypes(str);
 
@@ -284,10 +369,11 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanGetCompletionDataForArrayListVariable()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\na.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var completionProvider = new IronPythonCompletionProvider(logger);
             var matches = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, matches.Length);

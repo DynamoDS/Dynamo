@@ -28,6 +28,7 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
+        bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
  
@@ -193,8 +194,6 @@ namespace ProtoTestFx.TD
                 
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                System.Diagnostics.StackFrame frame = trace.GetFrame(caller);
-                string callerName = frame.GetMethod().Name;
                 
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";
@@ -252,16 +251,22 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
-                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                String folderName = TestContext.CurrentContext.Test.FullName;
-
-                string[] substrings = folderName.Split('.');
-
-                string path ="..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);    
                 
-                createDSFile(fileName,path,sourceCode);
+                if (dumpDS )
+                {
+
+                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                    String folderName = TestContext.CurrentContext.Test.FullName;
+
+                    string[] substrings = folderName.Split('.');
+
+                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+
+                    createDSFile(fileName, path, sourceCode);
+                }
+
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
@@ -291,7 +296,7 @@ namespace ProtoTestFx.TD
             return testMirror;
         }
 
-        public ExecutionMirror VerifyRunScriptSource(string sourceCode, string errorstring, string importPath = null)
+        public ExecutionMirror VerifyRunScriptSource(string sourceCode, string errorstring = "", string importPath = null)
         {
             Assert.DoesNotThrow(() => testMirror = RunScriptSource(sourceCode, errorstring, importPath), errorstring);
                 return testMirror;
@@ -335,12 +340,14 @@ namespace ProtoTestFx.TD
                 T realValue = (T)Convert.ChangeType(dsObject.Payload, typeof(T));
                 if (!expectedValue.Equals(realValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, BuildIndicesString(indices), expectedValue, realValue, mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                        BuildIndicesString(indices), expectedValue, realValue, mErrorMessage));
                 }
             }
             catch (System.InvalidCastException)
             {
-                Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to {3}. \n{4}", dsVariable, BuildIndicesString(indices), expectedValue, typeof(T), mErrorMessage));
+                Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to {3}. \n{4}", dsVariable, 
+                    BuildIndicesString(indices), expectedValue, typeof(T), mErrorMessage));
             }
         }
 
@@ -351,7 +358,8 @@ namespace ProtoTestFx.TD
             {
                 if (!dsObject.DsasmValue.IsNull)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable, TestFrameWork.BuildIndicesString(indices), TestFrameWork.mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable, 
+                        TestFrameWork.BuildIndicesString(indices), TestFrameWork.mErrorMessage));
                 }
                 return;
             }
@@ -367,7 +375,8 @@ namespace ProtoTestFx.TD
                 Int64 expectedValue = Convert.ToInt64(expectedObject);
                 if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeInt)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable, 
+                        BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
                 {
@@ -379,7 +388,8 @@ namespace ProtoTestFx.TD
                 Double expectedValue = Convert.ToDouble(expectedObject);
                 if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeDouble)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable, 
+                        BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
                 {
@@ -389,12 +399,14 @@ namespace ProtoTestFx.TD
 
                         if (!MathUtils.Equals(expectedValue, dsValue))
                         {
-                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
+                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                                BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
                         }
                     }
                     catch (System.InvalidCastException)
                     {
-                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Double. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
+                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Double. \n{3}", dsVariable, 
+                            BuildIndicesString(indices), expectedValue, mErrorMessage));
                     }
                 }
             }
@@ -403,7 +415,8 @@ namespace ProtoTestFx.TD
                 Boolean expectedValue = Convert.ToBoolean(expectedObject);
                 if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.kTypeBool)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable, 
+                        BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
                 {
@@ -427,12 +440,14 @@ namespace ProtoTestFx.TD
 
                         if (!expectedObject.Equals(dsValue))
                         {
-                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
+                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                                BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
                         }
                     }
                     catch (System.InvalidCastException)
                     {
-                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Char. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
+                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Char. \n{3}", dsVariable, 
+                            BuildIndicesString(indices), expectedValue, mErrorMessage));
                     }
                 }
             }
@@ -445,11 +460,13 @@ namespace ProtoTestFx.TD
                 ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
                 if (dsArray == null)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, BuildIndicesString(indices), mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, 
+                        BuildIndicesString(indices), mErrorMessage));
                 }
                 else if (chars.Count() != dsArray.members.Count())
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string of length {2}, but its actual length is {3}.\n{4}", dsVariable, BuildIndicesString(indices), objs.Count(), dsArray.members.Count(), mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string of length {2}, but its actual length is {3}.\n{4}", dsVariable, 
+                        BuildIndicesString(indices), objs.Count(), dsArray.members.Count(), mErrorMessage));
                 }
                 else
                 {
@@ -470,7 +487,8 @@ namespace ProtoTestFx.TD
                 ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
                 if (dsArray == null)
                 {
-                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable, BuildIndicesString(indices), mErrorMessage));
+                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable, 
+                        BuildIndicesString(indices), mErrorMessage));
                 }
                 foreach (var item in collection)
                 {
@@ -661,18 +679,57 @@ namespace ProtoTestFx.TD
             AssertValue(data, value);
         }
 
+        public static void AssertInfinity(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
+        }
+
+        public static void AssertNan(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
+        }
+
         public static void AssertValue(MirrorData data, object value)
         {
-            if (data.IsCollection)
-                AssertCollection(data, value as IEnumerable);
-            else if (value == null)
+            if (value == null)
+            {
                 Assert.IsTrue(data.IsNull);
+            }
             else if (value is int)
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with int");
+
                 Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            }
             else if (value is double)
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with double");
+
                 Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            }
+            else if (data.IsCollection)
+            {
+                var values = value as IEnumerable;
+                if (object.ReferenceEquals(values, null))
+                {
+                    string errorMessage = string.Format(
+                        "The value is {1}, but the expected value is {2}.",
+                        data.Data ?? "null",
+                        value);
+                    throw new AssertionException(errorMessage);
+                }
+                AssertCollection(data, values);
+            }
             else
+            {
                 Assert.AreEqual(value, data.Data);
+            }
         }
 
         public IList<MethodMirror> GetMethods(string className, string methodName)
@@ -690,6 +747,12 @@ namespace ProtoTestFx.TD
             {
                 AssertValue(elements[i++], item);
             }
+        }
+
+        public void AssertPointer(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
         public void CleanUp()

@@ -13,46 +13,41 @@ namespace Dynamo.Tests
     [TestFixture]
     class DividedSurfaceTests:DynamoRevitUnitTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\DividedSurface\DividedSurface.rfa")]
         public void DividedSurface()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
-            //string samplePath = Path.Combine(_testPath, @".\DividedSurface\DividedSurface.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            string samplePath = Path.Combine(_testPath, @".\DividedSurface\DividedSurface.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            
+            ViewModel.OpenCommand.Execute(testPath);
+            ViewModel.Model.RunExpression();
 
-            ////var shellPath = Path.Combine(_testPath, "shell.rfa");
-            ////SwapCurrentModel(shellPath);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            fec.OfClass(typeof(DividedSurface));
 
-            //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //did it create a divided surface?
+            Assert.AreEqual(1, fec.ToElements().Count());
 
-            //FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(DividedSurface));
+            var ds = (DividedSurface)fec.ToElements()[0];
+            Assert.AreEqual(5, ds.USpacingRule.Number);
+            Assert.AreEqual(5, ds.VSpacingRule.Number);
 
-            ////did it create a divided surface?
-            //Assert.AreEqual(1, fec.ToElements().Count());
+            //can we change the number of divisions
+            var numNode = ViewModel.Model.Nodes.OfType<DoubleInput>().First();
+            numNode.Value = "10";
+            ViewModel.Model.RunExpression();
 
-            //var ds = (DividedSurface)fec.ToElements()[0];
-            //Assert.AreEqual(5, ds.USpacingRule.Number);
-            //Assert.AreEqual(5, ds.VSpacingRule.Number);
+            //did it create a divided surface?
+            Assert.AreEqual(10, ds.USpacingRule.Number);
+            Assert.AreEqual(10, ds.VSpacingRule.Number);
 
-            ////can we change the number of divisions
-            //var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
-            //numNode.Value = "10";
-            //dynSettings.Controller.RunExpression(true);
-
-            ////did it create a divided surface?
-            //Assert.AreEqual(10, ds.USpacingRule.Number);
-            //Assert.AreEqual(10, ds.VSpacingRule.Number);
-
-            ////does it throw an error when we try to set a negative number of divisions
-            //numNode.Value = "-5";
-            //Assert.Throws(typeof(AssertionException),
-            //              () => dynSettings.Controller.RunExpression(true));
-
-            Assert.Inconclusive("Porting : DoubleInput");
+            //ensure there is a warning when we try to set a negative number of divisions
+            numNode.Value = "-5";
+            ViewModel.Model.RunExpression();
+            Assert.Greater(ViewModel.Model.EngineController.LiveRunnerCore.RuntimeStatus.WarningCount, 0);
         }
     }
 }

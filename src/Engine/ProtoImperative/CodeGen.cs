@@ -2221,6 +2221,7 @@ namespace ProtoImperative
 
                     bool isAccessible = false;
                     bool isAllocated = false;
+                    bool isLocalDeclaration = t.IsLocal;
                     // if it's forloop, verify allocation with its original arrayname
                     if (t.ArrayName != null && !t.ArrayName.Equals(""))
                     {
@@ -2228,7 +2229,14 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        if (isLocalDeclaration)
+                        {
+                            isAllocated = VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        }
+                        else
+                        {
+                            isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        }
                     }
                    
                     int runtimeIndex = (!isAllocated) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;

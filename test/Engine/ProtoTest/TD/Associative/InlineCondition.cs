@@ -323,7 +323,8 @@ thisTest.Verification(mirror, ""c2"", 2, 1);
 thisTest.Verification(mirror, ""t5"", 3, 1); 
 thisTest.Verification(mirror, ""c3"", 1, 1);
 thisTest.Verification(mirror, ""t7"", 0, 1);
-thisTest.Verification(mirror, ""c4"", 1, 1);*/";
+thisTest.Verification(mirror, ""c4"", 1, 1);*/
+";
             thisTest.VerifyRunScriptSource(src, errmsg);
             thisTest.Verify("xx", 5);
             thisTest.Verify("x1", 5);
@@ -335,8 +336,10 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T010_Defect_1456751_execution_on_both_true_and_false_path_issue()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
             string src = @"
 a = 0;
 def foo ( )
@@ -347,7 +350,8 @@ def foo ( )
 x = 1 > 2 ? foo() + 1 : foo() + 2;
 	
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
             thisTest.Verify("x", 3);
             thisTest.Verify("a", 1);
         }
@@ -355,12 +359,19 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T011_Defect_1467281_conditionals()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941
             string code =
-               @"x = 2 == { };                  y = {}==null;                 z = {{1}}=={1};                 z2 = { { 1 } } == 1;                 z3=1=={{1}};                 z4={1}=={{1}};";
+               @"x = 2 == { }; 
+                 y = {}==null;
+                 z = {{1}}=={1};
+                 z2 = { { 1 } } == 1;
+                 z3=1=={{1}};
+                 z4={1}=={{1}};";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467281 Sprint 26 - Rev 3695 [Design Decision] incorrect conditional tests on empty arrays  ");
+            thisTest.SetErrorMessage("MAGN-3941 [Design Issue] Errors with conditionals with empty arrays and ararys with different ranks");
             thisTest.Verify("x", false); //WAITING FOR DESIGN DECISION
             thisTest.Verify("y", false);//WAITING FOR DESIGN DECISION
             thisTest.Verify("z", null);
@@ -374,7 +385,10 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288()
         {
             string code =
-@"c = 0;a = { 0, 1, 2 };a = c > 1 ? a : a + 1;//expected : { 1, 2, 3 }";
+@"c = 0;
+a = { 0, 1, 2 };
+a = c > 1 ? a : a + 1;
+//expected : { 1, 2, 3 }";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 1, 2, 3 });
@@ -385,7 +399,19 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288_2()
         {
             string code =
-@"class A{    a:var[]..[];    constructor A( c )    {        a = { 0, 1, 2 };        a = c > 1 ? a : a + 1;    }}x = { A.A(0), A.A(2)};a1 = x.a;";
+@"
+class A
+{
+    a:var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+}
+x = { A.A(0), A.A(2)};
+a1 = x.a;
+";
             string errmsg = "";
 
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -397,7 +423,25 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288_3()
         {
             string code =
-@"class A{    a:var[]..[];    constructor A( c )    {        a = { 0, 1, 2 };        a = c > 1 ? a : a + 1;    }    def foo (c)    {        a = c == 4 ? a : a + 1;        return = a;    }}x = { A.A(0), A.A(2)};a1 = x.a;test = a1.foo(5);";
+@"
+class A
+{
+    a:var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+    def foo (c)
+    {
+        a = c == 4 ? a : a + 1;
+        return = a;
+    }
+}
+x = { A.A(0), A.A(2)};
+a1 = x.a;
+test = a1.foo(5);
+";
             string errmsg = "";
 
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -409,7 +453,20 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288_4()
         {
             string code =
-@"class A{    a;    constructor A( c )    {        a = { 0, 1, 2 };        a = c > 1 ? a : a + 1;    }}x = { A.A(0), A.A(2)};a = x.a;//expected : { { 1,2,3}, {0,1,2} }";
+@"
+class A
+{
+    a;
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+}
+x = { A.A(0), A.A(2)};
+a = x.a;
+//expected : { { 1,2,3}, {0,1,2} }
+";
             string errmsg = "";
 
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -421,7 +478,19 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288_5()
         {
             string code =
-@"class A{    a : var[]..[];    constructor A( c )    {        a = { 0, 1, 2 };        a = c > 1 ? a : a + 1;    }}x = { A.A(0), A.A(2)};a = x.a;";
+@"
+class A
+{
+    a : var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+}
+x = { A.A(0), A.A(2)};
+a = x.a;
+";
             string errmsg = "1467288 - sprint25: rev 3731 : REGRESSION : NullReferenceException when using the same collection in both paths of a inline condition";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 1, 2 } });
@@ -432,7 +501,25 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T012_Defect_1467288_6()
         {
             string code =
-@"class A{    a:var[]..[];    constructor A( c )    {        a = { 0, 1, 2 };        a = c > 1 ? a : a + 1;    }    def foo (c)    {        a = c == 4 ? a : a + 1;        return = a;    }}x = { A.A(0), A.A(2)};a1 = x.a;test = x.foo(5);";
+@"
+class A
+{
+    a:var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+    def foo (c)
+    {
+        a = c == 4 ? a : a + 1;
+        return = a;
+    }
+}
+x = { A.A(0), A.A(2)};
+a1 = x.a;
+test = x.foo(5);
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1", new Object[] { new Object[] { 2, 3, 4 }, new Object[] { 1, 2, 3 } });
@@ -443,7 +530,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T013_Defect_1467290()
         {
             string code =
-@"c = 0;x = 10;x = c > 1 ? 3 : 4;[Imperative]{    c = 3;            }test = x;";
+@"c = 0;
+x = 10;
+x = c > 1 ? 3 : 4;
+[Imperative]
+{
+    c = 3;            
+}
+test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 3);
@@ -454,7 +548,17 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T013_Defect_1467290_2()
         {
             string code =
-@"c = 0;x = 10;a = 1;b = {1,2};x = c > 1 ? a : b;[Imperative]{    c = 3;     a = 2;           }test = x;";
+@"c = 0;
+x = 10;
+a = 1;
+b = {1,2};
+x = c > 1 ? a : b;
+[Imperative]
+{
+    c = 3; 
+    a = 2;           
+}
+test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 2);
@@ -465,7 +569,22 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T013_Defect_1467290_3()
         {
             string code =
-@"c = 0;x = 10;a = 1;b = {1,2};x = c > 1 ? a : b;[Imperative]{    c = 3;     a = 2;    [Associative]    {        c = -1;        b = { 2,3};    }           }test = x;";
+@"c = 0;
+x = 10;
+a = 1;
+b = {1,2};
+x = c > 1 ? a : b;
+[Imperative]
+{
+    c = 3; 
+    a = 2;
+    [Associative]
+    {
+        c = -1;
+        b = { 2,3};
+    }           
+}
+test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new Object[] { 2, 3 });
@@ -476,7 +595,21 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         public void T013_Defect_1467290_4()
         {
             string code =
-@"c = 0;x = 10;a = {1,2};x = c > 1 ? a : a +1;[Imperative]{    c = 3;     a = {2,3};    [Associative]    {        c = -1;        a = { 0,1};    }           }test = x;";
+@"c = 0;
+x = 10;
+a = {1,2};
+x = c > 1 ? a : a +1;
+[Imperative]
+{
+    c = 3; 
+    a = {2,3};
+    [Associative]
+    {
+        c = -1;
+        a = { 0,1};
+    }           
+}
+test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", new Object[] { 1, 2 });
@@ -486,7 +619,9 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T014_InlineConditionContainUndefinedType()
         {
-            string code = @"x = C ? 1 : 0;";
+            string code = @"
+x = C ? 1 : 0;
+";
             string errmsg = "";//DNL-1467449 Rev 4596 : REGRESSION : Undefined variables in inline condition causes  Compiler Error";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 0);
@@ -496,7 +631,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T014_InlineConditionContainUndefinedType_2()
         {
-            string code = @"def foo (){    x = C ? 1 : 0;    return  = x;}test = foo();";
+            string code = @"
+def foo ()
+{
+    x = C ? 1 : 0;
+    return  = x;
+}
+test = foo();
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", 0);
@@ -506,7 +648,18 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T014_InlineConditionContainUndefinedType_3()
         {
-            string code = @"class A{    static def foo ()    {        x = C==1 ? 1 : 0;        C = 1;        return  = x;    }}test = A.foo();";
+            string code = @"
+class A
+{
+    static def foo ()
+    {
+        x = C==1 ? 1 : 0;
+        C = 1;
+        return  = x;
+    }
+}
+test = A.foo();
+";
             string errmsg = "1467449 - Rev 4596 : REGRESSION : Undefined variables in inline condition causes Compiler Error";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", 1);
@@ -516,7 +669,15 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T014_InlineConditionContainUndefinedType_4()
         {
-            string code = @"def foo (){    x = C == 1? 1 : 0;    C = 1;    return  = x;}test = foo();";
+            string code = @"
+def foo ()
+{
+    x = C == 1? 1 : 0;
+    C = 1;
+    return  = x;
+}
+test = foo();
+";
             string errmsg = "1467449 - Rev 4596 : REGRESSION : Undefined variables in inline condition causes Compiler Error";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", 1);
@@ -526,7 +687,10 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T014_InlineConditionContainUndefinedType_5()
         {
-            string code = @"x = C==1 ? 1 : 0;C = 1;";
+            string code = @"
+x = C==1 ? 1 : 0;
+C = 1;
+";
             string errmsg = "1467449 - Rev 4596 : REGRESSION : Undefined variables in inline condition causes Compiler Error";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 1);
@@ -536,7 +700,10 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T015_conditionequalto_1467482()
         {
-            string code = @"c = true;d = c== true;";
+            string code = @"
+c = true;
+d = c== true;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -547,7 +714,10 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T016_conditionnotequalto_1467482_2()
         {
-            string code = @"c = false;d = c!= true;";
+            string code = @"
+c = false;
+d = c!= true;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -558,7 +728,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T017_conditionequalto_1467482_3()
         {
-            string code = @"d;[Imperative]{    c = true;    d = c== true;}";
+            string code = @"
+d;
+[Imperative]
+{
+    c = true;
+    d = c== true;
+}
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -569,7 +746,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467482_4()
         {
-            string code = @"            d;            [Imperative]            {                c = false;                d = c!= true;            }            ";
+            string code = @"
+            d;
+            [Imperative]
+            {
+                c = false;
+                d = c!= true;
+            }
+            ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -578,10 +762,17 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failure")]
         public void T018_conditionequalto_1467503_5()
         {
-            string code = @"                d;                c = false;                d = c!= null;                    ";
-            string errmsg = "1467503- null comparison returns null, it should return true or false";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
+            string code = @"
+                d;
+                c = false;
+                d = c!= null;
+            
+        ";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -589,10 +780,17 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failure")]
         public void T018_conditionequalto_1467503_6()
         {
-            string code = @"                d;                c = false;                d = c== null;                    ";
-            string errmsg = "1467503- null comparison returns null, it should return true or false";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
+            string code = @"
+                d;
+                c = false;
+                d = c== null;
+            
+        ";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -600,10 +798,19 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failure")]
         public void T018_conditionequalto_1467503_7()
         {
-            string code = @"            d;            [Imperative]            {                c = false;                d = c== null;            }        ";
-            string errmsg = "1465048- null comparison returns null, it should return true or false";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
+            string code = @"
+            d;
+            [Imperative]
+            {
+                c = false;
+                d = c== null;
+            }
+        ";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -611,10 +818,19 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failure")]
         public void T018_conditionequalto_1467503_8()
         {
-            string code = @"            d;            [Imperative]            {                c = false;                d = c!= null;            }        ";
-            string errmsg = "1467503-null comparison returns null, it should return true or false";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
+            string code = @"
+            d;
+            [Imperative]
+            {
+                c = false;
+                d = c!= null;
+            }
+        ";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -624,7 +840,11 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467403_9()
         {
-            string code = @"            d;                c = null;                d = c== null;        ";
+            string code = @"
+            d;
+                c = null;
+                d = c== null;
+        ";
             string errmsg = "1467403 -in conditional it throws error could not decide which function to execute , for valid code a,d gives the correct result as well ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -635,7 +855,11 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467403_10()
         {
-            string code = @"            d;                c = null;                d = c!= null;        ";
+            string code = @"
+            d;
+                c = null;
+                d = c!= null;
+        ";
             string errmsg = "1467403- in conditional it throws error could not decide which function to execute , for valid code a,d gives the correct result as well ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
@@ -646,7 +870,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467403_11()
         {
-            string code = @"            d;            [Imperative]            {                c = null;                d = c== null;            }        ";
+            string code = @"
+            d;
+            [Imperative]
+            {
+                c = null;
+                d = c== null;
+            }
+        ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
@@ -657,7 +888,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467403_12()
         {
-            string code = @"            d;            [Imperative]            {                c = null;                d = c!= null;            }        ";
+            string code = @"
+            d;
+            [Imperative]
+            {
+                c = null;
+                d = c!= null;
+            }
+        ";
             string errmsg = "1467403 -in conditional it throws error could not decide which function to execute , for valid code a,d gives the correct result as well ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
@@ -668,7 +906,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467403_13()
         {
-            string code = @"            e;                c : int = 1;                d : int[] = { 1, 0 };                e = c == d;        ";
+            string code = @"
+            e;
+                c : int = 1;
+                d : int[] = { 1, 0 };
+                e = c == d;
+        ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e", new object[] { true, false });
@@ -679,7 +922,15 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T018_conditionequalto_1467504_14()
         {
-            string code = @"            e;            [Imperative]            {                c : int = 1;                d : int[] = { 1, 0 };                e = c == d;            }        ";
+            string code = @"
+            e;
+            [Imperative]
+            {
+                c : int = 1;
+                d : int[] = { 1, 0 };
+                e = c == d;
+            }
+        ";
             string errmsg = "1467504-conditonal - comparison with an single vs array returns null in imperative block ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e", false);
@@ -688,10 +939,20 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failure")]
         public void T019_conditionequalto_1467469()
         {
-            string code = @"            e;            class A{ a1 = 1; }            class B{ b2 = 2; }            a = A.A();            b = B.B();            c = 1 == 2;            d = a == b;        ";
-            string errmsg = "1467469 equal to with user defined always returns true ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692
+            string code = @"
+            e;
+            class A{ a1 = 1; }
+            class B{ b2 = 2; }
+            a = A.A();
+            b = B.B();
+            c = 1 == 2;
+            d = a == b;
+        ";
+            string errmsg = "MAGN-1692 equal to with user defined always returns true";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -701,7 +962,11 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T020_1467442()
         {
-            string code = @"z = 1;z = (z > 0) ? 1 : 2;z = 3;";
+            string code = @"
+z = 1;
+z = (z > 0) ? 1 : 2;
+z = 3;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 3);
@@ -711,7 +976,13 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442()
         {
-            string code = @"b = 0;a = b;z = 0;z = z + ((a > 0) ? a : 0);b = 5;";
+            string code = @"
+b = 0;
+a = b;
+z = 0;
+z = z + ((a > 0) ? a : 0);
+b = 5;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 5);
@@ -721,7 +992,11 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_2()
         {
-            string code = @"z = 0;z = z + ((a > 0) ? a : 0);a = 1;";
+            string code = @"
+z = 0;
+z = z + ((a > 0) ? a : 0);
+a = 1;
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
@@ -731,7 +1006,15 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_3()
         {
-            string code = @"def foo (){    z = z + ((a > 0) ? a : 0);    a = 1;}z = 0;test = foo();";
+            string code = @"
+def foo ()
+{
+    z = z + ((a > 0) ? a : 0);
+    a = 1;
+}
+z = 0;
+test = foo();
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
@@ -741,7 +1024,18 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_4()
         {
-            string code = @"class A{    constructor A ()    {        z = z + ((a > 0) ? a : 0);        a = 1;    }}z = 0;t1 = A.A();";
+            string code = @"
+class A
+{
+    constructor A ()
+    {
+        z = z + ((a > 0) ? a : 0);
+        a = 1;
+    }
+}
+z = 0;
+t1 = A.A();
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
@@ -751,7 +1045,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_5()
         {
-            string code = @"a = 1;b = 1;c = 1;z = a > 0 ? (b > 1 ? 0 : 1 ) : ( c > 1 ? 2 : 3);";
+            string code = @"
+a = 1;
+b = 1;
+c = 1;
+z = a > 0 ? (b > 1 ? 0 : 1 ) : ( c > 1 ? 2 : 3);
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
@@ -761,7 +1060,18 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_6()
         {
-            string code = @"def foo ( x : double){    return = 0;}def foo ( x : bool){    return = 1;}a = 1;z = foo ( a > 0 ? 1.4 : false  );";
+            string code = @"
+def foo ( x : double)
+{
+    return = 0;
+}
+def foo ( x : bool)
+{
+    return = 1;
+}
+a = 1;
+z = foo ( a > 0 ? 1.4 : false  );
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 0);
@@ -771,7 +1081,18 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_7()
         {
-            string code = @"def foo ( x : double){    return = 0;}def foo ( x : bool){    return = 1;}a = {-1, 1};z = foo ( a > 0 ? 1.4 : false  );";
+            string code = @"
+def foo ( x : double)
+{
+    return = 0;
+}
+def foo ( x : bool)
+{
+    return = 1;
+}
+a = {-1, 1};
+z = foo ( a > 0 ? 1.4 : false  );
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", new Object[] { 1, 0 });
@@ -781,7 +1102,21 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_8()
         {
-            string code = @"class A{    static def foo ( x : double)    {        return = 0;    }    static def foo ( x : bool)    {        return = 1;    }}a = {-1, 1};z = A.foo ( a > 0 ? 1.4 : false  );";
+            string code = @"
+class A
+{
+    static def foo ( x : double)
+    {
+        return = 0;
+    }
+    static def foo ( x : bool)
+    {
+        return = 1;
+    }
+}
+a = {-1, 1};
+z = A.foo ( a > 0 ? 1.4 : false  );
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", new Object[] { 1, 0 });
@@ -791,7 +1126,18 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_9()
         {
-            string code = @"def foo ( x ){    return = x;}def foo2 ( x ){    return = x;}a = {-1, 1};z = foo2 ( a > 0 ? foo(1) : foo(2)  );";
+            string code = @"
+def foo ( x )
+{
+    return = x;
+}
+def foo2 ( x )
+{
+    return = x;
+}
+a = {-1, 1};
+z = foo2 ( a > 0 ? foo(1) : foo(2)  );
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", new Object[] { 2, 1 });
@@ -801,7 +1147,25 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
         [Test]
         public void T021_1467442_10()
         {
-            string code = @"def foo ( x ){    return = x;}def foo2 ( x ){    return = x;}a = {-1, 1};z;[Imperative]{    for ( i in 0..1 )    {        z[i] = foo2 ( a[i] > 0 ? foo(1) : foo(2)  );    }}";
+            string code = @"
+def foo ( x )
+{
+    return = x;
+}
+def foo2 ( x )
+{
+    return = x;
+}
+a = {-1, 1};
+z;
+[Imperative]
+{
+    for ( i in 0..1 )
+    {
+        z[i] = foo2 ( a[i] > 0 ? foo(1) : foo(2)  );
+    }
+}
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", new Object[] { 2, 1 });

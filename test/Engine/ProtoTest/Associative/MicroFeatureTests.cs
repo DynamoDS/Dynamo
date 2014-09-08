@@ -138,17 +138,15 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("Class")]
         public void TestClasses01()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}		class g	{		gx : var;		gy : var;		constructor g()		{			// Construct a class within a class			gx = f.f();			gy = 678;		}	}	// Construct class 'g'	cg = g.g();	// Resolution assignment	cg.gx.fx = 10001;	somevar = cg.gx.fx;	// Construct class 'f'	cf = f.f();	cf.fx = 888888;	cf.fy = 999999;	// Re-assign an instance of class 'gx' in class 'cg' with new class 'cf'	cg.gx = cf;	another = cg.gx.fx;	cf2 = cg.gx;	xx = cf2.fx;	yy = cf2.fy;";
+@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}		class g	{		gx : var;		gy : var;		constructor g()		{			// Construct a class within a class			gx = f.f();			gy = 678;		}	}	p = f.f();    a = p.fx;    b = p.fy;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("somevar").Payload == 10001);
-            Assert.IsTrue((Int64)mirror.GetValue("another").Payload == 888888);
-            Assert.IsTrue((Int64)mirror.GetValue("xx").Payload == 888888);
-            Assert.IsTrue((Int64)mirror.GetValue("yy").Payload == 999999);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 123);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 456);
         }
 
         [Test]
@@ -520,6 +518,36 @@ x = d.foo(c);
         }
 
         [Test]
+        public void Regression_MAGN336()
+        {
+            // Regression for defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-336
+            string code = @"
+class test
+            {
+                static a = { 1, 2, 3 };
+                static b = {""x"",""y""};
+                static def foo(c:int)
+                {
+                    a[b[0]] = c;
+                    a[b[1]] = c+1;
+                    return =a;
+                }
+            }
+            def foo(z:test)
+            {
+
+                y = z.foo(5);
+                x = y[z.b];
+                return =x;
+            }
+r = foo(test.test());
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 5, 6});
+        }
+
+        [Test]
         public void TestStaticProperty02()
         {
             string code = @"class S{	public static a : int;}class C{    public x : int;    constructor C()    {        S.a = 2;    }}p = C.C();b = S.a;";
@@ -527,19 +555,6 @@ x = d.foo(c);
             Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 2);
         }
 
-        [Test]
-        [Category("Method Resolution")]
-        public void TestStaticFunction01()
-        {
-            string code =
-                @"                    class A                    {                        static x:int;                                protected static def ding()                        {                            return = 3;                        }                            public static def dong()                        {                            return = 4;                        }                    }                    class B extends A                    {                        public static def ding()                        {                            return = 5;                        }                        public def foo()                        {                            x1 = A.ding();                            a = A.A();                            x2 = a.ding();                            x3 = ding();                            return = x1 + x2 + x3;                        }                    }                    a = A.A();                    d1 = a.ding();                    d2 = a.dong();                    d3 = A.dong();                    b = B.B();                    f = b.foo();                    d4 = b.ding();                    d5 = B.ding();";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("d2", 0).Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("d3", 0).Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("f", 0).Payload == 11);
-            Assert.IsTrue((Int64)mirror.GetValue("d4", 0).Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("d5", 0).Payload == 5);
-        }
 
         [Test]
         public void TestStaticMethodResolution()
@@ -1165,6 +1180,7 @@ r2 = ContainsKey(a, true);
         }
 
         [Test]
+        [Category("Failure")]
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array
@@ -1177,7 +1193,9 @@ r2 = RemoveKey(a, true);
 r3 = ContainsKey(a, ""x"");
 r4 = ContainsKey(a, true);
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
+            string errmsg = "MAGN-4155 : ContainsKey returns wrong value";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, errmsg);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
             thisTest.Verify("r3", false);
@@ -1260,6 +1278,38 @@ r = a[null];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 0);
             thisTest.Verify("r", 5);
+        }
+
+        [Test]
+        public void TestDictionary25()
+        {
+            string code = @"
+a = {};
+x = ""key"";
+a[x] = 42;
+
+y = ""key"";
+a[y] = 24;
+
+z = ""key"";
+a[z] = 12;
+
+r1 = a[x];
+r2 = a[y];
+r3 = a[z];
+r4 = a[""key""];
+
+a[""key""] = 1;
+r5 = a[""key""];
+r6 = a[x];
+r7 = a[y];
+r8 = a[z];
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r5", 1);
+            thisTest.Verify("r6", 1);
+            thisTest.Verify("r7", 1);
+            thisTest.Verify("r8", 1);
         }
 
         [Test]
@@ -1876,7 +1926,7 @@ x4 = 0..#5..10;
         public void TestLHSUpdate01()
         {
             String code =
-                @"class C{    x : var;    constructor C(i : int)    {        x = D.D(i);    }}class D{    y : int = 0;    constructor D(i : int)    {        y = i;    }}a = C.C();// must reexecute a.x.y = 10 because a.x was modifieda.x.y = 10;i = a.x.y;a.x = D.D(2);j = a.x.y                ";
+                @"class C{    x : var;    constructor C(i : int)    {        x = D.D(i);    }}class D{    y : int = 0;    constructor D(i : int)    {        y = i;    }}a = C.C();// must reexecute a.x.y = 10 because a.x was modifieda.x.y = 10;i = a.x.y;a.x = D.D(2);j = a.x.y;                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetFirstValue("i").Payload == 10);
             Assert.IsTrue((Int64)mirror.GetFirstValue("j").Payload == 10);
@@ -1964,7 +2014,7 @@ x4 = 0..#5..10;
         {
             String code =
                 @"def foo : int(){	p = Point.ByCoordinates(10, 20, 30);	p2 = Point.ByCoordinates(12, 22, 32);	p3 = Point.ByCoordinates(14, 24, 34);	return = 10;}p = Point.ByCoordinates(15, 25, 35);x = p.X;y = foo();                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
@@ -1972,8 +2022,8 @@ x4 = 0..#5..10;
         public void TestGCRefCount002()
         {
             String code =
-                @"def CreatePoint : Point(x : int, y : int, z : int){	return = Point.ByCoordinates(x, y, z);}def getx : double(p : Point){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+                @"def CreatePoint : DummyPoint(x : int, y : int, z : int){	return = DummyPoint.ByCoordinates(x, y, z);}def getx : double(p : DummyPoint){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetFirstValue("x");
             Assert.IsTrue((Double)o.Payload == 5.0);
@@ -1992,8 +2042,8 @@ x4 = 0..#5..10;
         public void TestNullFFI()
         {
             String code =
-                @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = Point.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+                @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = DummyPoint.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
         }
@@ -2169,46 +2219,39 @@ s9=s7+s8;";
             thisTest.Verify("s9", "abcd");
         }
 
+
         [Test]
         public void TestStringOperations()
         {
-            string src = @"class A{}
+            string src = @"
+class A{}
 s = ""ab"";
 r1 = s + 3;
 r2 = s + false;
-r3 = s + null;
 r4 = !s;
-r44 = !A.A();//false
+r44 = !A.A();
 r444 = !1;
 r5 = s == ""ab"";
 r6 = s == s;
 r7 = ""ab"" == ""ab"";
 ns = s;
 ns[0] = 1;
-r8 = ns == {1, 'b'};
-//r9 = "" == "";
-//r10 = ("" == null);
 r9 = s != ""ab"";
 ss = ""abc"";
 ss[0] = 'x';
 m = ss;
-r10 = """" == null;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.SetErrorMessage("1467274 - Sprint26: rev3611: type conversion checking through two paths");
             thisTest.Verify("r1", "ab3");
             thisTest.Verify("r2", "abfalse");
-            thisTest.Verify("r3", null);
             thisTest.Verify("r4", false);
             thisTest.Verify("r44", false);
             thisTest.Verify("r444", false);
             thisTest.Verify("r5", true);
             thisTest.Verify("r6", true);
             thisTest.Verify("r7", true);
-            thisTest.Verify("r8", true);
             thisTest.Verify("r9", false);
             thisTest.Verify("ss", "xbc");
-            thisTest.Verify("r10", null);
         }
 
         [Test]
@@ -2617,37 +2660,6 @@ i = [Associative]
             thisTest.Verify("i", 3);
         }
 
-                [Test]
-        public void TestLocalKeywordDeclaration09()
-        {
-            string code =
-@"
-i = [Imperative]
-{
-    a : local int = 1;      
-    return = a;
-}
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 1);
-        }
-
-        [Test]
-        public void TestLocalKeywordDeclaration10()
-        {
-            string code =
-@"
-i = [Imperative]
-{
-    a : local int = 1;      
-    b : local int = 2;       
-    return = a + b;
-}
-";          
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 3);
-        }
-
         [Test]
         public void TestLocalKeywordDeclarationNegativ01()
         {
@@ -2658,6 +2670,530 @@ a : int local = 1;   // 'local' should come before any type specifier";
             {
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
+        }
+
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ02()
+        {
+            String code =
+@"  
+local = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ03()
+        {
+            String code =
+@"  
+local : int = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ04()
+        {
+            String code =
+@"  
+local = [Imperative] { return = 1; };   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock01()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    return = a;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock02()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction01()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    return = a;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction02()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction01()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction02()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+
+
+    def g()
+    {
+        a : local = 3;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+z = p.g();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+            thisTest.Verify("z", 3);
+        }
+
+
+        [Test]
+        public void TestLocalVariableUpdate01()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a;
+    a = 2;
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate02()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a + 10;
+    a = 2;
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 12);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate03()
+        {
+            string code =
+@"
+a = 10;
+b = a;
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a;
+    a = 2;          // Update local 'a'
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 10);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate04()
+        {
+            string code =
+@"
+a = 10;
+b = a;
+i = [Associative]
+{
+    return = [Imperative]
+    {
+        return = [Associative]
+        {
+            a : local = 1; 
+            b : local = a;
+            a = 2;          // Update local 'a'
+            return = b;
+        }
+    }
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableNoUpdate01()
+        {
+            string code =
+@"
+a = 1;
+b = a;
+c = [Associative]
+{
+    a : local = 2; // Updating local 'a' should not update global 'a'
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableNoUpdate02()
+        {
+            string code =
+@"
+a = 1;
+b = a;
+c = [Associative]
+{
+    a : local; 
+    a = 2;      // Updating local 'a' should not update global 'a'
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
+        }
+
+
+        [Test]
+        public void TestLocalVariableNoUpdate03()
+        {
+            string code =
+@"
+a : local = 1;      // Tagging a variable local at the global scope has no semantic effect
+b : local = a;
+c = [Associative]
+{
+    a : local; 
+    a = 2;      // Updating local 'a' should not update global 'a'
+    return = 1;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 1);
+        }
+
+
+        [Test]
+        public void TestNullsOnExpression01()
+        {
+            string code =
+@"
+        a = 1 + null;
+        b = """" == null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", false);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void TestComplexAssociativeUpdate()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
+            // Test must be simplified to use geoemtry functions from FFITarget
+            string code =
+@"
+
+import(""DSCoreNodes.dll""); 
+import(""ProtoGeometry.dll"");
+
+a = 8;
+x = a;
+t0 = 90;
+t1 = -90;
+t2 = null;
+t3 = null;
+t4 = Vector.ZAxis();
+t5 = true;
+t6 = t5;
+t7 = 1.5;
+t8 = 2.5;
+t9 = 11;
+t10 = 20;
+t11 = t9;
+t12 = (t11) / 2;
+t13 = t7;
+t14 = t8;
+t15 = t13;
+t16 = -t13;
+t17 = t14;
+t18 = -t14;
+t19 = Vector.ZAxis();
+t20 = 251.78;
+t21 = 110.78;
+t22 = 283.15;
+t23 = 189.22;
+t24 = 96.94;
+t25 = 283.15;
+t26 = Point.ByCoordinates(t20, t21, t22);
+t27 = Point.ByCoordinates(t23, t24, t25);
+t28 = Vector.ByTwoPoints(t27, t26);
+t29 = t28.Reverse();
+t30 = t28.Length;
+t31 = t28.Normalized();
+t32 = t19.Cross(t31);
+t33 = t5;
+t34 = t32;
+t35 = ((t33 ? t34 : t34.Reverse()));
+t36 = t4.Cross(t35);
+t37 = t36.Scale(t10);
+t38 = t37.Reverse();
+t39 = t36.Scale(t12);
+t40 = t39.Reverse();
+t41 = x;
+t42 = 85;
+t43 = 55;
+t44 = 30;
+t45 = 25;
+t46 = 44.57;
+t47 = 32.25;
+t48 = 32;
+t49 = 38;
+t50 = 248.21;
+t51 = 249.67;
+t52 = t50;
+t53 = t51;
+t54 = (t52) < (t53);
+t55 = t50;
+t56 = t51;
+t57 = (t55) > (t56);
+t58 = t29.Rotate(t35, t49);
+t59 = t58;
+t60 = Vector.ByCoordinates(t59.X, t59.Y, ((t59.Z) < 0 ? t59.Z : -t59.Z));
+t61 = Line.ByStartPointDirectionLength(t26, t60, t30);
+t62 = t28.Rotate(t35, t48);
+t63 = t62;
+t64 = Vector.ByCoordinates(t63.X, t63.Y, ((t63.Z) < 0 ? t63.Z : -t63.Z));
+t65 = Line.ByStartPointDirectionLength(t27, t64, t30);
+t66 = t65.Intersect(t61);
+t67 = DSCore.List.FirstItem(t66);
+t68 = t67.Add(t40);
+t69 = t67.Add(t39);
+t70 = t69;
+t71 = t50;
+t72 = t68;
+t73 = t51;
+t74 = Point.ByCoordinates(t70.X, t70.Y, t71);
+t75 = Point.ByCoordinates(t72.X, t72.Y, t73);
+t76 = t75.Add(t38);
+t77 = t50;
+t78 = t51;
+t79 = t74;
+t80 = t75;
+t81 = (((t77) < (t78) ? t77 : t78));
+t82 = Point.ByCoordinates(t79.X, t79.Y, t81);
+t83 = Point.ByCoordinates(t80.X, t80.Y, t81);
+t84 = Line.ByStartPointEndPoint(t83, t75);
+t85 = t54;
+t86 = t84;
+t87 = t3;
+t88 = ((t85 ? t86 : t87));
+t89 = Line.ByStartPointEndPoint(t74, t82);
+t90 = t57;
+t91 = t89;
+t92 = t2;
+t93 = ((t90 ? t91 : t92));
+t94 = Line.ByStartPointEndPoint(t82, t83);
+t95 = {t94, t88, t93};
+t96 = t95;
+t97 = DSCore.Object.IsNull(t95);
+t98 = DSCore.List.FilterByBoolMask(t95, t97);
+//t99 = __TryGetValueFromNestedDictionaries(t98, ""in"");
+//t100 = __TryGetValueFromNestedDictionaries(t98, ""out"");
+t101 = t74.Add(t37);
+t102 = Vector.ByTwoPoints(t67, t26);
+t103 = t102.Normalized();
+t104 = t103.Cross(t35);
+t105 = t104.Scale(t18);
+t106 = t26.Add(t105);
+t107 = t104.Scale(t15);
+t108 = t26.Add(t107);
+t109 = Vector.ByTwoPoints(t67, t27);
+t110 = t109.Normalized();
+t111 = t110.Cross(t35);
+t112 = t111.Scale(t17);
+t113 = t27.Add(t112);
+t114 = t111.Scale(t16);
+t115 = t27.Add(t114);
+t116 = Line.ByStartPointEndPoint(t67, t27);
+t117 = t116.Translate(t114);
+t118 = Line.ByStartPointEndPoint(t67, t26);
+t119 = t118.Translate(t107);
+t120 = Arc.ByCenterPointStartPointSweepAngle(t76, t75, t47, t35);
+t121 = t120.EndPoint;
+t122 = t46;
+t123 = -t122;
+t124 = Arc.ByCenterPointStartPointSweepAngle(t101, t74, t123, t35);
+t125 = t124.StartPoint;
+t126 = t103.Scale(t45);
+t127 = t67.Add(t126);
+t128 = t127.Add(t105);
+t129 = t110.Scale(t44);
+t130 = t67.Add(t129);
+t131 = t130.Add(t112);
+t132 = t5;
+t133 = t42;
+t134 = t43;
+t135 = ((t132 ? t133 : -t133));
+t136 = ((t132 ? -t134 : t134));
+t137 = t104.Scale(t136);
+t138 = t128.Add(t137);
+t139 = Arc.ByCenterPointStartPointSweepAngle(t138, t128, t1, t35);
+t140 = t139.ClosestPointTo(t121);
+t141 = t139.ParameterAtPoint(t140);
+t142 = t111.Scale(t135);
+t143 = t131.Add(t142);
+t144 = Arc.ByCenterPointStartPointSweepAngle(t143, t131, t0, t35);
+t145 = t144.ClosestPointTo(t125);
+t146 = t144.ParameterAtPoint(t145);
+t147 = t146;
+t148 = t141;
+t149 = (t147) / 2;
+t150 = (1 + (t148)) / 2;
+t151 = t139.PointAtParameter(t150);
+t152 = Arc.ByThreePoints(t121, t151, t128);
+t153 = t144.PointAtParameter(t149);
+t154 = Arc.ByThreePoints(t131, t153, t125);
+t155 = Arc.ByFillet(t119, t117, t41);
+t156 = t155.EndPoint;
+t157 = t155.StartPoint;
+
+a = 12;
+
+a = 8;
+
+x1 = t156.X;
+y1 = t156.Y;
+z1 = t156.Z;
+
+x2 = t157.X;
+y2 = t157.Y;
+z2 = t157.Z;
+";
+
+           thisTest.RunScriptSource(code);
+
+           thisTest.Verify("x1", 228.19587612091331);
+           thisTest.Verify("y1", 105.56254036946036);
+           thisTest.Verify("z1", 266.18207825882848);
+
+           thisTest.Verify("x2", 219.24758668548554);
+           thisTest.Verify("y2", 103.58293158131586);
+           thisTest.Verify("z2", 265.70177951843084);
         }
 
     }

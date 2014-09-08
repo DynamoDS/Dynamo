@@ -252,9 +252,11 @@ d = b + a; // { 5, 10}; // Here the length of the resulting variable [d] will be
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void Test_4_22_replication_guide_with_ragged_collection()
         {
-            string errmsg = "1467374 Sprint 28:Rev:4088: DS throws Type conversion.. & Index out of range.... error while adding two array jagged array.";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1678
+            string errmsg = "MAGN-1678 Sprint 28:Rev:4088: DS throws Type conversion.. & Index out of range.... error while adding two array jagged array.";
             string code = @"// The use of replication guides with ragged collections can be unpredictable results, as follows:
 a = { 1, { 3, 4 } }; // initial ragged collections
 b = { { 5, 6 }, 7 };

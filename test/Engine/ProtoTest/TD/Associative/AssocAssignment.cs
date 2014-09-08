@@ -1247,9 +1247,11 @@ y = x;
 
         [Test]
         [Category("Negative")]
+        [Category("Failure")]
         public void T55_Associative_assign_If_condition_1467002()
         {
-            String errmsg = "1467361 - Sprint 27 - Rev 4037 - [Design Issue]conditionals with empty arrays and ararys with different ranks";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941
+            String errmsg = "[Design Issue] conditionals with empty arrays and ararys with different ranks";
             string src = @"[Associative]
 {
 	x = {} == null;
@@ -1856,18 +1858,6 @@ y6 = x.foo(); ;
             thisTest.Verify("y6", 1);
         }
 
-        [Test]
-        public void T67_Defect_1467597()
-        {
-            string src = @"import(""Class_with_instance_methods_1.ds"");
-myVar = FabricationNode.CreateConnectionsFromNode(26);
-yourVar = myVar.ExtractGeometry();
-otherVar = myVar.ExtractGeometry_2();
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("otherVar").Payload == 26);
-
-        }
     }
 }
 

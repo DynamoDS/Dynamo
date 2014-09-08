@@ -283,10 +283,12 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void TestMethodResolutionForSingleton()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4116
             string code = @"def foo(x:var[]..[]){    return = 2;}def foo(x:var[]){    return = 1;}d = foo(2);";
-            string error = "";
+            string error = "MAGN-4116 DesignIssue: Method resolution - When a single value is passed to overloads with different rank, which one is chosen";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("d", 2);
         }
@@ -297,17 +299,17 @@ namespace ProtoTest.Associative
             string code = @"def foo(val : bool){    return = 1;}def foo(val : var){    return = 2;}arr1 = { true, null, false };r1 = foo(arr1);   // r1 = {1, 1, 1}arr2 = { null, true, false };r2 = foo(arr2);   // r2 = {2, 2, 2}";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            // r1 and r2 are not necessary to be {1, 1, 1}, they can be {2, 2, 2}, 
-            // but it'd better that they are same.
             thisTest.Verify("r1", new object[] { 1, 1, 1 });
-            thisTest.Verify("r2", new object[] { 1, 1, 1 });
+            thisTest.Verify("r2", new object[] { 2, 2, 2 });
         }
 
         [Test]
+        [Category("Failure")]
         public void TestMethodResolutionForInforLoss()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4114
             string code = @"def foo(x1 : int, x2: int, x3: int, x4:int){    return = x1 + x2 + x3 + x4;}def foo(x1 : double, x2:double, x3:double, x4:double){    return = x1 * x2 * x3 * x4;}r = foo(3, 4, 5, 4.7);   ";
-            string error = "";
+            string error = "MAGN-4114 Method resolution issue - type promotion should be preferred to type demotion";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 282);
 

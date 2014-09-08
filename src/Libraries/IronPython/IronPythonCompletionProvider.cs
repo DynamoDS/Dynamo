@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Hosting;
@@ -22,27 +23,29 @@ namespace Dynamo.Python
     {
         #region Properties and fields
 
+        private readonly ILogger logger;
+
         /// <summary>
         /// The engine used for autocompletion.  This essentially keeps
         /// track of the state of the editor, allowing access to variable types and 
         /// imported symbols.
         /// </summary>
-        private ScriptEngine _engine;
+        private ScriptEngine engine;
         public ScriptEngine Engine
         {
-            get { return _engine; }
-            set { _engine = value; }
+            get { return engine; }
+            set { engine = value; }
         }
 
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        private ScriptScope _scope;
+        private ScriptScope scope;
         public ScriptScope Scope
         {
-            get { return _scope; }
-            set { _scope = value; }
+            get { return scope; }
+            set { scope = value; }
         }
 
         /// <summary>
@@ -88,10 +91,12 @@ namespace Dynamo.Python
         /// <summary>
         /// Class constructor
         /// </summary>
-        public IronPythonCompletionProvider()
+        public IronPythonCompletionProvider(ILogger logger)
         {
-            _engine = IronPython.Hosting.Python.CreateEngine();
-            _scope = _engine.CreateScope();
+            this.logger = logger;
+
+            engine = IronPython.Hosting.Python.CreateEngine();
+            scope = engine.CreateScope();
 
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
@@ -109,16 +114,16 @@ namespace Dynamo.Python
             {
                 try
                 {
-                    _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
+                    scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(scope);
 
                     var revitImports =
                         "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
-                    _scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(_scope);
+                    scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch
                 {
-                    dynSettings.DynamoLogger.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    this.logger.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -126,17 +131,17 @@ namespace Dynamo.Python
             {
                 try
                 {
-                    _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
+                    scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(scope);
 
                     var libGImports =
                         "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
-                    _scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(_scope);
+                    scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch (Exception e)
                 {
-                    dynSettings.DynamoLogger.Log(e.ToString());
-                    dynSettings.DynamoLogger.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    this.logger.Log(e.ToString());
+                    this.logger.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -200,7 +205,7 @@ namespace Dynamo.Python
                 }
                 catch
                 {
-                    //Dynamo.dynSettings.DynamoLogger.Log("EXCEPTION: GETTING COMPLETION DATA");
+                    //Dynamo.this.logger.Log("EXCEPTION: GETTING COMPLETION DATA");
                 }
                 AutocompletionInProgress = false;
             }
@@ -360,7 +365,7 @@ namespace Dynamo.Python
             var periodIndex = name.IndexOf('.');
             if (periodIndex == -1)
             {
-                if (_scope.TryGetVariable(name, out varOutput))
+                if (scope.TryGetVariable(name, out varOutput))
                 {
                     return varOutput;
                 }
@@ -369,7 +374,7 @@ namespace Dynamo.Python
             var currentName = name.Substring(0, periodIndex);
             var theRest = name.Substring(periodIndex + 1);
 
-            if (_scope.TryGetVariable(currentName, out varOutput))
+            if (scope.TryGetVariable(currentName, out varOutput))
             {
                 if (varOutput is NamespaceTracker)
                 {
@@ -411,7 +416,7 @@ namespace Dynamo.Python
                     string docCommand = "";
                     if (isInstance) docCommand = "type(" + stub + ")" + "." + item + ".__doc__";
                     else docCommand = stub + "." + item + ".__doc__";
-                    object value = _engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(_scope);
+                    object value = engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
 
                     if (!String.IsNullOrEmpty((string)value))
                         description = (string)value;
@@ -475,12 +480,12 @@ namespace Dynamo.Python
             dynamic type = null;
             try
             {
-                type = _scope.Engine.CreateScriptSourceFromString(tryGetType, SourceCodeKind.Expression).Execute(_scope);
+                type = scope.Engine.CreateScriptSourceFromString(tryGetType, SourceCodeKind.Expression).Execute(scope);
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log(e.ToString());
-                dynSettings.DynamoLogger.Log("Failed to look up type");
+                this.logger.Log(e.ToString());
+                this.logger.Log("Failed to look up type");
             }
             return type as Type;
         }
@@ -613,14 +618,14 @@ namespace Dynamo.Python
             // try and load modules into python scope
             foreach (var import in imports)
             {
-                if (_scope.ContainsVariable(import.Key))
+                if (scope.ContainsVariable(import.Key))
                 {
                     continue;
                 }
                 try
                 {
-                    _scope.Engine.CreateScriptSourceFromString(import.Value, SourceCodeKind.SingleStatement)
-                         .Execute(this._scope);
+                    scope.Engine.CreateScriptSourceFromString(import.Value, SourceCodeKind.SingleStatement)
+                         .Execute(this.scope);
                     var type = Type.GetType(import.Key);
                     this.ImportedTypes.Add(import.Key, type);
                 }

@@ -236,12 +236,13 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467135_DotOp_Replication_1()
         {
             String code =
 @"class A{    fx:int;    fb : B;     def foo()    {           return = 1;    }}class B{    fy :int;    def foo()    {        return  =2 ;    }}a = A.A();b = B.B();arr = {a,b};arr2 = {a.fb,b};r1 = arr.foo();r2 = arr2.foo();";
-            string str = "DNL-1467475 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             thisTest.VerifyRunScriptSource(code, str);
             Object[] v1 = new Object[] { 1, 2 };
             Object[] v2 = new Object[] { null, 2 };
@@ -265,12 +266,13 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467135_DotOp_Replication_3()
         {
             String code =
 @"class A{    fx:int;    fb : B;    constructor A(x :int)    {        fx = x;        fb = B.B(x);    }      def foo()    {           return = 1;    }}class B{    fy :int;    constructor B(y:int)    {        fy = y;    }    def foo()    {        return  =2 ;    }}a = A.A({1,1});b = B.B({2,2});rfoo = {a,b}.foo();";
-            string str = "DNL-1467475 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             thisTest.VerifyRunScriptSource(code, str);
             Object[] v1 = new Object[] { 1, 1 };
             Object[] v2 = new Object[] { 2, 2 };
@@ -577,14 +579,16 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T021_DotOp_Nested_03()
         {
             String code =
-@"class A {         fb: B =B.B({10,11}) ;      } class B {         constructor B(y : int)         {        }} va = A.A();s = va.fb;n = a.fb;m:B = B.B({10,11});r = m==n;";
-            thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467333 - Sprint 27 - Rev 3959: when initializing class member, array is converted to not indexable type, which gives wrong result");
+@"class A {         fb: B =B.B({10,11}) ;      } class B {         constructor B(y : int)         {        }} va = A.A();s = va.fb;m:B = B.B({10,11});r = m==s;";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4045
+            thisTest.SetErrorMessage("MAGN-4045 Initializing class member at class level with array of objects, causes crash");
+
+            thisTest.RunScriptSource(code);  
             Object v1 = null;
-            //thisTest.Verify("va", v1); (as the constuction of the object is valid even if the assignment fails)
             thisTest.Verify("m", v1);
             thisTest.Verify("s", v1);
             thisTest.Verify("r", true);
@@ -616,11 +620,13 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T023_DotOp_FuncCall_02()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4048
             String code =
 @"class A{	fb : B;	def fooa(x:var)	{		fb = B.B();        return = fb.foob(x);	}}class B{	fa :A;	def foob(x : var)	{		fa = A.A();        return = fa.fooa(x);	}}a = A.A();r = a.fooa(1);";
-            Assert.Fail("1467138 - Sprint 24 - Rev 2949: Cyclic dependency cases are going into infinite loop");
+            Assert.Fail("MAGN-4048 Cyclic dependency undetected resulting in StackOverflowException");
             thisTest.RunScriptSource(code);
 
         }
@@ -714,8 +720,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
-        [Category("Negative")]
         [Category("Class")]
         public void T029_Inheritance_Property_1()
         {
@@ -726,9 +730,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("r1", 1);
             thisTest.Verify("r2", 0);
             thisTest.Verify("r3", 2);
-            Assert.Fail("1467142 - Sprint 24 - Rev 2954: there must exist base constructor for a subclass constructor");
-            thisTest.VerifyBuildWarningCount(1);
-
+            
         }
 
         [Test]
@@ -1156,13 +1158,15 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467063_Function_Overriding()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4054
+            string err = "";
             String code =
 @"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:int)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:var)	{		fx = x;		return = fx;	}}a = A.A();b = B.B();r1 = a.foo(1);r2 = b.foo(100);r3 = a.fx;r4 = b.fx;";
-            thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467163 - Sprint 25 - Rev 3106:Function overriding: when using function overriding, wrong function is called");
+            thisTest.RunScriptSource(code, err);
+            thisTest.SetErrorMessage("MAGN-4054: Function overriding: when using function overriding, wrong function is called");
             thisTest.Verify("r1", 11);
             thisTest.Verify("r2", 100);
             thisTest.Verify("r3", 11);
@@ -1281,7 +1285,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467167()
         {
             String code =
@@ -1338,17 +1342,18 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("ToFixJun")]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("Class")]
         public void T051_TransitiveInheritance_Constructor()
         {
             String code =
 @"class A{    fx : int;    constructor A(x : int)    {        fx = x+1;    }    constructor A(x : double)    {        fx = x+2;    }}class B extends A{    constructor B(x : int) : base.A(x) { }    constructor B(x : double) : base.A(x) { }}class C extends B{    constructor C(x : int) : base.B(x) { }    constructor C(x : double) : base.B(x) { }}c1 = C.C();c2 = C.C(1);c3 = C.C(1.0);r1 = c1.fx;r2 = c2.fx;r3 = c3.fx;";
-            thisTest.RunScriptSource(code);
-            Assert.Fail("1467179 - Sprint25 : rev 3152 : transitive inheritance base constructor causes method resolution");
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4050
+            string err = "MAGN-4050 Transitive inheritance base constructor causes method resolution failure";
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("r1", 0);
             thisTest.Verify("r2", 2);
-            thisTest.Verify("r3", 3.0);
+            thisTest.Verify("r3", 3.0); // Actual result is 2 as C.C(1.0) instead of calling double overload of ctor A calls its int counterpart instead??
         }
 
         [Test]
@@ -1377,24 +1382,27 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failure")]
         public void T052_Defect_ReplicationMethodOverloading_2()
         {
             String code =
 @"class A{}a1 = A.A();def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{a1} } ;//1,2,2,3r = foo(arr);    ";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             thisTest.RunScriptSource(code);
-            //Assert.Fail("1467129 - Sprint 24 - Rev 2892 Regression : Replication and Method overload issue, resolving to wrong method");
             Object[] v1 = new Object[] { 1, 2, 2, 3 };
             thisTest.Verify("r", v1);
         }
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_01()
         {
             String code =
 @"class A{}a1 = A.A();def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{{a1}} } ;//1,2,2,nullr = foo(arr);";
-            thisTest.RunScriptSource(code);
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
+            string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
+            thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 1, 2, 2, null };
             thisTest.Verify("r", v1);
         }
@@ -1411,24 +1419,28 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_03()
         {
             String code =
 @"class A{}a1 = A.A();def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
-            thisTest.RunScriptSource(code);
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
+            string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
+            thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 1, 2, 2, null };
             thisTest.Verify("r", v1);
         }
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_InUserDefinedClass()
         {
             String code =
 @"class A{        def foo(val : int[])    {        return = 11;    }    def foo(val : var)    {        return = 22;    }    def foo(val: var[])    {	    return = 33;    }}a1 = A.A();a2 = A.A();def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);r2= a2.foo(arr);";
-            thisTest.RunScriptSource(code);
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
+            string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
+            thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 1, 2, 2, null };
             Object[] v2 = new Object[] { 11, 22, 22, null };
             thisTest.Verify("r", v1);
@@ -1438,11 +1450,13 @@ namespace ProtoTest.Associative
 [Test]                public void T050_Inheritance_Multi_Construc()                {                    String code =        @"        class A        {            fx : int;            constructor A()            {                fx = 0;            }                    constructor A(x:var)            {                fx = x+1;            }            constructor A(x:int)            {                fx = x+2;            }                 constructor A2(x:var)            {                fx = x+3;            }            }        class B extends A        {            constructor B() : base.A() { }            constructor B(x : var) : base.A(x) { }            constructor B(x : int) : base.A(x) { }            constructor B2(x : var) : base.A2(x) { }            constructor B2(x : int) : base.A2(x) { }        }        b1 = B.B();        r1 = b1.fx;        b2 = B.B(0);        r2 = b2.fx;        b3 = B.B2(0.0);        r3 = b3.fx;        b4 = B.B2(A.A()); //null        r4 = b4.fx;        b5 = B.B2(0);        r5 = b5.fx;            ";                    thisTest.RunScriptSource(code);                    Assert.Fail("1467179 - Sprint25 : rev 3152 : multiple inheritance base constructor causes method resolution");                    Object v1 = null;                    thisTest.Verify("r1", 0);                    thisTest.Verify("r2", 1);                    thisTest.Verify("r3", 1);                    thisTest.Verify("r4", v1);                }                */
 
         [Test]
+        [Category("Failure")]
         public void T053_ReplicationWithDiffTypesInArr()
         {
             String code =
 @"class A{    def foo()    {        return = 1;    }}class B{    def foo()    {        return = 2;    }}m = { A.A(), B.B(), A.A() };n = { B.B(), A.A(), B.B() };r1 = m.foo();r2 = n.foo();";
-            string str = "DNL-1467475 Regression : Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             thisTest.VerifyRunScriptSource(code, str);
 
             Object[] v1 = new Object[] { 1, 2, 1 };
@@ -1452,11 +1466,13 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T054_ReplicationWithInvalidTypesInArr()
         {
             String code =
 @"class A{    def foo()    {        return = 1;    }}class B{    def foo()    {        return = 2;    }}m = { A.A(), B.B(), null };n = { B.B(), A.A(), c, false };r1 = m.foo();r2 = n.foo();";
-            string str = "DNL-1467475 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             thisTest.RunScriptSource(code, str);
             Object v3 = null;
             Object[] v1 = new Object[] { 1, 2, v3 };
@@ -1465,16 +1481,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("r1", v1);
             thisTest.Verify("r2", v2);
         }
-        [Test, Ignore]
-        public void T055_ReplicationWithDiffTypesInArr_UserDefined()
-        {
-            String code =
-@"class A{def foo(a:A){    return = 1;}}class B{def foo(b:B){    return = 2;}}m = {A.A(),B.B(),A.A()};r1 = m.foo(m);r2 = m.foo(m);";
-            thisTest.RunScriptSource(code);
-            Assert.Fail("No validation");
-
-        }
-
+        
         [Test]
         public void T055_ReplicationWithDiffTypesInArr_UserDefined_Simpler()
         {

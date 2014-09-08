@@ -389,10 +389,11 @@ x4 = a.foo(power(3)) >= power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T014_Inline_Using_Collections()
         {
 
-            string err = "1467166 - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";
+            string err = " comparison of collection with singleton should yield null in imperative scope";
             string src = @"t1;t2;t3;t4;t5;t7;
 c1;c2;c3;c4;
 [Imperative]
@@ -568,16 +569,20 @@ a2 = foo2(3);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
             Assert.Fail("Cauing NUnit failures. Disabled");
+
             string code = @"
 def factorial : int (num : int)
 {
     return = num < 2 ? 1 : num * factorial(num-1);
 }
 fac = factorial(10);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("fac", 3628800, 0);
 
         }
@@ -620,25 +625,17 @@ a3 = 1 > 2 ? true : b;";
         }
 
         [Test]
-        [Category("Imperative")]
-        public void T021_Defect_1467166_array_comparison_issue()
-        {
-            string code = @"
-[Imperative] 
-{
-    a = { 0, 1, 2}; 
-    xx = a < 1 ? 1 : 0;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("xx", 5);
-        }
-
-        [Test]
         [Category("Replication")]
         public void T22_Defect_1467166()
         {
             String code =
-@"xx;[Imperative] {    a = { 0, 1, 2};     xx = a < 1 ? 1 : 0;}";
+@"xx;
+[Imperative] 
+{
+    a = { 0, 1, 2}; 
+    xx = a < 1 ? 1 : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -650,7 +647,13 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166_2()
         {
             String code =
-@"xx;[Imperative] {    a = { 0, 1, 2};     xx = 2 > 1 ? a : 0;}";
+@"xx;
+[Imperative] 
+{
+    a = { 0, 1, 2}; 
+    xx = 2 > 1 ? a : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -662,7 +665,18 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166_3()
         {
             String code =
-@"x1;x2;x3;x4;x5;[Imperative] {   def foo () = null;   x1 = null == null ? 1 : 0;   x2 = null != null ? 1 : 0;   x3 = null == a ? 1 : 0;   x4 = foo2(1) == a ? 1 : 0;   x5 = foo() == null ? 1 : 0;}";
+@"
+x1;x2;x3;x4;x5;
+[Imperative] 
+{
+   def foo () = null;
+   x1 = null == null ? 1 : 0;
+   x2 = null != null ? 1 : 0;
+   x3 = null == a ? 1 : 0;
+   x4 = foo2(1) == a ? 1 : 0;
+   x5 = foo() == null ? 1 : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -679,7 +693,9 @@ a3 = 1 > 2 ? true : b;";
         public void T23_1467403_inline_null()
         {
             String code =
-@"a = null;d2 = (a!=null)? 1 : 0;";
+@"a = null;
+d2 = (a!=null)? 1 : 0;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

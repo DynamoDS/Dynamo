@@ -41,8 +41,9 @@ namespace Revit.Elements
         /// <summary>
         /// Internal constructor for ModelCurve
         /// </summary>
-        /// <param name="c"></param>
-        private ModelCurve(Autodesk.Revit.DB.Curve c, bool makeReferenceCurve)
+        /// <param name="crv"></param>
+        /// <param name="makeReferenceCurve"></param>
+        private ModelCurve(Autodesk.Revit.DB.Curve crv, bool makeReferenceCurve)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var mc =
@@ -53,46 +54,47 @@ namespace Revit.Elements
             if (mc != null)
             {
                 InternalSetCurveElement(mc);
-                if (!InternalSetSketchPlaneFromCurve(c))
+                if (!InternalSetSketchPlaneFromCurve(crv))
                 {
-                    InternalSetCurve(c);
+                    InternalSetCurve(crv);
                     return;
                 }
             }
 
             ElementId oldId = (mc != null) ? mc.Id : ElementId.InvalidElementId;
+            string oldUniqueId = (mc != null) ? mc.UniqueId : string.Empty;
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             // (sic erat scriptum)
-            var sp = GetSketchPlaneFromCurve(c);
+            var sp = GetSketchPlaneFromCurve(crv);
             var plane = sp.GetPlane();
 
-            if (GetPlaneFromCurve(c, true) == null)
+            if (CurveUtils.GetPlaneFromCurve(crv, true) == null)
             {
-                var flattenCurve = Flatten3dCurveOnPlane(c, plane);
+                var flattenCurve = Flatten3dCurveOnPlane(crv, plane);
                 mc = Document.IsFamilyDocument
                     ? Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
                     : Document.Create.NewModelCurve(flattenCurve, sp);
 
-                setCurveMethod(mc, c);
+                setCurveMethod(mc, crv);
             }
             else
             {
                 mc = Document.IsFamilyDocument
-                    ? Document.FamilyCreate.NewModelCurve(c, sp)
-                    : Document.Create.NewModelCurve(c, sp);
+                    ? Document.FamilyCreate.NewModelCurve(crv, sp)
+                    : Document.Create.NewModelCurve(crv, sp);
             }
 
             if (mc.SketchPlane.Id != sp.Id)
             {
                 //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
-                DocumentManager.Instance.DeleteElement(sp.Id);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(sp.UniqueId));
             }
 
             InternalSetCurveElement(mc);
             if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
-                DocumentManager.Instance.DeleteElement(oldId);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldUniqueId));
             if (makeReferenceCurve)
                 mc.ChangeToReferenceLine();
 
@@ -116,16 +118,16 @@ namespace Revit.Elements
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             // Infer the sketch plane
-            Autodesk.Revit.DB.Plane plane = GetPlaneFromCurve(c, false);
+            Autodesk.Revit.DB.Plane plane = CurveUtils.GetPlaneFromCurve(c, false);
 
             // attempt to change the sketch plane
             bool needsRemake = false;
-            ElementId idSpUnused = resetSketchPlaneMethod(this.InternalCurveElement, c, plane, out needsRemake);
+            string idSpUnused = resetSketchPlaneMethod(this.InternalCurveElement, c, plane, out needsRemake);
 
             // if we got a valid id, delete the old sketch plane
-            if (idSpUnused != ElementId.InvalidElementId)
+            if (idSpUnused != String.Empty)
             {
-                DocumentManager.Instance.DeleteElement(idSpUnused);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(idSpUnused));
             }
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -152,7 +154,7 @@ namespace Revit.Elements
             return new ModelCurve(ExtractLegalRevitCurve(curve), false);
         }
 
-        // <summary>
+        /// <summary>
         /// Construct a Revit ModelCurve element from a Curve
         /// </summary>
         /// <param name="curve"></param>
@@ -173,11 +175,11 @@ namespace Revit.Elements
         #endregion
 
         #region Private static constructors
-
         /// <summary>
         /// Construct a Revit ModelCurve element from an existing element.  The result is Dynamo owned.
         /// </summary>
         /// <param name="modelCurve"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static ModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve, bool isRevitOwned)
         {
@@ -211,13 +213,13 @@ namespace Revit.Elements
 
         private static bool hasMethodResetSketchPlane = true;
 
-        private static ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.CurveElement mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
+        private static string resetSketchPlaneMethod(Autodesk.Revit.DB.CurveElement mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
         {
             //do we need to reset?
             needsSketchPlaneReset = false;
-            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : GetPlaneFromCurve(c, false);
+            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : CurveUtils.GetPlaneFromCurve(c, false);
 
-            Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.Plane;
+            Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.GetPlane();
 
             bool resetPlane = false;
 
@@ -241,7 +243,7 @@ namespace Revit.Elements
                     sp = GetSketchPlaneFromCurve(c);
                     mc.SketchPlane = GetSketchPlaneFromCurve(c);
                 }
-                return (sp == null || mc.SketchPlane.Id == sp.Id) ? ElementId.InvalidElementId : sp.Id;
+                return (sp == null || mc.SketchPlane.Id == sp.Id) ? "" : sp.UniqueId;
             }
 
             //do reset if method is available
@@ -277,77 +279,18 @@ namespace Revit.Elements
                 needsSketchPlaneReset = true;
                 //expect exception, so try to keep old plane?
                 //mc.SketchPlane = sp;
-                return ElementId.InvalidElementId;
+                return "";
             }
 
             if (sp != null && mc.SketchPlane.Id != sp.Id)
-                return sp.Id;
+                return sp.UniqueId;
 
-            return ElementId.InvalidElementId;
-        }
-
-        private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
-        {
-            //cases to handle
-            //straight line - normal will be inconclusive
-
-            //find the plane of the curve and generate a sketch plane
-            double period = c.IsBound ? 0.0 : (c.IsCyclic ? c.Period : 1.0);
-
-            var p0 = c.IsBound ? c.Evaluate(0.0, true) : c.Evaluate(0.0, false);
-            var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
-            var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
-
-            if (c is Line)
-            {
-                var v1 = p1 - p0;
-                var v2 = p2 - p0;
-                XYZ norm = null;
-
-                //keep old plane computations
-                if (System.Math.Abs(p0.Z - p2.Z) < 0.0001)
-                {
-                    norm = XYZ.BasisZ;
-                }
-                else
-                {
-                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
-                    var v3 = p3 - p0;
-                    norm = v1.CrossProduct(v3);
-                    if (norm.IsZeroLength())
-                    {
-                        norm = v2.CrossProduct(XYZ.BasisY);
-                    }
-                    norm = norm.Normalize();
-                }
-
-                return new Plane(norm, p0);
-
-            }
-
-            Autodesk.Revit.DB.CurveLoop cLoop = new Autodesk.Revit.DB.CurveLoop();
-            cLoop.Append(c.Clone());
-            if (cLoop.HasPlane())
-            {
-                return cLoop.GetPlane();
-            }
-            if (planarOnly)
-                return null;
-
-            IList<XYZ> points = c.Tessellate();
-            List<XYZ> xyzs = new List<XYZ>();
-            for (int iPoint = 0; iPoint < points.Count; iPoint++)
-                xyzs.Add(points[iPoint]);
-
-            var bestFitPlane =
-                Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(xyzs.ToPoints(false));
-
-            return bestFitPlane.ToPlane(false);
+            return "";
         }
 
         private static Autodesk.Revit.DB.SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
-            Plane plane = GetPlaneFromCurve(c, false);
+            Plane plane = CurveUtils.GetPlaneFromCurve(c, false);
             return Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
         }
 
@@ -356,7 +299,7 @@ namespace Revit.Elements
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
-                plane = GetPlaneFromCurve(c, false);
+                plane = CurveUtils.GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
                 {

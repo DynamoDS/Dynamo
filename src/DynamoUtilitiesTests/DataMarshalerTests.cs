@@ -11,6 +11,7 @@ namespace DynamoUtilitiesTests
     public class DataMarshalerTests
     {
         [Test]
+        [Category("UnitTests")]
         public static void MarshalTest()
         {
             var marshaler = new DataMarshaler();
@@ -29,6 +30,7 @@ namespace DynamoUtilitiesTests
         private class Sub3 : Sub2 { }
 
         [Test]
+        [Category("UnitTests")]
         public static void MarshalSubclass()
         {
             var marshaler = new DataMarshaler();
@@ -44,6 +46,7 @@ namespace DynamoUtilitiesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void MarshalEnumerables()
         {
             var marshaler = new DataMarshaler();

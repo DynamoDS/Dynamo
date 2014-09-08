@@ -4,7 +4,7 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    class ForLoop
+    public class ForLoop
     {
         public TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\ForLoop\\";
@@ -1242,10 +1242,11 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T42_Create_3_Dim_Collection_Using_For_Loop_In_Class_Constructor()
         {
-            //string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
-            string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
+            string errmsg = "MAGN-4081: Nested forloop fails in a constructor";
             string src = @"class A
 {
     a : var[][][];
@@ -1377,9 +1378,11 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("Array")]
+        [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172()
         {
-            string err = "1457172 - Sprint16 : Rev 1061 : For loop cannot be used to create n dimensional collection from inside a class";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
+            string errmsg = "MAGN-4081: Nested forloop fails in a constructor";
             string src = @"class A
 {
 a : var;
@@ -1424,7 +1427,7 @@ p7 = y[2][0];
 p8 = y[2][1];
 p8 = y[2][2];
 ";
-            thisTest.VerifyRunScriptSource(src, err);
+            thisTest.VerifyRunScriptSource(src, errmsg);
             thisTest.Verify("p1", 3, 0);
             thisTest.Verify("p2", 4, 0);
             thisTest.Verify("p3", 5, 0);
@@ -1438,9 +1441,11 @@ p8 = y[2][2];
 
         [Test]
         [Category("Array")]
+        [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172_2()
         {
-            string err = "1457172 - Sprint16 : Rev 1061 : For loop cannot be used to create n dimensional collection from inside a class";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
+            string errmsg = "MAGN-4081: Nested forloop fails in a constructor";
             string src = @"class A
 {
 a : var;
@@ -1492,7 +1497,7 @@ p6 = y[1][0][1];//8
 p5 = y[1][1][0];//8
 p6 = y[1][1][1];//9
 ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, err);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, errmsg);
             thisTest.Verify("p1", 6, 0);
             thisTest.Verify("p2", 7, 0);
             thisTest.Verify("p3", 7, 0);

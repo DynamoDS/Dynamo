@@ -334,7 +334,7 @@ namespace ProtoCore
             int type = (int)Constants.kInvalidIndex;
             if (sv.IsReferenceType)
             {
-                type = (int)sv.metaData.type;
+                type = sv.metaData.type;
             }
             else
             {
@@ -388,8 +388,8 @@ namespace ProtoCore
                 return sv;
 
             if (!(
-                (int)sv.metaData.type == targetType.UID ||
-                (core.ClassTable.ClassNodes[(int)sv.metaData.type].ConvertibleTo(targetType.UID))
+                sv.metaData.type == targetType.UID ||
+                (core.ClassTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
                 || sv.IsArray))
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);

@@ -32,6 +32,7 @@ namespace DynamoAddinGenerator
             if (!dynamoColl.Installs.Any())
             {
                 Console.WriteLine("There were no Dynamo installations found.");
+                DeleteExistingAddins(prodColl);
                 return;
             }
 

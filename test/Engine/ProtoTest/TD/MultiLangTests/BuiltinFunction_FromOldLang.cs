@@ -308,6 +308,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void T80585_Count()
         {
             string code = @"
@@ -346,6 +347,7 @@ b4 = Count(a4); //0";
         }
 
         [Test]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void language_functions_test_1()
         {
             string code = @"
@@ -425,11 +427,10 @@ newArray[2] = { 7, 8, 9 }; // and good
             thisTest.Verify("raggedminus1minus1", 3);
             thisTest.Verify("rankRagged", 2);
 
-            thisTest.Verify("transposeRagged", null);//not sure
-            //thisTest.Verify("transposeRagged", nu
+            thisTest.Verify("transposeRagged", new object[] {new object[]{1,2}, new object[]{null,3}});//not sure
             thisTest.Verify("noramlisedDepthCollection", v3);
             thisTest.Verify("isUniformDepthNormalize", true);
-            thisTest.Verify("transposeNormalize", v15);
+            thisTest.Verify("transposeNormalize", new object[] { new object[] { 1, 2 }, new object[] { null, 3 } });
             thisTest.Verify("noramlised00", 1);
             thisTest.Verify("rankNoramlised", 2);
             thisTest.Verify("flattenedCollection", v7);
@@ -440,13 +441,14 @@ newArray[2] = { 7, 8, 9 }; // and good
             thisTest.Verify("indexOf", 1);
             thisTest.Verify("reordedCollection", v9);
             thisTest.Verify("indexByValue", v10);
-            thisTest.Verify("sort", v7);
+            thisTest.Verify("sort", v8);
             thisTest.Verify("newArray", v13);
 
 
         }
 
         [Test]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void set_operation_functions_test_1()
         {
             string code = @"
@@ -513,13 +515,23 @@ setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
             thisTest.Verify("removeDuplicatesSetInsert", v2);
             thisTest.Verify("flattenSetInsert", v4);
             thisTest.Verify("removeDuplicatesSetInsertFalttened", v5);
-            thisTest.Verify("removeIfNotSetInsert", v6);
+            thisTest.Verify("removeIfNotSetInsert", new object[]{true, false, true});
             thisTest.Verify("setDifferenceA", v7);
             thisTest.Verify("setDifferenceB", v8);
             thisTest.Verify("setIntersection", v9);
             thisTest.Verify("setUnion", v10);
         }
         /* 
-[Test]         public void TestFrameWork_IntDouble()         {             String code = @"     a = 1.0; ";             thisTest.RunScriptSource(code);             thisTest.Verify("a", 1);                     }*/
+[Test]
+         public void TestFrameWork_IntDouble()
+         {
+             String code =
+ @"
+     a = 1.0;
+ ";
+             thisTest.RunScriptSource(code);
+             thisTest.Verify("a", 1);
+            
+         }*/
     }
 }

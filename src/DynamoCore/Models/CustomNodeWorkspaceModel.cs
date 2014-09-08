@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -15,24 +14,24 @@ namespace Dynamo.Models
     {
         #region Contructors
 
-        public CustomNodeWorkspaceModel()
-            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel)
+            : this(dynamoModel, "", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public CustomNodeWorkspaceModel(String name, String category)
-            : this(name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category)
+            : this(dynamoModel, name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public CustomNodeWorkspaceModel(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category, string description, double x, double y)
+            : this(dynamoModel, name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
         {
         }
 
-        public CustomNodeWorkspaceModel(
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, 
             String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(name, e, c, x, y)
+            : base(dynamoModel, name, e, c, x, y)
         {
             WatchChanges = true;
             HasUnsavedChanges = false;
@@ -54,7 +53,7 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get { return DynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
         public override void Modified()
@@ -65,12 +64,12 @@ namespace Dynamo.Models
                 return;
 
             CustomNodeDefinition.RequiresRecalc = true;
-            CustomNodeDefinition.SyncWithWorkspace(false, true);
+            CustomNodeDefinition.SyncWithWorkspace(DynamoModel, false, true);
         }
 
         public List<Function> GetExistingNodes()
         {
-            return dynSettings.Controller.DynamoModel.AllNodes
+            return DynamoModel.AllNodes
                 .OfType<Function>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
@@ -103,9 +102,9 @@ namespace Dynamo.Models
 
             if (originalPath == null)
             {
-                CustomNodeDefinition.AddToSearch();
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
-                CustomNodeDefinition.UpdateCustomNodeManager();
+                CustomNodeDefinition.AddToSearch(this.DynamoModel.SearchModel);
+                DynamoModel.SearchModel.OnRequestSync();
+                CustomNodeDefinition.UpdateCustomNodeManager(DynamoModel.CustomNodeManager);
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -116,42 +115,35 @@ namespace Dynamo.Models
                 if ( !File.Exists(originalPath) )
                 {
                     CustomNodeDefinition.FunctionId = newGuid;
-                    CustomNodeDefinition.SyncWithWorkspace(true, true);
+                    CustomNodeDefinition.SyncWithWorkspace(DynamoModel, true, true);
                     return false;
                 }
 
                 var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
-                dynSettings.CustomNodeManager.Remove(originalGuid);
-                dynSettings.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                DynamoModel.CustomNodeManager.Remove(originalGuid);
+                DynamoModel.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = DynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
                 {
                     return false;
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                dynSettings.Controller.DynamoModel.AllNodes
+                var instances = DynamoModel.AllNodes
                         .OfType<Function>()
-                        .Where(el => el.Definition.FunctionId == originalGuid)
-                        .ToList()
-                        .ForEach(node =>
-                            {
-                                node.Definition = origDef;
-                            });
+                        .Where(el => el.Definition.FunctionId == originalGuid);
+
+                foreach (var node in instances)
+                    node.ResyncWithDefinition(origDef);
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(true, true);
+                newDef.SyncWithWorkspace(DynamoModel, true, true);
             }
 
             return true;
-        }
-
-        public override void OnDisplayed()
-        {
-
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

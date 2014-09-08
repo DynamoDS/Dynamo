@@ -44,7 +44,7 @@ namespace ProtoCore.Lang
 
             int classScopeCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kClass).opdata;
             int returnAddr = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int blockDecl = (int)procNode.runtimeIndex;
+            int blockDecl = procNode.runtimeIndex;
             int blockCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
             int framePointer = runtimeCore.Rmem.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(-1);
@@ -146,6 +146,8 @@ namespace ProtoCore.Lang
             {
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
+
+            interpreter.runtime.DecRefCounter(rx);
 
             return rx;
         }

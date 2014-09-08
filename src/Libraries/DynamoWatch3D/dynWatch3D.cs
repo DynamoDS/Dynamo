@@ -1,17 +1,27 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ProtoCore.AST.AssociativeAST;
+
+using VMDataBridge;
+
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Nodes
 {
@@ -28,10 +38,19 @@ namespace Dynamo.Nodes
         private Point3D _camPosition = new Point3D(10,10,10);
         private Vector3D _lookDirection = new Vector3D(-1,-1,-1);
 
-        public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
+
+        public DelegateCommand ToggleCanNavigateBackgroundCommand
+        {
+            get
+            {
+                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
+            }
+        }
+
         public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return false; } }
 
         public Watch3DView View { get; private set; }
 
@@ -48,7 +67,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public Watch3D()
+        public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -58,13 +77,46 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             WatchIsResizable = true;
         }
 
+        public override void Destroy()
+        {
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        {
+            if (data is IGraphicItem)
+                yield return data as IGraphicItem;
+            else if (data is IEnumerable)
+            {
+                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                foreach (var g in graphics)
+                    yield return g;
+            }
+        }
+
+        private RenderPackage PackageRenderData(IGraphicItem gItem)
+        {
+            var renderPackage = new RenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, this.DynamoViewModel.VisualizationManager.MaxTesselationDivisions);
+            renderPackage.ItemsCount++;
+            return renderPackage;
+        }
+
+        private void RenderData(object data)
+        {
+            View.RenderDrawables(
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString(), -1));
+        }
+
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
 
@@ -99,6 +151,14 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+
+            DataBridge.Instance.RegisterCallback(
+                GUID.ToString(),
+                obj =>
+                    nodeUI.Dispatcher.Invoke(
+                        new Action<object>(RenderData),
+                        DispatcherPriority.Render,
+                        obj));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -165,16 +225,51 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                dynSettings.DynamoLogger.Log(ex);
-                dynSettings.DynamoLogger.Log("View attributes could not be read from the file.");
+                this.Workspace.DynamoModel.Logger.Log(ex);
+                this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
             }
             
         }
 
-        public override void UpdateRenderPackage()
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode
+                            {
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                            },
+                            2,
+                            new[] { 0 },
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildStringNode(GUID.ToString()),
+                                AstFactory.BuildNullNode()
+                            }))
+                };
+            }
+
+            var resultAst = new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
+            };
+
+            return resultAst;
         }
 
         #region IWatchViewModel interface
@@ -182,28 +277,12 @@ namespace Dynamo.Nodes
         public void GetBranchVisualization(object parameters)
         {
             var taskId = (long)parameters;
-            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
+            this.DynamoViewModel.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
         }
 
         public bool CanGetBranchVisualization(object parameter)
         {
             return true;
-        }
-
-        internal void SelectVisualizationInView(object parameters)
-        {
-            //Debug.WriteLine("Selecting mesh from watch 3d node.");
-            //var arr = (double[])parameters;
-            //double x = arr[0];
-            //double y = arr[1];
-            //double z = arr[2];
-
-            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
-        }
-
-        internal bool CanSelectVisualizationInView(object parameters)
-        {
-            return parameters != null;
         }
 
         private bool CanCheckForLatestRender(object obj)
@@ -213,9 +292,8 @@ namespace Dynamo.Nodes
 
         private void CheckForLatestRender(object obj)
         {
-            dynSettings.Controller.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+            this.DynamoViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
-
 
         #endregion
 
@@ -223,5 +301,7 @@ namespace Dynamo.Nodes
         {
             return false; // Previews are not shown for this node type.
         }
+
+        public DynamoViewModel DynamoViewModel { get; set; }
     }
 }

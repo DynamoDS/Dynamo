@@ -1,5 +1,4 @@
-﻿//#define __RUN_TESTFILE
-
+﻿
 
 using System;
 using ProtoCore;
@@ -50,7 +49,6 @@ namespace ProtoTestConsoleRunner
             core.Options.DumpByteCode = false;
             core.Options.Verbose = false;
 #endif
-
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
             ExecutionMirror mirror = runner.LoadAndExecute(@"c:\project\github\test.ds", core);

@@ -18,7 +18,7 @@ namespace DynamoCoreUITests
     public delegate void CommandCallback(string commandTag);
 
     [TestFixture]
-    public class RecordedTests : DSEvaluationUnitTest
+    public class RecordedTests : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
@@ -27,6 +27,7 @@ namespace DynamoCoreUITests
         private CommandCallback commandCallback = null;
 
         // For access within test cases.
+        protected DynamoView dynamoView = null;
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
 
@@ -48,18 +49,18 @@ namespace DynamoCoreUITests
         protected void Exit()
         {
             commandCallback = null;
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 // There are exceptions made to certain test cases where async evaluation 
                 // needs to be permitted. IsTestMode is marked as false for these test cases
                 // to emulate the real UI async scenario. Since the UI takes care of shutting down
-                // the controller in such a case, we need to make sure it is not shut down twice
+                // the Model in such a case, we need to make sure it is not shut down twice
                 // by checking for IsTestMode here as well
-                if (DynamoController.IsTestMode)
+                if (DynamoModel.IsTestMode)
                 {
-                    this.Controller.ShutDown(true);
+                    this.ViewModel.Model.ShutDown(true);
                 }
-                this.Controller = null;
+                this.ViewModel = null;
             }
 
             GC.Collect();
@@ -72,15 +73,15 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void _SnowPeashooter()
         {
-            //RunCommandsFromFile("SnowPeashooter.xml");
+            RunCommandsFromFile("SnowPeashooter.xml");
 
-            //Assert.AreEqual(1, workspace.Nodes.Count);
-            //Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
 
-            //var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
-            //Assert.AreEqual("12.34", number.Value);
+            var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual("12.34", number.Value);
 
-            Assert.Inconclusive("Porting : DoubleInput");
+            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test, RequiresSTA]
@@ -288,7 +289,7 @@ namespace DynamoCoreUITests
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
-            var workspaces = this.Controller.DynamoModel.Workspaces;
+            var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
@@ -313,7 +314,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -364,13 +365,32 @@ namespace DynamoCoreUITests
 
             });
         }
+        [Test, RequiresSTA]
+        public void TestRunEnabledButtonCanBeDisabled()
+        {
+            RunCommandsFromFile("TestRunEnabledButtonCanBeDisabled.xml", false, (commandTag) =>
+            {
+                //This test case is to verify that when RunEnabled is changed to false from the model, 
+                //the Run button is disabled. The strategy here is to directly modify the RunEnabled value
+                //in the model. But at that time, the view has not yet had a chance to refresh its button.
+                //So the process is separated into two steps. At the second step. the button status is checked.
+                if (commandTag == "OpenFile")
+                {
+                    ViewModel.Model.RunEnabled = false;
+                }
+                else if (commandTag == "CheckButtonIsDisabled")
+                {
+                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                }
+            });
+        }
         [Test]
         public void Deffect_CN_1143()
         {
             // modify the name of the input node
             RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -416,7 +436,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -477,7 +497,7 @@ namespace DynamoCoreUITests
 
         #region General Node Operations Test Cases
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void MultiPassValidationSample()
         {
             RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
@@ -497,7 +517,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -511,7 +531,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodesUndo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
@@ -525,7 +545,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodesUndoRedo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
@@ -539,11 +559,11 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CreateAndUseCustomNode()
         {
             RunCommandsFromFile("CreateAndUseCustomNode.xml");
-            var workspaces = this.Controller.DynamoModel.Workspaces;
+            var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
@@ -568,7 +588,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
         }
 
         /// <summary>
@@ -592,7 +612,7 @@ namespace DynamoCoreUITests
             if (this.customNodesToBeLoaded != null)
                 throw new InvalidOperationException("LoadCustomNodes called twice");
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
                 throw new InvalidOperationException(message);
@@ -617,28 +637,38 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
-                var message = "Multiple DynamoController detected!";
+                var message = "Multiple DynamoViewModel instances detected!";
                 throw new InvalidOperationException(message);
             }
 
-            // Create the controller to run alongside the view.
-            this.Controller = DynamoController.MakeSandbox(commandFilePath);
-            var controller = this.Controller;
-            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            DynamoController.IsTestMode = true;
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            // Create the DynamoViewModel to control the view
+            this.ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            this.ViewModel.DynamicRunEnabled = autoRun;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
             {
                 foreach (var customNode in this.customNodesToBeLoaded)
                 {
-                    if (controller.CustomNodeManager.AddFileToPath(customNode) == null)
+                    if (ViewModel.Model.CustomNodeManager.AddFileToPath(customNode) == null)
                     {
                         throw new System.IO.FileFormatException(string.Format(
                             "Failed to load custom node: {0}", customNode));
@@ -649,16 +679,14 @@ namespace DynamoCoreUITests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView();
-            dynamoView.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = dynamoView.Dispatcher;
+            dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
-            Assert.IsNotNull(controller);
-            Assert.IsNotNull(controller.DynamoModel);
-            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-            workspace = controller.DynamoModel.CurrentWorkspace;
-            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+            Assert.IsNotNull(this.ViewModel);
+            Assert.IsNotNull(this.ViewModel.Model);
+            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
+            workspace = this.ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -670,7 +698,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException("RunCommandsFromFile called twice");
 
             this.commandCallback = commandCallback;
-            var automation = this.Controller.DynamoViewModel.Automation;
+            var automation = this.ViewModel.Automation;
             automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
         }
 
@@ -716,7 +744,7 @@ namespace DynamoCoreUITests
     {
         #region Basic CodeBlockNode Test Cases
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestBasicCodeBlockNodePortCreation()
         {
             RunCommandsFromFile("TestBasicPortCreation.xml");
@@ -762,7 +790,7 @@ namespace DynamoCoreUITests
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestCommentsInCodeBlockNode()
         {
             RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
@@ -785,7 +813,7 @@ namespace DynamoCoreUITests
         /// Create a code block node with some ports connected and others unconnected. Change all variable names
         /// and ensure that connectors remain to the port index.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestCodeBlockNodeConnectionOnCodeChange()
         {
             RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
@@ -814,7 +842,7 @@ namespace DynamoCoreUITests
         /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
         /// nodes to the + node. Then converts all the nodes to Code.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestConvertAllNodesToCode()
         {
             RunCommandsFromFile("TestConvertAllNodesToCode.xml");
@@ -861,10 +889,10 @@ namespace DynamoCoreUITests
             //var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
             //Assert.AreEqual(null, cbn);
 
-            //var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            //var addNode = workspaceViewModel.Model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
             //Assert.NotNull(addNode);
 
-            //var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            //var numberList = workspaceViewModel.Model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
             //Assert.AreEqual(3, numberList.Count);
 
             Assert.Inconclusive("Porting : DoubleInput");
@@ -874,7 +902,7 @@ namespace DynamoCoreUITests
         /// Ensures that redo works for NodeToCode by converting a set of nodes to
         /// code and then undoing and redoing it again.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
             RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
@@ -920,7 +948,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestUndoRedoNodesAndConnections_DS()
         {
             RunCommandsFromFile("TestUndoRedoNodesAndConnection_DS.xml");
@@ -938,7 +966,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestUpdateNodeCaptions_DS()
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
@@ -957,7 +985,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -978,7 +1006,7 @@ namespace DynamoCoreUITests
         #region Defect Verifications Test Cases
 
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_1956()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1956
@@ -986,22 +1014,23 @@ namespace DynamoCoreUITests
             AssertPreviewValue("bbec3d26-e220-4b55-9da6-ca1f37a55d7f", -10);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_159()
         {
-            //// Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
 
-            //RunCommandsFromFile("Defect_MAGN_159.xml", true);
+            RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
-            //Assert.AreEqual(1, workspace.Nodes.Count);
-            //Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
 
-            //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
 
-            Assert.Inconclusive("Porting : DoubleInput");
+            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_164_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1022,7 +1051,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_190_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1043,7 +1073,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_225_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -1055,7 +1086,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_397_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -1065,7 +1097,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_411()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
@@ -1081,7 +1114,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_429_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -1092,7 +1126,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_478_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -1103,7 +1138,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_491_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -1129,7 +1165,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1139,7 +1176,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1151,7 +1189,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_581_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -1161,7 +1200,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
             RunCommandsFromFile("Defect-MAGN-590.xml");
@@ -1177,7 +1217,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, connector.End.Index);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_775()
         {
             // The third undo operation should not crash.
@@ -1186,7 +1227,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_585()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-585
@@ -1207,7 +1249,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, cbn.InPorts.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_605()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-605
@@ -1239,7 +1282,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_624()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1265,7 +1309,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_624_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1298,7 +1343,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_590_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
@@ -1330,7 +1376,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1362,7 +1409,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_2()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1391,7 +1439,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_3()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1429,7 +1478,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_828()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-828
@@ -1454,7 +1504,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_613()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
@@ -1475,7 +1526,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_904()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1499,7 +1551,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_830()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-830
@@ -1523,7 +1576,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_803()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-803
@@ -1550,7 +1604,8 @@ namespace DynamoCoreUITests
         /// Eventually the evaluation will be done at record playback side thus remove the need
         /// of having multiple files.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void TestCBNWithNodeToCode()
         {
             // Run playback is recorded in command file
@@ -1574,7 +1629,8 @@ namespace DynamoCoreUITests
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_902()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
@@ -1595,7 +1651,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_422()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1619,7 +1676,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_422_1()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1644,6 +1702,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef01()
         {
             // test for function redefinition - evalaute function
@@ -1669,6 +1728,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef02()
         {
             // test for function redefinition - evalaute function
@@ -1691,6 +1751,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef03()
         {
             // test for function redefinition - evalaute function
@@ -1713,6 +1774,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef04()
         {
             // test for function redefinition - evalaute function
@@ -1733,7 +1795,8 @@ namespace DynamoCoreUITests
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void MethodResolutionFailRedef_MAGN_2262()
         {
             RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", false, (commandTag) =>
@@ -1761,7 +1824,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -1801,6 +1864,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Deffect_1412CreateList()
         {
             // This is a UI test to test for interaction crashes the application
@@ -1810,6 +1874,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Deffect_1344PythonEditor()
         {
             // This is a UI test to test for interaction crashes the application
@@ -1819,6 +1884,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Deffect_2208Delete_CBN()
         {
             // This is a UI test to test for interaction crashes the application
@@ -1827,12 +1893,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Deffect_2201Watch_CBN()
         {
             RunCommandsFromFile("Defect_MAGN_2201.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Deffect_747MultiReference()
         {
             RunCommandsFromFile("defect_MAGN_747.xml", true);
@@ -1851,7 +1919,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -1891,6 +1959,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
 
         //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
 
@@ -1898,7 +1967,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "Point-10")
                 {
@@ -1925,6 +1994,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2378()
         {
             // this is using CBN. 
@@ -1932,7 +2002,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "WithWarning")
                 {
@@ -1953,6 +2023,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2378_AnotherScenario()
         {
             // this is using Point.ByCoordinates node.
@@ -1960,7 +2031,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "WithWrongInput")
                 {
@@ -1987,13 +2058,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2100()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
 
             RunCommandsFromFile("Defect_MAGN_2100.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2007,7 +2079,7 @@ namespace DynamoCoreUITests
 
             });
 
-            NodeModel nodeModel = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace(
+            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(
                 "3f309016-7b00-4487-9b68-f0640e892d39");
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
@@ -2019,13 +2091,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2102()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2102
 
             RunCommandsFromFile("Defect_MAGN_2102.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "Start")
                 {
@@ -2062,6 +2135,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2272()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
@@ -2069,7 +2143,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2272.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2098,6 +2172,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2528()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2528
@@ -2115,13 +2190,14 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2453()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2453
 
             RunCommandsFromFile("Defect_MAGN_2453.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2150,13 +2226,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2593()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2593
 
             RunCommandsFromFile("Defect_MAGN_2593.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2210,12 +2287,13 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3113()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
 
             RunCommandsFromFile("Defect_MAGN_3113.xml", true);
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
 
             // check for number of Nodes and Connectors
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -2229,13 +2307,14 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2373()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2373
 
             RunCommandsFromFile("Defect_MAGN_2373.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2262,30 +2341,32 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2563()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2563
 
             RunCommandsFromFile("Defect_MAGN_2563.xml", true);
 
-            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, Controller.DynamoModel.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count);
 
 
-            NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+            NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
 
             Assert.AreEqual(ElementState.Warning, node.State);
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2247()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
 
             RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2317,13 +2398,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2311()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2311
 
             RunCommandsFromFile("Defect_MAGN_2311.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2331,7 +2413,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
 
                     Assert.AreEqual(ElementState.Warning, node.State);
@@ -2342,7 +2424,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
 
                     Assert.AreEqual(ElementState.Warning, node.State);
@@ -2353,13 +2435,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2279()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
 
             RunCommandsFromFile("Defect_MAGN_2279.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2376,7 +2459,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2389,7 +2472,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(1, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2401,13 +2484,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3116()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3116
 
             RunCommandsFromFile("Defect_MAGN_3116.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2423,7 +2507,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(1, workspace.Nodes.Count);
                     Assert.AreEqual(0, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("6e2644dc-3336-4a87-a97f-12b2aab14a6b");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2435,13 +2519,14 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2290()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
 
             RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2462,12 +2547,12 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("826ba392-b385-4960-89cc-c076c3abffb0");
                     Assert.AreNotEqual(ElementState.Warning, node.State);
                     AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0", new int[] { 0, 3 });
 
-                    NodeModel node1 = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("8765fc5f-4edd-482c-8541-9acb6e39352c");
                     Assert.AreNotEqual(ElementState.Warning, node1.State);
                     AssertPreviewValue("8765fc5f-4edd-482c-8541-9acb6e39352c",
@@ -2480,6 +2565,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
             // Details are available in defect 
@@ -2487,7 +2573,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3166.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2527,6 +2613,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3599()
         {
             // Details are available in defect 
@@ -2534,7 +2621,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3599.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("26d75d07-10d7-4517-83b8-0f45711706b2") as CodeBlockNodeModel;
 
@@ -2571,6 +2658,7 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3580()
         {
             // Details are available in defect 
@@ -2578,7 +2666,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3580.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("b9c2edd6-5d73-4243-90fb-2b608250adee") as CodeBlockNodeModel;
 
@@ -2655,6 +2743,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3212()
         {
             // Details are available in defect 
@@ -2662,7 +2751,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3212.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("28029adc-b19d-414c-996c-545572aa9efc") as CodeBlockNodeModel;
 
@@ -2698,24 +2787,25 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void TestCancelExecution()
         {
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
-                DynamoController.IsTestMode = false; 
+                DynamoModel.IsTestMode = false; 
 
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2733,18 +2823,18 @@ namespace DynamoCoreUITests
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
-                DynamoController.IsTestMode = false;
+                DynamoModel.IsTestMode = false;
 
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2755,12 +2845,21 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void TestListMapUpdateForCustomNode()
+        {
+            // For regression http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3917
+            RunCommandsFromFile("Defect_MAGN_3917.xml");
+            AssertPreviewValue("91fb442c-8e17-4a2f-8b0b-cf520b543c18", new object [] { 43} );
+        }
 
         #endregion
 
         #region Tests moved from FScheme
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_159_AnotherScenario()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
@@ -2788,7 +2887,8 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_164()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
@@ -2803,7 +2903,8 @@ namespace DynamoCoreUITests
             AssertPreviewValue("635bd033-03f6-4b98-b03d-a5c3c2969607", 10);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_190()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
@@ -2814,7 +2915,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_225()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -2827,7 +2929,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(3, nodes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_397()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -2837,7 +2940,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_429()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -2848,7 +2952,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_478()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -2857,7 +2962,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_491()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -2882,7 +2988,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -2892,7 +2999,8 @@ namespace DynamoCoreUITests
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -2903,9 +3011,10 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_57()
         {
-            Assert.Inconclusive("Deprecated: Map");
+            //Assert.Inconclusive("Deprecated: Map");
 
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
             RunCommandsFromFile("Defect_MAGN_57.xml");
@@ -2915,7 +3024,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_581()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -2925,7 +3035,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
@@ -2934,14 +3044,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestCreateNodesAndRunExpression()
         {
             RunCommandsFromFile("CreateNodesAndRunExpression.xml");
@@ -2949,14 +3059,14 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(5, workspace.Nodes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestDeleteCommands()
         {
             RunCommandsFromFile("CreateAndDeleteNodes.xml");
@@ -2978,7 +3088,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestUndoRedoNodesAndConnections()
         {
             RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
@@ -2999,53 +3109,53 @@ namespace DynamoCoreUITests
         [Test]
         public void TestUpdateNodeCaptions()
         {
-            //RunCommandsFromFile("UpdateNodeCaptions.xml");
-            //Assert.AreEqual(0, workspace.Connectors.Count);
-            //Assert.AreEqual(1, workspace.Notes.Count);
-            //Assert.AreEqual(2, workspace.Nodes.Count);
+            RunCommandsFromFile("UpdateNodeCaptions.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
-            //var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;
-            //var note = GetNode("21c66403-d102-42bd-97ae-9e7b9c0b6e7d") as NoteModel;
+            var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;
+            var note = GetNode("21c66403-d102-42bd-97ae-9e7b9c0b6e7d") as NoteModel;
 
-            //Assert.IsNotNull(number);
-            //Assert.IsNotNull(note);
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(note);
 
-            //Assert.AreEqual("Caption 1", number.NickName);
-            //Assert.AreEqual("Caption 3", note.Text);
+            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 3", note.Text);
 
-            Assert.Inconclusive("Porting : DoubleInput");
+            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test]
         public void TestUpdateNodeContents()
         {
-            //RunCommandsFromFile("UpdateNodeContents.xml", true);
-            //Assert.AreEqual(2, workspace.Connectors.Count);
-            //Assert.AreEqual(3, workspace.Nodes.Count);
+            RunCommandsFromFile("UpdateNodeContents.xml", true);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
 
-            //var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
-            //var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
-            //var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
+            var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
+            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
+            var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
 
-            //Assert.IsNotNull(number);
-            //Assert.IsNotNull(slider);
-            //Assert.IsNotNull(codeblock);
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(slider);
+            Assert.IsNotNull(codeblock);
 
-            //Assert.AreEqual("10", number.Value);
-            //Assert.AreEqual(0, slider.Min, 0.000001);
-            //Assert.AreEqual(70, slider.Value, 0.000001);
-            //Assert.AreEqual(100, slider.Max, 0.000001);
+            Assert.AreEqual("10", number.Value);
+            Assert.AreEqual(0, slider.Min, 0.000001);
+            Assert.AreEqual(70, slider.Value, 0.000001);
+            Assert.AreEqual(100, slider.Max, 0.000001);
 
-            //Assert.AreEqual("a+b;", codeblock.Code);
-            //Assert.AreEqual(2, codeblock.InPorts.Count);
-            //Assert.AreEqual(1, codeblock.OutPorts.Count);
+            Assert.AreEqual("a+b;", codeblock.Code);
+            Assert.AreEqual(2, codeblock.InPorts.Count);
+            Assert.AreEqual(1, codeblock.OutPorts.Count);
 
-            //AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
+            AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
 
-            Assert.Inconclusive("Porting : DoubleInput");
+            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);

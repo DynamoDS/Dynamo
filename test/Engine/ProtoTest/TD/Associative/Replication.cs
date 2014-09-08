@@ -1672,7 +1672,13 @@ c;
         public void SimpleOp()
         {
             String code =
-@"x;test;[Associative]{	x = 5;    test = x *2;}";
+@"x;test;
+[Associative]
+{
+	x = 5;
+    test = x *2;
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             ProtoCore.Lang.Obj o = mirror.GetValue("x");
             Assert.IsTrue((Int64)o.Payload == 5);
@@ -1685,7 +1691,13 @@ c;
         public void ArraySimpleOp()
         {
             String code =
-@"foo;test;[Associative]{	foo = {5};    test = 2 *foo;}";
+@"foo;test;
+[Associative]
+{
+	foo = {5};
+    test = 2 *foo;
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             ProtoCore.Lang.Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
@@ -1702,7 +1714,18 @@ c;
         public void ArraySimpleCall01()
         {
             String code =
-@"test;[Associative]{    def mult : int( s : int )		{		return = s * 2;	}    test = mult({5});    }";
+@"
+test;
+[Associative]
+{
+    def mult : int( s : int )	
+	{
+		return = s * 2;
+	}
+    test = mult({5});
+    
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             ProtoCore.Lang.Obj o = mirror.GetValue("test");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
@@ -1715,7 +1738,20 @@ c;
         public void ArraySimpleCall02()
         {
             String code =
-@"class Tuple4{    mx : var;    constructor ByCoordinates3(arr : double[])    {        mx = arr[2];          }}    a = {12.0,13.0,14.0};t = Tuple4.ByCoordinates3(a);x = t.mx;";
+@"
+class Tuple4
+{
+    mx : var;
+    constructor ByCoordinates3(arr : double[])
+    {
+        mx = arr[2];      
+    }
+}
+    
+a = {12.0,13.0,14.0};
+t = Tuple4.ByCoordinates3(a);
+x = t.mx;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((double)mirror.GetValue("x").Payload == 14);
         }
@@ -1725,7 +1761,22 @@ c;
         public void ArraySimpleCall03()
         {
             String code =
-@"class Tuple4{    mx : var;    constructor ByCoordinates3(arr : double)    {        mx = arr;          }}    a = {12.0,13.0,14.0};t = Tuple4.ByCoordinates3(a);x1 = t[0].mx;x2 = t[1].mx;x3 = t[2].mx;";
+@"
+class Tuple4
+{
+    mx : var;
+    constructor ByCoordinates3(arr : double)
+    {
+        mx = arr;      
+    }
+}
+    
+a = {12.0,13.0,14.0};
+t = Tuple4.ByCoordinates3(a);
+x1 = t[0].mx;
+x2 = t[1].mx;
+x3 = t[2].mx;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((double)mirror.GetValue("x1").Payload == 12);
             Assert.IsTrue((double)mirror.GetValue("x2").Payload == 13);
@@ -1737,7 +1788,15 @@ c;
         public void ArraySimpleCall04()
         {
             String code =
-@"def f: int( a : int ){    return = a + 1;}list = {10,20,30,40};x = f(list);y = x[0] + x[1];";
+@"
+def f: int( a : int )
+{
+    return = a + 1;
+}
+list = {10,20,30,40};
+x = f(list);
+y = x[0] + x[1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 32);
         }
@@ -1747,7 +1806,9 @@ c;
         public void TestSimpleCallAssociative()
         {
             String code =
-@"def fun : double() { return = 4.0; }a = fun();";
+@"def fun : double() { return = 4.0; }
+a = fun();
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Double)o.Payload == 4);
@@ -1758,7 +1819,12 @@ c;
         public void TestSimpleCallImperative()
         {
             String code =
-@"def fun : double() { return = 4.0; }a;[Imperative]{a = fun();}";
+@"def fun : double() { return = 4.0; }
+a;
+[Imperative]
+{
+a = fun();
+}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Double)o.Payload == 4);
@@ -1769,7 +1835,9 @@ c;
         public void TestSimpleCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun(1.0);";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun(1.0);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Double)o.Payload == 4);
@@ -1780,7 +1848,9 @@ c;
         public void Test1D1CellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({1.0});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({1.0});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 4.0 });
         }
@@ -1790,7 +1860,9 @@ c;
         public void Test1DDeepNestCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{{{{{{{{1.0}}}}}}}}});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{{{{{{{{1.0}}}}}}}}});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             TestFrameWork fx = new TestFrameWork();
@@ -1802,7 +1874,9 @@ c;
         public void Test1D2DeepNestCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{{{{{{{{1.0, 1.2}}}}}}}}});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{{{{{{{{1.0, 1.2}}}}}}}}});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -1815,7 +1889,9 @@ c;
         public void Test1DnCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({1.0, 2.0, 3.0, 4.0});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({1.0, 2.0, 3.0, 4.0});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             TestFrameWork.Verify(mirror, "a", new Object[] { 4.0, 4.0, 4.0, 4.0 });
@@ -1826,11 +1902,15 @@ c;
         public void Test2DnSquareCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0, 7.0, 8.0 }});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0, 7.0, 8.0 }});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             TestFrameWork fx = new TestFrameWork();
-            TestFrameWork.Verify(mirror, "a", new Object[] {                 new Object[] {4.0, 4.0, 4.0, 4.0 },                new Object[] {4.0, 4.0, 4.0, 4.0 }});
+            TestFrameWork.Verify(mirror, "a", new Object[] { 
+                new Object[] {4.0, 4.0, 4.0, 4.0 },
+                new Object[] {4.0, 4.0, 4.0, 4.0 }});
         }
 
         [Test]
@@ -1838,11 +1918,15 @@ c;
         public void Test2DnJaggedCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0}});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0}});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             TestFrameWork fx = new TestFrameWork();
-            TestFrameWork.Verify(mirror, "a", new Object[] {                 new Object[] {4.0, 4.0, 4.0, 4.0 },                new Object[] {4.0, 4.0}});
+            TestFrameWork.Verify(mirror, "a", new Object[] { 
+                new Object[] {4.0, 4.0, 4.0, 4.0 },
+                new Object[] {4.0, 4.0}});
         }
 
         [Test]
@@ -1850,7 +1934,9 @@ c;
         public void Test1D1DSimpleCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double, arg2:double) { return = 4.0; }a = fun(1.0, 2.0);";
+@"def fun : double(arg: double, arg2:double) { return = 4.0; }
+a = fun(1.0, 2.0);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("a");
             Assert.IsTrue(!o.Type.IsIndexable);
@@ -1862,7 +1948,9 @@ c;
         public void Test1D1D2CallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double, arg2:double) { return = 4.0; }a = fun(1.0, {10.0, 20.0, 30.0, 40.0});";
+@"def fun : double(arg: double, arg2:double) { return = 4.0; }
+a = fun(1.0, {10.0, 20.0, 30.0, 40.0});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             TestFrameWork.Verify(mirror, "a", new Object[] { 4.0, 4.0, 4.0, 4.0 });
@@ -1873,7 +1961,9 @@ c;
         public void Test1D1DCellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double, arg2:double) { return = 4.0; }a = fun({1.0}, {2.0});";
+@"def fun : double(arg: double, arg2:double) { return = 4.0; }
+a = fun({1.0}, {2.0});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             TestFrameWork.Verify(mirror, "a", new Object[] { 4.0 });
@@ -1884,7 +1974,9 @@ c;
         public void Test2D2CellArrayCallWithArgAssociative()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{1.0}, {2.0}});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{1.0}, {2.0}});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             TestFrameWork fx = new TestFrameWork();
@@ -1896,7 +1988,17 @@ c;
         public void TestIncompatibleTypes()
         {
             String code =
-@"def fun : double(arg: int) { return = 4; }class A {    x : int;    constructor A(_x : int) { x = _i; }}v1 = A.A(0);v2 = fun(4);v3 = fun ({0, 1});v4 = fun ({A.A(0), A.A(1)});";
+@"def fun : double(arg: int) { return = 4; }
+class A 
+{
+    x : int;
+    constructor A(_x : int) { x = _i; }
+}
+v1 = A.A(0);
+v2 = fun(4);
+v3 = fun ({0, 1});
+v4 = fun ({A.A(0), A.A(1)});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             TestFrameWork.Verify(mirror, "v2", 4.0);
@@ -1907,7 +2009,25 @@ c;
         public void TestOverloadDispatchWithTypeConversion()
         {
             String code =
-@"class TestDefect{        def foo(val : double)        {                return = val;        }        def foo(arr : double[])        {                return = -123;        }    def sqr(val : int)        {                return = val * val;        }}test = TestDefect.TestDefect();arr = 5..25;s = test.foo(arr);";
+@"class TestDefect
+{
+        def foo(val : double)
+        {
+                return = val;
+        }
+        def foo(arr : double[])
+        {
+                return = -123;
+        }
+    def sqr(val : int)
+        {
+                return = val * val;
+        }
+}
+test = TestDefect.TestDefect();
+arr = 5..25;
+s = test.foo(arr);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             TestFrameWork.Verify(mirror, "s", -123);
@@ -1918,7 +2038,10 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators()
         {
             String code =
-@"xdata = {1, 2};ydata = {3, 4};z = xdata + ydata;";
+@"xdata = {1, 2};
+ydata = {3, 4};
+z = xdata + ydata;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
             Object[] v1 = new Object[] { 4, 6 };
@@ -1930,7 +2053,10 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_2()
         {
             String code =
-@"xdata = {1, 2};ydata = {3, 4, 5};z = xdata * ydata;";
+@"xdata = {1, 2};
+ydata = {3, 4, 5};
+z = xdata * ydata;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 3, 8 };
             thisTest.Verify("z", v1);
@@ -1941,7 +2067,10 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_3()
         {
             String code =
-@"xdata = {1, 2, 5, 7};ydata = {3, 4};z = xdata - ydata;";
+@"xdata = {1, 2, 5, 7};
+ydata = {3, 4};
+z = xdata - ydata;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { -2, -2 };
             thisTest.Verify("z", v1);
@@ -1952,7 +2081,15 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_4()
         {
             String code =
-@"class A{}a1 = A.A();xdata = {null, 0, true, a1 };ydata = {1,1,1,1};z = xdata + ydata;";
+@"
+class A
+{
+}
+a1 = A.A();
+xdata = {null, 0, true, a1 };
+ydata = {1,1,1,1};
+z = xdata + ydata;
+";
             //Assert.Fail("1467089 - Sprint23 : rev 2681 : replication issue ComplierInternalException when using replication over array of instances");
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { null, 1, null, null };
@@ -1964,7 +2101,13 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_5()
         {
             String code =
-@"xdata = { { 1.5, 2 } , { 1, 2 } };ydata = { { 3, 4 } , { 5, 6.0 } };z = xdata + ydata;x = z[0];y = z[1];";
+@"
+xdata = { { 1.5, 2 } , { 1, 2 } };
+ydata = { { 3, 4 } , { 5, 6.0 } };
+z = xdata + ydata;
+x = z[0];
+y = z[1];
+";
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 4.5, 6.0 };
@@ -1978,7 +2121,26 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_6()
         {
             String code =
-@"class A{    c : var[];    constructor A ( a : var[], b : var[] )    {        c = a + b;    }    def foo ( a : var[], b : var[] )    {        c = a - b ;        return = c;    }}a1 = A.A( xdata, ydata);xdata = { 1, 2 };ydata = { 3, 4 };z1 = a1.c;z2 = a1.foo ( xdata, ydata );";
+@"
+class A
+{
+    c : var[];
+    constructor A ( a : var[], b : var[] )
+    {
+        c = a + b;
+    }
+    def foo ( a : var[], b : var[] )
+    {
+        c = a - b ;
+        return = c;
+    }
+}
+a1 = A.A( xdata, ydata);
+xdata = { 1, 2 };
+ydata = { 3, 4 };
+z1 = a1.c;
+z2 = a1.foo ( xdata, ydata );
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { -2, -2 };
             thisTest.Verify("z1", v2);
@@ -1990,7 +2152,18 @@ c;
         public void T09_Defect_1456568_Replication_On_Operators_7()
         {
             String code =
-@"def foo ( a : var[], b : var[] ){    c = a / b ;    return = c;}a1 = A.A( xdata, ydata);xdata = { 1, 2 };ydata = { 3, 4 };z1 = foo ( xdata, ydata );xdata = { 1.5, 2 };";
+@"
+def foo ( a : var[], b : var[] )
+{
+    c = a / b ;
+    return = c;
+}
+a1 = A.A( xdata, ydata);
+xdata = { 1, 2 };
+ydata = { 3, 4 };
+z1 = foo ( xdata, ydata );
+xdata = { 1.5, 2 };
+";
             string errmsg = "";//DNL-1467450 Rev 4596 : Regression : Need consistence in error generated for undefined class instances";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 0.5, 0.5 };
@@ -2002,7 +2175,22 @@ c;
         public void T57_Defect_1467004_Replication_With_Method_Overload()
         {
             String code =
-                            @"                            class TestDefect                            {                                def foo(val : double)                                {                                    return = val;                                }                                def foo(arr : double[])                                {                                    return = -123;                                }                            }                            test = TestDefect.TestDefect();                            arr = 5..25;                            s = test.foo(arr);                             ";
+                            @"
+                            class TestDefect
+                            {
+                                def foo(val : double)
+                                {
+                                    return = val;
+                                }
+                                def foo(arr : double[])
+                                {
+                                    return = -123;
+                                }
+                            }
+                            test = TestDefect.TestDefect();
+                            arr = 5..25;
+                            s = test.foo(arr); 
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("s", -123);
         }
@@ -2011,7 +2199,18 @@ c;
         public void T57_Defect_1467004_Replication_With_Method_Overload_2()
         {
             String code =
-                            @"                                def foo(val : double)                                {                                    return = val;                                }                                def foo(arr : double[])                                {                                    return = -123;                                }                                arr = 5..25;                                s = test.foo(arr);                             ";
+                            @"
+                                def foo(val : double)
+                                {
+                                    return = val;
+                                }
+                                def foo(arr : double[])
+                                {
+                                    return = -123;
+                                }
+                                arr = 5..25;
+                                s = test.foo(arr); 
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // Assert.Fail("1467091 - Sprint24 : rev 2733 : instance method resolution is too tolerant and passing even when the instance is not defined");
             Object n1 = null;
@@ -2020,15 +2219,37 @@ c;
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_3()
         {
             String code =
-                            @"                                def foo(val : int[])                                {                                    return = 1;                                }                                def foo(val : double[])                                {                                    return = 2;                                }                                def foo(val : int)                                {                                    return = 3;                                }                                def foo(arr : double)                                {                                    return = 4;                                }                                arr = { 3, 0, 5.5, 3 } ;                                s = foo(arr);                             ";
-            string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+                            @"
+                                def foo(val : int[])
+                                {
+                                    return = 1;
+                                }
+                                def foo(val : double[])
+                                {
+                                    return = 2;
+                                }
+                                def foo(val : int)
+                                {
+                                    return = 3;
+                                }
+                                def foo(arr : double)
+                                {
+                                    return = 4;
+                                }
+                                arr = { 3, 0, 5.5, 3 } ;
+                                s = foo(arr); 
+                            ";
+            //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            string errmsg = "MAGN-4098 Replication vs function override with different types - what is the correct ";
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 3, 3, 4, 3 };
             thisTest.Verify("s", v1);
+
         }
 
         [Test]
@@ -2036,7 +2257,23 @@ c;
         public void T57_Defect_1467004_Replication_With_Method_Overload_4()
         {
             String code =
-                            @"                                class A                                {                                }                                a1 = A.A();                                def foo(val : int[])                                {                                    return = 1;                                }                                def foo(val : var)                                {                                    return = 2;                                }                                                                arr = { 3, a1, 5 } ;                                s = foo(arr);                             ";
+                            @"
+                                class A
+                                {
+                                }
+                                a1 = A.A();
+                                def foo(val : int[])
+                                {
+                                    return = 1;
+                                }
+                                def foo(val : var)
+                                {
+                                    return = 2;
+                                }
+                                
+                                arr = { 3, a1, 5 } ;
+                                s = foo(arr); 
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2, 2 };
             thisTest.Verify("s", v1);
@@ -2047,7 +2284,37 @@ c;
         public void T57_Defect_1467004_Replication_With_Method_Overload_5()
         {
             String code =
-                            @"                                class A                                {                                    x : int;                                }                                class B extends A                                {                                    y : int;                                }                                a1 = A.A();                                b1 = B.B();                                def foo(val : A[])                                {                                    return = 1;                                }                                def foo(val : B[])                                {                                    return = 2;                                }                                def foo(val : A)                                {                                    return = 3;                                }                                def foo(val : B)                                {                                    return = 4;                                }                                                                arr = { a1, b1 } ;                                s = foo(arr);                             ";
+                            @"
+                                class A
+                                {
+                                    x : int;
+                                }
+                                class B extends A
+                                {
+                                    y : int;
+                                }
+                                a1 = A.A();
+                                b1 = B.B();
+                                def foo(val : A[])
+                                {
+                                    return = 1;
+                                }
+                                def foo(val : B[])
+                                {
+                                    return = 2;
+                                }
+                                def foo(val : A)
+                                {
+                                    return = 3;
+                                }
+                                def foo(val : B)
+                                {
+                                    return = 4;
+                                }
+                                
+                                arr = { a1, b1 } ;
+                                s = foo(arr); 
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("s", 1);
         }
@@ -2057,18 +2324,69 @@ c;
         public void T57_Defect_1467004_Replication_With_Method_Overload_6()
         {
             String code =
-                            @"                                class A                                {                                    x : int;                                }                                class B extends A                                {                                    y : int;                                }                                a1 = A.A();                                b1 = B.B();                                def foo(val : A[])                                {                                    return = 1;                                }                                def foo(val : B[])                                {                                    return = 2;                                }                                def foo(val : var)                                {                                    return = 3;                                }                                def foo(val : var[])                                {                                    return = 4;                                }                                                                arr = { a1, b1 } ;                                s = foo(arr);                             ";
+                            @"
+                                class A
+                                {
+                                    x : int;
+                                }
+                                class B extends A
+                                {
+                                    y : int;
+                                }
+                                a1 = A.A();
+                                b1 = B.B();
+                                def foo(val : A[])
+                                {
+                                    return = 1;
+                                }
+                                def foo(val : B[])
+                                {
+                                    return = 2;
+                                }
+                                def foo(val : var)
+                                {
+                                    return = 3;
+                                }
+                                def foo(val : var[])
+                                {
+                                    return = 4;
+                                }
+                                
+                                arr = { a1, b1 } ;
+                                s = foo(arr); 
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("s", 1);
         }
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_7()
         {
             String code =
-                            @"  def foo(val : int[])                                {                                    return = 1;                                }                                def foo(val : double[])                                {                                    return = 2;                                }                                def foo(val : int)                                {                                    return = 3;                                }                                def foo(val : double)                                {                                    return = 4;                                }                                                                arr = { { 1, 2}, 1, 3.5, {3.5, 2.3}, {1, 2.5}, null } ;                                s = foo(arr);                             ";
-            string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+                            @"  def foo(val : int[])
+                                {
+                                    return = 1;
+                                }
+                                def foo(val : double[])
+                                {
+                                    return = 2;
+                                }
+                                def foo(val : int)
+                                {
+                                    return = 3;
+                                }
+                                def foo(val : double)
+                                {
+                                    return = 4;
+                                }
+                                
+                                arr = { { 1, 2}, 1, 3.5, {3.5, 2.3}, {1, 2.5}, null } ;
+                                s = foo(arr); 
+                            ";
+            //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            string errmsg = "MAGN-4098 Replication vs function override - what is the correct beahviour here ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v2 = new Object[] { 3, 4 };
             Object[] v1 = new Object[] { 1, 3, 4, 2, v2, 3 };
@@ -2080,7 +2398,19 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections()
         {
             String code =
-@"y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = { 1, 2, 3 };    x2 = { 1, 2, 3 };    y = foo ( x1, x2 );}                            ";
+@"
+y;
+[Associative]
+{
+    def foo : int ( a : int, b : int )
+    {
+        return = a + b;
+    }
+    x1 = { 1, 2, 3 };
+    x2 = { 1, 2, 3 };
+    y = foo ( x1, x2 );
+}
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, 6 };
             thisTest.Verify("y", v1);
@@ -2091,7 +2421,16 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_2()
         {
             String code =
-@"def foo : double (arr1 : double[], arr2 : double[] ){return = arr1[0] + arr2[0];}arr = { {2.5,3}, {1.5,2} };two = foo (arr, arr);t1 = two[0];t2 = two[1];";
+@"
+def foo : double (arr1 : double[], arr2 : double[] )
+{
+return = arr1[0] + arr2[0];
+}
+arr = { {2.5,3}, {1.5,2} };
+two = foo (arr, arr);
+t1 = two[0];
+t2 = two[1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("t1", 5.0);
@@ -2103,7 +2442,19 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_3()
         {
             String code =
-@"y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = { 1 };    x2 = { 1, 2, 3 };    y = foo ( x1, x2 );}                            ";
+@"
+y;
+[Associative]
+{
+    def foo : int ( a : int, b : int )
+    {
+        return = a + b;
+    }
+    x1 = { 1 };
+    x2 = { 1, 2, 3 };
+    y = foo ( x1, x2 );
+}
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
@@ -2114,7 +2465,19 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_4()
         {
             String code =
-@"y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = { 1, 2.5, null };    x2 = { 1 };    y = foo ( x1, x2 );}                            ";
+@"
+y;
+[Associative]
+{
+    def foo : int ( a : int, b : int )
+    {
+        return = a + b;
+    }
+    x1 = { 1, 2.5, null };
+    x2 = { 1 };
+    y = foo ( x1, x2 );
+}
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
@@ -2125,7 +2488,19 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_5()
         {
             String code =
-@"y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = { 1, 2.5, null };    x2 =  1 ;    y = foo ( x1, x2 );}                            ";
+@"
+y;
+[Associative]
+{
+    def foo : int ( a : int, b : int )
+    {
+        return = a + b;
+    }
+    x1 = { 1, 2.5, null };
+    x2 =  1 ;
+    y = foo ( x1, x2 );
+}
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, null };
             thisTest.Verify("y", v1);
@@ -2136,7 +2511,19 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_6()
         {
             String code =
-@"y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = 0;    x2 =  { 1, 2.5, null };    y = foo ( x1, x2 );}                            ";
+@"
+y;
+[Associative]
+{
+    def foo : int ( a : int, b : int )
+    {
+        return = a + b;
+    }
+    x1 = 0;
+    x2 =  { 1, 2.5, null };
+    y = foo ( x1, x2 );
+}
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 3, null };
             thisTest.Verify("y", v1);
@@ -2147,7 +2534,23 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_7()
         {
             String code =
-@"class A{    x : var;        def foo : int ( a : int, b : int )    {        x = a + b;        return = x;    }}a1 = A.A();test = a1.x;x1 = { 3, 4 };x2 =  { null, 1 };y = a1.foo( {3, 4 }, { null, 1} );";
+@"
+class A
+{
+    x : var;
+    
+    def foo : int ( a : int, b : int )
+    {
+        x = a + b;
+        return = x;
+    }
+}
+a1 = A.A();
+test = a1.x;
+x1 = { 3, 4 };
+x2 =  { null, 1 };
+y = a1.foo( {3, 4 }, { null, 1} );
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { null, 5 };
             thisTest.Verify("y", v1);
@@ -2159,7 +2562,23 @@ c;
         public void T58_Defect_1456115_Replication_Over_Collections_8()
         {
             String code =
-@"class A{    x : var;        def foo : int ( a : int, b : int )    {        x = a + b;        return = x;    }}a1 = A.A();test = a1.x;x1 = { 3, 4 };x2 =  { null, 1 };y = a1.foo( x1, x2 );";
+@"
+class A
+{
+    x : var;
+    
+    def foo : int ( a : int, b : int )
+    {
+        x = a + b;
+        return = x;
+    }
+}
+a1 = A.A();
+test = a1.x;
+x1 = { 3, 4 };
+x2 =  { null, 1 };
+y = a1.foo( x1, x2 );
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { null, 5 };
@@ -2172,7 +2591,10 @@ c;
         public void T59_Defect_1463351_Replication_Over_Unary_Operators()
         {
             String code =
-@"list1 = { true, false };list2 = !list1; // { false, true }                            ";
+@"
+list1 = { true, false };
+list2 = !list1; // { false, true }
+                            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, true };
             thisTest.Verify("list2", v1);
@@ -2183,7 +2605,10 @@ c;
         public void T59_Defect_1463351_Replication_Over_Unary_Operators_2()
         {
             String code =
-@"list1 = { true, null, a1, 0, 0.0, 1.5, 0.5, -1 };list2 = !list1;";
+@"
+list1 = { true, null, a1, 0, 0.0, 1.5, 0.5, -1 };
+list2 = !list1;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, null, null, true, true, false, false, false };
             thisTest.Verify("list2", v1);
@@ -2194,7 +2619,10 @@ c;
         public void T59_Defect_1463351_Replication_Over_Unary_Operators_3()
         {
             String code =
-@"list1 = { { true, null}, 0, 1 };list2 = !list1;";
+@"
+list1 = { { true, null}, 0, 1 };
+list2 = !list1;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { new Object[] { false, null }, true, false };
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -2206,7 +2634,14 @@ c;
         public void T59_Defect_1463351_Replication_Over_Unary_Operators_4()
         {
             String code =
-@"class A{}a1 = A.A();b1 = { true, a1 };b = !b1;";
+@"
+class A
+{
+}
+a1 = A.A();
+b1 = { true, a1 };
+b = !b1;
+";
             //Assert.Fail("1467096 - Sprint24: rev 2759 : Replication using unary operators over class instances causes CompilerInternalAssertion");
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, false };
@@ -2218,7 +2653,25 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances()
         {
             String code =
-@"class Point{x : var;y : var;constructor Create(xx : int, yy : int){x = xx;y = yy;}}y;[Associative]{coords = {0,1,2,3,4,5,6,7,8,9};pts = Point.Create(coords, coords);y = Count ( pts );}";
+@"
+class Point
+{
+x : var;
+y : var;
+constructor Create(xx : int, yy : int)
+{
+x = xx;
+y = yy;
+}
+}
+y;
+[Associative]
+{
+coords = {0,1,2,3,4,5,6,7,8,9};
+pts = Point.Create(coords, coords);
+y = Count ( pts );
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 10);
@@ -2229,7 +2682,36 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances_2()
         {
             String code =
-@"class Point{x : var;y : var;z : var;constructor Create(xx : double){x = xx;}}class Circle{centerPt : var;radius : var;constructor Create(cp : Point, rad : double){centerPt = cp;radius = rad;}}c1;[Associative]{coords = {0.0,1,2,3,4,5,6,7,8,9};pts = Point.Create(coords);circs = Circle.Create(pts, 5.0); c1 = Count ( circs );}";
+@"
+class Point
+{
+x : var;
+y : var;
+z : var;
+constructor Create(xx : double)
+{
+x = xx;
+}
+}
+class Circle
+{
+centerPt : var;
+radius : var;
+constructor Create(cp : Point, rad : double)
+{
+centerPt = cp;
+radius = rad;
+}
+}
+c1;
+[Associative]
+{
+coords = {0.0,1,2,3,4,5,6,7,8,9};
+pts = Point.Create(coords);
+circs = Circle.Create(pts, 5.0); 
+c1 = Count ( circs );
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 10);
@@ -2240,7 +2722,25 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances_3()
         {
             String code =
-@"class Point{    x : var;    y : var;    z : var;    constructor Create(xx : double, yy: double, zz: double)    {        x = xx;        y = yy;        z = zz;    }}x1 = { 0.0, 1 };y1 = { 0, 2.0, 3 };z1 = { 0, 1 };pts = Point.Create(x1, y1, z1);c1 = Count ( pts );";
+@"
+class Point
+{
+    x : var;
+    y : var;
+    z : var;
+    constructor Create(xx : double, yy: double, zz: double)
+    {
+        x = xx;
+        y = yy;
+        z = zz;
+    }
+}
+x1 = { 0.0, 1 };
+y1 = { 0, 2.0, 3 };
+z1 = { 0, 1 };
+pts = Point.Create(x1, y1, z1);
+c1 = Count ( pts );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 2);
@@ -2251,7 +2751,25 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances_4()
         {
             String code =
-@"class Point{    x : var;    y : var;    z : var;    constructor Create(xx : double, yy: double, zz: double)    {        x = xx;        y = yy;        z = zz;    }}x1 = { { 0.0, 1 } };y1 = { 0, 2.0, 3 };z1 = { 0, 1 };pts = Point.Create(x1, y1, z1);c1 = Count ( pts );";
+@"
+class Point
+{
+    x : var;
+    y : var;
+    z : var;
+    constructor Create(xx : double, yy: double, zz: double)
+    {
+        x = xx;
+        y = yy;
+        z = zz;
+    }
+}
+x1 = { { 0.0, 1 } };
+y1 = { 0, 2.0, 3 };
+z1 = { 0, 1 };
+pts = Point.Create(x1, y1, z1);
+c1 = Count ( pts );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
@@ -2263,7 +2781,25 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances_5()
         {
             String code =
-@"class Point{    x : var;    y : var;    z : var;    constructor Create(xx : double, yy: double, zz: double)    {        x = xx;        y = yy;        z = zz;    }}x1 = { 0, 0.0, 1  };y1 = 3;z1 = { 0, 1 };pts = Point.Create(x1, y1, z1);c1 = Count ( pts );";
+@"
+class Point
+{
+    x : var;
+    y : var;
+    z : var;
+    constructor Create(xx : double, yy: double, zz: double)
+    {
+        x = xx;
+        y = yy;
+        z = zz;
+    }
+}
+x1 = { 0, 0.0, 1  };
+y1 = 3;
+z1 = { 0, 1 };
+pts = Point.Create(x1, y1, z1);
+c1 = Count ( pts );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 2); // this depends on new replication logic : please check
@@ -2274,7 +2810,23 @@ c;
         public void T60_Defect_1455247_Replication_Over_Class_Instances_6()
         {
             String code =
-@"class Point{    x : var;    y : var;        constructor Create(xx : double, yy: double)    {        x = xx;        y = yy;            }}x1 = { 0, 0.0, 1  };y1 = 3;pts = Point.Create(x1, y1);c1 = Count ( pts );";
+@"
+class Point
+{
+    x : var;
+    y : var;    
+    constructor Create(xx : double, yy: double)
+    {
+        x = xx;
+        y = yy;
+        
+    }
+}
+x1 = { 0, 0.0, 1  };
+y1 = 3;
+pts = Point.Create(x1, y1);
+c1 = Count ( pts );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 3); // this depends on new replication logic : please check
@@ -2285,7 +2837,26 @@ c;
         public void T61_Defect_1463338_Replication_CallSite_Assertion()
         {
             String code =
-@"class Point_2D{    x : int;    y : int;    constructor ValueCtor(x1 : int, y1 : int)    {    x = x1;    y = y1;    }    def GetValue()    {        return = x * y;    }}list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };list3 = Point_2D.ValueCtor(list1, list2);list2_0_0 = list3[0][0].GetValue(); ";
+@"
+class Point_2D
+{
+    x : int;
+    y : int;
+    constructor ValueCtor(x1 : int, y1 : int)
+    {
+    x = x1;
+    y = y1;
+    }
+    def GetValue()
+    {
+        return = x * y;
+    }
+}
+list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
+list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
+list3 = Point_2D.ValueCtor(list1, list2);
+list2_0_0 = list3[0][0].GetValue(); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -2296,7 +2867,7 @@ c;
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
-//import ( ""Math.dll"");
+
 class Math
 {
    static def Sin ( x1 : double)
@@ -2349,22 +2920,34 @@ y = Count(xHighFrequency);";
         public void T62_Defect_1467075_replication_on_nested_array()
         {
             String code =
-@"def fun : double(arg: double) { return = 4.0; }a = fun({{1.0}, {2.0}});";
+@"def fun : double(arg: double) { return = 4.0; }
+a = fun({{1.0}, {2.0}});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
-        [Test, Ignore]
+        [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
 
             String code =
-@"[Imperative]{    def foo( a )    {        a = a + 1;        return = a;    }    c = { 1,2,3 };    d = foo ( c ) ;}";
+@"[Imperative]
+{
+    def foo( a )
+    {
+        a = a + 1;
+        return = a;
+    }
+    c = { 1,2,3 };
+    d = foo ( c ) ;
+}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            string err = "1467177 - sprint24: rev 3152 : REGRESSION : Replication should not be supported in Imperative scope";
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
 
             thisTest.Verify("d", null);
@@ -2375,7 +2958,18 @@ y = Count(xHighFrequency);";
         public void T64_Defect_1456105_replication_on_function_with_no_arg_type()
         {
             String code =
-@"d;[Associative]{    def foo( a )    {        a = a + 1;        return = a;    }    c = { 1,2,3 };    d = foo ( c ) ;}";
+@"
+d;
+[Associative]
+{
+    def foo( a )
+    {
+        a = a + 1;
+        return = a;
+    }
+    c = { 1,2,3 };
+    d = foo ( c ) ;
+}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new Object[] { 2, 3, 4 });
@@ -2386,7 +2980,12 @@ y = Count(xHighFrequency);";
         public void T64_Defect_1456105_replication_on_function_with_no_arg_type_2()
         {
             String code =
-@"def foo2 : double (arr : double){return = 0;}arr1 = {1,2,3,4};sum1 = foo2(arr1);";
+@"def foo2 : double (arr : double)
+{
+return = 0;
+}
+arr1 = {1,2,3,4};
+sum1 = foo2(arr1);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 0.0, 0.0, 0.0, 0.0 });
@@ -2397,7 +2996,18 @@ y = Count(xHighFrequency);";
         public void T64_Defect_1456105_replication_on_function_with_no_arg_type_3()
         {
             String code =
-@"def foo2  (x ){return = x + 1;}def foo  (x:double ){return = x + 1;}arr1 = {1,2.0,3,4};sum1 = foo2(arr1);arr2 = {1,2.0,3,4};sum2 = foo(arr1);";
+@"def foo2  (x )
+{
+return = x + 1;
+}
+def foo  (x:double )
+{
+return = x + 1;
+}
+arr1 = {1,2.0,3,4};
+sum1 = foo2(arr1);
+arr2 = {1,2.0,3,4};
+sum2 = foo(arr1);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 2, 3.0, 4, 5 });
@@ -2407,6 +3017,7 @@ y = Count(xHighFrequency);";
         [Test]
         [Category("Replication")]
         [Category("SmokeTest")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void T65_Defect_1467125_Geo_Replication()
         {
             string code = @"
@@ -2453,6 +3064,7 @@ controlPolyF = Polygon.ByVertices(groupOfPointGroups);
 }*/
 //a simple case
 c=2 * {{1},{2}};";
+            string error = "";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Object[] v1 = new Object[] {true,true,true,false,false};
             Object v1 = null;
@@ -2469,7 +3081,19 @@ c=2 * {{1},{2}};";
         public void T66_Defect_1467125_Replication_Method()
         {
             String code =
-@"a = {1,2};b = { 10, 11 };c = { { 1 }, { 2 } };d = { {0 } };def foo(x : var, y : var){    return = x + y;}rab = foo(a, b);rac = foo(a, c);rad = foo(a, d);";
+@"
+a = {1,2};
+b = { 10, 11 };
+c = { { 1 }, { 2 } };
+d = { {0 } };
+def foo(x : var, y : var)
+{
+    return = x + y;
+}
+rab = foo(a, b);
+rac = foo(a, c);
+rad = foo(a, d);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = "1467125 - Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
@@ -2478,7 +3102,8 @@ c=2 * {{1},{2}};";
             Object[] v2 = new Object[] { 20, 22 };
             Object[] v3 = new Object[] { v1, v2 };
             Object[] v4 = new Object[] { v1, v2 };
-            thisTest.Verify("rab", v3);
+            thisTest.Verify("rab", new object []{ 11,13});
+
         }
 
         [Test]
@@ -2486,7 +3111,17 @@ c=2 * {{1},{2}};";
         public void T66_Defect_1467125_Replication_Method_2()
         {
             String code =
-                    @"                    a = {1,2};                    b = { 10, 11 };                    c = { { 1 }, { 2 } };                    d = { {0 } };                    rab = a<1>*b<2>;                    rac = a<1>*c<2>;                    rad = a<1>*d<2>;                    ";
+            
+                @"
+                    a = {1,2};
+                    b = { 10, 11 };
+                    c = { { 1 }, { 2 } };
+                    d = { {0 } };
+                    rab = a<1>*b<2>;
+                    rac = a<1>*c<2>;
+                    rad = a<1>*d<2>;
+                    ";
+
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = "1467125 - VALIDATION NEEDED - Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
@@ -2499,13 +3134,18 @@ c=2 * {{1},{2}};";
             thisTest.Verify("rab", v3);
             thisTest.Verify("rac", v4);
             thisTest.Verify("rad", v5);
+
         }
 
         [Test]
         public void Test()
         {
             String code =
-                    @"                    a = {1,2};                    b = { {10} };                    rab = a*b;                    ";
+                    @"
+                    a = {1,2};
+                    b = { {10} };
+                    rab = a*b;
+                    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
@@ -2514,21 +3154,56 @@ c=2 * {{1},{2}};";
         public void Array_Ranks_Match_argumentdefinition_1467190()
         {
             String code =
-            @"              class B              {                    value : int;                    constructor B (b : int)                    {                        value = b;                    }               }               class A               {                     a1 : var;                     constructor A ( b1 : int)                     {                                        a1 = b1;                     }                      def foo( arr : B[])                       {                          return = arr.value;                       }                }                 arr = { B.B(1), B.B(2), B.B(3), B.B(4) };                 q = A.A( {6,7,8,9} );                t = q.foo(arr);            ";
+            @"
+              class B
+              {
+                    value : int;
+                    constructor B (b : int)
+                    {
+                        value = b;
+                    }
+               }
+               class A
+               {
+                     a1 : var;
+                     constructor A ( b1 : int)
+                     {                
+                        a1 = b1;
+                     } 
+                     def foo( arr : B[])  
+                     {  
+                        return = arr.value;  
+                     }
+                } 
+                arr = { B.B(1), B.B(2), B.B(3), B.B(4) }; 
+                q = A.A( {6,7,8,9} );
+                t = q.foo(arr);
+            ";
             //Assert.Fail("1467190 -Sprint 25 - Rev 3185 it replicates when not expected ");
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object t = new Object[]                           {                               new object[] { 1, 2, 3, 4 },                               new object[] { 1, 2, 3, 4 },                               new object[] { 1, 2, 3, 4 },                               new object[] { 1, 2, 3, 4 }                           };
+            Object t = new Object[]
+                           {
+                               new object[] { 1, 2, 3, 4 },
+                               new object[] { 1, 2, 3, 4 },
+                               new object[] { 1, 2, 3, 4 },
+                               new object[] { 1, 2, 3, 4 }
+                           };
             thisTest.Verify("t", t);
         }
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
-@"a = { 1, 2};b = { {0,2}, 1};x = a < b ? 1 : 0;";
-            string err = "1467198 - Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+@"a = { 1, 2};
+b = { {0,2}, 1};
+x = a < b ? 1 : 0;";
+            //string err = "1467198 - Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+            string err = "MAGN-1658 Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+            
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("x", new Object[] { new Object[] { 0, 1 }, 0 });
@@ -2539,7 +3214,17 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator()
         {
             String code =
-@"class A{    a : int;    constructor A ( a1 : int )    {        a = a1;    }}c1 = { A.A(1), A.A(2) };c2 = c1.a; // Expected : { 1,2 }; Recieved : null";
+@"class A
+{
+    a : int;
+    constructor A ( a1 : int )
+    {
+        a = a1;
+    }
+}
+c1 = { A.A(1), A.A(2) };
+c2 = c1.a; 
+// Expected : { 1,2 }; Recieved : null";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c2", new Object[] { 1, 2 });
@@ -2550,7 +3235,21 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_2()
         {
             String code =
-@"class Point{    x : var;    constructor Create(xx : int)    {        x = xx;    }}xs;[Associative]{    coords = {0,1,2,3,4,5,6,7,8,9};    pts = Point.Create(coords);    xs = pts.x;}";
+@"class Point
+{
+    x : var;
+    constructor Create(xx : int)
+    {
+        x = xx;
+    }
+}
+xs;
+[Associative]
+{
+    coords = {0,1,2,3,4,5,6,7,8,9};
+    pts = Point.Create(coords);
+    xs = pts.x;
+}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("xs", new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
@@ -2561,7 +3260,17 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_3()
         {
             String code =
-@"class MyPoint {     X: var;    Y: var;    constructor CreateXY(x : double, y : double)    {        X = x;        Y = y;    } }p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
+@"class MyPoint 
+{ 
+    X: var;
+    Y: var;
+    constructor CreateXY(x : double, y : double)
+    {
+        X = x;
+        Y = y;
+    } 
+}
+p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p2", -20.0);
@@ -2572,7 +3281,17 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_4()
         {
             String code =
-@"class MyPoint {     X: var;    Y: var;    constructor CreateXY(x : double, y : double)    {        X = x;        Y = y;    } }p2 = MyPoint.CreateXY(0..2,-30.0).X;";
+@"class MyPoint 
+{ 
+    X: var;
+    Y: var;
+    constructor CreateXY(x : double, y : double)
+    {
+        X = x;
+        Y = y;
+    } 
+}
+p2 = MyPoint.CreateXY(0..2,-30.0).X;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p2", new Object[] { 0.0, 1.0, 2.0 });
@@ -2583,7 +3302,18 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_5()
         {
             String code =
-@"class A{    X : var;    constructor  A ( t1 : var )    {        X = t1;    }}a1 = A.A(1);b1 = A.A(2);test = { a1, b1}.X ;";
+@"class A
+{
+    X : var;
+    constructor  A ( t1 : var )
+    {
+        X = t1;
+    }
+}
+a1 = A.A(1);
+b1 = A.A(2);
+test = { a1, b1}.X ;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 2 });
@@ -2594,7 +3324,20 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_6()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}a1 = { A.A(1..2), A.A(2..3) };test = a1.X ;test2 = a1.X[0];test3 = a1.X[1];test4 = a1[0].X[0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+a1 = { A.A(1..2), A.A(2..3) };
+test = a1.X ;
+test2 = a1.X[0];
+test3 = a1.X[1];
+test4 = a1[0].X[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { new Object[] { 1, 2 }, new Object[] { 2, 3 } });
@@ -2608,7 +3351,20 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}a1 = { A.A(1..2), A.A(2..3) };test = a1.X ;test2 = a1.X[0];test3 = a1.X[1];test4 = a1[0].X[0][1];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+a1 = { A.A(1..2), A.A(2..3) };
+test = a1.X ;
+test2 = a1.X[0];
+test3 = a1.X[1];
+test4 = a1[0].X[0][1];
+";
             string error = "1467264 - Sprint25: rev 3548 : over indexing should yield null value";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
@@ -2624,7 +3380,19 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}a1 = { A.A(1..2), A.A(2..3) };test1 = a1.X;test2 = a1.X[0];test3 = (a1.X[0])[0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+a1 = { A.A(1..2), A.A(2..3) };
+test1 = a1.X;
+test2 = a1.X[0];
+test3 = (a1.X[0])[0];
+";
             string error = "";//1467265 - Sprint25:rev 3548 : accessing array members using bracket should be allowed";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, error);
@@ -2637,7 +3405,19 @@ c=2 * {{1},{2}};";
         public void T67_Defect_1460965_Replication_On_Dot_Operator_10()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}a1 = { A.A(1..2), A.A(2..3) };test1 = a1.X;test2 = a1.X[0];test3 = a1.X[0][0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+a1 = { A.A(1..2), A.A(2..3) };
+test1 = a1.X;
+test2 = a1.X[0];
+test3 = a1.X[0][0];
+";
             string error = "";// "1467266 - Sprint25: rev 3549 : Accessing array members is not giving the expected result";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
@@ -2649,7 +3429,18 @@ c=2 * {{1},{2}};";
         [Test]
         public void T67_Defect_1460965_ExpressionInParenthesis01()
         {
-            string code = @"x1;x2;x3;[Imperative]{    def foo()    {        return = (0..9);    }    x1 = ({1,2,3})[1];    x2 = (0..9)[3];    x3 = (foo())[4];}";
+            string code = @"
+x1;x2;x3;
+[Imperative]
+{
+    def foo()
+    {
+        return = (0..9);
+    }
+    x1 = ({1,2,3})[1];
+    x2 = (0..9)[3];
+    x3 = (foo())[4];
+}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 2);
             thisTest.Verify("x2", 3);
@@ -2659,7 +3450,31 @@ c=2 * {{1},{2}};";
         [Test]
         public void T67_Defect_1460965_ExpressionInParenthesis02()
         {
-            string code = @"class A{    x:int[];    constructor A(val:int[])    {        x = val;    }    def foo()    {        return = 0..10;    }    def foo2()    {        return = {{1,2}, {3,4}};    }}t1;t2;t3;[Imperative]{    a = A.A({1,2,3,4,5});    t1 = (a.x)[3];    t2 = (a.foo())[4];    t3 = (a.foo2())[1][1];}";
+            string code = @"
+class A
+{
+    x:int[];
+    constructor A(val:int[])
+    {
+        x = val;
+    }
+    def foo()
+    {
+        return = 0..10;
+    }
+    def foo2()
+    {
+        return = {{1,2}, {3,4}};
+    }
+}
+t1;t2;t3;
+[Imperative]
+{
+    a = A.A({1,2,3,4,5});
+    t1 = (a.x)[3];
+    t2 = (a.foo())[4];
+    t3 = (a.foo2())[1][1];
+}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 4);
             thisTest.Verify("t2", 4);
@@ -2669,7 +3484,30 @@ c=2 * {{1},{2}};";
         [Test]
         public void T67_Defect_1460965_ExpressionInParenthesis03()
         {
-            string code = @"class A{    x:int[];    constructor A(val:int[])    {        x = val;    }    def foo()    {        return = 0..10;    }    def foo2()    {        return = {{1,2}, {3,4}};    }}t2;t3;[Imperative]{    a = A.A({1,2,3,4,5});    t2 = a.foo()[4];    t3 = (a.foo2()[1])[1];}";
+            string code = @"
+class A
+{
+    x:int[];
+    constructor A(val:int[])
+    {
+        x = val;
+    }
+    def foo()
+    {
+        return = 0..10;
+    }
+    def foo2()
+    {
+        return = {{1,2}, {3,4}};
+    }
+}
+t2;t3;
+[Imperative]
+{
+    a = A.A({1,2,3,4,5});
+    t2 = a.foo()[4];
+    t3 = (a.foo2()[1])[1];
+}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t2", 4);
             thisTest.Verify("t3", 4);
@@ -2680,7 +3518,19 @@ c=2 * {{1},{2}};";
         public void T68_Defect_1460965_Replication_On_Dot_Operator_7()
         {
             String code =
-@"class A {    x : int;    t : int;    constructor A( y)    {        x = y;    }}a1 = { A.A(1), A.A(2) };a1.t = 5;test = a1.t;";
+@"class A 
+{
+    x : int;
+    t : int;
+    constructor A( y)
+    {
+        x = y;
+    }
+}
+a1 = { A.A(1), A.A(2) };
+a1.t = 5;
+test = a1.t;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467241 - Sprint25: rev 3420 : Property assignments using replication is not working");
@@ -2693,7 +3543,13 @@ c=2 * {{1},{2}};";
         public void ArrayConvertTest()
         {
             String code =
-@"def foo : int (i : double){    return=i;}    a = {2.0, 3.5};    b = foo(a);";
+@"def foo : int (i : double)
+{
+    return=i;
+}
+    a = {2.0, 3.5};
+    b = foo(a);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467241 - Sprint25: rev 3420 : Property assignments using replication is not working");
@@ -2702,25 +3558,67 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
-@"class A {    x : int;        constructor A( y)    {        x = y;    }}class B extends A {    t : int;    constructor B( y)    {        x = y;        t = x + 1;    }}a1 = { B.B(1), { A.A(2), B.B( 0..1) } };test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }";
+@"class A 
+{
+    x : int;    
+    constructor A( y)
+    {
+        x = y;
+    }
+}
+class B extends A 
+{
+    t : int;
+    constructor B( y)
+    {
+        x = y;
+        t = x + 1;
+    }
+}
+a1 = { B.B(1), { A.A(2), B.B( 0..1) } };
+test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-
-            String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            //String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4107";
+        
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 1, new Object[] { 2, new Object[] { 0, 1 } } });
         }
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
-@"class A {    x : int;        constructor A( y)    {        x = y;    }}class B extends A {    t : int;    constructor B( y)    {        x = y;        t = x + 1;    }}a1 = { B.B(1), { A.A(2), B.B( 0..1) } };test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }";
+@"class A 
+{
+    x : int;    
+    constructor A( y)
+    {
+        x = y;
+    }
+}
+class B extends A 
+{
+    t : int;
+    constructor B( y)
+    {
+        x = y;
+        t = x + 1;
+    }
+}
+a1 = { B.B(1), { A.A(2), B.B( 0..1) } };
+test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
+a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            String errmsg = "MAGN-4107 Replication on dot operators not working for jagged arrays";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 5, new Object[] { 5, new Object[] { 5, 5 } } });
         }
@@ -2730,7 +3628,24 @@ c=2 * {{1},{2}};";
         public void T69_Replication_Across_Language_Blocks()
         {
             String code =
-@"def foo ( p : double){    return = p;}i = 0;x = { };[Imperative]{	while (i == 0)  	{		[Associative] 		{			x = foo ( { 1.0,2.0 } );		}		i = i + 1; 	}}";
+@"def foo ( p : double)
+{
+    return = p;
+}
+i = 0;
+x = { };
+[Imperative]
+{
+	while (i == 0)  
+	{
+		[Associative] 
+		{
+			x = foo ( { 1.0,2.0 } );
+		}
+		i = i + 1; 
+	}
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2742,7 +3657,27 @@ c=2 * {{1},{2}};";
         public void T70_Defect_1467266()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}class B {    a : A[];    constructor  B ( t1 : var[] )    {        a = { A.A(t1), A.A(t1) };            }}a1 = { B.B(1..2), B.B(2..3) };test1 = a1.a.X;test2 = a1.a.X[0];test3 = a1.a.X[0][0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+class B 
+{
+    a : A[];
+    constructor  B ( t1 : var[] )
+    {
+        a = { A.A(t1), A.A(t1) };        
+    }
+}
+a1 = { B.B(1..2), B.B(2..3) };
+test1 = a1.a.X;
+test2 = a1.a.X[0];
+test3 = a1.a.X[0][0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2755,7 +3690,18 @@ c=2 * {{1},{2}};";
         public void T71_Defect_1467209()
         {
             String code =
-@"class A{    X : var;    constructor  A ( t1 : var )    {        X = t1;    }}a1 = A.A(1);b1 = A.A(2);test = { a1, b1}.X ;";
+@"class A
+{
+    X : var;
+    constructor  A ( t1 : var )
+    {
+        X = t1;
+    }
+}
+a1 = A.A(1);
+b1 = A.A(2);
+test = { a1, b1}.X ;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2768,7 +3714,19 @@ c=2 * {{1},{2}};";
         public void T71_Defect_1467209_2()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}a = { A.A(1..2), A.A(4..5) } ;test1 = a.X;test2 = a.X[0];test3 = (a.X)[0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+a = { A.A(1..2), A.A(4..5) } ;
+test1 = a.X;
+test2 = a.X[0];
+test3 = (a.X)[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467265 - Sprint25:rev 3548 : accessing array members/ function calls  using bracket should be allowed";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2781,7 +3739,25 @@ c=2 * {{1},{2}};";
         public void T71_Defect_1467209_3()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1;    }}class B {    a : A[];    constructor  B ( t1 : var[] )    {        a = { A.A(t1), A.A(t1) };            }}t1 = {{ B.B(1..2), B.B(2..3) }.a}.X;a1 = t1[0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1;
+    }
+}
+class B 
+{
+    a : A[];
+    constructor  B ( t1 : var[] )
+    {
+        a = { A.A(t1), A.A(t1) };        
+    }
+}
+t1 = {{ B.B(1..2), B.B(2..3) }.a}.X;
+a1 = t1[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467265 - Sprint25:rev 3548 : accessing array members/ function calls  using bracket should be allowed";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2794,7 +3770,26 @@ c=2 * {{1},{2}};";
         public void T71_Defect_1467209_4()
         {
             String code =
-@"class A{    X : var[];    constructor  A ( t1 : var[] )    {        X = t1+1;    }}class B {    a : A[];    b : var[];    constructor  B ( t1 : var[] )    {       a = {A.A(t1), A.A(t1)};                }}a1 = {{ B.B(1..2), B.B(2..3) }.a}.X[0];";
+@"class A
+{
+    X : var[];
+    constructor  A ( t1 : var[] )
+    {
+        X = t1+1;
+    }
+}
+class B 
+{
+    a : A[];
+    b : var[];
+    constructor  B ( t1 : var[] )
+    {
+       a = {A.A(t1), A.A(t1)};
+            
+    }
+}
+a1 = {{ B.B(1..2), B.B(2..3) }.a}.X[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467265 - Sprint25:rev 3548 : accessing array members/ function calls  using bracket should be allowed";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2806,7 +3801,10 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169()
         {
             String code =
-@"a = { 1, 2 } ;i = 0..1; b = a[i] > 0? 1 : 0; ";
+@"a = { 1, 2 } ;
+i = 0..1; 
+b = a[i] > 0? 1 : 0; 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2818,7 +3816,20 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_2()
         {
             String code =
-@"class A{    a : int;    constructor A ( x )    {        a = x;    }}a = { 1, 2 } ;i = 0..1; b = a[i] > 0? A.A(i) : 0;test = b.a; ";
+@"
+class A
+{
+    a : int;
+    constructor A ( x )
+    {
+        a = x;
+    }
+}
+a = { 1, 2 } ;
+i = 0..1; 
+b = a[i] > 0? A.A(i) : 0;
+test = b.a; 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2830,7 +3841,20 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_3()
         {
             String code =
-@"class A{    a : int[];    constructor A ( x:int[] )    {        a = x;    }}a = { 1, 2 } ;i = 0..1; b = a[i] > 0? A.A(a[i]) : 0;test = b.a; ";
+@"
+class A
+{
+    a : int[];
+    constructor A ( x:int[] )
+    {
+        a = x;
+    }
+}
+a = { 1, 2 } ;
+i = 0..1; 
+b = a[i] > 0? A.A(a[i]) : 0;
+test = b.a; 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2842,7 +3866,11 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_4()
         {
             String code =
-@"a = { 1, 2 } ;b = { 3, 4, 5};test = b[0..1] + a[0..1]; ";
+@"
+a = { 1, 2 } ;
+b = { 3, 4, 5};
+test = b[0..1] + a[0..1]; 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2854,7 +3882,15 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_5()
         {
             String code =
-@"def foo ( a : int[], b :int[] ){    return = Count(a) + Count(b);}a = { 1, 2 } ;b = { 3, 4, 5};test = foo (b[0..1], a[0..1]); ";
+@"
+def foo ( a : int[], b :int[] )
+{
+    return = Count(a) + Count(b);
+}
+a = { 1, 2 } ;
+b = { 3, 4, 5};
+test = foo (b[0..1], a[0..1]); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2866,11 +3902,19 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_6()
         {
             String code =
-@"def foo ( a : int[], b :int[] ){    return = Count(a) + Count(b);}a = { 1, 2 } ;b = { {3, 4}, {5, 6}};test = foo (b[0..1][0..1], a[0..1]); ";
+@"
+def foo ( a : int[], b :int[] )
+{
+    return = Count(a) + Count(b);
+}
+a = { 1, 2 } ;
+b = { {3, 4}, {5, 6}};
+test = foo (b[0..1][0..1], a[0..1]); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";// "1467284 - Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", 4);
+            thisTest.Verify("test", new object [] {4,4});
         }
 
         [Test]
@@ -2878,7 +3922,10 @@ c=2 * {{1},{2}};";
         public void T72_Defect_1467169_7()
         {
             String code =
-@"x = { };x[1..2] = 2 ;";
+@"
+x = { };
+x[1..2] = 2 ;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467285 - Sprint25: rev 3711: left assignment using replication on array indices is not working";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2891,21 +3938,36 @@ c=2 * {{1},{2}};";
         public void T73_Defect_1467069()
         {
             String code =
-@"a = {3,1,2,10};x = {10,11,12,13,14,15};x[a] = 2;y = x;";
+@"
+a = {3,1,2,10};
+x = {10,11,12,13,14,15};
+x[a] = 2;
+y = x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 2, 2, 2, 14, 15, n1, n1, n1, n1, 2 });
         }
-        [Test, Ignore]
+        [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T73_Defect_1467069_2()
         {
             String code =
-@"[Imperative]{    a = {3,1,2,10};    x = {10,11,12,13,14,15};    x[a] = 2;    y = x;}";
+@"
+[Imperative]
+{
+    a = {3,1,2,10};
+    x = {10,11,12,13,14,15};
+    x[a] = 2;
+    y = x;
+}
+";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 11, 12, 13, 14, 15 });
@@ -2913,12 +3975,20 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T73_Defect_1467069_3()
         {
             String code =
-@"a = {2, 5};x = {10,11,12};x[a] = {2,2};y = x + 1;";
+@"
+a = {2, 5};
+x = {10,11,12};
+x[a] = {2,2};
+y = x + 1;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467292 - rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            //String errmsg = "1467292 - rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            String errmsg = "1662 rev 3746 - REGRESSION : replication on jagged array is giving unexpected output";
+            
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 11, 12, new Object[] { 3, 3 }, null, new Object[] { 2, 2 } });
@@ -2929,7 +3999,26 @@ c=2 * {{1},{2}};";
         public void T73_Defect_1467069_4()
         {
             String code =
-@"class A{    x : int[]..[];    constructor A()    {        a = {3,1,2,10};        x = {10,11,12,13,14,15};        x[a] = 2;    }    def foo ()    {        x[-1..-3] = 0;        return = x;    }}a1 = A.A();y1 = a1.x + 1;y2 = a1.foo();";
+@"
+class A
+{
+    x : int[]..[];
+    constructor A()
+    {
+        a = {3,1,2,10};
+        x = {10,11,12,13,14,15};
+        x[a] = 2;
+    }
+    def foo ()
+    {
+        x[-1..-3] = 0;
+        return = x;
+    }
+}
+a1 = A.A();
+y1 = a1.x + 1;
+y2 = a1.foo();
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2937,14 +4026,30 @@ c=2 * {{1},{2}};";
             thisTest.Verify("y1", new Object[] { 11, 3, 3, 3, 15, 16, null, null, 1, 1, 1 });
             thisTest.Verify("y2", new Object[] { 10, 2, 2, 2, 14, 15, null, null, 0, 0, 0 });
         }
-        [Test, Ignore]
+        [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T74_Defect_1463465()
         {
             String code =
-@"[Imperative]{def even : int (a : int) { if(( a % 2 ) > 0 )return = a + 1; else return = a;return = 0;}x = { 1, 2, 3 };c = even(x);}";
+@"
+[Imperative]
+{
+def even : int (a : int) 
+{ 
+if(( a % 2 ) > 0 )
+return = a + 1; 
+else 
+return = a;
+return = 0;
+}
+x = { 1, 2, 3 };
+c = even(x);
+}
+";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("c", n1);
@@ -2956,7 +4061,20 @@ c=2 * {{1},{2}};";
         public void T74_Defect_1463465_2()
         {
             String code =
-@"def even : int (a : int) {     return = [Imperative]    {        if(( a % 2 ) > 0 )            return = a + 1;         else             return = a;    }}x = { 1, 2, 3 };c = even(x);";
+@"
+def even : int (a : int) 
+{ 
+    return = [Imperative]
+    {
+        if(( a % 2 ) > 0 )
+            return = a + 1; 
+        else 
+            return = a;
+    }
+}
+x = { 1, 2, 3 };
+c = even(x);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2968,7 +4086,21 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282()
         {
             String code =
-@"class A{    c : int;    constructor A(a : int, b : int)    {        c = a + b;    }    }a = { 5, 6 };b = { 0, 1 };x = A.A(a<1>, b<2> ).c;y = A.A(a, b).c;";
+@"
+class A
+{
+    c : int;
+    constructor A(a : int, b : int)
+    {
+        c = a + b;
+    }
+    
+}
+a = { 5, 6 };
+b = { 0, 1 };
+x = A.A(a<1>, b<2> ).c;
+y = A.A(a, b).c;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467282 - Replication guides not working in constructor of class";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2981,7 +4113,21 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_2()
         {
             String code =
-@"class A{    c : int;    constructor A(a : int, b : int)    {        c = a + b;    }    }a = { {5, 6}, {5,6} };b = { {0, 1}, {0,1} };x = A.A(a<1><2>, b<3><4> ).c;y = A.A(a, b).c;";
+@"
+class A
+{
+    c : int;
+    constructor A(a : int, b : int)
+    {
+        c = a + b;
+    }
+    
+}
+a = { {5, 6}, {5,6} };
+b = { {0, 1}, {0,1} };
+x = A.A(a<1><2>, b<3><4> ).c;
+y = A.A(a, b).c;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2995,7 +4141,17 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_3()
         {
             String code =
-@"def sum ( a : int, b : int){    return = a + b;}a = { {5, 6}, {5,6} };b = { {0, 1}, {0,1} };test = sum(a<1><2>, b<3><4> );//expected :   test = { { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } }, { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } } }//recieved :   System.NotImplemented exception";
+@"
+def sum ( a : int, b : int)
+{
+    return = a + b;
+}
+a = { {5, 6}, {5,6} };
+b = { {0, 1}, {0,1} };
+test = sum(a<1><2>, b<3><4> );
+//expected :   test = { { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } }, { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } } }
+//recieved :   System.NotImplemented exception
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3008,7 +4164,10 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_4()
         {
             String code =
-@"a = { {5, 6}, {7, 8} };x = a[(0..1)<1>][(0..1)<2>];";
+@"
+a = { {5, 6}, {7, 8} };
+x = a[(0..1)<1>][(0..1)<2>];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467298 rev 4245 :  replication guides with partial array indexing is not giving the expected output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3021,7 +4180,24 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_5()
         {
             String code =
-@"def sum(a, b){    return = a + b;}class A{    X : var[];    constructor A( x1 : var[] )    {        X = x1;    }}a = { A.A(0..2), A.A(3..5) };b = { A.A(0..2), A.A(3..5) };test = a.X<1> + b.X<2>;test2 = sum ( a.X<1>, b.X<2>);";
+@"
+def sum(a, b)
+{
+    return = a + b;
+}
+class A
+{
+    X : var[];
+    constructor A( x1 : var[] )
+    {
+        X = x1;
+    }
+}
+a = { A.A(0..2), A.A(3..5) };
+b = { A.A(0..2), A.A(3..5) };
+test = a.X<1> + b.X<2>;
+test2 = sum ( a.X<1>, b.X<2>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3035,7 +4211,25 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_6()
         {
             String code =
-@"def foo(){    a = { 5, 6 };    b = { 0, 1 };    x = A.A(a<1>, b<2> ).c;    return = x;}class A{    c : int;    constructor A(a : int, b : int)    {        c = a + b;    }    }test = foo();";
+@"
+def foo()
+{
+    a = { 5, 6 };
+    b = { 0, 1 };
+    x = A.A(a<1>, b<2> ).c;
+    return = x;
+}
+class A
+{
+    c : int;
+    constructor A(a : int, b : int)
+    {
+        c = a + b;
+    }
+    
+}
+test = foo();
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3048,7 +4242,17 @@ c=2 * {{1},{2}};";
         public void T75_Defect_1467282_7()
         {
             String code =
-@"def sum ( a, b){     return = a + b;}a = {0,1};b = {2,3};test = sum ( a<1>, b<2>);test1 = sum ( {0,1}<1>, {2,3}<2>);test2 = sum ( (0..1)<1>, (2..3)<2>);";
+@"
+def sum ( a, b)
+{ 
+    return = a + b;
+}
+a = {0,1};
+b = {2,3};
+test = sum ( a<1>, b<2>);
+test1 = sum ( {0,1}<1>, {2,3}<2>);
+test2 = sum ( (0..1)<1>, (2..3)<2>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467398 Rev 4319 : Replication guides applied directly on collections not giving expected output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3062,7 +4266,23 @@ c=2 * {{1},{2}};";
         public void T76_Defect_1467254()
         {
             String code =
-@"class A{     public x : var ;       constructor A ()    {        x = 10;           }    public def foo ()    {       return = x + 1;    }        }a = A.A();a1 = a.foo(); //expected 5, received 11a.x = 4;";
+@"
+class A
+{ 
+    public x : var ;   
+    constructor A ()
+    {
+        x = 10;       
+    }
+    public def foo ()
+    {
+       return = x + 1;
+    }        
+}
+a = A.A();
+a1 = a.foo(); //expected 5, received 11
+a.x = 4;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3074,7 +4294,24 @@ c=2 * {{1},{2}};";
         public void T76_Defect_1467254_2()
         {
             String code =
-@"class A{     public x : var ;       constructor A ()    {        x = 10;           }    public def foo (p)    {       return = x + p;    }        }a = A.A();p = a.x;a1 = a.foo(p); //expected 5, received 11a.x = 4;";
+@"
+class A
+{ 
+    public x : var ;   
+    constructor A ()
+    {
+        x = 10;       
+    }
+    public def foo (p)
+    {
+       return = x + p;
+    }        
+}
+a = A.A();
+p = a.x;
+a1 = a.foo(p); //expected 5, received 11
+a.x = 4;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3086,7 +4323,12 @@ c=2 * {{1},{2}};";
         public void T77_Defect_1467081()
         {
             String code =
-@"x = { 0,1,2 };y = x [ {0,1} ];z = x [ 1..3 ];z2 = x [ -1..-3 ];";
+@"
+x = { 0,1,2 };
+y = x [ {0,1} ];
+z = x [ 1..3 ];
+z2 = x [ -1..-3 ];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3098,15 +4340,19 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T77_Defect_1467081_2()
         {
             String code =
-@"x = { {0,1,2}, {3,4} };y = x [ {0,1} ][{0,1}];";
+@"
+x = { {0,1,2}, {3,4} };
+y = x [ {0,1} ][{0,1}];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y", new Object[] { 0, 4 });
+            thisTest.Verify("y", new int[] { 0, 4 });
 
         }
 
@@ -3115,7 +4361,26 @@ c=2 * {{1},{2}};";
         public void T77_Defect_1467081_3()
         {
             String code =
-                @"                class A                {                    x;                    y;                    z;                    z2;                    constructor A()                    {                        x = { 0,1,2 };                        y = x [ {0,1} ];                        z = x [ 1..3 ];                        z2 = x [ -1..-3 ];                    }                }                a1 = A.A();                x1 = a1.y;                x2 = a1.z;                x3 = a1.z2;                ";
+                @"
+                class A
+                {
+                    x;
+                    y;
+                    z;
+                    z2;
+                    constructor A()
+                    {
+                        x = { 0,1,2 };
+                        y = x [ {0,1} ];
+                        z = x [ 1..3 ];
+                        z2 = x [ -1..-3 ];
+                    }
+                }
+                a1 = A.A();
+                x1 = a1.y;
+                x2 = a1.z;
+                x3 = a1.z2;
+                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
             Object n1 = null;
@@ -3127,10 +4392,15 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T78_Defect_1467125()
         {
             String code =
-@"a = {1, 2};b = { {10} };rab = a*b;";
+@"
+a = {1, 2};
+b = { {10} };
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467125 Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
             Object n1 = null;
@@ -3144,7 +4414,11 @@ c=2 * {{1},{2}};";
         public void T78_Defect_1467125_2()
         {
             String code =
-@"a = {{1, 2}};b = 10;rab = a*b;";
+@"
+a = {{1, 2}};
+b = 10;
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3157,7 +4431,11 @@ c=2 * {{1},{2}};";
         public void T78_Defect_1467125_3()
         {
             String code =
-@"a = 10;b = {{1,2}};rab = a*b;";
+@"
+a = 10;
+b = {{1,2}};
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3170,7 +4448,11 @@ c=2 * {{1},{2}};";
         public void T78_Defect_1467125_4()
         {
             String code =
-@"a = {{10}};b = {{1,2}};rab = a*b;";
+@"
+a = {{10}};
+b = {{1,2}};
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3183,7 +4465,11 @@ c=2 * {{1},{2}};";
         public void T78_Defect_1467125_5()
         {
             String code =
-@"a = {1, 2};b = {3, 4, 5};rab = a*b;";
+@"
+a = {1, 2};
+b = {3, 4, 5};
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3193,12 +4479,19 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T78_Defect_1467125_6()
         {
             String code =
-@"a = {1, 2};b = {{3, 4, 5}};rab = a*b;";
+@"
+a = {1, 2};
+b = {{3, 4, 5}};
+rab = a*b;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467125 Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
+            //String errmsg = "DNL-1467125 Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
+            String errmsg = "4109 TestFramework - asserting a collection against an array with different rank throws object reference not set to an instance of an object in some cases";
+            //once the testframework issue is fixed change the error string back to the original bug above
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("rab", new Object[] { new Object[] { 3, 8 } });
@@ -3209,7 +4502,11 @@ c=2 * {{1},{2}};";
         public void T79_Defect_1467096()
         {
             String code =
-@"a = {1, 2, 3};i = 0..1;b = !a[i];";
+@"
+a = {1, 2, 3};
+i = 0..1;
+b = !a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3222,7 +4519,11 @@ c=2 * {{1},{2}};";
         public void T79_Defect_1467096_2()
         {
             String code =
-@"a = {1, 2, 3};i = 0..1;b = -a[i];";
+@"
+a = {1, 2, 3};
+i = 0..1;
+b = -a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3235,7 +4536,20 @@ c=2 * {{1},{2}};";
         public void T79_Defect_1467096_3()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;c = a1.a;b = a1.a[i];";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+c = a1.a;
+b = a1.a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3247,7 +4561,20 @@ c=2 * {{1},{2}};";
         public void T79_Defect_1467096_4()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;c = a1.a;b = a1.a[i];";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+c = a1.a;
+b = a1.a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3259,7 +4586,19 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;b = -a1.a[i];";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = -a1.a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3272,7 +4611,19 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_2()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;b = -a1.a[0];";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = -a1.a[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3285,7 +4636,19 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_3()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;b = -a1.a;";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = -a1.a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3298,7 +4661,18 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_4()
         {
             String code =
-@"class A{    a :int;    constructor A ()    {        a = 1;    }}a1 = A.A();b = -a1.a;";
+@"
+class A
+{
+    a :int;
+    constructor A ()
+    {
+        a = 1;
+    }
+}
+a1 = A.A();
+b = -a1.a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3311,7 +4685,17 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_5()
         {
             String code =
-@"class A{    a :int;    constructor A ()    {        a = 1;    }}b = -A.A().a;";
+@"
+class A
+{
+    a :int;
+    constructor A ()
+    {
+        a = 1;
+    }
+}
+b = -A.A().a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3324,7 +4708,25 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_6()
         {
             String code =
-@"class B{    b :int;    constructor B ()    {        b = 1;    }}class A{    a :int;    constructor A ()    {        a = -B.B().b;    }}b = -A.A().a;";
+@"
+class B
+{
+    b :int;
+    constructor B ()
+    {
+        b = 1;
+    }
+}
+class A
+{
+    a :int;
+    constructor A ()
+    {
+        a = -B.B().b;
+    }
+}
+b = -A.A().a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3337,7 +4739,25 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_7()
         {
             String code =
-@"class B{    b :int;    constructor B ()    {        b = 1;    }}class A{    a :int;    constructor A ()    {        a = -B.B().b;    }}b = {A.A(), A.A()}.a;";
+@"
+class B
+{
+    b :int;
+    constructor B ()
+    {
+        b = 1;
+    }
+}
+class A
+{
+    a :int;
+    constructor A ()
+    {
+        a = -B.B().b;
+    }
+}
+b = {A.A(), A.A()}.a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3350,7 +4770,25 @@ c=2 * {{1},{2}};";
         public void T80_Defect_1467297_8()
         {
             String code =
-@"class B{    b :int;    constructor B ()    {        b = 1;    }}class A{    a :int;    constructor A ()    {        a = -B.B().b;    }}b = {-A.A().a, A.A().a};";
+@"
+class B
+{
+    b :int;
+    constructor B ()
+    {
+        b = 1;
+    }
+}
+class A
+{
+    a :int;
+    constructor A ()
+    {
+        a = -B.B().b;
+    }
+}
+b = {-A.A().a, A.A().a};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
             Object n1 = null;
@@ -3363,7 +4801,17 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467298()
         {
             String code =
-@"def add(a:int,b:int){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a[0..1], b[1..2]);c2 = add( a<1>, b<2>);c3 = add( a[0..1]<1>, b[1..2]<2>); ";
+@"
+def add(a:int,b:int)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a[0..1], b[1..2]);
+c2 = add( a<1>, b<2>);
+c3 = add( a[0..1]<1>, b[1..2]<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467298 rev 3769 : replication guides with partial array indexing is not supported by parser";
 
@@ -3378,7 +4826,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299()
         {
             String code =
-@"def add(a,b){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a<1>, b<2>); ";
+@"
+def add(a,b)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3390,7 +4846,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_2()
         {
             String code =
-@"def add(a:var,b:var){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a<1>, b<2>); ";
+@"
+def add(a:var,b:var)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3402,7 +4866,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_3()
         {
             String code =
-@"def add(a:int,b:int){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a<1>, b<2>); ";
+@"
+def add(a:int,b:int)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3414,7 +4886,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_4()
         {
             String code =
-@"def add(a:double,b:int){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a<1>, b<2>); ";
+@"
+def add(a:double,b:int)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3426,7 +4906,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_5()
         {
             String code =
-@"def add(a:double,b:double){   return = a + b;}a = {1, 2, 3};b = {3, 4, 5};c1 = add( a<1>, b<2>); ";
+@"
+def add(a:double,b:double)
+{
+   return = a + b;
+}
+a = {1, 2, 3};
+b = {3, 4, 5};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3438,7 +4926,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_6()
         {
             String code =
-@"def add(a:double,b:double){   return = a + b;}a = {1.0, 2.0, 3.0};b = {3.0, 4.0, 5.0};c1 = add( a<1>, b<2>); ";
+@"
+def add(a:double,b:double)
+{
+   return = a + b;
+}
+a = {1.0, 2.0, 3.0};
+b = {3.0, 4.0, 5.0};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3450,7 +4946,15 @@ c=2 * {{1},{2}};";
         public void T81_Defect_1467299_7()
         {
             String code =
-@"def add : int (a:double,b:double){   return = a + b;}a = {1.0, 2.0, 3.0};b = {3.0, 4.0, 5.0};c1 = add( a<1>, b<2>); ";
+@"
+def add : int (a:double,b:double)
+{
+   return = a + b;
+}
+a = {1.0, 2.0, 3.0};
+b = {3.0, 4.0, 5.0};
+c1 = add( a<1>, b<2>); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";// "DNL-1467299 rev 3769 : System.NotImplemented exc eption when replication guides are used to call functions with no type specified in arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3459,12 +4963,26 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T82_Defect_1467244()
         {
             String code =
-@"class A{static def execute(b : A) {   return = 100;  }}arr = {A.A(), null, 3};v1 = A.execute(null);v2 = A.execute(3);v3 = A.execute(arr);";
+@"
+class A
+{
+static def execute(b : A)
+ { 
+  return = 100; 
+ }
+}
+arr = {A.A(), null, 3};
+v1 = A.execute(null);
+v2 = A.execute(3);
+v3 = A.execute(arr);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            String errmsg = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct";
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3478,7 +4996,17 @@ c=2 * {{1},{2}};";
         public void T82_Defect_1467244_2()
         {
             String code =
-@"class A{static def execute(b : A) {   return = 100;  }}arr = {3,3,3};v3 = A.execute(arr);";
+@"
+class A
+{
+static def execute(b : A)
+ { 
+  return = 100; 
+ }
+}
+arr = {3,3,3};
+v3 = A.execute(arr);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3491,7 +5019,17 @@ c=2 * {{1},{2}};";
         public void T82_Defect_1467244_3()
         {
             String code =
-@"class A{static def execute(b : A) {   return = 100;  }}arr = {null, null};v3 = A.execute(arr);";
+@"
+class A
+{
+static def execute(b : A)
+ { 
+  return = 100; 
+ }
+}
+arr = {null, null};
+v3 = A.execute(arr);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3504,7 +5042,18 @@ c=2 * {{1},{2}};";
         public void T83_Defect_1467253()
         {
             String code =
-@"def foo ( a : int[] , b : int[]){    return = a + b;}def foo2 ( a : int,  b : int){    return = foo ( { a,b}, {a,b} );}arr = {1, 2};test = foo2 ( {arr, arr },  { arr, arr} );";
+@"
+def foo ( a : int[] , b : int[])
+{
+    return = a + b;
+}
+def foo2 ( a : int,  b : int)
+{
+    return = foo ( { a,b}, {a,b} );
+}
+arr = {1, 2};
+test = foo2 ( {arr, arr },  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3516,7 +5065,14 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313()
         {
             String code =
-@"def foo ( a : int[] , b : int[]){    return = a + b;}arr = {1, 2};test = foo ( {arr, arr },  { arr, arr} );";
+@"
+def foo ( a : int[] , b : int[])
+{
+    return = a + b;
+}
+arr = {1, 2};
+test = foo ( {arr, arr },  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//1467313 - rev 3791: replication on arguments that expect one dimensional array using higher ranks is giving ambiguous output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3528,7 +5084,14 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_2()
         {
             String code =
-@"def foo ( a : var[] , b : var[]){    return = a + b;}arr = {1, 2};test = foo ( {arr, arr },  { arr, arr} );";
+@"
+def foo ( a : var[] , b : var[])
+{
+    return = a + b;
+}
+arr = {1, 2};
+test = foo ( {arr, arr },  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3540,7 +5103,18 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_3()
         {
             String code =
-@"class A{    def foo ( a : var[] , b : var[])    {        return = a + b;    }}arr = {1, 2};t1 = A.A();test = t1.foo ( {arr, arr },  { arr, arr} );";
+@"
+class A
+{
+    def foo ( a : var[] , b : var[])
+    {
+        return = a + b;
+    }
+}
+arr = {1, 2};
+t1 = A.A();
+test = t1.foo ( {arr, arr },  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3552,7 +5126,25 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_4()
         {
             String code =
-@"class A{    a : var[];    b : var[];    constructor A ( a1 : var[] , b1 : var[])    {        a = a1;        b = b1;            }    def foo ()    {        return  = a + b;    }}arr = {1, 2};t1 = A.A({arr, arr },  { arr, arr} );test = t1.foo( );";
+@"
+class A
+{
+    a : var[];
+    b : var[];
+    constructor A ( a1 : var[] , b1 : var[])
+    {
+        a = a1;
+        b = b1;        
+    }
+    def foo ()
+    {
+        return  = a + b;
+    }
+}
+arr = {1, 2};
+t1 = A.A({arr, arr },  { arr, arr} );
+test = t1.foo( );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3564,7 +5156,37 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_5()
         {
             String code =
-@"class A{    a : var;    b : var;    c : var[];    constructor A ( a1 : var , b1 : var)    {        a = a1;        b = b1;            }    constructor A2 ( a1 : var , c1 : var[])    {        a = a1;        c = c1;            }    def foo ()    {        return  = a + b;    }    def foo2 ()    {        return  = a + c;    }}arr = {1, 2};t1 = A.A({arr, arr },  { arr, arr} );test = t1.foo( );t2 = A.A2(arr,  { arr, arr} );test2 = t2.foo2( );";
+@"
+class A
+{
+    a : var;
+    b : var;
+    c : var[];
+    constructor A ( a1 : var , b1 : var)
+    {
+        a = a1;
+        b = b1;        
+    }
+    constructor A2 ( a1 : var , c1 : var[])
+    {
+        a = a1;
+        c = c1;        
+    }
+    def foo ()
+    {
+        return  = a + b;
+    }
+    def foo2 ()
+    {
+        return  = a + c;
+    }
+}
+arr = {1, 2};
+t1 = A.A({arr, arr },  { arr, arr} );
+test = t1.foo( );
+t2 = A.A2(arr,  { arr, arr} );
+test2 = t2.foo2( );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3577,7 +5199,23 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_6()
         {
             String code =
-@"class A{    def foo ( a : var , b : var)    {        return = a + b;    }    def foo2 ( a : var , b : var[])    {        return = a + b;    }}arr = {1, 2};t1 = A.A();test = t1.foo ( {arr, arr },  { arr, arr} );test2 = t1.foo2 ( arr,  { arr, arr} );";
+@"
+class A
+{
+    def foo ( a : var , b : var)
+    {
+        return = a + b;
+    }
+    def foo2 ( a : var , b : var[])
+    {
+        return = a + b;
+    }
+}
+arr = {1, 2};
+t1 = A.A();
+test = t1.foo ( {arr, arr },  { arr, arr} );
+test2 = t1.foo2 ( arr,  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3590,7 +5228,14 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_7()
         {
             String code =
-@"def foo ( a : var , b : var){    return = a + b;}arr = {1, 2};test = foo ( {arr, arr },  { arr, arr} );";
+@"
+def foo ( a : var , b : var)
+{
+    return = a + b;
+}
+arr = {1, 2};
+test = foo ( {arr, arr },  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3602,7 +5247,14 @@ c=2 * {{1},{2}};";
         public void T84_Defect_1467313_8()
         {
             String code =
-@"def foo ( a : var , b : var[]){    return = a + b;}arr = {1, 2};test = foo ( arr,  { arr, arr} );";
+@"
+def foo ( a : var , b : var[])
+{
+    return = a + b;
+}
+arr = {1, 2};
+test = foo ( arr,  { arr, arr} );
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3614,7 +5266,22 @@ c=2 * {{1},{2}};";
         public void T85_Defect_1467076()
         {
             String code =
-                    @"                    class A                    {                        def foo(x : double)                    { return = 1; }                        }                    class B extends A                    {                        def foo(x : double)                            { return = 2; }                    }                    a = A.A();                    val1 = a.foo();                                        ";
+                    @"
+                    class A
+                    {
+                        def foo(x : double)
+                    { return = 1; }
+    
+                    }
+                    class B extends A
+                    {
+                        def foo(x : double)
+                            { return = 2; }
+                    }
+                    a = A.A();
+                    val1 = a.foo();
+                    
+                    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3626,7 +5293,22 @@ c=2 * {{1},{2}};";
         public void T85_Defect_1467076_a()
         {
             String code =
-                    @"                    class A                    {                        def foo(x : double)                    { return = 1; }                        }                    class B extends A                    {                        def foo(x : double)                            { return = 2; }                    }                    a = A.A();                    val1 = a.foo(0.0);                                        ";
+                    @"
+                    class A
+                    {
+                        def foo(x : double)
+                    { return = 1; }
+    
+                    }
+                    class B extends A
+                    {
+                        def foo(x : double)
+                            { return = 2; }
+                    }
+                    a = A.A();
+                    val1 = a.foo(0.0);
+                    
+                    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3638,7 +5320,23 @@ c=2 * {{1},{2}};";
         public void T85_Defect_1467076_2()
         {
             String code =
-                    @"                    class A                    {                        def foo(x : double)                    { return = 1; }                        }                    class B extends A                    {                        def foo(x : double)                            { return = 2; }                    }                    a = A.A();                    val1 = a.foo();                    b = B.B();                    val2 = b.foo();                    ";
+                    @"
+                    class A
+                    {
+                        def foo(x : double)
+                    { return = 1; }
+    
+                    }
+                    class B extends A
+                    {
+                        def foo(x : double)
+                            { return = 2; }
+                    }
+                    a = A.A();
+                    val1 = a.foo();
+                    b = B.B();
+                    val2 = b.foo();
+                    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3651,7 +5349,23 @@ c=2 * {{1},{2}};";
         public void T85_Defect_1467076_2b()
         {
             String code =
-                    @"                    class A                    {                        def foo(x : double)                    { return = 1; }                        }                    class B extends A                    {                        def foo(x : double)                            { return = 2; }                    }                    a = A.A();                    val1 = a.foo(1.0);                    b = B.B();                    val2 = b.foo(1.0);                    ";
+                    @"
+                    class A
+                    {
+                        def foo(x : double)
+                    { return = 1; }
+    
+                    }
+                    class B extends A
+                    {
+                        def foo(x : double)
+                            { return = 2; }
+                    }
+                    a = A.A();
+                    val1 = a.foo(1.0);
+                    b = B.B();
+                    val2 = b.foo(1.0);
+                    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3664,7 +5378,10 @@ c=2 * {{1},{2}};";
         public void T86_Defect_1467285()
         {
             String code =
-@"x = { };x[1..2] = 2 ;";
+@"
+x = { };
+x[1..2] = 2 ;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3677,7 +5394,18 @@ c=2 * {{1},{2}};";
         public void T86_Defect_1467285_2()
         {
             String code =
-@"class A{    x : var[]..[];    constructor A()    {        x = { };        x[1..2][1..2] = 2 ;    }}x = A.A().x;";
+@"
+class A
+{
+    x : var[]..[];
+    constructor A()
+    {
+        x = { };
+        x[1..2][1..2] = 2 ;
+    }
+}
+x = A.A().x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3690,7 +5418,11 @@ c=2 * {{1},{2}};";
         public void T86_Defect_1467285_3()
         {
             String code =
-@"x = { };x[0..1][0..1][0..1] = 2 ;y = x;";
+@"
+x = { };
+x[0..1][0..1][0..1] = 2 ;
+y = x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3703,7 +5435,11 @@ c=2 * {{1},{2}};";
         public void T86_Defect_1467285_4()
         {
             String code =
-@"x = { { { 0, 0}, {0,0} }, {{0,0}, {0,0}} };x[0..1][0..1][0..1] = 2 ;y = x;";
+@"
+x = { { { 0, 0}, {0,0} }, {{0,0}, {0,0}} };
+x[0..1][0..1][0..1] = 2 ;
+y = x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3713,12 +5449,27 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T87_Defect_1467284()
         {
             String code =
-@"class A{}def foo (){    return = 1.5;}a = A.A();x = { { { 0.6, foo()}, {5.1,0.0} }, {{null,b}, {true,a}} };x[0..1][0..1][0..1] = 2 ;y = x;test = x[0..1][0..1][0..1];";
+@"
+class A
+{
+}
+def foo ()
+{
+    return = 1.5;
+}
+a = A.A();
+x = { { { 0.6, foo()}, {5.1,0.0} }, {{null,b}, {true,a}} };
+x[0..1][0..1][0..1] = 2 ;
+y = x;
+test = x[0..1][0..1][0..1];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
+
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { new Object[] { new Object[] { 2, 1.5 }, new Object[] { 5.1, 0.0 } }, new Object[] { new Object[] { n1, n1 }, new Object[] { true, 2 } } });
@@ -3730,7 +5481,20 @@ c=2 * {{1},{2}};";
         public void T88_Defect_1467296()
         {
             String code =
-@"class A{    a :int[];    constructor A ()    {        a = { 1, 2, 3};    }}a1 = A.A();i = 0..1;c = a1.a;b = A.A().a[i];";
+@"
+class A
+{
+    a :int[];
+    constructor A ()
+    {
+        a = { 1, 2, 3};
+    }
+}
+a1 = A.A();
+i = 0..1;
+c = a1.a;
+b = A.A().a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3742,7 +5506,27 @@ c=2 * {{1},{2}};";
         public void T88_Defect_1467296_2()
         {
             String code =
-@"class B{    b :int[];    constructor B ()    {        b = { 1, 2, 3,4};    }}class A{    a :int[];    constructor A (i: int[])    {        a = B.B().b[i];    }}a1 = A.A();i = 0..1;b = A.A(i).a[i];";
+@"
+class B
+{
+    b :int[];
+    constructor B ()
+    {
+        b = { 1, 2, 3,4};
+    }
+}
+class A
+{
+    a :int[];
+    constructor A (i: int[])
+    {
+        a = B.B().b[i];
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = A.A(i).a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3754,7 +5538,27 @@ c=2 * {{1},{2}};";
         public void T88_Defect_1467296_3()
         {
             String code =
-@"class B{    b :int[];    constructor B ()    {        b = { 1, 2, 3,4};    }}class A{    a :int[];    constructor A (i: int[])    {        a = B.B().b[i];    }}a1 = A.A();i = 0..1;b = { A.A(i).a[i], -A.A(i).a[i] };";
+@"
+class B
+{
+    b :int[];
+    constructor B ()
+    {
+        b = { 1, 2, 3,4};
+    }
+}
+class A
+{
+    a :int[];
+    constructor A (i: int[])
+    {
+        a = B.B().b[i];
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = { A.A(i).a[i], -A.A(i).a[i] };
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3766,7 +5570,27 @@ c=2 * {{1},{2}};";
         public void T88_Defect_1467296_4()
         {
             String code =
-@"class B{    b :int[];    constructor B ()    {        b = { 1, 2, 3,4};    }}class A{    a :int[];    constructor A (i: int[])    {        a = B.B().b[i];    }}a1 = A.A();i = 0..1;b = { A.A(i), A.A(i) }.a[i];";
+@"
+class B
+{
+    b :int[];
+    constructor B ()
+    {
+        b = { 1, 2, 3,4};
+    }
+}
+class A
+{
+    a :int[];
+    constructor A (i: int[])
+    {
+        a = B.B().b[i];
+    }
+}
+a1 = A.A();
+i = 0..1;
+b = { A.A(i), A.A(i) }.a[i];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3778,7 +5602,14 @@ c=2 * {{1},{2}};";
         public void T89_Defect_1467328()
         {
             String code =
-@"def sum (a:int , b :int){    return = a + b;}x = sum ( (1..2)<1> , (3..4)<2>);//expected : { { 4,5}, 5,6}}";
+@"
+def sum (a:int , b :int)
+{
+    return = a + b;
+}
+x = sum ( (1..2)<1> , (3..4)<2>);
+//expected : { { 4,5}, 5,6}}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
 
@@ -3791,7 +5622,12 @@ c=2 * {{1},{2}};";
         public void T90_Defect_1467285()
         {
             String code =
-@"a = {1,2,3,4};b = a;a[0..1] = {0,0};a[0..1]  = a[2..3];";
+@"
+a = {1,2,3,4};
+b = a;
+a[0..1] = {0,0};
+a[0..1]  = a[2..3];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467285 Sprint25: rev 3711: left assignment using replication on array indices should follow zipped collection rule";
 
@@ -3804,7 +5640,10 @@ c=2 * {{1},{2}};";
         public void T91_Defect_1467285_2()
         {
             String code =
-@"a = {1,2,3,4};a[0..1]  = a[2..3];";
+@"
+a = {1,2,3,4};
+a[0..1]  = a[2..3];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467285 Sprint25: rev 3711: left assignment using replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3816,7 +5655,15 @@ c=2 * {{1},{2}};";
         public void T91_Defect_1467285_3()
         {
             String code =
-@"a = {1,2,3,4};b = a;c = a;d = a;b[0..1] = 3;c[{5,6}] = a[{0,1}];d[0..1] = {3};";
+@"
+a = {1,2,3,4};
+b = a;
+c = a;
+d = a;
+b[0..1] = 3;
+c[{5,6}] = a[{0,1}];
+d[0..1] = {3};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3831,7 +5678,23 @@ c=2 * {{1},{2}};";
         public void T91_Defect_1467285_4()
         {
             String code =
-@"def foo (){    a = {1,2,3,4};    b = a;    c = a;    d = a;    b[0..1] = 3;    c[{5,6}] = a[{0,1}];    d[0..1] = {3};    return = { a,b,c,d};}x = foo();b1 = x[1];c1 = x[2];d1 = x[3];";
+@"
+def foo ()
+{
+    a = {1,2,3,4};
+    b = a;
+    c = a;
+    d = a;
+    b[0..1] = 3;
+    c[{5,6}] = a[{0,1}];
+    d[0..1] = {3};
+    return = { a,b,c,d};
+}
+x = foo();
+b1 = x[1];
+c1 = x[2];
+d1 = x[3];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             Object n1 = null;
@@ -3843,12 +5706,18 @@ c=2 * {{1},{2}};";
 
         [Test] 
         [Category("Replication")]
+        [Category("Failure")]
         public void T91_Defect_1467285_5()
         {
             String code =
-@"a = {1,2,3,4};b = a;b[0..1] = b[2..3];a = { 5, 6, 7, 8 };";
+@"
+a = {1,2,3,4};
+b = a;
+b[0..1] = b[2..3];
+a = { 5, 6, 7, 8 };
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";
+            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4112";
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 7, 8, 7, 8 });
@@ -3856,11 +5725,17 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T92_add()
         {
             String code =
-@"a = { { 1, 2 }, { 3, 4 } };b = { 5, 6 };def foo:int (a:int, b:int) { return = a + b; }c = foo(a,b);";
-            string errmsg = "DNL-1467292 rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+@"
+a = { { 1, 2 }, { 3, 4 } };
+b = { 5, 6 };
+def foo:int (a:int, b:int) { return = a + b; }
+c = foo(a,b);
+";
+            string errmsg = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", new object[] { new object[] { 6, 7 }, new object[] { 9, 10 } });
         }
@@ -3870,7 +5745,22 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315()
         {
             String code =
-@"class A{    c : int;        def foo(a : int, b : int)    {        c = a + b;        return = c;    }    }a = { {5, 6}, {5,6} };b = { {0, 1}, {0,1} };y = A.A().foo(a<1><2>,b<3><4>);";
+@"
+class A
+{
+    c : int;
+    
+    def foo(a : int, b : int)
+    {
+        c = a + b;
+        return = c;
+    }
+    
+}
+a = { {5, 6}, {5,6} };
+b = { {0, 1}, {0,1} };
+y = A.A().foo(a<1><2>,b<3><4>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3883,7 +5773,26 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315_2()
         {
             String code =
-@"class B{    c : int;        def foo(a : int, b : int)    {        c = a + b;        return = c;    }    }class A extends B{    }a = { {5, 6}, {5,6} };b = { {0, 1}, {0,1} };y = A.A().foo(a<1><2>,b<3><4>);";
+@"
+class B
+{
+    c : int;
+    
+    def foo(a : int, b : int)
+    {
+        c = a + b;
+        return = c;
+    }
+    
+}
+class A extends B
+{
+    
+}
+a = { {5, 6}, {5,6} };
+b = { {0, 1}, {0,1} };
+y = A.A().foo(a<1><2>,b<3><4>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3896,7 +5805,23 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315_3()
         {
             String code =
-@"class A{    b : B = B.B();   }class B{    def foo(a : int, b : int)    {        c = a + b;        return = c;    }}a = { {5, 6}, {5,6} };b = { {0, 1}, {0,1} };y = A.A().b.foo(a<1><2>,b<3><4>);";
+@"
+class A
+{
+    b : B = B.B();   
+}
+class B
+{
+    def foo(a : int, b : int)
+    {
+        c = a + b;
+        return = c;
+    }
+}
+a = { {5, 6}, {5,6} };
+b = { {0, 1}, {0,1} };
+y = A.A().b.foo(a<1><2>,b<3><4>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3909,7 +5834,15 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315_4()
         {
             String code =
-@"def foo(a : int, b : int){    c = a + b;    return = c;}a = { { {5, 6} }, { {5,6} } };y = foo(a<1><2><3>, 1);";
+@"
+def foo(a : int, b : int)
+{
+    c = a + b;
+    return = c;
+}
+a = { { {5, 6} }, { {5,6} } };
+y = foo(a<1><2><3>, 1);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3922,7 +5855,15 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315_5()
         {
             String code =
-@"def foo(a : int, b : int){    c = a + b;    return = c;}a = { { {5, 6} }, { {5,6} } };y = foo(a<1><2><3>, a<1><2><3>);";
+@"
+def foo(a : int, b : int)
+{
+    c = a + b;
+    return = c;
+}
+a = { { {5, 6} }, { {5,6} } };
+y = foo(a<1><2><3>, a<1><2><3>);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3935,7 +5876,16 @@ c=2 * {{1},{2}};";
         public void T93_Defect_1467315_6()
         {
             String code =
-@"def foo(a : int, b : int){    c = a + b;    return = c;}a = { { {5, 6} }, { {5,6} } };y = foo(a<1><2><3>, a<4><5><6>);t1 = y[0][0][0][0][0];";
+@"
+def foo(a : int, b : int)
+{
+    c = a + b;
+    return = c;
+}
+a = { { {5, 6} }, { {5,6} } };
+y = foo(a<1><2><3>, a<4><5><6>);
+t1 = y[0][0][0][0][0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3949,7 +5899,9 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265()
         {
             String code =
-@"nums = 10;n = (0..11..#(nums + 2))[1..nums]; ";
+@"nums = 10;
+n = (0..11..#(nums + 2))[1..nums]; 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3962,7 +5914,21 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265_2()
         {
             String code =
-@"class A{    X : var[];    constructor  A ()    {        X = {1,2,3};    }}a1 = A.A();test = [Imperative]{    return = (a1.X)[0];}";
+@"
+class A
+{
+    X : var[];
+    constructor  A ()
+    {
+        X = {1,2,3};
+    }
+}
+a1 = A.A();
+test = [Imperative]
+{
+    return = (a1.X)[0];
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3973,7 +5939,21 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265_3()
         {
             String code =
-@"class A{    X : var[];    constructor  A (t:var[])    {        X = t;    }}t = { 1,2,3};test = [Imperative]{    return = (A.A(t).X)[0];}";
+@"
+class A
+{
+    X : var[];
+    constructor  A (t:var[])
+    {
+        X = t;
+    }
+}
+t = { 1,2,3};
+test = [Imperative]
+{
+    return = (A.A(t).X)[0];
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3984,7 +5964,19 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265_4()
         {
             String code =
-@"class A{    X : int[];    constructor  A (t1:int, t2:int)    {        X = {t1,t2};    }}t1 = { 1,2};test1 = A.A(t1<1>,t1<2>).X;test = (A.A(t1<1>,t1<2>).X)[0][0];";
+@"
+class A
+{
+    X : int[];
+    constructor  A (t1:int, t2:int)
+    {
+        X = {t1,t2};
+    }
+}
+t1 = { 1,2};
+test1 = A.A(t1<1>,t1<2>).X;
+test = (A.A(t1<1>,t1<2>).X)[0][0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3995,7 +5987,26 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265_5()
         {
             String code =
-@"class B{    X : int[];    constructor  B (t1:int, t2:int)    {        X = {t1,t2};    }    }class A{    def foo ()    {        t3 = { 1,2};        test1 = B.B(t3<1>,t3<2>);        return = test1;    }}test = (A.A().foo()).X[0][0];";
+@"
+class B
+{
+    X : int[];
+    constructor  B (t1:int, t2:int)
+    {
+        X = {t1,t2};
+    }    
+}
+class A
+{
+    def foo ()
+    {
+        t3 = { 1,2};
+        test1 = B.B(t3<1>,t3<2>);
+        return = test1;
+    }
+}
+test = (A.A().foo()).X[0][0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4006,7 +6017,27 @@ c=2 * {{1},{2}};";
         public void T94_Defect_1467265_6()
         {
             String code =
-@"class B{    X : int[];    constructor  B (t1:int, t2:int)    {        X = {t1,t2};    }    }class A{    def foo ()    {        t3 = { 1,2};        test1 = B.B(t3<1>,t3<2>);        return = test1;    }}test2 = (A.A().foo()).X[0][0];test = ((A.A().foo()).X[0])[0];";
+@"
+class B
+{
+    X : int[];
+    constructor  B (t1:int, t2:int)
+    {
+        X = {t1,t2};
+    }    
+}
+class A
+{
+    def foo ()
+    {
+        t3 = { 1,2};
+        test1 = B.B(t3<1>,t3<2>);
+        return = test1;
+    }
+}
+test2 = (A.A().foo()).X[0][0];
+test = ((A.A().foo()).X[0])[0];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4018,7 +6049,23 @@ c=2 * {{1},{2}};";
         public void T95_Defect_1467398_Replication_Guides_On_Collection()
         {
             String code =
-@"class A{    x : var;    y : var;    constructor A ( x1, y1)    {        x = x1;        y = y1;    }}a = {0,1};b = {2,3};test = A.A ( a<1>, b<2>).x;test1 = A.A ( {0,1}<1>, {2,3}<2>).x;test2 = A.A ( (0..1)<1>, (2..3)<2>).x;";
+@"
+class A
+{
+    x : var;
+    y : var;
+    constructor A ( x1, y1)
+    {
+        x = x1;
+        y = y1;
+    }
+}
+a = {0,1};
+b = {2,3};
+test = A.A ( a<1>, b<2>).x;
+test1 = A.A ( {0,1}<1>, {2,3}<2>).x;
+test2 = A.A ( (0..1)<1>, (2..3)<2>).x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467398 Rev 4319 : Replication guides applied directly on collections not giving expected output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4031,7 +6078,36 @@ c=2 * {{1},{2}};";
         public void T95_Defect_1467398_Replication_Guides_On_Collection_2()
         {
             String code =
-@"class A{    x : var;    y : var;    constructor A ( x1, y1)    {        x = x1;        y = y1;    }    def foo1 (a:int[], b:int[])    {        return = A.A ( a<1>, b<2>).x;    }    def foo2 ()    {        return = A.A ( {0,1}<1>, {2,3}<2>).x;    }    def foo3 ()    {        return = A.A ( (0..1)<1>, (2..3)<2>).x;    }}a = {0,1};b = {2,3};a1 = A.A(a<1>,b<2>);test = a1.foo1(a, b);test1 = a1.foo2();test2 = a1.foo3();";
+@"
+class A
+{
+    x : var;
+    y : var;
+    constructor A ( x1, y1)
+    {
+        x = x1;
+        y = y1;
+    }
+    def foo1 (a:int[], b:int[])
+    {
+        return = A.A ( a<1>, b<2>).x;
+    }
+    def foo2 ()
+    {
+        return = A.A ( {0,1}<1>, {2,3}<2>).x;
+    }
+    def foo3 ()
+    {
+        return = A.A ( (0..1)<1>, (2..3)<2>).x;
+    }
+}
+a = {0,1};
+b = {2,3};
+a1 = A.A(a<1>,b<2>);
+test = a1.foo1(a, b);
+test1 = a1.foo2();
+test2 = a1.foo3();
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4045,7 +6121,26 @@ c=2 * {{1},{2}};";
         public void T95_Defect_1467398_Replication_Guides_On_Collection_3()
         {
             String code =
-@"def sum ( a, b){     return = a + b;}test = { { } };test1 = { { } };test2 = { { } } ;[Imperative]{    [Associative]    {        a = {0,1};        b = {2,3};        test = sum ( a<1>, b<2>);        test1 = sum ( {0,1}<1>, {2,3}<2>);        test2 = sum ( (0..1)<1>, (2..3)<2>);    }}";
+@"
+def sum ( a, b)
+{ 
+    return = a + b;
+}
+test = { { } };
+test1 = { { } };
+test2 = { { } } ;
+[Imperative]
+{
+    [Associative]
+    {
+        a = {0,1};
+        b = {2,3};
+        test = sum ( a<1>, b<2>);
+        test1 = sum ( {0,1}<1>, {2,3}<2>);
+        test2 = sum ( (0..1)<1>, (2..3)<2>);
+    }
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467398 Rev 4319 : Replication guides applied directly on collections not giving expected output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4058,7 +6153,16 @@ c=2 * {{1},{2}};";
         public void T95_Defect_1467398_Replication_Guides_On_Collection_4()
         {
             String code =
-@"def sum ( a, b){     return = a + b;}a = {0,1};b = {2,3};test = Count(sum ( {0,1}<1>, {2,3}<2>) ); ";
+@"
+def sum ( a, b)
+{ 
+    return = a + b;
+}
+a = {0,1};
+b = {2,3};
+test = Count(sum ( {0,1}<1>, {2,3}<2>) );
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4069,7 +6173,15 @@ c=2 * {{1},{2}};";
         public void T95_Defect_1467398_Replication_Guides_On_Collection_5()
         {
             String code =
-@"def sum ( a, b){     return = a + b;}a = {0,1};b = {2,3};test = Count(sum ( {0,1}<1>, {2,3}<2>) ); ";
+@"
+def sum ( a, b)
+{ 
+    return = a + b;
+}
+a = {0,1};
+b = {2,3};
+test = Count(sum ( {0,1}<1>, {2,3}<2>) ); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4080,7 +6192,16 @@ c=2 * {{1},{2}};";
         public void T96_Defect_1467192_Replication_Inline_Condition()
         {
             String code =
-@"d2;f2;[Associative]{    a2 = { 0, 1 };    b2 = 1;    d2 = a2 > b2 ? true : { false, false};    f2 = a2 > b2;    }";
+@"
+d2;f2;
+[Associative]
+{
+    a2 = { 0, 1 };
+    b2 = 1;
+    d2 = a2 > b2 ? true : { false, false};
+    f2 = a2 > b2;    
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4094,7 +6215,19 @@ c=2 * {{1},{2}};";
         public void T96_Defect_1467192_Replication_Inline_Condition_2()
         {
             String code =
-@"d2 = [Imperative]{    d2 = [Associative]    {        a2 = { 0, 1 };        b2 = 1;        d2 = a2 > b2 ? true : { false, false};        return = d2;        }    return = d2;}";
+@"
+d2 = [Imperative]
+{
+    d2 = [Associative]
+    {
+        a2 = { 0, 1 };
+        b2 = 1;
+        d2 = a2 > b2 ? true : { false, false};
+        return = d2;    
+    }
+    return = d2;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4106,7 +6239,23 @@ c=2 * {{1},{2}};";
         public void T96_Defect_1467192_Replication_Inline_Condition_3()
         {
             String code =
-@"class A{    d2 : int[]..[];    f2 : bool[]..[];    constructor A ( a2:int[], b2:int )    {          d2 = a2 > b2 ? 1 : { 0,0};          f2 = a2 > b2;    }}a2 = { 0, 2 };b2 = 1;a = A.A(a2,b2);test1 = a.d2;test2 = a.f2;        ";
+@"
+class A
+{
+    d2 : int[]..[];
+    f2 : bool[]..[];
+    constructor A ( a2:int[], b2:int )
+    {
+          d2 = a2 > b2 ? 1 : { 0,0};
+          f2 = a2 > b2;
+    }
+}
+a2 = { 0, 2 };
+b2 = 1;
+a = A.A(a2,b2);
+test1 = a.d2;
+test2 = a.f2;        
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4116,37 +6265,66 @@ c=2 * {{1},{2}};";
         }
 
         [Test]
+        [Category("Failure")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
-@"class A{    x :int;    constructor A ( x1 )    {        x = x1;           }}a = A.A(0..1);test1 = a.x;a.x = 2..3;";
+@"
+class A
+{
+    x :int;
+    constructor A ( x1 )
+    {
+        x = x1;       
+    }
+}
+a = A.A(0..1);
+test1 = a.x;
+a.x = 2..3;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467408 Rev 4443  :Replication on class property assignment is not working";
+            String errmsg = "MAGN-1682 Rev 4443 :[Design Issue]Replication on class property assignment is not working"; 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("test1", new Object[] { 2, 3 });
         }
 
         [Test]
+        [Category("Failure")]
         public void T98_replication_1467453()
         {
             String code =
-@"a = 3;b = { 3, 1 };d = { 5 + 6, b + 1 };c = { { 3 } } + d;";
+@"
+a = 3;
+b = { 3, 1 };
+d = { 5 + 6, b + 1 };
+c = { { 3 } } + d;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467453 - throws error index out of range  for valid code ";
+            String errmsg = "MAGN-1691 throws error index out of range  for jagged array arithmetic operation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("a", 3);
             thisTest.Verify("b", new Object[] { 3, 1 });
             thisTest.Verify("d", new Object[] { 11, new object[] { 4, 1 } });
-            thisTest.Verify("c", new Object[] { new object[] { 14 }, new object[] { 17 } });
+            thisTest.Verify("c", new Object[] { new object[] { 14 } });
         }
 
         [Test]
         public void T100_Replication_On_Class_Instance_01()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }p = C.C();a = p.f({1,2}); ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+p = C.C();
+a = p.f({1,2}); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4158,7 +6336,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_02()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	}	def f(a : double)	{		return = 3;	}    }p = {C.C(), C.C()};a = p.f({1,2.1});  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	}
+	def f(a : double)
+	{
+		return = 3;
+	}
+    
+}
+p = {C.C(), C.C()};
+a = p.f({1,2.1}); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4169,7 +6363,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_03()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	}	def f(a : double)	{		return = 3;	}    }p = {C.C(), C.C()};a = p.f({1,2.1,2});  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	}
+	def f(a : double)
+	{
+		return = 3;
+	}
+    
+}
+p = {C.C(), C.C()};
+a = p.f({1,2.1,2}); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4180,7 +6390,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_04()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	}	def f(a : double)	{		return = 3;	}    }p = {C.C(), C.C()};a = p.f({1});  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	}
+	def f(a : double)
+	{
+		return = 3;
+	}
+    
+}
+p = {C.C(), C.C()};
+a = p.f({1}); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4192,7 +6418,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_05()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	}	def f(a : double)	{		return = 3;	}    }p = {C.C(), C.C(), C.C()};a = p.f({1, 1.5});  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	}
+	def f(a : double)
+	{
+		return = 3;
+	}
+    
+}
+p = {C.C(), C.C(), C.C()};
+a = p.f({1, 1.5}); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4201,22 +6443,56 @@ c=2 * {{1},{2}};";
         }
 
         [Test]
+        [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
             String code =
-@"class C{	x : int[];    def f(a : int[])	{		return = 1;	}	def f(a : double[])	{		return = 3;	}    def f(a : var)	{		return = 2;	}    }p = {C.C(), C.C()};a = p.f({1, 1.5}); ";
+@"
+class C
+{
+	x : int[];
+    def f(a : int[])
+	{
+		return = 1;
+	}
+	def f(a : double[])
+	{
+		return = 3;
+	}
+    def f(a : var)
+	{
+		return = 2;
+	}
+    
+}
+p = {C.C(), C.C()};
+a = p.f({1, 1.5}); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
+            //String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
+            String errmsg = "MAGN-4098  Replication vs function override ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("a", new Object[] { 2, 2 });
+            thisTest.Verify("a", new Object[] { 3, 3 });
         }
 
         [Test]
         public void T100_Replication_On_Class_Instance_07()
         {
             String code =
-@"class C{	x : int[];    def f(a : int[])	{		return = 1;	} }p = {C.C(), C.C()};a = p.f({1, 2});  ";
+@"
+class C
+{
+	x : int[];
+    def f(a : int[])
+	{
+		return = 1;
+	} 
+}
+p = {C.C(), C.C()};
+a = p.f({1, 2}); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4228,7 +6504,22 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_08()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }def foo ( t : C[]){    return = t.f({1,2});}p = {C.C(), C.C()};a = foo(p);  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+def foo ( t : C[])
+{
+    return = t.f({1,2});
+}
+p = {C.C(), C.C()};
+a = foo(p); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4240,7 +6531,22 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_09()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }def foo ( t : C[]){    return = t.f(1..2);}p = {C.C(), C.C()};a = foo(p);  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+def foo ( t : C[])
+{
+    return = t.f(1..2);
+}
+p = {C.C(), C.C()};
+a = foo(p); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4252,7 +6558,22 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_10()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }def foo ( t : C[], a, b){    return = t.f(a..b);}p = {C.C(), C.C()};a = foo(p, 1, 2);  ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+def foo ( t : C[], a, b)
+{
+    return = t.f(a..b);
+}
+p = {C.C(), C.C()};
+a = foo(p, 1, 2); 
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4264,7 +6585,25 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_11()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }def foo ( t : C[], a, b){    return = t.f(a..b);}p = {C.C(), C.C()};x = 1;y = 2;a = foo(p, x, y); y = 1; ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+def foo ( t : C[], a, b)
+{
+    return = t.f(a..b);
+}
+p = {C.C(), C.C()};
+x = 1;
+y = 2;
+a = foo(p, x, y); 
+y = 1;
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4276,7 +6615,28 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_12()
         {
             String code =
-@"class C{	def f(a : int)	{		return = 1;	} }class D{	static def foo ( t : C[], a, b)    {        return = t.f(a..b);    }}p = {C.C(), C.C()};x = 1;y = 2;a = D.foo(p, x, y); y = 3; ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = 1;
+	} 
+}
+class D
+{
+	static def foo ( t : C[], a, b)
+    {
+        return = t.f(a..b);
+    }
+}
+p = {C.C(), C.C()};
+x = 1;
+y = 2;
+a = D.foo(p, x, y); 
+y = 3;
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4288,7 +6648,21 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_13()
         {
             String code =
-@"class C{	def f(a : int)	{		return = a;	} }p = {C.C(), C.C()};x = 1;y = 2;a = p.f(x..y); y = 3; ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = a;
+	} 
+}
+p = {C.C(), C.C()};
+x = 1;
+y = 2;
+a = p.f(x..y); 
+y = 3;
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4300,7 +6674,28 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_14()
         {
             String code =
-@"class C{	def t ( )    {        return = D.D();    }}class D{	def f(a : int)	{		return = a;	} }p = {C.C(), C.C()};x = 1;y = 2;a = p.t().f(x..y); y = 3; ";
+@"
+class C
+{
+	def t ( )
+    {
+        return = D.D();
+    }
+}
+class D
+{
+	def f(a : int)
+	{
+		return = a;
+	} 
+}
+p = {C.C(), C.C()};
+x = 1;
+y = 2;
+a = p.t().f(x..y); 
+y = 3;
+ 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4312,7 +6707,17 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_15()
         {
             String code =
-@"class C{	def f(a : int)	{		return = a;	} }p = {C.C(), C.C()};a = p.f({0,1,2,3}[1..2]); ";
+@"
+class C
+{
+	def f(a : int)
+	{
+		return = a;
+	} 
+}
+p = {C.C(), C.C()};
+a = p.f({0,1,2,3}[1..2]); 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4324,7 +6729,27 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_16()
         {
             String code =
-@"class C{	def t ( )    {        return = D.D();    }}class D{	def f(a : int)	{		return = a;	} }p = {C.C(), C.C()};x = 0;y = 3;a = p.t().f((x..y)[1..2]); y = 4;";
+@"
+class C
+{
+	def t ( )
+    {
+        return = D.D();
+    }
+}
+class D
+{
+	def f(a : int)
+	{
+		return = a;
+	} 
+}
+p = {C.C(), C.C()};
+x = 0;
+y = 3;
+a = p.t().f((x..y)[1..2]); 
+y = 4;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4336,7 +6761,19 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_17()
         {
             String code =
-@"class A{     a = 1; }def foo( x:A[] ){	b1 = x;	return = b1;}d = foo( A.A() );d1 = d.a;";
+@"
+class A
+{ 
+    a = 1; 
+}
+def foo( x:A[] )
+{
+	b1 = x;
+	return = b1;
+}
+d = foo( A.A() );
+d1 = d.a;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4348,7 +6785,20 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_18()
         {
             String code =
-@"class B{ b1=0;}class A{	x : var[];	def foo (y)	{		x = y;		return = x;	}}s = A.A();y = s.foo(B.B()).b1;";
+@"
+class B{ b1=0;}
+class A
+{
+	x : var[];
+	def foo (y)
+	{
+		x = y;
+		return = x;
+	}
+}
+s = A.A();
+y = s.foo(B.B()).b1;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4360,7 +6810,21 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_19()
         {
             String code =
-@"class A{    a : int = 0;            }def foo ( x1 : A){    x1.a = -1;    return = x1;}a1 = A.A();a1 = foo ( a1);b = a1.a;a1.a = 2;";
+@"
+class A
+{
+    a : int = 0;            
+}
+def foo ( x1 : A)
+{
+    x1.a = -1;
+    return = x1;
+}
+a1 = A.A();
+a1 = foo ( a1);
+b = a1.a;
+a1.a = 2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4372,7 +6836,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_20()
         {
             String code =
-@"class A{     a : int;        def foo(x : int)    {       a =        {            x => a1;                        }        return = a ;    }}ax = A.A();res = ax.foo(1);";
+@"
+class A
+{ 
+    a : int;    
+    def foo(x : int)
+    {
+       a =
+        {
+            x => a1;    
+            
+        }
+        return = a ;
+    }
+}
+ax = A.A();
+res = ax.foo(1);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4384,7 +6864,33 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_21()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a =        {            x => a1;                        }        return = a ;    }}ax = { A.A(), A.A() };res;[Imperative]{    if(ax[0].a == 0)    {        [Associative]        {            res = ax.foo( 1..2) ;        }    }}";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a =
+        {
+            x => a1;    
+            
+        }
+        return = a ;
+    }
+}
+ax = { A.A(), A.A() };
+res;
+[Imperative]
+{
+    if(ax[0].a == 0)
+    {
+        [Associative]
+        {
+            res = ax.foo( 1..2) ;
+        }
+    }
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4395,7 +6901,38 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_22()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a =        {            x => a1;             +1;                   }        return = a ;    }}ax = { A.A(), A.A() };res = foo( ax );def foo ( xx : A[] ){    ret;    [Imperative]    {        if(ax[0].a == 0)        {            [Associative]            {                ret = xx.foo( 1..2) ;            }        }    }    return = ret;}";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a =
+        {
+            x => a1; 
+            +1;           
+        }
+        return = a ;
+    }
+}
+ax = { A.A(), A.A() };
+res = foo( ax );
+def foo ( xx : A[] )
+{
+    ret;
+    [Imperative]
+    {
+        if(ax[0].a == 0)
+        {
+            [Associative]
+            {
+                ret = xx.foo( 1..2) ;
+            }
+        }
+    }
+    return = ret;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4407,7 +6944,39 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_23()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a =        {            x => a1;             +1;                   }        return = a ;    }}ax = { A.A(), A.A() };res = foo( ax );def foo ( xx : A[] ){    ret;    [Imperative]    {        if(ax[0].a == 0)        {            [Associative]            {                ret = xx.foo( 1..2) ;            }        }    }    return = ret;}ax = { A.A(), A.A(), A.A() };";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a =
+        {
+            x => a1; 
+            +1;           
+        }
+        return = a ;
+    }
+}
+ax = { A.A(), A.A() };
+res = foo( ax );
+def foo ( xx : A[] )
+{
+    ret;
+    [Imperative]
+    {
+        if(ax[0].a == 0)
+        {
+            [Associative]
+            {
+                ret = xx.foo( 1..2) ;
+            }
+        }
+    }
+    return = ret;
+}
+ax = { A.A(), A.A(), A.A() };
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4419,7 +6988,23 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_24()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a = x;       return = a ;    }}ax = { A.A(), A.A() };res = {            ax.foo( {1,2} );             +1;                  }ax = { A.A(), A.A() , A.A()};";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a = x;
+       return = a ;
+    }
+}
+ax = { A.A(), A.A() };
+res = {
+            ax.foo( {1,2} ); 
+            +1;           
+       }
+ax = { A.A(), A.A() , A.A()};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4430,7 +7015,32 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_25()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a = x;       return = a ;    }    }class B{     static def test_foo(a: A[], b : int[])    {       return = a.foo(b) ;    }     static def test_foo(a: A[], b : int)    {       return = a.foo(b) ;    }   }ax = { A.A(), A.A() };bx = { 2, 3};res = B.test_foo(ax, bx );bx = 2;";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a = x;
+       return = a ;
+    }    
+}
+class B
+{ 
+    static def test_foo(a: A[], b : int[])
+    {
+       return = a.foo(b) ;
+    } 
+    static def test_foo(a: A[], b : int)
+    {
+       return = a.foo(b) ;
+    }   
+}
+ax = { A.A(), A.A() };
+bx = { 2, 3};
+res = B.test_foo(ax, bx );
+bx = 2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4441,7 +7051,28 @@ c=2 * {{1},{2}};";
         public void T100_Replication_On_Class_Instance_26()
         {
             String code =
-@"class A{     a : int = 0;        def foo(x : int)    {       a = x;       return = a ;    }    }class B{     static def test_foo(a: A[], b : int[])    {       return = a.foo(b) ;    }       }ax = { A.A(), A.A() };bx = { 2, 3};res = B.test_foo(ax, bx );bx = 2;";
+@"
+class A
+{ 
+    a : int = 0;    
+    def foo(x : int)
+    {
+       a = x;
+       return = a ;
+    }    
+}
+class B
+{ 
+    static def test_foo(a: A[], b : int[])
+    {
+       return = a.foo(b) ;
+    }       
+}
+ax = { A.A(), A.A() };
+bx = { 2, 3};
+res = B.test_foo(ax, bx );
+bx = 2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4453,7 +7084,15 @@ c=2 * {{1},{2}};";
         public void T101_Replication_Empty_List()
         {
          String code =
-@"def foo(x: int, y: int){ return = x + y;};a = {};o = foo(a, 1);";
+@"
+def foo(x: int, y: int)
+{
+ return = x + y;
+};
+
+a = {};
+o = foo(a, 1);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4463,3 +7102,4 @@ c=2 * {{1},{2}};";
     }
 
 }
+

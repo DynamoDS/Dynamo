@@ -15,7 +15,7 @@ namespace ProtoTestFx
 {
     public class DebugTestFx
     {
-        public static void CompareDebugAndRunResults(string code)
+        public static void CompareDebugAndRunResults(string code, string defectID = "")
         {
             Core runCore = null;
 
@@ -32,16 +32,16 @@ namespace ProtoTestFx
 
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
-                CompareCores(runCore, debugRunCore);
+                CompareCores(runCore, debugRunCore, defectID);
             }
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
-                CompareCores(runCore, stepOverCore);
+                CompareCores(runCore, stepOverCore, defectID);
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
-                CompareCores(runCore, stepInCore);
+                CompareCores(runCore, stepInCore, defectID);
             }
 
             
@@ -50,19 +50,19 @@ namespace ProtoTestFx
 
         internal static ProtoCore.Core TestRunnerRunOnly(string code)
         {
-
-
             ProtoCore.Core core;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
 
 
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.SuppressBuildOutput = false;
+
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
+            options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
@@ -87,13 +87,15 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.SuppressBuildOutput = false;
             options.GCTempVarsOnDebug = false;
+
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
+            options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
@@ -123,7 +125,6 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
              // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -131,9 +132,13 @@ namespace ProtoTestFx
             options.SuppressBuildOutput = false;
             options.GCTempVarsOnDebug = false;
 
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
+            options.IncludeDirectories.Add(testPath);
+
             core = new ProtoCore.Core(options);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
@@ -161,13 +166,15 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.SuppressBuildOutput = false;
             options.GCTempVarsOnDebug = false;
+
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
+            options.IncludeDirectories.Add(testPath);
 
             core = new ProtoCore.Core(options);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
@@ -192,9 +199,9 @@ namespace ProtoTestFx
 
         }
 
-        internal static void CompareCores(Core c1, Core c2)
+        internal static void CompareCores(Core c1, Core c2, string defectID = "")
         {
-            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length);
+            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
 
 
             for (int symTableIndex = 0; symTableIndex < c1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
@@ -244,7 +251,7 @@ namespace ProtoTestFx
                         StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
                         if (!StackUtils.CompareStackValues(debugValue, runValue, c2, c1))
                         {
-                            Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\n", symNode.name));
+                            Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));
                         }
                     }
                 }

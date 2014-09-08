@@ -15,17 +15,17 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class CoreUserInterfaceTests : DynamoTestUI
+    public class CoreUserInterfaceTests : DynamoTestUIBase
     {
         #region SaveImageCommand
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanSaveImage()
         {
             string path = Path.Combine(TempFolder, "output.png");
 
-            Vm.SaveImageCommand.Execute(path);
+            ViewModel.SaveImageCommand.Execute(path);
 
             Assert.True(File.Exists(path));
             File.Delete(path);
@@ -33,12 +33,12 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CannotSaveImageWithBadPath()
         {
             string path = "W;\aelout put.png";
 
-            Vm.SaveImageCommand.Execute(path);
+            ViewModel.SaveImageCommand.Execute(path);
 
             Assert.False(File.Exists(path));
         }
@@ -51,85 +51,50 @@ namespace DynamoCoreUITests
         [Category("DynamoUI")]
         public void CanHideConsoleWhenShown()
         {
-            Vm.ToggleConsoleShowingCommand.Execute(null);
-            Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(Ui.ConsoleShowing)));
+            ViewModel.ToggleConsoleShowingCommand.Execute(null);
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
         [Category("DynamoUI")]
         public void ConsoleIsHiddenOnOpen()
         {
-            Assert.False(Ui.ConsoleShowing);
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
         [Category("DynamoUI")]
         public void CanShowConsoleWhenHidden()
         {
-            Vm.ToggleConsoleShowingCommand.Execute(null);
-            Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(Ui.ConsoleShowing)));
+            ViewModel.ToggleConsoleShowingCommand.Execute(null);
+            Assert.False(ViewModel.ConsoleHeight > 0);
 
-            Vm.ToggleConsoleShowingCommand.Execute(null);
-            Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.True(Ui.ConsoleShowing)));
+            ViewModel.ToggleConsoleShowingCommand.Execute(null);
+            Assert.True(ViewModel.ConsoleHeight > 0);
         }
 
         #endregion
 
-         //THIS WILL ALWAYS FAIL 
-
-        //[Test, RequiresSTA]
-        //[Category("DynamoUI")]
-        //public void CanOpenAllSampleFilesWithoutError()
-        //{
-        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
-        //    int failCount = 0;
-
-        //    foreach (DirectoryInfo d in di.GetDirectories())
-        //    {
-
-        //        foreach (FileInfo fi in d.GetFiles())
-        //        {
-        //            try
-        //            {
-        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
-        //                {
-        //                    dynSettings.Controller.CommandQueue.Enqueue(
-        //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-        //                    dynSettings.Controller.ProcessCommandQueue();
-        //                }));
-        //            }
-        //            catch(Exception e)
-        //            {
-        //                failCount++;
-        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
-        //            }
-        //        }
-        //    }
-        //    Assert.AreEqual(failCount, 0);
-        //}
-
         #region Zoom In and Out canvas
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanZoom()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
             double zoom;
             
             // Test Zoom in
             zoom = workspaceModel.Zoom;
-            if ( Vm.ZoomInCommand.CanExecute(null) )
-                Vm.ZoomInCommand.Execute(null);
+            if ( ViewModel.ZoomInCommand.CanExecute(null) )
+                ViewModel.ZoomInCommand.Execute(null);
             Assert.Greater(workspaceModel.Zoom, zoom);
 
             // Test Zoom out
             zoom = workspaceModel.Zoom;
-            if (Vm.ZoomOutCommand.CanExecute(null))
-                Vm.ZoomOutCommand.Execute(null);
+            if (ViewModel.ZoomOutCommand.CanExecute(null))
+                ViewModel.ZoomOutCommand.Execute(null);
             Assert.Greater(zoom, workspaceModel.Zoom);
 
             // Test can set zoom (at random zoom for 10 times)
@@ -142,8 +107,8 @@ namespace DynamoCoreUITests
                 Random random = new Random();
                 double randomNumber = random.NextDouble() * (upperBound - lowerBound) + lowerBound;
 
-                if (Vm.CurrentSpaceViewModel.SetZoomCommand.CanExecute(randomNumber))
-                    Vm.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
+                if (ViewModel.CurrentSpaceViewModel.SetZoomCommand.CanExecute(randomNumber))
+                    ViewModel.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
 
                 // Check Zoom is correct
                 Assert.AreEqual(randomNumber, workspaceModel.Zoom);
@@ -156,8 +121,8 @@ namespace DynamoCoreUITests
                 workspaceVM.SetZoomCommand.Execute(zoom);
             Assert.AreEqual(zoom, workspaceModel.Zoom);
             // Zoom out over limit (check that it does not zoom out)
-            if (Vm.ZoomOutCommand.CanExecute(null))
-                Vm.ZoomOutCommand.Execute(null);
+            if (ViewModel.ZoomOutCommand.CanExecute(null))
+                ViewModel.ZoomOutCommand.Execute(null);
             Assert.AreEqual(zoom, workspaceModel.Zoom);
             
             // Max zoom
@@ -166,8 +131,8 @@ namespace DynamoCoreUITests
                 workspaceVM.SetZoomCommand.Execute(zoom);
             Assert.AreEqual(zoom, workspaceModel.Zoom);
             // Zoom in over limit (check that it does not zoom in)
-            if (Vm.ZoomInCommand.CanExecute(null))
-                Vm.ZoomInCommand.Execute(null);
+            if (ViewModel.ZoomInCommand.CanExecute(null))
+                ViewModel.ZoomInCommand.Execute(null);
             Assert.AreEqual(zoom, workspaceModel.Zoom);
 
             // Above Max Limit Test
@@ -188,13 +153,13 @@ namespace DynamoCoreUITests
             {
                 for (int stepIn = 0; stepIn < 20; stepIn++)
                 {
-                    if (Vm.ZoomInCommand.CanExecute(null))
-                        Vm.ZoomInCommand.Execute(null);
+                    if (ViewModel.ZoomInCommand.CanExecute(null))
+                        ViewModel.ZoomInCommand.Execute(null);
                 }
                 for (int stepOut = 0; stepOut < 20; stepOut++)
                 {
-                    if (Vm.ZoomOutCommand.CanExecute(null))
-                        Vm.ZoomOutCommand.Execute(null);
+                    if (ViewModel.ZoomOutCommand.CanExecute(null))
+                        ViewModel.ZoomOutCommand.Execute(null);
                 }
             }
             // Doesn't crash the system
@@ -206,11 +171,11 @@ namespace DynamoCoreUITests
         #region Pan Left, Right, Top, Down Canvas
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanLeft()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
             double posX = workspaceModel.X;
@@ -219,8 +184,8 @@ namespace DynamoCoreUITests
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
             {
-                if (Vm.PanCommand.CanExecute("Left"))
-                    Vm.PanCommand.Execute("Left");
+                if (ViewModel.PanCommand.CanExecute("Left"))
+                    ViewModel.PanCommand.Execute("Left");
             }
 
             Assert.Greater(workspaceModel.X, posX);
@@ -228,11 +193,11 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanRight()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
             double posX = workspaceModel.X;
@@ -241,8 +206,8 @@ namespace DynamoCoreUITests
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
             {
-                if (Vm.PanCommand.CanExecute("Right"))
-                    Vm.PanCommand.Execute("Right");
+                if (ViewModel.PanCommand.CanExecute("Right"))
+                    ViewModel.PanCommand.Execute("Right");
             }
 
             Assert.Greater(posX, workspaceModel.X);
@@ -250,11 +215,11 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanUp()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
             double posX = workspaceModel.X;
@@ -263,8 +228,8 @@ namespace DynamoCoreUITests
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
             {
-                if (Vm.PanCommand.CanExecute("Up"))
-                    Vm.PanCommand.Execute("Up");
+                if (ViewModel.PanCommand.CanExecute("Up"))
+                    ViewModel.PanCommand.Execute("Up");
             }
 
             Assert.AreEqual(posX, workspaceModel.X);
@@ -272,11 +237,11 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanDown()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
             double posX = workspaceModel.X;
@@ -285,8 +250,8 @@ namespace DynamoCoreUITests
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
             {
-                if (Vm.PanCommand.CanExecute("Down"))
-                    Vm.PanCommand.Execute("Down");
+                if (ViewModel.PanCommand.CanExecute("Down"))
+                    ViewModel.PanCommand.Execute("Down");
             }
 
             Assert.AreEqual(posX, workspaceModel.X);
@@ -298,11 +263,11 @@ namespace DynamoCoreUITests
         #region Fit to View
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewWithNoNodes()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
             double initX = workspaceModel.X;
@@ -318,11 +283,11 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitView()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
             double initX = workspaceModel.X;
@@ -338,15 +303,15 @@ namespace DynamoCoreUITests
             Assert.AreNotEqual(workspaceModel.X, initX);
             Assert.AreNotEqual(workspaceModel.Y, initY);
 
-            Controller.DynamoViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewTwiceForActualZoom()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
             double initX = workspaceModel.X;
@@ -362,15 +327,15 @@ namespace DynamoCoreUITests
             Assert.AreNotEqual(workspaceModel.X, initX);
             Assert.AreNotEqual(workspaceModel.Y, initY);
 
-            Controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewStressTest()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
             
             double initZoom = workspaceModel.Zoom;
             double initX = workspaceModel.X;
@@ -387,15 +352,15 @@ namespace DynamoCoreUITests
             // Not crashed
             Assert.True(true);
 
-            Controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByZoom()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             CreateNodeOnCurrentWorkspace();
 
@@ -406,7 +371,7 @@ namespace DynamoCoreUITests
             double curY = workspaceModel.Y;
 
             // Do some zoom action before FitView again
-            Vm.ZoomIn(null);
+            ViewModel.ZoomIn(null);
 
             workspaceVM.FitViewInternal();
 
@@ -415,15 +380,15 @@ namespace DynamoCoreUITests
             Assert.AreEqual(workspaceModel.X, curX);
             Assert.AreEqual(workspaceModel.Y, curY);
 
-            Controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByPan()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             CreateNodeOnCurrentWorkspace();
 
@@ -434,7 +399,7 @@ namespace DynamoCoreUITests
             double curY = workspaceModel.Y;
 
             // Do some pan action before FitView again
-            Vm.Pan("Up" as object);
+            ViewModel.Pan("Up" as object);
 
             workspaceVM.FitViewInternal();
 
@@ -443,60 +408,60 @@ namespace DynamoCoreUITests
             Assert.AreEqual(workspaceModel.X, curX);
             Assert.AreEqual(workspaceModel.Y, curY);
 
-            Controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+            ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
 
         // Add a number node on workspace
         private void CreateNodeOnCurrentWorkspace()
         {
             // Create number node
-            Controller.DynamoModel.CreateNode(Guid.NewGuid(), "Number", 0, 0, true, false);
-            var numNode = Controller.DynamoViewModel.Model.Nodes[0];
+            ViewModel.Model.CurrentWorkspace.AddNode(Guid.NewGuid(), "Number", 0, 0, true, false);
+            var numNode = ViewModel.Model.Nodes[0];
 
             // Add to current workspace
-            Vm.CurrentSpaceViewModel.Model.Nodes.Add(numNode);
-            int nodeIndex = Vm.CurrentSpaceViewModel.Model.Nodes.Count - 1;
-            Vm.CurrentSpaceViewModel.Model.Nodes[nodeIndex].X = 100;
-            Vm.CurrentSpaceViewModel.Model.Nodes[nodeIndex].Y = 100;
+            ViewModel.CurrentSpaceViewModel.Model.Nodes.Add(numNode);
+            int nodeIndex = ViewModel.CurrentSpaceViewModel.Model.Nodes.Count - 1;
+            ViewModel.CurrentSpaceViewModel.Model.Nodes[nodeIndex].X = 100;
+            ViewModel.CurrentSpaceViewModel.Model.Nodes[nodeIndex].Y = 100;
         }
 
         #endregion
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI"), Category("Failure")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
-            // between DynamoViewModel, Controller is not broken or replaced.
+            // between DynamoViewModel, Model is not broken or replaced.
             #region FullscreenWatchShowing
-            bool expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
-            Vm.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
 
-            expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
-            Vm.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+            expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
             #endregion
 
             #region ConsoleHeight
             int expectedHeight = 0;;
-            Vm.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedHeight, Controller.PreferenceSettings.ConsoleHeight);
+            ViewModel.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
 
             expectedHeight = 100;
-            Vm.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedHeight, Controller.PreferenceSettings.ConsoleHeight);
+            ViewModel.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
             #endregion
 
             #region ConnectorType
             ConnectorType expectedConnector = ConnectorType.BEZIER;
-            Vm.SetConnectorType("BEZIER");
-            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+            ViewModel.SetConnectorType("BEZIER");
+            Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
 
             expectedConnector = ConnectorType.POLYLINE;
-            Vm.SetConnectorType("POLYLINE");
-            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+            ViewModel.SetConnectorType("POLYLINE");
+            Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
             #endregion
 
             #region Collect Information Option
@@ -552,31 +517,39 @@ namespace DynamoCoreUITests
 
             #endregion
             
-            Ui.Close();
+            View.Close();
         }
 
         private void RestartTestSetup()
         {
             // Shutdown Dynamo and restart it
-            Ui.Close();
-            if (Controller != null)
+            View.Close();
+            View = null;
+
+            if (ViewModel != null)
             {
-                Controller.ShutDown(false);
-                Controller = null;
+                ViewModel.Model.ShutDown(false);
+                ViewModel = null;
             }
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            Controller = DynamoController.MakeSandbox();
-            DynamoController.IsTestMode = true;
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
 
             //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
+            View = new DynamoView(ViewModel);
+            View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
@@ -585,10 +558,10 @@ namespace DynamoCoreUITests
         #region InfoBubble
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void UpdateInfoBubble_ErrorBubble()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.ViewModel);
             string content = "This is the test infoBubble";
             InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
                 new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom);
@@ -608,7 +581,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI")]
         public void Collapse()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.ViewModel);
             infoBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             //Assert.AreEqual(0, infoBubble.Opacity);
         }
@@ -621,21 +594,21 @@ namespace DynamoCoreUITests
         [Category("DynamoUI")]
         public void CanCreateANote()
         {
-            Vm.AddNoteCommand.Execute(null);
+            ViewModel.AddNoteCommand.Execute(null);
             var note = Model.CurrentWorkspace.Notes.FirstOrDefault();
             Assert.IsNotNull(note);
             
             //verify the note was created
             Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
 
-            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanDeleteANote()
         {
-            Vm.AddNoteCommand.Execute(null);
+            ViewModel.AddNoteCommand.Execute(null);
             var note = Model.CurrentWorkspace.Notes.FirstOrDefault();
             Assert.IsNotNull(note);
 
@@ -647,10 +620,10 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
 
             //delete the note
-            Vm.DeleteCommand.Execute(null);
+            ViewModel.DeleteCommand.Execute(null);
             Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count);
 
-            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
 

@@ -953,10 +953,13 @@ _c;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void T46_TestBooleanOperationOnNull()
         {
-            string src = @"[Imperative]
+            string src = @"
+a;b;c;d;
+[Imperative]
 {
 	a = null;
 	b = a * 2;
@@ -983,7 +986,9 @@ _c;
 	
 	
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4080
+            string err = "if condition fails to evaluate a null";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
             Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
             Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
             Assert.IsTrue(mirror.GetValue("c").DsasmValue.IsNull);
@@ -1668,38 +1673,13 @@ b;
 {
     p = A.A();
     p.foo(9);
-    b = p.x;//expected 9 , received:0
+    b = p.x;
 }
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 9);
         }
 
-        [Test]
-        public void T67_DNL_1467458_2()
-        {
-            String code =
-            @"
-            class A
-{
-    x:int;
-    def foo(a : int)
-    {
-        x = a;
-        return = x;
-    }
-}
-b;
-[Imperative]
-{
-    p = {A.A()};
-    p.foo(9);
-    b = p.x;//expected 9 , received:0
-}
-            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 9);
-        }
 
         [Test]
         public void T67_DNL_1467458_3()

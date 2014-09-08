@@ -52,7 +52,7 @@ namespace DSRevitNodesTests.GeometryConversion
             // assert the tesselation is very close to original curve
             foreach (var pt in tessPtsProto)
             {
-                var closestPt = protoSpline.GetClosestPoint(pt);
+                var closestPt = protoSpline.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
         }
@@ -97,7 +97,7 @@ namespace DSRevitNodesTests.GeometryConversion
             // what's the best tolerance to use here?
             foreach (var pt in tessPts)
             {
-                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint(false));
+                var closestPt = protoSpline.ClosestPointTo(pt.ToPoint(false));
                 Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
         }
@@ -142,7 +142,7 @@ namespace DSRevitNodesTests.GeometryConversion
             // what's the best tolerance to use here?
             foreach (var pt in tessPts)
             {
-                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint(false));
+                var closestPt = protoSpline.ClosestPointTo(pt.ToPoint(false));
                 Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
 
@@ -241,7 +241,7 @@ namespace DSRevitNodesTests.GeometryConversion
             // assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = pa.GetClosestPoint(pt.ToPoint(false));
+                var closestPt = pa.ClosestPointTo(pt.ToPoint(false));
                 Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
         }
@@ -286,7 +286,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //}
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@".\empty.rfa")]
         public void CylindricalHelix_Basic()
         {

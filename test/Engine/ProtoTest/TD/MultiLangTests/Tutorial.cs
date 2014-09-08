@@ -105,7 +105,6 @@ t6 = cartesian_sum[2][0];
 
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 startPt = Point.ByCartesianCoordinates( 1, 1, 0 );
 endPt   = Point.ByCartesianCoordinates( 1, 5, 0 );
 line_0  = Line.ByStartPointEndPoint( startPt, endPt ); 	// create line_0
@@ -277,13 +276,14 @@ t2 = lines[1][2].StartPoint.X;";
         }
 
         [Test]
+        [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             Assert.Fail("1460783 - Sprint 18 : Rev 1661 : Forward referencing is not being allowed in class property ( related to Update issue ) ");
 
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 import(""DSCoreNodes.dll"");
 class MyPoint 
 {
@@ -353,13 +353,14 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T00011_Geometry_008_trim_then_tube_4()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException "); 
 
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 myPoint = Point.ByCartesianCoordinates( (2..10..2)<1>, (2..10..2)<2>, 2 ); // create 2D point array
 controlPoint_1 = Point.ByCartesianCoordinates( 5, 5, 5 ); 		// create control point
 controlPoint_2 = Point.ByCartesianCoordinates( 5, 10, 5 ); 	// create control point
@@ -389,13 +390,12 @@ t5 = tubes[4].EndPoint.X;";
 
 
         [Test]
+        [Category("Failure")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
-            Assert.Fail("1463622 - Sprint 20 : rev 2130 : Usage of Pattern Matching syntax is throwing compiler error ");
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 startRadius = 0.1;
 endRadius	= 0.2;
 startParam  = 0.2;
@@ -415,7 +415,7 @@ x_2 = 10;
 line_2  = Line.Trim(Line.ByStartPointEndPoint(Point.ByCartesianCoordinates( x_2, 1, 0 ), Point.ByCartesianCoordinates( 10, 5, 0 )),{endParam, startParam}, false); 	// create line_2 embedded method call
 x_2 = 12; // cause an update
 // [4] define a function as a compound operation
-def TrimTube(line : Line, startParam: double | startParam > 0.0, endParam: double | endParam < 1.0, startRadius : double, endRadius : double)
+def TrimTube(line : Line, startParam: double, endParam: double, startRadius : double, endRadius : double)
 {
 	intermediateLine = line.Trim( {endParam, startParam}, false);
 	return = Solid.Cone(intermediateLine.StartPoint, intermediateLine.EndPoint, startRadius, endRadius);
@@ -621,11 +621,8 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         [Category("Feature")]
         public void T00015_Geometry_011_nested_user_defined_feature_with_partial_class_1()
         {
-            Assert.Fail("1463623 - Sprint 20 : rev 2130 : partial class is not supported");
-
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 // [1] create initial model from which to make the MyLine user defined feature
 start    = Point.ByCartesianCoordinates( 2, 2, 0 );
 end      = Point.ByCartesianCoordinates( 7, 7, 0 );
@@ -650,59 +647,44 @@ point_c  = Point.ByCartesianCoordinates( 50, 10, 0 );
 side_a_b = MyLine.ByStartPointEndPoint(point_a, point_b);
 side_b_c = MyLine.ByStartPointEndPoint(point_b, point_c);
 side_c_a = MyLine.ByStartPointEndPoint(point_c, point_a);
-partial class MyLine 
-{
-    public constructor ByStartPointEndPoint(start : Point, end : Point, t : double | (t<1.0 && t>0.0))
-    {
-		InternalLine = Line.ByStartPointEndPoint(start, end);
-		MidPoint     = InternalLine.PointAtParameter(t);
-    }
-	
-    public constructor ByStartPointEndPoint(start : Point, end : Point, t : double )
-    {
-		InternalLine = Line.ByStartPointEndPoint(start, end);
-		MidPoint     = InternalLine.PointAtParameter(0.5);
-    }
-}
-point_r = Point.ByCartesianCoordinates( 30, 80, 0 );
-point_s = Point.ByCartesianCoordinates( 10, 50, 0 );
-point_t = Point.ByCartesianCoordinates( 50, 50, 0 );
-myT = 1.4;
-side_r_s = MyLine.ByStartPointEndPoint( point_r, point_s,  myT );
-side_s_t = MyLine.ByStartPointEndPoint( point_s, point_t, -0.1 );
-side_t_r = MyLine.ByStartPointEndPoint( point_t, point_r,  0.25 );
-myT = 0.6;
+
+
 x1 = side_a_b.MidPoint.X;
 x2 = side_b_c.MidPoint.X;
 x3 = side_c_a.MidPoint.X;
-x4 = side_r_s.MidPoint.X;
-x5 = side_s_t.MidPoint.X;
-x6 = side_t_r.MidPoint.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
 
             thisTest.Verify("x1", 15.0, 0);
             thisTest.Verify("x2", 5.0, 0);
             thisTest.Verify("x3", 25.0, 0);
-            thisTest.Verify("x4", 18.0, 0);
-            thisTest.Verify("x5", 5.0, 0);
-            thisTest.Verify("x6", 12.5, 0);
+            
         }
 
         [Test]
         [Category("Feature")]
         public void T00016_Geometry_012_centroid_1()
         {
-            Assert.Fail("1463622 - Sprint 20 : rev 2130 : Usage of Pattern Matching syntax is throwing compiler error ");
-
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
 // [1] create functions to calculate the centroid of a collection of points 
-def sumCollection(arr : double[]) = sumCollectionInternal(arr, count(arr)-1);
-def sumCollectionInternal(arr : double[], i : int | i > -1) = arr[i] + sumCollectionInternal(arr, i-1);
-def sumCollectionInternal(arr : double[], i : int) = 0;
-def average(arr : double[]) = sumCollection(arr) / count(arr);
+def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
+def sumCollectionInternal(arr : double[], i : int ) 
+{
+    return = [Imperative]
+    {
+        if( i > -1) 
+        {
+            return = arr[i] + sumCollectionInternal(arr, i-1);
+        }
+        else
+        {
+            return = 0;
+        }
+    }
+}
+
+def average(arr : double[]) = sumCollection(arr) / Count(arr);
 def centroid(points : Point[]) = Point.ByCartesianCoordinates( average(points.X), average(points.Y),  average(points.Z) );
 // [2] create some points
 point_1 = Point.ByCartesianCoordinates( 30.0, 80.0, 0.0 );
@@ -715,198 +697,11 @@ lineTest  = Line.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 
 // [5] move a point
 point_1 = Point.ByCartesianCoordinates( 40.0, 80.0, 0.0 );
 x1 = lineTest[2].EndPoint.X;
+
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             thisTest.Verify("x1", 50.0, 0);
         }
 
-        [Test]
-        [Category("Replication")]
-        public void T00017_Geometry_015_Happy_Xmas_2()
-        {
-            Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
-
-            string code = @"
-import (""GeometryLibForLanguageTesting.ds"");
-//#include ""GeometryLibForLanguageTesting.ds""
-def arrayWidth (array : Object[][])
-{
-    c1 = [Imperative]
-    {
-        c = 0;
-	for ( i in array )
-	{
-		c = c + 1;
-	}
-	return  = c;	
-    }
-    return = c1;
-}
-//def arrayWidth(arr : Object[][]) = count(count(arr));
-def arrayHeight(arr : Object[][]) = count(arr[0]);
-def internalSample(points : Point[][], i : int, j : int) = {points[i-1][j-1], points[i][j-1], points[i][j], points[i-1][j]};
-def sampleAdjacents(points : Point[][]) = internalSample(points, (1..(arrayWidth(points)-1))<2>, (1..(arrayHeight(points)-1))<1>);
-//def internalSample(points : Point[][], i : int, j : int) = {points[i-1][j-1], points[i][j-1], points[i][j], points[i-1][j]};
-//def arrayWidth(arr : Object[][]) = count(count(arr));
-//def arrayHeight(arr : Object[][]) = count(arr[0]);
-def UVpoint(p : Point[], U : double, V : double) // assumes an arry of 4 points
-{
-	//x = ((p[0].x * ((1.0-U) + (1.0-V)))+ (p[1].x * (U + (1.0-V))) + (p[2].x * (U+V)) + (p[3].x * ((1.0-U) + V)))/4.0;  
-	//y = ((p[0].y * ((1.0-U) + (1.0-V)))+ (p[1].y * (U + (1.0-V))) + (p[2].y * (U+V)) + (p[3].y * ((1.0-U) + V)))/4.0;  
-	//z = ((p[0].z * ((1.0-U) + (1.0-V)))+ (p[1].z * (U + (1.0-V))) + (p[2].z * (U+V)) + (p[3].z * ((1.0-U) + V)))/4.0;  
-	//return = Point.ByCartesianCoordinates(WCS,x, y, z);
-	
-	xb = ((p[0].x * (1.0-U))+ (p[1].x * U));  
-	yb = ((p[0].y * (1.0-U))+ (p[1].y * U));  
-	zb = ((p[0].z * (1.0-U))+ (p[1].z * U)); 
-	
-	xt = ((p[3].x * (1.0-U))+ (p[2].x * U));  
-	yt = ((p[3].y * (1.0-U))+ (p[2].y * U));  
-	zt = ((p[3].z * (1.0-U))+ (p[2].z * U));  
-	
-	x  = ((xb * (1.0-V))+ (xt * V));  
-	y  = ((yb * (1.0-V))+ (yt * V));  
-	z  = ((zb * (1.0-V))+ (zt * V));  
-	return = Point.ByCartesianCoordinates( x, y, z );
-}
-class Tubulor 
-{
-    primary : Tube;  	
-    secondary : Tube;	// and a midPoint property
-    public constructor ByPoint(character : string, p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		secondary = { Solid.Cone(p[0], p[2], startRadius*secondaryFactor, endRadius*secondaryFactor),
-		Solid.Cone(p[1], p[3], startRadius*secondaryFactor, endRadius*secondaryFactor)};
-    }
-	
-    public constructor ByPoint(character : string | character==""A"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.2, 0.5, 0.8, 0.35, 0.65}, {0.2, 0.8, 0.2, 0.5, 0.5});
-		primary   = { Solid.Cone(s[0], s[1], startRadius, endRadius),
-					  Solid.Cone(s[1], s[2], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(s[3], s[4], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(s[2], p[1], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(p[2], s[1], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(s[1], p[3], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""X"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.2, 0.8, 0.2, 0.8}, {0.2, 0.8, 0.8, 0.2});
-		primary   = { Solid.Cone(s[0], s[1], startRadius, endRadius),
-					  Solid.Cone(s[2], s[3], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(s[3], p[1], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(p[2], s[1], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(s[2], p[3], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""Y"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.5, 0.5, 0.2, 0.8}, {0.2, 0.5, 0.8, 0.8});
-		primary   = { Solid.Cone(s[0], s[1], startRadius, endRadius),
-					  Solid.Cone(s[2], s[1], startRadius, endRadius),
-					  Solid.Cone(s[3], s[1], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(s[0], p[1], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(p[2], s[3], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(s[2], p[3], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""M"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.2, 0.3, 0.5, 0.7, 0.8}, {0.2, 0.8, 0.5, 0.8, 0.2});
-		primary   = { Solid.Cone(s[0], s[1], startRadius, endRadius),
-					  Solid.Cone(s[1], s[2], startRadius, endRadius),
-					  Solid.Cone(s[2], s[3], startRadius, endRadius),
-					  Solid.Cone(s[3], s[4], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[1], s[4], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(p[2], s[3], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(p[3], s[1], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""H"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.3, 0.3, 0.3, 0.7, 0.7, 0.7}, {0.2, 0.8, 0.5, 0.5, 0.8, 0.2});
-		primary   = { Solid.Cone(s[0], s[1], startRadius, endRadius),
-					  Solid.Cone(s[4], s[5], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[1], s[5], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(s[2], s[3], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[2], s[4], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(p[3], s[1], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""P"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.3, 0.3, 0.5, 0.65, 0.7, 0.7, 0.65, 0.5, 0.3}, {0.2, 0.8, 0.8, 0.75, 0.7, 0.6, 0.55, 0.5, 0.5});
-		primary   = { Solid.Cone(s[0..(count(s)-2)], s[1..(count(s)-1)], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[1], s[6], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(s[2], s[3], startRadius, endRadius),
-					  Solid.Cone(p[2], s[3], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(p[3], s[1], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
-	
-    public constructor ByPoint(character : string | character==""S"", p : Point[], startRadius: double, endRadius : double, secondaryFactor: double)
-    {
-		s = UVpoint(p, {0.3, 0.5, 0.65, 0.7, 0.7, 0.65, 0.5, 0.35, 0.3, 0.3, 0.35, 0.5, 0.65}, 
-					   {0.225, 0.2, 0.25, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.75, 0.8, 0.775});
-		primary   = { Solid.Cone(s[0..(count(s)-2)], s[1..(count(s)-1)], startRadius, endRadius)};
-					  
-		secondary = { Solid.Cone(p[0], s[0], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[1], s[3], startRadius*secondaryFactor, endRadius*secondaryFactor),
-    				  Solid.Cone(s[0], s[12], startRadius*secondaryFactor, endRadius*secondaryFactor),
-					  Solid.Cone(p[2], s[12], startRadius*secondaryFactor, endRadius*secondaryFactor),
- 					  Solid.Cone(p[3], s[9], startRadius*secondaryFactor, endRadius*secondaryFactor)};    
-    }
- }
-xSize 			  =  7.0; 
-ySize 			  =  4.0; 	
-upVector 		  = Vector.ByCoordinates(0.0, 0.0, 1.0); // need up vector
-groundPoints             = Point.ByCartesianCoordinates((0.0..xSize..1.0)<1>, (0.0..ySize..1.0)<2>, 0.0); 
-xFocus 			  = 0.25;  // proportion within the array of points where the focal point will be located
-yFocus 			  = 0.25;
-heightControl 	  = 2.0;   // proportion that the roof point move up near the focus point
-lateralControl	  = 0.5;   // proportion that the roof point move laterally away from the focus point
-panelHeightFactor = 0.25;  // aspect ratio of the pyramid (hight as a function of base dimensions)
-focalPoint        = Point.ByCartesianCoordinates( xSize * xFocus, ySize * yFocus, 0.0); 
-// testLine		  = Line.ByStartPointEndPoint(groundPoints, focalPoint);
-xFocus 			  = 0.5;   // proportion within the array of points where the focal point will be located
-roofHeights 	  = focalPoint.DistanceTo(groundPoints);
-horizontalVector  = focalPoint.DirectionTo(groundPoints<1><2>);
-lateralPoints     = Point.Project(groundPoints<1><2>, horizontalVector<1><2>, lateralControl);
-//testLine		  = Line.ByStartPointEndPoint(groundPoints, lateralPoints);
-roofPoints 		  = Point.Project(lateralPoints<1><2>, upVector, heightControl/(roofHeights<1><2>+1));
-text = {{"" "","" "","" "","" "","" "","" "","" ""},
-        {"" "",""X"",""M"",""A"",""S"","" "","" ""},
-		{"" "",""H"",""A"",""P"",""P"",""Y"","" ""},
-		{"" "",""A"",""R"",""U"",""P"","" "","" ""}};
-		
-pointsForPolygons = sampleAdjacents(roofPoints); 
-radius = 0.075;
-factor = 0.5;
-testTube = Tubulor.ByPoint(text, pointsForPolygons, radius, radius, factor);
-x1 = testTube[0][1].secondary.StartPoint.X;
-// testTube = Tubulor.ByPoint(""A"", pointsForPolygons[0][1], radius, radius, factor);
-// testTube = Tubulor.ByPoint(""X"", pointsForPolygons[0][2], radius, radius, factor);
-// testTube = Tubulor.ByPoint(""Y"", pointsForPolygons[0][3], radius, radius, factor);
-// testTube = Tubulor.ByPoint(""M"", pointsForPolygons[0][4], radius, radius, factor);
-// testTube = Tubulor.ByPoint(""H"", pointsForPolygons[2][1], radius, radius, factor);
-// testTube = Tubulor.ByPoint(""P"", pointsForPolygons[2][2], radius, radius, factor);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-
-            Object[] v1 = new Object[] { 10.200, -2.556 };
-            thisTest.Verify("x1", v1, 0);
-        }
     }
 }

@@ -10,15 +10,64 @@ namespace DSCoreNodesTests
     [TestFixture]
     internal static class ListTests
     {
+        #region UniqueInList
+        private sealed class Point
+        {
+            private bool Equals(Point other)
+            {
+                return X == other.X && Y == other.Y;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (X*397) ^ Y;
+                }
+            }
+
+            public readonly int X;
+            public readonly int Y;
+
+            public Point(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public Point() { }
+
+            public override bool Equals(object obj)
+            {
+                return !ReferenceEquals(null, obj)
+                    && (ReferenceEquals(this, obj)
+                        || obj.GetType() == GetType() && Equals((Point)obj));
+            }
+        }
+
+        [Test]
+        public static void UniqueInListWithPoints()
+        {
+            var pt1 = new Point();
+            var pt2 = new Point(1, 0);
+            var pt3 = new Point(1, 0);
+
+            Assert.AreEqual(
+                new ArrayList { pt1, pt2 },
+                List.UniqueItems(new ArrayList { pt1, pt2, pt1, pt3 }));
+        }
+
         [Test]
         public static void UniqueInList()
         {
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3, 4, 5 },
-                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
+                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4.0, 5, 4, 2, 1, 3 }));
         }
+        #endregion
 
         [Test]
+        [Category("UnitTests")]
         public static void ListContains()
         {
             Assert.IsTrue(List.ContainsItem(new ArrayList { 1, 2, 3, 4, 5 }, 4));
@@ -27,6 +76,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ReverseList()
         {
             Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));
@@ -41,28 +91,31 @@ namespace DSCoreNodesTests
          * */
 
         [Test]
+        [Category("UnitTests")]
         public static void SortList()
         {
             var sorted = Enumerable.Range(1, 5).ToList();
 
-            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted)));
+            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted).Cast<object>()));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void SortMixedList1()
         {
             Assert.AreEqual(
-                new ArrayList { 1, 2, 3.5, 4.002, 5 },
-                List.Sort(new ArrayList { 2, 3.5, 5, 4.002, 1 }));
+                new List<object> { 1, 2, 3.5, 4.002, 5 },
+                List.Sort(new List<object> { 2, 3.5, 5, 4.002, 1 }));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void SortMixedList2()
         {
             var obj = new object();
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3.5, 4.002, 5, false, true, "aaa", "bb", obj },
-                List.Sort(new ArrayList { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
+                List.Sort(new List<object> { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
         }
 
         //[Test]
@@ -86,9 +139,17 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void ListMinimumValue()
         {
-            Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListMinimumValueMixed()
+        {
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8.5, 4, 0, 6.6, 10.2 }));
         }
 
         //[Test]
@@ -98,12 +159,21 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void ListMaximumValue()
         {
-            Assert.AreEqual(66, List.MaximumItem(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8, 4, 0, 66, 10 }));
         }
 
         [Test]
+        [Category("UnitTests")]
+        public static void ListMaximumValueMixed()
+        {
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8.223, 4, 0.64, 66, 10.2 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void FilterListByMask()
         {
             Assert.AreEqual(
@@ -171,6 +241,7 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void SplitList()
         {
             var results = List.Deconstruct(new List<int> { 0, 1, 2, 3, 4, 5 });
@@ -188,24 +259,29 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void AddToList()
         {
             Assert.AreEqual(new ArrayList { 0, 1, 2 }, List.AddItemToFront(0, new ArrayList { 1, 2 }));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TakeValuesFromList()
         {
             Assert.AreEqual(new List<int> { 0, 1 }, List.TakeItems(new List<int> { 0, 1, 2 }, 2));
         }
 
         [Test]
+        [Category("UnitTests")]
+
         public static void DropValuesFromList()
         {
             Assert.AreEqual(new List<int> { 2 }, List.DropItems(new List<int> { 0, 1, 2 }, 2));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ShiftListIndices()
         {
             Assert.AreEqual(new List<int> { 2, 0, 1 }, List.ShiftIndices(new List<int> { 0, 1, 2 }, 1));
@@ -213,12 +289,14 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GetFromList()
         {
             Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TakeListSlice()
         {
             var list = new ArrayList(Enumerable.Range(0, 10).ToList());
@@ -235,12 +313,14 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void RemoveValueFromList()
         {
             Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new[]{2}));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void RemoveMultipleValuesFromList()
         {
             Assert.AreEqual(
@@ -249,6 +329,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void RemoveMultipleValuesFromNestedList()
         {
             var strings = new List<string> { "one", "two" };
@@ -258,6 +339,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void DropEveryNthValueFromList()
         {
             var list = Enumerable.Range(1, 12).ToList();
@@ -270,6 +352,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TakeEveryNthValueFromList()
         {
             var list = Enumerable.Range(1, 12).ToList();
@@ -282,12 +365,14 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void EmptyList()
         {
             Assert.AreEqual(0, List.Empty.Count);
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void IsEmptyList()
         {
             Assert.IsTrue(List.IsEmpty(List.Empty));
@@ -295,6 +380,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ListCount()
         {
             Assert.AreEqual(0, List.Count(List.Empty));
@@ -302,6 +388,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void JoinLists()
         {
             Assert.AreEqual(
@@ -310,18 +397,21 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void FirstInList()
         {
             Assert.AreEqual(0, List.FirstItem(new ArrayList { 0, 1, 2, 3 }));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void RestOfList()
         {
             Assert.AreEqual(new List<int> { 1 }, List.RestOfItems(new List<int> { 0, 1 }));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void PartitionList()
         {
             Assert.AreEqual(
@@ -330,6 +420,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ListDiagonalRight()
         {
             Assert.AreEqual(
@@ -347,6 +438,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ListDiagonalLeft()
         {
             Assert.AreEqual(
@@ -378,6 +470,7 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void RepeatObject()
         {
             Assert.AreEqual(new List<object> { 1, 1, 1, 1 }, List.OfRepeatedItem(1, 4));
@@ -413,12 +506,14 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void LastInList()
         {
             Assert.AreEqual(4, List.LastItem(Enumerable.Range(0, 5).ToList()));
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ShuffleList()
         {
             var numbers = Enumerable.Range(0, 100).ToList();
@@ -478,6 +573,7 @@ namespace DSCoreNodesTests
         //}
 
         [Test]
+        [Category("UnitTests")]
         public static void ListPermutations()
         {
             var check = List.Permutations(new ArrayList { "A", "B", "C", "D" }, 2);
@@ -502,6 +598,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ListCombinations()
         {
             var input = new ArrayList { "A", "B", "C", "D" };
@@ -540,6 +637,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Sublists()
         {
             List<int> input = Enumerable.Range(0, 10).ToList();
