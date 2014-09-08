@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
@@ -228,14 +229,31 @@ namespace DynamoWebServer.Messages
                 var codeBlock = node as CodeBlockNodeModel;
                 if (codeBlock != null)
                 {
-                    var inPorts = codeBlock.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
-                    var outPorts = codeBlock.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
+                    var map = CodeBlockUtils.MapLogicalToVisualLineIndices(codeBlock.Code);
+                    var allDefs = codeBlock.GetAllDeffs();
+                    var indexes = new List<int>();
+                    var inPorts = node.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
+                    var outPorts = node.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
 
                     var stringBuilder = new StringBuilder();
 
-                    stringBuilder.Append("{\"Code\":\"");
+                    stringBuilder.Append("{");
+
+                    foreach (var def in allDefs)
+                    {
+                        var logicalIndex = def.Value - 1;
+                        var visualIndex = map.ElementAt(logicalIndex);
+                        indexes.Add(visualIndex);
+                    }
+
+                    stringBuilder.Append("\"Code\":\"");
                     stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
-                    stringBuilder.Append("\", \"InPorts\": [");
+                    stringBuilder.Append("\", ");
+                    stringBuilder.Append("\"PortIndexes\": [");
+                    stringBuilder.Append(string.Join(", ", indexes.Select(x => x.ToString()).ToArray()));
+                    stringBuilder.Append("],");
+
+                    stringBuilder.Append("\"InPorts\": [");
                     stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
                     stringBuilder.Append("], \"OutPorts\": [");
                     stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
