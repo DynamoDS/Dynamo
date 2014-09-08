@@ -4867,6 +4867,7 @@ v = foo(t);
 
 
         [Test]
+        [Category("Failure")]
         public void TestComplexAssociativeUpdateReExecution()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
