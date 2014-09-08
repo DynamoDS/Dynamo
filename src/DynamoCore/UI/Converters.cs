@@ -1679,7 +1679,7 @@ namespace Dynamo.Controls
         {
             BrowserRootElement rootElement = value as BrowserRootElement;
 
-            if (rootElement != null && rootElement.IsPlaceHolder)
+            if (rootElement != null && rootElement.IsPlaceholder)
                 return rootElement.ClassDetails;
 
             return rootElement;

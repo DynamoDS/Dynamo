@@ -31,11 +31,15 @@ namespace Dynamo.Nodes.Search
 
         /// <summary>
         /// Property specifies if BrowserItem has members only as children. No any subcategories.
-        /// </summary>
-        private bool isPlaceHolder;
-        public bool IsPlaceHolder
+        /// </summary>        
+        public bool IsPlaceholder
         {
-            get { return isPlaceHolder; }
+            get
+            {
+                // If all childs are derived from NodeSearchElement they all are members
+                // not subcategories.
+                return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
+            }
         }
 
         private ClassInformation classDetails;
@@ -70,9 +74,6 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public void SpecifyIsPlaceHolderProperty()
         {
-            // If all childs are derived from NodeSearchElement they all are members
-            // not subcategories. 
-            isPlaceHolder = Items.Count > 0 && Items.All(it => it is NodeSearchElement);
         }
     }
 

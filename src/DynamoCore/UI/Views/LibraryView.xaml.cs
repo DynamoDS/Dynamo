@@ -47,7 +47,7 @@ namespace Dynamo.UI.Views
             {
                 rootCategories[i].SpecifyIsPlaceHolderProperty();
 
-                if (rootCategories[i].IsPlaceHolder)
+                if (rootCategories[i].IsPlaceholder)
                 {
                     rootCategories[i].ClassDetails.PopulateMemberCollections(rootCategories[i]);
                     rootCategories[i].ClassDetails.ClassDetailsVisibility = true;
