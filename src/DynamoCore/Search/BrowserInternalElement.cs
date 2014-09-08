@@ -45,7 +45,18 @@ namespace Dynamo.Nodes.Search
         private ClassInformation classDetails;
         public ClassInformation ClassDetails
         {
-            get { return classDetails; }
+            get
+            {
+                if (classDetails == null && IsPlaceholder)
+                {
+                    classDetails = new ClassInformation();
+                    classDetails.PopulateMemberCollections(this);
+
+                    classDetails.ClassDetailsVisibility = true;
+                }
+
+                return classDetails;
+            }
         }
 
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
@@ -53,7 +64,6 @@ namespace Dynamo.Nodes.Search
             this.Height = 32;
             this.Siblings = siblings;
             this._name = name;
-            this.classDetails = new ClassInformation();
         }
 
         public BrowserRootElement(string name)
@@ -61,19 +71,11 @@ namespace Dynamo.Nodes.Search
             this.Height = 32;
             this.Siblings = null;
             this._name = name;
-            this.classDetails = new ClassInformation();
         }
 
         public void SortChildren()
         {
             this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-        }
-
-        /// <summary>
-        /// Specifies IsPlaceHolder property.
-        /// </summary>
-        public void SpecifyIsPlaceHolderProperty()
-        {
         }
     }
 
