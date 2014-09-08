@@ -591,6 +591,11 @@
             The default value is false; but it a good idea to set this property to true when using folding.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.ColumnRulerPosition">
+      <summary>
+            Gets/Sets where the column ruler should be shown.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.ConvertTabsToSpaces">
       <summary>
             Gets/Sets whether to use spaces for indentation instead of tabs.
@@ -611,6 +616,12 @@
             Gets/Sets whether to enable clickable hyperlinks in the editor.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.EnableImeSupport">
+      <summary>
+            Gets/Sets whether the support for Input Method Editors (IME)
+            for non-alphanumeric scripts (Chinese, Japanese, Korean, ...) is enabled.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.EnableRectangularSelection">
       <summary>
             Enables rectangular selection (press ALT and select a rectangle)
@@ -619,6 +630,14 @@
     <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.EnableTextDragDrop">
       <summary>
             Enable dragging text within the text area.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.EnableVirtualSpace">
+      <summary>
+            Gets/Sets whether the user can set the caret behind the line ending
+            (into "virtual space").
+            Note that virtual space is always used (independent from this setting)
+            when doing rectangle selections.
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.TextEditorOptions.GetIndentationString(System.Int32)">
@@ -665,6 +684,11 @@
     <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.ShowBoxForControlCharacters">
       <summary>
             Gets/Sets whether to show a box with the hex code for control characters.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.ShowColumnRuler">
+      <summary>
+            Gets/Sets whether the column ruler should be shown.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.TextEditorOptions.ShowEndOfLine">
@@ -776,6 +800,11 @@
     <member name="P:ICSharpCode.AvalonEdit.TextViewPosition.Line">
       <summary>
             Gets/Sets the line number.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.TextViewPosition.Location">
+      <summary>
+            Gets/Sets Location.
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.TextViewPosition.op_Equality(ICSharpCode.AvalonEdit.TextViewPosition,ICSharpCode.AvalonEdit.TextViewPosition)">
@@ -1057,6 +1086,12 @@
             Gets the parent TextArea.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.CodeCompletion.CompletionWindowBase.UpdatePosition">
+      <summary>
+            Updates the position of the CompletionWindow based on the parent TextView position and the screen working area.
+            It ensures that the CompletionWindow is completely visible on the screen.
+            </summary>
+    </member>
     <member name="T:ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData">
       <summary>
             Describes an entry in the <see cref="T:ICSharpCode.AvalonEdit.CodeCompletion.CompletionList" />.
@@ -1125,6 +1160,10 @@
       <summary>
             Detaches events from the text area.
             </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.CodeCompletion.InsightWindow.OnSourceInitialized(System.EventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Window.SourceInitialized" /> event.</summary>
+      <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.CodeCompletion.IOverloadProvider">
       <summary>
@@ -1771,7 +1810,7 @@
       <summary>
             Normal replace.
             Anchors in front of the replaced region will stay in front, anchors after the replaced region will stay after.
-            Anchors in the middle of the removed region will be deleted. Ifthey survive deletion,
+            Anchors in the middle of the removed region will be deleted. If they survive deletion,
             they move depending on their AnchorMovementType.
             </summary>
     </member>
@@ -2484,6 +2523,12 @@
             Gets/Sets the length of the segment.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Document.TextSegment.OnSegmentChanged">
+      <summary>
+            This method gets called when the StartOffset/Length/EndOffset properties are set.
+            It is not called when StartOffset/Length/EndOffset change due to document changes
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Document.TextSegment.StartOffset">
       <summary>
             Gets/Sets the start offset of the segment.
@@ -2570,6 +2615,11 @@
       <returns>Returns a new collection containing the results of the query.
             This means it is safe to modify the TextSegmentCollection while iterating through the result collection.</returns>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Document.TextSegmentCollection`1.FirstSegment">
+      <summary>
+            Returns the first segment in the collection or null, if the collection is empty.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Document.TextSegmentCollection`1.GetEnumerator">
       <summary>
             Gets an enumerator to enumerate the segments.
@@ -2586,7 +2636,12 @@
       <summary>
             Gets the previous segment before the specified segment.
             Segments are sorted by their start offset.
-            Returns null if segment is the last segment.
+            Returns null if segment is the first segment.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Document.TextSegmentCollection`1.LastSegment">
+      <summary>
+            Returns the last segment in the collection or null, if the collection is empty.
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Document.TextSegmentCollection`1.Remove(`0)">
@@ -2976,6 +3031,11 @@
             Makes the caret invisible.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Editing.Caret.IsInVirtualSpace">
+      <summary>
+            Gets whether the caret is in virtual space.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Editing.Caret.Line">
       <summary>
             Gets/Sets the caret line.
@@ -3178,27 +3238,73 @@
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Editing.RectangleSelection">
       <summary>
-            Rectangular selection.
+            Rectangular selection ("box selection").
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.#ctor(ICSharpCode.AvalonEdit.Document.TextDocument,System.Int32,System.Int32)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.#ctor(ICSharpCode.AvalonEdit.Editing.TextArea,ICSharpCode.AvalonEdit.TextViewPosition,ICSharpCode.AvalonEdit.TextViewPosition)">
       <summary>
             Creates a new rectangular selection.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.Contains(System.Int32)">
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectDownByLine">
       <summary>
-            Gets whether the specified offset is included in the selection.
+            Expands the selection up by one line, creating a rectangular selection.
+            Key gesture: Alt+Shift+Down
             </summary>
-      <returns>True, if the selection contains the offset (selection borders inclusive);
-            otherwise, false.</returns>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectLeftByCharacter">
+      <summary>
+            Expands the selection left by one character, creating a rectangular selection.
+            Key gesture: Alt+Shift+Left
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectLeftByWord">
+      <summary>
+            Expands the selection left by one word, creating a rectangular selection.
+            Key gesture: Ctrl+Alt+Shift+Left
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectRightByCharacter">
+      <summary>
+            Expands the selection right by one character, creating a rectangular selection.
+            Key gesture: Alt+Shift+Right
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectRightByWord">
+      <summary>
+            Expands the selection left by one word, creating a rectangular selection.
+            Key gesture: Ctrl+Alt+Shift+Right
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectToLineEnd">
+      <summary>
+            Expands the selection to the end of the line, creating a rectangular selection.
+            Key gesture: Alt+Shift+End
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectToLineStart">
+      <summary>
+            Expands the selection to the start of the line, creating a rectangular selection.
+            Key gesture: Alt+Shift+Home
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Editing.RectangleSelection.BoxSelectUpByLine">
+      <summary>
+            Expands the selection up by one line, creating a rectangular selection.
+            Key gesture: Alt+Shift+Up
+            </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.CreateDataObject(ICSharpCode.AvalonEdit.Editing.TextArea)">
       <summary>
             Creates a data object containing the selection's text.
             </summary>
     </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.EndOffset">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.EnableVirtualSpace">
+      <summary>
+            Gets whether virtual space is enabled for this selection.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.EndPosition">
       <summary>
             Gets the end position of the selection.
             </summary>
@@ -3212,14 +3318,9 @@
       <summary>Serves as a hash function for a particular type. </summary>
       <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.GetText(ICSharpCode.AvalonEdit.Document.TextDocument)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.GetText">
       <summary>
             Gets the selected text.
-            </summary>
-    </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.IsEmpty">
-      <summary>
-            Gets whether the selection is empty.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.Length">
@@ -3227,7 +3328,7 @@
             Gets the selection length.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.PerformRectangularPaste(ICSharpCode.AvalonEdit.Editing.TextArea,System.Int32,System.String,System.Boolean)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.PerformRectangularPaste(ICSharpCode.AvalonEdit.Editing.TextArea,ICSharpCode.AvalonEdit.TextViewPosition,System.String,System.Boolean)">
       <summary>
             Performs a rectangular paste operation.
             </summary>
@@ -3237,7 +3338,7 @@
             Gets the name of the entry in the DataObject that signals rectangle selections.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.ReplaceSelectionWithText(ICSharpCode.AvalonEdit.Editing.TextArea,System.String)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.ReplaceSelectionWithText(System.String)">
       <summary>
             Replaces the selection with the specified text.
             </summary>
@@ -3247,21 +3348,21 @@
             Gets the selected text segments.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.SetEndpoint(System.Int32)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.SetEndpoint(ICSharpCode.AvalonEdit.TextViewPosition)">
       <summary>
             Returns a new selection with the changed end point.
             </summary>
       <exception cref="T:System.NotSupportedException">Cannot set endpoint for empty selection</exception>
     </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.StartOffset">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.StartPosition">
       <summary>
             Gets the start position of the selection.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.StartSelectionOrSetEndpoint(System.Int32,System.Int32)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.RectangleSelection.StartSelectionOrSetEndpoint(ICSharpCode.AvalonEdit.TextViewPosition,ICSharpCode.AvalonEdit.TextViewPosition)">
       <summary>
-            If this selection is empty, starts a new selection from <paramref name="startOffset" /> to
-            <paramref name="newEndOffset" />, otherwise, changes the endpoint of this selection.
+            If this selection is empty, starts a new selection from <paramref name="startPosition" /> to
+            <paramref name="endPosition" />, otherwise, changes the endpoint of this selection.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Editing.RectangleSelection.SurroundingSegment">
@@ -3284,8 +3385,10 @@
             Base class for selections.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Editing.Selection" /> class</summary>
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.#ctor(ICSharpCode.AvalonEdit.Editing.TextArea)">
+      <summary>
+            Constructor for Selection.
+            </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.Contains(System.Int32)">
       <summary>
@@ -3294,19 +3397,34 @@
       <returns>True, if the selection contains the offset (selection borders inclusive);
             otherwise, false.</returns>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.Create(ICSharpCode.AvalonEdit.Editing.TextArea,ICSharpCode.AvalonEdit.Document.ISegment)">
+      <summary>
+            Creates a new simple selection that selects the text in the specified segment.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.Create(ICSharpCode.AvalonEdit.Editing.TextArea,System.Int32,System.Int32)">
+      <summary>
+            Creates a new simple selection that selects the text from startOffset to endOffset.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.CreateDataObject(ICSharpCode.AvalonEdit.Editing.TextArea)">
       <summary>
             Creates a data object containing the selection's text.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.CreateHtmlFragment(ICSharpCode.AvalonEdit.Editing.TextArea,ICSharpCode.AvalonEdit.Highlighting.HtmlOptions)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.CreateHtmlFragment(ICSharpCode.AvalonEdit.Highlighting.HtmlOptions)">
       <summary>
             Creates a HTML fragment for the selected text.
             </summary>
     </member>
-    <member name="F:ICSharpCode.AvalonEdit.Editing.Selection.Empty">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.Selection.EnableVirtualSpace">
       <summary>
-            Gets the empty selection.
+            Gets whether virtual space is enabled for this selection.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Editing.Selection.EndPosition">
+      <summary>
+            Gets the end position of the selection.
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.Equals(System.Object)">
@@ -3318,7 +3436,7 @@
       <summary>Serves as a hash function for a particular type. </summary>
       <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.GetText(ICSharpCode.AvalonEdit.Document.TextDocument)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.GetText">
       <summary>
             Gets the selected text.
             </summary>
@@ -3328,7 +3446,7 @@
             Gets whether the selection is empty.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.IsMultiline(ICSharpCode.AvalonEdit.Document.TextDocument)">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.Selection.IsMultiline">
       <summary>
             Gets whether the selection is multi-line.
             </summary>
@@ -3338,7 +3456,7 @@
             Gets the selection length.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.ReplaceSelectionWithText(ICSharpCode.AvalonEdit.Editing.TextArea,System.String)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.ReplaceSelectionWithText(System.String)">
       <summary>
             Replaces the selection with the specified text.
             </summary>
@@ -3348,16 +3466,21 @@
             Gets the selected text segments.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.SetEndpoint(System.Int32)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.SetEndpoint(ICSharpCode.AvalonEdit.TextViewPosition)">
       <summary>
             Returns a new selection with the changed end point.
             </summary>
       <exception cref="T:System.NotSupportedException">Cannot set endpoint for empty selection</exception>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.StartSelectionOrSetEndpoint(System.Int32,System.Int32)">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.Selection.StartPosition">
       <summary>
-            If this selection is empty, starts a new selection from <paramref name="startOffset" /> to
-            <paramref name="newEndOffset" />, otherwise, changes the endpoint of this selection.
+            Gets the start position of the selection.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Editing.Selection.StartSelectionOrSetEndpoint(ICSharpCode.AvalonEdit.TextViewPosition,ICSharpCode.AvalonEdit.TextViewPosition)">
+      <summary>
+            If this selection is empty, starts a new selection from <paramref name="startPosition" /> to
+            <paramref name="endPosition" />, otherwise, changes the endpoint of this selection.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Editing.Selection.SurroundingSegment">
@@ -3371,80 +3494,49 @@
             Updates the selection when the document changes.
             </summary>
     </member>
-    <member name="T:ICSharpCode.AvalonEdit.Editing.SimpleSelection">
+    <member name="T:ICSharpCode.AvalonEdit.Editing.SelectionSegment">
       <summary>
-            A simple selection.
+            Represents a selected segment.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.#ctor(ICSharpCode.AvalonEdit.Document.ISegment)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.SelectionSegment.#ctor(System.Int32,System.Int32)">
       <summary>
-            Creates a new SimpleSelection instance.
+            Creates a SelectionSegment from two offsets.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.#ctor(System.Int32,System.Int32)">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.SelectionSegment.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
       <summary>
-            Creates a new SimpleSelection instance.
+            Creates a SelectionSegment from two offsets and visual columns.
             </summary>
     </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.EndOffset">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.SelectionSegment.EndOffset">
       <summary>
             Gets the end offset.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.Equals(System.Object)">
-      <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
-      <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />. </param>
-      <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
-    </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.GetHashCode">
-      <summary>Serves as a hash function for a particular type. </summary>
-      <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
-    </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.IsEmpty">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.SelectionSegment.EndVisualColumn">
       <summary>
-            Gets whether the selection is empty.
+            Gets the end visual column.
             </summary>
     </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.Length">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.SelectionSegment.Length">
       <summary>
-            Gets the selection length.
+            Gets the length of the segment.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.ReplaceSelectionWithText(ICSharpCode.AvalonEdit.Editing.TextArea,System.String)">
-      <summary>
-            Replaces the selection with the specified text.
-            </summary>
-    </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.Segments">
-      <summary>
-            Gets the selected text segments.
-            </summary>
-    </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.SetEndpoint(System.Int32)">
-      <summary>
-            Returns a new selection with the changed end point.
-            </summary>
-      <exception cref="T:System.NotSupportedException">Cannot set endpoint for empty selection</exception>
-    </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.StartOffset">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.SelectionSegment.StartOffset">
       <summary>
             Gets the start offset.
             </summary>
     </member>
-    <member name="P:ICSharpCode.AvalonEdit.Editing.SimpleSelection.SurroundingSegment">
+    <member name="P:ICSharpCode.AvalonEdit.Editing.SelectionSegment.StartVisualColumn">
       <summary>
-            Gets the smallest segment that contains all segments in this selection.
-            May return null if the selection is empty.
+            Gets the start visual column.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.ToString">
+    <member name="M:ICSharpCode.AvalonEdit.Editing.SelectionSegment.ToString">
       <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
       <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
-    </member>
-    <member name="M:ICSharpCode.AvalonEdit.Editing.SimpleSelection.UpdateOnDocumentChange(ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs)">
-      <summary>
-            Updates the selection when the document changes.
-            </summary>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Editing.TextArea">
       <summary>
@@ -3481,6 +3573,11 @@
     <member name="P:ICSharpCode.AvalonEdit.Editing.TextArea.Caret">
       <summary>
             Gets the Caret used for this text area.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Editing.TextArea.ClearSelection">
+      <summary>
+            Clears the current selection.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Editing.TextArea.DefaultInputHandler">
@@ -4261,9 +4358,19 @@
             Creates a new HighlightedInlineBuilder instance.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Highlighting.HighlightedInlineBuilder.Clone">
+      <summary>
+            Clones this HighlightedInlineBuilder.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Highlighting.HighlightedInlineBuilder.CreateRuns">
       <summary>
             Creates WPF Run instances that can be used for TextBlock.Inlines.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Highlighting.HighlightedInlineBuilder.SetBackground(System.Int32,System.Int32,System.Windows.Media.Brush)">
+      <summary>
+            Sets the background brush on the specified text segment.
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Highlighting.HighlightedInlineBuilder.SetFontFamily(System.Int32,System.Int32,System.Windows.Media.FontFamily)">
@@ -4304,6 +4411,11 @@
     <member name="M:ICSharpCode.AvalonEdit.Highlighting.HighlightedLine.#ctor(ICSharpCode.AvalonEdit.Document.TextDocument,ICSharpCode.AvalonEdit.Document.DocumentLine)">
       <summary>
             Creates a new HighlightedLine instance.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.HighlightedLine.DefaultTextColor">
+      <summary>
+            Gets the default color of all text outside a <see cref="T:ICSharpCode.AvalonEdit.Highlighting.HighlightedSection" />.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Highlighting.HighlightedLine.Document">
@@ -4679,6 +4791,18 @@
             Gets the color used for the text between start and end.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.HighlightingSpan.SpanColorIncludesEnd">
+      <summary>
+            Gets/Sets whether the span color includes the end.
+            The default is <c>false</c>.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.HighlightingSpan.SpanColorIncludesStart">
+      <summary>
+            Gets/Sets whether the span color includes the start.
+            The default is <c>false</c>.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Highlighting.HighlightingSpan.StartColor">
       <summary>
             Gets the color used for the text matching the start expression.
@@ -4797,6 +4921,16 @@
     <member name="P:ICSharpCode.AvalonEdit.Highlighting.IHighlightingDefinition.NamedHighlightingColors">
       <summary>
             Gets the list of named highlighting colors.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Highlighting.IHighlightingDefinition2">
+      <summary>
+            Extension of IHighlightingDefinition to avoid breaking changes in the API.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.IHighlightingDefinition2.Properties">
+      <summary>
+            Gets the list of properties.
             </summary>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Highlighting.IHighlightingDefinitionReferenceResolver">
@@ -5001,6 +5135,31 @@
     <member name="P:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdKeywords.Words">
       <summary>
             Gets the list of key words.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdProperty">
+      <summary>
+            A property in an Xshd file.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdProperty.#ctor">
+      <summary>
+            Creates a new XshdColor instance.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdProperty.AcceptVisitor(ICSharpCode.AvalonEdit.Highlighting.Xshd.IXshdVisitor)">
+      <summary>
+            Applies the visitor to this element.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdProperty.Name">
+      <summary>
+            Gets/sets the name.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdProperty.Value">
+      <summary>
+            Gets/sets the value.
             </summary>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Highlighting.Xshd.XshdReference`1">
@@ -5356,6 +5515,11 @@
             Creates a new BackgroundGeometryBuilder instance.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.AddRectangle(ICSharpCode.AvalonEdit.Rendering.TextView,System.Windows.Rect)">
+      <summary>
+            Adds a rectangle to the geometry.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.AddRectangle(System.Double,System.Double,System.Double,System.Double)">
       <summary>
             Adds a rectangle to the geometry.
@@ -5392,9 +5556,21 @@
             Returns null when the geometry is empty!
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.GetRectsForSegment(ICSharpCode.AvalonEdit.Rendering.TextView,ICSharpCode.AvalonEdit.Document.ISegment)">
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.ExtendToFullWidthAtLineEnd">
+      <summary>
+            Gets/Sets whether to extend the rectangles to full width at line end.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.GetRectsForSegment(ICSharpCode.AvalonEdit.Rendering.TextView,ICSharpCode.AvalonEdit.Document.ISegment,System.Boolean)">
       <summary>
             Calculates the list of rectangle where the segment in shown.
+            This method usually returns one rectangle for each line inside the segment
+            (but potentially more, e.g. when bidirectional text is involved).
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.BackgroundGeometryBuilder.GetRectsFromVisualSegment(ICSharpCode.AvalonEdit.Rendering.TextView,ICSharpCode.AvalonEdit.Rendering.VisualLine,System.Int32,System.Int32)">
+      <summary>
+            Calculates the rectangles for the visual column segment.
             This returns one rectangle for each line inside the segment.
             </summary>
     </member>
@@ -5417,11 +5593,6 @@
             This property initially is true and turns to false when uncollapsing the section.
             </summary>
     </member>
-    <member name="E:ICSharpCode.AvalonEdit.Rendering.CollapsedLineSection.PropertyChanged">
-      <summary>
-            Is raised when of the properties Start,End,IsCollapsed changes.
-            </summary>
-    </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.CollapsedLineSection.Start">
       <summary>
             Gets the start line of the section.
@@ -5438,11 +5609,8 @@
       <summary>
             Uncollapses the section.
             This causes the Start and End properties to be set to null!
-            Runtime: O(log(n))
+            Does nothing if the section is already uncollapsed.
             </summary>
-      <exception cref="T:System.InvalidOperationException">
-            The section is already uncollapsed, or the text containing the section was deleted.
-            </exception>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Rendering.ColorizingTransformer">
       <summary>
@@ -5492,6 +5660,186 @@
         <see cref="M:ICSharpCode.AvalonEdit.Rendering.IVisualLineTransformer.Transform(ICSharpCode.AvalonEdit.Rendering.ITextRunConstructionContext,System.Collections.Generic.IList{ICSharpCode.AvalonEdit.Rendering.VisualLineElement})" /> implementation.
             Sets <see cref="P:ICSharpCode.AvalonEdit.Rendering.ColorizingTransformer.CurrentElements" /> and calls <see cref="M:ICSharpCode.AvalonEdit.Rendering.ColorizingTransformer.Colorize(ICSharpCode.AvalonEdit.Rendering.ITextRunConstructionContext)" />.
             </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties">
+      <summary>
+            Default implementation for TextRunTypographyProperties.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.AnnotationAlternates">
+      <summary>Gets the index of an alternate annotation form.</summary>
+      <returns>The index of the alternate annotation form. The default is 0 (zero).</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.Capitals">
+      <summary>Gets a value that indicates the capital form of the selected font.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontCapitals" /> values. The default is <see cref="F:System.Windows.FontCapitals.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.CapitalSpacing">
+      <summary>Gets a value that indicates whether inter-glyph spacing for all-capital text is globally adjusted to improve readability.</summary>
+      <returns>true if spacing is adjusted; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.CaseSensitiveForms">
+      <summary>Gets a value that indicates whether glyphs adjust their vertical position to better align with uppercase glyphs.</summary>
+      <returns>true if the vertical position is adjusted; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.ContextualAlternates">
+      <summary>Gets a value that indicates whether custom glyph forms can be used based upon the context of the text being rendered.</summary>
+      <returns>true if custom glyph forms can be used; otherwise, false. The default is true.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.ContextualLigatures">
+      <summary>Gets a value that indicates whether contextual ligatures are enabled.</summary>
+      <returns>true if contextual ligatures are enabled; otherwise, false. The default is true.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.ContextualSwashes">
+      <summary>Gets a value that specifies the index of a contextual swashes form.</summary>
+      <returns>The index of the standard swashes form. The default is 0 (zero).</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.DiscretionaryLigatures">
+      <summary>Gets a value that indicates whether discretionary ligatures are enabled.</summary>
+      <returns>true if discretionary ligatures are enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.EastAsianExpertForms">
+      <summary>Gets a value that indicates whether the standard Japanese font forms have been replaced with the corresponding preferred typographic forms.</summary>
+      <returns>true if standard Japanese font forms have been replaced with the corresponding preferred typographic forms; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.EastAsianLanguage">
+      <summary>Gets a value that indicates the version of glyphs to be used for a specific writing system or language.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontEastAsianLanguage" /> values. The default is <see cref="F:System.Windows.FontEastAsianLanguage.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.EastAsianWidths">
+      <summary>Gets a value that indicates the proportional width to be used for Latin characters in an East Asian font.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontEastAsianWidths" /> values. The default is <see cref="F:System.Windows.FontEastAsianWidths.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.Fraction">
+      <summary>Gets a value that indicates the fraction style.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontFraction" /> values. The default is <see cref="F:System.Windows.FontFraction.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.HistoricalForms">
+      <summary>Gets a value that indicates whether historical forms are enabled.</summary>
+      <returns>true if historical forms are enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.HistoricalLigatures">
+      <summary>Gets a value that indicates whether historical ligatures are enabled.</summary>
+      <returns>true if historical ligatures are enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.Kerning">
+      <summary>Gets a value that indicates whether kerning is enabled.</summary>
+      <returns>true if kerning is enabled; otherwise, false. The default is true.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.MathematicalGreek">
+      <summary>Gets a value that indicates whether standard typographic font forms of Greek glyphs have been replaced with corresponding font forms commonly used in mathematical notation.</summary>
+      <returns>true if mathematical Greek forms are enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.NumeralAlignment">
+      <summary>Gets the alignment of widths when using numerals.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontNumeralAlignment" /> values. The default is <see cref="F:System.Windows.FontNumeralAlignment.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.NumeralStyle">
+      <summary>Gets a value that indicates the set of glyphs that are used to render numeric alternate font forms.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontNumeralStyle" /> values. The default is <see cref="F:System.Windows.FontNumeralStyle.Normal" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.SlashedZero">
+      <summary>Gets a value that indicates whether a nominal zero font form should be replaced with a slashed zero.</summary>
+      <returns>true if slashed zero forms are enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StandardLigatures">
+      <summary>Gets a value that indicates whether standard ligatures are enabled.</summary>
+      <returns>true if standard ligatures are enabled; otherwise, false. The default is true.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StandardSwashes">
+      <summary>Gets the index of a standard swashes form.</summary>
+      <returns>The index of the standard swashes form. The default is 0 (zero).</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticAlternates">
+      <summary>Gets the index of a stylistic alternates form.</summary>
+      <returns>The index of the stylistic alternates form. The default is 0 (zero).</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet1">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet10">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet11">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet12">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet13">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet14">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet15">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet16">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet17">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet18">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet19">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet2">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet20">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet3">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet4">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet5">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet6">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet7">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet8">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.StylisticSet9">
+      <summary>Gets a value that indicates whether a stylistic set of a font form is enabled.</summary>
+      <returns>true if the stylistic set of the font form is enabled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.DefaultTextRunTypographyProperties.Variants">
+      <summary>Gets a value that indicates a variation of the standard typographic form to be used.</summary>
+      <returns>One of the <see cref="T:System.Windows.FontVariants" /> values. The default is <see cref="F:System.Windows.FontVariants.Normal" />.</returns>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Rendering.DocumentColorizingTransformer">
       <summary>
@@ -5876,6 +6224,13 @@
             May return null if no element should be constructed.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.LinkElementGenerator.ConstructElementFromMatch(System.Text.RegularExpressions.Match)">
+      <summary>
+            Constructs a VisualLineElement that replaces the matched text.
+            The default implementation will create a <see cref="T:ICSharpCode.AvalonEdit.Rendering.VisualLineLinkText" />
+            based on the URI provided by <see cref="M:ICSharpCode.AvalonEdit.Rendering.LinkElementGenerator.GetUriFromMatch(System.Text.RegularExpressions.Match)" />.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.LinkElementGenerator.GetFirstInterestedOffset(System.Int32)">
       <summary>
             Gets the first offset &gt;= startOffset where the generator wants to construct an element.
@@ -5958,6 +6313,29 @@
             and not used to start the generation of a <see cref="T:ICSharpCode.AvalonEdit.Rendering.VisualLine" />.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.ColumnRulerPen">
+      <summary>
+            Gets/Sets the pen used to draw the column ruler.
+            <seealso cref="P:ICSharpCode.AvalonEdit.TextEditorOptions.ShowColumnRuler" /></summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.TextView.ColumnRulerPenProperty">
+      <summary>
+            The pen used to draw the column ruler.
+            <seealso cref="P:ICSharpCode.AvalonEdit.TextEditorOptions.ShowColumnRuler" /></summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.DefaultBaseline">
+      <summary>
+            Gets the default baseline position. This is the difference between <see cref="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.TextTop" />
+            and <see cref="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.Baseline" /> for a line containing regular text.
+            Lines that include formatted text or custom UI elements may have a different baseline.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.DefaultLineHeight">
+      <summary>
+            Gets the default line height. This is the height of an empty line or a line containing regular text.
+            Lines that include formatted text or custom UI elements may have a different line height.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.Document">
       <summary>
             Gets/Sets the document displayed by the text editor.
@@ -6006,6 +6384,16 @@
     <member name="M:ICSharpCode.AvalonEdit.Rendering.TextView.GetPosition(System.Windows.Point)">
       <summary>
             Gets the text view position from the specified visual position.
+            If the position is within a character, it is rounded to the next character boundary.
+            </summary>
+      <param name="visualPosition">The position in WPF device-independent pixels relative
+            to the top left corner of the document.</param>
+      <returns>The logical position, or null if the position is outside the document.</returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.TextView.GetPositionFloor(System.Windows.Point)">
+      <summary>
+            Gets the text view position from the specified visual position.
+            If the position is inside a character, the position in front of the character is returned.
             </summary>
       <param name="visualPosition">The position in WPF device-independent pixels relative
             to the top left corner of the document.</param>
@@ -6073,6 +6461,13 @@
             use the <see cref="M:ICSharpCode.AvalonEdit.Rendering.TextView.Redraw" /> method to do that.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.TextView.InvalidateLayer(ICSharpCode.AvalonEdit.Rendering.KnownLayer,System.Windows.Threading.DispatcherPriority)">
+      <summary>
+            Causes a known layer to redraw.
+            This method does not invalidate visual lines;
+            use the <see cref="M:ICSharpCode.AvalonEdit.Rendering.TextView.Redraw" /> method to do that.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.Layers">
       <summary>
             Gets the list of layers displayed in the text view.
@@ -6081,6 +6476,26 @@
     <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.LineTransformers">
       <summary>
             Gets a collection where line transformers can be registered.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.LinkTextBackgroundBrush">
+      <summary>
+            Gets/sets the Brush used for the background of link texts.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.TextView.LinkTextBackgroundBrushProperty">
+      <summary>
+            LinkTextBackgroundBrush dependency property.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.LinkTextForegroundBrush">
+      <summary>
+            Gets/sets the Brush used for displaying link texts.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.TextView.LinkTextForegroundBrushProperty">
+      <summary>
+            LinkTextForegroundBrush dependency property.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.LogicalChildren">
@@ -6159,7 +6574,7 @@
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.Options">
       <summary>
-            Gets/Sets the document displayed by the text editor.
+            Gets/Sets the options used by the text editor.
             </summary>
     </member>
     <member name="F:ICSharpCode.AvalonEdit.Rendering.TextView.OptionsProperty">
@@ -6274,6 +6689,11 @@
             if this property is <c>false</c>.
             </summary>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.TextView.WideSpaceWidth">
+      <summary>
+            Gets the width of a 'wide space' (the space width used for calculating the tab size).
+            </summary>
+    </member>
     <member name="T:ICSharpCode.AvalonEdit.Rendering.TextViewWeakEventManager">
       <summary>
             Contains weak event managers for the TextView events.
@@ -6355,7 +6775,7 @@
             Gets the first document line displayed by this visual line.
             </summary>
     </member>
-    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetNextCaretPosition(System.Int32,System.Windows.Documents.LogicalDirection,ICSharpCode.AvalonEdit.Document.CaretPositioningMode)">
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetNextCaretPosition(System.Int32,System.Windows.Documents.LogicalDirection,ICSharpCode.AvalonEdit.Document.CaretPositioningMode,System.Boolean)">
       <summary>
             Gets the next possible caret position after visualColumn, or -1 if there is no caret position.
             </summary>
@@ -6380,6 +6800,12 @@
             Gets the start visual column from the specified text line.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetTextLineVisualXPosition(System.Windows.Media.TextFormatting.TextLine,System.Int32)">
+      <summary>
+            Gets the distance to the left border of the text area of the specified visual column.
+            The visual column must belong to the specified text line.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetTextLineVisualYPosition(System.Windows.Media.TextFormatting.TextLine,ICSharpCode.AvalonEdit.Rendering.VisualYPosition)">
       <summary>
             Gets the visual top from the specified text line.
@@ -6392,13 +6818,31 @@
             Gets the visual column from a document offset relative to the first line start.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetVisualColumn(System.Windows.Media.TextFormatting.TextLine,System.Double,System.Boolean)">
+      <summary>
+            Gets the visual column from a document position (relative to top left of the document).
+            If the user clicks between two visual columns, rounds to the nearest column.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetVisualColumn(System.Windows.Point)">
       <summary>
             Gets the visual column from a document position (relative to top left of the document).
             If the user clicks between two visual columns, rounds to the nearest column.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetVisualColumn(System.Windows.Point,System.Boolean)">
+      <summary>
+            Gets the visual column from a document position (relative to top left of the document).
+            If the user clicks between two visual columns, rounds to the nearest column.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetVisualColumnFloor(System.Windows.Point)">
+      <summary>
+            Gets the visual column from a document position (relative to top left of the document).
+            If the user clicks between two visual columns, returns the first of those columns.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.GetVisualColumnFloor(System.Windows.Point,System.Boolean)">
       <summary>
             Gets the visual column from a document position (relative to top left of the document).
             If the user clicks between two visual columns, returns the first of those columns.
@@ -6426,6 +6870,18 @@
             Gets the last document line displayed by this visual line.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.ReplaceElement(System.Int32,ICSharpCode.AvalonEdit.Rendering.VisualLineElement[])">
+      <summary>
+            Replaces the single element at <paramref name="elementIndex" /> with the specified elements.
+            The replacement operation must preserve the document length, but may change the visual length.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.ReplaceElement(System.Int32,System.Int32,ICSharpCode.AvalonEdit.Rendering.VisualLineElement[])">
+      <summary>
+            Replaces <paramref name="count" /> elements starting at <paramref name="elementIndex" /> with the specified elements.
+            The replacement operation must preserve the document length, but may change the visual length.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLine.StartOffset">
       <summary>
             Gets the start offset of the VisualLine inside the document.
@@ -6437,9 +6893,24 @@
             Gets a read-only collection of text lines.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.ValidateVisualColumn(ICSharpCode.AvalonEdit.TextViewPosition,System.Boolean)">
+      <summary>
+            Validates the visual column and returns the correct one.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLine.ValidateVisualColumn(System.Int32,System.Int32,System.Boolean)">
+      <summary>
+            Validates the visual column and returns the correct one.
+            </summary>
+    </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLine.VisualLength">
       <summary>
             Length in visual line coordinates.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLine.VisualLengthWithEndOfLineMarker">
+      <summary>
+            Length in visual line coordinates including the end of line marker, if TextEditorOptions.ShowEndOfLine is enabled.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLine.VisualTop">
@@ -6473,6 +6944,11 @@
             </summary>
       <param name="visualLength">The length of the element in VisualLine coordinates. Must be positive.</param>
       <param name="documentLength">The length of the element in the document. Must be non-negative.</param>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElement.BackgroundBrush">
+      <summary>
+            Gets/sets the brush used for the background of this <see cref="T:ICSharpCode.AvalonEdit.Rendering.VisualLineElement" />.
+            </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElement.CanSplit">
       <summary>
@@ -6673,6 +7149,11 @@
       <summary>Gets the brush that is used to paint the foreground color of the text run.</summary>
       <returns>A <see cref="T:System.Windows.Media.Brush" /> value that represents the foreground color.</returns>
     </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.NumberSubstitution">
+      <summary>
+            Gets the number substitution settings for the text run.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.SetBackgroundBrush(System.Windows.Media.Brush)">
       <summary>
             Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.BackgroundBrush" />.
@@ -6703,6 +7184,11 @@
             Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.ForegroundBrush" />.
             </summary>
     </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.SetNumberSubstitution(System.Windows.Media.NumberSubstitution)">
+      <summary>
+            Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.NumberSubstitution" />.
+            </summary>
+    </member>
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.SetTextDecorations(System.Windows.TextDecorationCollection)">
       <summary>
             Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.TextDecorations" />.
@@ -6716,6 +7202,11 @@
     <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.SetTypeface(System.Windows.Media.Typeface)">
       <summary>
             Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.Typeface" />.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.SetTypographyProperties(System.Windows.Media.TextFormatting.TextRunTypographyProperties)">
+      <summary>
+            Sets the <see cref="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.TypographyProperties" />.
             </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.TextDecorations">
@@ -6739,6 +7230,11 @@
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.Typeface">
       <summary>Gets the typeface for the text run.</summary>
       <returns>A value of <see cref="T:System.Windows.Media.Typeface" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineElementTextRunProperties.TypographyProperties">
+      <summary>
+            Gets the typography properties for the text run.
+            </summary>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Rendering.VisualLineLinkText">
       <summary>
@@ -6770,6 +7266,11 @@
       <param name="context">
             Context object that contains information relevant for text run creation.
             </param>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Rendering.VisualLineLinkText.LinkIsClickable">
+      <summary>
+            Gets whether the link is currently clickable.
+            </summary>
     </member>
     <member name="P:ICSharpCode.AvalonEdit.Rendering.VisualLineLinkText.NavigateUri">
       <summary>
@@ -6915,19 +7416,347 @@
     </member>
     <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.TextTop">
       <summary>
-            Returns the top of the text. If the line contains inline UI elements larger than the text, TextTop
-            will be below LineTop.
+            Returns the top of the text.
+            If the line contains inline UI elements larger than the text, TextTop may be below LineTop.
+            For a line containing regular text (all in the editor's main font), this will be equal to LineTop.
             </summary>
     </member>
     <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.LineBottom">
       <summary>
-            Returns the bottom of the TextLine. This is the same as the bottom of the text (the text is always
-            aligned at the bottom border).
+            Returns the bottom of the TextLine.
             </summary>
     </member>
     <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.LineMiddle">
       <summary>
             The middle between LineTop and LineBottom.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.TextBottom">
+      <summary>
+            Returns the bottom of the text. 
+            If the line contains inline UI elements larger than the text, TextBottom might be above LineBottom.
+            For a line containing regular text (all in the editor's main font), this will be equal to LineBottom.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.TextMiddle">
+      <summary>
+            The middle between TextTop and TextBottom.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Rendering.VisualYPosition.Baseline">
+      <summary>
+            Returns the baseline of the text.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.ISearchResult">
+      <summary>
+            Represents a search result.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.ISearchResult.ReplaceWith(System.String)">
+      <summary>
+            Replaces parts of the replacement string with parts from the match. (e.g. $1)
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.ISearchStrategy">
+      <summary>
+            Basic interface for search algorithms.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.ISearchStrategy.FindAll(ICSharpCode.AvalonEdit.Document.ITextSource,System.Int32,System.Int32)">
+      <summary>
+            Finds all matches in the given ITextSource and the given range.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.ISearchStrategy.FindNext(ICSharpCode.AvalonEdit.Document.ITextSource,System.Int32,System.Int32)">
+      <summary>
+            Finds the next match in the given ITextSource and the given range.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.Localization">
+      <summary>
+            Holds default texts for buttons and labels in the SearchPanel. Override properties to add other languages.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.Localization.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Search.Localization" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.ErrorText">
+      <summary>
+            Default: 'Error: '
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.FindNextText">
+      <summary>
+            Default: 'Find next (F3)'
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.FindPreviousText">
+      <summary>
+            Default: 'Find previous (Shift+F3)'
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.MatchCaseText">
+      <summary>
+            Default: 'Match case'
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.MatchWholeWordsText">
+      <summary>
+            Default: 'Match whole words'
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.NoMatchesFoundText">
+      <summary>
+            Default: 'No matches found!'
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.Localization.UseRegexText">
+      <summary>
+            Default: 'Use regular expressions'
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchCommands">
+      <summary>
+            Search commands for AvalonEdit.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchCommands.CloseSearchPanel">
+      <summary>
+            Closes the SearchPanel.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchCommands.FindNext">
+      <summary>
+            Finds the next occurrence in the file.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchCommands.FindPrevious">
+      <summary>
+            Finds the previous occurrence in the file.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchInputHandler">
+      <summary>
+            TextAreaInputHandler that registers all search-related commands.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchInputHandler.#ctor(ICSharpCode.AvalonEdit.Editing.TextArea)">
+      <summary>
+            Creates a new SearchInputHandler and registers the search-related commands.
+            </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Search.SearchInputHandler.SearchOptionsChanged">
+      <summary>
+            Fired when SearchOptions are modified inside the SearchPanel.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchMode">
+      <summary>
+            Defines supported search modes.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchMode.Normal">
+      <summary>
+            Standard search
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchMode.RegEx">
+      <summary>
+            RegEx search
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchMode.Wildcard">
+      <summary>
+            Wildcard search
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs">
+      <summary>
+            EventArgs for <see cref="E:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchOptionsChanged" /> event.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs.#ctor(System.String,System.Boolean,System.Boolean,System.Boolean)">
+      <summary>
+            Creates a new SearchOptionsChangedEventArgs instance.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs.MatchCase">
+      <summary>
+            Gets whether the search pattern should be interpreted case-sensitive.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs.SearchPattern">
+      <summary>
+            Gets the search pattern.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs.UseRegex">
+      <summary>
+            Gets whether the search pattern should be interpreted as regular expression.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs.WholeWords">
+      <summary>
+            Gets whether the search pattern should only match whole words.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchPanel">
+      <summary>
+            Provides search functionality for AvalonEdit. It is displayed in the top-right corner of the TextArea.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.#ctor">
+      <summary>
+            Creates a new SearchPanel.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.Attach(ICSharpCode.AvalonEdit.Editing.TextArea)">
+      <summary>
+            Attaches this SearchPanel to a TextArea instance.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.Close">
+      <summary>
+            Closes the SearchPanel.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.CloseAndRemove">
+      <summary>
+            Closes the SearchPanel and removes it.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.FindNext">
+      <summary>
+            Moves to the next occurrence in the file.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.FindPrevious">
+      <summary>
+            Moves to the previous occurrence in the file.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.IsClosed">
+      <summary>
+            Gets whether the Panel is already closed.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.Localization">
+      <summary>
+            Gets/sets the localization for the SearchPanel.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.LocalizationProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.Localization" />.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.MarkerBrush">
+      <summary>
+            Gets/sets the Brush used for marking search results in the TextView.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.MarkerBrushProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.MarkerBrush" />.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.MatchCase">
+      <summary>
+            Gets/sets whether the search pattern should be interpreted case-sensitive.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.MatchCaseProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.MatchCase" />.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.OnApplyTemplate">
+      <summary>When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.OnSearchOptionsChanged(ICSharpCode.AvalonEdit.Search.SearchOptionsChangedEventArgs)">
+      <summary>
+            Raises the <see cref="E:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchOptionsChanged" /> event.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.Open">
+      <summary>
+            Opens the an existing search panel.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPanel.Reactivate">
+      <summary>
+            Reactivates the SearchPanel by setting the focus on the search box and selecting all text.
+            </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchOptionsChanged">
+      <summary>
+            Fired when SearchOptions are changed inside the SearchPanel.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchPattern">
+      <summary>
+            Gets/sets the search pattern.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchPatternProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.SearchPattern" />.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.UseRegex">
+      <summary>
+            Gets/sets whether the search pattern should be interpreted as regular expression.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.UseRegexProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.UseRegex" />.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Search.SearchPanel.WholeWords">
+      <summary>
+            Gets/sets whether the search pattern should only match whole words.
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Search.SearchPanel.WholeWordsProperty">
+      <summary>
+            Dependency property for <see cref="P:ICSharpCode.AvalonEdit.Search.SearchPanel.WholeWords" />.
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchPatternException">
+      <summary>Represents errors that occur during application execution.</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPatternException.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class.</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPatternException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with serialized data.</summary>
+      <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown. </param>
+      <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination. </param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is null. </exception>
+      <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult" /> is zero (0). </exception>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPatternException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.</summary>
+      <param name="message">The message that describes the error. </param>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchPatternException.#ctor(System.String,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
+      <param name="message">The error message that explains the reason for the exception. </param>
+      <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified. </param>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Search.SearchStrategyFactory">
+      <summary>
+            Provides factory methods for ISearchStrategies.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchStrategyFactory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Search.SearchStrategyFactory" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Search.SearchStrategyFactory.Create(System.String,System.Boolean,System.Boolean,ICSharpCode.AvalonEdit.Search.SearchMode)">
+      <summary>
+            Creates a default ISearchStrategy with the given parameters.
             </summary>
     </member>
     <member name="T:ICSharpCode.AvalonEdit.Snippets.AnchorElement">
@@ -7217,7 +8046,18 @@
             </summary>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Snippets.SnippetCaretElement.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Snippets.SnippetCaretElement" /> class</summary>
+      <summary>
+            Creates a new SnippetCaretElement.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Snippets.SnippetCaretElement.#ctor(System.Boolean)">
+      <summary>
+            Creates a new SnippetCaretElement.
+            </summary>
+      <param name="setCaretOnlyIfTextIsSelected">
+            If set to true, the caret is set only when some text was selected.
+            This is useful when both SnippetCaretElement and SnippetSelectionElement are used in the same snippet.
+            </param>
     </member>
     <member name="M:ICSharpCode.AvalonEdit.Snippets.SnippetCaretElement.Insert(ICSharpCode.AvalonEdit.Snippets.InsertionContext)">
       <summary>
@@ -8087,6 +8927,605 @@
       <summary>
             Detaches the event handler.
             </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor">
+      <summary>
+            Derive from this class to create visitor for the XML tree
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.VisitAttribute(ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary> Visit RawAttribute </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.VisitDocument(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Visit RawDocument </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.VisitElement(ICSharpCode.AvalonEdit.Xml.AXmlElement)">
+      <summary> Visit RawElement </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.VisitTag(ICSharpCode.AvalonEdit.Xml.AXmlTag)">
+      <summary> Visit RawTag </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AbstractAXmlVisitor.VisitText(ICSharpCode.AvalonEdit.Xml.AXmlText)">
+      <summary> Visit RawText </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlAttribute">
+      <summary>
+            Name-value pair in a tag
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlAttribute" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.EqualsSign">
+      <summary> Equals sign and surrounding whitespace </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.IsNamespaceDeclaration">
+      <summary> Attribute is declaring namespace ("xmlns" or "xmlns:*") </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.LocalName">
+      <summary> The part of name after ":" </summary>
+      <returns> Whole name if ":" not found </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.Name">
+      <summary> Name with namespace prefix - exactly as in source file </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.Namespace">
+      <summary>
+            Resolved namespace of the name.  Empty string if not found
+            From the specification: "The namespace name for an unprefixed attribute name always has no value."
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.ParentElement">
+      <summary> The element containing this attribute </summary>
+      <returns> Null if orphaned </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.Prefix">
+      <summary> The part of name before ":"</summary>
+      <returns> Empty string if not found </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.QuotedValue">
+      <summary> The raw value - exactly as in source file (*probably* quoted and escaped) </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlAttribute.Value">
+      <summary> Unquoted and dereferenced value of the attribute </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection">
+      <summary>
+            Specailized attribute collection with attribute name caching
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.#ctor">
+      <summary> Create unbound collection </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.#ctor(ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection{ICSharpCode.AvalonEdit.Xml.AXmlObject})">
+      <summary> Wrap the given collection.  Non-attributes are filtered </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.#ctor(ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection{ICSharpCode.AvalonEdit.Xml.AXmlObject},System.Predicate{System.Object})">
+      <summary> Wrap the given collection.  Non-attributes are filtered.  Items not matching the condition are filtered. </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.ClearItems">
+      <summary>Removes all items from the collection.</summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.Empty">
+      <summary> Empty unbound collection </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.GetByLocalName(System.String)">
+      <summary>
+            Get all attributes with given local name.
+            Hash table is used for lookup so this is cheap.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.InsertItem(System.Int32,ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary>Inserts an item into the collection at the specified index.</summary>
+      <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
+      <param name="item">The object to insert.</param>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.RemoveItem(System.Int32)">
+      <summary>Removes the item at the specified index of the collection.</summary>
+      <param name="index">The zero-based index of the element to remove.</param>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlAttributeCollection.SetItem(System.Int32,ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary>Replaces the element at the specified index.</summary>
+      <param name="index">The zero-based index of the element to replace.</param>
+      <param name="item">The new value for the element at the specified index.</param>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlContainer">
+      <summary>
+            Abstact base class for all types that can contain child nodes
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlContainer.#ctor">
+      <summary> Create new container </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlContainer.Children">
+      <summary>
+            Children of the node.  It is read-only.
+            Note that is has CollectionChanged event.
+            </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlContainer.Elements">
+      <summary> Gets direcly nested elements (non-recursive) </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlContainer.GetChildAtOffset(System.Int32)">
+      <summary>
+            Gets a child fully containg the given offset.
+            Goes recursively down the tree.
+            Specail case if at the end of attribute or text
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlContainer.GetSelfAndAllChildren">
+      <summary> Recursively gets self and all nested nodes. </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlDocument">
+      <summary>
+            The root object of the XML document
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlDocument.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlDocument" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlDocument.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlDocument.ObjectChanged">
+      <summary> Occurs after local data of any object in the document changed </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlDocument.ObjectChanging">
+      <summary> Occurs before local data of any object in the document changes </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlDocument.ObjectInserted">
+      <summary> Occurs when object is added to any part of the document </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlDocument.ObjectRemoved">
+      <summary> Occurs when object is removed from any part of the document </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlDocument.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlElement">
+      <summary>
+            Logical grouping of other nodes together.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlElement" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.Attributes">
+      <summary> Gets attributes of the element </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.AttributesAndElements">
+      <summary> Gets both attributes and elements.  Expensive, avoid use. </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.FindDefaultNamespace">
+      <summary> Find the defualt namespace for this context </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.GetAttributeValue(System.String)">
+      <summary>
+            Get unquoted value of attribute.
+            It looks in the no namespace (empty string).
+            </summary>
+      <returns>Null if not found</returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.GetAttributeValue(System.String,System.String)">
+      <summary>
+            Get unquoted value of attribute
+            </summary>
+      <param name="namespace">Namespace.  Can be no namepace (empty string), which is the default for attributes.</param>
+      <param name="localName">Local name - text after ":"</param>
+      <returns>Null if not found</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.HasEndTag">
+      <summary>
+        <p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;">[Missing &lt;summary&gt; documentation for "P:ICSharpCode.AvalonEdit.Xml.AXmlElement.HasEndTag"]</p>
+      </summary>
+      <returns> True in wellformed XML </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.HasStartOrEmptyTag">
+      <summary>
+        <p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;">[Missing &lt;summary&gt; documentation for "P:ICSharpCode.AvalonEdit.Xml.AXmlElement.HasStartOrEmptyTag"]</p>
+      </summary>
+      <returns> True in wellformed XML </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.IsProperlyNested">
+      <summary> No tags are missing anywhere within this element (recursive) </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.LocalName">
+      <summary> The part of name after ":" </summary>
+      <returns> Empty string if not found </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.Name">
+      <summary> Name with namespace prefix - exactly as in source </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.Namespace">
+      <summary> Resolved namespace of the name </summary>
+      <returns> Empty string if prefix is not found </returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlElement.Prefix">
+      <summary> The part of name before ":" </summary>
+      <returns> Empty string if not found </returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.ResolvePrefix(System.String)">
+      <summary>
+            Recursively resolve given prefix in this context.  Prefix must have some value.
+            </summary>
+      <returns> Empty string if prefix is not found </returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlElement.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlObject">
+      <summary>
+            Abstact base class for all types
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.#ctor">
+      <summary> Creates new object </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.Assert(System.Boolean,System.String)">
+      <summary> Throws exception if condition is false </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlObject.Changed">
+      <summary> Occurs after the value of any local properties changed.  Nested changes do not cause the event to occur </summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlObject.Changing">
+      <summary> Occurs before the value of any local properties changes.  Nested changes do not cause the event to occur </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.DebugAssert(System.Boolean,System.String)">
+      <summary> Throws exception if condition is false </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.GetAncestors">
+      <summary> Get all ancestors of this node </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.GetLocalName(System.String)">
+      <summary> The part of name after ":" </summary>
+      <returns> Whole name if ":" not found </returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.GetNamespacePrefix(System.String)">
+      <summary> The part of name before ":" </summary>
+      <returns> Empty string if not found </returns>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.GetSelfAndAllChildren">
+      <summary> Recursively gets self and all nested nodes. </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlObject.MySyntaxErrors">
+      <summary>
+            The error that occured in the context of this node (excluding nested nodes)
+            </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Xml.AXmlObject.NoNamespace">
+      <summary> Empty string.  The namespace used if there is no "xmlns" specified </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.OnChanged">
+      <summary> Raises Changed event </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.OnChanging">
+      <summary> Raises Changing event </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlObject.Parent">
+      <summary> Parent node. </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlObject.SyntaxErrors">
+      <summary>
+            The error that occured in the context of this node and all nested nodes.
+            It has O(n) cost.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObject.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Xml.AXmlObject.XmlNamespace">
+      <summary> Namespace for "xml:" prefix: "http://www.w3.org/XML/1998/namespace" </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Xml.AXmlObject.XmlnsNamespace">
+      <summary> Namesapce for "xmlns:" prefix: "http://www.w3.org/2000/xmlns/" </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1">
+      <summary>
+            Collection that is publicly read-only and has support 
+            for adding/removing multiple items at a time.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.ClearItems">
+      <summary>Removes all elements from the <see cref="T:System.Collections.ObjectModel.Collection`1" />.</summary>
+    </member>
+    <member name="E:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.CollectionChanged">
+      <summary> Occurs when the collection is changed </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.InsertItem(System.Int32,`0)">
+      <summary>Inserts an element into the <see cref="T:System.Collections.ObjectModel.Collection`1" /> at the specified index.</summary>
+      <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
+      <param name="item">The object to insert. The value can be null for reference types.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.RemoveItem(System.Int32)">
+      <summary>Removes the element at the specified index of the <see cref="T:System.Collections.ObjectModel.Collection`1" />.</summary>
+      <param name="index">The zero-based index of the element to remove.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.-or-<paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectCollection`1.SetItem(System.Int32,`0)">
+      <summary>Replaces the element at the specified index.</summary>
+      <param name="index">The zero-based index of the element to replace.</param>
+      <param name="item">The new value for the element at the specified index. The value can be null for reference types.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> is less than zero.-or-<paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlObjectEventArgs">
+      <summary> Holds event args for event caused by <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlObject" /></summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlObjectEventArgs.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlObjectEventArgs" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlObjectEventArgs.Object">
+      <summary> The object that caused the event </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlParser">
+      <summary>
+            Creates object tree from XML document.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlParser.#ctor">
+      <summary> Create new parser </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlParser.Clear">
+      <summary>
+            Clears the parser data.
+            </summary>
+      <exception cref="T:System.InvalidOperationException">No write lock is held by the current thread.</exception>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlParser.LastDocument">
+      <summary>
+            Returns the last cached version of the document.
+            </summary>
+      <exception cref="T:System.InvalidOperationException">No read lock is held by the current thread.</exception>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlParser.Lock">
+      <summary>
+            Makes calls to Parse() thread-safe. Use Lock everywhere Parse() is called.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlParser.Parse(System.String,System.Collections.Generic.IEnumerable{ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs})">
+      <summary>
+            Incrementaly parse the given text.
+            You have to hold the write lock.
+            </summary>
+      <param name="input">
+            The full XML text of the new document.
+            </param>
+      <param name="changesSinceLastParse">
+            Changes since last parse.  Null will cause full reparse.
+            </param>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlParser.UnknownEntityReferenceIsError">
+      <summary>
+            Generate syntax error when seeing enity reference other then the build-in ones
+            </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlTag">
+      <summary>
+            Represents any markup starting with "&lt;" and (hopefully) ending with "&gt;"
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlTag.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlTag" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlTag.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.Attributes">
+      <summary> Gets attributes of the tag (if applicable) </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.ClosingBracket">
+      <summary> Opening bracket - usually "&gt;" </summary>
+    </member>
+    <member name="F:ICSharpCode.AvalonEdit.Xml.AXmlTag.DtdNames">
+      <summary> These identify the start of DTD elements </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsCData">
+      <summary> True if tag starts with "&lt;![CDATA[" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsComment">
+      <summary> True if tag starts with "&lt;!--" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsDocumentType">
+      <summary> True if tag starts with one of the DTD starts </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsEmptyTag">
+      <summary> True if tag starts with "&lt;" and does not end with "&gt;" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsEndTag">
+      <summary> True if tag starts with "&lt;/" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsProcessingInstruction">
+      <summary> True if tag starts with "&lt;?" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsStartOrEmptyTag">
+      <summary> True if tag starts with "&lt;" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsStartTag">
+      <summary> True if tag starts with "&lt;" and ends with "&gt;" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.IsUnknownBang">
+      <summary> True if tag starts with "&lt;!" </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.Name">
+      <summary> Name following the opening bracket </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlTag.OpeningBracket">
+      <summary> Opening bracket - usually "&lt;" </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlTag.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.AXmlText">
+      <summary>
+            Whitespace or character data
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlText.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.AXmlText" /> class</summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlText.AcceptVisitor(ICSharpCode.AvalonEdit.Xml.IAXmlVisitor)">
+      <summary> Call appropriate visit method on the given visitor </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlText.ContainsOnlyWhitespace">
+      <summary> True if the text contains only whitespace characters </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlText.EscapedValue">
+      <summary> The text exactly as in source </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.AXmlText.ToString">
+      <summary>Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</summary>
+      <returns>A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.</returns>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.AXmlText.Value">
+      <summary> The text with all entity references resloved </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor">
+      <summary>
+            Converts the XML tree back to text in canonical form.
+            See http://www.w3.org/TR/xml-c14n
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.Output">
+      <summary>
+            Gets the pretty printed text
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.Print(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Create canonical text from a document </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.VisitAttribute(ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary> Visit RawAttribute </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.VisitDocument(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Visit RawDocument </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.VisitElement(ICSharpCode.AvalonEdit.Xml.AXmlElement)">
+      <summary> Visit RawElement </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.VisitTag(ICSharpCode.AvalonEdit.Xml.AXmlTag)">
+      <summary> Visit RawTag </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.CanonicalPrintAXmlVisitor.VisitText(ICSharpCode.AvalonEdit.Xml.AXmlText)">
+      <summary> Visit RawText </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.FilteredCollection`2">
+      <summary>
+            Collection that presents only some items from the wrapped collection.
+            It implicitely filters object that are not of type T (or derived).
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.FilteredCollection`2.#ctor">
+      <summary> Create unbound collection </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.FilteredCollection`2.#ctor(`1)">
+      <summary> Wrap the given collection.  Items of type other then T are filtered </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.FilteredCollection`2.#ctor(`1,System.Predicate{System.Object})">
+      <summary> Wrap the given collection.  Items of type other then T are filtered.  Items not matching the condition are filtered. </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor">
+      <summary>
+            Visitor for the XML tree
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor.VisitAttribute(ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary> Visit RawAttribute </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor.VisitDocument(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Visit RawDocument </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor.VisitElement(ICSharpCode.AvalonEdit.Xml.AXmlElement)">
+      <summary> Visit RawElement </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor.VisitTag(ICSharpCode.AvalonEdit.Xml.AXmlTag)">
+      <summary> Visit RawTag </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.IAXmlVisitor.VisitText(ICSharpCode.AvalonEdit.Xml.AXmlText)">
+      <summary> Visit RawText </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.MergedCollection`2">
+      <summary>
+            Two collections in sequence
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.MergedCollection`2.#ctor(`1,`1)">
+      <summary> Create a wrapper containing elements of 'a' and then 'b' </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor">
+      <summary>
+            Converts the XML tree back to text.
+            The text should exactly match the original.
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.Output">
+      <summary>
+            Gets the pretty printed text
+            </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.PrettyPrint(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Create XML text from a document </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.VisitAttribute(ICSharpCode.AvalonEdit.Xml.AXmlAttribute)">
+      <summary> Visit RawAttribute </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.VisitDocument(ICSharpCode.AvalonEdit.Xml.AXmlDocument)">
+      <summary> Visit RawDocument </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.VisitElement(ICSharpCode.AvalonEdit.Xml.AXmlElement)">
+      <summary> Visit RawElement </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.VisitTag(ICSharpCode.AvalonEdit.Xml.AXmlTag)">
+      <summary> Visit RawTag </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.PrettyPrintAXmlVisitor.VisitText(ICSharpCode.AvalonEdit.Xml.AXmlText)">
+      <summary> Visit RawText </summary>
+    </member>
+    <member name="T:ICSharpCode.AvalonEdit.Xml.SyntaxError">
+      <summary> Information about syntax error that occured during parsing </summary>
+    </member>
+    <member name="M:ICSharpCode.AvalonEdit.Xml.SyntaxError.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:ICSharpCode.AvalonEdit.Xml.SyntaxError" /> class</summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.SyntaxError.Message">
+      <summary> Textual description of the error </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.SyntaxError.Object">
+      <summary> Object for which the error occured </summary>
+    </member>
+    <member name="P:ICSharpCode.AvalonEdit.Xml.SyntaxError.Tag">
+      <summary> Any user data </summary>
     </member>
   </members>
 </doc>

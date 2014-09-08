@@ -1593,4 +1593,19 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class StringLengthToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (string.IsNullOrEmpty((string)value))
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
