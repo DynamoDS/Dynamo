@@ -165,11 +165,11 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
-        protected virtual string GetResourceName(ResourceType resourceType, bool addInputs = false)
+        protected virtual string GetResourceName(ResourceType resourceType, bool disambiguate = false)
         {
-            if ((resourceType == ResourceType.SmallIcon) && !addInputs)
+            if ((resourceType == ResourceType.SmallIcon) && !disambiguate)
                 return this.Name;
-            if ((resourceType == ResourceType.SmallIcon) && addInputs)
+            if ((resourceType == ResourceType.SmallIcon) && disambiguate)
                 return this.ShortenParameterType();
             else
                 return string.Empty;
