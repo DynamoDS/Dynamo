@@ -62,9 +62,9 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="topCategoryHeader"
+        <TextBlock x:Name="primaryHeader"
                    Foreground="#DDD">CREATE</TextBlock>
-        <ListBox x:Name="topCategoryList"
+        <ListBox x:Name="primaryMembers"
                  Grid.Row="1"
                  Background="Transparent"
                  BorderBrush="Transparent"
@@ -90,11 +90,19 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel x:Name="addCategoryHeaders"
-                    Orientation="Horizontal"
+        <StackPanel Orientation="Horizontal"
                     Grid.Row="2">
+            <TextBlock x:Name="secondaryHeaderLeft"
+                       Text="QUERY"
+                       Foreground="#DDD"
+                       FontWeight="UltraBold" />
+            <TextBlock x:Name="secondaryHeaderRight"
+                       Text="ACTIONS"
+                       Foreground="#DDD"
+                       FontWeight="Normal"
+                       Margin="10,0,0,0" />
         </StackPanel>
-        <ListBox x:Name="addCategoryList"
+        <ListBox x:Name="secondaryMembers"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
                  Background="Transparent"

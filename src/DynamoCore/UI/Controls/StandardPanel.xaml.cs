@@ -42,23 +42,23 @@ namespace Dynamo.UI.Controls
 
             if ((sender as FrameworkElement).Tag.ToString() == QueryHeaderTag)
             {
-                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+                secondaryMembers.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
 
                 ultraBoldIndex = 0;
             }
             else
             {
-                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+                secondaryMembers.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
 
                 ultraBoldIndex = 1;
             }
 
-            // Setting styles. 
-            if (areAllListsPresented)
-            {
-                (addCategoryHeaders.Children[ultraBoldIndex] as TextBlock).FontWeight = FontWeights.UltraBold;
-                (addCategoryHeaders.Children[1 - ultraBoldIndex] as TextBlock).FontWeight = FontWeights.Normal;
-            }
+            //// Setting styles. 
+            //if (areAllListsPresented)
+            //{
+            //    (addCategoryHeaders.Children[ultraBoldIndex] as TextBlock).FontWeight = FontWeights.UltraBold;
+            //    (addCategoryHeaders.Children[1 - ultraBoldIndex] as TextBlock).FontWeight = FontWeights.Normal;
+            //}
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -95,13 +95,13 @@ namespace Dynamo.UI.Controls
             // new TextBlock will be added to addCategoryList.
             if (!isCreateListEmpty)
             {
-                topCategoryList.ItemsSource = classInfo.CreateMembers;
+                primaryMembers.ItemsSource = classInfo.CreateMembers;
 
                 if (!isQueryListEmpty)
                 {
                     CreateAndPlaceQueryHeader(true);
 
-                    addCategoryList.ItemsSource = classInfo.QueryMembers;
+                    secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
                 if (!isActionListEmpty)
@@ -109,12 +109,8 @@ namespace Dynamo.UI.Controls
                     CreateAndPlaceActionHeader(isQueryListEmpty);
 
                     if (isQueryListEmpty)
-                        addCategoryList.ItemsSource = classInfo.ActionMembers;
+                        secondaryMembers.ItemsSource = classInfo.ActionMembers;
                 }
-
-                // gap should be added between bottom two categories 
-                if (addCategoryHeaders.Children.Count > 1)
-                    (addCategoryHeaders.Children[1] as FrameworkElement).Margin = new Thickness(10, 0, 0, 0);
 
                 return;
             }
@@ -124,14 +120,14 @@ namespace Dynamo.UI.Controls
             // Depending on availibility of QueryMembers it will be added to addCategoryList.
             if (!isActionListEmpty)
             {
-                topCategoryHeader.Text = ActionHeaderString;
-                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+                primaryHeader.Text = ActionHeaderString;
+                primaryMembers.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
 
                 if (!isQueryListEmpty)
                 {
                     CreateAndPlaceQueryHeader();
 
-                    addCategoryList.ItemsSource = classInfo.QueryMembers;
+                    secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
                 return;
@@ -141,14 +137,14 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in topCategoryList. 
             if (!isQueryListEmpty)
             {
-                topCategoryHeader.Text = QueryHeaderString;
-                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+                primaryHeader.Text = QueryHeaderString;
+                primaryMembers.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
 
                 return;
             }
 
             // All lists are empty. We should hide topCategoryHeader TextBlock
-            topCategoryHeader.Visibility = Visibility.Collapsed;
+            primaryHeader.Visibility = Visibility.Collapsed;
         }
 
         private void CreateAndPlaceActionHeader(bool makeUltraBold = false)
@@ -161,7 +157,7 @@ namespace Dynamo.UI.Controls
                 actionHeader.FontWeight = FontWeights.UltraBold;
             actionHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
 
-            addCategoryHeaders.Children.Add(actionHeader);
+            //addCategoryHeaders.Children.Add(actionHeader);
         }
 
         private void CreateAndPlaceQueryHeader(bool makeUltraBold = false)
@@ -174,7 +170,7 @@ namespace Dynamo.UI.Controls
                 queryHeader.FontWeight = FontWeights.UltraBold;
             queryHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
 
-            addCategoryHeaders.Children.Add(queryHeader);
+            //addCategoryHeaders.Children.Add(queryHeader);
         }
     }
 }
