@@ -6,35 +6,118 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
+    [MutationTest("FilePathMutator")]
     class FilePathMutator : AbstractMutator
     {
-        public FilePathMutator(DynamoViewModel viewModel, Random rand)
-            : base(viewModel, rand)
+        public FilePathMutator(DynamoViewModel viewModel)
+            : base(viewModel)
         {
-
         }
 
-        public override int Mutate()
+        public override Type GetNodeType()
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
             string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-
-            List<NodeModel> nodes = new List<NodeModel>();
-
             Type type = assembly.GetType("DSCore.File.Filename");
-            if (type != null)
-                nodes = DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
 
-            //If there aren't any File nodes, we can't mutate anything
-            if (nodes.Count == 0)
-                return 0;
+            return type;
+        }
 
-            NodeModel node = nodes[Rand.Next(nodes.Count)];
+        public override bool RunTest(NodeModel node, StreamWriter writer)
+        {
+            bool pass = false;
+
+            var valueMap = new Dictionary<Guid, String>();
+            if (node.OutPorts.Count > 0)
+            {
+                Guid guid = node.GUID;
+                Object data = node.GetValue(0).Data;
+                String val = data != null ? data.ToString() : "null";
+                valueMap.Add(guid, val);
+                writer.WriteLine(guid + " :: " + val);
+                writer.Flush();
+            }
+
+            int numberOfUndosNeeded = Mutate(node);
+            Thread.Sleep(100);
+
+            writer.WriteLine("### - Beginning undo");
+            for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoViewModel.UndoRedoCommand undoCommand =
+                        new DynamoViewModel.UndoRedoCommand(
+                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
+
+                    DynamoViewModel.ExecuteCommand(undoCommand);
+                }));
+                Thread.Sleep(100);
+            }
+            writer.WriteLine("### - undo complete");
+            writer.Flush();
+            writer.WriteLine("### - Beginning re-exec");
+
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoViewModel.RunCancelCommand runCancel =
+                    new DynamoViewModel.RunCancelCommand(false, false);
+
+                DynamoViewModel.ExecuteCommand(runCancel);
+            }));
+            Thread.Sleep(10);
+            while (DynamoViewModel.Model.Runner.Running)
+            {
+                Thread.Sleep(10);
+            }
+
+            writer.WriteLine("### - re-exec complete");
+            writer.Flush();
+
+            writer.WriteLine("### - Beginning readback");
+
+            writer.WriteLine("### - Beginning test of FilePath");
+            if (node.OutPorts.Count > 0)
+            {
+                try
+                {
+                    String valmap = valueMap[node.GUID].ToString();
+                    Object data = node.GetValue(0).Data;
+                    String nodeVal = data != null ? data.ToString() : "null";
+
+                    if (valmap != nodeVal)
+                    {
+                        writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
+                        writer.WriteLine(node.GUID);
+
+                        writer.WriteLine("Was: " + nodeVal);
+                        writer.WriteLine("Should have been: " + valmap);
+                        writer.Flush();
+                        return pass;
+                    }
+                }
+                catch (Exception)
+                {
+                    writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
+                    writer.Flush();
+                    return pass;
+                }
+            }
+            writer.WriteLine("### - test of FilePath complete");
+            writer.Flush();
+
+            return pass = true;
+        }
+
+        public override int Mutate(NodeModel node)
+        {
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {

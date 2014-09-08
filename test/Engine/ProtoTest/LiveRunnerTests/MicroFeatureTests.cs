@@ -3803,6 +3803,8 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void ReproMAG3600()
         {
+            //FLAKY TEST STRIKE (1/3): 2014-09-08
+
             List<string> codes = new List<string>()
                 {
                     @"import(""FFITarget.dll""); 
@@ -4867,6 +4869,7 @@ v = foo(t);
 
 
         [Test]
+        [Category("Failure")]
         public void TestComplexAssociativeUpdateReExecution()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434

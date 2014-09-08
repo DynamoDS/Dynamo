@@ -349,9 +349,7 @@ namespace DynamoUtilities
             {
                 subDirs = root.GetDirectories();
             }
-            // This is thrown if even one of the files requires permissions greater 
-            // than the application provides. 
-            catch (UnauthorizedAccessException e)
+            catch (Exception e)
             {
                 // TODO: figure out how to print to the console that Sandbox needs higher permissions
                 return false;
