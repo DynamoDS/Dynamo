@@ -1545,11 +1545,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool) value != true) return "(Up-to-date)";
+            var dvm = value as DynamoViewModel;
 
-            if (!(parameter is DynamoViewModel)) return "Could not get version";
+            if (dvm == null) return "Could not get version";
+            if (dvm.IsUpdateAvailable != true) return "(Up-to-date)";
 
-            var dvm = parameter as DynamoViewModel;
             var latest = dvm.Model.UpdateManager.AvailableVersion;
             return latest;
         }
