@@ -764,7 +764,15 @@ namespace Dynamo.Controls
                 }
 
                 if (this.startPage != null)
-                    this.startPage.PopulateSampleFileList(sampleFiles);
+                {
+                    string rootPath = Path.GetDirectoryName(
+                        Path.GetDirectoryName(sampleFiles.ToArray()[0]));
+                    DirectoryInfo root = new DirectoryInfo(rootPath);
+                    SampleFileEntry rootProperty = new SampleFileEntry("Samples", "Path");
+                    this.startPage.WalkDirectoryTree(root, rootProperty);
+
+                    this.startPage.SampleFiles.Add(rootProperty);
+                }
             }
         }
 
