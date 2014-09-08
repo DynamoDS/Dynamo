@@ -71,7 +71,7 @@
                                                     <MenuItem Name="GoToRoot"  Command="{Binding Path=GoToRootDirectoryCommand}" Margin="3" ToolTip="Go to the root folder of this package" Header="Show Root Directory" />
                                                     <Separator></Separator>
                                                     <MenuItem Name="UninstallButton" Command="{Binding Path=UninstallCommand}" Margin="3" ToolTip="Uninstall this package, only allowed if none of the types are currently in use" Header="Uninstall..." />
-                                                    <MenuItem Name="UnmarkUninstallButton" Command="{Binding Path=UnmarkForUninstallationCommand}" Margin="3" ToolTip="Remove the pending uninstall status" Header="Unmark for uninstall..." />
+                                                    <MenuItem Name="UnmarkUninstallButton" Command="{Binding Path=UnmarkForUninstallationCommand}" Margin="3" ToolTip="Remove the pending uninstall status" Header="Cancel pending uninstall..." />
                                                     <Separator></Separator>
                                                     <MenuItem Name="MakePackageButton" Command="{Binding Path=PublishNewPackageCommand}" Margin="3" ToolTip="Publish this package, if it has yet to be published." Header="Publish..." />
                                                     <MenuItem Name="MakeNewVersionButton" Command="{Binding Path=PublishNewPackageVersionCommand}" Margin="3" ToolTip="Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package." Header="Publish Version..."  />

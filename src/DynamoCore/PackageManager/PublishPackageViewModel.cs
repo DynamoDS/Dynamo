@@ -675,6 +675,9 @@ namespace Dynamo.PackageManager
 
                 Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
 
+                if (ContainsBinaries()) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesConstant;
+                if (ContainsPythonScripts()) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsConstant;
+
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
@@ -695,6 +698,20 @@ namespace Dynamo.PackageManager
                 this.dynamoViewModel.Model.Logger.Log(e);
             }
 
+        }
+
+        private bool ContainsBinaries()
+        {
+            return this.Assemblies.Any();
+        }
+
+        private bool ContainsPythonScripts()
+        {
+            return
+                this.CustomNodeDefinitions.Any(
+                    x => x.WorkspaceModel.Nodes.Any(
+                        n => n.GetType().Name == "PythonNode" ||
+                            n.GetType().Name == "PythonStringNode"));
         }
 
         /// <summary>

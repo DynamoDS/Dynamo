@@ -52,6 +52,9 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
+        internal static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+
         private readonly DynamoModel dynamoModel;
 
         /// <summary>

@@ -74,13 +74,11 @@ namespace Dynamo.ViewModels
             if (this.Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show(
-                        "The package " + this.Model.Name
-                            + " contains loaded binaries.  You will need to restart Dynamo fully, including the host application, before the uninstall takes effect.  Do you want to proceed?",
+                    MessageBox.Show("Dynamo and its host application must restart before uninstall takes effect.",
                         "Uninstalling Package",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-                if (resAssem == MessageBoxResult.No) return;
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Exclamation);
+                if (resAssem == MessageBoxResult.Cancel) return;
             }
 
             var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n"+
