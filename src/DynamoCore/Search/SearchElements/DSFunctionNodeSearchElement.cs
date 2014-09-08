@@ -48,19 +48,19 @@ namespace Dynamo.Search.SearchElements
             return this.FunctionDescriptor == other.FunctionDescriptor;
         }
 
-        protected override string GetResourceName(ResourceType resourceType, bool addInputs = false)
+        protected override string GetResourceName(ResourceType resourceType, bool disambiguate = false)
         {
             switch (resourceType)
             {
                 case ResourceType.SmallIcon:
                 {
-                    if (!addInputs)
+                    if (!disambiguate)
                         return FunctionDescriptor.QualifiedName;
                     return this.ShortenParameterType();
                 }
                 case ResourceType.LargeIcon:
                 {
-                    if (!addInputs)
+                    if (!disambiguate)
                         return FunctionDescriptor.QualifiedName;
                     return this.ShortenParameterType();
                 }
