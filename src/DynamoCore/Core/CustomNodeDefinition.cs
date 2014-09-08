@@ -252,7 +252,7 @@ namespace Dynamo
             // Schedule the compilation of CustomNodeDefinition, we are 
             // not interested in when it will be completed, so no callback.
             var scheduler = dynamoModel.Scheduler;
-            var task = new CompileCustomNodeAsyncTask(scheduler);
+            var task = new CompileCustomNodeAsyncTask(scheduler, null);
             if (task.Initialize(initParams))
                 scheduler.ScheduleForExecution(task);
 

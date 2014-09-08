@@ -443,17 +443,14 @@ namespace Dynamo.Models
             if ((traceData != null) && traceData.Any())
             {
                 // If we do have preloaded trace data, set it here first.
-                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler, null);
                 if (setTraceDataTask.Initialize(EngineController, HomeSpace))
                     scheduler.ScheduleForExecution(setTraceDataTask);
             }
 
-            var task = new UpdateGraphAsyncTask(scheduler);
+            var task = new UpdateGraphAsyncTask(scheduler, null);
             if (task.Initialize(EngineController, HomeSpace))
-            {
-                task.Completed += OnUpdateGraphCompleted;
                 scheduler.ScheduleForExecution(task);
-            }
         }
 
         /// <summary>
