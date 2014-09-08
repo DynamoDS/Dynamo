@@ -77,16 +77,16 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                BitmapImage icon;
-                icon = GetIcon(
-                    this.GetResourceName(ResourceType.SmallIcon, false)
-                        + Dynamo.UI.Configurations.SmallIconPostfix);
-                if (icon != null) return icon;
+                var name = GetResourceName(ResourceType.SmallIcon, false);
+                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
 
-                // Try to load image with using incoming parameters.
-                // It's used in overridden methods.
-                return icon = GetIcon(this.GetResourceName(ResourceType.SmallIcon, true)
-                        + Dynamo.UI.Configurations.SmallIconPostfix);
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.SmallIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                }
+                return icon;
             }
         }
 
