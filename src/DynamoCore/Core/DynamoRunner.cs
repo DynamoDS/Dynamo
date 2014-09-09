@@ -153,7 +153,7 @@ namespace Dynamo.Core
 
             if (cancelSet)
             {
-                dynamoModel.Reset();
+                dynamoModel.ResetEngine(true);
                 cancelSet = false;
             }
         }
