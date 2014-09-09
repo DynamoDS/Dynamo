@@ -2903,4 +2903,83 @@
         DG/jX0BV1S+9sWBuD8DufQAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.Plane.Offset.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABiElEQVRYR+2WwU3DQBBFXQIl
+        uISUYI5IHFxCSkgJ7iASDeSCuLoEiwo4c4IOUsLy//hPZCcbZ7U2kUB+0pf3Z9ezw85OQrGyco0QQgWV
+        Gm/kHwZzUS+Z15x7W5sEFh8g0sh3vT0FdS68ZGjO/Rd9Eljc9u+EnfweYhIbeY6jXjKvOXqSngDBC+lH
+        tiTYuIZYAjveJWAsxbQTnQSLRsefw/vzU3DRIxb/KGJlmQSLWLOGT32UhW9OEKtMiokFbJlZGzvDBBzG
+        5h6yl2ByB5FWnreZeDs6o/bTeNR+32+vcqdu8FjXS4vJUa347O0iCbAEpKb/dWIluCt/O4HHl88SaqGt
+        /B7qIOsQjaNe6jwB91D6FxsW13rJfg3xZJAKshbSOOqlapAA/QGyi3w35paARz7rx+g8AZ6ChtNgIet/
+        lM0mksAHdPseYBFrZpcvF27u0keMy3tld2qSpEWZpCZwhLz9tlAD2dFpTHl3mNeYpRt6dgW9x+L4dmnP
+        XloyAfrs/zFWVv4rRfEDomdsBUHPOCkAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABzElEQVRYR+1WO07DQBT0EXIE
+        jpAjwA1yApSWjiOkpYrEBSwqyrR0KaCgS4lAAksRBSmwj2BmHvPQWv7GMa480sge7+574931PkcT+iJN
+        0zkpOT6QfEtKjgskXoC5uNDj8YCkSWAg0eNx4QYkx8dk4F8NXNy+zsEVeC69lD6TXoUG1Gbtomm1ue7+
+        taDzBsw5UHor7YYseWCAbdYumlab64y6E9CZb8yk5lr6lBlgLNODITQwOOS48Zg9xgBirRWzvXawE8g1
+        azzhjjTge6h9I6LTDOSaL/WoEm4AnOlRLZiY8dCXR/gwtSMw0IespNXLAafcwZyu2l2LwXEQrA8bDfgZ
+        cK1HBWBgmLxxmRyIZWfB/us7w5jmJUBH7gEOKK1tn+SEx5RshpKXpqdvcofitptAJ05/4fM6NTlRFbcE
+        dOBUZSQS2bE7RHICMXdgAnb7kVXi8Nerd/LOgDuuEz9D/nL/JX98OXhhsXUEbYO61r1vXtcsQtT2xrjy
+        MGLs+n2gDvnV/cfOk5PPb4e12m0dPYhr3TNZqP08sZqCa6HEVwKNVjpvHvY8KOL46XNzeffOc9ymn22i
+        v5Vp3bOGhNpLupunpgnbWxMm/CKKfgD3GsrSbBTjRAAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Point.Add.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAA2ElEQVRYR2MYBaNgFAwrEBoa
+        +h8XhiqhLQBZpKSkhIHp7oB3797B8agDBsQB6JhmDjjo46kAxAVAfB9EgyzChaFaqAuAlhoA8X8odoAK
+        0w+AfA3E74H4PBALQIXpA4AWBkAtN4AK0Q+ALIVaHgAVoh8AWioAtbwAKkQ/ALUcFN/zoUK0A9iy0kx/
+        v//L/HwGplCptrL4v9jF6X9MSAh9HeA46eb/worF/3cGBP130NKkXaGCDpAdMDOp7H9k6z4wf0AcAMMD
+        4gB0TFcH4MJQJaNgFAwHwMAAAHGf8/MvfG2MAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Point.AsVector.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAkklEQVRYR+2UwQmEMBBFU4I1
+        pJK1Ay/pw04WtgFLsBTPVmEJ44z8FVFzzETkP/gQfgbekEMCISRHSklywUhZTBRjvMR9gfY37+ECVRY4
+        x3WBXDDybESk03w1k+aD2geI/yyo/VBpY+JNLzKi9kGFJrdnH5AeV+U5ylFtHY5luZO7QTnlrlSVGyq2
+        P76OnJAXEsIKdWn5M6rFF10AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Point.Project.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABiklEQVRYR+1UO07DQBT0EThC
+        5BOkghZKJApASp8jIBra3CASF8kRIk6QmoojcASYeZqxHMdrryNwCnukkXd23+4b7+cVM2YMxWq1+klR
+        If8LJirL8oSjG7h7/6w4XQMfD/eXM0DSgNujGjBpoK4VMh5oQM3LYLoGcPNvSRuwBq/E0BoLzXY2MGEL
+        8oltpPfSXrR6hnXNcTG0xqwP1FlAsBOmDFDvawZCg0sxtMaoOfebOhuYENspeQIk/6IBftX1N0DSBcgj
+        WKvrCH7zb89PcQT89tUBrqU1l+pKA0E+s9jCJpjI1e/15jqrEip5daSdQBANbMAXdR3BBurIMOA1h72G
+        NpxjYBDg8gByu1rP68wd4L3KewkKJFtfgA002bcDXleyGwhM3lYmSlEhrcCaCzXTYGKwuizSvEAxWW0y
+        dsda7WYJ5rZTx8/g+wh2X0QFcKt20q6Arog+HieptpV9De21XBF30umniEGX0a003y91FCW1Sf9VaLWb
+        JZjFh9prUdNEfzGaMSEUxS+ZCA2tZxqb1QAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Point.PruneDuplicates.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAA6klEQVRYR+2UwQ2DMAxFGaEj
+        ICboGpV64MK9a+XUWTpBR+gGWYF+IzsKIm4NbWgPftJXQrDyPw7QOI6jMQzDaBGXfx/L5qWa2/l04WkC
+        az105EsbsnnXdWNJeY0AkwN0h668NAWCRqjnJRt5gBjjTFoAAkYpBCTmi668ZWsAAoYU4rHZnPgwgDw5
+        hUjHsYqtATJzGhfvhJk8QEl5jQCjFpq1HXMJse4otPbmKB1oeZqgEDy1Q5tbxOVOIoQwdUUbq1HdwErp
+        iyHRvaohZXMy0/4bu/AqgHdgtw6UNBX9mqodIMRAGx3nD2maJ3xoaV5eVREdAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Point.Subtract.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAA3klEQVRYR2MYBaNgFAwrEBoa
+        +h8XhiqhLQBZpKSkhIHp7oB3797B8agDBsQB6JiuDsCFoUqGOMDmMxiGKqEtAFk04HEMstBx0s3/ndkd
+        /yNb9w2MAyqLZ/3fGRD037PvAv0dEKKvB7Yc5HtQSNDVAZnBwf+3e7qDHQGyGIbp4oCDPp4Cu3y9/rcE
+        BoAtRMdQZbQBIMuB+DwQz4cK0ReALAbi/VAufQHQ4n6o7wWgQvQBQAsboJa/B2IDqDD9ANDS/UD8H+QI
+        qBB9AdTnoKAvgArRFwAtpn+wjwL6AwYGAMyi7SJ75cubAAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>
