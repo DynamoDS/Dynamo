@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -8,22 +7,9 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
-        //TODO: use LibraryViewModel if it will be ready
-        private readonly SearchViewModel viewModel;
-        private readonly DynamoViewModel dynamoViewModel;
-
-        public LibraryView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
+        public LibraryView()
         {
-            this.viewModel = searchViewModel;
-            this.dynamoViewModel = dynamoViewModel;
-
             InitializeComponent();
-            Loaded += LibraryViewLoaded;
-        }
-
-        private void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            DataContext = this.viewModel;
         }
 
         private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
