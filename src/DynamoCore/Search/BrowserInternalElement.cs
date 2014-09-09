@@ -51,8 +51,6 @@ namespace Dynamo.Nodes.Search
                 {
                     classDetails = new ClassInformation();
                     classDetails.PopulateMemberCollections(this);
-
-                    classDetails.ClassDetailsVisibility = true;
                 }
 
                 return classDetails;
@@ -229,7 +227,13 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
-        public bool ClassDetailsVisibility { get; set; }
+        public bool ClassDetailsVisibility
+        {
+            get
+            {
+                return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
+            }
+        }
 
         public ClassInformation()
             : base()
