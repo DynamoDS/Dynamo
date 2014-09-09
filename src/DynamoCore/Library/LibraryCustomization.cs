@@ -97,7 +97,15 @@ namespace Dynamo.DSEngine
                 fn = fn + Configurations.ResourcesDLL;
 
                 resourceAssemblyPath = Path.Combine(dir, fn);
+                bool resourceAssemblyExistence = File.Exists(resourceAssemblyPath);
 
+                // If resource assembly was not found, that use DynamoCore.dll as default.
+                if (!resourceAssemblyExistence)
+                {
+                    var defaultAssembly = Configurations.DefaultAssembly
+                        + Configurations.ResourcesDLL;
+                    resourceAssemblyPath = Path.Combine(dir,defaultAssembly); 
+                }
                 return File.Exists(resourceAssemblyPath);
             }
             catch
@@ -144,7 +152,9 @@ namespace Dynamo.DSEngine
         public string GetNamespaceCategory(string namespaceName)
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
-            var obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            object obj = String.Empty;
+            if (XmlDocument != null)
+                obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
         }
 

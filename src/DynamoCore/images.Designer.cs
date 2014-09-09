@@ -143,6 +143,16 @@ namespace Dynamo {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Autodesk_DesignScript_Geometry_Arc_ByStartEndAndTangencies_Small {
+            get {
+                object obj = ResourceManager.GetObject("Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Concat_Large {
             get {
                 object obj = ResourceManager.GetObject("Concat.Large", resourceCulture);
