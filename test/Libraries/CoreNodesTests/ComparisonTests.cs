@@ -11,6 +11,7 @@ namespace DSCoreNodesTests
     static class ComparisonTests
     {
         [Test]
+        [Category("UnitTests")]
         public static void LessThan_Ints()
         {
             Assert.AreEqual(true, Compare.LessThan(0, 1));
@@ -19,6 +20,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThan_Doubles()
         {
             Assert.AreEqual(true, Compare.LessThan(0.0, 1.0));
@@ -27,6 +29,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThan_DoublesAndInts()
         {
             Assert.AreEqual(true, Compare.LessThan(0.0, 1));
@@ -35,6 +38,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThan_Strings()
         {
             Assert.AreEqual(true, Compare.LessThan("a", "A"));
@@ -44,6 +48,7 @@ namespace DSCoreNodesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThan_Ints()
         {
             Assert.AreEqual(false, Compare.GreaterThan(0, 1));
@@ -52,6 +57,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThan_Doubles()
         {
             Assert.AreEqual(false, Compare.GreaterThan(0.0, 1.0));
@@ -60,6 +66,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThan_DoublesAndInts()
         {
             Assert.AreEqual(false, Compare.GreaterThan(0.0, 1));
@@ -68,6 +75,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThan_Strings()
         {
             Assert.AreEqual(false, Compare.GreaterThan("a", "A"));
@@ -77,6 +85,7 @@ namespace DSCoreNodesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThanOrEqual_Ints()
         {
             Assert.AreEqual(true, Compare.LessThanOrEqual(0, 1));
@@ -85,6 +94,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThanOrEqual_Doubles()
         {
             Assert.AreEqual(true, Compare.LessThanOrEqual(0.0, 1.0));
@@ -93,6 +103,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThanOrEqual_DoublesAndInts()
         {
             Assert.AreEqual(true, Compare.LessThanOrEqual(0.0, 1));
@@ -101,6 +112,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LessThanOrEqual_Strings()
         {
             Assert.AreEqual(true, Compare.LessThanOrEqual("a", "A"));
@@ -110,6 +122,7 @@ namespace DSCoreNodesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThanOrEqual_Ints()
         {
             Assert.AreEqual(false, Compare.GreaterThanOrEqual(0, 1));
@@ -118,6 +131,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThanOrEqual_Doubles()
         {
             Assert.AreEqual(false, Compare.GreaterThanOrEqual(0.0, 1.0));
@@ -126,6 +140,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThanOrEqual_DoublesAndInts()
         {
             Assert.AreEqual(false, Compare.GreaterThanOrEqual(0.0, 1));
@@ -134,6 +149,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GreaterThanOrEqual_Strings()
         {
             Assert.AreEqual(false, Compare.GreaterThanOrEqual("a", "A"));

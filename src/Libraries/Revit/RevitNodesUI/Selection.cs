@@ -20,7 +20,11 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
+
+using Revit.GeometryObjects;
 using Revit.Interactivity;
+
+using RevitServices.Elements;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
 
@@ -143,7 +147,15 @@ namespace Dynamo.Nodes
                 else
                 {
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
-                    selectedUniqueId = selectionOwner.GetElement(selectedElement).UniqueId;
+                    var el = selectionOwner.GetElement(selectedElement);
+                    if (el != null)
+                    {
+                        selectedUniqueId = el.UniqueId;
+                    }
+                    else
+                    {
+                        selectedUniqueId = string.Empty;
+                    }
                 }
 
                 if (dirty)
@@ -320,13 +332,21 @@ namespace Dynamo.Nodes
             // When there's no selection, this returns an invalid ID.
             var selectedElementId = selectedUniqueId ?? "";
 
-            var node = AstFactory.BuildFunctionCall(
+            AssociativeNode node;
+            if (string.IsNullOrEmpty(selectedElementId))
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                node = AstFactory.BuildFunctionCall(
                 new Func<string, bool, Element>(ElementSelector.ByUniqueId),
                 new List<AssociativeNode>
                 {
                     AstFactory.BuildStringNode(selectedElementId),
                     AstFactory.BuildBooleanNode(true)
                 });
+            }
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
@@ -552,17 +572,18 @@ namespace Dynamo.Nodes
                 }
 
                 stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
+
+                var args = new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode(stableRep)
+                };
+
+                node = AstFactory.BuildFunctionCall(new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation),args);
             }
-
-            var args = new List<AssociativeNode>
+            else
             {
-                AstFactory.BuildStringNode(stableRep)
-            };
-
-            node = AstFactory.BuildFunctionCall(
-                    "GeometryObjectSelector",
-                    "ByReferenceStableRepresentation",
-                    args);
+                node = AstFactory.BuildNullNode();
+            }
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
@@ -624,8 +645,12 @@ namespace Dynamo.Nodes
                 if (selectedElements != null)
                 {
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
-                    selectedUniqueIds =
-                        selectedElements.Select(x => selectionOwner.GetElement(x).UniqueId).ToList();
+                    
+                    selectedUniqueIds.Clear();
+
+                    var elements = selectedElements.Select(id => selectionOwner.GetElement(id))
+                        .Where(el => el != null).Select(el=>el.UniqueId);
+                    selectedUniqueIds.AddRange(elements);
                 }
 
                 if (dirty)
@@ -812,7 +837,7 @@ namespace Dynamo.Nodes
         {
             AssociativeNode node;
 
-            if (SelectedElement == null)
+            if (SelectedElement == null || !SelectedElement.Any())
             {
                 node = AstFactory.BuildNullNode();
             }
