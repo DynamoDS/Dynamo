@@ -165,14 +165,13 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
-        protected virtual string GetResourceName(ResourceType resourceType, bool disambiguate = false)
+        protected virtual string GetResourceName(
+            ResourceType resourceType, bool disambiguate = false)
         {
-            if ((resourceType == ResourceType.SmallIcon) && !disambiguate)
-                return this.Name;
-            if ((resourceType == ResourceType.SmallIcon) && disambiguate)
-                return this.ShortenParameterType();
-            else
-                return string.Empty;
+            if (resourceType == ResourceType.SmallIcon)
+                return disambiguate ? ShortenParameterType() : this.Name;
+
+            return string.Empty;
         }
 
         private BitmapImage GetIcon(string fullNameOfIcon)
