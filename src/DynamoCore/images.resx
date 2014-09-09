@@ -2798,4 +2798,109 @@
         AABJRU5ErkJggg==
 </value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAB5ElEQVRYR+2UO0sDQRSF8xPy
+        E0LQLkJ8VCL46HwU2lmIRNJYpLFTLIyIhAgiWAhWFoIiCCnERotgoXau2JlGwSCCEH/Cer/hzrKJMa4S
+        NxBy4JDM3Ltzzty5M5EO2hbxeNytpYbCAYKVSsVjyww85HOtNfByc+2+l8utMQA3hwbdxYH+cA2M7j5G
+        hS7cS68kr6bGkxoKByKcVQMFER8ROhr6HrZkfmroVxBRdv+hBlLMYcIEGwFBe2X+2rUq7qh4Uacx4Pxo
+        whqQRPf58sLdHxvmP+eXEkY1zYOtkp8+cSoQ01QMsI43rgsWwEDp+Mhcm/m+XgzEhEUh58iYX8Yx4uT5
+        K+YT95qOeW4Bt8Ea1VA1bBChRHdXVSILCncmt++cpeVDdyZ/ayrEHSf/9d4x47mNi6fT2QVjUJgVRid6
+        Eu5b6dHkBjpa+YhymZKLaExYFNrdeWQhu3sqgRDfqTAGDoQjGONI5X9gA6bkIsKubTfDA+G00JwlC9XS
+        LFAD5q3RoAaSC+vnGLDiNFbjBmoAv0FLDdUHFUivnfnFv9yAf0Vm9SQlFUAcE+GKg1xmq0Cni3hWp8ID
+        O2b3WoHwd0+D8MDAQA3TbCDIgxH40Wg2EOTVgi0z8KtHo9lAsJYa6qCDdkUk8gnXZ9+ifnQl6wAAAABJ
+        RU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.Knots.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABY0lEQVRYR+2V3Y2DMBCEKYES
+        IipICXcdpARKSAl0gJQGKIESKCHP93QdkBKcGWuMwJi/BOch4pNGwWuxs2sWkhx8LVmWGV/aWocx5gSd
+        tRyBvXRun4Zt23baVAAS51AtlQp3IFZAFZQrNOLdAv51ObgmNIUKLSd5uQAkP0ONllw3jGnJ9R0qFa8U
+        HkFDX9qah2ZMrmWoAHLSdfAx/N7+UshIqcLrQdK5R8ATsEnxy5MIFVDIvFZoG0wKuSG0Bvhlt1foojgH
+        kacz6JAdQw8VMDmkiyDx4DXU2nXOV/DHbvSQ+V3m3WOMQmjIeuY8ATsn0aCh/5r1zCc/UC/BhFAJNZA1
+        miiA+/t1zmRK6rrrFCpAt+0DTNi1m2aqgi6Q7ZCGvuyNewCTvjkHK+5A+cDQHTvNt3/J3gGGucx5Ap81
+        JzCtVcDiP97usGOZU5/vPupkr4GGUd/tJY4CaOhLWwcH30qSPAETcvZDYe0YXAAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.Weights.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABV0lEQVRYR+1U0Q2CMBRkBEYw
+        TMAIugEjMIIjsIGJCzCCIzCC3365AY5Q75prgxUtGqiJ4ZIL7Xvtu/faR7MVf4uiKExIudKAgn3fe64J
+        /CSBkHItj93xkoNGzGVOB4g2Ej/JlA6sGLwpgVrmNJD4WeKdzMtgrMkG4jyBjZYuAwqGv9lAvNSyecCA
+        4AHsQCv0IgH656ucwRTUVec5loC2zQOIsGrXzWQLVqCtkIIh7cY5AJGhOBtr2YYKAUF37BRP+5JBsJY4
+        TyAqboypwT34tBa2xlGmOCB6UgLRTQh8AClOPjy7mG/BVt+tzO/BiiVOTqn+quHDmMC8Apng9P75pLMR
+        mJX555Zj2jR1fh4/7a3M70HBqf82gm4YXFOXwGi1sJ/B+Ov4SQIEgl7BXLRXgC8T89fnfEPbS3yRQAmy
+        cl8hvmw8NiXvnz6yshtioGBIuVas+Fdk2R2ZYe68bYDl6wAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsSurface.ControlPoints.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAACmklEQVRYR+2WT1ITQRjFcwSO
+        QE1C/lFFjViW5c4DgEYQFYyYle4UEIMCmoCogEKWlisXVlEuXbmzOAJH4AhzhPa9nu5Mz0yb+UNMsfBV
+        vTLVZr7366+/aVL4r4vKcRxhWi2PTgzVuhQA5YW3Lb1uWn75Xyga5MysilJj45yftfhZfX34QqDH0JhH
+        AYAgNxaszW4Yri69H4+uqTL55cyu9azhFhdvrctQrQsDFG+/HIM9WXhmLRZo9TABSnOvu8XGhgCE7zQg
+        CDWtSiUr+mD5Xsct330jSvNbAiAiDPLCHg7XmgfiRuf3TVU2vRiqxc8YKK9yf4cgYoIgcwC5Q5D2QJCp
+        J1+yt32y1RuLAtQfHYrqw4+isrgnJMgCQbYBsgmQVwAIQJzZAGT6+cmZKptOteZ+q7782WOo6cnHxwLr
+        oTUat2AERHdjnZcT27+iSicLO2txh9xprXkoA9GNkBmqxc+VxXfoSNcHmQ+DTD39SoBxVX6w8KDLs+UZ
+        s8U4c4Dsy9bXl4/+CsAhqy59EJUHu3hWg2yJCfx7ffPXN1U+WZjqU043H+a0sxiLEgTHApBPOIYjGWra
+        tsZnrzz77qXePdrl6rNj+9hGCYJdhEEO+iCDjmV65YThriqfLExrD1dsMEAhkG0JwnPmebPdAcixFSD1
+        zrUAcKpfG75CAUg7AMGk+yA7PggGlbPB3TLUtCqbXv1ww7xU+iC4bHjpBCAddGJPXGv/PMu8W60otQ2C
+        joFgUHkLXl39kX7IbGKo1iAA35gPXCwaRN3v8mdYbmUDUOagAgSv2Lkqk18y1LQexPh6yBxM7L6rygxX
+        CGgwVMsGoNqf/h3PqiSAXH9es0iGmuYv4Mia+upoBIDYbwP1X6PTpQAwrZZzqlD4A1eYT7bXBRHdAAAA
+        AElFTkSuQmCC
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsSurface.UKnots.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAB1UlEQVRYR+2VTUrDUBSFu4Qs
+        QbqCWKpFEVoRHQhKQJ13CZ2JImqdCUKxoIKgEXUkYhFRJ0px4kipoIP6W3eQJTzPLfeF26bESBNB2wMf
+        zXsvuefkviSNdfVvpZQygMlDz7htxeNxJeFpVzDLgDIPPeO2RaZanRtAwtOuIg/wnWBGD50DTD4uE7z8
+        O4KhBUrABhSkwEvtaWj91gDLI5v3zszhpwL0m+PlaAVjE1SAIiZ2qxRAY/Np0YjNHW1OpIt3amq/Fn0I
+        mFHba9KcSBcf1OjGi5o+cAOEHwJGZO62XZIpPqnh4rMa336TAXxf0R9JFhpYvVb9KxcquXiq+vLnanDt
+        BubVegDC2vtoCEAKJYAu1Dt71EBi/sQ1J8a2XsPpAIobIJuYO67JQtKckGs6RNMDqamAAsiCDNt4haIm
+        sIGjTfwgY90dHUBuQzMyMMG23u96K7NWyGsCBKh3U4uO2d77z4bigTuRXDhzzX0CUPuNwAF4ui6YWKAk
+        TZtJFx7dAE3fA/pEu3tOtSU87bMgBCN6MHOgoo01qfxV3Vy+BaAEDL48XMG0BxRATYegLkzuvOu7tvjU
+        6AVz2iI7tXRJxtHdtZ+CbGGkIlOtzg0g4emu/oJisS+zA/xz9uTRRQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsSurface.VKnots.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAB7UlEQVRYR+2Wz0oCYRTFfYR5
+        BPEJTPpDEVhELYJCqPY+QrsooqxdEEhCBUEZ1Soiiag2tWjTqjCohf2d3mAe4escud9w1bIBR6HywA+9
+        d/A7Z+43f4y09WdljImDqJSso+xJ2bhisZjRSNsXzKZBXkrWefakbFw0tfomAM/Yk5K1BxwpG9dPASgc
+        KoCUUJB2OKKpRtoVgmkacPQkJe3WCaYOcEFRWq0XzDMgvIuP6l+7cUBmaOPOmzr4MICf4Zp8JxjHQREY
+        MrZTYgCLf9s1RWLuWXOSzN2aiT23+SFgxrG72pwkc/dmeP3ZTO77AcIPASOa+2PXDOQezWDuyYxuveoA
+        P96igaUX6l25Mt3L56Zz4cR0LZ2ZvtVrmJfKAUhq970iABVKALtQx8xhBYm5Y9+cjGy+hDMBLO6AdGL2
+        yNULaXOij9kQVRekpQiyIA0GxKZWWDQO8sCzJvWgsZ2ODaC3oRodmIht7XP9K7Ov0L8JEKA8TSt+F/va
+        NxsWDzyJzvlT37xOAI7fCRxA2mXBJAUK2rSaZPbBD1D1POAj2t9zrq2Rdp0DSjDihTkNitbY0rN0WTbX
+        dwEogPD+gGjBNAqywLUhOIXx7Td71q1798OcW5TvWbygcfPOup6CbGFTRVOr/xtAI+22foMikU+LWOhZ
+        VCu7YQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsSurface.Weights.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAC6UlEQVRYR+1WbUsUURT2J/gT
+        lv0FGwi9UDkm9iK2rZbopsSaYvk+7rIrq0uMJfS6Dm5oZeWGRh8KWrA+hWAUBIGxRQW9b/9gfsLpPLc7
+        w3VnjG1XhMgHHubO2XvP88w5985s1Ta2US78fj+plOGtA0RtFBvgkMaMyFsHHPMxdXlbGTYywLcRpi7p
+        mOAxTBnytnJAVGVvb2814iySExMYPF6VQxFnwpTJFHMrAgvmmQEIM7MYI14kqo7z8hpilt8GKQhxnwwJ
+        8H2OaSA5E+UGMa6WzGIeX2HAtT9KBotoXQNRY+/MK6N+7o3Vev8nMa22O+8M/BaPx7MsACMghCEIBmSs
+        oqfXuvsGicXzTFzp6MInGBBsW/goqoB5csnmgZMGTkYn9bprz4SwzdrMGh1fLDgmmNgPaFH5ZfYCnqw5
+        NbdO/LeBt9Qw+4VOLDkG7EqEmKLvFQOJWLxQO/3cZUDLfKC6zGdqnP9GvA8oPPuCeobjxUd03YYtGbww
+        oCbqGElRMJam8GCSjozfppZEmpqmntKx84/p8JWX1NM3RO03XwsTmA9IAxFmSKYtDbxAxyI10Y6xh4K7
+        4ouC+2O3qPHiijCA68EbX502YL5NzuNjuo6uJzAp3D+mdfbFaHdiyVIT2QZsqr+hDWDRhrSZZ5qnY0ah
+        K3kVm9TbSNPIJa37TD8diM66xLwIYbs6toHQvR9eBgRVw6CUdb/XUV4vwWKqa0owUMA8GxhLefeXrW0g
+        qbcOTAgjNYkHnuI2a1JPHPGNDJy6kLW47GbJBngy3vdi56Il+2LzeWw4LwNgrfneMaC+D3AiIhPmKvIw
+        fcitUsq7WyDDAtJMKHJ22GwZMvL1o9et4qrsnFwR4uop6Lz8iLr1cTzE5vwBATiZxsQn2DqkT682jM44
+        LUIVgne/i6fuSC/je1DasSsHnBhVwdnOBYenzOahSWvPuWWrfX4N5Ua//+6lUwlg5E8t3BJA1Mb/a0Cl
+        DG/jX0BV1S+9sWBuD8DufQAAAABJRU5ErkJggg==
+</value>
+  </data>
 </root>
