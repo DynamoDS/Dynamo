@@ -15,11 +15,8 @@ namespace Dynamo.UI.Controls
     {
         #region Constants
 
-        private const string CreateHeaderString = "CREATE";
-        private const string ActionHeaderString = "ACTIONS";
-        private const string QueryHeaderString = "QUERY";
-        private const string ActionHeaderTag = "actionHeader";
-        private const string QueryHeaderTag = "queryHeader";
+        private const string ActionHeaderTag = "Action";
+        private const string QueryHeaderTag = "Query";
 
         #endregion
 
@@ -39,27 +36,17 @@ namespace Dynamo.UI.Controls
             if (!areAllListsPresented)
                 return;
 
-            int ultraBoldIndex;
-
+            var classInfo = this.DataContext as ClassInformation;
             if ((sender as FrameworkElement).Tag.ToString() == QueryHeaderTag)
             {
-                secondaryMembers.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
-
-                ultraBoldIndex = 0;
+                classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                secondaryMembers.ItemsSource = classInfo.QueryMembers;
             }
             else
             {
-                secondaryMembers.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
-
-                ultraBoldIndex = 1;
+                classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
+                secondaryMembers.ItemsSource = classInfo.ActionMembers;
             }
-
-            //// Setting styles. 
-            //if (areAllListsPresented)
-            //{
-            //    (addCategoryHeaders.Children[ultraBoldIndex] as TextBlock).FontWeight = FontWeights.UltraBold;
-            //    (addCategoryHeaders.Children[1 - ultraBoldIndex] as TextBlock).FontWeight = FontWeights.Normal;
-            //}
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -113,12 +100,15 @@ namespace Dynamo.UI.Controls
                 {
                     classInfo.SecondaryHeaderLeftVisibility = true;
                     classInfo.SecondaryHeaderRightVisibility = true;
+                    classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
                 if (!isActionListEmpty && isQueryListEmpty)
                 {
                     classInfo.SecondaryHeaderLeftVisibility = true;
+
                     secondaryMembers.ItemsSource = classInfo.ActionMembers;
                 }
 

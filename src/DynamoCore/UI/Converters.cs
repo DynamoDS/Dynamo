@@ -23,6 +23,7 @@ using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
 using Dynamo.Search;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
 {
@@ -1649,16 +1650,16 @@ namespace Dynamo.Controls
         {
             bool shouldPrefixColon = false;
 
-            if(parameter!=null)
+            if (parameter != null)
                 shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
-            if (string.IsNullOrEmpty(input) || input.Equals(NoneString)) 
-                    return NoneString;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return NoneString;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString,SpaceString, input);
-            else 
+                return String.Concat(ColonString, SpaceString, input);
+            else
                 return input;
         }
 
@@ -1683,6 +1684,26 @@ namespace Dynamo.Controls
                 default:
                     return "Header is undefined";
             }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DisplayModeToFontWeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var displayMode = (ClassInformation.DisplayMode)value;
+            if (parameter == null)
+                return FontWeights.Normal;
+
+            if (displayMode.ToString() == parameter.ToString())
+                return FontWeights.UltraBold;
+
+            return FontWeights.Normal;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

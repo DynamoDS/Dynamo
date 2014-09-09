@@ -210,6 +210,22 @@ namespace Dynamo.Nodes.Search
         public bool SecondaryHeaderLeftVisibility { get; set; }
         public bool SecondaryHeaderRightVisibility { get; set; }
 
+        public enum DisplayMode { None, Query, Action };
+
+        private DisplayMode currentDisplayMode;
+        public DisplayMode CurrentDisplayMode
+        {
+            get
+            {
+                return currentDisplayMode;
+            }
+            set
+            {
+                currentDisplayMode = value;
+                RaisePropertyChanged("CurrentDisplayMode");
+            }
+        }
+
         public ClassInformation()
             : base()
         {

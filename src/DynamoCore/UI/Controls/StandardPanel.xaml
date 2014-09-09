@@ -14,6 +14,7 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
+        <controls:DisplayModeToFontWeightConverter x:Key="DisplayModeToFontWeightConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -102,8 +103,9 @@
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2">
             <TextBlock x:Name="secondaryHeaderLeft"
+                       Tag="Query"
                        Foreground="#DDD"
-                       FontWeight="UltraBold">
+                       PreviewMouseDown="OnHeaderMouseDown">
                 <TextBlock.Visibility>
                     <Binding Path="SecondaryHeaderLeftVisibility"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -112,11 +114,17 @@
                     <Binding Path="SecondaryHeaderLeftGroup"
                              Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
                 </TextBlock.Text>
+                <TextBlock.FontWeight>
+                    <Binding Path="CurrentDisplayMode"
+                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
+                             ConverterParameter="Query" />
+                </TextBlock.FontWeight>
             </TextBlock>
             <TextBlock x:Name="secondaryHeaderRight"
+                       Tag="Action"
                        Foreground="#DDD"
-                       FontWeight="Normal"
-                       Margin="10,0,0,0">
+                       Margin="10,0,0,0"
+                       PreviewMouseDown="OnHeaderMouseDown">
                 <TextBlock.Visibility>
                     <Binding Path="SecondaryHeaderRightVisibility"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -125,6 +133,11 @@
                     <Binding Path="SecondaryHeaderRightGroup"
                              Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
                 </TextBlock.Text>
+                <TextBlock.FontWeight>
+                    <Binding Path="CurrentDisplayMode"
+                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
+                             ConverterParameter="Action" />
+                </TextBlock.FontWeight>
             </TextBlock>
         </StackPanel>
         <ListBox x:Name="secondaryMembers"
