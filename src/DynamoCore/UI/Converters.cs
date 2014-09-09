@@ -1547,11 +1547,9 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
-            if (!(parameter is DynamoViewModel)) return "Could not get version";
+            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
 
-            var dvm = parameter as DynamoViewModel;
-            var latest = dvm.Model.UpdateManager.AvailableVersion;
-            return latest;
+            return latest != null? latest.ToString() : "Could not get version.";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

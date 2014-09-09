@@ -90,6 +90,7 @@
     <Compile Include="Messages\UploadFileMessage.cs" />
     <Compile Include="Messages\FileUploader.cs" />
     <Compile Include="Messages\ConnectorToCreate.cs" />
+    <Compile Include="Messages\SaveFileMessage.cs" />
     <Compile Include="Messages\RunCommandsMessage.cs" />
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Responses\LibraryItemsListResponse.cs" />
     <Compile Include="Responses\NodeCreationDataResponse.cs" />
     <Compile Include="Responses\UploadFileResponse.cs" />
+    <Compile Include="Responses\SavedFileResponse.cs" />
     <Compile Include="Interfaces\IWebServer.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
@@ -109,6 +111,10 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>

@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.7993" X="572" Y="213" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.7993" X="505.378910570934" Y="-225.615211857142" zoom="1.08570356044719" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="4ef96a5b-2be4-44ba-9db7-ccc81e0424d9" nickname="Build Sublists" x="75" y="125.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <System.String value="" />
@@ -16,7 +16,6 @@
     <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="17761c3c-a5e2-49cb-b3a6-d1456819a872" nickname="Filter by Boolean Mask" x="-147" y="143.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Filter type="Dynamo.Nodes.Filter" guid="3ee8509f-44ae-4a0e-abde-f342214331a4" nickname="Filter In" x="75" y="-122.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.FilterOut type="Dynamo.Nodes.FilterOut" guid="2d5d0d80-9494-4fc8-92d6-8af91dbfba4c" nickname="Filter Out" x="275" y="310.642857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.ForEach type="Dynamo.Nodes.ForEach" guid="0228f535-5571-492a-bf5c-50beaa95d2fb" nickname="For Each" x="468" y="-122.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.LaceLongest type="Dynamo.Nodes.LaceLongest" guid="55a69dac-ffa0-47e0-a831-f164b6c2fa9b" nickname="Lace Longest" x="703" y="219.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
     <Dynamo.Nodes.LaceShortest type="Dynamo.Nodes.LaceShortest" guid="64a5d049-b1a8-4473-a4ba-f2247f8a7ead" nickname="Lace Shortest" x="-147" y="10.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
     <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="0a261535-201a-40b1-821d-0c9d4b7eebd7" nickname="Map" x="-147" y="542.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -42,7 +41,6 @@
     <Dynamo.Nodes.SortBy type="Dynamo.Nodes.SortBy" guid="ca563efc-1ac0-4e57-a069-e2bc7db626b1" nickname="Sort by Key" x="275" y="527.214285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <PortInfo index="0" default="True" />
     </Dynamo.Nodes.SortBy>
-    <Dynamo.Nodes.SortWith type="Dynamo.Nodes.SortWith" guid="2f2b2495-316f-4af4-8469-c6b3f95ff80f" nickname="Sort with Comparator" x="-323" y="-122.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="b481ac5f-755b-4fc0-b631-e6e47fce9a76" nickname="Split List" x="-323" y="269.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.TakeEveryNth type="Dynamo.Nodes.TakeEveryNth" guid="584d8eec-e9cf-4e68-ba09-5a07a8198880" nickname="Take Every Nth" x="75" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <PortInfo index="2" default="True" />
@@ -62,7 +60,6 @@
       <PortInfo index="0" default="True" />
     </Dynamo.Nodes.ListMin>
     <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="474a5a9e-a4a9-4ae3-bb58-9d701cd950ee" nickname="Rest of List" x="-143" y="675.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Smooth type="Dynamo.Nodes.Smooth" guid="5c624ed8-28c4-4c4d-8239-d882744394e7" nickname="Smooth" x="-321" y="661.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.AndMap type="Dynamo.Nodes.AndMap" guid="c992dbda-208a-44a5-aaa0-605bf2a369b6" nickname="True For All" x="-521" y="525.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.OrMap type="Dynamo.Nodes.OrMap" guid="8ff0f76b-fdaa-4270-ae7a-f12fb2f21301" nickname="True For Any" x="-522" y="655.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>

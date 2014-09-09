@@ -9,7 +9,6 @@ namespace Dynamo.ViewModels
 {
     public interface IWatchViewModel
     {
-        DelegateCommand SelectVisualizationInViewCommand { get; set; }
         DelegateCommand GetBranchVisualizationCommand { get; set; }
         bool WatchIsResizable { get; set; }
         DelegateCommand CheckForLatestRenderCommand { get; set; }

@@ -9,7 +9,7 @@ namespace Dynamo.Tests
 {
     class DynamoSamples : DSEvaluationViewModelUnitTest
     {
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Basics_Basic03()
         {
             DynamoModel model = ViewModel.Model;
@@ -27,7 +27,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_AttractorPoint()
         {
             DynamoModel model = ViewModel.Model;
@@ -50,7 +50,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_01()
         {
             DynamoModel model = ViewModel.Model;
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_02()
         {
             DynamoModel model = ViewModel.Model;
@@ -134,7 +134,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_04()
         {
             DynamoModel model = ViewModel.Model;
@@ -165,7 +165,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_05()
         {
             DynamoModel model = ViewModel.Model;
@@ -203,7 +203,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_ListLacing()
         {
             DynamoModel model = ViewModel.Model;
@@ -244,7 +244,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Math_01()
         {
             DynamoModel model = ViewModel.Model;
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Math_02()
         {
             DynamoModel model = ViewModel.Model;
@@ -300,7 +300,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Math_03()
         {
             DynamoModel model = ViewModel.Model;
@@ -327,7 +327,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Math_04()
         {
             DynamoModel model = ViewModel.Model;
@@ -372,7 +372,7 @@ namespace Dynamo.Tests
             // that is the reason I have put verification all 4 surfaces.
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_PassingFunctions()
         {
             DynamoModel model = ViewModel.Model;
@@ -393,7 +393,7 @@ namespace Dynamo.Tests
             AssertPreviewCount(curveNodeID1, 8);
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Python()
         {
             DynamoModel model = ViewModel.Model;
@@ -431,7 +431,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_RangeSyntax()
         {
             DynamoModel model = ViewModel.Model;
@@ -456,7 +456,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void Core_Strings()
         {
             DynamoModel model = ViewModel.Model;
@@ -482,7 +482,7 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("d78216bf-d28d-4b15-b605-0b6a66f603c9", validationData);
         }
 
-        [Test, Category("Sample")]
+        [Test, Category("SmokeTests")]
         public void ImportExport_CSV_to_Stuff()
         {
             DynamoModel model = ViewModel.Model;

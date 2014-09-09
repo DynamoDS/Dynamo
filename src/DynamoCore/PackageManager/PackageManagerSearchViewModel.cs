@@ -205,7 +205,7 @@ namespace Dynamo.PackageManager
             this.PackageManagerClientViewModel = client;
 
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
-            MaxNumSearchResults = 12;
+            MaxNumSearchResults = 35;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
@@ -359,7 +359,7 @@ namespace Dynamo.PackageManager
         /// Synchronously perform a refresh and then search
         /// </summary>
         /// <returns></returns>
-        public List<PackageManagerSearchElement> RefreshAndSearch()
+        public IEnumerable<PackageManagerSearchElement> RefreshAndSearch()
         {
 
             Refresh();
@@ -372,7 +372,7 @@ namespace Dynamo.PackageManager
             SearchResults.Clear();
             this.SearchState = PackageSearchState.SYNCING;
 
-            Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
+            Task<IEnumerable<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
@@ -433,7 +433,7 @@ namespace Dynamo.PackageManager
         {
             this.SearchText = query;
 
-            Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
+            Task<IEnumerable<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
                 {
@@ -489,7 +489,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<PackageManagerSearchElement> Search(string query)
+        internal IEnumerable<PackageManagerSearchElement> Search(string query)
         {
             if (!String.IsNullOrEmpty(query))
             {

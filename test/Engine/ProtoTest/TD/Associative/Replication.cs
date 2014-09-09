@@ -2219,7 +2219,7 @@ xdata = { 1.5, 2 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_3()
         {
             String code =
@@ -2361,7 +2361,7 @@ xdata = { 1.5, 2 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_7()
         {
             String code =
@@ -2929,7 +2929,7 @@ a = fun({{1.0}, {2.0}});";
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
@@ -3194,7 +3194,7 @@ rad = foo(a, d);
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
@@ -3558,7 +3558,7 @@ test = a1.t;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
@@ -3592,6 +3592,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
@@ -3617,7 +3618,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            String errmsg = "MAGN-4107 Replication on dot operators not working for jagged arrays";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 5, new Object[] { 5, new Object[] { 5, 5 } } });
         }
@@ -3951,7 +3952,7 @@ y = x;
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T73_Defect_1467069_2()
         {
             String code =
@@ -3974,7 +3975,7 @@ y = x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T73_Defect_1467069_3()
         {
             String code =
@@ -4027,7 +4028,7 @@ y2 = a1.foo();
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T74_Defect_1463465()
         {
             String code =
@@ -4339,7 +4340,7 @@ z2 = x [ -1..-3 ];
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T77_Defect_1467081_2()
         {
             String code =
@@ -4391,7 +4392,7 @@ y = x [ {0,1} ][{0,1}];
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467125()
         {
             String code =
@@ -4478,7 +4479,7 @@ rab = a*b;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467125_6()
         {
             String code =
@@ -4962,7 +4963,7 @@ c1 = add( a<1>, b<2>);
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T82_Defect_1467244()
         {
             String code =
@@ -5448,7 +5449,7 @@ y = x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T87_Defect_1467284()
         {
             String code =
@@ -5705,7 +5706,7 @@ d1 = x[3];
 
         [Test] 
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_Defect_1467285_5()
         {
             String code =
@@ -5724,6 +5725,7 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T92_add()
         {
             String code =
@@ -5733,7 +5735,7 @@ b = { 5, 6 };
 def foo:int (a:int, b:int) { return = a + b; }
 c = foo(a,b);
 ";
-            string errmsg = "DNL-1467292 rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            string errmsg = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", new object[] { new object[] { 6, 7 }, new object[] { 9, 10 } });
         }
@@ -6263,7 +6265,7 @@ test2 = a.f2;
         }
 
         [Test]
-
+        [Category("Failure")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
@@ -6281,13 +6283,14 @@ test1 = a.x;
 a.x = 2..3;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1682";
+            String errmsg = "MAGN-1682 Rev 4443 :[Design Issue]Replication on class property assignment is not working"; 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("test1", new Object[] { 2, 3 });
         }
 
         [Test]
+        [Category("Failure")]
         public void T98_replication_1467453()
         {
             String code =
@@ -6298,7 +6301,7 @@ d = { 5 + 6, b + 1 };
 c = { { 3 } } + d;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467453 - throws error index out of range  for valid code ";
+            String errmsg = "MAGN-1691 throws error index out of range  for jagged array arithmetic operation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("a", 3);
@@ -6440,7 +6443,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
             String code =

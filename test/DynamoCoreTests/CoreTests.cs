@@ -30,6 +30,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddANodeByName()
         {
             var model = ViewModel.Model;
@@ -38,6 +39,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddANote()
         {
             // Create some test note data
@@ -47,6 +49,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddToSelectionAndNotThrowExceptionWhenPassedIncorrectType()
         {
             var model = ViewModel.Model;
@@ -67,6 +70,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddToSelectionCommand()
         {
             var model = ViewModel.Model;
@@ -88,6 +92,7 @@ namespace Dynamo.Tests
         // Log
 
         [Test]
+        [Category("UnitTests")]
         public void CanClearLog()
         {
             var model = ViewModel.Model;
@@ -101,6 +106,7 @@ namespace Dynamo.Tests
         // Clearworkspace 
 
         [Test]
+        [Category("UnitTests")]
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
             ViewModel.Model.Clear(null);
@@ -108,6 +114,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanClearWorkspaceWithNodes()
         {
             var model = ViewModel.Model;
@@ -126,6 +133,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAdd100NodesToClipboard()
         {
             var model = ViewModel.Model;
@@ -150,6 +158,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ValidateConnectionsDoesNotClearError()
         {
             var model = ViewModel.Model;
@@ -188,6 +197,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAdd1NodeToClipboardAndPaste()
         {
             var model = ViewModel.Model;
@@ -215,6 +225,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAdd100NodesToClipboardAndPaste()
         {
             var model = ViewModel.Model;
@@ -242,6 +253,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             var model = ViewModel.Model;
@@ -274,6 +286,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddOneNodeToClipboard()
         {
             var model = ViewModel.Model;
@@ -296,6 +309,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanCopyAndPasteDSVarArgFunctionNode()
         {
             var model = ViewModel.Model;
@@ -372,6 +386,7 @@ namespace Dynamo.Tests
         // SaveCommand
 
         [Test]
+        [Category("UnitTests")]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
             var model = ViewModel.Model;
@@ -382,6 +397,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CannotSavePopulatedWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
             var model = ViewModel.Model;
@@ -402,6 +418,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("UnitTests")]
         public void CanSelectAndNotThrowExceptionWhenPassedIncorrectType()
         {
             int numNodes = 100;
@@ -414,6 +431,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanStayHomeWhenInHomeWorkspace()
         {
             var model = ViewModel.Model;
@@ -426,6 +444,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestRecordModelsForModificationWithEmptyInput()
         {
             WorkspaceModel workspace = ViewModel.CurrentSpace;
@@ -448,6 +467,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestRecordCreatedModelsWithEmptyInput()
         {
             WorkspaceModel workspace = ViewModel.CurrentSpace;
@@ -470,6 +490,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestRecordAndDeleteModelsWithEmptyInput()
         {
             WorkspaceModel workspace = ViewModel.CurrentSpace;
@@ -492,6 +513,8 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("UnitTests")]
         public void CanSumTwoNumbers()
         {
             var model = ViewModel.Model;
@@ -535,6 +558,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [Category("UnitTests")]
         public void SelectionDoesNotChangeWhenAddingAlreadySelectedNode()
         {
             var model = ViewModel.Model;
@@ -562,6 +586,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDraggedNode()
         {
             var model = ViewModel.Model;
@@ -614,6 +639,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void AngleConverter()
         {
             RadianToDegreesConverter converter = new RadianToDegreesConverter();
@@ -639,6 +665,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(180.0, degrees, 0.01);
         }
         [Test]
+        [Category("UnitTests")]
         public void AngleConverterGerman()
         {
             RadianToDegreesConverter converter = new RadianToDegreesConverter();
@@ -666,6 +693,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
             // Create the node with given information.

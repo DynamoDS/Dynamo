@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
+
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
@@ -14,6 +16,8 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
@@ -54,7 +58,7 @@ namespace Dynamo.Models
 
         #region public members
 
-        public WorkspaceModel Workspace { get; private set; }
+        public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -902,6 +906,33 @@ namespace Dynamo.Models
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
         private void SetupCustomUIElements(object view) { }
+
+        /// <summary>
+        /// As hacky as the name sounds, this method is used to retrieve the 
+        /// "DynamoViewModel" from a given "MenuItem" object. The reason it is
+        /// needed boils down to the fact that we still do "SetupCustomUIElements"
+        /// at the "NodeModel" level. This method will be removed when we 
+        /// eventually refactor "SetupCustomUIElements" out into view layer.
+        /// </summary>
+        /// <param name="menuItem">The MenuItem from which DynamoViewModel is to 
+        /// be retrieved.</param>
+        /// <returns>Returns the corresponding DynamoViewModel retrieved from the 
+        /// given MenuItem.</returns>
+        /// 
+        protected DynamoViewModel GetDynamoViewModelFromMenuItem(MenuItem menuItem)
+        {
+            if (menuItem == null || (menuItem.Tag == null))
+                throw new ArgumentNullException("menuItem");
+
+            var dynamoViewModel = menuItem.Tag as DynamoViewModel;
+            if (dynamoViewModel == null)
+            {
+                const string message = "MenuItem.Tag is not DynamoViewModel";
+                throw new ArgumentException(message);
+            }
+
+            return dynamoViewModel;
+        }
 
         private void ClearTooltipText()
         {
