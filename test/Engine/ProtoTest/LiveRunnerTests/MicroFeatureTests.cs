@@ -3803,6 +3803,8 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void ReproMAG3600()
         {
+            //FLAKY TEST STRIKE (1/3): 2014-09-08
+
             List<string> codes = new List<string>()
                 {
                     @"import(""FFITarget.dll""); 
@@ -4865,9 +4867,9 @@ v = foo(t);
             AssertValue("v", 120);
         }
 
-
         [Test]
-        public void TestComplexAssociativeUpdateReExecution()
+        [Category("Failure")]
+        public void TestComplexAssociativeUpdateReExecution01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
             // Test passes but must be simplified to use FFITarget
@@ -5095,6 +5097,192 @@ z2 = t157.Z;
             AssertValue("z2", 265.70177951843084);
         }
 
+
+
+        [Test]
+        [Category("Failure")]
+        public void TestComplexAssociativeUpdateReExecution02()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
+            // Test  must be simplified to use FFITarget
+            List<string> codes = new List<string>() 
+            {
+                
+//@"import(""DSCoreNodes.dll""); import(""FFITarget.dll""); ", 
+//@"import(""FFITarget.dll""); ", 
+//@"import(""DSCoreNodes.dll""); ", 
+"",
+
+@"
+a = 8;
+",
+ 
+@"
+a = 12;
+"
+,
+@"
+
+a = 8;
+x = a;
+t4 = Vector.ByCoordinates(0.0, 0.0, 1.0);
+t9 = 0.1;
+t19 = Vector.ByCoordinates(0.0, 0.0, 1.0);
+t26 = Point.ByCoordinates(251.78, 110.78, 283.15);
+t27 = Point.ByCoordinates(189.22, 96.94, 283.15);
+t28 = Vector.ByTwoPoints(t27, t26);
+
+t29 = Vector.ByCoordinates(-62.56, -13.840000000000003, 0.0);
+
+t30 = 64.072608812190566;
+n = t28.Scale(1.0);
+
+t31 = Vector.ByCoordinates(0.97639227057814493, 0.2160049396547559, 0.0);
+t32 = Vector.ByCoordinates(-0.2160049396547559, 0.97639227057814493, 0.0);
+
+
+t36 = t4.Scale(t9);
+t37 = t36.Scale(t9);
+t38 = t37.Scale(t9);
+t39 = t36.Scale(t9);
+t40 = t39.Scale(t9);
+
+t41 = x;
+t59 = t29.Rotate(t32, 38);
+
+t60 = Vector.ByCoordinates(t59.X, t59.Y, -t59.Z);
+
+t61 = Line.ByStartPointDirectionLength(t26, t60, 64.072608812190566);
+t62 = t28.Rotate(t32, 32);
+
+
+
+t63 = t62;
+t64 = Vector.ByCoordinates(t63.X, t63.Y, t63.Z);
+t65 = Line.ByStartPointDirectionLength(t27, t64, 64.072608812190566);
+
+t66 = t65.Intersect(t61);
+
+
+t67 = t66[0];
+t68 = t67.Add(t40);
+t69 = t67.Add(t39);
+t70 = t69;
+t71 = 248.2;
+t72 = t68;
+t73 = 249.67;
+t74 = Point.ByCoordinates(t70.X, t70.Y, 248.2);
+t75 = Point.ByCoordinates(t72.X, t72.Y, 249.67);
+t76 = t75.Add(t38);
+
+
+
+t82 = Point.ByCoordinates(t74.X, t74.Y, 248.2);
+t83 = Point.ByCoordinates(t75.X, t75.Y, 248.2);
+t84 = Line.ByStartPointEndPoint(t83, t75);
+t86 = t84;
+t87 = null;
+t88 = t86;
+t89 = Line.ByStartPointEndPoint(t74, t82);
+t91 = t89;
+t92 = null;
+t93 = null;
+t94 = Line.ByStartPointEndPoint(t82, t83);
+t95 = {t94, t88, t93};
+t96 = t95;
+
+t97 = DSCore.Object.IsNull(t95);
+t98 = DSCore.List.FilterByBoolMask(t95, t97);
+
+
+t101 = t74.Add(t37);
+t102 = Vector.ByTwoPoints(t67, t26);
+
+t103 = t102.Scale(t9);
+t104 = t103.Scale(t9);
+t105 = t104.Scale(t9);
+t106 = t26.Add(t105);
+t107 = t104.Scale(t9);
+t108 = t26.Add(t107);
+
+t109 = Vector.ByTwoPoints(t67, t27);
+t110 = t109.Scale(t9);
+t111 = t110.Scale(t9);
+t112 = t111.Scale(t9);
+t113 = t27.Add(t112);
+t114 = t111.Scale(t9);
+t115 = t27.Add(t114);
+
+t116 = Line.ByStartPointEndPoint(t67, t27);
+t117 = t116.Translate(t114);
+t118 = Line.ByStartPointEndPoint(t67, t26);
+t119 = t118.Translate(t107);
+t120 = Arc.ByCenterPointStartPointSweepAngle(t76, t75, 32.25, t32);
+t121 = t120.EndPoint;
+t124 = Arc.ByCenterPointStartPointSweepAngle(t101, t74, -44.57, t32);
+t125 = t124.StartPoint;
+t126 = t103.Scale(25);
+t127 = t67.Add(t126);
+t128 = t127.Add(t105);
+t129 = t110.Scale(30);
+t130 = t67.Add(t129);
+t131 = t130.Add(t112);
+
+t137 = t104.Scale(-55);
+t138 = t128.Add(t137);
+t139 = Arc.ByCenterPointStartPointSweepAngle(t138, t128, null, t32);
+t140 = t139.ClosestPointTo(t121);
+t141 = t139.ParameterAtPoint(t140);
+t142 = t111.Scale(85);
+t143 = t131.Add(t142);
+t144 = Arc.ByCenterPointStartPointSweepAngle(t143, t131, 90, t32);
+
+t151 = t139.PointAtParameter(null);
+t152 = Arc.ByThreePoints(t121, t151, t128);
+t153 = t144.PointAtParameter(null);
+t154 = Arc.ByThreePoints(t131, t153, t125);
+t155 = Arc.ByFillet(t119, t117, t41);
+t156 = t155.EndPoint;
+t157 = t155.StartPoint;
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // a = 8
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 12
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 8
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x1", 228.19587612091331);
+            AssertValue("y1", 105.56254036946036);
+            AssertValue("z1", 266.18207825882848);
+
+            AssertValue("x2", 219.24758668548554);
+            AssertValue("y2", 103.58293158131586);
+            AssertValue("z2", 265.70177951843084);
+        }
     }
 
 }
