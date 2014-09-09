@@ -8,7 +8,19 @@ namespace DynamoWebServer.Messages
 {
     class SocketMessageQueue
     {
+        // One to signal task availability, another for shutdown.
+        private readonly AutoResetEvent[] waitHandles = 
+        {
+            new AutoResetEvent(false), // For action availability
+            new AutoResetEvent(false)  // For shutdown event
+        };
+
         private readonly object locker = new object();
+
+        private enum HandleIndex
+        {
+            TaskAvailable, Shutdown
+        }
 
         private Queue<Action> messageQueue;
         private Thread worker;
@@ -25,9 +37,9 @@ namespace DynamoWebServer.Messages
             lock (locker)
             {
                 messageQueue.Clear();
-                messageQueue.Enqueue(null);
-                Monitor.Pulse(locker);
             }
+            waitHandles[(int)HandleIndex.Shutdown].Set(); // Shutdown requested
+            worker.Join(); // Wait for thread to end.
         }
 
         public void EnqueueItem(Action message)
@@ -35,7 +47,7 @@ namespace DynamoWebServer.Messages
             lock (locker)
             {
                 messageQueue.Enqueue(message);
-                Monitor.Pulse(locker);
+                waitHandles[(int)HandleIndex.TaskAvailable].Set(); // A task is available.
             }
         }
 
@@ -43,21 +55,29 @@ namespace DynamoWebServer.Messages
         {
             while (true)
             {
-                Action message;                               
+                Action message = null;
                 lock (locker)
                 {
-                    while (messageQueue.Count == 0)
-                    {
-                        Monitor.Wait(locker);
-                    }
-                    message = messageQueue.Dequeue();
+                    if (messageQueue.Count > 0)
+                        message = messageQueue.Dequeue();
                 }
-                if (message == null)
+                if (message != null)
                 {
-                    return;
+                    ProcessMessage(message);
+                    continue;
                 }
-                (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher).Invoke(message);
+                // No more message, go into wait.
+                int eventIndex = WaitHandle.WaitAny(waitHandles);
+                if (eventIndex == 1) // Shutdown event.
+                    break;
+
+                // Otherwise, pick up the next message.
             }
+        }
+
+        private void ProcessMessage(Action message)
+        {
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher).Invoke(message);
         }
     }
 }
