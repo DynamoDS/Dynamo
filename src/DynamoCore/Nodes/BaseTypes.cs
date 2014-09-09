@@ -663,15 +663,20 @@ namespace Dynamo.Nodes
             StringBuilder newText = new StringBuilder(resource.Length);
 
             // Dots and minus we add, they are for overloaded methods.
-            foreach (
-                var c in 
-                    resource.Where(c => (Char.IsLetterOrDigit(c) || (c == '.') || (c == '-'))))
+            var query = resource.Where(
+                c =>
+                {
+                    if (c == '.' || (c == '-'))
+                        return true;
+
+                    return Char.IsLetterOrDigit(c);
+                });
+
+            foreach (var c in query)
                 newText.Append(c);
 
-            //Last case for "-".
-            if (newText.ToString() == "-") return "";
-                                                                   
-            return newText.ToString();
+            var result = newText.ToString();
+            return ((result == "-") ? string.Empty : result);
         }
     }
 
