@@ -393,6 +393,9 @@ namespace DynamoUtilities
             return ASM219Host != null || ASM220Host != null;
         }
 
+        /// <summary>
+        /// Determines correct version of ASM and loads binaries
+        /// </summary>
         public void PreloadASMLibraries()
         {
             if (DynamoPathManager.Instance.ASM219Host == null)
