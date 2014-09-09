@@ -119,7 +119,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         // Create a cyclic chain of three code block nodes, and verify that a
         // warning is shown on one of the cyclic nodes.
         // Reconnect a valid value to one of the chain items, and verify that the

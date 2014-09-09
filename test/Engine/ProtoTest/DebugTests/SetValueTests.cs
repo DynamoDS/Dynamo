@@ -110,7 +110,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void AssocSetValue()
         {
             String code =
