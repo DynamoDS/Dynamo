@@ -77,7 +77,7 @@ namespace Dynamo.UI.Controls
 
             areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
 
-            // Hide all headers.
+            // Hide all headers by default.
             classInfo.PrimaryHeaderVisibility = false;
             classInfo.SecondaryHeaderLeftVisibility = false;
             classInfo.SecondaryHeaderRightVisibility = false;
@@ -87,10 +87,10 @@ namespace Dynamo.UI.Controls
             classInfo.SecondaryHeaderLeftGroup = SearchElementGroup.Query;
             classInfo.SecondaryHeaderRightGroup = SearchElementGroup.Action;
 
+            classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.None;
+
             // Case when CreateMembers list is not empty.
-            // We should present CreateMembers in topCategoryList.
-            // Depending on availibility of QueryMembers and ActionMembers
-            // new TextBlock will be added to addCategoryList.
+            // We should present CreateMembers in primaryMembers.            
             if (!isCreateListEmpty)
             {
                 classInfo.PrimaryHeaderVisibility = true;
@@ -116,8 +116,8 @@ namespace Dynamo.UI.Controls
             }
 
             // Case when CreateMembers list is empty and ActionMembers list isn't empty.
-            // ActionMembers will be presented in topCategoryList.
-            // Depending on availibility of QueryMembers it will be added to addCategoryList.
+            // ActionMembers will be presented in primaryMembers.
+            // Depending on availibility of QueryMembers it will be shown as secondaryHeaderLeft.
             if (!isActionListEmpty)
             {
                 classInfo.PrimaryHeaderVisibility = true;
@@ -134,13 +134,11 @@ namespace Dynamo.UI.Controls
             }
 
             // Case when CreateMembers and ActionMembers lists are empty.
-            // If QueryMembers is not empty the list will be presented in topCategoryList. 
+            // If QueryMembers is not empty the list will be presented in primaryMembers. 
             if (!isQueryListEmpty)
             {
                 classInfo.PrimaryHeaderGroup = SearchElementGroup.Query;
                 primaryMembers.ItemsSource = classInfo.QueryMembers;
-
-                return;
             }
         }
     }

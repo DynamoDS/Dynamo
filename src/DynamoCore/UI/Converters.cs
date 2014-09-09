@@ -1690,7 +1690,10 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-	public class SearchElementGroupToHeaderConverter : IValueConverter
+
+    /// This converter displays correct header text on StandarPanel
+    /// by using SearchElement as value parameter.
+    public class SearchElementGroupToHeaderConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -1713,6 +1716,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// This converter makes TextBlock fornt weight as UltraBold if it is currently selected.
+    /// To know for which TextBlock the converter works the parameter used.
+    /// Converter is used on StandardPanel.
     public class DisplayModeToFontWeightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
