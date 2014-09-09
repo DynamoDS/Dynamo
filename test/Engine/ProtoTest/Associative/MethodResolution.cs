@@ -283,7 +283,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestMethodResolutionForSingleton()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4116
@@ -304,7 +304,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestMethodResolutionForInforLoss()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4114

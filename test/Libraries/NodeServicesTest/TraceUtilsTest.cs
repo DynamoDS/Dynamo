@@ -9,6 +9,7 @@ namespace DSNodeServicesTest
     class TraceUtilsTest
     {
         [Test]
+        [Category("UnitTests")]
         public void TestGetSetData()
         {
             string id = "TestID-{82AC4E65-CC86-4BF0-95EA-AE4B2B5E4A35}";
@@ -27,6 +28,7 @@ namespace DSNodeServicesTest
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGetSetDataOnDifferentThreads()
         {
             string id = "TestID-{82AC4E65-CC86-4BF0-95EA-AE4B2B5E4A35}";

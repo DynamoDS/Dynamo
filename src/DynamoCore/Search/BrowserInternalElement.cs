@@ -140,7 +140,15 @@ namespace Dynamo.Nodes.Search
         private string assembly;
         public string Assembly
         {
-            get { return assembly; }
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's buildin function or operator.
+                // Icons for these members are in DynamoCore project.
+                return "DynamoCore";
+            }
 
             // Note: we need setter, when we set resource assembly in NodeSearchElement.
             set { assembly = value; }

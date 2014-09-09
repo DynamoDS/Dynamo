@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -16,7 +15,6 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Services;
 using DynamoUnits;
-using Dynamo.UpdateManager;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
@@ -1974,32 +1972,6 @@ namespace Dynamo.ViewModels
         private void ShowAboutWindow(object obj)
         {
             OnRequestAboutWindow(this);
-        }
-
-        private bool CanCheckForUpdate(object obj)
-        {
-            //check internet connectivity
-            //http://stackoverflow.com/questions/2031824/what-is-the-best-way-to-check-for-internet-connectivity-using-net
-            try
-            {
-                using (var client = new WebClient())
-                using (var stream = client.OpenRead("http://www.google.com"))
-                {
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private void CheckForUpdate(object obj)
-        {
-            //Disable the update check for 0.6.3. Just send he user to the downloads page.
-            //dynamoModel.UpdateManager.CheckForProductUpdate();
-
-            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
         }
 
         private void SetNumberFormat(object parameter)

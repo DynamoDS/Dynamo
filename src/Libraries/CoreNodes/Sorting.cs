@@ -5,6 +5,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
+    // ReSharper disable InconsistentNaming
     /// <summary>
     /// Utility methods for sorting by keys. These should be suppressed from becoming nodes, instead
     /// they will be wrapped by DS implementations that accept a key mapping function.
@@ -64,13 +65,15 @@ namespace DSCore
                     .ToList();
         }
 
-        //public static IList groupByKey(IList list, IList keys)
-        //{
-        //    return
-        //        list.Cast<object>().Zip(keys.Cast<object>(), (item, key) => new { item, key })
-        //            .GroupBy(x => x.key)
-        //            .Select(x => x.Select(y => y.item).ToList())
-        //            .ToList();
-        //}
+        [IsVisibleInDynamoLibrary(false)]
+        public static IList groupByKey(IList list, IList keys)
+        {
+            return
+                list.Cast<object>().Zip(keys.Cast<object>(), (item, key) => new { item, key })
+                    .GroupBy(x => x.key)
+                    .Select(x => x.Select(y => y.item).ToList())
+                    .ToList();
+        }
     }
+    // ReSharper restore InconsistentNaming
 }

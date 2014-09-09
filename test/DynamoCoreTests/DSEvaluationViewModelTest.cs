@@ -610,6 +610,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_844()
         {
             // CBN: a = 1;
@@ -623,6 +624,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_1()
         {
             // CBN ==> 1=a;
@@ -638,6 +640,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_2()
         {
             // CBN ==> 1=1=a;
@@ -652,6 +655,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_3()
         {
             // CBN ==> a=1=2=3;
@@ -666,6 +670,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_4()
         {
             // CBN ==> a*a=1;;
@@ -680,6 +685,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_5()
         {
             // Multiline CBN ==> a=1;
@@ -695,6 +701,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_610()
         {
             // Multiline CBN ==> a={1,2,3};
@@ -745,6 +752,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2363()
         {
             // CBN: 0..#3..10;
@@ -754,6 +762,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2479()
         {
             // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2479
@@ -769,6 +778,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2375_3487()
         {
             // This test case is addressing the following two defects:
@@ -817,6 +827,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("9c51f2d5-a9f2-4825-bda6-f062e69efc46", 5.00000);
         }
         [Test]
+        [Category("RegressionTests")]
         public void CBN_Range_1300()
         {
             RunModel(@"core\dsevaluation\CBN_Range_1300.dyn");
@@ -833,6 +844,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3264()
         {
             // Function object to property method and used in apply 
@@ -841,6 +853,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2535()
         {
             // Function object to property method and used in apply 
@@ -873,24 +886,28 @@ namespace Dynamo.Tests
             AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_IFnode_3483_1()
         {
             RunModel(@"core\dsevaluation\ifnode_3483.dyn");
             AssertPreviewValue("516de967-91ac-4a93-87ce-7f130774268a", 5.00);
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_IFnode_3483_2()
         {
             RunModel(@"core\dsevaluation\ifnode_3483_2.dyn");
             AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object []{ 1, 1, 1, new object []{ -2, -1, 0, 1, 2 },new object[] { -2, -1, 0, 1, 2 } });
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_ConditionalCustomFunction_3483()
         {
             RunModel(@"core\dsevaluation\conditionalCustomFunction_3483.dyn");
             AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.647);
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_CustomFunctionobject_3483()
         {
             RunModel(@"core\dsevaluation\CustomFunctionobject_3483.dyn");
@@ -898,6 +915,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfinputFunctionObject_3483()
         {
             RunModel(@"core\dsevaluation\IfinputFunctionObject_3483.dyn");
@@ -905,6 +923,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfAsFunctionobject_3483()
         {
             RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
@@ -912,6 +931,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfOutputFunctionObject_3483()
         {
             RunModel(@"core\dsevaluation\IfOutputCustomFunction_3483.dyn");
@@ -919,6 +939,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_If_CustomNode_4058()
         {
             var model = ViewModel.Model;
@@ -928,6 +949,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 6.00);
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestSingleIFRecusion_4058()
         {
             var model = ViewModel.Model;
@@ -936,6 +958,7 @@ namespace Dynamo.Tests
             
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestMultipleIFCN_4058()
         {
             var model = ViewModel.Model;
@@ -947,6 +970,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestMultipleIFRecursion_4058()
         {
             var model = ViewModel.Model;
@@ -958,6 +982,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         [Category("Failure")]
         public void TestNestedIFNORecursion_4058()
         {
@@ -969,6 +994,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestNestedIFRecursion_4058()
         {
             var model = ViewModel.Model;
@@ -977,6 +1003,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void NestedIFRecursionMultiple_4058()
         {
             
