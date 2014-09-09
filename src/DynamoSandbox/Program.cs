@@ -22,11 +22,8 @@ namespace DynamoSandbox
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            if (DynamoPathManager.Instance.FindAndSetASMHostPath())
-            {
-                DynamoPathManager.Instance.PreloadASMLibraries();
-            }
-
+            DynamoPathManager.Instance.PreloadASMLibraries();
+            
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
