@@ -9,6 +9,9 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
+using DynamoUtilities;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo.Tests
 {
@@ -54,6 +57,11 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
+            DynamoPathManager.Instance.InitializeCore(
+               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.Instance.PreloadASMLibraries();
+            
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
