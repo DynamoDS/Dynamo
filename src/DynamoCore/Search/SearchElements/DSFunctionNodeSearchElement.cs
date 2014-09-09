@@ -58,10 +58,7 @@ namespace Dynamo.Search.SearchElements
                         return FunctionDescriptor.QualifiedName;
 
                     // Case for overloaded methods.
-                    string shortIconName = this.GetResourceName(ResourceType.SmallIcon);
-                    var inputParameters = this.FunctionDescriptor.InputParameters;
-                    if (inputParameters == null) return "";
-                    return this.GetFullIconName(shortIconName, inputParameters);
+                    return TypedParametersToString(this.FunctionDescriptor);
                 }
                 case ResourceType.LargeIcon:
                 {
@@ -69,22 +66,18 @@ namespace Dynamo.Search.SearchElements
                         return FunctionDescriptor.QualifiedName;
 
                     // Case for overloaded methods.
-                    string shortIconName = this.GetResourceName(ResourceType.LargeIcon);
-                    var inputParameters = this.FunctionDescriptor.InputParameters;
-                    if (inputParameters == null) return "";
-                    return this.GetFullIconName(shortIconName, inputParameters);
+                    return TypedParametersToString(this.FunctionDescriptor);
                 }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        public string GetFullIconName(
-            string shortIconName, IEnumerable<Tuple<string, string>> inputParameters)
+        internal static string TypedParametersToString(FunctionDescriptor descriptor)
         {
-            string iconName = shortIconName + ".";
+            string iconName = descriptor.QualifiedName + ".";
             List<Tuple<string, string>> listInputs = new List<Tuple<string, string>>();
-            foreach (var parameter in inputParameters)
+            foreach (var parameter in descriptor.InputParameters)
                 listInputs.Add(parameter);
 
             for (int i = 0; i < listInputs.Count; i++)
