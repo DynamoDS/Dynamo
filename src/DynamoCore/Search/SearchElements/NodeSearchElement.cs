@@ -176,9 +176,13 @@ namespace Dynamo.Search.SearchElements
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
 
+        /// <summary>
+        /// This method is called to obtain the resource name for this NodeSearchElement.
+        /// Typical NodeSearchElement includes 'ColorRange' or 'File.Directory'. Since these 
+        /// elements do not have overloads, the parameter 'disambiguate' is not checked.
+        /// </summary>
         protected override string GetResourceName(ResourceType resourceType, bool disambiguate = false)
         {
-            // We don't check addInputs, because now there is no any overloaded method among NodeSearchElements.
             switch (resourceType)
             {
                 case ResourceType.SmallIcon: return this._fullName;

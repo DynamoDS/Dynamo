@@ -77,6 +77,8 @@ namespace Dynamo.Search.SearchElements
         {
             string iconName = descriptor.QualifiedName + ".";
             List<Tuple<string, string>> listInputs = new List<Tuple<string, string>>();
+            if (descriptor.InputParameters == null) return String.Empty;
+
             foreach (var parameter in descriptor.InputParameters)
                 listInputs.Add(parameter);
 
