@@ -41,12 +41,16 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
+            var um = UpdateManager.UpdateManager.Instance;
+
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
-            Assert.AreEqual(UpdateManager.UpdateManager.Instance.AvailableVersion.ToString(), "9.9.9.0");
+            // Spoof a download completion by setting the downloaded update info to the update info
+            (um as UpdateManager.UpdateManager).DownloadedUpdateInfo = um.UpdateInfo;
+            Assert.NotNull(um.UpdateInfo);
+            Assert.AreEqual(um.AvailableVersion.ToString(), "9.9.9.0");
         }
 
         [Test]
