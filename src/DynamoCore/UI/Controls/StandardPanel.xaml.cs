@@ -65,6 +65,8 @@ namespace Dynamo.UI.Controls
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null) return;
+
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
                 searchElement.Execute();
