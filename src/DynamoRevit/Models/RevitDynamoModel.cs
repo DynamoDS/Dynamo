@@ -237,9 +237,11 @@ namespace Dynamo.Applications.Models
             }
         }
 
-        public override void ResetEngine()
+        public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
         }
 
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
