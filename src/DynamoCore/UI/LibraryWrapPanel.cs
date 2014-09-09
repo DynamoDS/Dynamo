@@ -130,13 +130,7 @@ namespace Dynamo.Controls
             // If there is no selection, then mark the StandardPanel as hidden.
             var classInformation = classObjectBase as ClassInformation;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
-            {
-                classInformation.ClassDetailsVisibility = false;
                 return;
-            }
-
-            // Otherwise, if we get here it means the StandardPanel is shown!
-            classInformation.ClassDetailsVisibility = true;
 
             //Add members of selected class to StandardPanel            
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);

@@ -1549,10 +1549,9 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
-            if (!(parameter is DynamoViewModel)) return "Could not get version";
-
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
-            return latest;
+
+            return latest != null? latest.ToString() : "Could not get version.";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1669,7 +1668,29 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SearchElementGroupToHeaderConverter : IValueConverter
+    /// This converter provides BrowserRootElement or ClassInformation
+    /// instance depending on value of IsPlaceHolder property. 
+    /// BrowserRootElement is needed to show subclasses in LibraryView.
+    /// ClassInformation is needed to show member list of root category
+    /// which doesn't have any subclasses.
+    public class BrowserRootElementToSubclassesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            BrowserRootElement rootElement = value as BrowserRootElement;
+
+            if (rootElement != null && rootElement.IsPlaceholder)
+                return rootElement.ClassDetails;
+
+            return rootElement;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+	public class SearchElementGroupToHeaderConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
