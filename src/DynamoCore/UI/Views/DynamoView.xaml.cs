@@ -1001,8 +1001,10 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
+            this.LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
             UserControl view = (UserControl)this.sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
@@ -1126,20 +1128,5 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void OnCollapsedSidebarClick(object sender, RoutedEventArgs e)
-        {
-            this.LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
-
-            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
-            this.verticalSplitter.Visibility = System.Windows.Visibility.Visible;
-            this.sidebarGrid.Visibility = System.Windows.Visibility.Visible;
-
-            this.horizontalSplitter.Width = restoreWidth;
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            sv.Visibility = Visibility.Visible;
-
-            this.sidebarGrid.Visibility = Visibility.Visible;
-            this.collapsedSidebar.Visibility = Visibility.Collapsed;
-        }
     }
 }
