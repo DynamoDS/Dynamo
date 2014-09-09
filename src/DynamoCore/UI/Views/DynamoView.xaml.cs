@@ -1127,6 +1127,5 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
-
     }
 }
