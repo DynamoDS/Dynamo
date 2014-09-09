@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using Dynamo.Interfaces;
+
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
 
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
+using DynamoUtilities;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo.Tests
 {
@@ -60,6 +57,11 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
+            DynamoPathManager.Instance.InitializeCore(
+               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.Instance.PreloadASMLibraries();
+            
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {

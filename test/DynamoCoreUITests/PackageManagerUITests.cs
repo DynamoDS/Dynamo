@@ -50,7 +50,7 @@ namespace DynamoCoreUITests
 
         #region PackageManagerPublishView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenPackagePublishDialogAndWindowIsOwned()
         {
             var l = new PublishPackageViewModel(ViewModel);
@@ -71,7 +71,7 @@ namespace DynamoCoreUITests
             AssertWindowOwnedByDynamoView<PublishPackageView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void PackagePublishWindowClosesWithDynamo()
         {
             var l = new PublishPackageViewModel(ViewModel);
@@ -86,7 +86,7 @@ namespace DynamoCoreUITests
 
         #region InstalledPackagesView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenManagePackagesDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestManagePackagesDialog(null, null);
@@ -105,7 +105,7 @@ namespace DynamoCoreUITests
         //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         //}
 
-        [Test, Category("Failing")]
+        [Test]
         public void ManagePackagesDialogClosesWithDynamo()
         {
             ViewModel.OnRequestManagePackagesDialog(null, null);
@@ -119,7 +119,7 @@ namespace DynamoCoreUITests
 
         #region PackageManagerSearchView
 
-        [Test, Category("Failing")]
+        [Test]
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);
@@ -128,7 +128,7 @@ namespace DynamoCoreUITests
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void CannotCreateDuplicatePackageSearchDialogs()
         {
             for (var i = 0; i < 10; i++)
@@ -139,7 +139,7 @@ namespace DynamoCoreUITests
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void PackageSearchDialogClosesWithDynamo()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);

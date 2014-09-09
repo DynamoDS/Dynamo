@@ -623,10 +623,7 @@ namespace ProtoCore.DSASM
                 {
                     HeapElement he = rmem.Heap.Heaplist[(int)svArrayPtrDimesions.opdata];
                     Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
-                    for (int n = 0; n < he.VisibleSize; ++n)
-                    {
-                        dotCallDimensions.Add(he.Stack[n] /*(int)he.Stack[n].opdata*/);
-                    }
+                    dotCallDimensions.AddRange(he.VisibleItems);
                 }
             }
             else
@@ -1319,12 +1316,13 @@ namespace ProtoCore.DSASM
             HeapElement hs = rmem.Heap.Heaplist[pointer];
 
             string str = "";
-            for (int n = 0; n < hs.VisibleSize; ++n)
+            foreach (var item in hs.VisibleItems)
             {
-                if (!hs.Stack[n].IsChar)
+                if (!item.IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(hs.Stack[n].opdata);
+                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
             }
+
             if (str == "")
                 return null;
 
@@ -1644,33 +1642,6 @@ namespace ProtoCore.DSASM
         {
             StackValue svNull = StackValue.Null;
             SetGraphNodeStackValue(graphNode, svNull);
-        }
-
-        private ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int index, int exprID)
-        {
-            //while (istream.dependencyGraph.GraphList[index].exprUID == exprID)
-            while (istream.dependencyGraph.GraphList[index].IsSSANode())
-            {
-                --index;
-                if (index < 0)
-                {
-                    // In this case, the first SSA statemnt is the first graphnode
-                    break;
-                }
-
-                //// This check will be deprecated on full SSA
-                //if (core.Options.FullSSA)
-                //{
-                //    if (!istream.dependencyGraph.GraphList[index].IsSSANode())
-                //    {
-                //        // The next graphnode is nolonger part of the current statement 
-                //        break;
-                //    }
-                //}
-
-                Validity.Assert(index >= 0);
-            }
-            return istream.dependencyGraph.GraphList[index + 1];
         }
 
         private bool UpdatePropertyChangedGraphNode()
@@ -2110,34 +2081,6 @@ namespace ProtoCore.DSASM
                         }
                         else if (!graphNode.isDirty)
                         {
-                            // If the graphnode is not cyclic, then it can be safely marked as dirty, in preparation of its execution
-                            if (core.Options.EnableVariableAccumulator
-                                && !isSSAAssign
-                                && graphNode.IsSSANode())
-                            {
-                                //
-                                // Comment Jun: Backtrack and firt the first graphnode of this SSA transform and mark it dirty. 
-                                //              We want to execute the entire statement, not just the partial SSA nodes
-                                //
-
-                                // TODO Jun: Optimization - Statically determine the index of the starting graphnode of this SSA expression
-
-                                // Looks we should partially execuate graph
-                                // nodes otherwise we will get accumulative
-                                // update. - Yu Ke 
-
-                                /*
-                                int graphNodeIndex = 0;
-                                for (; graphNodeIndex < graph.GraphList.Count; graphNodeIndex++)
-                                {
-                                    if (graph.GraphList[graphNodeIndex].UID == graphNode.UID)
-                                        break;
-                                }
-                                var firstGraphNode = GetFirstSSAGraphnode(graphNodeIndex - 1, graphNode.exprUID);
-                                firstGraphNode.isDirty = true;
-                                */
-                            }
-
                             if (core.Options.ElementBasedArrayUpdate)
                             {
                                 UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
@@ -2168,7 +2111,8 @@ namespace ProtoCore.DSASM
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
-                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNode.exprUID);
+                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
+                                    var firstGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
@@ -4259,9 +4203,11 @@ namespace ProtoCore.DSASM
                         {
                             paramType.rank++;
                             int arrayHeapPtr = (int)paramSv.opdata;
-                            if (core.Heap.Heaplist[arrayHeapPtr].VisibleSize > 0)
+                            var he = core.Heap.Heaplist[arrayHeapPtr];
+
+                            if (he.VisibleItems.Any())
                             {
-                                paramSv = core.Heap.Heaplist[arrayHeapPtr].Stack[0];
+                                paramSv = he.VisibleItems.First();
                                 paramType.UID = (int)paramSv.metaData.type;
                             }
                             else
@@ -5295,7 +5241,7 @@ namespace ProtoCore.DSASM
             HeapElement he = ArrayUtils.GetHeapElement(array, core);
             if (he != null)
             {
-                if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
+                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
                 {
                     key = StackValue.BuildArrayKey(array, 0);
                 }
@@ -5381,7 +5327,6 @@ namespace ProtoCore.DSASM
                     GCRetain(coercedValue);
                 }
 
-                FX = coercedValue;
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
@@ -5449,7 +5394,6 @@ namespace ProtoCore.DSASM
 #endif
 
                 svData = rmem.Pop();
-                FX = svData;
                 tempSvData = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
 
@@ -5534,7 +5478,6 @@ namespace ProtoCore.DSASM
                 svData = rmem.Pop();
                 StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
                 GCRetain(coercedValue);
-                FX = coercedValue;
 
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
@@ -5549,7 +5492,6 @@ namespace ProtoCore.DSASM
                 }
 
                 svData = rmem.Pop();
-                FX = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
                 if (!instruction.op1.IsRegister)
                 {
@@ -5631,12 +5573,10 @@ namespace ProtoCore.DSASM
 
             if (instruction.op1.IsStaticVariableIndex)
             {
-                FX = svData;
-
                 if (0 == dimensions)
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
-                    FX = coercedValue;
+                    GCRetain(coercedValue);
 
                     tempSvData = coercedValue;
 
@@ -5751,7 +5691,6 @@ namespace ProtoCore.DSASM
             {
                 lock (core.Heap.cslock)
                 {
-                    FX = svData;
                     EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
                     GCRelease(EX);
                 }
@@ -6025,7 +5964,7 @@ namespace ProtoCore.DSASM
             else if ((opdata1.IsChar || opdata1.IsString) &&
                      (opdata2.IsChar || opdata2.IsString))
             {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
+                opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
             }
             else if (opdata1.IsString || opdata2.IsString)
             {
@@ -6033,12 +5972,12 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, rmem);
+                    opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, rmem);
+                    opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)

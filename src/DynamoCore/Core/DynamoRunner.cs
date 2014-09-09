@@ -53,6 +53,11 @@ namespace Dynamo.Core
 
         public void RunExpression(HomeWorkspaceModel workspaceModel, int? executionInterval = null)
         {
+            if (workspaceModel == null)
+            {
+                return;
+            }
+
             var dynamoModel = workspaceModel.DynamoModel;
 
             execInternval = executionInterval;
@@ -76,7 +81,13 @@ namespace Dynamo.Core
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
                     workspaceModel.PreloadedTraceData;
                 workspaceModel.PreloadedTraceData = null; // Reset.
-                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
+
+                if (dynamoModel == null || dynamoModel.EngineController == null)
+                {
+                    return;
+                }
+
+                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData); 
 
                 //We are now considered running
                 Running = true;
@@ -142,7 +153,7 @@ namespace Dynamo.Core
 
             if (cancelSet)
             {
-                dynamoModel.Reset();
+                dynamoModel.ResetEngine(true);
                 cancelSet = false;
             }
         }
