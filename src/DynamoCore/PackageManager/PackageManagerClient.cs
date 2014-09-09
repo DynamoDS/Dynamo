@@ -112,7 +112,7 @@ namespace Dynamo.PackageManager
         public PackageManagerClient(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
-            Client = new Client(null, "http://107.20.146.184/"); 
+            Client = new Client(null, "https://www.dynamopackages.com"); 
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
