@@ -660,22 +660,17 @@ namespace Dynamo.Nodes
             if (string.IsNullOrWhiteSpace(resource))
                 return "";
 
-            // Check if string consists of only letters, numbers, dots.
-            if (Regex.IsMatch(resource, @"^[a-zA-Z0-9.]+$"))
-                return resource;
-
             StringBuilder newText = new StringBuilder(resource.Length);
-            // Create new string without "bad" characters.
+
             // Dots and minus we add, they are for overloaded methods.
-            foreach (char character in resource)
-            {
-                if (Char.IsLetterOrDigit(character) || character == '.' || character == '-')
-                newText.Append(character);
-            }
+            foreach (
+                var c in 
+                    resource.Where(c => (Char.IsLetterOrDigit(c) || (c == '.') || (c == '-'))))
+                newText.Append(c);
 
             //Last case for "-".
             if (newText.ToString() == "-") return "";
-
+                                                                   
             return newText.ToString();
         }
     }
