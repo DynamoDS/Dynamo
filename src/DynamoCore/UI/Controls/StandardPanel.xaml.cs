@@ -89,27 +89,31 @@ namespace Dynamo.UI.Controls
 
             areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
 
+            // Hide all headers.
+            classInfo.PrimaryHeaderVisibility = false;
+            classInfo.SecondaryHeaderLeftVisibility = false;
+            classInfo.SecondaryHeaderRightVisibility = false;
+
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in topCategoryList.
             // Depending on availibility of QueryMembers and ActionMembers
             // new TextBlock will be added to addCategoryList.
             if (!isCreateListEmpty)
             {
+                classInfo.PrimaryHeaderVisibility = true;
                 primaryMembers.ItemsSource = classInfo.CreateMembers;
 
                 if (!isQueryListEmpty)
                 {
-                    CreateAndPlaceQueryHeader(true);
-
+                    classInfo.SecondaryHeaderLeftVisibility = true;
+                    classInfo.SecondaryHeaderRightVisibility = true;
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
-                if (!isActionListEmpty)
+                if (!isActionListEmpty && isQueryListEmpty)
                 {
-                    CreateAndPlaceActionHeader(isQueryListEmpty);
-
-                    if (isQueryListEmpty)
-                        secondaryMembers.ItemsSource = classInfo.ActionMembers;
+                    classInfo.SecondaryHeaderLeftVisibility = true;
+                    secondaryMembers.ItemsSource = classInfo.ActionMembers;
                 }
 
                 return;
@@ -120,13 +124,14 @@ namespace Dynamo.UI.Controls
             // Depending on availibility of QueryMembers it will be added to addCategoryList.
             if (!isActionListEmpty)
             {
+                classInfo.PrimaryHeaderVisibility = true;
                 primaryHeader.Text = ActionHeaderString;
-                primaryMembers.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+                primaryMembers.ItemsSource = classInfo.ActionMembers;
 
                 if (!isQueryListEmpty)
                 {
-                    CreateAndPlaceQueryHeader();
-
+                    classInfo.SecondaryHeaderLeftVisibility = true;
+                    secondaryHeaderLeft.Text = QueryHeaderString;
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
@@ -137,40 +142,12 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in topCategoryList. 
             if (!isQueryListEmpty)
             {
+                classInfo.PrimaryHeaderVisibility = true;
                 primaryHeader.Text = QueryHeaderString;
-                primaryMembers.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+                primaryMembers.ItemsSource = classInfo.QueryMembers;
 
                 return;
             }
-
-            // All lists are empty. We should hide topCategoryHeader TextBlock
-            primaryHeader.Visibility = Visibility.Collapsed;
-        }
-
-        private void CreateAndPlaceActionHeader(bool makeUltraBold = false)
-        {
-            TextBlock actionHeader = new TextBlock();
-            actionHeader.Tag = ActionHeaderTag;
-            actionHeader.Text = ActionHeaderString;
-            actionHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
-            if (makeUltraBold)
-                actionHeader.FontWeight = FontWeights.UltraBold;
-            actionHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
-
-            //addCategoryHeaders.Children.Add(actionHeader);
-        }
-
-        private void CreateAndPlaceQueryHeader(bool makeUltraBold = false)
-        {
-            TextBlock queryHeader = new TextBlock();
-            queryHeader.Tag = QueryHeaderTag;
-            queryHeader.Text = QueryHeaderString;
-            queryHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
-            if (makeUltraBold)
-                queryHeader.FontWeight = FontWeights.UltraBold;
-            queryHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
-
-            //addCategoryHeaders.Children.Add(queryHeader);
         }
     }
 }

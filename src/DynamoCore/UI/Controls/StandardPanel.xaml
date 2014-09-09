@@ -11,7 +11,7 @@
              Background="Transparent"
              MinWidth="100">
     <UserControl.Resources>
-        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
@@ -54,8 +54,7 @@
     </UserControl.Resources>
     <Grid DataContextChanged="GridDataContextChanged"
           Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityConverter},
-                               ConverterParameter='Collapse'}">
+                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -63,7 +62,13 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock x:Name="primaryHeader"
-                   Foreground="#DDD">CREATE</TextBlock>
+                   Foreground="#DDD"
+                   Text="CREATE">
+            <TextBlock.Visibility>
+                <Binding Path="PrimaryHeaderVisibility"
+                         Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+            </TextBlock.Visibility>
+        </TextBlock>
         <ListBox x:Name="primaryMembers"
                  Grid.Row="1"
                  Background="Transparent"
@@ -95,12 +100,22 @@
             <TextBlock x:Name="secondaryHeaderLeft"
                        Text="QUERY"
                        Foreground="#DDD"
-                       FontWeight="UltraBold" />
+                       FontWeight="UltraBold">
+                <TextBlock.Visibility>
+                    <Binding Path="SecondaryHeaderLeftVisibility"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+            </TextBlock>
             <TextBlock x:Name="secondaryHeaderRight"
                        Text="ACTIONS"
                        Foreground="#DDD"
                        FontWeight="Normal"
-                       Margin="10,0,0,0" />
+                       Margin="10,0,0,0">
+                <TextBlock.Visibility>
+                    <Binding Path="SecondaryHeaderRightVisibility"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+            </TextBlock>
         </StackPanel>
         <ListBox x:Name="secondaryMembers"
                  Grid.Row="3"
