@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Nodes.Search;
+using Dynamo.Search;
 
 namespace Dynamo.UI.Controls
 {
@@ -94,6 +95,11 @@ namespace Dynamo.UI.Controls
             classInfo.SecondaryHeaderLeftVisibility = false;
             classInfo.SecondaryHeaderRightVisibility = false;
 
+            // Set default values.
+            classInfo.PrimaryHeaderGroup = SearchElementGroup.Create;
+            classInfo.SecondaryHeaderLeftGroup = SearchElementGroup.Query;
+            classInfo.SecondaryHeaderRightGroup = SearchElementGroup.Action;
+
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in topCategoryList.
             // Depending on availibility of QueryMembers and ActionMembers
@@ -125,13 +131,12 @@ namespace Dynamo.UI.Controls
             if (!isActionListEmpty)
             {
                 classInfo.PrimaryHeaderVisibility = true;
-                primaryHeader.Text = ActionHeaderString;
+                classInfo.PrimaryHeaderGroup = SearchElementGroup.Action;
                 primaryMembers.ItemsSource = classInfo.ActionMembers;
 
                 if (!isQueryListEmpty)
                 {
                     classInfo.SecondaryHeaderLeftVisibility = true;
-                    secondaryHeaderLeft.Text = QueryHeaderString;
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
@@ -142,8 +147,7 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in topCategoryList. 
             if (!isQueryListEmpty)
             {
-                classInfo.PrimaryHeaderVisibility = true;
-                primaryHeader.Text = QueryHeaderString;
+                classInfo.PrimaryHeaderGroup = SearchElementGroup.Query;
                 primaryMembers.ItemsSource = classInfo.QueryMembers;
 
                 return;

@@ -13,6 +13,7 @@
     <UserControl.Resources>
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -62,12 +63,15 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock x:Name="primaryHeader"
-                   Foreground="#DDD"
-                   Text="CREATE">
+                   Foreground="#DDD">
             <TextBlock.Visibility>
                 <Binding Path="PrimaryHeaderVisibility"
                          Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
             </TextBlock.Visibility>
+            <TextBlock.Text>
+                <Binding Path="PrimaryHeaderGroup"
+                         Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+            </TextBlock.Text>
         </TextBlock>
         <ListBox x:Name="primaryMembers"
                  Grid.Row="1"
@@ -98,16 +102,18 @@
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2">
             <TextBlock x:Name="secondaryHeaderLeft"
-                       Text="QUERY"
                        Foreground="#DDD"
                        FontWeight="UltraBold">
                 <TextBlock.Visibility>
                     <Binding Path="SecondaryHeaderLeftVisibility"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderLeftGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
             </TextBlock>
             <TextBlock x:Name="secondaryHeaderRight"
-                       Text="ACTIONS"
                        Foreground="#DDD"
                        FontWeight="Normal"
                        Margin="10,0,0,0">
@@ -115,6 +121,10 @@
                     <Binding Path="SecondaryHeaderRightVisibility"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderRightGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
             </TextBlock>
         </StackPanel>
         <ListBox x:Name="secondaryMembers"
