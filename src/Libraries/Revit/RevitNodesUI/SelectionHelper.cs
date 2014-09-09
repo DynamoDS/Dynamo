@@ -26,25 +26,17 @@ namespace Revit.Interactivity
         PointOnFace,
         MultipleReferences,
         Element,
-        MultipleElements
+        MultipleElements,
     };
 
     internal class SelectionHelper
     {
-        public static List<string> RequestSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
+        public static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
         {
             selectionTarget = null;
 
             switch(selectionType)
             {
-                case SelectionType.Edge:
-                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
-                case SelectionType.Face:
-                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
-                case SelectionType.PointOnFace:
-                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
-                case SelectionType.MultipleReferences:
-                    return RequestMultipleReferencesSelection(selectionMessage, logger, selectionType);
                 case SelectionType.Element:
                     return RequestElementSelection<T>(selectionMessage, out selectionTarget, logger);
                 case SelectionType.MultipleElements:
@@ -57,6 +49,25 @@ namespace Revit.Interactivity
             return null;
         }
 
+        public static List<string> RequestReferenceSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
+        {
+            selectionTarget = null;
+
+            switch (selectionType)
+            {
+                case SelectionType.Edge:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.Face:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.PointOnFace:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.MultipleReferences:
+                    return RequestMultipleReferencesSelection(selectionMessage, logger, selectionType);
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Request an element in a selection.
         /// </summary>
@@ -64,7 +75,7 @@ namespace Revit.Interactivity
         /// <param name="selectionMessage">The message to display.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        private static List<string> RequestElementSelection(string selectionMessage, out object selectionTarget, ILogger logger)
+        private static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -98,7 +109,7 @@ namespace Revit.Interactivity
         /// <param name="selectionTarget">An object which, when modified, should update this selection.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        private static List<string> RequestMultipleElementsSelection(string message, out object selectionTarget, ILogger logger)
+        private static List<string> RequestMultipleElementsSelection<T>(string message, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 

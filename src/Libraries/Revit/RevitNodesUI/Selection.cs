@@ -21,6 +21,7 @@ using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 
 using Revit.Elements;
+using Revit.GeometryObjects;
 using Revit.Interactivity;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
@@ -904,6 +905,92 @@ namespace Dynamo.Nodes
     //    #endregion
     //}
 
+    public abstract class ReferenceSelection : ElementSelection
+    {
+        public override string SelectionText
+        {
+            get
+            {
+                var doc = DocumentManager.Instance.CurrentDBDocument;
+                var refs = Selection.Select(r => Reference.ParseFromStableRepresentation(doc, r));
+                var ids = refs.Select(doc.GetElement).Select(el => el.Id).ToArray();
+
+                var sb = new StringBuilder();
+                int count = 0;
+                while (count < Math.Min(ids.Count(), 10))
+                {
+                    sb.Append(ids[count] + ",");
+                    count++;
+                }
+                if (sb.Length > 0)
+                {
+                    sb.Remove(sb.Length - 1, 1).Append("...");
+                }
+
+                return "Elements:" + sb;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        protected ReferenceSelection(WorkspaceModel workspaceModel, 
+            ElementsSelectionUpdateDelegate action, 
+            SelectionType selectionType, 
+            string message) :base(workspaceModel, action, selectionType, message){}
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (StableReference != null)
+            {
+                var args = new List<AssociativeNode>
+                    {
+                        AstFactory.BuildStringNode(stableReference)
+                    };
+
+                node = AstFactory.BuildFunctionCall(new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation), args);
+            }
+            else
+            {
+                node = AstFactory.BuildNullNode();
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (Selection == null || !Selection.Any())
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var els = selection;
+
+                var newInputs = els.Select(el =>
+                    AstFactory.BuildFunctionCall(
+                    new Func<string, bool, Element>(ElementSelector.ByUniqueId),
+                    new List<AssociativeNode>
+                    {
+                        AstFactory.BuildStringNode(el),
+                        AstFactory.BuildBooleanNode(true)
+                    }
+                    )).ToList();
+
+                node = AstFactory.BuildExprList(newInputs);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
+
     [NodeName("Select Analysis Results")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]
@@ -912,7 +999,7 @@ namespace Dynamo.Nodes
     public class DSAnalysisResultSelection : ElementSelection
     {
         public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Element, "Select an analysis result.")
+            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.Element, "Select an analysis result.")
         { }
     }
 
@@ -923,7 +1010,7 @@ namespace Dynamo.Nodes
     public class DSModelElementSelection : ElementSelection
     {
         public DSModelElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Element, "Select Model Element")
+            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.Element, "Select Model Element")
         { }
     }
     
@@ -931,15 +1018,15 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a face.")]
     [IsDesignScriptCompatible]
-    public class DSFaceSelection : ElementSelection
+    public class DSFaceSelection : ReferenceSelection
     {
         public override string SelectionText
         {
             get
             {
-                return _selectionText = StableReference == null
+                return _selectionText = !Selection.Any()
                                             ? "Nothing Selected"
-                                            : "Face of Element ID: " + Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, StableReference).ElementId;
+                                            : "Face of Element ID: " + Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, Selection.First()).ElementId;
             }
             set
             {
@@ -949,14 +1036,14 @@ namespace Dynamo.Nodes
         }
 
         public DSFaceSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Face, "Select a face.") { }
+            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.Face, "Select a face.") { }
     }
 
     [NodeName("Select Edge")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an edge.")]
     [IsDesignScriptCompatible]
-    public class DSEdgeSelection : ElementSelection
+    public class DSEdgeSelection : ReferenceSelection
     {
         public override string SelectionText
         {
@@ -964,9 +1051,9 @@ namespace Dynamo.Nodes
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
 
-                return _selectionText = StableReference == null
+                return _selectionText = !Selection.Any()
                                             ? "Nothing Selected"
-                                            : "Edge of Element ID: " + Reference.ParseFromStableRepresentation(doc, stableReference).ElementId;
+                                            : "Edge of Element ID: " + Reference.ParseFromStableRepresentation(doc, Selection.First()).ElementId;
             }
             set
             {
@@ -976,7 +1063,7 @@ namespace Dynamo.Nodes
         }
 
         public DSEdgeSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Edge, "Select an edge.")
+            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.Edge, "Select an edge.")
         { }
     }
 
@@ -984,16 +1071,16 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a point on a face.")]
     [IsDesignScriptCompatible]
-    public class DSPointOnElementSelection : ElementSelection
+    public class DSPointOnElementSelection : ReferenceSelection
     {
         public override string SelectionText
         {
             get
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                return _selectionText = string.IsNullOrEmpty(stableReference)
+                return _selectionText = !Selection.Any()
                                             ? "Nothing Selected"
-                                            : "Point on element" + " (" + Reference.ParseFromStableRepresentation(doc,stableReference) + ")";
+                                            : "Point on element" + " (" + Reference.ParseFromStableRepresentation(doc,Selection.First()) + ")";
             }
             set
             {
@@ -1002,26 +1089,26 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override string StableReference
-        {
-            get { return stableReference; }
-            set
-            {
-                bool dirty = value != null;
+        //public override string StableReference
+        //{
+        //    get { return stableReference; }
+        //    set
+        //    {
+        //        bool dirty = value != null;
 
-                stableReference = value;
+        //        stableReference = value;
 
-                if (dirty)
-                {
-                    RequiresRecalc = true;
-                }
+        //        if (dirty)
+        //        {
+        //            RequiresRecalc = true;
+        //        }
 
-                RaisePropertyChanged("SelectedUniqueIdElement");
-            }
-        }
+        //        RaisePropertyChanged("SelectedUniqueIdElement");
+        //    }
+        //}
 
         public DSPointOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
 
     //    public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1065,16 +1152,16 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
-    public class DSUVOnElementSelection : ElementSelection
+    public class DSUVOnElementSelection : ReferenceSelection
     {
         public override string SelectionText
         {
             get
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                return _selectionText = StableReference == null
+                return _selectionText = !Selection.Any()
                                             ? "Nothing Selected"
-                                            : "UV on element" + " (" + Reference.ParseFromStableRepresentation(doc, stableReference) + ")";
+                                            : "UV on element" + " (" + Reference.ParseFromStableRepresentation(doc, Selection.First()) + ")";
             }
             set
             {
@@ -1084,7 +1171,7 @@ namespace Dynamo.Nodes
         }
 
         public DSUVOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
 
         //public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1131,7 +1218,8 @@ namespace Dynamo.Nodes
     {
         public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
-            SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, 
+            SelectionHelper.RequestElementSelection<Autodesk.Revit.DB.DividedSurface>, 
+            SelectionType.Element, 
             "Select a divided surface.") { }
     }
 
@@ -1165,7 +1253,7 @@ namespace Dynamo.Nodes
         }
 
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.MultipleElements, "Select elements.") { }
+            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.MultipleElements, "Select elements.") { }
     }
 
     internal class SelectionButtonContentConverter : IValueConverter
