@@ -214,6 +214,7 @@ limitations under the License.
     <Compile Include="UI\Controls\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SubclassesTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <SubType>Code</SubType>

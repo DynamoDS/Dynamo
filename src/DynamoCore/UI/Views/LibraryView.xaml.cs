@@ -21,7 +21,7 @@ namespace Dynamo.UI.Views
             Loaded += LibraryViewLoaded;
         }
 
-        void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             DataContext = this.viewModel;
         }
