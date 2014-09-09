@@ -27,7 +27,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
 
-            string libraryPath = Path.Combine(GetTestDirectory(), @"..\bin\AnyCPU\Debug\FFITarget.dll");
+            string libraryPath = "FFITarget.dll";
             libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
             Assert.IsTrue(libraryLoaded);
 
