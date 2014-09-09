@@ -84,11 +84,6 @@ namespace Dynamo.Search.SearchElements
             {
                 string typeOfParameter = listInputs[i].Item2;
 
-                // Check if there simbols like "[]..[]".
-                // And remove it.
-                // e.g. bool[]..[] -> boolN
-                typeOfParameter = typeOfParameter.Replace("[]..[]", "N");
-
                 // Check if there simbols like "[]".
                 // And remove them, according how much we found.
                 // e.g. bool[][] -> bool2

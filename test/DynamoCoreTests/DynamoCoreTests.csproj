@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
-    <Compile Include="ShortenParameterTypeTest.cs" />
+    <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
