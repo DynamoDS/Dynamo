@@ -193,7 +193,6 @@ namespace Dynamo.Nodes.Search
                 icon = cust.LoadIconInternal(fullNameOfIcon);
             return icon;
         }
-
     }
 
     public class ClassInformation : BrowserItem
