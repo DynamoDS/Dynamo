@@ -220,7 +220,6 @@
             </ScrollViewer.HorizontalScrollBarVisibility>
             <ScrollViewer.Resources>
 
-                <!--ScrollViewer-->
                 <Style x:Key="ScrollViewer"
                        TargetType="{x:Type ScrollViewer}">
                     <Setter Property="OverridesDefaultStyle"
@@ -265,7 +264,6 @@
                     </Setter>
                 </Style>
 
-                <!--Scrollbar Thumbs-->
                 <Style x:Key="ScrollThumbs"
                        TargetType="{x:Type Thumb}">
                     <Setter Property="Template">
@@ -301,7 +299,6 @@
                     </Setter>
                 </Style>
 
-                <!--ScrollBars-->
                 <Style x:Key="{x:Type ScrollBar}"
                        TargetType="{x:Type ScrollBar}">
                     <Setter Property="Stylus.IsFlicksEnabled"
@@ -733,8 +730,6 @@
                 </DataTemplate>
 
             </ScrollViewer.Resources>
-
-            <!--CATEGORIES-->
 
             <TreeView Name="SearchTreeView"
                       Background="Blue"

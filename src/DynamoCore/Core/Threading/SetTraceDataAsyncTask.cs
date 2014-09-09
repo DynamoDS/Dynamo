@@ -14,8 +14,8 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
 
-        internal SetTraceDataAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal SetTraceDataAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 
