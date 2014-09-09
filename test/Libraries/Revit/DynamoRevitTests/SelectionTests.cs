@@ -70,7 +70,7 @@ namespace Dynamo.Tests
 
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection || x is DSModelElementsSelection);
             Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));
         }
     }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI.Selection;
 
 using Dynamo.Interfaces;
@@ -11,46 +9,63 @@ using RevitServices.Persistence;
 
 namespace Revit.Interactivity
 {
+    public interface ISelectionIdentifier
+    {
+        /// <summary>
+        /// The unique id of the element within the model
+        /// </summary>
+        string UniqueId { get; set; }
+        int ElementId { get; set; }
+        string StableReference { get; set; }
+    }
+
+    public enum ReferenceSelectionType
+    {
+        Face,
+        Edge,
+        PointOnFace
+    };
+
     internal class SelectionHelper
     {
-        public static ReferencePoint RequestReferencePointSelection(string message)
+        /// <summary>
+        /// Request an element in a selection.
+        /// </summary>
+        /// <typeparam name="T">The type of the Element.</typeparam>
+        /// <param name="selectionMessage">The message to display.</param>
+        /// <param name="logger">A logger.</param>
+        /// <returns></returns>
+        public static string RequestElementSelection<T>(string selectionMessage,ILogger logger) where T : Element
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            ReferencePoint rp = null;
+            Element e = null;
 
             var choices = doc.Selection;
-
             choices.Elements.Clear();
 
+            logger.Log(selectionMessage);
 
-            var pointRef = doc.Selection.PickObject(ObjectType.Element);
+            var elementRef = doc.Selection.PickObject(
+                ObjectType.Element,
+                new ElementSelectionFilter<T>());
 
-            if (pointRef != null)
+            if (elementRef != null)
             {
-                rp =
-                    DocumentManager.Instance.CurrentDBDocument.GetElement(pointRef) as
-                        ReferencePoint;
+                e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
             }
-            return rp;
+            return e.UniqueId;
         }
 
-        public static CurveElement RequestCurveElementSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            var choices = doc.Selection;
-
-            choices.Elements.Clear();
-
-            logger.Log(message);
-
-            var curveRef = doc.Selection.PickObject(ObjectType.Element);
-
-            return DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
-        }
-
-        public static List<ElementId> RequestMultipleElementsSelection(string message, out object selectionTarget, ILogger logger)
+        /// <summary>
+        /// Request multiple elements in a selection
+        /// </summary>
+        /// <typeparam name="T">The type of the Elements.</typeparam>
+        /// <param name="message">The message to display.</param>
+        /// <param name="selectionTarget">An object which, when modified, should update this selection.</param>
+        /// <param name="logger">A logger.</param>
+        /// <returns></returns>
+        public static List<string> RequestMultipleElementsSelection<T>(string message, out object selectionTarget, ILogger logger) where T : Element
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -63,273 +78,84 @@ namespace Revit.Interactivity
             // passed in the element list.
             selectionTarget = null;
 
-            return doc.Selection.PickElementsByRectangle(
-                "Window select multiple elements.").Select(x => x.Id).ToList();
+            var elementRefs = doc.Selection.PickElementsByRectangle(
+                new ElementSelectionFilter<T>(),
+                message);
+
+            return elementRefs.Select(x => x.UniqueId).ToList();
         }
 
-        public static Face RequestFaceSelection(string message, ILogger logger)
+        /// <summary>
+        /// Request a selection and return a stable reference to that reference.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="logger">A logger.</param>
+        /// <param name="selectionType">The type of reference selection.</param>
+        /// <returns></returns>
+        public static string RequestReferenceSelection(string message, ILogger logger, ReferenceSelectionType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            Face f = null;
-
-            var choices = doc.Selection;
-
-            choices.Elements.Clear();
-
-            logger.Log(message);
-
-            var faceRef = doc.Selection.PickObject(ObjectType.Face);
-
-            if (faceRef != null)
-            {
-                var geob =
-                    DocumentManager.Instance.CurrentDBDocument.GetElement(faceRef)
-                        .GetGeometryObjectFromReference(faceRef);
-                f = geob as Face;
-            }
-            return f;
-        }
-
-        public static Reference RequestFaceReferenceSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            Reference faceRef = null;
-
-            var choices = doc.Selection;
-            choices.Elements.Clear();
-
-            logger.Log(message);
-            faceRef = doc.Selection.PickObject(ObjectType.Face);
-
-            return faceRef;
-        }
-
-        public static Reference RequestEdgeReferenceSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            var choices = doc.Selection;
-            choices.Elements.Clear();
-
-            logger.Log(message);
-            var edgeRef = doc.Selection.PickObject(ObjectType.Edge);
-
-            return edgeRef;
-        }
-
-        public static Form RequestFormSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            Form f = null;
-
-            var choices = doc.Selection;
-
-            choices.Elements.Clear();
-
-            logger.Log(message);
-
-            var formRef = doc.Selection.PickObject(ObjectType.Element);
-
-            if (formRef != null)
-            {
-                //get the element
-                var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
-                f = el as Form;
-            }
-            return f;
-        }
-
-        public static DividedSurface RequestDividedSurfaceSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            DividedSurface f = null;
-
-            var choices = doc.Selection;
-
-            choices.Elements.Clear();
-
-            logger.Log(message);
-
-            var formRef = doc.Selection.PickObject(
-                ObjectType.Element,
-                new DividedSurfaceSelectionFilter());
-
-            if (formRef != null)
-            {
-                //get the element
-                var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
-                f = (DividedSurface)el;
-            }
-            return f;
-        }
-
-        public static FamilySymbol RequestFamilySymbolByInstanceSelection(
-            string message, ILogger logger, ref FamilyInstance fi)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            try
-            {
-                //FamilySymbol fs = null;
-
-                var choices = doc.Selection;
-
-                choices.Elements.Clear();
-
-                logger.Log(message);
-
-                var fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-                if (fsRef != null)
-                {
-                    fi = doc.Document.GetElement(fsRef) as FamilyInstance;
-
-                    if (fi != null)
-                        return fi.Symbol;
-                    return null;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                logger.Log(ex);
-                return null;
-            }
-        }
-
-        public static FamilyInstance RequestFamilyInstanceSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            try
-            {
-                var choices = doc.Selection;
-
-                choices.Elements.Clear();
-
-                logger.Log(message);
-
-                var fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-                if (fsRef != null)
-                {
-                    var inst = doc.Document.GetElement(fsRef.ElementId) as FamilyInstance;
-                    return inst;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                logger.Log(ex);
-                return null;
-            }
-        }
-
-        public static Level RequestLevelSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            Level l = null;
-
-            var choices = doc.Selection;
-
-            choices.Elements.Clear();
-
-            logger.Log(message);
-
-            var fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-            if (fsRef != null)
-                l = (Level)doc.Document.GetElement(fsRef.ElementId);
-
-            return l;
-        }
-
-        public static ElementId RequestAnalysisResultInstanceSelection(
-            string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            try
-            {
-                var view = doc.ActiveView;
-
-                var sfm = SpatialFieldManager.GetSpatialFieldManager(view);
-
-                if (sfm != null)
-                {
-                    sfm.GetRegisteredResults();
-
-                    var choices = doc.Selection;
-
-                    choices.Elements.Clear();
-
-                    logger.Log(message);
-
-                    var fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-                    if (fsRef != null)
-                    {
-                        var analysisResult = doc.Document.GetElement(fsRef.ElementId);
-
-                        return analysisResult.Id;
-                    }
-                    return null;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                logger.Log(ex);
-                return null;
-            }
-        }
-
-        public static ElementId RequestModelElementSelection(string message, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            Element selectedElement = null;
+            Reference reference = null;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
 
             logger.Log(message);
 
-            var fsRef = doc.Selection.PickObject(ObjectType.Element);
-            if (fsRef != null)
+            switch (selectionType)
             {
-                selectedElement = doc.Document.GetElement(fsRef.ElementId);
-                if (selectedElement is FamilyInstance || selectedElement is HostObject ||
-                    selectedElement is ImportInstance ||
-                    selectedElement is CombinableElement)
-                    return selectedElement.Id;
+                case ReferenceSelectionType.Face:
+                    reference = doc.Selection.PickObject(ObjectType.Face, message);
+                    break;
+                case ReferenceSelectionType.Edge:
+                    reference = doc.Selection.PickObject(ObjectType.Edge, message);
+                    break;
+                case ReferenceSelectionType.PointOnFace:
+                    reference = doc.Selection.PickObject(ObjectType.PointOnElement, message);
+                    break;
             }
 
-            return selectedElement != null ? selectedElement.Id : null;
+            return reference.ConvertToStableRepresentation(doc.Document);
         }
 
-        public static Reference RequestReferenceXYZSelection(string message, ILogger logger)
+        /// <summary>
+        /// Request a selection and return a stable reference to that reference.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="logger">A logger.</param>
+        /// <param name="selectionType">The type of reference selection.</param>
+        /// <returns></returns>
+        public static IEnumerable<string> RequestMultipleReferencesSelection(string message, ILogger logger, ReferenceSelectionType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
+
+            IList<Reference> references = null;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
 
             logger.Log(message);
 
-            var xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
+            switch (selectionType)
+            {
+                case ReferenceSelectionType.Face:
+                    references = doc.Selection.PickObjects(ObjectType.Face, message);
+                    break;
+                case ReferenceSelectionType.Edge:
+                    references = doc.Selection.PickObjects(ObjectType.Edge, message);
+                    break;
+                case ReferenceSelectionType.PointOnFace:
+                    references = doc.Selection.PickObjects(ObjectType.PointOnElement, message);
+                    break;
+            }
 
-            return xyzRef;
+            return references.Select(r=>r.ConvertToStableRepresentation(doc.Document));
         }
 
-        public static List<ElementId> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
+        public static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
         {
-            var ds = RequestDividedSurfaceSelection(message, logger);
+            var ds = RequestElementSelection<DividedSurface>(message, logger);
 
             var result = GetFamilyInstancesFromDividedSurface(ds);
 
@@ -338,11 +164,26 @@ namespace Revit.Interactivity
             return result;
         }
 
-        public static List<ElementId> GetFamilyInstancesFromDividedSurface(object selectionTarget)
+        public class ElementSelectionFilter<T> : ISelectionFilter
+        {
+            public bool AllowElement(Element elem)
+            {
+                return elem is T;
+            }
+
+            public bool AllowReference(Reference reference, XYZ position)
+            {
+                return false;
+            }
+        }
+
+        #region private static methods
+
+        private static List<string> GetFamilyInstancesFromDividedSurface(object selectionTarget)
         {
             var ds = selectionTarget as DividedSurface;
 
-            var result = new List<ElementId>();
+            var result = new List<string>();
 
             var gn = new GridNode();
 
@@ -364,7 +205,7 @@ namespace Revit.Interactivity
                         if (fi != null)
                         {
                             //put the family instance into the tree
-                            result.Add(fi.Id);
+                            result.Add(fi.UniqueId);
                         }
                     }
                     v = v + 1;
@@ -375,34 +216,173 @@ namespace Revit.Interactivity
             return result;
         }
 
-        public class CurveSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
-                    return true;
-                return false;
-            }
+        #endregion
 
-            public bool AllowReference(Reference refer, XYZ point)
-            {
-                return false;
-            }
-        }
+        #region junk
 
-        public class DividedSurfaceSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element elem)
-            {
-                if (elem is DividedSurface)
-                    return true;
-                return false;
-            }
+        //public static Reference RequestFaceReferenceSelection(string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            public bool AllowReference(Reference reference, XYZ position)
-            {
-                return false;
-            }
-        }
+        //    Reference faceRef = null;
+
+        //    var choices = doc.Selection;
+        //    choices.Elements.Clear();
+
+        //    logger.Log(message);
+        //    faceRef = doc.Selection.PickObject(ObjectType.Face);
+
+        //    return faceRef;
+        //}
+
+        //public static Reference RequestEdgeReferenceSelection(string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+        //    var choices = doc.Selection;
+        //    choices.Elements.Clear();
+
+        //    logger.Log(message);
+        //    var edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+
+        //    return edgeRef;
+        //}
+
+        //public static DividedSurface RequestDividedSurfaceSelection(string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+        //    DividedSurface f = null;
+
+        //    var choices = doc.Selection;
+
+        //    choices.Elements.Clear();
+
+        //    logger.Log(message);
+
+        //    var formRef = doc.Selection.PickObject(
+        //        ObjectType.Element,
+        //        new DividedSurfaceSelectionFilter());
+
+        //    if (formRef != null)
+        //    {
+        //        //get the element
+        //        var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
+        //        f = (DividedSurface)el;
+        //    }
+        //    return f;
+        //}
+
+        //public static ElementId RequestAnalysisResultInstanceSelection(
+        //    string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+        //    try
+        //    {
+        //        var view = doc.ActiveView;
+
+        //        var sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+
+        //        if (sfm != null)
+        //        {
+        //            sfm.GetRegisteredResults();
+
+        //            var choices = doc.Selection;
+
+        //            choices.Elements.Clear();
+
+        //            logger.Log(message);
+
+        //            var fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+        //            if (fsRef != null)
+        //            {
+        //                var analysisResult = doc.Document.GetElement(fsRef.ElementId);
+
+        //                return analysisResult.Id;
+        //            }
+        //            return null;
+        //        }
+        //        return null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Log(ex);
+        //        return null;
+        //    }
+        //}
+
+        //public static ElementId RequestModelElementSelection(string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+        //    Element selectedElement = null;
+
+        //    var choices = doc.Selection;
+        //    choices.Elements.Clear();
+
+        //    logger.Log(message);
+
+        //    var fsRef = doc.Selection.PickObject(ObjectType.Element);
+        //    if (fsRef != null)
+        //    {
+        //        selectedElement = doc.Document.GetElement(fsRef.ElementId);
+        //        if (selectedElement is FamilyInstance || selectedElement is HostObject ||
+        //            selectedElement is ImportInstance ||
+        //            selectedElement is CombinableElement)
+        //            return selectedElement.Id;
+        //    }
+
+        //    return selectedElement != null ? selectedElement.Id : null;
+        //}
+
+        //public static Reference RequestReferenceXYZSelection(string message, ILogger logger)
+        //{
+        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+        //    var choices = doc.Selection;
+        //    choices.Elements.Clear();
+
+        //    logger.Log(message);
+
+        //    var xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
+
+        //    return xyzRef;
+        //}
+
+        //public class CurveSelectionFilter : ISelectionFilter
+        //{
+        //    public bool AllowElement(Element element)
+        //    {
+        //        if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
+        //            return true;
+        //        return false;
+        //    }
+
+        //    public bool AllowReference(Reference refer, XYZ point)
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //public class DividedSurfaceSelectionFilter : ISelectionFilter
+        //{
+        //    public bool AllowElement(Element elem)
+        //    {
+        //        if (elem is DividedSurface)
+        //            return true;
+        //        return false;
+        //    }
+
+        //    public bool AllowReference(Reference reference, XYZ position)
+        //    {
+        //        return false;
+        //    }
+        //}
+
+
+        #endregion
+
     }
 }

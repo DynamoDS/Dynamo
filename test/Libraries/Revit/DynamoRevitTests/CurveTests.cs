@@ -45,10 +45,10 @@ namespace Dynamo.Tests
             if (!ptSelectNodes.Any())
                 Assert.Fail("Could not find point selection nodes in dynamo graph.");
 
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(0)).SelectedElement = p1.Id;
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(1)).SelectedElement = p2.Id;
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3.Id;
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4.Id;
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(0)).SelectedUniqueId = p1.UniqueId;
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(1)).SelectedUniqueId = p2.UniqueId;
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(2)).SelectedUniqueId = p3.UniqueId;
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(3)).SelectedUniqueId = p4.UniqueId;
 
             ViewModel.Model.RunExpression();
 
