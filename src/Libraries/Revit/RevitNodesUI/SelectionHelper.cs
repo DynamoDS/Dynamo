@@ -19,15 +19,44 @@ namespace Revit.Interactivity
         string StableReference { get; set; }
     }
 
-    public enum ReferenceSelectionType
+    public enum SelectionType
     {
         Face,
         Edge,
-        PointOnFace
+        PointOnFace,
+        MultipleReferences,
+        Element,
+        MultipleElements
     };
 
     internal class SelectionHelper
     {
+        public static List<string> RequestSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
+        {
+            selectionTarget = null;
+
+            switch(selectionType)
+            {
+                case SelectionType.Edge:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.Face:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.PointOnFace:
+                    return RequestReferenceSelection(selectionMessage, logger, selectionType);
+                case SelectionType.MultipleReferences:
+                    return RequestMultipleReferencesSelection(selectionMessage, logger, selectionType);
+                case SelectionType.Element:
+                    return RequestElementSelection<T>(selectionMessage, out selectionTarget, logger);
+                case SelectionType.MultipleElements:
+                    return RequestMultipleElementsSelection<T>(
+                        selectionMessage,
+                        out selectionTarget,
+                        logger);
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Request an element in a selection.
         /// </summary>
@@ -35,7 +64,7 @@ namespace Revit.Interactivity
         /// <param name="selectionMessage">The message to display.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        public static string RequestElementSelection<T>(string selectionMessage,ILogger logger) where T : Element
+        private static List<string> RequestElementSelection(string selectionMessage, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -46,6 +75,10 @@ namespace Revit.Interactivity
 
             logger.Log(selectionMessage);
 
+            // Don't pass anything back, as everything we care about will be
+            // passed in the element list.
+            selectionTarget = null;
+
             var elementRef = doc.Selection.PickObject(
                 ObjectType.Element,
                 new ElementSelectionFilter<T>());
@@ -54,7 +87,7 @@ namespace Revit.Interactivity
             {
                 e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
             }
-            return e.UniqueId;
+            return new List<string>(){e.UniqueId};
         }
 
         /// <summary>
@@ -65,7 +98,7 @@ namespace Revit.Interactivity
         /// <param name="selectionTarget">An object which, when modified, should update this selection.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        public static List<string> RequestMultipleElementsSelection<T>(string message, out object selectionTarget, ILogger logger) where T : Element
+        private static List<string> RequestMultipleElementsSelection(string message, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -92,7 +125,7 @@ namespace Revit.Interactivity
         /// <param name="logger">A logger.</param>
         /// <param name="selectionType">The type of reference selection.</param>
         /// <returns></returns>
-        public static string RequestReferenceSelection(string message, ILogger logger, ReferenceSelectionType selectionType)
+        private static List<string> RequestReferenceSelection(string message, ILogger logger, SelectionType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -105,18 +138,18 @@ namespace Revit.Interactivity
 
             switch (selectionType)
             {
-                case ReferenceSelectionType.Face:
+                case SelectionType.Face:
                     reference = doc.Selection.PickObject(ObjectType.Face, message);
                     break;
-                case ReferenceSelectionType.Edge:
+                case SelectionType.Edge:
                     reference = doc.Selection.PickObject(ObjectType.Edge, message);
                     break;
-                case ReferenceSelectionType.PointOnFace:
+                case SelectionType.PointOnFace:
                     reference = doc.Selection.PickObject(ObjectType.PointOnElement, message);
                     break;
             }
 
-            return reference.ConvertToStableRepresentation(doc.Document);
+            return new List<string>() { reference.ConvertToStableRepresentation(doc.Document) };
         }
 
         /// <summary>
@@ -126,7 +159,7 @@ namespace Revit.Interactivity
         /// <param name="logger">A logger.</param>
         /// <param name="selectionType">The type of reference selection.</param>
         /// <returns></returns>
-        public static IEnumerable<string> RequestMultipleReferencesSelection(string message, ILogger logger, ReferenceSelectionType selectionType)
+        private static List<string> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -139,23 +172,23 @@ namespace Revit.Interactivity
 
             switch (selectionType)
             {
-                case ReferenceSelectionType.Face:
+                case SelectionType.Face:
                     references = doc.Selection.PickObjects(ObjectType.Face, message);
                     break;
-                case ReferenceSelectionType.Edge:
+                case SelectionType.Edge:
                     references = doc.Selection.PickObjects(ObjectType.Edge, message);
                     break;
-                case ReferenceSelectionType.PointOnFace:
+                case SelectionType.PointOnFace:
                     references = doc.Selection.PickObjects(ObjectType.PointOnElement, message);
                     break;
             }
 
-            return references.Select(r=>r.ConvertToStableRepresentation(doc.Document));
+            return references.Select(r=>r.ConvertToStableRepresentation(doc.Document)).ToList();
         }
 
-        public static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
+        private static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
         {
-            var ds = RequestElementSelection<DividedSurface>(message, logger);
+            var ds = RequestElementSelection<DividedSurface>(message, out selectionTarget, logger);
 
             var result = GetFamilyInstancesFromDividedSurface(ds);
 
@@ -164,7 +197,7 @@ namespace Revit.Interactivity
             return result;
         }
 
-        public class ElementSelectionFilter<T> : ISelectionFilter
+        private class ElementSelectionFilter<T> : ISelectionFilter
         {
             public bool AllowElement(Element elem)
             {

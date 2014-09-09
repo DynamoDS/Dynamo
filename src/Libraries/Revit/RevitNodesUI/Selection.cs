@@ -21,14 +21,13 @@ using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 
 using Revit.Elements;
-using Revit.GeometryObjects;
 using Revit.Interactivity;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
-    public delegate List<string> ElementsSelectionUpdateDelegate(string message, out object target, ILogger logger);
+    public delegate List<string> ElementsSelectionUpdateDelegate(string message, out object target, SelectionType selectionType, ILogger logger);
 
     public abstract class SelectionBase : RevitNodeModel, IWpfNode
     {
@@ -112,258 +111,258 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class ElementSelection : SelectionBase 
-    {
-        protected Func<string, ILogger, string> SelectionAction;
+    //public abstract class ElementSelection : SelectionBase 
+    //{
+    //    protected Func<string, ILogger, string> SelectionAction;
 
-        private string selectedUniqueId;
-        private Document selectionOwner;
+    //    private string selectedUniqueId;
+    //    private Document selectionOwner;
 
-        /// <summary>
-        /// The Element which is selected.
-        /// </summary>
-        public string SelectedUniqueId
-        {
-            get { return selectedUniqueId; }
-            set
-            {
-                bool dirty;
-                if (selectedUniqueId != null)
-                {
-                    if (value != null && value.Equals(selectedUniqueId))
-                        return;
+    //    /// <summary>
+    //    /// The Element which is selected.
+    //    /// </summary>
+    //    public string SelectedUniqueId
+    //    {
+    //        get { return selectedUniqueId; }
+    //        set
+    //        {
+    //            bool dirty;
+    //            if (selectedUniqueId != null)
+    //            {
+    //                if (value != null && value.Equals(selectedUniqueId))
+    //                    return;
 
-                    dirty = true;
-                }
-                else
-                    dirty = value != null;
+    //                dirty = true;
+    //            }
+    //            else
+    //                dirty = value != null;
                 
-                selectedUniqueId = value;
-                selectionOwner = selectedUniqueId == null ? null : DocumentManager.Instance.CurrentDBDocument;
+    //            selectedUniqueId = value;
+    //            selectionOwner = selectedUniqueId == null ? null : DocumentManager.Instance.CurrentDBDocument;
 
-                if (dirty)
-                {
+    //            if (dirty)
+    //            {
 
-                    RequiresRecalc = true;
-                }
+    //                RequiresRecalc = true;
+    //            }
 
-                RaisePropertyChanged("SelectedUniqueId");
-            }
-        }
+    //            RaisePropertyChanged("SelectedUniqueId");
+    //        }
+    //    }
 
-        public override string SelectionText
-        {
-            get
-            {
-                return SelectedUniqueId == null
-                    ? "Nothing Selected"
-                    : string.Format("Element ID: {0}", DocumentManager.Instance.CurrentDBDocument.GetElement(selectedUniqueId).Id);
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
+    //    public override string SelectionText
+    //    {
+    //        get
+    //        {
+    //            return SelectedUniqueId == null
+    //                ? "Nothing Selected"
+    //                : string.Format("Element ID: {0}", DocumentManager.Instance.CurrentDBDocument.GetElement(selectedUniqueId).Id);
+    //        }
+    //        set
+    //        {
+    //            _selectionText = value;
+    //            RaisePropertyChanged("SelectionText");
+    //        }
+    //    }
 
-        public override bool ForceReExecuteOfNode
-        {
-            get { return true; }
-        }
+    //    public override bool ForceReExecuteOfNode
+    //    {
+    //        get { return true; }
+    //    }
 
-        #region protected constructors
+    //    #region protected constructors
 
-        protected ElementSelection(WorkspaceModel workspaceModel, Func<string, ILogger, string> action, string message) : base(workspaceModel)
-        {
-            SelectionAction = action;
-            _selectionMessage = message;
+    //    protected ElementSelection(WorkspaceModel workspaceModel, Func<string, ILogger, string> action, string message) : base(workspaceModel)
+    //    {
+    //        SelectionAction = action;
+    //        _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Element", "The selected element."));
-            RegisterAllPorts();
+    //        OutPortData.Add(new PortData("Element", "The selected element."));
+    //        RegisterAllPorts();
 
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
-            if (revMod == null) return;
+    //        var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+    //        if (revMod == null) return;
 
-            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
-            revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
-            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
-        }
+    //        revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
+    //        revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
+    //        revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
+    //    }
 
-        void Controller_RevitDocumentChanged(object sender, EventArgs e)
-        {
-            SelectedUniqueId = null;
-            RaisePropertyChanged("SelectedUniqueId");
-            RaisePropertyChanged("SelectionText");
-        }
+    //    void Controller_RevitDocumentChanged(object sender, EventArgs e)
+    //    {
+    //        SelectedUniqueId = null;
+    //        RaisePropertyChanged("SelectedUniqueId");
+    //        RaisePropertyChanged("SelectionText");
+    //    }
 
-        public override void Destroy()
-        {
-            base.Destroy();
+    //    public override void Destroy()
+    //    {
+    //        base.Destroy();
 
-            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
-            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
-        }
+    //        RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
+    //        RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region public methods
+    //    #region public methods
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = Configurations.PortHeightInPixels,
-            };
-            selectButton.Click += selectButton_Click;
+    //    public override void SetupCustomUIElements(dynNodeView nodeUI)
+    //    {
+    //        //add a button to the inputGrid on the dynElement
+    //        var selectButton = new DynamoNodeButton()
+    //        {
+    //            HorizontalAlignment = HorizontalAlignment.Stretch,
+    //            VerticalAlignment = VerticalAlignment.Top,
+    //            Height = Configurations.PortHeightInPixels,
+    //        };
+    //        selectButton.Click += selectButton_Click;
 
-            var tb = new TextBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
-            };
+    //        var tb = new TextBox
+    //        {
+    //            HorizontalAlignment = HorizontalAlignment.Stretch,
+    //            VerticalAlignment = VerticalAlignment.Center,
+    //            Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+    //            BorderThickness = new Thickness(0),
+    //            IsReadOnly = true,
+    //            IsReadOnlyCaretVisible = false
+    //        };
 
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+    //        nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+    //        nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(selectButton);
+    //        nodeUI.inputGrid.Children.Add(tb);
+    //        nodeUI.inputGrid.Children.Add(selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+    //        System.Windows.Controls.Grid.SetRow(selectButton, 0);
+    //        System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            tb.DataContext = this;
-            selectButton.DataContext = this;
+    //        tb.DataContext = this;
+    //        selectButton.DataContext = this;
 
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+    //        var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+    //        {
+    //            Mode = BindingMode.TwoWay,
+    //        };
+    //        tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectedUniqueId")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new SelectionButtonContentConverter(),
-            };
-            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+    //        var buttonTextBinding = new System.Windows.Data.Binding("SelectedUniqueId")
+    //        {
+    //            Mode = BindingMode.TwoWay,
+    //            Converter = new SelectionButtonContentConverter(),
+    //        };
+    //        selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
-            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
-        }
+    //        var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+    //        {
+    //            Mode = BindingMode.TwoWay,
+    //        };
+    //        selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region ElementSync
+    //    #region ElementSync
 
-        void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
-        {
-            var uuids =
-                deleted.Select(document.GetElement)
-                    .Where(el => el != null)
-                    .Select(el => el.UniqueId);
+    //    void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+    //    {
+    //        var uuids =
+    //            deleted.Select(document.GetElement)
+    //                .Where(el => el != null)
+    //                .Select(el => el.UniqueId);
 
-            if (!string.IsNullOrEmpty(SelectedUniqueId) && document.Equals(selectionOwner) && uuids.Contains(SelectedUniqueId))
-            {
-                SelectedUniqueId = null;
+    //        if (!string.IsNullOrEmpty(SelectedUniqueId) && document.Equals(selectionOwner) && uuids.Contains(SelectedUniqueId))
+    //        {
+    //            SelectedUniqueId = null;
 
-                RaisePropertyChanged("SelectedUniqueId");
-                RaisePropertyChanged("SelectionText");
-                RequiresRecalc = true;
-            }
-        }
+    //            RaisePropertyChanged("SelectedUniqueId");
+    //            RaisePropertyChanged("SelectionText");
+    //            RequiresRecalc = true;
+    //        }
+    //    }
 
-        void Updater_ElementsModified(IEnumerable<string> updated)
-        {
-            if (SelectedUniqueId != null && updated.Contains(selectedUniqueId))
-            {
-                RequiresRecalc = true;
-            }
-        }
+    //    void Updater_ElementsModified(IEnumerable<string> updated)
+    //    {
+    //        if (SelectedUniqueId != null && updated.Contains(selectedUniqueId))
+    //        {
+    //            RequiresRecalc = true;
+    //        }
+    //    }
 
-        #endregion
+    //    #endregion
 
-        /// <summary>
-        /// Callback when selection button is clicked. 
-        /// Calls the selection action, and stores the ElementId(s) of the selected objects.
-        /// </summary>
-        protected override void OnSelectClick()
-        {
-            try
-            {
-                //call the delegate associated with a selection type
-                SelectedUniqueId = SelectionAction(_selectionMessage, RevitDynamoModel.Logger);
-                RaisePropertyChanged("SelectionText");
-                RequiresRecalc = true;
-            }
-            catch (OperationCanceledException)
-            {
-                CanSelect = true;
-            }
-            catch (Exception e)
-            {
-                RevitDynamoModel.Logger.Log(e);
-            }
-        }
+    //    /// <summary>
+    //    /// Callback when selection button is clicked. 
+    //    /// Calls the selection action, and stores the ElementId(s) of the selected objects.
+    //    /// </summary>
+    //    protected override void OnSelectClick()
+    //    {
+    //        try
+    //        {
+    //            //call the delegate associated with a selection type
+    //            SelectedUniqueId = SelectionAction(_selectionMessage, RevitDynamoModel.Logger);
+    //            RaisePropertyChanged("SelectionText");
+    //            RequiresRecalc = true;
+    //        }
+    //        catch (OperationCanceledException)
+    //        {
+    //            CanSelect = true;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            RevitDynamoModel.Logger.Log(e);
+    //        }
+    //    }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
-            // When there's no selection, this returns an invalid ID.
-            var selectedElementId = selectedUniqueId ?? "";
+    //    public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+    //    {
+    //        // When there's no selection, this returns an invalid ID.
+    //        var selectedElementId = selectedUniqueId ?? "";
 
-            AssociativeNode node;
-            if (string.IsNullOrEmpty(selectedElementId))
-            {
-                node = AstFactory.BuildNullNode();
-            }
-            else
-            {
-                node = AstFactory.BuildFunctionCall(
-                new Func<string, bool, Element>(ElementSelector.ByUniqueId),
-                new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(selectedElementId),
-                    AstFactory.BuildBooleanNode(true)
-                });
-            }
+    //        AssociativeNode node;
+    //        if (string.IsNullOrEmpty(selectedElementId))
+    //        {
+    //            node = AstFactory.BuildNullNode();
+    //        }
+    //        else
+    //        {
+    //            node = AstFactory.BuildFunctionCall(
+    //            new Func<string, bool, Element>(ElementSelector.ByUniqueId),
+    //            new List<AssociativeNode>
+    //            {
+    //                AstFactory.BuildStringNode(selectedElementId),
+    //                AstFactory.BuildBooleanNode(true)
+    //            });
+    //        }
 
-            return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
-        }
+    //        return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
+    //    }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            if (SelectedUniqueId != null)
-            {
-                XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", selectedUniqueId);
-                nodeElement.AppendChild(outEl);
-            }
-        }
+    //    protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+    //    {
+    //        if (SelectedUniqueId != null)
+    //        {
+    //            XmlElement outEl = xmlDoc.CreateElement("instance");
+    //            outEl.SetAttribute("id", selectedUniqueId);
+    //            nodeElement.AppendChild(outEl);
+    //        }
+    //    }
 
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            string id = (from XmlNode subNode in nodeElement.ChildNodes
-                         where subNode.Name.Equals("instance")
-                         where subNode.Attributes != null
-                         select subNode.Attributes[0].Value).LastOrDefault();
+    //    protected override void LoadNode(XmlNode nodeElement)
+    //    {
+    //        string id = (from XmlNode subNode in nodeElement.ChildNodes
+    //                     where subNode.Name.Equals("instance")
+    //                     where subNode.Attributes != null
+    //                     select subNode.Attributes[0].Value).LastOrDefault();
 
-            if (id != null && DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
-            {
-                SelectedUniqueId = DocumentManager.Instance.CurrentDBDocument.GetElement(id).UniqueId;                
-            }
-        }
-    }
+    //        if (id != null && DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
+    //        {
+    //            SelectedUniqueId = DocumentManager.Instance.CurrentDBDocument.GetElement(id).UniqueId;                
+    //        }
+    //    }
+    //}
 
-    public abstract class MultipleElementSelection : SelectionBase
+    public abstract class ElementSelection : SelectionBase
     {
         /// <summary>
         /// The function to invoke during selection.
@@ -373,26 +372,27 @@ namespace Dynamo.Nodes
         /// <summary>
         /// The function to invoke during update.
         /// </summary>
-        protected Func<object, IEnumerable<string>>  Update;
+        protected Func<object, IEnumerable<string>> Update;
 
-        private List<string> selectedUniqueIds = new List<string>();
+        private List<string> selection = new List<string>();
         private Document selectionOwner;
+        private SelectionType selectionType;
 
         #region public properties
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public List<string> SelectedUniqueIds
+        public List<string> Selection
         {
-            get { return selectedUniqueIds; }
+            get { return selection; }
             set
             {
                 bool dirty = value != null;
 
-                selectedUniqueIds = value;
+                selection = value;
 
-                if (selectedUniqueIds != null)
+                if (selection != null)
                 {
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
                 }
@@ -402,7 +402,7 @@ namespace Dynamo.Nodes
                     RequiresRecalc = true;
                 }
 
-                RaisePropertyChanged("SelectedUniqueIds");
+                RaisePropertyChanged("Selection");
             }
         }
 
@@ -411,7 +411,7 @@ namespace Dynamo.Nodes
             get
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                var ids = SelectedUniqueIds.Select(doc.GetElement).Select(el => el.Id).ToArray();
+                var ids = Selection.Select(doc.GetElement).Select(el => el.Id).ToArray();
 
                 var sb = new StringBuilder();
                 int count = 0;
@@ -438,11 +438,12 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected MultipleElementSelection(WorkspaceModel workspaceModel, ElementsSelectionUpdateDelegate action, string message) 
+        protected ElementSelection(WorkspaceModel workspaceModel, ElementsSelectionUpdateDelegate action, SelectionType selectionType, string message) 
             : base(workspaceModel)
         {
             SelectionAction = action;
             _selectionMessage = message;
+            this.selectionType = selectionType;
 
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
@@ -471,23 +472,23 @@ namespace Dynamo.Nodes
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-            SelectedUniqueIds.Clear();
-            RaisePropertyChanged("SelectedUniqueIds");
+            Selection.Clear();
+            RaisePropertyChanged("Selection");
             RaisePropertyChanged("SelectionText");
         }
 
         void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            if (SelectedUniqueIds.Any() && document.Equals(selectionOwner))
+            if (Selection.Any() && document.Equals(selectionOwner))
             {
                 var uuids =
                 deleted.Select(document.GetElement)
                     .Where(el => el != null)
                     .Select(el => el.UniqueId);
 
-                SelectedUniqueIds = SelectedUniqueIds.Where(x => !uuids.Contains(x)).ToList();
+                Selection = Selection.Where(x => !uuids.Contains(x)).ToList();
 
-                RaisePropertyChanged("SelectedUniqueIds");
+                RaisePropertyChanged("Selection");
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -495,14 +496,14 @@ namespace Dynamo.Nodes
 
         protected virtual void Updater_ElementsModified(IEnumerable<string> updated)
         {
-            if (SelectedUniqueIds != null && SelectedUniqueIds.Any(updated.Contains))
+            if (Selection != null && Selection.Any(updated.Contains))
             {
                 RequiresRecalc = true;
 
                 if (Update != null && _selectionTarget != null)
                 {
-                    SelectedUniqueIds.Clear();
-                    SelectedUniqueIds = Update.Invoke(_selectionTarget).ToList();
+                    Selection.Clear();
+                    Selection = Update.Invoke(_selectionTarget).ToList();
                 }
             }
         }
@@ -552,7 +553,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectedUniqueIds")
+            var buttonTextBinding = new System.Windows.Data.Binding("selection")
             {
                 Mode = BindingMode.OneWay,
                 Converter = new SelectionButtonContentConverter(),
@@ -570,13 +571,13 @@ namespace Dynamo.Nodes
         {
             AssociativeNode node;
 
-            if (SelectedUniqueIds == null || !SelectedUniqueIds.Any())
+            if (Selection == null || !Selection.Any())
             {
                 node = AstFactory.BuildNullNode();
             }
             else
             {
-                var els = selectedUniqueIds;
+                var els = selection;
 
                 var newInputs = els.Select(el =>
                     AstFactory.BuildFunctionCall(
@@ -607,7 +608,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedUniqueIds = SelectionAction(_selectionMessage, out _selectionTarget, this.RevitDynamoModel.Logger);
+                Selection = SelectionAction(_selectionMessage, out _selectionTarget, selectionType, RevitDynamoModel.Logger);
 
                 RaisePropertyChanged("SelectionText");
 
@@ -626,9 +627,9 @@ namespace Dynamo.Nodes
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (SelectedUniqueIds != null)
+            if (Selection != null)
             {
-                foreach (string selectedElement in selectedUniqueIds.Where(x => x != null))
+                foreach (string selectedElement in selection.Where(x => x != null))
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
                     outEl.SetAttribute("id", selectedElement);
@@ -641,267 +642,267 @@ namespace Dynamo.Nodes
         {
             selectionOwner = DocumentManager.Instance.CurrentDBDocument;
 
-            selectedUniqueIds =
+            selection =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
 
             RequiresRecalc = true;
-            RaisePropertyChanged("SelectedUniqueIds");
+            RaisePropertyChanged("Selection");
         }
         
         #endregion
     }
 
-    public abstract class ReferenceSelection : SelectionBase
-    {
-        protected string stableReference;
-        protected Func<string, ILogger, ReferenceSelectionType, string> SelectionAction;
+    //public abstract class ReferenceSelection : SelectionBase
+    //{
+    //    protected string stableReference;
+    //    protected Func<string, ILogger, SelectionType, string> SelectionAction;
 
-        private ReferenceSelectionType selectionType;
+    //    private SelectionType selectionType;
 
-        #region public properties
+    //    #region public properties
 
-        /// <summary>
-        /// The Element which is selected.
-        /// </summary>
-        public virtual string StableReference
-        {
-            get { return stableReference; }
-            set
-            {
-                bool dirty = value != null;
+    //    /// <summary>
+    //    /// The Element which is selected.
+    //    /// </summary>
+    //    public virtual string StableReference
+    //    {
+    //        get { return stableReference; }
+    //        set
+    //        {
+    //            bool dirty = value != null;
 
-                stableReference = value;
+    //            stableReference = value;
 
-                if (dirty)
-                {
-                    RequiresRecalc = true;
+    //            if (dirty)
+    //            {
+    //                RequiresRecalc = true;
 
-                }
+    //            }
 
-                RaisePropertyChanged("StableReference");
-            }
-        }
+    //            RaisePropertyChanged("StableReference");
+    //        }
+    //    }
 
-        public override string SelectionText
-        {
-            get
-            {
-                var doc = DocumentManager.Instance.CurrentDBDocument;
-                var el = doc.GetElement(Reference.ParseFromStableRepresentation(doc, stableReference));
-                return stableReference == null
-                                        ? "Nothing Selected"
-                                        : string.Format("Reference Id: {0}", el.Id);
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
+    //    public override string SelectionText
+    //    {
+    //        get
+    //        {
+    //            var doc = DocumentManager.Instance.CurrentDBDocument;
+    //            var el = doc.GetElement(Reference.ParseFromStableRepresentation(doc, stableReference));
+    //            return stableReference == null
+    //                                    ? "Nothing Selected"
+    //                                    : string.Format("Reference Id: {0}", el.Id);
+    //        }
+    //        set
+    //        {
+    //            _selectionText = value;
+    //            RaisePropertyChanged("SelectionText");
+    //        }
+    //    }
 
-        public override bool ForceReExecuteOfNode
-        {
-            get { return true; }
-        }
+    //    public override bool ForceReExecuteOfNode
+    //    {
+    //        get { return true; }
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region protected constructors
+    //    #region protected constructors
 
-        protected ReferenceSelection(WorkspaceModel workspaceModel, Func<string, ILogger, ReferenceSelectionType, string> action, ReferenceSelectionType selectionType, string message)
-            : base(workspaceModel)
-        {
-            this.selectionType = selectionType;
+    //    protected ReferenceSelection(WorkspaceModel workspaceModel, Func<string, ILogger, SelectionType, string> action, SelectionType selectionType, string message)
+    //        : base(workspaceModel)
+    //    {
+    //        this.selectionType = selectionType;
 
-            SelectionAction = action;
-            _selectionMessage = message;
+    //        SelectionAction = action;
+    //        _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Reference", "The geometry reference."));
-            RegisterAllPorts();
+    //        OutPortData.Add(new PortData("Reference", "The geometry reference."));
+    //        RegisterAllPorts();
 
-            // we need to obtain the dynamo model directly from the workspace model 
-            // here, as it is not yet initialized on the base class
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
-            if (revMod == null) return;
+    //        // we need to obtain the dynamo model directly from the workspace model 
+    //        // here, as it is not yet initialized on the base class
+    //        var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+    //        if (revMod == null) return;
 
-            var u = revMod.RevitServicesUpdater;
-            u.ElementsModified += u_ElementsModified;
+    //        var u = revMod.RevitServicesUpdater;
+    //        u.ElementsModified += u_ElementsModified;
 
-            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
-        }
+    //        revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
+    //    }
 
-        void Controller_RevitDocumentChanged(object sender, EventArgs e)
-        {
-            StableReference = null;
-            RaisePropertyChanged("StableReference");
-            RaisePropertyChanged("SelectionText");
-        }
+    //    void Controller_RevitDocumentChanged(object sender, EventArgs e)
+    //    {
+    //        StableReference = null;
+    //        RaisePropertyChanged("StableReference");
+    //        RaisePropertyChanged("SelectionText");
+    //    }
 
-        void u_ElementsModified(IEnumerable<string> updated)
-        {
-            var enumerable = updated as string[] ?? updated.ToArray();
+    //    void u_ElementsModified(IEnumerable<string> updated)
+    //    {
+    //        var enumerable = updated as string[] ?? updated.ToArray();
 
-            if (string.IsNullOrEmpty(stableReference) || !enumerable.Any()) return;
+    //        if (string.IsNullOrEmpty(stableReference) || !enumerable.Any()) return;
 
-            var doc = DocumentManager.Instance.CurrentDBDocument;
-            if (enumerable.Contains(doc.GetElement(Reference.ParseFromStableRepresentation(doc, stableReference)).UniqueId))
-            {
-                RequiresRecalc = true;
-            }
-        }
+    //        var doc = DocumentManager.Instance.CurrentDBDocument;
+    //        if (enumerable.Contains(doc.GetElement(Reference.ParseFromStableRepresentation(doc, stableReference)).UniqueId))
+    //        {
+    //            RequiresRecalc = true;
+    //        }
+    //    }
 
-        public override void Destroy()
-        {
-            base.Destroy();
+    //    public override void Destroy()
+    //    {
+    //        base.Destroy();
 
-            var u = RevitDynamoModel.RevitServicesUpdater;
-            u.ElementsModified -= u_ElementsModified;
-        }
+    //        var u = RevitDynamoModel.RevitServicesUpdater;
+    //        u.ElementsModified -= u_ElementsModified;
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region public methods
+    //    #region public methods
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = Configurations.PortHeightInPixels,
-            };
-            selectButton.Click += selectButton_Click;
+    //    public override void SetupCustomUIElements(dynNodeView nodeUI)
+    //    {
+    //        //add a button to the inputGrid on the dynElement
+    //        var selectButton = new DynamoNodeButton
+    //        {
+    //            HorizontalAlignment = HorizontalAlignment.Stretch,
+    //            VerticalAlignment = VerticalAlignment.Top,
+    //            Height = Configurations.PortHeightInPixels,
+    //        };
+    //        selectButton.Click += selectButton_Click;
 
-            var tb = new TextBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
-            };
+    //        var tb = new TextBox
+    //        {
+    //            HorizontalAlignment = HorizontalAlignment.Stretch,
+    //            VerticalAlignment = VerticalAlignment.Center,
+    //            Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+    //            BorderThickness = new Thickness(0),
+    //            IsReadOnly = true,
+    //            IsReadOnlyCaretVisible = false
+    //        };
 
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+    //        nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+    //        nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(selectButton);
+    //        nodeUI.inputGrid.Children.Add(tb);
+    //        nodeUI.inputGrid.Children.Add(selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+    //        System.Windows.Controls.Grid.SetRow(selectButton, 0);
+    //        System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            tb.DataContext = this;
-            selectButton.DataContext = this;
+    //        tb.DataContext = this;
+    //        selectButton.DataContext = this;
 
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+    //        var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+    //        {
+    //            Mode = BindingMode.TwoWay,
+    //        };
+    //        tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("StableReference")
-            {
-                Mode = BindingMode.OneWay,
-                Converter = new SelectionButtonContentConverter(),
-            };
-            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+    //        var buttonTextBinding = new System.Windows.Data.Binding("StableReference")
+    //        {
+    //            Mode = BindingMode.OneWay,
+    //            Converter = new SelectionButtonContentConverter(),
+    //        };
+    //        selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
-            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
-        }
+    //        var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+    //        {
+    //            Mode = BindingMode.TwoWay,
+    //        };
+    //        selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+    //    }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
-            AssociativeNode node;
+    //    public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+    //    {
+    //        AssociativeNode node;
 
-            if (StableReference != null)
-            {
-                var args = new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(stableReference)
-                };
+    //        if (StableReference != null)
+    //        {
+    //            var args = new List<AssociativeNode>
+    //            {
+    //                AstFactory.BuildStringNode(stableReference)
+    //            };
 
-                node = AstFactory.BuildFunctionCall(new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation), args);
-            }
-            else
-            {
-                node = AstFactory.BuildNullNode();
-            }
+    //            node = AstFactory.BuildFunctionCall(new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation), args);
+    //        }
+    //        else
+    //        {
+    //            node = AstFactory.BuildNullNode();
+    //        }
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
-        }
+    //        return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region protected methods
+    //    #region protected methods
 
-        /// <summary>
-        /// Callback when selection button is clicked. 
-        /// Calls the selection action, and stores the ElementId(s) of the selected objects.
-        /// </summary>
-        protected override void OnSelectClick()
-        {
-            try
-            {
-                //call the delegate associated with a selection type
-                StableReference = SelectionAction(_selectionMessage, this.RevitDynamoModel.Logger, selectionType);
-                RaisePropertyChanged("SelectionText");
+    //    /// <summary>
+    //    /// Callback when selection button is clicked. 
+    //    /// Calls the selection action, and stores the ElementId(s) of the selected objects.
+    //    /// </summary>
+    //    protected override void OnSelectClick()
+    //    {
+    //        try
+    //        {
+    //            //call the delegate associated with a selection type
+    //            StableReference = SelectionAction(_selectionMessage, this.RevitDynamoModel.Logger, selectionType);
+    //            RaisePropertyChanged("SelectionText");
 
-                RequiresRecalc = true;
-            }
-            catch (OperationCanceledException)
-            {
-                CanSelect = true;
-            }
-            catch (Exception e)
-            {
-                Workspace.DynamoModel.Logger.Log(e);
-            }
-        }
+    //            RequiresRecalc = true;
+    //        }
+    //        catch (OperationCanceledException)
+    //        {
+    //            CanSelect = true;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            Workspace.DynamoModel.Logger.Log(e);
+    //        }
+    //    }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            if (StableReference != null)
-            {
-                XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", StableReference);
-                nodeElement.AppendChild(outEl);
-            }
-        }
+    //    protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+    //    {
+    //        if (StableReference != null)
+    //        {
+    //            XmlElement outEl = xmlDoc.CreateElement("instance");
+    //            outEl.SetAttribute("id", StableReference);
+    //            nodeElement.AppendChild(outEl);
+    //        }
+    //    }
 
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("instance"))
-                {
-                    Reference saved = null;
-                    var id = subNode.Attributes[0].Value;
-                    try
-                    {
-                        saved = Reference.ParseFromStableRepresentation(
-                            DocumentManager.Instance.CurrentDBDocument, id);
-                    }
-                    catch
-                    {
-                        RevitDynamoModel.Logger.Log(
-                            "Unable to find reference with stable id: " + id);
-                    }
-                    StableReference = saved != null ? id : string.Empty;
-                }
-            }
-        }
+    //    protected override void LoadNode(XmlNode nodeElement)
+    //    {
+    //        foreach (XmlNode subNode in nodeElement.ChildNodes)
+    //        {
+    //            if (subNode.Name.Equals("instance"))
+    //            {
+    //                Reference saved = null;
+    //                var id = subNode.Attributes[0].Value;
+    //                try
+    //                {
+    //                    saved = Reference.ParseFromStableRepresentation(
+    //                        DocumentManager.Instance.CurrentDBDocument, id);
+    //                }
+    //                catch
+    //                {
+    //                    RevitDynamoModel.Logger.Log(
+    //                        "Unable to find reference with stable id: " + id);
+    //                }
+    //                StableReference = saved != null ? id : string.Empty;
+    //            }
+    //        }
+    //    }
 
-        #endregion
-    }
+    //    #endregion
+    //}
 
     [NodeName("Select Analysis Results")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -911,7 +912,7 @@ namespace Dynamo.Nodes
     public class DSAnalysisResultSelection : ElementSelection
     {
         public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestElementSelection<Autodesk.Revit.DB.Element>, "Select an analysis result.")
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Element, "Select an analysis result.")
         { }
     }
 
@@ -922,7 +923,7 @@ namespace Dynamo.Nodes
     public class DSModelElementSelection : ElementSelection
     {
         public DSModelElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestElementSelection<Autodesk.Revit.DB.Element>, "Select Model Element")
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Element, "Select Model Element")
         { }
     }
     
@@ -930,7 +931,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a face.")]
     [IsDesignScriptCompatible]
-    public class DSFaceSelection : ReferenceSelection
+    public class DSFaceSelection : ElementSelection
     {
         public override string SelectionText
         {
@@ -948,14 +949,14 @@ namespace Dynamo.Nodes
         }
 
         public DSFaceSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, ReferenceSelectionType.Face, "Select a face.") { }
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Face, "Select a face.") { }
     }
 
     [NodeName("Select Edge")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an edge.")]
     [IsDesignScriptCompatible]
-    public class DSEdgeSelection : ReferenceSelection
+    public class DSEdgeSelection : ElementSelection
     {
         public override string SelectionText
         {
@@ -975,7 +976,7 @@ namespace Dynamo.Nodes
         }
 
         public DSEdgeSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, ReferenceSelectionType.Edge, "Select an edge.")
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.Edge, "Select an edge.")
         { }
     }
 
@@ -983,7 +984,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a point on a face.")]
     [IsDesignScriptCompatible]
-    public class DSPointOnElementSelection : ReferenceSelection
+    public class DSPointOnElementSelection : ElementSelection
     {
         public override string SelectionText
         {
@@ -1020,7 +1021,7 @@ namespace Dynamo.Nodes
         }
 
         public DSPointOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, ReferenceSelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
 
     //    public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1064,7 +1065,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
-    public class DSUVOnElementSelection : ReferenceSelection
+    public class DSUVOnElementSelection : ElementSelection
     {
         public override string SelectionText
         {
@@ -1083,7 +1084,7 @@ namespace Dynamo.Nodes
         }
 
         public DSUVOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, ReferenceSelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
 
         //public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1126,7 +1127,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a divided surface and get its family instances.")]
     [IsDesignScriptCompatible]
-    public class DSDividedSurfaceFamiliesSelection : MultipleElementSelection
+    public class DSDividedSurfaceFamiliesSelection : ElementSelection
     {
         public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
@@ -1138,7 +1139,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select multiple elements from the Revit document.")]
     [IsDesignScriptCompatible]
-    public class DSModelElementsSelection : MultipleElementSelection
+    public class DSModelElementsSelection : ElementSelection
     {
         private static string formatSelectionText(IEnumerable<string> elements)
         {
@@ -1152,8 +1153,8 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = 
-                    (SelectedUniqueIds != null && SelectedUniqueIds.Count > 0)
-                        ? "Element IDs:" + formatSelectionText(SelectedUniqueIds.Where(x => x != null).Select(x => x.ToString()))
+                    (Selection != null && Selection.Count > 0)
+                        ? "Element IDs:" + formatSelectionText(Selection.Where(x => x != null).Select(x => x.ToString()))
                         : "Nothing Selected";
             }
             set
@@ -1164,7 +1165,7 @@ namespace Dynamo.Nodes
         }
 
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestMultipleElementsSelection<Autodesk.Revit.DB.Element>, "Select elements.") { }
+            : base(workspaceModel, SelectionHelper.RequestSelection, SelectionType.MultipleElements, "Select elements.") { }
     }
 
     internal class SelectionButtonContentConverter : IValueConverter

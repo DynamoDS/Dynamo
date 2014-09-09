@@ -205,7 +205,7 @@ namespace Dynamo.Tests
 
             var elId = new ElementId(184273);
             var uuid = DocumentManager.Instance.CurrentDBDocument.GetElement(elId).UniqueId;
-            selNode.SelectedUniqueId = uuid;
+            selNode.Selection.Add(uuid);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -251,7 +251,7 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection);
             var selNode = selNodes.First() as ElementSelection;
-            selNode.SelectedUniqueId = rpID;
+            selNode.Selection.Add(rpID);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -289,14 +289,14 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection);
             var selNode = selNodes.First() as ElementSelection;
-            selNode.SelectedUniqueId = rpID1;
+            selNode.Selection.Add(rpID1);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id1 = selNode.SelectedUniqueId;
+            var id1 = selNode.Selection.First();
 
             //Select the second reference point in Dynamo
-            selNode.SelectedUniqueId = rpID2;
+            selNode.Selection.Add(rpID2);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id2 = selNode.SelectedUniqueId;
+            var id2 = selNode.Selection.First();
 
             //Ensure the element binding is not the same
             Assert.IsTrue(!id1.Equals(id2));
