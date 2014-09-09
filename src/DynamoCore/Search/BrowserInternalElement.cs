@@ -177,7 +177,7 @@ namespace Dynamo.Nodes.Search
             ResourceType resourceType, bool disambiguate = false)
         {
             if (resourceType == ResourceType.SmallIcon)
-                return disambiguate ? ShortenParameterType() : this.Name;
+                return disambiguate ? String.Empty : this.Name;
 
             return string.Empty;
         }
@@ -194,11 +194,6 @@ namespace Dynamo.Nodes.Search
             return icon;
         }
 
-        public virtual string ShortenParameterType()
-        {
-            // Maybe, in future we have overloaded classes or any other overloaded items.
-            return "";
-        }
     }
 
     public class ClassInformation : BrowserItem

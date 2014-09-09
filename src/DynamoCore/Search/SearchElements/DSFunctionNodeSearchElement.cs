@@ -56,26 +56,27 @@ namespace Dynamo.Search.SearchElements
                 {
                     if (!disambiguate)
                         return FunctionDescriptor.QualifiedName;
-                    return this.ShortenParameterType();
+
+                    // Case for overloaded methods.
+                    string shortIconName = this.GetResourceName(ResourceType.SmallIcon);
+                    var inputParameters = this.FunctionDescriptor.InputParameters;
+                    if (inputParameters == null) return "";
+                    return this.GetFullIconName(shortIconName, inputParameters);
                 }
                 case ResourceType.LargeIcon:
                 {
                     if (!disambiguate)
                         return FunctionDescriptor.QualifiedName;
-                    return this.ShortenParameterType();
+
+                    // Case for overloaded methods.
+                    string shortIconName = this.GetResourceName(ResourceType.LargeIcon);
+                    var inputParameters = this.FunctionDescriptor.InputParameters;
+                    if (inputParameters == null) return "";
+                    return this.GetFullIconName(shortIconName, inputParameters);
                 }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
-        }
-
-        public override string ShortenParameterType()
-        {
-            string shortIconName = this.GetResourceName(ResourceType.SmallIcon);
-            IEnumerable<Tuple<string, string>> inputParameters =
-                this.FunctionDescriptor.InputParameters;
-            if (inputParameters == null) return "";
-            return this.GetFullIconName(shortIconName, inputParameters);
         }
 
         public string GetFullIconName(
