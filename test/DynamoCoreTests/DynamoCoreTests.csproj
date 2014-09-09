@@ -78,6 +78,7 @@
     <Compile Include="DynamoDefects.cs" />
     <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="LibraryCustomizationTests.cs" />
+    <Compile Include="LibraryTests.cs" />
     <Compile Include="MigrationManagerTests.cs" />
     <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
