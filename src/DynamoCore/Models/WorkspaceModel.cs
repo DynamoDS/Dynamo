@@ -509,6 +509,14 @@ namespace Dynamo.Models
                 return null;
             }
 
+            AddNode(node, nodeId, x, y, useDefaultPos, transformCoordinates, xmlNode);
+            return node;
+        }
+
+        public void AddNode(
+            NodeModel node, Guid nodeId, double x, double y,
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
+        {
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -540,7 +548,6 @@ namespace Dynamo.Models
                 node.SaveResult = true;
 
             DynamoModel.OnNodeAdded(node);
-            return node;
         }
 
         public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.INPUT )
