@@ -155,6 +155,28 @@ namespace ProtoCore
         }
 
 
+        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
+        {
+            if (Constants.kGlobalScope != classIndex)
+            {
+                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+            }
+            return codeBlock.procedureTable.procList[functionIndex];
+        }
+
+        /// <summary>
+        /// Append the graphnode to the instruction stream and procedure nodes
+        /// </summary>
+        /// <param name="graphnode"></param>
+        protected void PushGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            codeBlock.instrStream.dependencyGraph.Push(graphnode);
+            if (globalProcIndex != Constants.kGlobalScope)
+            {
+                localProcedure.GraphNodeList.Add(graphnode);
+            }
+        }
+
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
@@ -275,18 +297,8 @@ namespace ProtoCore
                 return;
             }
 
-            bool isLanguageBlock = CodeBlockType.kLanguage == codeBlock.blockType;
             int langblockOffset = 0;
             bool isGlobal = null == localProcedure;
-
-            /*
-            // Remove this check once the global stackframe push is implemented
-            if (isLanguageBlock && 0 != codeBlock.codeBlockId && !isGlobal)
-            {
-                langblockOffset = ProtoCore.DSASM.StackFrame.kStackFrameSize;
-            }
-            
-             * */
 
             if (ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex)
             {
@@ -606,7 +618,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -635,8 +646,8 @@ namespace ProtoCore
                 }
                 else
                 {
-                    ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
-                    ProtoCore.DSASM.ProcedureNode procNodeDummy = new DSASM.ProcedureNode();
+                    AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
+                    ProcedureNode procNodeDummy = new ProcedureNode();
                     procNodeDummy.name = functionName;
                     updateNode.procNode = procNodeDummy;
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
@@ -737,7 +748,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -2227,9 +2237,13 @@ namespace ProtoCore
             EmitPush(op, cNode.line, cNode.col);
         }
        
-        protected void EmitStringNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
+        protected void EmitStringNode(
+            Node node, 
+            ref Type inferedType, 
+            AssociativeGraph.GraphNode graphNode = null,
+            AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone)
         {
-            if (subPass == DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+            if (subPass == AssociativeSubCompilePass.kUnboundIdentifier)
             {
                 return;
             }
@@ -2240,19 +2254,31 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            Byte[] utf8bytes = ProtoCore.Utils.EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
+            Byte[] utf8bytes = EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
             String value = Encoding.UTF8.GetString(utf8bytes);
 
             foreach (char ch in value)
             {
                 String strValue = "'" + ch + "'";
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
+                EmitInstrConsole(kw.push, strValue);
 
-                StackValue op = ProtoCore.DSASM.StackValue.BuildChar(ch);
+                StackValue op = StackValue.BuildChar(ch);
                 EmitPush(op, node.line, node.col);
             }
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, value.Length.ToString());
+            if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
+            {
+                SymbolNode literalSymbol = new SymbolNode();
+                literalSymbol.name = value;
+
+                var dimNode = new AssociativeGraph.UpdateNode();
+                dimNode.symbol = literalSymbol;
+                dimNode.nodeType = AssociativeGraph.UpdateNodeType.kLiteral;
+
+                graphNode.dimensionNodeList.Add(dimNode);
+            }
+
+            EmitInstrConsole(kw.alloca, value.Length.ToString());
             EmitPopString(value.Length);
         }
         
@@ -2665,8 +2691,6 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-	        AssociativeGraph.GraphNode dependent = new AssociativeGraph.GraphNode();
-
             // Push all dependent pointers
             ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
 

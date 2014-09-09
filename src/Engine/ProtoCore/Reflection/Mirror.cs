@@ -165,18 +165,10 @@ namespace ProtoCore
 
                 int ptr = (int)svData.opdata;
                 HeapElement hs = core.Heap.Heaplist[ptr];
-                for (int n = 0; n < hs.VisibleSize; ++n)
+                foreach (var sv in hs.VisibleItems)
                 {
-                    StackValue sv = hs.Stack[n];
                     if (sv.IsArray)
                     {
-                        /*List<string> arrtypes = new List<string>();
-                        arrtypes = GetArrayTypes(sv);
-                        foreach (string type in arrtypes)
-                        {
-                            if (!types.Contains(type))
-                                types.Add(type);
-                        }*/
                         Dictionary<string, List<string>> types = GetArrayTypes(sv);
                         foreach (var kvp in types)
                         {
@@ -193,16 +185,11 @@ namespace ProtoCore
                                     if (!cTypes.Contains(s))
                                         cTypes.Add(s);
                                 }
-                                //cTypes.AddRange(kvp.Value);
                             }
                         }
                     }
                     else
                     {
-                        //string type = GetType(sv);
-                        //if (!types.Contains(type))
-                          //  types.Add(type);
-                        
                         Dictionary<string, List<string>> asmType = GetType(sv);
                         var iter = asmType.GetEnumerator();
                         iter.MoveNext();
@@ -230,21 +217,7 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
                 if (sv.IsPointer)
                 {
-                    ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
-                    //assemblyName = classNode.ExternLib;                    
-                    //return classNode.name;
-                    /*if (!asmType.ContainsKey(classNode.ExternLib))
-                    {
-                        List<string> types = new List<string>();
-                        types.Add(classNode.name);
-                        asmType.Add(classNode.ExternLib, types);
-                    }
-                    else
-                    {
-                        List<string> types = asmType[classNode.ExternLib];
-                        if (!types.Contains(classNode.name))
-                            types.Add(classNode.name);
-                    }*/
+                    ClassNode classNode = core.ClassTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
                     types.Add(classNode.name);
                     asmType.Add(classNode.ExternLib, types);
@@ -518,7 +491,7 @@ namespace ProtoCore
                 IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;
                 Validity.Assert(classNodes != null && classNodes.Count > 0);
 
-                this.classNode = classNodes[(int)svData.metaData.type];
+                this.classNode = classNodes[svData.metaData.type];
                 this.ClassName = this.classNode.name;
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
@@ -686,7 +659,7 @@ namespace ProtoCore
                 List<ProcedureNode> procList = procedureTable.procList;
                 foreach (ProcedureNode pNode in procList)
                 {
-                    if (pNode.isConstructor == true)
+                    if (pNode.isConstructor)
                         constructors.Add(new MethodMirror(pNode));
                 }
                                 

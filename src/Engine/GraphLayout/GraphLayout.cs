@@ -100,7 +100,7 @@ namespace GraphLayout
                         if (conn[xi, zi] == 0)
                             conn[xi, zi] = e != null ? 1 : -1;
 
-                        if (conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
+                        if (e != null && conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
                             e.Active = false;
 
                     }

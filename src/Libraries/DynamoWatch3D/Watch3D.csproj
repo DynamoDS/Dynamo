@@ -44,6 +44,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -58,6 +61,15 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

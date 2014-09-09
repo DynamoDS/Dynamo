@@ -493,793 +493,7 @@ namespace ProtoTest.LiveRunner
             mirror = liveRunner.InspectNodeValue("d");
             Assert.IsTrue((Int64)mirror.GetData().Data == 10);
         }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_01()
-        {
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //============================================== 
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = p.X;
-            //==============================================
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("p");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-            //==============================================
-            // emit the DS code from the AST tree
-            //
-            // import("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // xval = p.X;
-            //
-            //==============================================
-
-            // Instantiate GraphSyncData
-            List<Subtree> addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            GraphSyncData syncData = new GraphSyncData(null, addedList, null);
-
-            // emit the DS code from the AST tree
-
-            liveRunner.UpdateGraph(syncData);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-
-
-            ///////////////////////////////////////////////////////////////////////////////
-            libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            className = "Point";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = p.X;
-            //==============================================
-            identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("p");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-            //==============================================
-            // emit the DS code from the AST tree
-            //
-            // import("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // xval = p.X;
-            //
-            //==============================================
-
-            // Instantiate GraphSyncData
-            addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            syncData = new GraphSyncData(null, addedList, null);
-
-            liveRunner.UpdateGraph(syncData);
-
-
-            mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_01_astInput()
-        {
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            List<LibraryMirror> libMirrors = liveRunner.ResetVMAndImportLibrary(libs);
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //============================================== 
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = p.X;
-            //==============================================
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("p");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-            //==============================================
-            // emit the DS code from the AST tree
-            //
-            // import("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // xval = p.X;
-            //
-            //==============================================
-
-            // update graph
-            CodeBlockNode cNode = new CodeBlockNode();
-            cNode.Body = astList;
-            liveRunner.UpdateGraph(cNode);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-
-
-            ///////////////////////////////////////////////////////////////////////////////
-            libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            libMirrors = liveRunner.ResetVMAndImportLibrary(libs);
-
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            className = "Point";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = p.X;
-            //==============================================
-            identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("p");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-            //==============================================
-            // emit the DS code from the AST tree
-            //
-            // import("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // xval = p.X;
-            //
-            //==============================================
-
-            cNode.Body = astList;
-            liveRunner.UpdateGraph(cNode);
-
-
-            mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_02()
-        {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Translate the point
-            // newPoint = p.Translate(1,2,3);
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode functionCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            functionCallTranslate.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Translate");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(1.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(2.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(3.0));
-            functionCallTranslate.FormalArguments = listArgs;
-
-            //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionDotCallNode("p", functionCallTranslate);
-            className = "p";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, functionCallTranslate, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("newPoint"),
-                dotCallTranslate,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = newPoint.X
-            //==============================================
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("newPoint");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt3 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt3);
-            //==============================================
-            // emit the DS code from the AST tree
-            //
-            // import ("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // newPoint = p.Translate(1.0,2.0,3.0);
-            // xval = newPoint.X;
-            //
-            //==============================================
-            // Instantiate GraphSyncData
-            List<Subtree> addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            GraphSyncData syncData = new GraphSyncData(null, addedList, null);
-
-            // emit the DS code from the AST tree
-            liveRunner.UpdateGraph(syncData);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 11.0);
-
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_02_astInput()
-        {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            List<LibraryMirror> libMirrors = liveRunner.ResetVMAndImportLibrary(libs);
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("p"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-            //==============================================
-            // Translate the point
-            // newPoint = p.Translate(1,2,3);
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode functionCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            functionCallTranslate.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Translate");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(1.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(2.0));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(3.0));
-            functionCallTranslate.FormalArguments = listArgs;
-
-            //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionDotCallNode("p", functionCallTranslate);
-            className = "p";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, functionCallTranslate, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("newPoint"),
-                dotCallTranslate,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt2);
-
-            //==============================================
-            // Build a binary expression to retirieve the x property
-            // xval = newPoint.X
-            //==============================================
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identListNode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            identListNode.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("newPoint");
-            identListNode.Optr = ProtoCore.DSASM.Operator.dot;
-            identListNode.RightNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("X");
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt3 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("xval"),
-                identListNode,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt3);
-            //==============================================
-            // 
-            // import ("ProtoGeometry.dll");
-            // p = Point.Bycoordinates(10.0, 10.0, 10.0);
-            // newPoint = p.Translate(1.0,2.0,3.0);
-            // xval = newPoint.X;
-            //
-            //==============================================
-
-            // update graph
-            CodeBlockNode cNode = new CodeBlockNode();
-            cNode.Body = astList;
-            liveRunner.UpdateGraph(cNode);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("xval");
-            Assert.IsTrue((double)mirror.GetData().Data == 11.0);
-
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_03()
-        {
-            //
-            //  a=2;
-            //  tSSA_150=1..10;
-            //  x= tSSA_150;
-            //  tSSA_151=x;
-            //  tSSA_152=a;
-            //  tSSA_153=( tSSA_151+ tSSA_152);
-            //  var_79153f69593b4fde9bb50646a1aaea96= tSSA_153;
-            //  tSSA_154=Point.ByCoordinates(var_79153f69593b4fde9bb50646a1aaea96,a,a);
-            //  var_347c1113204a4d15a22f7daf83bbe20e= tSSA_154;
-            //
-
-            //
-            //  a=2;
-            //  x=1..10;
-            //  var_79153f69593b4fde9bb50646a1aaea96=(x+a);
-            //  var_347c1113204a4d15a22f7daf83bbe20e=Point.ByCoordinates(var_79153f69593b4fde9bb50646a1aaea96,a,a);
-            //
-
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            //ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-            //importNode.ModuleName = "ProtoGeometry.dll";
-            //astList.Add(importNode);
-
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-
-
-
-
-            // Build the AST trees
-            // a = 2
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode(2),
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(assign1);
-
-
-            // x = 1..10;
-            ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
-                rangeExpr,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(assign2);
-
-            // var_79153f69593b4fde9bb50646a1aaea96 = (x + a);
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign3 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("dude"),
-                new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
-                    new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    ProtoCore.DSASM.Operator.add),
-                ProtoCore.DSASM.Operator.assign);
-
-            astList.Add(assign3);
-
-
-
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("dude"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("a"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("a"));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("final"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-
-
-            //==============================================
-            // emit the DS code from the AST tree
-            //==============================================
-
-            // Instantiate GraphSyncData
-            List<Subtree> addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            GraphSyncData syncData = new GraphSyncData(null, addedList, null);
-
-            // emit the DS code from the AST tree
-            liveRunner.UpdateGraph(syncData);
-
-
-
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_03_astInput()
-        {
-            //
-            //  a=2;
-            //  tSSA_150=1..10;
-            //  x= tSSA_150;
-            //  tSSA_151=x;
-            //  tSSA_152=a;
-            //  tSSA_153=( tSSA_151+ tSSA_152);
-            //  var_79153f69593b4fde9bb50646a1aaea96= tSSA_153;
-            //  tSSA_154=Point.ByCoordinates(var_79153f69593b4fde9bb50646a1aaea96,a,a);
-            //  var_347c1113204a4d15a22f7daf83bbe20e= tSSA_154;
-            //
-
-            //
-            //  a=2;
-            //  x=1..10;
-            //  var_79153f69593b4fde9bb50646a1aaea96=(x+a);
-            //  var_347c1113204a4d15a22f7daf83bbe20e=Point.ByCoordinates(var_79153f69593b4fde9bb50646a1aaea96,a,a);
-            //
-
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            List<LibraryMirror> libMirrors = liveRunner.ResetVMAndImportLibrary(libs);
-
-            // Build the AST trees
-            // a = 2
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode(2),
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(assign1);
-
-
-            // x = 1..10;
-            ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
-                rangeExpr,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(assign2);
-
-            // var_79153f69593b4fde9bb50646a1aaea96 = (x + a);
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign3 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("dude"),
-                new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
-                    new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    ProtoCore.DSASM.Operator.add),
-                ProtoCore.DSASM.Operator.assign);
-
-            astList.Add(assign3);
-
-
-
-
-            //==============================================
-            // Build the constructor call nodes
-            // Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("dude"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("a"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IdentifierNode("a"));
-            constructorCall.FormalArguments = listArgs;
-
-            string className = "Point";
-            ProtoCore.AST.AssociativeAST.IdentifierNode inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("final"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-
-            // emit the DS code from the AST tree
-            CodeBlockNode cNode = new CodeBlockNode();
-            cNode.Body = astList;
-            liveRunner.UpdateGraph(cNode);
-        }
-
-        [Test]
-        public void GraphILTest_FFIClassUsage_04()
-        {
-
-            //
-            //  a=2;
-            //  x=1..10;
-            //  var_79153f69593b4fde9bb50646a1aaea96=(x+a);
-            //  var_347c1113204a4d15a22f7daf83bbe20e=Point.ByCoordinates(var_79153f69593b4fde9bb50646a1aaea96,a,a);
-            //
-
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            //==============================================
-            // Build the import Nodes
-            //==============================================
-            List<string> libs = new List<string>();
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-
-            string code = null;
-            ProtoCore.AST.Node codeBlockNode = null;
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            List<ProtoCore.AST.Node> nodes = new List<ProtoCore.AST.Node>();
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            code = null;
-            nodes = new List<ProtoCore.AST.Node>();
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            codeBlockNode = null;
-
-            code = @"
-a=2;
-x=1..10;
-y=(x+a);
-z=Point.ByCoordinates(y,a,a);
-";
-            commentNode = null;
-            codeBlockNode = GraphToDSCompiler.GraphUtilities.Parse(code, out commentNode);
-            nodes = ProtoCore.Utils.ParserUtils.GetAstNodes(codeBlockNode);
-
-            foreach (ProtoCore.AST.Node node in nodes)
-            {
-                astList.Add(node as ProtoCore.AST.AssociativeAST.AssociativeNode);
-            }
-
-
-            //==============================================
-            // emit the DS code from the AST tree
-            //==============================================
-
-            Guid guid = System.Guid.NewGuid();
-            // Instantiate GraphSyncData
-            List<Subtree> addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, guid));
-            GraphSyncData syncData = new GraphSyncData(null, addedList, null);
-
-            // emit the DS code from the AST tree
-            liveRunner.UpdateGraph(syncData);
-
-            const int rep = 2;
-            for (int n = 0; n < rep; ++n)
-            {
-
-                //////
-                code = null;
-                nodes = new List<ProtoCore.AST.Node>();
-                astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-                codeBlockNode = null;
-
-                code = @"
-a = null;
-a=2;
-x = null;
-x=1..10;
-y = null;
-y=(x+a);
-z= null;
-z=Point.ByCoordinates(y,a,a);
-";
-                commentNode = null;
-                codeBlockNode = GraphToDSCompiler.GraphUtilities.Parse(code, out commentNode);
-                nodes = ProtoCore.Utils.ParserUtils.GetAstNodes(codeBlockNode);
-
-                foreach (ProtoCore.AST.Node node in nodes)
-                {
-                    astList.Add(node as ProtoCore.AST.AssociativeAST.AssociativeNode);
-                }
-
-
-                // Instantiate GraphSyncData
-                addedList = new List<Subtree>();
-                addedList.Add(new Subtree(astList, guid));
-                syncData = new GraphSyncData(null, null, addedList);
-
-                // emit the DS code from the AST tree
-                liveRunner.UpdateGraph(syncData);
-
-                ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("z");
-                var zValues = mirror.GetData().GetElements();
-                Assert.IsTrue(zValues != null && zValues.Count == 10);
-                Assert.IsTrue(zValues[0].Class.ClassName == "Point");
-            }
-
-        }
+     
 
         [Test]
         public void TestDeltaExpression_01()
@@ -1362,6 +576,9 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
@@ -1399,6 +616,9 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
@@ -1481,34 +701,6 @@ z=Point.ByCoordinates(y,a,a);
             Assert.IsTrue((Int64)collection[1].Data == 1);
         }
 
-        [Test]
-        public void GraphILTest_ComplexWatch02()
-        {
-            // Build the AST trees
-            // x = 1..10;
-            ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(100);
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                rangeExpr,
-                ProtoCore.DSASM.Operator.assign);
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            astList.Add(assign);
-
-            // Instantiate GraphSyncData
-            List<Subtree> addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            GraphSyncData syncData = new GraphSyncData(null, addedList, null);
-
-            // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.UpdateGraph(syncData);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a[1 + 7]");
-            Assert.IsTrue((Int64)mirror.GetData().Data == 90);
-        }
 
         [Test]
         public void GraphILTest_DeletedNode01()
@@ -1619,7 +811,7 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
@@ -1652,6 +844,9 @@ z=Point.ByCoordinates(y,a,a);
 
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestModify01()
         {
             List<string> codes = new List<string>() 
@@ -1792,6 +987,9 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void RegressMAGN753()
         {
             List<string> codes = new List<string>() 
@@ -2043,55 +1241,14 @@ z=Point.ByCoordinates(y,a,a);
             }
         }
 
-        [Test]
-        public void TestFunctionModification03()
-        {
-            // Test function with same name but with different parameters
-            List<string> codes = new List<string>() 
-            {
-                "def f() { t1 = 1; t2 = 5; return = t1..t2;} x = f(); r = Equals(x, {1, 2, 3, 4, 5});",
-                "def f(x) { t = (x > 0) ? 41 : 42; return = t;} x = f(-1); r = Equals(x, 42);",
-                "def f(x, y) { t1 = x; t2 = y; return = t1 + t2;} x = f(1, 2); r = Equals(x, 3);",
-                "def f(x, y) { return = x..y;} m = 2; n = 6; z1 = f(m, n); z2 = f(); r1 = Equals(z1, {2, 3, 4, 5, 6}); r2 = Equals(z2, null); r = r1 && r2;",
-                "def f(x, y, z) { t1 = x; t2 = y; t3 = z; return = t1 + t2 + t3;} x = f(1, 2, 3); r = Equals(x, 6);",
-            };
-
-            Guid guid = System.Guid.NewGuid();
-
-            {
-                List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
-
-                var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
-
-                AssertValue("r", true);
-            }
-
-
-            IEnumerable<int> indexes = Enumerable.Range(0, codes.Count);
-            int shuffleCount = codes.Count;
-
-            for (int i = 0; i < shuffleCount; ++i)
-            {
-                indexes = indexes.OrderBy(_ => randomGen.Next());
-
-                foreach (var index in indexes)
-                {
-                    List<Subtree> modified = new List<Subtree>();
-                    modified.Add(CreateSubTreeFromCode(guid, codes[index]));
-
-                    var syncData = new GraphSyncData(null, null, modified);
-                    astLiveRunner.UpdateGraph(syncData);
-
-                    AssertValue("r", true);
-                }
-            }
-        }
 
         [Test]
+        [Category("Failure")]
         public void TestFunctionModification04()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161
+            // AST node to string is causing a crash
+
             // Test function re-define and should remove the old function
             List<string> codes = new List<string>() 
             {
@@ -3013,8 +2170,11 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("Failure")]
         public void TestPersistentValuesOnUpdate()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3789
+
             List<string> codes = new List<string>() 
             {
                 @"import(""FFITarget.dll"");", 
@@ -3102,8 +2262,11 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("Failure")]
         public void TestCodeblockModification08()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4160
+
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
@@ -3463,8 +2626,10 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("Failure")]
         public void TestCodeBlockDeleteLine01()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
             List<string> codes = new List<string>() 
             {                    
                 "a = 2;",
@@ -3666,12 +2831,16 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("Failure")]
         public void TestCachingSSA02()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4158
+            // Executing function SSA statement that was not modified
+
+
             List<string> codes = new List<string>() 
             {
-                "global = 0;",
-                "def f(i:int) { return = i; } def g(j:int) { global = global + 1; return = j; }",
+                "global = 0; def f(i:int) { return = i; } def g(j:int) { global = global + 1; return = j; }",
                 "x = 1;",               // Simulate input to function in this CBN
                 "z = 10;",              // Simulate another input to the function
                 "a = f(x) + g(2);",     // CBN with function call 
@@ -3689,7 +2858,6 @@ z=Point.ByCoordinates(y,a,a);
             added.Add(CreateSubTreeFromCode(guid2, codes[1]));
             added.Add(CreateSubTreeFromCode(guid3, codes[2]));
             added.Add(CreateSubTreeFromCode(guid4, codes[3]));
-            added.Add(CreateSubTreeFromCode(guid5, codes[4]));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -3700,7 +2868,7 @@ z=Point.ByCoordinates(y,a,a);
 
             // Modify the function call CBN so it connects to the input 'z'
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid5, codes[5]));
+            modified.Add(CreateSubTreeFromCode(guid5, codes[4]));
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
@@ -4078,7 +3246,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             AssertValue("a", 2);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestReExecuteOnModifiedNode01()
         {
             List<string> codes = new List<string>() 
@@ -4635,6 +3803,8 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void ReproMAG3600()
         {
+            //FLAKY TEST STRIKE (1/3): 2014-09-08
+
             List<string> codes = new List<string>()
                 {
                     @"import(""FFITarget.dll""); 
@@ -5398,7 +4568,9 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-def foo()
+
+
+def foo()
 {
     x2 = 5;
     v1 = [Associative]
@@ -5484,6 +4656,7 @@ r = foo();
             AssertValue("r", 16);
         }
 
+        [Test]
         public void TestNestedLanguageBlockReExecution07()
         {
             string code = @"
@@ -5560,7 +4733,47 @@ r = func_11546f565974453bae527393c546bbff(x);
             AssertValue("r", 1024);
         }
 
-         public void TestNestedLanguageBlockReExecution08()
+        [Test]
+        public void TestNestedLanguageBlockReExecution08()
+        {
+            string code = @"
+def f(x)
+{
+    aa = [Imperative]
+    {
+        if(x <= 1)
+        {
+            return = [Associative]
+            {
+                bb = 1;
+                return = bb;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                cc = f(x - 1) + x;   
+                return = cc;
+            }
+        }
+    }
+    return = aa;
+}
+
+t = f(3);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("t", 6);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution09()
         {
             string code = @"
 def func_f417d5607cc14ef8bde1b821bada91da: var[]..[](x : var[]..[])
@@ -5604,7 +4817,471 @@ t = func_f417d5607cc14ef8bde1b821bada91da(r);
             added.Add(CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            AssertValue("t", 1);
+            AssertValue("t", 24);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution10()
+        {
+            string code = @"
+def foo: var[]..[](x : var[]..[])
+{
+    t0 = 1;
+    cond= (x) <= (t0);
+    v0 = [Imperative]
+    {
+        if(cond)
+        {
+            return = [Associative]
+            {
+                t1 = 1;
+                return = t1;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                t2 = 1;
+                v2 = (x) - (t2);
+                v3 = foo(v2);
+                v4 = (x) * (v3);
+                return = v4;
+
+            }
+        }
+    }
+    v1 = v0;
+    return = v1;
+}
+
+t = 5;
+v = foo(t);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("v", 120);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void TestComplexAssociativeUpdateReExecution01()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
+            // Test passes but must be simplified to use FFITarget
+            List<string> codes = new List<string>() 
+            {
+                
+@"import(""DSCoreNodes.dll""); import(""ProtoGeometry.dll"");", 
+
+@"
+a = 8;
+",
+ 
+@"
+a = 12;
+"
+,
+@"
+
+a = 8;
+x = a;
+t0 = 90;
+t1 = -90;
+t2 = null;
+t3 = null;
+t4 = Vector.ZAxis();
+t5 = true;
+t6 = t5;
+t7 = 1.5;
+t8 = 2.5;
+t9 = 11;
+t10 = 20;
+t11 = t9;
+t12 = (t11) / 2;
+t13 = t7;
+t14 = t8;
+t15 = t13;
+t16 = -t13;
+t17 = t14;
+t18 = -t14;
+t19 = Vector.ZAxis();
+t20 = 251.78;
+t21 = 110.78;
+t22 = 283.15;
+t23 = 189.22;
+t24 = 96.94;
+t25 = 283.15;
+t26 = Point.ByCoordinates(t20, t21, t22);
+t27 = Point.ByCoordinates(t23, t24, t25);
+t28 = Vector.ByTwoPoints(t27, t26);
+t29 = t28.Reverse();
+t30 = t28.Length;
+t31 = t28.Normalized();
+t32 = t19.Cross(t31);
+t33 = t5;
+t34 = t32;
+t35 = ((t33 ? t34 : t34.Reverse()));
+t36 = t4.Cross(t35);
+t37 = t36.Scale(t10);
+t38 = t37.Reverse();
+t39 = t36.Scale(t12);
+t40 = t39.Reverse();
+t41 = x;
+t42 = 85;
+t43 = 55;
+t44 = 30;
+t45 = 25;
+t46 = 44.57;
+t47 = 32.25;
+t48 = 32;
+t49 = 38;
+t50 = 248.21;
+t51 = 249.67;
+t52 = t50;
+t53 = t51;
+t54 = (t52) < (t53);
+t55 = t50;
+t56 = t51;
+t57 = (t55) > (t56);
+t58 = t29.Rotate(t35, t49);
+t59 = t58;
+t60 = Vector.ByCoordinates(t59.X, t59.Y, ((t59.Z) < 0 ? t59.Z : -t59.Z));
+t61 = Line.ByStartPointDirectionLength(t26, t60, t30);
+t62 = t28.Rotate(t35, t48);
+t63 = t62;
+t64 = Vector.ByCoordinates(t63.X, t63.Y, ((t63.Z) < 0 ? t63.Z : -t63.Z));
+t65 = Line.ByStartPointDirectionLength(t27, t64, t30);
+t66 = t65.Intersect(t61);
+t67 = DSCore.List.FirstItem(t66);
+t68 = t67.Add(t40);
+t69 = t67.Add(t39);
+t70 = t69;
+t71 = t50;
+t72 = t68;
+t73 = t51;
+t74 = Point.ByCoordinates(t70.X, t70.Y, t71);
+t75 = Point.ByCoordinates(t72.X, t72.Y, t73);
+t76 = t75.Add(t38);
+t77 = t50;
+t78 = t51;
+t79 = t74;
+t80 = t75;
+t81 = (((t77) < (t78) ? t77 : t78));
+t82 = Point.ByCoordinates(t79.X, t79.Y, t81);
+t83 = Point.ByCoordinates(t80.X, t80.Y, t81);
+t84 = Line.ByStartPointEndPoint(t83, t75);
+t85 = t54;
+t86 = t84;
+t87 = t3;
+t88 = ((t85 ? t86 : t87));
+t89 = Line.ByStartPointEndPoint(t74, t82);
+t90 = t57;
+t91 = t89;
+t92 = t2;
+t93 = ((t90 ? t91 : t92));
+t94 = Line.ByStartPointEndPoint(t82, t83);
+t95 = {t94, t88, t93};
+t96 = t95;
+t97 = DSCore.Object.IsNull(t95);
+t98 = DSCore.List.FilterByBoolMask(t95, t97);
+//t99 = __TryGetValueFromNestedDictionaries(t98, ""in"");
+//t100 = __TryGetValueFromNestedDictionaries(t98, ""out"");
+t101 = t74.Add(t37);
+t102 = Vector.ByTwoPoints(t67, t26);
+t103 = t102.Normalized();
+t104 = t103.Cross(t35);
+t105 = t104.Scale(t18);
+t106 = t26.Add(t105);
+t107 = t104.Scale(t15);
+t108 = t26.Add(t107);
+t109 = Vector.ByTwoPoints(t67, t27);
+t110 = t109.Normalized();
+t111 = t110.Cross(t35);
+t112 = t111.Scale(t17);
+t113 = t27.Add(t112);
+t114 = t111.Scale(t16);
+t115 = t27.Add(t114);
+t116 = Line.ByStartPointEndPoint(t67, t27);
+t117 = t116.Translate(t114);
+t118 = Line.ByStartPointEndPoint(t67, t26);
+t119 = t118.Translate(t107);
+t120 = Arc.ByCenterPointStartPointSweepAngle(t76, t75, t47, t35);
+t121 = t120.EndPoint;
+t122 = t46;
+t123 = -t122;
+t124 = Arc.ByCenterPointStartPointSweepAngle(t101, t74, t123, t35);
+t125 = t124.StartPoint;
+t126 = t103.Scale(t45);
+t127 = t67.Add(t126);
+t128 = t127.Add(t105);
+t129 = t110.Scale(t44);
+t130 = t67.Add(t129);
+t131 = t130.Add(t112);
+t132 = t5;
+t133 = t42;
+t134 = t43;
+t135 = ((t132 ? t133 : -t133));
+t136 = ((t132 ? -t134 : t134));
+t137 = t104.Scale(t136);
+t138 = t128.Add(t137);
+t139 = Arc.ByCenterPointStartPointSweepAngle(t138, t128, t1, t35);
+t140 = t139.ClosestPointTo(t121);
+t141 = t139.ParameterAtPoint(t140);
+t142 = t111.Scale(t135);
+t143 = t131.Add(t142);
+t144 = Arc.ByCenterPointStartPointSweepAngle(t143, t131, t0, t35);
+t145 = t144.ClosestPointTo(t125);
+t146 = t144.ParameterAtPoint(t145);
+t147 = t146;
+t148 = t141;
+t149 = (t147) / 2;
+t150 = (1 + (t148)) / 2;
+t151 = t139.PointAtParameter(t150);
+t152 = Arc.ByThreePoints(t121, t151, t128);
+t153 = t144.PointAtParameter(t149);
+t154 = Arc.ByThreePoints(t131, t153, t125);
+t155 = Arc.ByFillet(t119, t117, t41);
+t156 = t155.EndPoint;
+t157 = t155.StartPoint;
+
+x1 = t156.X;
+y1 = t156.Y;
+z1 = t156.Z;
+
+x2 = t157.X;
+y2 = t157.Y;
+z2 = t157.Z;
+
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // a = 8
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 12
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 8
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x1", 228.19587612091331);
+            AssertValue("y1", 105.56254036946036);
+            AssertValue("z1", 266.18207825882848);
+
+            AssertValue("x2", 219.24758668548554);
+            AssertValue("y2", 103.58293158131586);
+            AssertValue("z2", 265.70177951843084);
+        }
+
+
+
+        [Test]
+        [Category("Failure")]
+        public void TestComplexAssociativeUpdateReExecution02()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
+            // Test  must be simplified to use FFITarget
+            List<string> codes = new List<string>() 
+            {
+                
+//@"import(""DSCoreNodes.dll""); import(""FFITarget.dll""); ", 
+//@"import(""FFITarget.dll""); ", 
+//@"import(""DSCoreNodes.dll""); ", 
+"",
+
+@"
+a = 8;
+",
+ 
+@"
+a = 12;
+"
+,
+@"
+
+a = 8;
+x = a;
+t4 = Vector.ByCoordinates(0.0, 0.0, 1.0);
+t9 = 0.1;
+t19 = Vector.ByCoordinates(0.0, 0.0, 1.0);
+t26 = Point.ByCoordinates(251.78, 110.78, 283.15);
+t27 = Point.ByCoordinates(189.22, 96.94, 283.15);
+t28 = Vector.ByTwoPoints(t27, t26);
+
+t29 = Vector.ByCoordinates(-62.56, -13.840000000000003, 0.0);
+
+t30 = 64.072608812190566;
+n = t28.Scale(1.0);
+
+t31 = Vector.ByCoordinates(0.97639227057814493, 0.2160049396547559, 0.0);
+t32 = Vector.ByCoordinates(-0.2160049396547559, 0.97639227057814493, 0.0);
+
+
+t36 = t4.Scale(t9);
+t37 = t36.Scale(t9);
+t38 = t37.Scale(t9);
+t39 = t36.Scale(t9);
+t40 = t39.Scale(t9);
+
+t41 = x;
+t59 = t29.Rotate(t32, 38);
+
+t60 = Vector.ByCoordinates(t59.X, t59.Y, -t59.Z);
+
+t61 = Line.ByStartPointDirectionLength(t26, t60, 64.072608812190566);
+t62 = t28.Rotate(t32, 32);
+
+
+
+t63 = t62;
+t64 = Vector.ByCoordinates(t63.X, t63.Y, t63.Z);
+t65 = Line.ByStartPointDirectionLength(t27, t64, 64.072608812190566);
+
+t66 = t65.Intersect(t61);
+
+
+t67 = t66[0];
+t68 = t67.Add(t40);
+t69 = t67.Add(t39);
+t70 = t69;
+t71 = 248.2;
+t72 = t68;
+t73 = 249.67;
+t74 = Point.ByCoordinates(t70.X, t70.Y, 248.2);
+t75 = Point.ByCoordinates(t72.X, t72.Y, 249.67);
+t76 = t75.Add(t38);
+
+
+
+t82 = Point.ByCoordinates(t74.X, t74.Y, 248.2);
+t83 = Point.ByCoordinates(t75.X, t75.Y, 248.2);
+t84 = Line.ByStartPointEndPoint(t83, t75);
+t86 = t84;
+t87 = null;
+t88 = t86;
+t89 = Line.ByStartPointEndPoint(t74, t82);
+t91 = t89;
+t92 = null;
+t93 = null;
+t94 = Line.ByStartPointEndPoint(t82, t83);
+t95 = {t94, t88, t93};
+t96 = t95;
+
+t97 = DSCore.Object.IsNull(t95);
+t98 = DSCore.List.FilterByBoolMask(t95, t97);
+
+
+t101 = t74.Add(t37);
+t102 = Vector.ByTwoPoints(t67, t26);
+
+t103 = t102.Scale(t9);
+t104 = t103.Scale(t9);
+t105 = t104.Scale(t9);
+t106 = t26.Add(t105);
+t107 = t104.Scale(t9);
+t108 = t26.Add(t107);
+
+t109 = Vector.ByTwoPoints(t67, t27);
+t110 = t109.Scale(t9);
+t111 = t110.Scale(t9);
+t112 = t111.Scale(t9);
+t113 = t27.Add(t112);
+t114 = t111.Scale(t9);
+t115 = t27.Add(t114);
+
+t116 = Line.ByStartPointEndPoint(t67, t27);
+t117 = t116.Translate(t114);
+t118 = Line.ByStartPointEndPoint(t67, t26);
+t119 = t118.Translate(t107);
+t120 = Arc.ByCenterPointStartPointSweepAngle(t76, t75, 32.25, t32);
+t121 = t120.EndPoint;
+t124 = Arc.ByCenterPointStartPointSweepAngle(t101, t74, -44.57, t32);
+t125 = t124.StartPoint;
+t126 = t103.Scale(25);
+t127 = t67.Add(t126);
+t128 = t127.Add(t105);
+t129 = t110.Scale(30);
+t130 = t67.Add(t129);
+t131 = t130.Add(t112);
+
+t137 = t104.Scale(-55);
+t138 = t128.Add(t137);
+t139 = Arc.ByCenterPointStartPointSweepAngle(t138, t128, null, t32);
+t140 = t139.ClosestPointTo(t121);
+t141 = t139.ParameterAtPoint(t140);
+t142 = t111.Scale(85);
+t143 = t131.Add(t142);
+t144 = Arc.ByCenterPointStartPointSweepAngle(t143, t131, 90, t32);
+
+t151 = t139.PointAtParameter(null);
+t152 = Arc.ByThreePoints(t121, t151, t128);
+t153 = t144.PointAtParameter(null);
+t154 = Arc.ByThreePoints(t131, t153, t125);
+t155 = Arc.ByFillet(t119, t117, t41);
+t156 = t155.EndPoint;
+t157 = t155.StartPoint;
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // a = 8
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 12
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // a = 8
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x1", 228.19587612091331);
+            AssertValue("y1", 105.56254036946036);
+            AssertValue("z1", 266.18207825882848);
+
+            AssertValue("x2", 219.24758668548554);
+            AssertValue("y2", 103.58293158131586);
+            AssertValue("z2", 265.70177951843084);
         }
     }
 

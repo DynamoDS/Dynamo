@@ -1,5 +1,8 @@
-﻿using Dynamo.Controls;
+﻿using System.Linq;
+
+using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -41,6 +44,8 @@ namespace Dynamo.UI.Controls
             public const string GridHeightAnimator = "gridHeightAnimator";
         }
 
+        private readonly NodeViewModel nodeViewModel;
+
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
@@ -64,8 +69,9 @@ namespace Dynamo.UI.Controls
 
         #region Public Class Operational Methods
 
-        public PreviewControl()
+        public PreviewControl(NodeViewModel nodeViewModel)
         {
+            this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
         }
@@ -238,25 +244,18 @@ namespace Dynamo.UI.Controls
                 return;
 
             cachedSmallContent = "null";
-            if (mirrorData != null && (mirrorData.IsNull == false))
+            if (mirrorData != null)
             {
-                if (mirrorData.IsCollection == false)
-                {
-                    // The following determines if we do get a CLR object before
-                    // trying to access it. For example, placing just a "+" node 
-                    // without any input will return a "null" here, in which case 
-                    // its display should remain "null".
-                    // 
-                    var clrData = mirrorData.Data;
-                    if (clrData != null)
-                        cachedSmallContent = clrData.ToString();
-                }
-                else
+                if (mirrorData.IsCollection)
                 {
                     // TODO(Ben): Can we display details of the array and 
                     // probably display the first element of the array (even 
                     // when it is multi-dimensional array)?
                     cachedSmallContent = "Array";
+                }
+                else 
+                {
+                    cachedSmallContent = mirrorData.StringData;
                 }
             }
 
@@ -277,7 +276,7 @@ namespace Dynamo.UI.Controls
             if (largeContentGrid.Children.Count <= 0)
             {
                 var newWatchTree = new WatchTree();
-                newWatchTree.DataContext = new WatchViewModel();
+                newWatchTree.DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.VisualizationManager);
                 largeContentGrid.Children.Add(newWatchTree);
             }
 
@@ -285,7 +284,9 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = Watch.Process(mirrorData, string.Empty, false);
+            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.Process(
+                mirrorData, string.Empty, false);
+
             rootDataContext.Children.Add(cachedLargeContent);
 
             // Establish data binding between data context and the view.

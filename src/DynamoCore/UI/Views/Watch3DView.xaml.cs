@@ -207,10 +207,11 @@ namespace Dynamo.Controls
             Debug.WriteLine("Watch 3D view unloaded.");
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
 
@@ -221,16 +222,12 @@ namespace Dynamo.Controls
             MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
-            var mi = new MenuItem { Header = "Zoom to Fit" };
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            MainContextMenu.Items.Add(mi);
-
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -243,8 +240,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            //Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
-            //                    new object[] {e});
             RenderDrawables(e);
         }
 
@@ -257,11 +252,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            if (dynSettings.Controller == null)
-            {
-                return;
-            }
-
             Dispatcher.Invoke(new Action(delegate
             {
                 var vm = (IWatchViewModel) DataContext;
@@ -319,13 +309,9 @@ namespace Dynamo.Controls
             }
         }
 
-        protected void mi_Click(object sender, RoutedEventArgs e)
+        protected void OnZoomToFitClicked(object sender, RoutedEventArgs e)
         {
             watch_view.ZoomExtents();
-        }
-
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
         }
 
         void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
@@ -392,7 +378,7 @@ namespace Dynamo.Controls
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
-        private void RenderDrawables(VisualizationEventArgs e)
+        public void RenderDrawables(VisualizationEventArgs e)
         {
             //check the id, if the id is meant for another watch,
             //then ignore it
@@ -630,32 +616,6 @@ namespace Dynamo.Controls
                 var normal = new Vector3D(p.TriangleNormals[i],
                                             p.TriangleNormals[i + 1],
                                             p.TriangleNormals[i + 2]);
-
-                //find a matching point
-                //compare the angle between the normals
-                //to discern a 'break' angle for adjacent faces
-                //int foundIndex = -1;
-                //for (int j = 0; j < points.Count; j++)
-                //{
-                //    var testPt = points[j];
-                //    var testNorm = norms[j];
-                //    var ang = Vector3D.AngleBetween(normal, testNorm);
-
-                //    if (new_point.X == testPt.X &&
-                //        new_point.Y == testPt.Y &&
-                //        new_point.Z == testPt.Z &&
-                //        ang > 90.0000)
-                //    {
-                //        foundIndex = j;
-                //        break;
-                //    }
-                //}
-
-                //if (foundIndex != -1)
-                //{
-                //    tris.Add(foundIndex);
-                //    continue;
-                //}
                     
                 tris.Add(points.Count);
                 points.Add(new_point);
@@ -679,28 +639,6 @@ namespace Dynamo.Controls
                 sb.AppendFormat("[{0}]", splits[i]);
             }
             return sb.ToString();
-        }
-
-        private HitTestResultBehavior ResultCallback(HitTestResult result)
-        {
-            // Did we hit 3D?
-            var rayResult = result as RayHitTestResult;
-            if (rayResult != null)
-            {
-                // Did we hit a MeshGeometry3D?
-                var rayMeshResult =
-                    rayResult as RayMeshGeometry3DHitTestResult;
-
-                if (rayMeshResult != null)
-                {
-                    // Yes we did!
-                    var pt = rayMeshResult.PointHit;
-                    ((IWatchViewModel)DataContext).SelectVisualizationInViewCommand.Execute(new double[] { pt.X, pt.Y, pt.Z });
-                    return HitTestResultBehavior.Stop;
-                }
-            }
-
-            return HitTestResultBehavior.Continue;
         }
 
         #endregion

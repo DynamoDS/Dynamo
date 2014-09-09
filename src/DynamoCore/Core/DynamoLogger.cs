@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Dynamo.Core;
+
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
-
-using DynamoUtilities;
 
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -16,11 +13,38 @@ namespace Dynamo
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
 
+    public delegate void LogEventHandler(LogEventArgs args);
+
+    public class LogEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The message to be logged.
+        /// </summary>
+        public string Message { get; set; }
+    
+        /// <summary>
+        /// The log level at which to log the message.
+        /// </summary>
+        public LogLevel Level { get; set; }
+
+        public LogEventArgs(string message, LogLevel level)
+        {
+            Message = message;
+            Level = level;
+        }
+
+        public LogEventArgs(Exception e, LogLevel level)
+        {
+            Message = e.Message + "\n" + e.StackTrace;
+            Level = level;
+        }
+    }
+
     public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
         private readonly Object guardMutex = new Object();
 
-        //private static DynamoLogger instance;
+        private readonly DynamoModel dynamoModel;
         private string _logPath;
         private string _warning;
         private WarningLevel _warningLevel;
@@ -77,17 +101,25 @@ namespace Dynamo
         /// <summary>
         /// The default constructor.
         /// </summary>
-        public DynamoLogger(string logDirectory)
+        public DynamoLogger(DynamoModel dynamoModel, string logDirectory)
         {
-            lock (this.guardMutex)
+            lock (guardMutex)
             {
+                this.dynamoModel = dynamoModel;
                 _isDisposed = false;
 
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
+                UpdateManager.UpdateManager.Instance.Log += UpdateManager_Log;
+                
                 StartLogging(logDirectory);
             }
+        }
+
+        private void UpdateManager_Log(LogEventArgs args)
+        {
+            Log(args.Message, args.Level);
         }
 
         public void Log(string message, LogLevel level)
@@ -104,7 +136,7 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 //Don't overwhelm the logging system
-                if (dynSettings.Controller != null && !dynSettings.Controller.DebugSettings.VerboseLogging)
+                if (dynamoModel.DebugSettings.VerboseLogging)
                     InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)
@@ -271,6 +303,8 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+
+            UpdateManager.UpdateManager.Instance.Log -= UpdateManager_Log;
         }
 
         public void Dispose()

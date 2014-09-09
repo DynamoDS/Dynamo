@@ -9,6 +9,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests : UnitTestBase
     {
         [Test]
+        [Category("UnitTests")]
         public void SetLengthsFromString()
         {
             //feet tests
@@ -46,6 +47,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetAreaFromString()
         {
             var area = Area.FromDouble(1.0);
@@ -117,6 +119,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetVolumeFromString()
         {
             var volume = Volume.FromDouble(1.0);
@@ -187,6 +190,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ToFractonialInchRepresentation()
         {
             var length = Length.FromDouble(0.03175); //1.25"
@@ -223,6 +227,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ToFractionalFootRepresentations()
         {
             //test just the fractional case
@@ -261,6 +266,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void FromFeetAndFractionalInches()
         {
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1'"));
@@ -272,6 +278,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ParseLengthFromString()
         {
             double feet = 0;
@@ -380,6 +387,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CreateFraction()
         {
             Assert.AreEqual("", Utils.ParsePartialInchesToString(0.0, 0.015625));
@@ -395,6 +403,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void FeetAndFractionalInchesInvalidInput()
         {
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("--1'"));
@@ -406,6 +415,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UnitsMath()
         {
             var length = Length.FromDouble(2.0);
@@ -485,6 +495,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UnitsNegatives()
         {
             var length = Length.FromDouble(-2.0);
@@ -501,6 +512,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void Extensions()
         {
             const double x = 5.0;
@@ -520,6 +532,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UiRounding()
         {
             SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
@@ -552,6 +565,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void Sorting()
         {
             //tests of units IComparability
@@ -598,7 +612,7 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class UnitsOfMeasureDynTests : DSEvaluationUnitTest
+    internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void CanMapOverUnits()

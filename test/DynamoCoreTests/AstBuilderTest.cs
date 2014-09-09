@@ -14,7 +14,7 @@ using ProtoCore.Mirror;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class AstBuilderTest: DynamoUnitTest
+    class AstBuilderTest: DynamoViewModelUnitTest
     {
         private class ShuffleUtil<T>
         {
@@ -40,12 +40,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestCompileToAstNodes1()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            AstBuilder builder = new AstBuilder(null);
+            AstBuilder builder = new AstBuilder(model, null);
             var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
             Console.WriteLine(code);
@@ -58,17 +58,17 @@ namespace Dynamo.Tests
             // 
             //  1 <----> 2
             //
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\cyclic.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var sortedNodes = AstBuilder.TopologicalSort(model.CurrentWorkspace.Nodes);
             Assert.AreEqual(sortedNodes.Count(), 2);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestSortNode2()
         {
             // The connections of CBNs are
@@ -79,9 +79,9 @@ namespace Dynamo.Tests
             //     \    
             //      +----> 4
             // 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multioutputs.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -109,7 +109,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestSortNode3()
         {
             // The connections of CBNs are
@@ -120,9 +120,9 @@ namespace Dynamo.Tests
             //          /
             //   3 ----+
             // 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multiinputs.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -150,7 +150,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestSortNode4()
         {
             // The connections of CBNs are
@@ -160,9 +160,9 @@ namespace Dynamo.Tests
             //  |               v
             //  2 ----> 3 ----> 1
             // 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\tri.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -190,16 +190,16 @@ namespace Dynamo.Tests
 
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestSortNode5()
         {
             // The connections of CBNs are
             //   
             // 1 <---- 2 <----> 3 <---- 4
             //
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\linear.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -228,7 +228,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Category("Failing")]
+        [Category("Failure")]
         public void TestSortNode6()
         {
             // The connections of CBNs are
@@ -241,10 +241,10 @@ namespace Dynamo.Tests
             //                   |
             //  6 <---- 4 <----> 3 <----> 5 ----> 7          8 <----> 9
             // 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var nodes = model.CurrentWorkspace.Nodes.ToList();
             int shuffleCount = 10;

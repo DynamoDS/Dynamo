@@ -74,6 +74,8 @@ namespace DSCoreNodesUI
 
     public abstract class EnumAsInt<T> : EnumBase<T>
     {
+        protected EnumAsInt(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildIntNode(SelectedIndex);
@@ -85,6 +87,8 @@ namespace DSCoreNodesUI
 
     public abstract class EnumAsString<T> : EnumBase<T>
     {
+        protected EnumAsString(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString());
@@ -96,7 +100,7 @@ namespace DSCoreNodesUI
 
     public abstract class EnumBase<T> : DSDropDownBase
     {
-        protected EnumBase() : base(typeof(T).ToString()) { }
+        protected EnumBase(WorkspaceModel workspace) : base(workspace, typeof(T).ToString()) { }
 
         protected override void PopulateItems()
         {
@@ -116,7 +120,7 @@ namespace DSCoreNodesUI
     /// </summary>
     public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        protected AllChildrenOfType() : base("Types")
+        protected AllChildrenOfType(WorkspaceModel workspace) : base(workspace, "Types")
         {
             RegisterAllPorts();
         }

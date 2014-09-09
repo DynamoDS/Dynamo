@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Revit.GeometryConversion;
@@ -50,7 +51,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bsplineScaled.GetClosestPoint(pt);
+                var closestPt = bsplineScaled.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
         }
@@ -85,9 +86,67 @@ namespace DSRevitNodesTests.GeometryConversion
              //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bspline.GetClosestPoint(pt);
+                var closestPt = bspline.ClosestPointTo(pt);
                 Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
             }
+
+        }
+       
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void NurbsCurve_AcceptsStraightReplicatedDegree3NurbsCurve()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0, 0));
+
+            var nurbsCurve = NurbsCurve.ByPoints(points, 3);
+            var revitCurve = nurbsCurve.ToRevitType(false);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
+
+            var revitSpline = (Autodesk.Revit.DB.NurbSpline)revitCurve;
+            Assert.AreEqual(3, revitSpline.Degree);
+            var tessPts = revitSpline.Tessellate().Select(x => x.ToPoint(false));
+
+            //assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = nurbsCurve.ClosestPointTo(pt);
+                Assert.Less(closestPt.DistanceTo(pt), 1e-6);
+            }
+
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
+
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void NurbsCurve_AcceptsStraightReplicatedDegree2NurbsCurve()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0, 0));
+
+            var nurbsCurve = NurbsCurve.ByPoints(points, 2);
+            var revitCurve = nurbsCurve.ToRevitType(false);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
+
+            var revitSpline = (Autodesk.Revit.DB.NurbSpline)revitCurve;
+            Assert.AreEqual(3, revitSpline.Degree);
+            var tessPts = revitSpline.Tessellate().Select(x => x.ToPoint(false));
+
+            //assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = nurbsCurve.ClosestPointTo(pt);
+                Assert.Less(closestPt.DistanceTo(pt), 1e-6);
+            }
+
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
 
         }
 
@@ -114,9 +173,12 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bspline.GetClosestPoint(pt);
+                var closestPt = bspline.ClosestPointTo(pt);
                 Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
             }
+
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(bspline.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(bspline.EndPoint);
 
         }
 
@@ -149,7 +211,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = ellipseArc.GetClosestPoint(pt);
+                var closestPt = ellipseArc.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
         } 

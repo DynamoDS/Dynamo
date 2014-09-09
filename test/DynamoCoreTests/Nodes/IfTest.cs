@@ -10,14 +10,14 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class IfTest : DSEvaluationUnitTest
+    class IfTest : DSEvaluationViewModelUnitTest
     {
         string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
         [Test]
         public void TestIFBasic()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfBasic.dyn");
             RunModel(testFilePath);
 
@@ -32,7 +32,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfAsFunctionObject()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFAsFunctionObject.dyn");
             RunModel(testFilePath);
 
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode1()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfInCustomNode1.dyn");
             RunModel(testFilePath);
 
@@ -54,13 +54,23 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode2()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFInCustomNode2.dyn");
             RunModel(testFilePath);
 
             AssertPreviewValue("2569020c-9952-46c5-8962-02bbf8c9f027", 1);
             AssertPreviewValue("4cda88e3-b54e-46c1-9c80-2647de6e3468", 5);
-            AssertPreviewValue("e52d959c-27cb-48f7-9004-baf2e9a780ae", new object[] { 1, 5 });
+        }
+
+
+        [Test]
+        public void TestScopeIfForFactorial()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(testFolder, "callFactorial.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("d70fab7e-7a2c-495e-a301-0b0797d86118", 720);
         }
     }
 }

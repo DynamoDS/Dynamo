@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
 
         FileWatch watch;
 
-        protected FileReaderBase()
+        protected FileReaderBase(WorkspaceModel ws) : base(ws)
         {
             handler = watcher_FileChanged;
             InPortData.Add(new PortData("path", "Path to the file"));
@@ -37,15 +37,15 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-                if (!dynSettings.Controller.Runner.Running)
-                    RequiresRecalc = true;
-                else
-                {
-                    //TODO: Refactor
-                    DisableReporting();
-                    RequiresRecalc = true;
-                    EnableReporting();
-                }
+            if (!this.Workspace.DynamoModel.Runner.Running)
+                RequiresRecalc = true;
+            else
+            {
+                //TODO: Refactor
+                DisableReporting();
+                RequiresRecalc = true;
+                EnableReporting();
+            }
         }
     }
 

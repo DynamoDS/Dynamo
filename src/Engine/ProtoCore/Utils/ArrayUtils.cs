@@ -179,20 +179,18 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<int, StackValue> ret = new Dictionary<int, StackValue>();
-                ret.Add((int)array.metaData.type, array);
+                ret.Add(array.metaData.type, array);
                 return ret;
             }
 
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-                if (!usageFreq.ContainsKey((int)sv.metaData.type))
-                    usageFreq.Add((int)sv.metaData.type, sv);
+                if (!usageFreq.ContainsKey(sv.metaData.type))
+                    usageFreq.Add(sv.metaData.type, sv);
             }
 
             return usageFreq;
@@ -210,24 +208,21 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
-                ret.Add(core.ClassTable.ClassNodes[(int)array.metaData.type], 1);
+                ret.Add(core.ClassTable.ClassNodes[array.metaData.type], 1);
                 return ret;
             }
 
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode,int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-                ClassNode cn = core.ClassTable.ClassNodes[(int)sv.metaData.type];
+                ClassNode cn = core.ClassTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
                     usageFreq.Add(cn, 0);
 
                 usageFreq[cn] = usageFreq[cn] + 1;
-
             }
 
             return usageFreq;
@@ -244,19 +239,16 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
-                ret.Add(core.ClassTable.ClassNodes[(int) array.metaData.type], 1);
+                ret.Add(core.ClassTable.ClassNodes[array.metaData.type], 1);
                 return ret;
             }
 
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-
                 if (sv.IsArray)
                 {
                     //Recurse
@@ -273,7 +265,7 @@ namespace ProtoCore.Utils
                 else
                 {
 
-                    ClassNode cn = core.ClassTable.ClassNodes[(int)sv.metaData.type];
+                    ClassNode cn = core.ClassTable.ClassNodes[sv.metaData.type];
                     if (!usageFreq.ContainsKey(cn))
                         usageFreq.Add(cn, 0);
 
@@ -295,16 +287,12 @@ namespace ProtoCore.Utils
 
             int ret = 1;
 
-            //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-
             int largestSub = 0;
 
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            //This is the element on the heap that manages the data structure
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-
                 if (sv.IsArray)
                 {
                     int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
@@ -313,7 +301,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            var dict = heapElement.Dict as Dictionary<StackValue, StackValue>;
+            var dict = heapElement.Dict;
             if (dict != null)
             {
                 foreach (var sv in dict.Values)
@@ -346,19 +334,9 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            StackValue[] svArray = core.Rmem.GetArrayElements(sv);
-            foreach (var item in svArray)
-            {
-                if (item.IsArray && ContainsDoubleElement(item, core))
-                    return true;
-
-                if (core.TypeSystem.GetType(item) == (int)PrimitiveType.kTypeDouble)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return ArrayUtils.GetValues(sv, core).Any(
+                        v => (v.IsArray && ContainsDoubleElement(v, core)) ||
+                             (core.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
         }
 
         /// <summary>
@@ -373,14 +351,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            StackValue[] svArray = core.Rmem.GetArrayElements(sv);
-            foreach (var item in svArray)
-            {
-                if (ContainsNonArrayElement(item, core))
-                    return true;
-            }
-
-            return false;
+            var values = ArrayUtils.GetValues(sv, core);
+            return values.Any(v => ContainsNonArrayElement(v, core)); 
         }
 
         /// <summary>
@@ -410,46 +382,6 @@ namespace ProtoCore.Utils
             return true;
         }
     
-        /*
-        [Obsolete]
-        public static StackValue CoerceArray(StackValue array, Type typ, Core core)
-        {
-            //@TODO(Luke) handle array rank coersions
-
-            Validity.Assert(IsArray(array), "Argument needs to be an array {99FB71A6-72AD-4C93-8F1E-0B1F419C1A6D}");
-
-            //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-            StackValue[] newSVs = new StackValue[heapElement.VisibleSize];
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
-            {
-                StackValue sv = heapElement.Stack[i];
-                StackValue coercedValue;
-
-                if (IsArray(sv))
-                {
-                    Type typ2 = new Type();
-                    typ2.UID = typ.UID;
-                    typ2.rank = typ.rank - 1;
-                    typ2.IsIndexable = (typ2.rank == -1 || typ2.rank > 0);
-
-                    coercedValue = CoerceArray(sv, typ2, core);
-                }
-                else
-                {
-                    coercedValue = TypeSystem.Coerce(sv, typ, core);
-                }
-
-                GCUtils.GCRetain(coercedValue, core);
-                newSVs[i] = coercedValue;
-            }
-            
-            return HeapUtils.StoreArray(newSVs, core);
-        }
-        */
-
-        
         /// <summary>
         /// Retrieve the first non-array element in an array 
         /// </summary>
@@ -503,35 +435,6 @@ namespace ProtoCore.Utils
             }
 
             return GetHeapElement(array, core).VisibleSize;
-        }
-
-        public static int GetValueSize(StackValue array, Core core)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return Constants.kInvalidIndex;
-            }
-
-            HeapElement he = GetHeapElement(array, core);
-            if (null == he)
-            {
-                return 0;
-            }
-
-            var dict = he.Dict as Dictionary<StackValue, StackValue>;
-            return (null == dict) ? 0 : dict.Count;
-        }
-
-        public static int GetFullSize(StackValue array, Core core)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return Constants.kInvalidIndex;
-            }
-
-            return GetElementSize(array, core) + GetValueSize(array, core);
         }
 
         /// <summary>
@@ -692,13 +595,16 @@ namespace ProtoCore.Utils
                 }
 
                 StackValue oldValue;
-                if (!he.Dict.TryGetValue(index, out oldValue))
+                GCUtils.GCRetain(value, core);
+                if (he.Dict.TryGetValue(index, out oldValue))
+                {
+                    GCUtils.GCRelease(oldValue, core);
+                }
+                else
                 {
                     oldValue = StackValue.Null;
+                    GCUtils.GCRetain(index, core);
                 }
-
-                GCUtils.GCRetain(index, core);
-                GCUtils.GCRetain(value, core);
                 he.Dict[index] = value;
 
                 return oldValue;
@@ -1050,50 +956,20 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Get all values from an array.
+        /// Get all values that stored in the array, including in dictionary
         /// </summary>
         /// <param name="array"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static StackValue[] GetValues(StackValue array, Core core)
+        public static IEnumerable<StackValue> GetValues(StackValue array, Core core)
         {
-            List<StackValue> values = GetValues<StackValue>(array, core, (StackValue sv) => sv);
-            return values.ToArray();
-        }
-
-        /// <summary>
-        /// Gets all array elements in a List of given type using the given converter to
-        /// convert the stackValue.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <param name="converter"></param>
-        /// <returns></returns>
-        public static List<T> GetValues<T>(StackValue array, Core core, Func<StackValue, T> converter)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
+            if (!array.IsArray && !array.IsString)
             {
-                return null;
+                return Enumerable.Empty<StackValue>();
             }
 
             HeapElement he = GetHeapElement(array, core);
-            List<T> values = new List<T>();
-            foreach (var sv in he.Stack)
-            {
-                values.Add(converter(sv));
-            }
-
-            if (he.Dict != null)
-            {
-                foreach (var sv in he.Dict.Values)
-                {
-                    values.Add(converter(sv));
-                }
-            }
-
-            return values;
+            return (he.Dict == null) ? he.VisibleItems : he.VisibleItems.Concat(he.Dict.Values);
         }
 
         private static StackValue[] GetFlattenValue(StackValue array, Core core)
@@ -1111,10 +987,8 @@ namespace ProtoCore.Utils
             {
                 array = workingSet.Dequeue();
                 HeapElement he = GetHeapElement(array, core);
-
-                for (int i = 0; i < he.VisibleSize; ++i)
+                foreach (var value in he.VisibleItems)
                 {
-                    StackValue value = he.Stack[i];
                     if (value.IsArray)
                     {
                         workingSet.Enqueue(value);
@@ -1159,19 +1033,10 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = GetHeapElement(array, core);
-            List<StackValue> keys = new List<StackValue>();
-
-            for (int i = 0; i < he.VisibleSize; ++i)
-            {
-                keys.Add(StackValue.BuildInt(i));
-            }
-
+            var keys = Enumerable.Range(0, he.VisibleSize).Select(i => StackValue.BuildInt(i)).ToList(); 
             if (he.Dict != null)
             {
-                foreach (var key in he.Dict.Keys)
-                {
-                    keys.Add(key);
-                }
+                keys.AddRange(he.Dict.Keys);
             }
 
             return keys.ToArray();
@@ -1228,7 +1093,6 @@ namespace ProtoCore.Utils
 
                 if (index >= 0 && index < he.VisibleSize)
                 {
-                    StackValue oldValue = he.Stack[index];
                     he.Stack[index] = StackValue.Null;
 
                     if (index == he.VisibleSize - 1)
@@ -1277,6 +1141,54 @@ namespace ProtoCore.Utils
             }
 
             return StackValue.Null;
+        }
+
+        /// <summary>
+        /// Try to get value for key from nested dictionaries. This function is
+        /// used in the case that indexing into dictionaries that returned from
+        /// a replicated function whose return type is dictionary.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static bool TryGetValueFromNestedDictionaries(StackValue array, StackValue key, out StackValue value, Core core)
+        {
+            if (!array.IsArray)
+            {
+                value = StackValue.Null;
+                return false;
+            }
+
+            HeapElement he = GetHeapElement(array, core);
+            if (he.Dict != null && he.Dict.TryGetValue(key, out value))
+            {
+                return true;
+            }
+
+            var values = new List<StackValue>();
+            bool hasValue = false;
+            foreach (var element in he.VisibleItems)
+            {
+                StackValue valueInElement;
+                if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
+                {
+                    hasValue = true;
+                    values.Add(valueInElement);
+                }
+            }
+
+            if (hasValue)
+            {
+                value = HeapUtils.StoreArray(values.ToArray(), null, core);
+                return true;
+            }
+            else
+            {
+                value = StackValue.Null;
+                return false;
+            }
         }
     }
 }

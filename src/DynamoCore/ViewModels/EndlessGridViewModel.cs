@@ -103,17 +103,17 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceWidth
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth; }
+            get { return workspaceVM.DynamoViewModel.WorkspaceActualWidth; }
         }
 
         public double WorkspaceHeight
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight; }
+            get { return workspaceVM.DynamoViewModel.WorkspaceActualHeight; }
         }
 
         public double WorkspaceZoom
         {
-            get { return workspaceVM._model.Zoom; }
+            get { return workspaceVM.Model.Zoom; }
         }
 
         public Color gridLineColor
@@ -123,7 +123,7 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
+            get { return workspaceVM.DynamoViewModel.FullscreenWatchShowing; }
         }
 
 
@@ -154,7 +154,7 @@ namespace Dynamo.ViewModels
         {
             // Subscribing to properties changes, keeping up to date
             this.workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            workspaceVM.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
             RecalculateSize();

@@ -492,21 +492,21 @@ namespace ProtoCore
                 }
                 else if (option == StackFrameFlagOptions.IsReplicating)
                 {
-                    if(debugFrame.IsReplicating == true)
+                    if(debugFrame.IsReplicating)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsExternalFunction)
                 {
-                    if (debugFrame.IsExternalFunction == true)
+                    if (debugFrame.IsExternalFunction)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsFunctionStepOver)
                 {
-                    if (debugFrame.FunctionStepOver == true)
+                    if (debugFrame.FunctionStepOver)
                     {
                         return true;
                     }
@@ -829,7 +829,7 @@ namespace ProtoCore
             InstructionStream istream;
 
             int pc = tempPC;
-            if (core.DebugProps.InlineConditionOptions.isInlineConditional == true)
+            if (core.DebugProps.InlineConditionOptions.isInlineConditional)
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
@@ -2277,10 +2277,13 @@ namespace ProtoCore
 
            }
 
-            if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
+            if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
             {
                 csInstance.UpdateCallSite(classScope, methodName);
-                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);                
+                if (Options.IsDeltaExecution)
+                {
+                    this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                }
             }
                 
             return csInstance;

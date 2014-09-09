@@ -2446,7 +2446,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Associative_ArithmeticExpression(out node);
 		if (la.kind == 22) {
 			ProtoCore.AST.AssociativeAST.RangeExprNode rnode = new ProtoCore.AST.AssociativeAST.RangeExprNode(); 
-			rnode.FromNode = node; NodeUtils.CopyNodeLocation(rnode, node);
+			rnode.FromNode = node; NodeUtils.SetNodeStartLocation(rnode, node);
 			bool hasRangeAmountOperator = false;
 			
 			Get();
@@ -2456,13 +2456,17 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			rnode.HasRangeAmountOperator = hasRangeAmountOperator; 
 			Associative_ArithmeticExpression(out node);
 			rnode.ToNode = node; 
+			NodeUtils.SetNodeEndLocation(rnode, node);
+			
 			if (la.kind == 22) {
 				RangeStepOperator op; 
 				Get();
 				Associative_rangeStepOperator(out op);
 				rnode.stepoperator = op; 
 				Associative_ArithmeticExpression(out node);
-				rnode.StepNode = node; 
+				rnode.StepNode = node;
+				NodeUtils.SetNodeEndLocation(rnode, node);
+				
 			}
 			node = rnode; 
 		}
@@ -2654,7 +2658,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, out value))
+			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
 			}
@@ -2676,7 +2680,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 3) {
 			Get();
 			double value;
-			if (Double.TryParse(t.val, out value))
+			if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
 			}
@@ -4099,7 +4103,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, out value))
+            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
 			}
@@ -4120,7 +4124,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 3) {
 			Get();
 			double value;
-			if (Double.TryParse(t.val, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
 			}

@@ -63,6 +63,8 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
+        public DynamoViewModel DynamoViewModel { get; private set; }
+
         private double zIndex;
         public double ZIndex
         {
@@ -144,8 +146,10 @@ namespace Dynamo.ViewModels
 
         #region Public Methods
 
-        public InfoBubbleViewModel()
+        public InfoBubbleViewModel(DynamoViewModel dynamoViewModel)
         {
+            this.DynamoViewModel = dynamoViewModel;
+
             // Default values
             limitedDirection = Direction.None;
             ConnectingDirection = Direction.None;

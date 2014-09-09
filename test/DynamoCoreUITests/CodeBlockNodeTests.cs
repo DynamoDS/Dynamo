@@ -16,7 +16,7 @@ namespace DynamoCoreUITests
     //public delegate void CommandCallback(string commandTag);
 
     [TestFixture]
-    public class CodeBlockNodeTests : DSEvaluationUnitTest
+    public class CodeBlockNodeTests : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
@@ -44,10 +44,10 @@ namespace DynamoCoreUITests
         [TearDown]
         protected void Exit()
         {
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
-                this.Controller.ShutDown(true);
-                this.Controller = null;
+                this.ViewModel.Model.ShutDown(true);
+                this.ViewModel = null;
                 this.commandCallback = null;
             }
 
@@ -119,7 +119,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         // Create a cyclic chain of three code block nodes, and verify that a
         // warning is shown on one of the cyclic nodes.
         // Reconnect a valid value to one of the chain items, and verify that the
@@ -190,41 +190,48 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
-                var message = "Multiple DynamoController detected!";
+                var message = "Multiple DynamoViewModel instances detected!";
                 throw new InvalidOperationException(message);
             }
 
-            // Create the controller to run alongside the view.
-            this.Controller = DynamoController.MakeSandbox(commandFilePath);
-            var controller = this.Controller;
-            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            DynamoController.IsTestMode = true;
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = model,
+                    CommandFilePath = commandFilePath
+                });
+
+            ViewModel.DynamicRunEnabled = autoRun;
 
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView();
-            dynamoView.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = dynamoView.Dispatcher;
+            var dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
-            Assert.IsNotNull(controller);
-            Assert.IsNotNull(controller.DynamoModel);
-            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-            workspace = controller.DynamoModel.CurrentWorkspace;
-            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+            Assert.IsNotNull(ViewModel);
+            Assert.IsNotNull(ViewModel.Model);
+            Assert.IsNotNull(ViewModel.Model.CurrentWorkspace);
+            workspace = ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = ViewModel.CurrentSpaceViewModel;
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -236,7 +243,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException("RunCommandsFromFile called twice");
 
             this.commandCallback = commandCallback;
-            var automation = this.Controller.DynamoViewModel.Automation;
+            var automation = this.ViewModel.Automation;
             automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
         }
 

@@ -2,6 +2,7 @@
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using System.Linq;
 
 namespace ProtoCore
 {
@@ -26,7 +27,7 @@ namespace ProtoCore
             //      1. Move the MirrorData properties in the RuntimeMirror class or ...
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
-            private ProtoCore.Core core = null;
+            private ProtoCore.Core core;
 
             /// <summary>
             /// 
@@ -84,7 +85,7 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        List<DSASM.StackValue> stackValues = GetArrayStackValues(sv);
+                        var stackValues = ArrayUtils.GetValues(sv, core);
                         foreach (var item in stackValues)
                             GetPointersRecursively(item, values);
 
@@ -92,11 +93,6 @@ namespace ProtoCore
                     default:
                         break;
                 }
-            }
-
-            private List<StackValue> GetArrayStackValues(DSASM.StackValue sv)
-            {
-                return ArrayUtils.GetValues<StackValue>(sv, this.core, (DSASM.StackValue s) => s);
             }
 
             /// <summary>
@@ -150,8 +146,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                List<MirrorData> elements = ArrayUtils.GetValues<MirrorData>(svData, core, (StackValue sv) => new MirrorData(this.core, sv));
-                return elements;
+                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, x)).ToList();
             }
 
             /// <summary>
@@ -188,6 +183,35 @@ namespace ProtoCore
                         break;
                 }
                 return null;
+            }
+
+            /// <summary>
+            /// Return string representation of data
+            /// </summary>
+            public string StringData
+            {
+                get
+                {
+                    if (object.ReferenceEquals(Data, null))
+                    {
+                        return "null";
+                    }
+                    else
+                    {
+                        if (this.IsNull)
+                        {
+                            return "null";
+                        }
+                        else if (Data is bool)
+                        {
+                            return Data.ToString().ToLower();
+                        }
+                        else
+                        {
+                            return Data.ToString();
+                        }
+                    }
+                }
             }
 
             /// <summary>

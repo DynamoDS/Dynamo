@@ -9,9 +9,10 @@ using System.IO;
 
 namespace Dynamo.Tests
 {
-    internal class UtilityTests : DynamoUnitTest
+    internal class UtilityTests : DynamoViewModelUnitTest
     {
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName00()
         {
             // 'null' as fullyQualifiedName throws an exception.
@@ -23,6 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName01()
         {
             // Empty fullyQualifiedName throws an exception.
@@ -34,6 +36,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName02()
         {
             // "Dynamo.Elements." prefix should be replaced.
@@ -43,6 +46,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName03()
         {
             // "Dynamo.Nodes." prefix should never be replaced.
@@ -52,6 +56,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName04()
         {
             // System type names should never be modified.
@@ -61,6 +66,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName05()
         {
             // "Dynamo.Elements.dyn" prefix should be replaced.
@@ -70,6 +76,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName06()
         {
             // "Dynamo.Nodes.dyn" prefix should be replaced.
@@ -79,6 +86,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName07()
         {
             // "Dynamo.Elements.dynXYZ" prefix should be replaced.
@@ -88,6 +96,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PreprocessTypeName08()
         {
             // "Dynamo.Nodes.dynUV" prefix should be replaced.
@@ -97,67 +106,74 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType00()
         {
             // 'null' as fullyQualifiedName throws an exception.
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string fqn = null;
-                DynNodes.Utilities.ResolveType(fqn);
+                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             });
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType01()
         {
             // Empty fullyQualifiedName throws an exception.
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string fqn = string.Empty;
-                DynNodes.Utilities.ResolveType(fqn);
+                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             });
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType02()
         {
             // Unknown type returns a 'null'.
             string fqn = "Dynamo.Connectors.ConnectorModel";
-            System.Type type = DynNodes.Utilities.ResolveType(fqn);
+            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             Assert.AreEqual(null, type);
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType03()
         {
             // Known internal type.
             string fqn = "Dynamo.Nodes.Addition";
-            System.Type type = DynNodes.Utilities.ResolveType(fqn);
+            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             Assert.AreNotEqual(null, type);
             Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType04()
         {
             // System type names should be discoverable.
             string fqn = "System.Environment";
-            System.Type type = DynNodes.Utilities.ResolveType(fqn);
+            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             Assert.AreNotEqual(null, type);
             Assert.AreEqual("System.Environment", type.FullName);
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResolveType05()
         {
             // 'NumberRange' class makes use of this attribute.
             string fqn = "Dynamo.Nodes.dynBuildSeq";
-            System.Type type = DynNodes.Utilities.ResolveType(fqn);
+            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
             Assert.AreNotEqual(null, type);
             Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetDocumentXmlPath00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -168,6 +184,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetDocumentXmlPath01()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -179,6 +196,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetDocumentXmlPath02()
         {
             XmlDocument document = new XmlDocument();
@@ -192,6 +210,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetDocumentXmlPath03()
         {
             XmlDocument document = new XmlDocument();
@@ -213,6 +232,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SetDocumentXmlPath04()
         {
             XmlDocument document = new XmlDocument();
@@ -234,6 +254,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetDocumentXmlPath00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -244,6 +265,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetDocumentXmlPath01()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -255,6 +277,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetDocumentXmlPath02()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -267,6 +290,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SaveTraceDataToXmlDocument00()
         {
             XmlDocument document = new XmlDocument();
@@ -300,6 +324,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SaveTraceDataToXmlDocument01()
         {
             // Create a valid XmlDocument object.
@@ -355,6 +380,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -372,6 +398,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument01()
         {
             IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
@@ -388,6 +415,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -398,6 +426,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath01()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -408,6 +437,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath02()
         {
             var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
@@ -416,6 +446,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath03()
         {
             var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
@@ -424,6 +455,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath04()
         {
             var justFileName = "JustSingleFileName.dll";
@@ -433,6 +465,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeRelativePath05()
         {
             var tempPath = Path.GetTempPath();
@@ -448,6 +481,20 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
+        public void MakeRelativePath06()
+        {
+            var tempPath = Path.GetTempPath();
+            var basePath = Path.Combine(tempPath, "home.dyn");
+
+            var absolutePath1 = Path.Combine(tempPath, "dummy.dll");
+            var relativePath = DynNodes.Utilities.MakeRelativePath(basePath, absolutePath1);
+            var absolutePath2 = DynNodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+            Assert.AreEqual(absolutePath1, absolutePath2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -472,6 +519,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath01()
         {
             var validPath = Path.Combine(Path.GetTempPath(), "TempFile.dyn");
@@ -489,6 +537,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath02()
         {
             var basePath = Path.GetTempPath();
@@ -504,6 +553,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath03()
         {
             var basePath = Path.GetTempPath();
@@ -518,6 +568,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath04()
         {
             var basePath = @"C:\This\Is\Sub\Directory\Home.dyn";

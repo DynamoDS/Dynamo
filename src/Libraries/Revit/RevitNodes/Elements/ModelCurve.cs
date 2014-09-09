@@ -70,7 +70,7 @@ namespace Revit.Elements
             var sp = GetSketchPlaneFromCurve(crv);
             var plane = sp.GetPlane();
 
-            if (GetPlaneFromCurve(crv, true) == null)
+            if (CurveUtils.GetPlaneFromCurve(crv, true) == null)
             {
                 var flattenCurve = Flatten3dCurveOnPlane(crv, plane);
                 mc = Document.IsFamilyDocument
@@ -118,7 +118,7 @@ namespace Revit.Elements
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             // Infer the sketch plane
-            Autodesk.Revit.DB.Plane plane = GetPlaneFromCurve(c, false);
+            Autodesk.Revit.DB.Plane plane = CurveUtils.GetPlaneFromCurve(c, false);
 
             // attempt to change the sketch plane
             bool needsRemake = false;
@@ -217,7 +217,7 @@ namespace Revit.Elements
         {
             //do we need to reset?
             needsSketchPlaneReset = false;
-            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : GetPlaneFromCurve(c, false);
+            Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : CurveUtils.GetPlaneFromCurve(c, false);
 
             Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.GetPlane();
 
@@ -288,68 +288,9 @@ namespace Revit.Elements
             return "";
         }
 
-        private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
-        {
-            //cases to handle
-            //straight line - normal will be inconclusive
-
-            //find the plane of the curve and generate a sketch plane
-            double period = c.IsBound ? 0.0 : (c.IsCyclic ? c.Period : 1.0);
-
-            var p0 = c.IsBound ? c.Evaluate(0.0, true) : c.Evaluate(0.0, false);
-            var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
-            var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
-
-            if (c is Line)
-            {
-                var v1 = p1 - p0;
-                var v2 = p2 - p0;
-                XYZ norm = null;
-
-                //keep old plane computations
-                if (System.Math.Abs(p0.Z - p2.Z) < 0.0001)
-                {
-                    norm = XYZ.BasisZ;
-                }
-                else
-                {
-                    var p3 = new XYZ(p2.X, p2.Y, p0.Z);
-                    var v3 = p3 - p0;
-                    norm = v1.CrossProduct(v3);
-                    if (norm.IsZeroLength())
-                    {
-                        norm = v2.CrossProduct(XYZ.BasisY);
-                    }
-                    norm = norm.Normalize();
-                }
-
-                return new Plane(norm, p0);
-
-            }
-
-            Autodesk.Revit.DB.CurveLoop cLoop = new Autodesk.Revit.DB.CurveLoop();
-            cLoop.Append(c.Clone());
-            if (cLoop.HasPlane())
-            {
-                return cLoop.GetPlane();
-            }
-            if (planarOnly)
-                return null;
-
-            IList<XYZ> points = c.Tessellate();
-            List<XYZ> xyzs = new List<XYZ>();
-            for (int iPoint = 0; iPoint < points.Count; iPoint++)
-                xyzs.Add(points[iPoint]);
-
-            var bestFitPlane =
-                Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(xyzs.ToPoints(false));
-
-            return bestFitPlane.ToPlane(false);
-        }
-
         private static Autodesk.Revit.DB.SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
-            Plane plane = GetPlaneFromCurve(c, false);
+            Plane plane = CurveUtils.GetPlaneFromCurve(c, false);
             return Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
         }
 
@@ -358,7 +299,7 @@ namespace Revit.Elements
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
-                plane = GetPlaneFromCurve(c, false);
+                plane = CurveUtils.GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
                 {

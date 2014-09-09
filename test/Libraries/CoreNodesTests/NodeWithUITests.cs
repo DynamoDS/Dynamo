@@ -23,10 +23,11 @@ namespace DSCoreNodesTests
     class NodeWithUITests
     {
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
+        [Category("UnitTests")]
         public void SliderASTGeneration()
         {
-            var sliderNode = new DoubleSlider { Value = 10 };
+            var sliderNode = new DoubleSlider(null) { Value = 10 };
             var buildOutput = sliderNode.BuildOutputAst(new List<AssociativeNode>());
 
             Assert.AreEqual(

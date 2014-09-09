@@ -10,10 +10,9 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Tests
 {
-    [TestFixture]
-    class FormulaTests : DSEvaluationUnitTest
+    class FormulaTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void FormulaWithIf()
@@ -21,7 +20,7 @@ namespace Dynamo.Nodes
             string path = Path.Combine(GetTestDirectory(), "core", "formula", "formula-if.dyn");
             RunModel(path);
 
-            var node = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Formula>();
+            var node = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Formula>();
             Assert.AreEqual(3, node.InPorts.Count);
             
             AssertPreviewValue(node.GUID.ToString(), 2);
