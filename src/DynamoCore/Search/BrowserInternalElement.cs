@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.Search;
@@ -31,6 +29,34 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Property specifies if BrowserItem has members only as children. No any subcategories.
+        /// </summary>        
+        public bool IsPlaceholder
+        {
+            get
+            {
+                // If all childs are derived from NodeSearchElement they all are members
+                // not subcategories.
+                return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
+            }
+        }
+
+        private ClassInformation classDetails;
+        public ClassInformation ClassDetails
+        {
+            get
+            {
+                if (classDetails == null && IsPlaceholder)
+                {
+                    classDetails = new ClassInformation();
+                    classDetails.PopulateMemberCollections(this);
+                }
+
+                return classDetails;
+            }
+        }
+
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;
@@ -38,16 +64,16 @@ namespace Dynamo.Nodes.Search
             this._name = name;
         }
 
-        public void SortChildren()
-        {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-        }
-
         public BrowserRootElement(string name)
         {
             this.Height = 32;
             this.Siblings = null;
             this._name = name;
+        }
+
+        public void SortChildren()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
         }
     }
 
@@ -77,8 +103,16 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.SmallIcon)
-                              + Dynamo.UI.Configurations.SmallIconPostfix);
+                var name = GetResourceName(ResourceType.SmallIcon, false);
+                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.SmallIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                }
+                return icon;
             }
         }
 
@@ -89,7 +123,7 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.LargeIcon)
+                return GetIcon(this.GetResourceName(ResourceType.LargeIcon, false)
                               + Dynamo.UI.Configurations.LargeIconPostfix);
             }
         }
@@ -165,12 +199,13 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
-        protected virtual string GetResourceName(ResourceType resourceType)
+        protected virtual string GetResourceName(
+            ResourceType resourceType, bool disambiguate = false)
         {
             if (resourceType == ResourceType.SmallIcon)
-                return this.Name;
-            else
-                return string.Empty;
+                return disambiguate ? String.Empty : this.Name;
+
+            return string.Empty;
         }
 
         private BitmapImage GetIcon(string fullNameOfIcon)
@@ -179,7 +214,10 @@ namespace Dynamo.Nodes.Search
                 return null;
 
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
+            BitmapImage icon = null;
+            if (cust != null)
+                icon = cust.LoadIconInternal(fullNameOfIcon);
+            return icon;
         }
     }
 
@@ -209,7 +247,13 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
-        public bool ClassDetailsVisibility { get; set; }
+        public bool ClassDetailsVisibility
+        {
+            get
+            {
+                return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
+            }
+        }
 
         public ClassInformation()
             : base()
@@ -238,7 +282,7 @@ namespace Dynamo.Nodes.Search
             get { return this.queryMembers; }
         }
 
-        public void PopulateMemberCollections(BrowserInternalElement element)
+        public void PopulateMemberCollections(BrowserItem element)
         {
             createMembers.Clear();
             actionMembers.Clear();
