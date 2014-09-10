@@ -53,7 +53,7 @@ namespace Dynamo.Tests
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
             var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger);
-            loader.LoadPackagesIntoDynamo();
+            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings);
 
             Assert.AreEqual(1, loader.LocalPackages.Count);
         }
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
             var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, pkgDir);
-            loader.LoadPackagesIntoDynamo();
+            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings);
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
 
@@ -73,7 +73,7 @@ namespace Dynamo.Tests
             //Assert.Inconclusive("Porting : Formula");
 
             var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
-            loader.LoadPackagesIntoDynamo();
+            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings);
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 

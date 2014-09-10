@@ -326,6 +326,7 @@ namespace Dynamo.PackageManager
                 _packageContents = CustomNodeDefinitions.Select(
                     (def) => new PackageItemRootViewModel(def))
                     .Concat(Assemblies.Select((assem) => new PackageItemRootViewModel(assem)))
+                    .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                     .ToList();
                 return _packageContents;
             }
@@ -478,7 +479,6 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<string> GetAllFiles()
         {
-
             // get all function defs
             var allFuncs = AllFuncDefs().ToList();
 
@@ -490,7 +490,7 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception("The following workspaces have not been saved " +
+                throw new Exception("The following workspaces have not been saved: " +
                                     String.Join(", ", unsavedWorkspaceNames) + ". Please save them and try again.");
             }
 
@@ -544,7 +544,7 @@ namespace Dynamo.PackageManager
             var dsFunctionPackages = AllFuncDefs()
                 .Select(x => x.WorkspaceModel.Nodes)
                 .SelectMany(x => x)
-                .Cast<DSFunctionBase>()
+                .OfType<DSFunctionBase>()
                 .Select(x => x.Controller.Definition.Assembly )
                 .Where(pkgLoader.IsUnderPackageControl)
                 .Select(pkgLoader.GetOwnerPackage)
@@ -612,7 +612,7 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-                this.AddDependency(fDialog.FileName);
+                this.AddFile(fDialog.FileName);
             }
         }
 
@@ -621,15 +621,16 @@ namespace Dynamo.PackageManager
             return true;
         }
 
-        private void AddDependency(string filename)
+        private void AddFile(string filename)
         {
             if (!File.Exists(filename)) return;
 
-            if (filename.EndsWith(".dll")) this.AddDllDependency(filename);
-            if (filename.EndsWith(".dyf")) this.AddCustomNodeDependency(filename);
+            if (filename.EndsWith(".xml")) this.AddXmlFile(filename);
+            if (filename.EndsWith(".dll")) this.AddDllFile(filename);
+            if (filename.EndsWith(".dyf")) this.AddCustomNodeFile(filename);
         }
 
-        private void AddCustomNodeDependency(string filename)
+        private void AddCustomNodeFile(string filename)
         {
             var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddFileToPath(filename);
             if (nodeInfo != null)
@@ -648,7 +649,20 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void AddDllDependency(string filename)
+        private void AddXmlFile(string filename)
+        {
+            try
+            {
+                this.Assemblies.Add(Assembly.LoadFrom(filename));
+                this.RaisePropertyChanged("PackageContents");
+            }
+            catch (Exception e)
+            {
+                this.dynamoViewModel.Model.Logger.Log(e);
+            }
+        }
+
+        private void AddDllFile(string filename)
         {
             try
             {

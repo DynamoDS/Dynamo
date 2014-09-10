@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -134,7 +135,15 @@ namespace Dynamo.PackageManager.UI
                 {
                     return Definition.WorkspaceModel.Name;
                 }
-                return Assembly.GetName().Name;
+                else if (DependencyType == DependencyType.Assembly)
+                {
+                    return Assembly.GetName().Name;
+                }
+                else
+                {
+                    return FileInfo.Name;
+                }
+               
             }
         }
 
@@ -163,30 +172,12 @@ namespace Dynamo.PackageManager.UI
                     this.Items.Add(packDep);
                 }
             }
-            //else if (DependencyType == DependencyType.Assembly)
-            //{
-            //    var assems = Assembly.GetReferencedAssemblies();
-            //    foreach (var dep in assems)
-            //    {
-            //        var depAss = Assembly.Load(dep);
-            //        var discovered = discoveredDeps.Contains(dep);
-            //        var packDep = new PackageItemInternalViewModel(depAss, this)
-            //        {
-            //            AlreadyDiscovered = discovered
-            //        };
-            //        if (!discovered)
-            //        {
-            //            discoveredDeps.Add(dep);
-            //            packDep.BuildDependencies(discoveredDeps);
-            //        }
-            //        this.Items.Add(packDep);
-            //    }
-            //}
         }
 
         public bool AlreadyDiscovered { get; set; }
         public DependencyType DependencyType { get; protected set; }
         public Assembly Assembly { get; protected set; }
+        public FileInfo FileInfo { get; protected set; }
         public CustomNodeDefinition Definition { get; protected set; }
 
     }

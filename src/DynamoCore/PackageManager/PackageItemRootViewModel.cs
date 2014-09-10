@@ -4,10 +4,9 @@ using System.Reflection;
 
 namespace Dynamo.PackageManager.UI
 {
-
     public enum DependencyType
     {
-        CustomNode, Assembly
+        CustomNode, Assembly, File
     }
 
     public class PackageItemRootViewModel : PackageItemViewModel
@@ -31,6 +30,14 @@ namespace Dynamo.PackageManager.UI
             this.Height = 32;
             this.DependencyType = DependencyType.Assembly;
             this.Assembly = assembly;
+            this.BuildDependencies(new HashSet<object>());
+        }
+
+        public PackageItemRootViewModel(System.IO.FileInfo fileInfo)
+        {
+            this.Height = 32;
+            this.DependencyType = DependencyType.File;
+            this.FileInfo = fileInfo;
             this.BuildDependencies(new HashSet<object>());
         }
 
