@@ -534,7 +534,7 @@ namespace Dynamo.Nodes
     public class DSAnalysisResultSelection : ElementSelection
     {
         public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.Element, "Select an analysis result.")
+            : base(workspaceModel, SelectionHelper.Instance.RequestElementSelection<Element>, SelectionType.Element, "Select an analysis result.")
         { }
     }
 
@@ -545,7 +545,7 @@ namespace Dynamo.Nodes
     public class DSModelElementSelection : ElementSelection
     {
         public DSModelElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.Element, "Select Model Element")
+            : base(workspaceModel, SelectionHelper.Instance.RequestElementSelection<Element>, SelectionType.Element, "Select Model Element")
         { }
     }
     
@@ -571,7 +571,7 @@ namespace Dynamo.Nodes
         }
 
         public DSFaceSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.Face, "Select a face.") { }
+            : base(workspaceModel, SelectionHelper.Instance.RequestReferenceSelection, SelectionType.Face, "Select a face.") { }
     }
 
     [NodeName("Select Edge")]
@@ -598,7 +598,7 @@ namespace Dynamo.Nodes
         }
 
         public DSEdgeSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.Edge, "Select an edge.")
+            : base(workspaceModel, SelectionHelper.Instance.RequestReferenceSelection, SelectionType.Edge, "Select an edge.")
         { }
     }
 
@@ -643,7 +643,7 @@ namespace Dynamo.Nodes
         //}
 
         public DSPointOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.Instance.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
     }
 
@@ -670,7 +670,7 @@ namespace Dynamo.Nodes
         }
 
         public DSUVOnElementSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
+            : base(workspaceModel, SelectionHelper.Instance.RequestReferenceSelection, SelectionType.PointOnFace, "Select a point on a face.")
         { }
     }
 
@@ -682,7 +682,7 @@ namespace Dynamo.Nodes
     {
         public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
-            SelectionHelper.RequestElementSelection<Autodesk.Revit.DB.DividedSurface>, 
+            SelectionHelper.Instance.RequestElementSelection<Autodesk.Revit.DB.DividedSurface>, 
             SelectionType.Element, 
             "Select a divided surface.") { }
     }
@@ -717,7 +717,7 @@ namespace Dynamo.Nodes
         }
 
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestElementSelection<Element>, SelectionType.MultipleElements, "Select elements.") { }
+            : base(workspaceModel, SelectionHelper.Instance.RequestElementSelection<Element>, SelectionType.MultipleElements, "Select elements.") { }
     }
 
     internal class SelectionButtonContentConverter : IValueConverter

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements.cs" />
+    <Compile Include="IModelSelectionHelper.cs" />
     <Compile Include="RevitDropDown.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

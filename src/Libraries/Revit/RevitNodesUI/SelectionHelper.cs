@@ -10,29 +10,16 @@ using RevitServices.Persistence;
 
 namespace Revit.Interactivity
 {
-    public interface ISelectionIdentifier
+    internal class SelectionHelper : IModelSelectionHelper
     {
-        /// <summary>
-        /// The unique id of the element within the model
-        /// </summary>
-        string UniqueId { get; set; }
-        int ElementId { get; set; }
-        string StableReference { get; set; }
-    }
+        private static readonly SelectionHelper instance = new SelectionHelper();
 
-    public enum SelectionType
-    {
-        Face,
-        Edge,
-        PointOnFace,
-        MultipleReferences,
-        Element,
-        MultipleElements,
-    };
+        public static SelectionHelper Instance
+        {
+            get { return instance; }
+        }
 
-    internal class SelectionHelper
-    {
-        public static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
+        public List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
         {
             selectionTarget = null;
 
@@ -50,7 +37,7 @@ namespace Revit.Interactivity
             return null;
         }
 
-        public static List<string> RequestReferenceSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
+        public List<string> RequestReferenceSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
         {
             selectionTarget = null;
 
@@ -69,6 +56,8 @@ namespace Revit.Interactivity
             return null;
         }
 
+        #region private static methods
+
         /// <summary>
         /// Request an element in a selection.
         /// </summary>
@@ -78,6 +67,14 @@ namespace Revit.Interactivity
         /// <returns></returns>
         private static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
         {
+            if (typeof(T) == typeof(DividedSurface))
+            {
+                return RequestDividedSurfaceFamilyInstancesSelection(
+                    selectionMessage,
+                    out selectionTarget,
+                    logger);
+            }
+
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Element e = null;
@@ -108,7 +105,7 @@ namespace Revit.Interactivity
                 return null;
             }
 
-            return new List<string>(){e.UniqueId};
+            return new List<string>() { e.UniqueId };
         }
 
         /// <summary>
@@ -132,11 +129,18 @@ namespace Revit.Interactivity
             // passed in the element list.
             selectionTarget = null;
 
-            var elementRefs = doc.Selection.PickElementsByRectangle(
-                new ElementSelectionFilter<T>(),
-                selectionMessage);
+            try
+            {
+                var elementRefs = doc.Selection.PickElementsByRectangle(
+                    new ElementSelectionFilter<T>(),
+                    selectionMessage);
 
-            return elementRefs.Select(x => x.UniqueId).ToList();
+                return elementRefs.Select(x => x.UniqueId).ToList();
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -157,20 +161,27 @@ namespace Revit.Interactivity
 
             logger.Log(message);
 
-            switch (selectionType)
+            try
             {
-                case SelectionType.Face:
-                    reference = doc.Selection.PickObject(ObjectType.Face, message);
-                    break;
-                case SelectionType.Edge:
-                    reference = doc.Selection.PickObject(ObjectType.Edge, message);
-                    break;
-                case SelectionType.PointOnFace:
-                    reference = doc.Selection.PickObject(ObjectType.PointOnElement, message);
-                    break;
-            }
+                switch (selectionType)
+                {
+                    case SelectionType.Face:
+                        reference = doc.Selection.PickObject(ObjectType.Face, message);
+                        break;
+                    case SelectionType.Edge:
+                        reference = doc.Selection.PickObject(ObjectType.Edge, message);
+                        break;
+                    case SelectionType.PointOnFace:
+                        reference = doc.Selection.PickObject(ObjectType.PointOnElement, message);
+                        break;
+                }
 
-            return new List<string>() { reference.ConvertToStableRepresentation(doc.Document) };
+                return new List<string>() { reference.ConvertToStableRepresentation(doc.Document) };
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }  
         }
 
         /// <summary>
@@ -191,20 +202,27 @@ namespace Revit.Interactivity
 
             logger.Log(message);
 
-            switch (selectionType)
+            try
             {
-                case SelectionType.Face:
-                    references = doc.Selection.PickObjects(ObjectType.Face, message);
-                    break;
-                case SelectionType.Edge:
-                    references = doc.Selection.PickObjects(ObjectType.Edge, message);
-                    break;
-                case SelectionType.PointOnFace:
-                    references = doc.Selection.PickObjects(ObjectType.PointOnElement, message);
-                    break;
-            }
+                switch (selectionType)
+                {
+                    case SelectionType.Face:
+                        references = doc.Selection.PickObjects(ObjectType.Face, message);
+                        break;
+                    case SelectionType.Edge:
+                        references = doc.Selection.PickObjects(ObjectType.Edge, message);
+                        break;
+                    case SelectionType.PointOnFace:
+                        references = doc.Selection.PickObjects(ObjectType.PointOnElement, message);
+                        break;
+                }
 
-            return references.Select(r=>r.ConvertToStableRepresentation(doc.Document)).ToList();
+                return references.Select(r => r.ConvertToStableRepresentation(doc.Document)).ToList();
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            } 
         }
 
         private static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
@@ -217,21 +235,6 @@ namespace Revit.Interactivity
 
             return result;
         }
-
-        private class ElementSelectionFilter<T> : ISelectionFilter
-        {
-            public bool AllowElement(Element elem)
-            {
-                return elem is T;
-            }
-
-            public bool AllowReference(Reference reference, XYZ position)
-            {
-                return false;
-            }
-        }
-
-        #region private static methods
 
         private static List<string> GetFamilyInstancesFromDividedSurface(object selectionTarget)
         {
@@ -437,6 +440,18 @@ namespace Revit.Interactivity
 
 
         #endregion
+    }
 
+    internal class ElementSelectionFilter<T> : ISelectionFilter
+    {
+        public bool AllowElement(Element elem)
+        {
+            return elem is T;
+        }
+
+        public bool AllowReference(Reference reference, XYZ position)
+        {
+            return false;
+        }
     }
 }
