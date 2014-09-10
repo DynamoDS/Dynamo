@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Autodesk.Revit.DB;
+using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI.Selection;
 
 using Dynamo.Interfaces;
@@ -90,14 +91,23 @@ namespace Revit.Interactivity
             // passed in the element list.
             selectionTarget = null;
 
-            var elementRef = doc.Selection.PickObject(
-                ObjectType.Element,
-                new ElementSelectionFilter<T>());
-
-            if (elementRef != null)
+            try
             {
-                e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
+                var elementRef = doc.Selection.PickObject(
+                ObjectType.Element,
+                new ElementSelectionFilter<T>(),
+                selectionMessage);
+
+                if (elementRef != null)
+                {
+                    e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
+                }
             }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
+
             return new List<string>(){e.UniqueId};
         }
 
@@ -109,14 +119,14 @@ namespace Revit.Interactivity
         /// <param name="selectionTarget">An object which, when modified, should update this selection.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        private static List<string> RequestMultipleElementsSelection<T>(string message, out object selectionTarget, ILogger logger)
+        private static List<string> RequestMultipleElementsSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            logger.Log(message);
+            logger.Log(selectionMessage);
 
             // Don't pass anything back, as everything we care about will be
             // passed in the element list.
@@ -124,7 +134,7 @@ namespace Revit.Interactivity
 
             var elementRefs = doc.Selection.PickElementsByRectangle(
                 new ElementSelectionFilter<T>(),
-                message);
+                selectionMessage);
 
             return elementRefs.Select(x => x.UniqueId).ToList();
         }
