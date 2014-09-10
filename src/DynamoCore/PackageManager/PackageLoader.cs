@@ -44,9 +44,9 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo()
+        public void LoadPackagesIntoDynamo( IPreferences preferences )
         {
-            this.ScanAllPackageDirectories();
+            this.ScanAllPackageDirectories( preferences );
 
             foreach (var pkg in LocalPackages)
             {
@@ -59,12 +59,13 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void ScanAllPackageDirectories()
+        private void ScanAllPackageDirectories(IPreferences preferences)
         { 
             foreach (var dir in 
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                ScanPackageDirectory(dir);
+                var pkg = ScanPackageDirectory(dir);
+                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) pkg.MarkForUninstall(preferences);
             }
         }
 
@@ -150,8 +151,14 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }
 
+        private static bool hasAttemptedUninstall = false;
+
         internal void DoCachedPackageUninstalls( IPreferences preferences )
         {
+            // this can only be run once per app run
+            if (hasAttemptedUninstall) return;
+            hasAttemptedUninstall = true;
+
             var pkgDirsRemoved = new List<string>();
             foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
             {
