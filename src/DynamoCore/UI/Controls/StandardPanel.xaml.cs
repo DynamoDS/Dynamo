@@ -75,6 +75,8 @@ namespace Dynamo.UI.Controls
         private void GridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var classInfo = this.DataContext as ClassInformation;
+            if (classInfo == null)
+                return;
 
             bool isCreateListEmpty = !classInfo.CreateMembers.Any();
             bool isActionListEmpty = !classInfo.ActionMembers.Any();

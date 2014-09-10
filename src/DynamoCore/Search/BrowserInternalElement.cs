@@ -267,7 +267,7 @@ namespace Dynamo.Nodes.Search
 
 
         /// <summary>
-        /// Spcifies which of QueryMembers of ActionMembers list is active for the moment.
+        /// Specifies which of QueryMembers of ActionMembers list is active for the moment.
         /// If any of CreateMembers, ActionMembers or QueryMembers lists is empty
         /// it returns 'None'.
         /// </summary>
