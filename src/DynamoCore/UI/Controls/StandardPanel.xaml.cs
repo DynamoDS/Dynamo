@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Controls
 {
@@ -63,8 +64,12 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //TODO: Execute node class.
-            MessageBox.Show("test");
+            var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null) return;
+
+            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            if (searchElement != null)
+                searchElement.Execute();
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
