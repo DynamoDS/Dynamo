@@ -279,5 +279,15 @@ namespace Dynamo.Tests
                 AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
             }
         }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_3998()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3998
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3998.dyn");
+            RunModel(openPath);
+            AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
+        }
     }
 }

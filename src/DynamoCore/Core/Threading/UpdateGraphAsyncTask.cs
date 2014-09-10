@@ -19,8 +19,8 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 
