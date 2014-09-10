@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -52,6 +53,9 @@ namespace Dynamo.PackageManager
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
             var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+
+            var info = new FileInfo(zipPath);
+            if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
 
             return zipPath;
         }

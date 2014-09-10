@@ -625,6 +625,9 @@ namespace Dynamo.PackageManager
         {
             if (!File.Exists(filename)) return;
 
+            var info = new FileInfo(filename);
+            if (info.Length > 15 * 1000000) throw new Exception(info.Name + " is too large!  All files must be less than 15 MB!");
+
             if (filename.EndsWith(".xml")) this.AddXmlFile(filename);
             if (filename.EndsWith(".dll")) this.AddDllFile(filename);
             if (filename.EndsWith(".dyf")) this.AddCustomNodeFile(filename);
@@ -653,7 +656,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                this.Assemblies.Add(Assembly.LoadFrom(filename));
+                this.AdditionalFiles.Add(filename);
                 this.RaisePropertyChanged("PackageContents");
             }
             catch (Exception e)
