@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
@@ -85,6 +86,10 @@ namespace DynamoWebServer.Messages
             else if (message is GetNodeGeometryMessage)
             {
                 RetrieveGeometry(((GetNodeGeometryMessage)message).NodeID, sessionId);
+            }
+            else if (message is ClearWorkspaceMessage)
+            {
+                ClearWorkspace();
             }
         }
 
@@ -291,6 +296,37 @@ namespace DynamoWebServer.Messages
                     GeometryData = new GeometryData(nodeId, model.RenderPackages)
                 }, sessionId));
             }
+        }
+
+        /// Cleanup workspace
+        /// </summary>
+        private void ClearWorkspace()
+        {
+            var dynamoModel = dynamoViewModel.Model;
+            var customNodeManager = dynamoModel.CustomNodeManager;
+            var searchModel = dynamoViewModel.SearchViewModel.Model;
+            var nodeInfos = customNodeManager.NodeInfos;
+
+            dynamoModel.Home(null);
+
+            foreach (var guid in nodeInfos.Keys)
+            {
+
+                searchModel.RemoveNodeAndEmptyParentCategory(guid);
+
+                var name = nodeInfos[guid].Name;
+                dynamoModel.Workspaces.RemoveAll(elem =>
+                {
+                    // To avoid deleting home workspace 
+                    // because of coincidence in the names
+                    return elem != dynamoModel.HomeSpace && elem.Name == name;
+                });
+
+                customNodeManager.LoadedCustomNodes.Remove(guid);
+            }
+
+            nodeInfos.Clear();
+            dynamoModel.Clear(null);
         }
 
         #endregion
