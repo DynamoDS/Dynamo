@@ -115,13 +115,34 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Image x:Name="SearchIcon"
-                       Grid.Column="0"
-                       Source="/DynamoCore;component/UI/Images/search_normal.png"
-                       Width="25"
-                       Height="25"
-                       Margin="10,0,0,0"
-                       VerticalAlignment="Center" />
+                <StackPanel Name="SearchIconAndTextBlockGrid"
+                            Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment" />
+                    </StackPanel.HorizontalAlignment>
+
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCore;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+
+                    <TextBlock FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#666"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Height="18"
+                               Width="48">
+                        Search
+                    </TextBlock>
+                </StackPanel>
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
@@ -129,30 +150,16 @@
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
-                         Padding="0,0,5,0"
-                         Margin="0"
                          IsEnabled="True"
                          TextChanged="OnSearchTextBoxTextChanged"
+                         GotKeyboardFocus="TextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="TextBoxLostKeyboardFocus"
                          VerticalAlignment="Center"
-                         Text="{Binding Path=SearchText, Mode=TwoWay}"
-                         Grid.Column="1"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
-                         CaretBrush="#DDD">
-                </TextBox>
-
-                <TextBlock FontSize="14"
-                           IsHitTestVisible="False"
-                           Padding="2,0,5,0"
-                           Margin="0"
-                           Foreground="#666"
-                           Grid.Column="1"
-                           VerticalAlignment="Center">
-                    <TextBlock.Visibility>
-                        <Binding Path="SearchText"
-                                 Converter="{StaticResource NonEmptyStringToCollapsedConverter}" />
-                    </TextBlock.Visibility>
-                    Search
-                </TextBlock>
+                         CaretBrush="#DDD"
+                         Margin="26,6,-6,5"
+                         Grid.ColumnSpan="3" />
 
                 <Button Name="SearchCancelButton"
                         Grid.Column="2"

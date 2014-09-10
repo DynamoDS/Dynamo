@@ -204,6 +204,10 @@ namespace Dynamo.UI
         public const string TwoDots = "..";
         #endregion
 
+        #region LibraryView
+        public const double MinWidthLibraryView = 308;
+        #endregion
+
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
