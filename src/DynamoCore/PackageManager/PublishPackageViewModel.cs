@@ -591,8 +591,8 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = "Custom Node, DLL (*.dyf, *.dll)|*.dyf;*.dll",
-                    Title = "Add Custom Node or Library to Package..."
+                    Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
+                    Title = "Add Custom Node, Library, or XML file to Package..."
                 };
             }
 
