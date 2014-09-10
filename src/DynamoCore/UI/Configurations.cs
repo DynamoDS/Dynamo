@@ -37,7 +37,8 @@ namespace Dynamo.UI
         //public static readonly double Minimum
 
         // Generic Constants
-        public static readonly double PortHeightInPixels = 17.563333333333336;
+        public static readonly double PortHeightInPixels = 26;
+        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
 
         // Grid Settings
         public static readonly int GridSpacing = 100;
