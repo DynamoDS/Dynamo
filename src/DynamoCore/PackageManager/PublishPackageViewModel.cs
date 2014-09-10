@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
 using Dynamo.ViewModels;
 
@@ -330,7 +331,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-
         /// <summary>
         /// CustomNodeDefinitions property 
         /// </summary>
@@ -541,7 +541,19 @@ namespace Dynamo.PackageManager
                 .Distinct()
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 
-            return allFilePackages.Union(allTypePackages);
+            var dsFunctionPackages = AllFuncDefs()
+                .Select(x => x.WorkspaceModel.Nodes)
+                .SelectMany(x => x)
+                .Cast<DSFunctionBase>()
+                .Select(x => x.Controller.Definition.Assembly )
+                .Where(pkgLoader.IsUnderPackageControl)
+                .Select(pkgLoader.GetOwnerPackage)
+                .Where(x => x != null)
+                .Where(x => (x.Name != this.Name) )
+                .Distinct()
+                .Select(x => new PackageDependency(x.Name, x.VersionName));
+
+            return allFilePackages.Union(allTypePackages).Union(dsFunctionPackages);
 
         }
 
