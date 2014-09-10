@@ -15,6 +15,21 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         public Package Model { get; private set; }
 
+        public bool HasAdditionalFiles
+        {
+            get { return this.Model.AdditionalFiles.Any(); }
+        }
+
+        public bool HasCustomNodes
+        {
+            get { return this.Model.LoadedCustomNodes.Any();  }
+        }
+
+        public bool HasAssemblies
+        {
+            get { return this.Model.LoadedAssemblies.Any(); }
+        }
+
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }

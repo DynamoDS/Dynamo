@@ -88,49 +88,80 @@
                                     </DockPanel>
                                     
      
-                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Visibility="{Binding Path=Model.TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Background="#2c2c2c" Visibility="{Binding Path=Model.TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         
                                         <StackPanel Margin="10,5,5,10" >
 
-                                            <Label Content="Custom Nodes" FontWeight="Bold" Foreground="Gray"></Label>
-                                            <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=Model.LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                            <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Custom Nodes" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=Model.LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
 
-                                                <ListBox.ItemTemplate >
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Path=Name}" Foreground="White" />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                    <ListBox.ItemTemplate >
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=Name}" Foreground="White" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
 
-                                            </ListBox>
+                                                </ListBox>
+                                                
+                                            </StackPanel>
 
-                                            <Label Content="Assemblies" FontWeight="Bold" Foreground="Gray"></Label>
-                                            <ListBox Name="Assemblies" ItemsSource="{Binding Path=Model.LoadedAssemblyNames}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                            <StackPanel Visibility="{Binding Path=HasAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Assemblies" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="Assemblies" ItemsSource="{Binding Path=Model.LoadedAssemblyNames}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
 
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Path=Name}" Foreground="White" />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=Name}" Foreground="White" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
 
-                                            </ListBox>
+                                                </ListBox>
+                                                
+                                            </StackPanel>
+
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Additional Files" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="AdditionalFiles" ItemsSource="{Binding Path=Model.AdditionalFiles}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=RelativePath}" Foreground="White" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+                                            </StackPanel>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>

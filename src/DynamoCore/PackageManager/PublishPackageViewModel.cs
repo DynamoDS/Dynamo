@@ -421,9 +421,18 @@ namespace Dynamo.PackageManager
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
                 Assemblies = l.LoadedAssemblies.ToList(),
+                
                 Name = l.Name,
                 Package = l
             };
+
+            // add additional files
+            l.EnumerateAdditionalFiles();
+
+            foreach ( var file in l.AdditionalFiles)
+            {
+                vm.AdditionalFiles.Add(file.Model.FullName);
+            }
 
             if (l.VersionName == null) return vm;
 
@@ -624,9 +633,6 @@ namespace Dynamo.PackageManager
         private void AddFile(string filename)
         {
             if (!File.Exists(filename)) return;
-
-            var info = new FileInfo(filename);
-            if (info.Length > 15 * 1000000) throw new Exception(info.Name + " is too large!  All files must be less than 15 MB!");
 
             if (filename.ToLower().EndsWith(".xml")) this.AddXmlFile(filename);
             if (filename.ToLower().EndsWith(".dll")) this.AddDllFile(filename);

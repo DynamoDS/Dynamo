@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -12,12 +13,36 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
+
+using Microsoft.Practices.Prism;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
 
 namespace Dynamo.PackageManager
 {
+    public class PackageFileInfo
+    {
+        public FileInfo Model { get; private set; }
+        private readonly string packageRoot;
+
+        /// <summary>
+        /// Filename relative to the package root directory
+        /// </summary>
+        public string RelativePath
+        {
+            get
+            {
+                return Model.FullName.Substring(packageRoot.Length);
+            }
+        }
+
+        public PackageFileInfo(string packageRoot, string filename)
+        {
+            this.packageRoot = packageRoot;
+            this.Model = new FileInfo(filename);
+        }
+    }
 
     public class Package : NotificationObject
     {
@@ -44,7 +69,20 @@ namespace Dynamo.PackageManager
         public bool Loaded { get; set; }
 
         private bool typesVisibleInManager;
-        public bool TypesVisibleInManager { get { return typesVisibleInManager; } set { typesVisibleInManager = value; RaisePropertyChanged("TypesVisibleInManager"); } }
+        public bool TypesVisibleInManager
+        {
+            get
+            {
+                return typesVisibleInManager;
+            }
+            set
+            {
+                // this implies the user would like to rescan additional files
+                this.EnumerateAdditionalFiles();
+                typesVisibleInManager = value;
+                RaisePropertyChanged("TypesVisibleInManager");
+            }
+        }
 
         private string rootDirectory;
         public string RootDirectory { get { return rootDirectory; } set { rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
@@ -79,11 +117,12 @@ namespace Dynamo.PackageManager
 
         public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
-        public ObservableCollection<Type> LoadedTypes { get; set; }
-        public ObservableCollection<Assembly> LoadedAssemblies { get; set; }
-        public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; set; }
-        public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
-        public ObservableCollection<PackageDependency> Dependencies { get; set; }
+        public ObservableCollection<Type> LoadedTypes { get; private set; }
+        public ObservableCollection<Assembly> LoadedAssemblies { get; private set; }
+        public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; private set; }
+        public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
+        public ObservableCollection<PackageDependency> Dependencies { get; private set; }
+        public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
 
         #endregion
 
@@ -98,6 +137,7 @@ namespace Dynamo.PackageManager
             this.LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+            this.AdditionalFiles = new ObservableCollection<PackageFileInfo>();
 
             this.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
 
@@ -156,6 +196,7 @@ namespace Dynamo.PackageManager
             {
                 this.LoadAssembliesIntoDynamo( loader, logger );
                 this.LoadCustomNodesIntoDynamo( loader );
+                this.EnumerateAdditionalFiles();
                 
                 Loaded = true;
             }
@@ -165,6 +206,21 @@ namespace Dynamo.PackageManager
                 logger.Log(e.GetType() + ": " + e.Message);
             }
 
+        }
+
+        public void EnumerateAdditionalFiles()
+        {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
+
+            var nonDyfDllFiles = Directory.EnumerateFiles(
+                RootDirectory,
+                "*",
+                SearchOption.AllDirectories)
+                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") && !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup"))
+                .Select(x => new PackageFileInfo(this.RootDirectory, x));
+
+            this.AdditionalFiles.Clear();
+            this.AdditionalFiles.AddRange( nonDyfDllFiles );
         }
 
         private void LoadCustomNodesIntoDynamo( DynamoLoader loader)
