@@ -402,11 +402,18 @@ namespace Dynamo.PackageManager
         /// The class constructor. </summary>
         public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
         {
+            this.customNodeDefinitions = new List<CustomNodeDefinition>();
             this.dynamoViewModel = dynamoViewModel;
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<Assembly>();
+            this.PropertyChanged += this.ThisPropertyChanged;
+        }
+
+        private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "PackageContents") this.CanSubmit();
         }
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
@@ -746,10 +753,9 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element </summary>
         private bool CanSubmit()
         {
-
-            if (Description.Length <= 10)
+            if (!this.PackageContents.Any())
             {
-                this.ErrorString = "Description must be longer than 10 characters.";
+                this.ErrorString = "Your package must contain at least one file.";
                 return false;
             }
 
@@ -762,6 +768,12 @@ namespace Dynamo.PackageManager
             if (this.Name.Length < 3)
             {
                 this.ErrorString = "Name must be at least 3 characters.";
+                return false;
+            }
+
+            if (Description.Length <= 10)
+            {
+                this.ErrorString = "Description must be longer than 10 characters.";
                 return false;
             }
 

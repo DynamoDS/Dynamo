@@ -1074,6 +1074,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void PublishNewPackage(object parameters)
+        {
+            PackageManagerClientViewModel.PublishNewPackage();
+        }
+
+        private bool CanPublishNewPackage(object parameters)
+        {
+            return PackageManagerClientViewModel.CanPublishNewPackage(parameters);
+        }
+
         private void ShowInstalledPackages(object parameters)
         {
             OnRequestManagePackagesDialog(this, EventArgs.Empty);

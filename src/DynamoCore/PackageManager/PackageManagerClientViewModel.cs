@@ -66,12 +66,21 @@ namespace Dynamo.ViewModels
             {
                 MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
             }
-
         }
 
         public bool CanPublishCurrentWorkspace()
         {
             return dynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
+        }
+
+        public void PublishNewPackage()
+        {
+            ShowNodePublishInfo();
+        }
+
+        public bool CanPublishNewPackage(object m)
+        {
+            return true;
         }
 
         public void PublishSelectedNode()
@@ -100,6 +109,12 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
                    DynamoSelection.Instance.Selection.All(x => x is Function);
+        }
+
+        private void ShowNodePublishInfo()
+        {
+            var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel);
+            this.dynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
         private void ShowNodePublishInfo(object funcDef)
