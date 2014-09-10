@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -236,11 +238,33 @@ namespace Dynamo
                 return n as AssociativeNode;
             });
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+            var initParams = new CompileCustomNodeParams()
+            {
+                EngineController = controller,
+                Definition = this,
+                Nodes = WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
+                Parameters = parameters,
+                Outputs = outputNodes
+            };
+
+            // Schedule the compilation of CustomNodeDefinition, we are 
+            // not interested in when it will be completed, so no callback.
+            var scheduler = dynamoModel.Scheduler;
+            var task = new CompileCustomNodeAsyncTask(scheduler);
+            if (task.Initialize(initParams))
+                scheduler.ScheduleForExecution(task);
+
+#else
+
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 outputNodes,
                 parameters);
+
+#endif
 
             // Not update graph until Run 
             // if (success)
