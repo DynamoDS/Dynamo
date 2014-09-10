@@ -54,3 +54,4 @@ using System.Windows.Resources;
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
+[assembly: InternalsVisibleTo("DynamoRevitDS")]
