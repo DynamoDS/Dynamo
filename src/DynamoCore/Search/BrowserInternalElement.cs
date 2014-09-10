@@ -124,16 +124,8 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                var name = GetResourceName(ResourceType.LargeIcon, false);
-                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
-
-                if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.LargeIcon, true);
-                    icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
-                }
-                return icon;
+                return GetIcon(this.GetResourceName(ResourceType.LargeIcon, false)
+                              + Dynamo.UI.Configurations.LargeIconPostfix);
             }
         }
 
