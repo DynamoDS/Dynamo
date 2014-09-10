@@ -8,10 +8,10 @@ namespace DynamoWebServer.Messages
 {
     class SocketMessageQueue
     {
-        // One to signal task availability, another for shutdown.
+        // One to signal message availability, another for shutdown.
         private readonly AutoResetEvent[] waitHandles = 
         {
-            new AutoResetEvent(false), // For action availability
+            new AutoResetEvent(false), // For message availability
             new AutoResetEvent(false)  // For shutdown event
         };
 
@@ -19,7 +19,7 @@ namespace DynamoWebServer.Messages
 
         private enum HandleIndex
         {
-            TaskAvailable, Shutdown
+            MessageAvailable, Shutdown
         }
 
         private Queue<Action> messageQueue;
@@ -42,12 +42,12 @@ namespace DynamoWebServer.Messages
             worker.Join(); // Wait for thread to end.
         }
 
-        public void EnqueueItem(Action message)
+        public void EnqueueMessage(Action message)
         {
             lock (locker)
             {
                 messageQueue.Enqueue(message);
-                waitHandles[(int)HandleIndex.TaskAvailable].Set(); // A task is available.
+                waitHandles[(int)HandleIndex.MessageAvailable].Set(); // A message is available.
             }
         }
 
@@ -66,7 +66,7 @@ namespace DynamoWebServer.Messages
                     ProcessMessage(message);
                     continue;
                 }
-                // No more message, go into wait.
+                // No more messages, go into wait.
                 int eventIndex = WaitHandle.WaitAny(waitHandles);
                 if (eventIndex == 1) // Shutdown event.
                     break;
@@ -77,7 +77,12 @@ namespace DynamoWebServer.Messages
 
         private void ProcessMessage(Action message)
         {
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher).Invoke(message);
+            Dispatcher dispatcher;
+            if (Application.Current != null)
+                dispatcher = Application.Current.Dispatcher;
+            else
+                dispatcher = Dispatcher.CurrentDispatcher;
+            dispatcher.Invoke(message);
         }
     }
 }
