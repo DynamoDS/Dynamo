@@ -22,6 +22,7 @@ using System.Windows.Controls.Primitives;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
 {
@@ -1647,17 +1648,40 @@ namespace Dynamo.Controls
         {
             bool shouldPrefixColon = false;
 
-            if(parameter!=null)
+            if (parameter != null)
                 shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
-            if (string.IsNullOrEmpty(input) || input.Equals(NoneString)) 
-                    return NoneString;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return NoneString;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString,SpaceString, input);
-            else 
+                return String.Concat(ColonString, SpaceString, input);
+            else
                 return input;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter provides BrowserRootElement or ClassInformation
+    /// instance depending on value of IsPlaceHolder property. 
+    /// BrowserRootElement is needed to show subclasses in LibraryView.
+    /// ClassInformation is needed to show member list of root category
+    /// which doesn't have any subclasses.
+    public class BrowserRootElementToSubclassesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            BrowserRootElement rootElement = value as BrowserRootElement;
+
+            if (rootElement != null && rootElement.IsPlaceholder)
+                return rootElement.ClassDetails;
+
+            return rootElement;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

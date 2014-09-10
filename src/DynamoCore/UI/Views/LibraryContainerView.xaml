@@ -8,6 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
@@ -114,13 +115,34 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Image x:Name="SearchIcon"
-                       Grid.Column="0"
-                       Source="/DynamoCore;component/UI/Images/search_normal.png"
-                       Width="25"
-                       Height="25"
-                       Margin="10,0,0,0"
-                       VerticalAlignment="Center" />
+                <StackPanel Name="SearchIconAndTextBlockGrid"
+                            Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment" />
+                    </StackPanel.HorizontalAlignment>
+
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCore;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+
+                    <TextBlock FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#666"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Height="18"
+                               Width="48">
+                        Search
+                    </TextBlock>
+                </StackPanel>
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
@@ -128,30 +150,16 @@
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
-                         Padding="0,0,5,0"
-                         Margin="0"
                          IsEnabled="True"
                          TextChanged="OnSearchTextBoxTextChanged"
+                         GotKeyboardFocus="TextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="TextBoxLostKeyboardFocus"
                          VerticalAlignment="Center"
-                         Text="{Binding Path=SearchText, Mode=TwoWay}"
-                         Grid.Column="1"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
-                         CaretBrush="#DDD">
-                </TextBox>
-
-                <TextBlock FontSize="14"
-                           IsHitTestVisible="False"
-                           Padding="2,0,5,0"
-                           Margin="0"
-                           Foreground="#666"
-                           Grid.Column="1"
-                           VerticalAlignment="Center">
-                    <TextBlock.Visibility>
-                        <Binding Path="SearchText"
-                                 Converter="{StaticResource NonEmptyStringToCollapsedConverter}" />
-                    </TextBlock.Visibility>
-                    Search
-                </TextBlock>
+                         CaretBrush="#DDD"
+                         Margin="26,6,-6,5"
+                         Grid.ColumnSpan="3" />
 
                 <Button Name="SearchCancelButton"
                         Grid.Column="2"
@@ -193,6 +201,8 @@
             </Grid>
         </Border>
 
+        <!-- The code is commented for now.
+     It will be used for another purposes in near future
         <ScrollViewer HorizontalAlignment="Stretch"
                       Margin="0"
                       Name="BrowserScrollView"
@@ -687,15 +697,6 @@
                                                 Value="#444" />
                                     </MultiTrigger>
 
-                                    <!--<MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="IsSelected" Value="true"/>
-                                            <Condition Property="IsSelectionActive" Value="false"/>
-                                        </MultiTrigger.Conditions>
-                                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                                    </MultiTrigger>-->
-
                                     <Trigger Property="IsEnabled"
                                              Value="false">
                                         <Setter Property="Foreground"
@@ -831,7 +832,31 @@
             </TreeView>
 
         </ScrollViewer>
+-->
+        <!-- LIBRARY VIEW -->
+        <views:LibraryView x:Name="libraryView"
+                           Grid.Row="2"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"
+                           Visibility="Visible"
+                           DataContext="{Binding}"></views:LibraryView>
 
+        <!-- LIBRARYSEARCH VIEW -->
+        <views:LibrarySearchView Grid.Row="2">
+            <views:LibrarySearchView.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=libraryView, Path=Visibility}"
+                                     Value="Visible">
+                            <Setter Property="UserControl.Visibility"
+                                    Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:LibrarySearchView.Style>
+        </views:LibrarySearchView>
+
+        <!--
         <Button Name="NoMatchFoundButton"
                 Grid.Column="0"
                 Grid.ColumnSpan="1"
@@ -880,13 +905,8 @@
                     </Setter>
                 </Style>
             </Button.Style>
-        </Button>
-        <!--<TextBlock Visibility="Visible" Grid.Row="2">
-                Library
-                <TextBlock.RenderTransform>
-                    <RotateTransform CenterX="0" CenterY="0" Angle="-90" />
-                </TextBlock.RenderTransform>
-        </TextBlock>-->
+        </Button> 
+-->
     </Grid>
 
 </UserControl>
