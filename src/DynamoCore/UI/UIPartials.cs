@@ -445,8 +445,6 @@ namespace Dynamo.Nodes
         {
             var cbe = new CodeBlockEditor(nodeUI.ViewModel);
 
-            var tb = cbe.InternalEditor;
-
             nodeUI.inputGrid.Children.Add(cbe);
             Grid.SetColumn(cbe, 0);
             Grid.SetRow(cbe, 0);
@@ -462,7 +460,7 @@ namespace Dynamo.Nodes
 
             if (shouldFocus)
             {
-                tb.Focus();
+                cbe.Focus();
                 shouldFocus = false;
             }
         }

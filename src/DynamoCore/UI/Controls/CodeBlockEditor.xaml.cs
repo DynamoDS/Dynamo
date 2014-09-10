@@ -54,14 +54,7 @@ namespace Dynamo.UI.Controls
 
         }
 
-        void InnerTextEditor_TextChanged(object sender, EventArgs e)
-        {
-            if (WatermarkLabel.Visibility == Visibility.Visible)
-                WatermarkLabel.Visibility = System.Windows.Visibility.Collapsed;
-
-        }
-
-
+        #region Generic Properties
         internal TextEditor InternalEditor
         {
             get { return this.InnerTextEditor; }
@@ -81,7 +74,14 @@ namespace Dynamo.UI.Controls
                 this.InnerTextEditor.Text = value;
             }
         }
+        #endregion
 
+        internal bool Focus()
+        {
+            return InternalEditor.Focus();
+        }
+
+        #region Dependency Property
         public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
             typeof(CodeBlockEditor), new PropertyMetadata((obj, args) =>
             {
@@ -89,7 +89,9 @@ namespace Dynamo.UI.Controls
                 target.Code = (string)args.NewValue;
             })
         );
+        #endregion
 
+        #region Event Handlers
         /// <summary>
         /// Called when the CBN is committed and the underlying source data 
         /// needs to be updated with the text typed in the CBN
@@ -103,6 +105,15 @@ namespace Dynamo.UI.Controls
                     this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
         }
 
+        void InnerTextEditor_TextChanged(object sender, EventArgs e)
+        {
+            if (WatermarkLabel.Visibility == Visibility.Visible)
+                WatermarkLabel.Visibility = System.Windows.Visibility.Collapsed;
+
+        }
+        #endregion
+
+        #region Private Helper Methods
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -118,12 +129,13 @@ namespace Dynamo.UI.Controls
             else
                 this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
         }
+        #endregion
 
+        #region Key Press Event Handlers
         /// <summary>
         /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
         /// and sets them when pressed/released
-        /// </summary>
-        #region Key Press Event Handlers
+        /// </summary>        
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
 
