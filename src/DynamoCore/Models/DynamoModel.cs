@@ -496,9 +496,9 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            // This method is guaranteed to be called on a background thread 
-            // (for Revit's case, it is the idle thread). Here we schedule the
-            // message to show up when the UI gets around and handle it.
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
             // 
             if (task.Exception != null && (DynamoModel.IsTestMode == false))
             {
