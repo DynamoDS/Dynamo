@@ -8,7 +8,11 @@ using Dynamo.Models;
 namespace DynamoWebServer.Messages
 {
     /// <summary>
-    /// The class that represents data for creating connectors
+    /// This class represents the data that is required to create connectors on the 
+    /// client. When a file is opened on Dynamo Server, this information is delivered 
+    /// to the client to generate connectors found in the file. The data contains 
+    /// only outgoing connectors since incoming connectors were added as outgoing 
+    /// connectors from other upstream nodes.
     /// </summary>
     public class ConnectorToCreate
     {
@@ -44,25 +48,23 @@ namespace DynamoWebServer.Messages
             EndPortIndex = eIndex;
         }
 
-        public static List<ConnectorToCreate> GetComingOutConnectors(NodeModel node)
+        public static IEnumerable<ConnectorToCreate> GetOutgoingConnectors(NodeModel node)
         {
             var result = new List<ConnectorToCreate>();
-            int startIndex, endIndex;
-            string startID, endID;
             foreach (var outPort in node.OutPorts)
             {
-                startIndex = outPort.Index;
                 foreach (var connector in outPort.Connectors)
                 {
-                    startID = connector.Start.Owner.GUID.ToString();
-                    startIndex = connector.Start.Index;
+                    string startID = connector.Start.Owner.GUID.ToString();
+                    int startIndex = connector.Start.Index;
 
-                    endID = connector.End.Owner.GUID.ToString();
-                    endIndex = connector.End.Index;
+                    string endID = connector.End.Owner.GUID.ToString();
+                    int endIndex = connector.End.Index;
 
                     result.Add(new ConnectorToCreate(startID, startIndex, endID, endIndex));
                 }
             }
+
             return result;
         }
     }
