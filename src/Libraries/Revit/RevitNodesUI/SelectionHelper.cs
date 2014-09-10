@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.Revit.DB;
-using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI.Selection;
 
 using Dynamo.Interfaces;
@@ -37,6 +37,39 @@ namespace Revit.Interactivity
             return null;
         }
 
+        public List<string> RequestElementSubSelection<T>(
+            string selectionMessage, out object selectionTarget, SelectionType selectionType,
+            ILogger logger)
+        {
+            selectionTarget = null;
+            List<string> selection = null;
+            
+            switch (selectionType)
+            {
+                case SelectionType.Element:
+                    selection = RequestElementSelection<T>(selectionMessage, out selectionTarget, logger);
+                    break;
+                case SelectionType.MultipleElements:
+                    selection = RequestMultipleElementsSelection<T>(
+                        selectionMessage,
+                        out selectionTarget,
+                        logger);
+                    break;
+            }
+
+            // Process the sub-selection of elements for a type
+            Func<List<string>, List<string>> subSelectionFunction = null;
+
+            if (typeof(T) == typeof(DividedSurface))
+            {
+                subSelectionFunction = GetFamilyInstancesFromDividedSurface;
+            }
+
+            return subSelectionFunction == null
+                ? selection
+                : subSelectionFunction.Invoke(selection);
+        }
+
         public List<string> RequestReferenceSelection(string selectionMessage, out object selectionTarget, SelectionType selectionType, ILogger logger)
         {
             selectionTarget = null;
@@ -67,26 +100,15 @@ namespace Revit.Interactivity
         /// <returns></returns>
         private static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
         {
-            if (typeof(T) == typeof(DividedSurface))
-            {
-                return RequestDividedSurfaceFamilyInstancesSelection(
-                    selectionMessage,
-                    out selectionTarget,
-                    logger);
-            }
-
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Element e = null;
+            selectionTarget = null;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
 
             logger.Log(selectionMessage);
-
-            // Don't pass anything back, as everything we care about will be
-            // passed in the element list.
-            selectionTarget = null;
 
             var elementRef = doc.Selection.PickObject(
             ObjectType.Element,
@@ -96,6 +118,7 @@ namespace Revit.Interactivity
             if (elementRef != null)
             {
                 e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
+                selectionTarget = e;
             }
 
             return new List<string>() { e.UniqueId };
@@ -200,51 +223,47 @@ namespace Revit.Interactivity
 
         }
 
-        private static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget, ILogger logger)
+        private static List<string> GetFamilyInstancesFromDividedSurface(List<string> uuids)
         {
-            var ds = RequestElementSelection<DividedSurface>(message, out selectionTarget, logger);
+            var doc = DocumentManager.Instance.CurrentDBDocument;
 
-            var result = GetFamilyInstancesFromDividedSurface(ds);
-
-            selectionTarget = ds;
-
-            return result;
-        }
-
-        private static List<string> GetFamilyInstancesFromDividedSurface(object selectionTarget)
-        {
-            var ds = selectionTarget as DividedSurface;
+            var divSurfs =
+                uuids.Select(doc.GetElement).Where(el => el != null).Cast<DividedSurface>();
 
             var result = new List<string>();
 
-            var gn = new GridNode();
-
-            var u = 0;
-            while (u < ds.NumberOfUGridlines)
+            foreach (var ds in divSurfs)
             {
-                gn.UIndex = u;
+                var gn = new GridNode();
 
-                var v = 0;
-                while (v < ds.NumberOfVGridlines)
+                var u = 0;
+                while (u < ds.NumberOfUGridlines)
                 {
-                    gn.VIndex = v;
+                    gn.UIndex = u;
 
-                    //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
-                    if (ds.IsSeedNode(gn))
+                    var v = 0;
+                    while (v < ds.NumberOfVGridlines)
                     {
-                        var fi = ds.GetTileFamilyInstance(gn, 0);
+                        gn.VIndex = v;
 
-                        if (fi != null)
+                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                        if (ds.IsSeedNode(gn))
                         {
-                            //put the family instance into the tree
-                            result.Add(fi.UniqueId);
-                        }
-                    }
-                    v = v + 1;
-                }
+                            var fi = ds.GetTileFamilyInstance(gn, 0);
 
-                u = u + 1;
+                            if (fi != null)
+                            {
+                                //put the family instance into the tree
+                                result.Add(fi.UniqueId);
+                            }
+                        }
+                        v = v + 1;
+                    }
+
+                    u = u + 1;
+                } 
             }
+            
             return result;
         }
 
