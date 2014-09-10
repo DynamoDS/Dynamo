@@ -27,7 +27,8 @@ using Element = Autodesk.Revit.DB.Element;
 
 namespace Dynamo.Nodes
 {
-    public delegate List<string> ElementsSelectionUpdateDelegate(string message, out object target, SelectionType selectionType, ILogger logger);
+    public delegate List<string> ElementsSelectionUpdateDelegate(string message, out object target, 
+        SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
 
     public abstract class ElementSelection : RevitNodeModel, IWpfNode
     {
@@ -40,6 +41,7 @@ namespace Dynamo.Nodes
 
         private Document selectionOwner;
         private SelectionType selectionType;
+        private SelectionObjectType selectionObjectType;
 
         #region public properties
 
@@ -98,14 +100,17 @@ namespace Dynamo.Nodes
 
         protected ElementSelection(WorkspaceModel workspaceModel, 
             ElementsSelectionUpdateDelegate action, 
-            SelectionType selectionType, 
+            SelectionType selectionType,
+            SelectionObjectType selectionObjectType,
             string message,
             string prefix) 
             : base(workspaceModel)
         {
             SelectionAction = action;
             selectionMessage = message;
+
             this.selectionType = selectionType;
+            this.selectionObjectType = selectionObjectType;
 
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
@@ -249,7 +254,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                Selection = SelectionAction(selectionMessage, out selectionTarget, selectionType, RevitDynamoModel.Logger);
+                Selection = SelectionAction(selectionMessage, out selectionTarget, selectionType, selectionObjectType, RevitDynamoModel.Logger);
                 RequiresRecalc = true;
             }
             catch (OperationCanceledException)
@@ -303,8 +308,9 @@ namespace Dynamo.Nodes
             WorkspaceModel workspaceModel,
             ElementsSelectionUpdateDelegate action,
             SelectionType selectionType,
+            SelectionObjectType selectionObjectType,
             string message,
-            string prefix) : base(workspaceModel, action, selectionType, message, prefix){}
+            string prefix) : base(workspaceModel, action, selectionType,selectionObjectType, message, prefix){}
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -411,7 +417,8 @@ namespace Dynamo.Nodes
         public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestElementSelection<Element>, 
-            SelectionType.Element, 
+            SelectionType.One, 
+            SelectionObjectType.None,
             "Select an analysis result.", 
             "Analysis Results")
         { }
@@ -426,7 +433,8 @@ namespace Dynamo.Nodes
         public DSModelElementSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestElementSelection<Element>, 
-            SelectionType.Element, 
+            SelectionType.One, 
+            SelectionObjectType.None,
             "Select Model Element", 
             "Element")
         { }
@@ -441,7 +449,8 @@ namespace Dynamo.Nodes
         public DSFaceSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestReferenceSelection, 
-            SelectionType.Face, 
+            SelectionType.One,
+            SelectionObjectType.Face,
             "Select a face.", 
             "Face of Element Id") { }
     }
@@ -454,8 +463,9 @@ namespace Dynamo.Nodes
     {
         public DSEdgeSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
-            SelectionHelper.Instance.RequestReferenceSelection, 
-            SelectionType.Edge, 
+            SelectionHelper.Instance.RequestReferenceSelection,
+            SelectionType.One,
+            SelectionObjectType.Edge, 
             "Select an edge.", 
             "Edge of Element Id"){ }
     }
@@ -487,7 +497,8 @@ namespace Dynamo.Nodes
         public DSPointOnElementSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestReferenceSelection, 
-            SelectionType.PointOnFace, 
+            SelectionType.One,
+            SelectionObjectType.PointOnFace, 
             "Select a point on a face.",
             "Point on Element"){ }
     }
@@ -501,7 +512,8 @@ namespace Dynamo.Nodes
         public DSUVOnElementSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestReferenceSelection, 
-            SelectionType.PointOnFace, 
+            SelectionType.One,
+            SelectionObjectType.PointOnFace, 
             "Select a point on a face.",
             "UV on Element"){ }
     }
@@ -515,7 +527,8 @@ namespace Dynamo.Nodes
         public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel,
             SelectionHelper.Instance.RequestElementSubSelection<Autodesk.Revit.DB.DividedSurface>, 
-            SelectionType.Element, 
+            SelectionType.One, 
+            SelectionObjectType.None,
             "Select a divided surface.",
             "Elements") { }
     }
@@ -529,10 +542,27 @@ namespace Dynamo.Nodes
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionHelper.Instance.RequestElementSelection<Element>, 
-            SelectionType.MultipleElements, 
+            SelectionType.Many,
+            SelectionObjectType.None,
             "Select elements.", 
             "Elements") { }
     }
+
+    [NodeName("Select Faces")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select multiple faces from the Revit document.")]
+    [IsDesignScriptCompatible]
+    public class SelectFaces : ReferenceSelection
+    {
+        public SelectFaces(WorkspaceModel workspaceModel)
+            : base(workspaceModel,
+            SelectionHelper.Instance.RequestReferenceSelection,
+            SelectionType.Many,
+            SelectionObjectType.Face,
+            "Select faces.",
+            "Faces") { }
+    }
+
 
     public class SelectionButtonContentConverter : IValueConverter
     {

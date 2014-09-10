@@ -4,23 +4,28 @@ namespace Dynamo.Interfaces
 {
     public enum SelectionType
     {
+        One,
+        Many
+    }
+
+    public enum SelectionObjectType
+    {
         Face,
         Edge,
         PointOnFace,
-        MultipleReferences,
         Element,
-        MultipleElements,
+        None
     };
 
     public interface IModelSelectionHelper
     {
         List<string> RequestElementSelection<T>(
             string selectionMessage, out object selectionTarget, SelectionType selectionType,
-            ILogger logger);
+            SelectionObjectType objectType, ILogger logger);
 
         List<string> RequestReferenceSelection(
             string selectionMessage, out object selectionTarget, SelectionType selectionType,
-            ILogger logger);
+            SelectionObjectType objectType, ILogger logger);
     }
 
 }
