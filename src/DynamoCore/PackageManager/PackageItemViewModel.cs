@@ -137,7 +137,7 @@ namespace Dynamo.PackageManager.UI
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {
-                    return Assembly.GetName().Name;
+                    return Assembly.GetName().Name + ".DLL";
                 }
                 else
                 {
