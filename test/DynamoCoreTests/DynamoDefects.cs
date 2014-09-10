@@ -204,6 +204,17 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_3468()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3468
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3468.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_1905()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
