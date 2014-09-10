@@ -470,7 +470,7 @@ namespace Dynamo.Models
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join("\n", warning.Value);
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 
@@ -481,7 +481,7 @@ namespace Dynamo.Models
                 if (messages.ContainsKey(warning.Key))
                     continue;
 
-                var message = string.Join("\n", warning.Value);
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 
