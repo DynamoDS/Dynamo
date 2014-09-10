@@ -996,8 +996,10 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
+            this.LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
             UserControl view = (UserControl)this.sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
@@ -1034,6 +1036,7 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = this.sidebarGrid.ActualWidth;
+            this.LibraryViewColumn.MinWidth = 0;
 
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;

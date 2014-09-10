@@ -322,5 +322,22 @@ namespace Dynamo.Search
             Keyboard.Focus(SearchTextBox);
         }
 
+        private void TextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (viewModel != null)
+                viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
+        }
+
+        private void TextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+           if (viewModel != null)
+            {
+                if (string.IsNullOrEmpty(viewModel.SearchText))
+                    viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
+                else
+                    viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
+            }
+        }
+
     }
 }
