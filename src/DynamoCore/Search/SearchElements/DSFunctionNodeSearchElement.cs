@@ -54,16 +54,38 @@ namespace Dynamo.Search.SearchElements
             {
                 case ResourceType.SmallIcon:
                 {
+                    string name = String.Empty;
+
+                    // Usual case.
                     if (!disambiguate)
-                        return FunctionDescriptor.QualifiedName;
+                    {
+                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                        // Case for operators. Operators should use FunctionDescriptor.Name property.
+                        if (string.IsNullOrEmpty(name))
+                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+
+                        return name;
+                    }
 
                     // Case for overloaded methods.
                     return TypedParametersToString(this.FunctionDescriptor);
                 }
                 case ResourceType.LargeIcon:
                 {
+                    string name = String.Empty;
+
+                    // Usual case.
                     if (!disambiguate)
-                        return FunctionDescriptor.QualifiedName;
+                    {
+                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                        // Case for operators. Operators should use FunctionDescriptor.Name property.
+                        if (string.IsNullOrEmpty(name))
+                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+
+                        return name;
+                    }
 
                     // Case for overloaded methods.
                     return TypedParametersToString(this.FunctionDescriptor);
