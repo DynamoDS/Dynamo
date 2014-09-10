@@ -12,12 +12,16 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
+using DSRevitNodesUI;
+
 using Dynamo.Applications.Models;
 using Dynamo.Interfaces;
 
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
+using Dynamo.UI.Commands;
+
 using ProtoCore.AST.AssociativeAST;
 
 using Revit.Elements;
@@ -30,100 +34,14 @@ namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionUpdateDelegate(string message, out object target, SelectionType selectionType, ILogger logger);
 
-    public abstract class SelectionBase : RevitNodeModel, IWpfNode
+    public abstract class ElementSelection : RevitNodeModel, IWpfNode
     {
-        protected bool _canSelect = true;
-        protected string _selectionText ="";
-        protected string _selectionMessage;
-        protected string _selectButtonContent;
-        protected object _selectionTarget;
-
-        protected SelectionBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
-
-        /// <summary>
-        /// The text that describes this selection.
-        /// </summary>
-        public virtual string SelectionText
-        {
-            get
-            {
-                return _selectionText;
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Select button is enabled in the UI.
-        /// </summary>
-        public bool CanSelect
-        {
-            get { return _canSelect; }
-            set
-            {
-                _canSelect = value;
-                RaisePropertyChanged("CanSelect");
-            }
-        }
-
-        /// <summary>
-        /// The content of the selection button.
-        /// </summary>
-        public string SelectButtonContent
-        {
-            get { return _selectButtonContent; }
-            set
-            {
-                _selectButtonContent = value;
-                RaisePropertyChanged("SelectButtonContent");
-            }
-        }
-
-        /// <summary>
-        /// Handler for the selection button's Click event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        internal void selectButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Disable the button once it's been clicked...
-            CanSelect = false;
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
-                delegate
-                {
-                    OnSelectClick();
-                    CanSelect = true; //...and re-enable it once selection has finished.
-                });
-        }
-
-        /// <summary>
-        /// Override this to perform custom selection logic.
-        /// </summary>
-        protected abstract void OnSelectClick();
-
-        public abstract void SetupCustomUIElements(dynNodeView view);
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
-    }
-
-    public abstract class ElementSelection : SelectionBase
-    {
-        /// <summary>
-        /// The function to invoke during selection.
-        /// </summary>
+        protected bool canSelect = true;
+        protected string selectionText = "";
+        protected string selectionMessage;
+        protected object selectionTarget;
         protected ElementsSelectionUpdateDelegate SelectionAction;
-
-        /// <summary>
-        /// The function to invoke during update.
-        /// </summary>
         protected Func<object, IEnumerable<string>> Update;
-
         protected List<string> selection = new List<string>();
 
         private Document selectionOwner;
@@ -157,7 +75,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override string SelectionText
+        public virtual string SelectionText
         {
             get
             {
@@ -180,8 +98,24 @@ namespace Dynamo.Nodes
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        public DelegateCommand SelectCommand { get; set; }
+
+        /// <summary>
+        /// Whether or not the Select button is enabled in the UI.
+        /// </summary>
+        public bool CanSelect
+        {
+            get { return canSelect; }
+            set
+            {
+                canSelect = value;
+                RaisePropertyChanged("CanSelect");
+                SelectCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -193,7 +127,7 @@ namespace Dynamo.Nodes
             : base(workspaceModel)
         {
             SelectionAction = action;
-            _selectionMessage = message;
+            selectionMessage = message;
             this.selectionType = selectionType;
 
             OutPortData.Add(new PortData("Elements", "The selected elements."));
@@ -207,6 +141,8 @@ namespace Dynamo.Nodes
             revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
             revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
+
+            SelectCommand = new DelegateCommand(Select, CanBeginSelect);
         }
 
         public override void Destroy()
@@ -251,10 +187,10 @@ namespace Dynamo.Nodes
             {
                 RequiresRecalc = true;
 
-                if (Update != null && _selectionTarget != null)
+                if (Update != null && selectionTarget != null)
                 {
                     Selection.Clear();
-                    Selection = Update.Invoke(_selectionTarget).ToList();
+                    Selection = Update.Invoke(selectionTarget).ToList();
                 }
             }
         }
@@ -263,59 +199,61 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = Configurations.PortHeightInPixels,
-            };
-            selectButton.Click += selectButton_Click;
+            ////add a button to the inputGrid on the dynElement
+            //var selectButton = new DynamoNodeButton
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    Height = Configurations.PortHeightInPixels,
+            //};
+            //selectButton.Click += selectButton_Click;
 
-            var tb = new TextBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false,
-                MaxWidth = 200,
-                TextWrapping = TextWrapping.Wrap
-            };
+            //var tb = new TextBox
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+            //    BorderThickness = new Thickness(0),
+            //    IsReadOnly = true,
+            //    IsReadOnlyCaretVisible = false,
+            //    MaxWidth = 200,
+            //    TextWrapping = TextWrapping.Wrap
+            //};
 
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            //nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            nodeUI.inputGrid.Children.Add(tb);
-            nodeUI.inputGrid.Children.Add(selectButton);
+            //nodeUI.inputGrid.Children.Add(tb);
+            //nodeUI.inputGrid.Children.Add(selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            //System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            //System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            tb.DataContext = this;
-            selectButton.DataContext = this;
+            //tb.DataContext = this;
+            //selectButton.DataContext = this;
 
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+            //var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            //{
+            //    Mode = BindingMode.TwoWay,
+            //};
+            //tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("Selection")
-            {
-                Mode = BindingMode.OneWay,
-                Converter = new SelectionButtonContentConverter(),
-            };
-            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+            //var buttonTextBinding = new System.Windows.Data.Binding("Selection")
+            //{
+            //    Mode = BindingMode.OneWay,
+            //    Converter = new SelectionButtonContentConverter(),
+            //};
+            //selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
-            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+            //var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            //{
+            //    Mode = BindingMode.TwoWay,
+            //};
+            //selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+            var selectionControl = new ElementSelectionControl { DataContext = this };
+            nodeUI.inputGrid.Children.Add(selectionControl);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -348,21 +286,28 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        #region private methods
+
+        private bool CanBeginSelect(object parameter)
+        {
+            return CanSelect;
+        }
+        
+        #endregion
+
         #region protected methods
 
         /// <summary>
         /// Callback when selection button is clicked. 
         /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
-        protected override void OnSelectClick()
+        protected virtual void Select(object parameter)
         {
             try
             {
                 //call the delegate associated with a selection type
-                Selection = SelectionAction(_selectionMessage, out _selectionTarget, selectionType, RevitDynamoModel.Logger);
-
+                Selection = SelectionAction(selectionMessage, out selectionTarget, selectionType, RevitDynamoModel.Logger);
                 RaisePropertyChanged("SelectionText");
-
                 RequiresRecalc = true;
             }
             catch (OperationCanceledException)
@@ -377,7 +322,6 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
             if (Selection != null)
             {
                 foreach (string selectedElement in selection.Where(x => x != null))
@@ -402,7 +346,12 @@ namespace Dynamo.Nodes
             RequiresRecalc = true;
             RaisePropertyChanged("Selection");
         }
-        
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         #endregion
     }
 
@@ -432,7 +381,7 @@ namespace Dynamo.Nodes
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -559,13 +508,13 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = !Selection.Any()
+                return selectionText = !Selection.Any()
                                             ? "Nothing Selected"
                                             : "Face of Element ID: " + Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, Selection.First()).ElementId;
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -586,13 +535,13 @@ namespace Dynamo.Nodes
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
 
-                return _selectionText = !Selection.Any()
+                return selectionText = !Selection.Any()
                                             ? "Nothing Selected"
                                             : "Edge of Element ID: " + Reference.ParseFromStableRepresentation(doc, Selection.First()).ElementId;
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -613,13 +562,13 @@ namespace Dynamo.Nodes
             get
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                return _selectionText = !Selection.Any()
+                return selectionText = !Selection.Any()
                                             ? "Nothing Selected"
                                             : "Point on element" + " (" + Reference.ParseFromStableRepresentation(doc,Selection.First()) + ")";
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -658,13 +607,13 @@ namespace Dynamo.Nodes
             get
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                return _selectionText = !Selection.Any()
+                return selectionText = !Selection.Any()
                                             ? "Nothing Selected"
                                             : "UV on element" + " (" + Reference.ParseFromStableRepresentation(doc, Selection.First()) + ")";
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
@@ -704,14 +653,14 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = 
+                return selectionText = 
                     (Selection != null && Selection.Count > 0)
                         ? "Element IDs:" + formatSelectionText(Selection.Where(x => x != null).Select(x => x.ToString()))
                         : "Nothing Selected";
             }
             set
             {
-                _selectionText = value;
+                selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
         }
