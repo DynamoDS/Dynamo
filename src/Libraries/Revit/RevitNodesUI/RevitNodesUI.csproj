@@ -64,10 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements.cs" />
-    <Compile Include="ElementSelectionControl.xaml.cs">
-      <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="IModelSelectionHelper.cs" />
     <Compile Include="RevitDropDown.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,12 +106,6 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="ElementSelectionControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

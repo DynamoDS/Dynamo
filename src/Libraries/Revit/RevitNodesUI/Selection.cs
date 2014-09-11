@@ -1,21 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Data;
-using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
-using DSRevitNodesUI;
-
-using Dynamo.Applications.Models;
 using Dynamo.Interfaces;
-using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.UI;
-using Dynamo.UI.Commands;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -23,20 +14,15 @@ using Revit.Elements;
 using Revit.GeometryObjects;
 using Revit.Interactivity;
 using RevitServices.Persistence;
+
 using Element = Autodesk.Revit.DB.Element;
+using RevitDynamoModel = Dynamo.Applications.Models.RevitDynamoModel;
 
 namespace Dynamo.Nodes
 {
-    public delegate List<string> ElementsSelectionDelegate(string message, 
-        SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
-
-    public abstract class ElementSelection : RevitNodeModel, IWpfNode
+    public abstract class ElementSelection : SelectionBase
     {
-        protected bool canSelect = true;
-        protected string selectionMessage;
-        protected List<string> selection = new List<string>();
-        protected SelectionType selectionType;
-        protected SelectionObjectType selectionObjectType;
+        protected RevitDynamoModel RevitDynamoModel { get; private set; }
         protected Document selectionOwner;
 
         #region public properties
@@ -44,7 +30,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public List<string> Selection
+        public override List<string> Selection
         {
             get { return selection; }
             set
@@ -68,46 +54,18 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DelegateCommand SelectCommand { get; set; }
-
-        public string Prefix { get; set; }
-
-        /// <summary>
-        /// Whether or not the Select button is enabled in the UI.
-        /// </summary>
-        public bool CanSelect
-        {
-            get { return canSelect; }
-            set
-            {
-                canSelect = value;
-                RaisePropertyChanged("CanSelect");
-            }
-        }
-
-        public string Text
-        {
-            get { return ToString(); }
-        }
-
         #endregion
 
         #region protected constructors
 
-        protected ElementSelection(WorkspaceModel workspaceModel, 
+        protected ElementSelection(WorkspaceModel workspaceModel,
             SelectionType selectionType,
             SelectionObjectType selectionObjectType,
             string message,
-            string prefix) 
-            : base(workspaceModel)
+            string prefix)
+            : base(workspaceModel, selectionType, selectionObjectType, message, prefix)
         {
-            selectionMessage = message;
-
-            this.selectionType = selectionType;
-            this.selectionObjectType = selectionObjectType;
-
-            OutPortData.Add(new PortData("Elements", "The selected elements."));
-            RegisterAllPorts();
+            RevitDynamoModel = Workspace.DynamoModel as RevitDynamoModel;
 
             // we need to obtain the dynamo model directly from the workspace model 
             // here, as it is not yet initialized on the base constructor
@@ -116,9 +74,6 @@ namespace Dynamo.Nodes
 
             revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
-
-            SelectCommand = new DelegateCommand(Select, CanBeginSelect);
-            Prefix = prefix;
         }
 
         #endregion
@@ -159,12 +114,6 @@ namespace Dynamo.Nodes
             RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
         }
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var selectionControl = new ElementSelectionControl { DataContext = this };
-            nodeUI.inputGrid.Children.Add(selectionControl);
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode node;
@@ -195,8 +144,8 @@ namespace Dynamo.Nodes
 
         public override string ToString()
         {
-            return selection.Any()? 
-                string.Format("{0} : {1}", Prefix, FormatSelectionText(selection)):
+            return selection.Any() ?
+                string.Format("{0} : {1}", Prefix, FormatSelectionText(selection)) :
                 "Nothing Selected";
         }
 
@@ -204,20 +153,15 @@ namespace Dynamo.Nodes
 
         #region private methods
 
-        private bool CanBeginSelect(object parameter)
-        {
-            return CanSelect;
-        }
-
         protected virtual string FormatSelectionText(IEnumerable<string> elements)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
             var ids = elements.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
             return ids.Any()
-                ? String.Join(" ", ids.Take(20))
+                ? System.String.Join(" ", ids.Take(20))
                 : "";
         }
-        
+
         #endregion
 
         #region protected methods
@@ -226,7 +170,7 @@ namespace Dynamo.Nodes
         /// Callback when selection button is clicked. 
         /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
-        protected virtual void Select(object parameter)
+        protected override void Select(object parameter)
         {
             try
             {
@@ -252,38 +196,6 @@ namespace Dynamo.Nodes
             {
                 RevitDynamoModel.Logger.Log(e);
             }
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            if (Selection != null)
-            {
-                foreach (string selectedElement in selection.Where(x => x != null))
-                {
-                    XmlElement outEl = xmlDoc.CreateElement("instance");
-                    outEl.SetAttribute("id", selectedElement);
-                    nodeElement.AppendChild(outEl);
-                }
-            }
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            selectionOwner = DocumentManager.Instance.CurrentDBDocument;
-
-            selection =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
-                    .Select(subNode => subNode.Attributes[0].Value)
-                    .ToList();
-
-            RequiresRecalc = true;
-            RaisePropertyChanged("Selection");
-        }
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
         }
 
         #endregion
@@ -360,19 +272,20 @@ namespace Dynamo.Nodes
 
     public abstract class ReferenceSelection : ElementSelection
     {
-        protected Dictionary<string,List<string>> subSelections = new Dictionary<string,List<string>>();
+        protected Dictionary<string, List<string>> subSelections = new Dictionary<string, List<string>>();
 
         protected ReferenceSelection(
             WorkspaceModel workspaceModel,
             SelectionType selectionType,
             SelectionObjectType selectionObjectType,
             string message,
-            string prefix) : base(workspaceModel, selectionType, selectionObjectType, message, prefix){}
+            string prefix)
+            : base(workspaceModel, selectionType, selectionObjectType, message, prefix) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var newInputs = new List<AssociativeNode>();
-            
+
             AssociativeNode node;
 
             if (Selection == null || !Selection.Any())
@@ -489,49 +402,11 @@ namespace Dynamo.Nodes
             var ids = refs.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
 
             return ids.Any()
-                ? String.Join(" ", ids.Take(20))
+                ? System.String.Join(" ", ids.Take(20))
                 : "";
         }
     }
-
-    public class SelectionButtonContentConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return "Select";
-
-            if (value.GetType() == typeof(List<Element>))
-            {
-                var els = (List<Element>)value;
-                if (!els.Any())
-                    return "Select";
-            }
-
-            return "Change";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class SelectionToTextConverter : IValueConverter
-    {
-        // parameter is the data context
-        // value is the selection
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value.ToString();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
+    
     [NodeName("Select Analysis Results")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]
