@@ -22,8 +22,9 @@ namespace Dynamo.Nodes
 {
     public abstract class ElementSelection : SelectionBase
     {
-        protected RevitDynamoModel RevitDynamoModel { get; private set; }
         protected Document selectionOwner;
+
+        protected RevitDynamoModel RevitDynamoModel { get; private set; }
 
         #region public properties
 
@@ -65,6 +66,8 @@ namespace Dynamo.Nodes
             string prefix)
             : base(workspaceModel, selectionType, selectionObjectType, message, prefix)
         {
+            SelectionHelper = RevitSelectionHelper.Instance;
+
             RevitDynamoModel = Workspace.DynamoModel as RevitDynamoModel;
 
             // we need to obtain the dynamo model directly from the workspace model 
@@ -178,7 +181,7 @@ namespace Dynamo.Nodes
 
                 //call the delegate associated with a selection type
                 Selection =
-                    RevitSelectionHelper.Instance.RequestElementSelection<Element>(
+                    SelectionHelper.RequestSelectionOfType<Element>(
                         selectionMessage,
                         selectionType,
                         selectionObjectType,
@@ -232,7 +235,7 @@ namespace Dynamo.Nodes
                 CanSelect = false;
 
                 //call the delegate associated with a selection type
-                subSelections = RevitSelectionHelper.Instance.RequestElementSubSelection<T>(
+                subSelections = SelectionHelper.RequestSubSelectionOfType<T>(
                     selectionMessage,
                     selectionType,
                     selectionObjectType,
@@ -372,7 +375,7 @@ namespace Dynamo.Nodes
                 CanSelect = false;
 
                 //call the delegate associated with a selection type
-                subSelections = RevitSelectionHelper.Instance.RequestReferenceSelection(
+                subSelections = SelectionHelper.RequestSelection(
                     selectionMessage,
                     selectionType,
                     selectionObjectType,
@@ -419,8 +422,7 @@ namespace Dynamo.Nodes
             SelectionType.One, 
             SelectionObjectType.None,
             "Select an analysis result.", 
-            "Analysis Results")
-        { }
+            "Analysis Results"){ }
     }
 
     [NodeName("Select Model Element")]
@@ -434,8 +436,7 @@ namespace Dynamo.Nodes
             SelectionType.One, 
             SelectionObjectType.None,
             "Select Model Element", 
-            "Element")
-        { }
+            "Element"){ }
     }
     
     [NodeName("Select Face")]

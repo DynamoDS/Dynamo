@@ -27,7 +27,7 @@ namespace Revit.Interactivity
         /// <param name="selectionType">The selection type.</param>
         /// <param name="objectType">The selection object type.</param>
         /// <returns></returns>
-        public List<string> RequestElementSelection<T>(string selectionMessage, 
+        public List<string> RequestSelectionOfType<T>(string selectionMessage, 
             SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
         {
             switch(selectionType)
@@ -53,7 +53,7 @@ namespace Revit.Interactivity
         /// <param name="objectType">The selection object type.</param>
         /// <param name="logger">A logger.</param>
         /// <returns></returns>
-        public Dictionary<string,List<string>> RequestElementSubSelection<T>(
+        public Dictionary<string,List<string>> RequestSubSelectionOfType<T>(
             string selectionMessage, SelectionType selectionType,
             SelectionObjectType objectType, ILogger logger)
         {
@@ -90,7 +90,7 @@ namespace Revit.Interactivity
         /// <param name="selectionType">The type of reference selection.</param>
         /// <param name="objectType">The selection object type.</param>
         /// <returns></returns>
-        public Dictionary<string,List<string>> RequestReferenceSelection(string selectionMessage, 
+        public Dictionary<string,List<string>> RequestSelection(string selectionMessage, 
             SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
         {
             switch (selectionType)

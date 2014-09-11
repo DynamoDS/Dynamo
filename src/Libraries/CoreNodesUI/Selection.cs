@@ -18,6 +18,30 @@ namespace Dynamo.Nodes
     public delegate List<string> ElementsSelectionDelegate(string message,
     SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
 
+    public class DefaultSelectionHelper : IModelSelectionHelper
+    {
+        public Dictionary<string, List<string>> RequestSelection(
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
+            ILogger logger)
+        {
+            return new Dictionary<string, List<string>>();
+        }
+
+        public List<string> RequestSelectionOfType<T>(
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
+            ILogger logger)
+        {
+            return new List<string>();
+        }
+
+        public Dictionary<string, List<string>> RequestSubSelectionOfType<T>(
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
+            ILogger logger)
+        {
+            return new Dictionary<string, List<string>>();
+        }
+    }
+
     public abstract class SelectionBase : NodeModel, IWpfNode
     {
         protected bool canSelect = true;
@@ -72,6 +96,8 @@ namespace Dynamo.Nodes
             get { return ToString(); }
         }
 
+        public IModelSelectionHelper SelectionHelper { get; protected set; }
+
         #endregion
 
         #region protected constructors
@@ -83,6 +109,8 @@ namespace Dynamo.Nodes
             string prefix)
             : base(workspaceModel)
         {
+            SelectionHelper = new DefaultSelectionHelper();
+
             selectionMessage = message;
 
             this.selectionType = selectionType;
