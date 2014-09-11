@@ -520,6 +520,7 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(this.AdditionalFiles);
+            files = files.Union(this.Assemblies.Select(x => x.Location));
 
             return files;
         }
