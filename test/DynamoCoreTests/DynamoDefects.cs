@@ -5,6 +5,7 @@ using Dynamo.Models;
 using System.Collections.Generic;
 using Dynamo.Nodes;
 using DSCoreNodesUI;
+using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
 {
@@ -250,6 +251,20 @@ namespace Dynamo.Tests
             RunCurrentModel();
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 3);
 
+        }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_3548()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3548
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3548.dyn");
+            RunModel(openPath);
+            var point = model.CurrentWorkspace.NodeFromWorkspace
+                ("a3da7834-f56f-4e73-b8f1-56796b6c37b3");
+            string var = point.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
         }
 
         [Test, Category("RegressionTests")]
