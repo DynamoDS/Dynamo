@@ -223,6 +223,16 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles.AddRange( nonDyfDllFiles );
         }
 
+        public IEnumerable<string> EnumerateAssemblyFiles()
+        {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return new List<string>();
+
+            return Directory.EnumerateFiles(
+                RootDirectory,
+                "*.dll",
+                SearchOption.AllDirectories);
+        }
+
         private void LoadCustomNodesIntoDynamo( DynamoLoader loader)
         {
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
