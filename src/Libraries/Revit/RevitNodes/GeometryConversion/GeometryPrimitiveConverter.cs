@@ -115,7 +115,23 @@ namespace Revit.GeometryConversion
         {
             xyz.Enabled = true;
             var corners = new[] {xyz.Min.ToPoint(), xyz.Max.ToPoint()};
-            return Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(corners);
+            var bboxTransform = xyz.Transform;
+            var csOrigin = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
+                bboxTransform.Origin.X,
+                bboxTransform.Origin.Y,
+                bboxTransform.Origin.Z);
+            var csX = Vector.ByCoordinates(
+                bboxTransform.BasisX.X,
+                bboxTransform.BasisX.Y,
+                bboxTransform.BasisX.Z);
+            var csY = Vector.ByCoordinates(
+                bboxTransform.BasisY.X,
+                bboxTransform.BasisY.Y,
+                bboxTransform.BasisY.Z);
+            var cs = CoordinateSystem.ByOriginVectors(csOrigin, csX, csY);
+            return Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(
+                corners,
+                cs);
         }
 
         public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz, bool convertUnits = true)
