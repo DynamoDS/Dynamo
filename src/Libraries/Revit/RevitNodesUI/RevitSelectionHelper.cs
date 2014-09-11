@@ -9,11 +9,11 @@ using RevitServices.Persistence;
 
 namespace Revit.Interactivity
 {
-    internal class SelectionHelper : IModelSelectionHelper
+    internal class RevitSelectionHelper : IModelSelectionHelper
     {
-        private static readonly SelectionHelper instance = new SelectionHelper();
+        private static readonly RevitSelectionHelper instance = new RevitSelectionHelper();
 
-        public static SelectionHelper Instance
+        public static RevitSelectionHelper Instance
         {
             get { return instance; }
         }

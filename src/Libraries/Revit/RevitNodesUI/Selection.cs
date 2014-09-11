@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
 
                 //call the delegate associated with a selection type
                 Selection =
-                    SelectionHelper.Instance.RequestElementSelection<Element>(
+                    RevitSelectionHelper.Instance.RequestElementSelection<Element>(
                         selectionMessage,
                         selectionType,
                         selectionObjectType,
@@ -320,7 +320,7 @@ namespace Dynamo.Nodes
                 CanSelect = false;
 
                 //call the delegate associated with a selection type
-                subSelections = SelectionHelper.Instance.RequestElementSubSelection<T>(
+                subSelections = RevitSelectionHelper.Instance.RequestElementSubSelection<T>(
                     selectionMessage,
                     selectionType,
                     selectionObjectType,
@@ -459,7 +459,7 @@ namespace Dynamo.Nodes
                 CanSelect = false;
 
                 //call the delegate associated with a selection type
-                subSelections = SelectionHelper.Instance.RequestReferenceSelection(
+                subSelections = RevitSelectionHelper.Instance.RequestReferenceSelection(
                     selectionMessage,
                     selectionType,
                     selectionObjectType,
@@ -491,6 +491,44 @@ namespace Dynamo.Nodes
             return ids.Any()
                 ? String.Join(" ", ids.Take(20))
                 : "";
+        }
+    }
+
+    public class SelectionButtonContentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return "Select";
+
+            if (value.GetType() == typeof(List<Element>))
+            {
+                var els = (List<Element>)value;
+                if (!els.Any())
+                    return "Select";
+            }
+
+            return "Change";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class SelectionToTextConverter : IValueConverter
+    {
+        // parameter is the data context
+        // value is the selection
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 
@@ -596,7 +634,7 @@ namespace Dynamo.Nodes
         {
             // Set an update method. When the target object is modified in
             // Revit, this will cause the sub-elements to be modified.
-            Update = SelectionHelper.GetFamilyInstancesFromDividedSurface;
+            Update = RevitSelectionHelper.GetFamilyInstancesFromDividedSurface;
         }
     }
 
@@ -626,43 +664,5 @@ namespace Dynamo.Nodes
             SelectionObjectType.Face,
             "Select faces.",
             "Faces") { }
-    }
-
-    public class SelectionButtonContentConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return "Select";
-
-            if (value.GetType() == typeof(List<Element>))
-            {
-                var els = (List<Element>)value;
-                if (!els.Any())
-                    return "Select";
-            }
-
-            return "Change";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class SelectionToTextConverter : IValueConverter
-    {
-        // parameter is the data context
-        // value is the selection
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value.ToString();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
     }
 }
