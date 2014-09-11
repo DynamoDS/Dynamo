@@ -51,6 +51,32 @@
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
         </Style>
+        <Style x:Key="STextButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid x:Name="container">
+                            <TextBlock x:Name="text"
+                                       HorizontalAlignment="Stretch"                                       
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Foreground="#DDD"
+                                       FontSize="20px"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver"
+                                     Value="true">
+                                <Setter TargetName="container"
+                                        Property="Background"
+                                        Value="#2F2F2F" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid DataContextChanged="GridDataContextChanged"
           Visibility="{Binding Path=ClassDetailsVisibility,
@@ -60,6 +86,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock x:Name="topCategoryHeader"
@@ -120,6 +147,10 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Button Grid.Row="4"
+                Height="32"
+                Style="{StaticResource STextButton}"
+                Content="..." />
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         AttachmentSide="Right"
                                         StaysOpen="True"
