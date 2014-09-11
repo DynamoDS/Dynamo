@@ -168,7 +168,7 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"
+            <ColumnDefinition Width="1*"
                               MaxWidth="500"
                               MinWidth="308"
                               Name="LibraryViewColumn"/>

@@ -145,13 +145,13 @@
             <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
                              TargetType="{x:Type ToggleButton}">
                 <Border x:Name="ExpanderButtonBorder"
-                        Background="{StaticResource WorkspaceBackgroundBrush}"
+                        Background="#282828"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
+                        Padding="16,0,0,0">
                     <Grid MinHeight="27"
                           MinWidth="66"
-                          Margin="16,0,0,2">
+                          Margin="0,0,0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -184,6 +184,9 @@
                             <Setter Property="Source"
                                     TargetName="ExpandCollapseStateIcon"
                                     Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -238,7 +241,8 @@
                                   Template="{StaticResource CategoryExpanderButtonTemplate}"
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                  OverridesDefaultStyle="True">
+                                  OverridesDefaultStyle="True"
+                                  Height="27">
                     </ToggleButton>
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
@@ -268,11 +272,12 @@
     <Grid Name="LibraryGrid">
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="{StaticResource WorkspaceBackgroundBrush}">
+                      Background="#282828"
+                      VerticalScrollBarVisibility="Auto">
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
-                      Background="{StaticResource WorkspaceBackgroundBrush}"
+                      Background="#282828"
                       BorderThickness="0"
                       ItemsSource="{Binding Model.BrowserRootCategories}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -281,9 +286,7 @@
                     <DataTemplate>
                         <Expander Header="{Binding Path=Name}"
                                   OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}"
-                                  Foreground="#DDD"
-                                  FontSize="13">
+                                  Template="{StaticResource CategoryExpanderTemplate}">
                             <!--Select not more than one category-->
                             <Expander.IsExpanded>
                                 <Binding Path="IsSelected"
@@ -306,7 +309,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderThickness="0,0,0,2"
+                                    <Border BorderThickness="0,0,0,1"
                                             BorderBrush="#2F2F2F">
                                         <ContentPresenter />
                                     </Border>
