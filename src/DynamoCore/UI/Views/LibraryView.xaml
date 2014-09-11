@@ -64,12 +64,14 @@
             <!-- This data template is used to show StandardPanel
                  for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
+                <Grid Background="#272727">
                     <Grid.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                     </Grid.Width>
-                    <uicontrols:StandardPanel Name="standardPanel" />
+                    <Border Padding="0,10,0,10">
+                        <uicontrols:StandardPanel Name="standardPanel" />
+                    </Border>
                 </Grid>
             </DataTemplate>
 
@@ -275,15 +277,12 @@
             </ControlTemplate>
 
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="#282828"
+                      Background="Transparent"
                       VerticalScrollBarVisibility="Auto">
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"

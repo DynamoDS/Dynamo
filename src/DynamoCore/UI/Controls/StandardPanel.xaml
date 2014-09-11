@@ -16,11 +16,13 @@
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="#272727" />
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="BorderThickness"
                     Value="1" />
+            <Setter Property="Height" 
+                    Value="40" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -38,7 +40,7 @@
                                                Value="False" />
                                 </MultiTrigger.Conditions>
                                 <Setter Property="Background"
-                                        Value="#2F2F2F" />
+                                        Value="#444444" />
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -53,6 +55,7 @@
         </Style>
     </UserControl.Resources>
     <Grid DataContextChanged="GridDataContextChanged"
+          Background="#272727"
           Visibility="{Binding Path=ClassDetailsVisibility,
                                Converter={StaticResource BoolToVisibilityConverter},
                                ConverterParameter='Collapse'}">
@@ -63,7 +66,16 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock x:Name="topCategoryHeader"
-                   Foreground="#DDD">CREATE</TextBlock>
+                   Foreground="#777777"
+                   VerticalAlignment="Center"
+                   FontSize="9"
+                   Margin="16,0,0,0">
+            <TextBlock.TextDecorations>
+                <TextDecoration Location="Underline"
+                                PenOffset="2"
+                                PenOffsetUnit="Pixel" />
+            </TextBlock.TextDecorations>
+            CREATE</TextBlock>
         <ListBox x:Name="topCategoryList"
                  Grid.Row="1"
                  Background="Transparent"
@@ -74,8 +86,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
                                Height="32"
-                               Margin="5,5,0,0"
-                               VerticalAlignment="Top"
+                               Margin="16,0,16,0"
+                               VerticalAlignment="Center"
                                Width="32"
                                Source="{Binding SmallIcon}" />
 
@@ -84,7 +96,8 @@
                                    Text="{Binding Name}"
                                    VerticalAlignment="Top"
                                    Margin="5,10,0,0"
-                                   Foreground="#DDD" />
+                                   Foreground="#CCCCCC"
+                                   FontSize="13" />
 
                     </StackPanel>
                 </DataTemplate>
@@ -92,7 +105,8 @@
         </ListBox>
         <StackPanel x:Name="addCategoryHeaders"
                     Orientation="Horizontal"
-                    Grid.Row="2">
+                    Grid.Row="2"
+                    Margin="16,0,0,0">
         </StackPanel>
         <ListBox x:Name="addCategoryList"
                  Grid.Row="3"
@@ -105,8 +119,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
                                Height="32"
-                               Margin="5,5,0,0"
-                               VerticalAlignment="Top"
+                               Margin="16,0,16,0"
+                               VerticalAlignment="Center"
                                Width="32"
                                Source="{Binding SmallIcon}" />
 
@@ -115,7 +129,8 @@
                                    Text="{Binding Name}"
                                    VerticalAlignment="Top"
                                    Margin="5,10,0,0"
-                                   Foreground="#DDD" />
+                                   Foreground="#CCCCCC"
+                                   FontSize="13" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
