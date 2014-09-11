@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml;
 
@@ -29,8 +28,6 @@ using Dynamo.Selection;
 using DynamoUnits;
 
 using DynamoUtilities;
-
-using GraphLayout;
 
 using Microsoft.Practices.Prism;
 

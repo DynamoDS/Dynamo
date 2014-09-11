@@ -13,7 +13,6 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
-using String = System.String;
 
 namespace Dynamo.Utilities
 {

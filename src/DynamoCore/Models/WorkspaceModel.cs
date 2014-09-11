@@ -18,7 +18,6 @@ using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Utils = Dynamo.Nodes.Utilities;
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
