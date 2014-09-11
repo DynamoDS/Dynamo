@@ -66,7 +66,7 @@
         <TextBlock x:Name="primaryHeader"
                    Foreground="#DDD">
             <TextBlock.Visibility>
-                <Binding Path="PrimaryHeaderVisibility"
+                <Binding Path="IsPrimaryHeaderVisible"
                          Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
             </TextBlock.Visibility>
             <TextBlock.Text>
@@ -107,7 +107,7 @@
                        Foreground="#DDD"
                        PreviewMouseDown="OnHeaderMouseDown">
                 <TextBlock.Visibility>
-                    <Binding Path="SecondaryHeaderLeftVisibility"
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </TextBlock.Visibility>
                 <TextBlock.Text>
@@ -126,7 +126,7 @@
                        Margin="10,0,0,0"
                        PreviewMouseDown="OnHeaderMouseDown">
                 <TextBlock.Visibility>
-                    <Binding Path="SecondaryHeaderRightVisibility"
+                    <Binding Path="IsSecondaryHeaderRightVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </TextBlock.Visibility>
                 <TextBlock.Text>

@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -78,16 +77,16 @@ namespace Dynamo.UI.Controls
             if (classInfo == null)
                 return;
 
-            bool isCreateListEmpty = !classInfo.CreateMembers.Any();
-            bool isActionListEmpty = !classInfo.ActionMembers.Any();
-            bool isQueryListEmpty = !classInfo.QueryMembers.Any();
+            bool hasCreateMembers = classInfo.CreateMembers.Any();
+            bool hasActionMembers = classInfo.ActionMembers.Any();
+            bool hasQueryMembers = classInfo.QueryMembers.Any();
 
-            areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
+            areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
 
             // Hide all headers by default.
-            classInfo.PrimaryHeaderVisibility = false;
-            classInfo.SecondaryHeaderLeftVisibility = false;
-            classInfo.SecondaryHeaderRightVisibility = false;
+            classInfo.IsPrimaryHeaderVisible = false;
+            classInfo.IsSecondaryHeaderLeftVisible = false;
+            classInfo.IsSecondaryHeaderRightVisible = false;
 
             // Set default values.
             classInfo.PrimaryHeaderGroup = SearchElementGroup.Create;
@@ -98,26 +97,30 @@ namespace Dynamo.UI.Controls
 
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in primaryMembers.            
-            if (!isCreateListEmpty)
+            if (hasCreateMembers)
             {
-                classInfo.PrimaryHeaderVisibility = true;
+                classInfo.IsPrimaryHeaderVisible = true;
                 primaryMembers.ItemsSource = classInfo.CreateMembers;
 
-                if (!isQueryListEmpty)
+                if (hasQueryMembers)
                 {
-                    classInfo.SecondaryHeaderLeftVisibility = true;
-                    classInfo.SecondaryHeaderRightVisibility = true;
-                    classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                    classInfo.IsSecondaryHeaderLeftVisible = true;
 
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
-                if (!isActionListEmpty && isQueryListEmpty)
+                if (hasActionMembers)
                 {
-                    classInfo.SecondaryHeaderLeftVisibility = true;
+                    classInfo.IsSecondaryHeaderRightVisible = true;
 
-                    secondaryMembers.ItemsSource = classInfo.ActionMembers;
+                    if (!hasQueryMembers)
+                        secondaryMembers.ItemsSource = classInfo.ActionMembers;
                 }
+
+                // For case when all lists are presented we should specify
+                // correct CurrentDisplayMode.
+                if (hasQueryMembers && hasActionMembers)
+                    classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
                 return;
             }
@@ -125,15 +128,15 @@ namespace Dynamo.UI.Controls
             // Case when CreateMembers list is empty and ActionMembers list isn't empty.
             // ActionMembers will be presented in primaryMembers.
             // Depending on availibility of QueryMembers it will be shown as secondaryHeaderLeft.
-            if (!isActionListEmpty)
+            if (hasActionMembers)
             {
-                classInfo.PrimaryHeaderVisibility = true;
+                classInfo.IsPrimaryHeaderVisible = true;
                 classInfo.PrimaryHeaderGroup = SearchElementGroup.Action;
                 primaryMembers.ItemsSource = classInfo.ActionMembers;
 
-                if (!isQueryListEmpty)
+                if (hasQueryMembers)
                 {
-                    classInfo.SecondaryHeaderLeftVisibility = true;
+                    classInfo.IsSecondaryHeaderLeftVisible = true;
                     secondaryMembers.ItemsSource = classInfo.QueryMembers;
                 }
 
@@ -142,7 +145,7 @@ namespace Dynamo.UI.Controls
 
             // Case when CreateMembers and ActionMembers lists are empty.
             // If QueryMembers is not empty the list will be presented in primaryMembers. 
-            if (!isQueryListEmpty)
+            if (hasQueryMembers)
             {
                 classInfo.PrimaryHeaderGroup = SearchElementGroup.Query;
                 primaryMembers.ItemsSource = classInfo.QueryMembers;

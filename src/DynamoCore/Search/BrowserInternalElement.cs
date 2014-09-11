@@ -259,9 +259,9 @@ namespace Dynamo.Nodes.Search
         public SearchElementGroup PrimaryHeaderGroup { get; set; }
         public SearchElementGroup SecondaryHeaderLeftGroup { get; set; }
         public SearchElementGroup SecondaryHeaderRightGroup { get; set; }
-        public bool PrimaryHeaderVisibility { get; set; }
-        public bool SecondaryHeaderLeftVisibility { get; set; }
-        public bool SecondaryHeaderRightVisibility { get; set; }
+        public bool IsPrimaryHeaderVisible { get; set; }
+        public bool IsSecondaryHeaderLeftVisible { get; set; }
+        public bool IsSecondaryHeaderRightVisible { get; set; }
 
         public enum DisplayMode { None, Query, Action };
 
