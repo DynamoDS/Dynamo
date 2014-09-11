@@ -60,7 +60,7 @@
                     <ControlTemplate>
                         <Grid x:Name="container">
                             <TextBlock x:Name="text"
-                                       HorizontalAlignment="Stretch"                                       
+                                       HorizontalAlignment="Stretch"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        Foreground="#DDD"
@@ -196,7 +196,13 @@
         <Button Grid.Row="4"
                 Height="32"
                 Style="{StaticResource STextButton}"
-                Content="..." />
+                Click="OnMoreButtonClick"
+                Content="...">
+            <Button.Visibility>
+                <Binding Path="IsMoreButtonVisible"
+                         Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+            </Button.Visibility>
+        </Button>
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         AttachmentSide="Right"
                                         StaysOpen="True"

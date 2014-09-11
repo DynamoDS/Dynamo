@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,6 +24,8 @@ namespace Dynamo.UI.Controls
         // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
         // and should be presented on StandardPanel.
         private bool areAllListsPresented;
+        private IEnumerable<BrowserInternalElement> hiddenMembers;
+        private ClassInformation castedDataContext;
 
         public StandardPanel()
         {
@@ -73,55 +76,56 @@ namespace Dynamo.UI.Controls
 
         private void GridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var classInfo = this.DataContext as ClassInformation;
-            if (classInfo == null)
+            castedDataContext = this.DataContext as ClassInformation;
+            if (castedDataContext == null)
                 return;
 
-            bool hasCreateMembers = classInfo.CreateMembers.Any();
-            bool hasActionMembers = classInfo.ActionMembers.Any();
-            bool hasQueryMembers = classInfo.QueryMembers.Any();
+            bool hasCreateMembers = castedDataContext.CreateMembers.Any();
+            bool hasActionMembers = castedDataContext.ActionMembers.Any();
+            bool hasQueryMembers = castedDataContext.QueryMembers.Any();
 
             areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
 
             // Hide all headers by default.
-            classInfo.IsPrimaryHeaderVisible = false;
-            classInfo.IsSecondaryHeaderLeftVisible = false;
-            classInfo.IsSecondaryHeaderRightVisible = false;
+            castedDataContext.IsPrimaryHeaderVisible = false;
+            castedDataContext.IsSecondaryHeaderLeftVisible = false;
+            castedDataContext.IsSecondaryHeaderRightVisible = false;
 
             // Set default values.
-            classInfo.PrimaryHeaderGroup = SearchElementGroup.Create;
-            classInfo.SecondaryHeaderLeftGroup = SearchElementGroup.Query;
-            classInfo.SecondaryHeaderRightGroup = SearchElementGroup.Action;
+            castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Create;
+            castedDataContext.SecondaryHeaderLeftGroup = SearchElementGroup.Query;
+            castedDataContext.SecondaryHeaderRightGroup = SearchElementGroup.Action;
 
-            classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.None;
+            castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in primaryMembers.            
             if (hasCreateMembers)
             {
-                classInfo.IsPrimaryHeaderVisible = true;
-                primaryMembers.ItemsSource = classInfo.CreateMembers;
+                castedDataContext.IsPrimaryHeaderVisible = true;
+                primaryMembers.ItemsSource = castedDataContext.CreateMembers;
 
                 if (hasQueryMembers)
                 {
-                    classInfo.IsSecondaryHeaderLeftVisible = true;
+                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
 
-                    secondaryMembers.ItemsSource = classInfo.QueryMembers;
+                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
                 if (hasActionMembers)
                 {
-                    classInfo.IsSecondaryHeaderRightVisible = true;
+                    castedDataContext.IsSecondaryHeaderRightVisible = true;
 
                     if (!hasQueryMembers)
-                        secondaryMembers.ItemsSource = classInfo.ActionMembers;
+                        secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
                 }
 
                 // For case when all lists are presented we should specify
                 // correct CurrentDisplayMode.
                 if (hasQueryMembers && hasActionMembers)
-                    classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
+                ShowMoreButton();
                 return;
             }
 
@@ -130,16 +134,17 @@ namespace Dynamo.UI.Controls
             // Depending on availibility of QueryMembers it will be shown as secondaryHeaderLeft.
             if (hasActionMembers)
             {
-                classInfo.IsPrimaryHeaderVisible = true;
-                classInfo.PrimaryHeaderGroup = SearchElementGroup.Action;
-                primaryMembers.ItemsSource = classInfo.ActionMembers;
+                castedDataContext.IsPrimaryHeaderVisible = true;
+                castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Action;
+                primaryMembers.ItemsSource = castedDataContext.ActionMembers;
 
                 if (hasQueryMembers)
                 {
-                    classInfo.IsSecondaryHeaderLeftVisible = true;
-                    secondaryMembers.ItemsSource = classInfo.QueryMembers;
+                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
+                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
+                ShowMoreButton();
                 return;
             }
 
@@ -147,9 +152,43 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in primaryMembers. 
             if (hasQueryMembers)
             {
-                classInfo.PrimaryHeaderGroup = SearchElementGroup.Query;
-                primaryMembers.ItemsSource = classInfo.QueryMembers;
+                castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Query;
+                primaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
+        }
+
+        private void OnMoreButtonClick(object sender, RoutedEventArgs e)
+        {
+            HideMoreButton();
+        }
+
+        private void ShowMoreButton()
+        {
+            castedDataContext.IsMoreButtonVisible = false;
+
+            var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
+            if (members != null && members.Count() > 4)
+            {
+                hiddenMembers = members.Skip(4);
+                secondaryMembers.ItemsSource = members.Take(4);
+
+                castedDataContext.IsMoreButtonVisible = true;
+            }
+        }
+
+        private void HideMoreButton()
+        {
+            if (hiddenMembers != null)
+            {
+                var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
+                var allMembers = members.ToList();
+                allMembers.AddRange(hiddenMembers);
+
+                secondaryMembers.ItemsSource = allMembers;
+                hiddenMembers = null;
+            }
+
+            castedDataContext.IsMoreButtonVisible = false;
         }
     }
 }

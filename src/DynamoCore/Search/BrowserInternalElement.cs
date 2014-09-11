@@ -263,6 +263,20 @@ namespace Dynamo.Nodes.Search
         public bool IsSecondaryHeaderLeftVisible { get; set; }
         public bool IsSecondaryHeaderRightVisible { get; set; }
 
+        private bool isMoreButtonVisible;
+        public bool IsMoreButtonVisible
+        {
+            get
+            {
+                return isMoreButtonVisible;
+            }
+            set
+            {
+                isMoreButtonVisible = value;
+                RaisePropertyChanged("IsMoreButtonVisible");
+            }
+        }
+
         public enum DisplayMode { None, Query, Action };
 
 
