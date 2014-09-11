@@ -580,9 +580,11 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
-                OutPortData.Add(new PortData(string.Empty, tooltip, Configurations.CodeBlockPortHeightInPixels)
+                
+                OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom
+                    VerticalMargin = portCoordsY - prevPortBottom,
+                    Height = Configurations.CodeBlockPortHeightInPixels
                 });
 
                 // Since we compute the "delta" between the top of the current 

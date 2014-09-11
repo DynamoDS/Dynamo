@@ -163,7 +163,7 @@ namespace Dynamo.Models
             get { return _usingDefaultValue; }
             set
             {
-                _usingDefaultValue = value; 
+                _usingDefaultValue = value;
                 RaisePropertyChanged("UsingDefaultValue");
             }
         }
@@ -242,7 +242,7 @@ namespace Dynamo.Models
         {
             if (!connectors.Contains(connector))
                 return;
-            
+
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
 
@@ -250,7 +250,7 @@ namespace Dynamo.Models
             owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
-            
+
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
@@ -305,17 +305,9 @@ namespace Dynamo.Models
         public object DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
-        private double height = 0;
-        public double Height 
-        { 
-            get { return height; } 
-            private set { height = value; } 
-        }
+        public double Height { get; set; }
 
-        public PortData(string nickName, string tip, double height = 0) : this(nickName, tip, null) 
-        {
-            this.height = height;
-        }
+        public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
         public PortData(string nickName, string toolTipString, object defaultValue)
         {
@@ -325,7 +317,7 @@ namespace Dynamo.Models
             VerticalMargin = 0;
         }
 
-        public bool HasDefaultValue 
+        public bool HasDefaultValue
         {
             get
             {
