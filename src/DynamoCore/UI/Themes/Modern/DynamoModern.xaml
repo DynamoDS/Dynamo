@@ -1256,16 +1256,17 @@
                             <ContentControl />
                             <Label x:Name="label"
                                    Content="Show Samples In Folder"
-                                   Foreground="#000000"
-                                   FontSize="14" />
+                                   Foreground="#888888"
+                                   FontSize="12"
+                                   FontFamily="{StaticResource OpenSansRegular}"/>
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
                                  Value="True">
-                            <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#B4DAFF" />
+                            <Setter TargetName="label"
+                                    Property="Foreground"
+                                    Value="#333" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1417,7 +1418,7 @@
                                                                       Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                                                                 Value="{StaticResource SelectedBackgroundColor}" />
+                                                                 Value="#a1dbff" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -1428,7 +1429,7 @@
                                                                       Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                                                                 Value="{StaticResource SelectedUnfocusedColor}" />
+                                                                 Value="#a1dbff" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
