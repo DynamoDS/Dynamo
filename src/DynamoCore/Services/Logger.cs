@@ -19,7 +19,7 @@ namespace Dynamo.Services
 
         private static readonly DynamoModel dynamoModel;
 
-        private const bool IS_VERBOSE_DIAGNOSTICS = true;
+        private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
         private static readonly string userID = GetUserID();
         private static string sessionID = Guid.NewGuid().ToString();
