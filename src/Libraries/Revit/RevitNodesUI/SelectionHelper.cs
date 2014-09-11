@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.Revit.DB;
@@ -19,63 +18,81 @@ namespace Revit.Interactivity
             get { return instance; }
         }
 
-        public List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, 
+        /// <summary>
+        /// Request an element in a selection.
+        /// </summary>
+        /// <typeparam name="T">The type of the Element.</typeparam>
+        /// <param name="selectionMessage">The message to display.</param>
+        /// <param name="logger">A logger.</param>
+        /// <param name="selectionType">The selection type.</param>
+        /// <param name="objectType">The selection object type.</param>
+        /// <returns></returns>
+        public List<string> RequestElementSelection<T>(string selectionMessage, 
             SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
         {
-            selectionTarget = null;
-
             switch(selectionType)
             {
                 case SelectionType.One:
-                    return RequestElementSelection<T>(selectionMessage, out selectionTarget, logger);
+                    return RequestElementSelection<T>(selectionMessage, logger);
                 case SelectionType.Many:
                     return RequestMultipleElementsSelection<T>(
                         selectionMessage,
-                        out selectionTarget,
                         logger);
             }
 
             return null;
         }
 
-        public List<string> RequestElementSubSelection<T>(
-            string selectionMessage, out object selectionTarget, SelectionType selectionType,
+        /// <summary>
+        /// Request the selection of sub-elements of an element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="selectionMessage">The selection message.</param>
+        /// <param name="selectionTarget">The object against which to apply updates.</param>
+        /// <param name="selectionType">The selection type.</param>
+        /// <param name="objectType">The selection object type.</param>
+        /// <param name="logger">A logger.</param>
+        /// <returns></returns>
+        public Dictionary<string,List<string>> RequestElementSubSelection<T>(
+            string selectionMessage, SelectionType selectionType,
             SelectionObjectType objectType, ILogger logger)
         {
-            selectionTarget = null;
             List<string> selection = null;
             
             switch (selectionType)
             {
                 case SelectionType.One:
-                    selection = RequestElementSelection<T>(selectionMessage, out selectionTarget, logger);
+                    selection = RequestElementSelection<T>(selectionMessage, logger);
                     break;
                 case SelectionType.Many:
                     selection = RequestMultipleElementsSelection<T>(
                         selectionMessage,
-                        out selectionTarget,
                         logger);
                     break;
             }
 
-            // Process the sub-selection of elements for a type
-            Func<List<string>, List<string>> subSelectionFunction = null;
+            Dictionary<string, List<string>> result = null;
 
             if (typeof(T) == typeof(DividedSurface))
             {
-                subSelectionFunction = GetFamilyInstancesFromDividedSurface;
+                result = GetFamilyInstancesFromDividedSurface(selection);
             }
 
-            return subSelectionFunction == null
-                ? selection
-                : subSelectionFunction.Invoke(selection);
+            return result;
         }
 
-        public List<string> RequestReferenceSelection(string selectionMessage, out object selectionTarget, 
+        /// <summary>
+        /// Request a selection and return a stable reference to that reference.
+        /// </summary>
+        /// <param name="selectionMessage">The message to display.</param>
+        /// <param name="selectionTarget">The object against which to apply updates.</param>
+        /// <param name="logger">A logger.</param>
+        /// <param name="selectionType">The type of reference selection.</param>
+        /// <param name="objectType">The selection object type.</param>
+        /// <returns></returns>
+        public Dictionary<string,List<string>> RequestReferenceSelection(string selectionMessage, 
             SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
         {
-            selectionTarget = null;
-
             switch (selectionType)
             {
                 case SelectionType.One:
@@ -87,21 +104,64 @@ namespace Revit.Interactivity
             return null;
         }
 
-        #region private static methods
+        public static Dictionary<string, List<string>> GetFamilyInstancesFromDividedSurface(List<string> uuids)
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
 
-        /// <summary>
-        /// Request an element in a selection.
-        /// </summary>
-        /// <typeparam name="T">The type of the Element.</typeparam>
-        /// <param name="selectionMessage">The message to display.</param>
-        /// <param name="logger">A logger.</param>
-        /// <returns></returns>
-        private static List<string> RequestElementSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
+            var divSurfs =
+                uuids.Select(doc.GetElement).Where(el => el != null).Cast<DividedSurface>();
+
+            var result = new Dictionary<string, List<string>>();
+
+            foreach (var ds in divSurfs)
+            {
+                var panels = new List<string>();
+
+                var gn = new GridNode();
+
+                var u = 0;
+                while (u < ds.NumberOfUGridlines)
+                {
+                    gn.UIndex = u;
+
+                    var v = 0;
+                    while (v < ds.NumberOfVGridlines)
+                    {
+                        gn.VIndex = v;
+
+                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                        if (ds.IsSeedNode(gn))
+                        {
+                            var fi = ds.GetTileFamilyInstance(gn, 0);
+
+                            if (fi != null)
+                            {
+                                //put the family instance into the tree
+                                panels.Add(fi.UniqueId);
+                            }
+                        }
+                        v = v + 1;
+                    }
+
+                    u = u + 1;
+                }
+
+                if (panels.Any())
+                {
+                    result.Add(ds.UniqueId, panels);
+                }
+            }
+
+            return result;
+        }
+
+        #region private static methods
+      
+        private static List<string> RequestElementSelection<T>(string selectionMessage, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Element e = null;
-            selectionTarget = null;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
@@ -116,21 +176,12 @@ namespace Revit.Interactivity
             if (elementRef != null)
             {
                 e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
-                selectionTarget = e;
             }
 
             return new List<string>() { e.UniqueId };
         }
 
-        /// <summary>
-        /// Request multiple elements in a selection
-        /// </summary>
-        /// <typeparam name="T">The type of the Elements.</typeparam>
-        /// <param name="message">The message to display.</param>
-        /// <param name="selectionTarget">An object which, when modified, should update this selection.</param>
-        /// <param name="logger">A logger.</param>
-        /// <returns></returns>
-        private static List<string> RequestMultipleElementsSelection<T>(string selectionMessage, out object selectionTarget, ILogger logger)
+        private static List<string> RequestMultipleElementsSelection<T>(string selectionMessage, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -139,26 +190,16 @@ namespace Revit.Interactivity
 
             logger.Log(selectionMessage);
 
-            // Don't pass anything back, as everything we care about will be
-            // passed in the element list.
-            selectionTarget = null;
-
             var elementRefs = doc.Selection.PickElementsByRectangle(
                 new ElementSelectionFilter<T>(),
                 selectionMessage);
 
-            return elementRefs.Select(x => x.UniqueId).ToList();
+            var uuids = elementRefs.Select(x => x.UniqueId).ToList();
+            return uuids;
 
         }
 
-        /// <summary>
-        /// Request a selection and return a stable reference to that reference.
-        /// </summary>
-        /// <param name="message">The message to display.</param>
-        /// <param name="logger">A logger.</param>
-        /// <param name="selectionType">The type of reference selection.</param>
-        /// <returns></returns>
-        private static List<string> RequestReferenceSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static Dictionary<string,List<string>> RequestReferenceSelection(string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -182,18 +223,18 @@ namespace Revit.Interactivity
                     break;
             }
 
-            return new List<string>() { reference.ConvertToStableRepresentation(doc.Document) };
+            if (reference == null)
+                return null;
 
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+            var targetUniqueId = dbDoc.GetElement(reference.ElementId).UniqueId;
+            var stableRef = reference.ConvertToStableRepresentation(doc.Document);
+            var dict = new Dictionary<string, List<string>> { { targetUniqueId, new List<string>() {stableRef} } };
+
+            return dict;
         }
 
-        /// <summary>
-        /// Request a selection and return a stable reference to that reference.
-        /// </summary>
-        /// <param name="message">The message to display.</param>
-        /// <param name="logger">A logger.</param>
-        /// <param name="selectionType">The type of reference selection.</param>
-        /// <returns></returns>
-        private static List<string> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static Dictionary<string,List<string>> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -217,52 +258,28 @@ namespace Revit.Interactivity
                     break;
             }
 
-            return references.Select(r => r.ConvertToStableRepresentation(doc.Document)).ToList();
+            if (references == null || !references.Any())
+                return null;
 
-        }
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
 
-        private static List<string> GetFamilyInstancesFromDividedSurface(List<string> uuids)
-        {
-            var doc = DocumentManager.Instance.CurrentDBDocument;
+            var results = new Dictionary<string, List<string>>();
 
-            var divSurfs =
-                uuids.Select(doc.GetElement).Where(el => el != null).Cast<DividedSurface>();
-
-            var result = new List<string>();
-
-            foreach (var ds in divSurfs)
+            foreach (var sref in references)
             {
-                var gn = new GridNode();
-
-                var u = 0;
-                while (u < ds.NumberOfUGridlines)
+                var uuid = dbDoc.GetElement(sref).UniqueId;
+                var stableRef = sref.ConvertToStableRepresentation(doc.Document);
+                if (!results.ContainsKey(uuid))
                 {
-                    gn.UIndex = u;
-
-                    var v = 0;
-                    while (v < ds.NumberOfVGridlines)
-                    {
-                        gn.VIndex = v;
-
-                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
-                        if (ds.IsSeedNode(gn))
-                        {
-                            var fi = ds.GetTileFamilyInstance(gn, 0);
-
-                            if (fi != null)
-                            {
-                                //put the family instance into the tree
-                                result.Add(fi.UniqueId);
-                            }
-                        }
-                        v = v + 1;
-                    }
-
-                    u = u + 1;
-                } 
+                    results.Add(uuid, new List<string>() { stableRef });
+                }
+                else
+                {
+                    results[uuid].Add(stableRef);
+                }
             }
-            
-            return result;
+
+            return results;
         }
 
         #endregion

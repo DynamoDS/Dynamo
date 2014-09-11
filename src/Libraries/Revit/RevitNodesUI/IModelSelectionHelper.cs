@@ -20,11 +20,11 @@ namespace Dynamo.Interfaces
     public interface IModelSelectionHelper
     {
         List<string> RequestElementSelection<T>(
-            string selectionMessage, out object selectionTarget, SelectionType selectionType,
+            string selectionMessage, SelectionType selectionType,
             SelectionObjectType objectType, ILogger logger);
 
-        List<string> RequestReferenceSelection(
-            string selectionMessage, out object selectionTarget, SelectionType selectionType,
+        Dictionary<string,List<string>> RequestReferenceSelection(
+            string selectionMessage, SelectionType selectionType,
             SelectionObjectType objectType, ILogger logger);
     }
 

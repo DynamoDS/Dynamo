@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <Button Content="{Binding Selection, Converter={StaticResource SelectionButtonContentConverter}}" 
                 Command="{Binding SelectCommand}"
-                Grid.Row="0"/>
+                Grid.Row="0" IsEnabled="{Binding CanSelect}"/>
         <TextBlock Text="{Binding Text}" 
                    TextTrimming="WordEllipsis" 
                    TextWrapping="Wrap"
