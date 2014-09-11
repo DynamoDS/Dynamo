@@ -23,31 +23,42 @@
                 <StackPanel Orientation="Vertical"
                             Width="96"
                             Height="96">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-                        <Image Source="{Binding Path=SmallIcon}"
-                               Width="32"
-                               Height="32"
-                               Margin="8"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Grid.Row="0" />
-                        <TextBlock HorizontalAlignment="Center"
+                    <Border Padding="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Path=SmallIcon}"
+                                   Width="32"
+                                   Height="32"
+                                   Margin="8"
+                                   HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   TextAlignment="Center"
-                                   Foreground="#989898"
-                                   Grid.Row="1">
-                            <TextBlock.Text>
-                                <Binding Path="Name"
-                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                         ConverterParameter="ClassButton" />
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Foreground="#989898"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="13">
+                                <TextBlock.Text>
+                                    <Binding Path="Name"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                             ConverterParameter="ClassButton" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </DataTemplate>
             <!-- This data template is used to show StandardPanel
@@ -115,7 +126,7 @@
                                 <Trigger Property="IsSelected"
                                          Value="true">
                                     <Setter Property="Background"
-                                            Value="{StaticResource WorkspaceBackgroundBrush}" />
+                                            Value="#272727" />
                                     <Setter Property="BorderThickness"
                                             Value="0" />
                                 </Trigger>
