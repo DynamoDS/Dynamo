@@ -39,17 +39,24 @@ namespace Dynamo.UI.Controls
             if (!areAllListsPresented)
                 return;
 
-            var classInfo = this.DataContext as ClassInformation;
-            if ((sender as FrameworkElement).Tag.ToString() == QueryHeaderTag)
+            var senderTag = (sender as FrameworkElement).Tag.ToString();
+
+            // User clicked on selected header. No need to change ItemsSource.
+            if (senderTag == castedDataContext.CurrentDisplayMode.ToString())
+                return;
+
+            if (senderTag == QueryHeaderTag)
             {
-                classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
-                secondaryMembers.ItemsSource = classInfo.QueryMembers;
+                castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
             else
             {
-                classInfo.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
-                secondaryMembers.ItemsSource = classInfo.ActionMembers;
+                castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
+                secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
             }
+
+            ShowMoreButton();
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
