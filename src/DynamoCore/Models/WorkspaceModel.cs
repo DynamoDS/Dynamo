@@ -874,80 +874,85 @@ namespace Dynamo.Models
             string code = DynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
-            UndoRecorder.BeginActionGroup();
-
-            #region Step I. Delete all nodes and their connections
-            //Create two dictionarys to store the details of the external connections that have to 
-            //be recreated after the conversion
-            var externalInputConnections = new Dictionary<ConnectorModel, string>();
-            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-            //Also collect the average X and Y co-ordinates of the different nodes
-            var nodeList = nodes.ToList();
-            int nodeCount = nodeList.Count;
-            double totalX = 0, totalY = 0;
-
-
-            for (int i = 0; i < nodeList.Count; ++i)
+            using (UndoRecorder.BeginActionGroup())
             {
-                var node = nodeList[i];
-                #region Step I.A. Delete the connections for the node
-                var connectors = node.AllConnectors as IList<ConnectorModel>;
-                if (null == connectors)
-                {
-                    connectors = node.AllConnectors.ToList();
-                }
+                #region Step I. Delete all nodes and their connections
+                //Create two dictionarys to store the details of the external connections that have to 
+                //be recreated after the conversion
+                var externalInputConnections = new Dictionary<ConnectorModel, string>();
+                var externalOutputConnections = new Dictionary<ConnectorModel, string>();
 
-                for (int n = 0; n < connectors.Count(); ++n)
+                //Also collect the average X and Y co-ordinates of the different nodes
+                var nodeList = nodes.ToList();
+                int nodeCount = nodeList.Count;
+                double totalX = 0, totalY = 0;
+
+
+                for (int i = 0; i < nodeList.Count; ++i)
                 {
-                    var connector = connectors[n];
-                    if (!IsInternalNodeToCodeConnection(connector))
+                    var node = nodeList[i];
+
+                    #region Step I.A. Delete the connections for the node
+                    var connectors = node.AllConnectors as IList<ConnectorModel>;
+                    if (null == connectors)
                     {
-                        //If the connector is an external connector, the save its details
-                        //for recreation later
-                        var startNode = connector.Start.Owner;
-                        int index = startNode.OutPorts.IndexOf(connector.Start);
-                        //We use the varibleName as the connection between the port of the old Node
-                        //to the port of the new node.
-                        var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
-                        if (variableNameMap.ContainsKey(variableName))
-                            variableName = variableNameMap[variableName];
-
-                        //Store the data in the corresponding dictionary
-                        if (startNode == node)
-                            externalOutputConnections.Add(connector, variableName);
-                        else
-                            externalInputConnections.Add(connector, variableName);
+                        connectors = node.AllConnectors.ToList();
                     }
 
-                    //Delete the connector
-                    UndoRecorder.RecordDeletionForUndo(connector);
-                    connector.NotifyConnectedPortsOfDeletion();
-                    Connectors.Remove(connector);
+                    for (int n = 0; n < connectors.Count(); ++n)
+                    {
+                        var connector = connectors[n];
+                        if (!IsInternalNodeToCodeConnection(connector))
+                        {
+                            //If the connector is an external connector, the save its details
+                            //for recreation later
+                            var startNode = connector.Start.Owner;
+                            int index = startNode.OutPorts.IndexOf(connector.Start);
+                            //We use the varibleName as the connection between the port of the old Node
+                            //to the port of the new node.
+                            var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
+                            if (variableNameMap.ContainsKey(variableName))
+                                variableName = variableNameMap[variableName];
+
+                            //Store the data in the corresponding dictionary
+                            if (startNode == node)
+                                externalOutputConnections.Add(connector, variableName);
+                            else
+                                externalInputConnections.Add(connector, variableName);
+                        }
+
+                        //Delete the connector
+                        UndoRecorder.RecordDeletionForUndo(connector);
+                        connector.NotifyConnectedPortsOfDeletion();
+                        Connectors.Remove(connector);
+                    }
+                    #endregion
+
+                    #region Step I.B. Delete the node
+                    totalX += node.X;
+                    totalY += node.Y;
+                    UndoRecorder.RecordDeletionForUndo(node);
+                    Nodes.Remove(node);
+                    #endregion
                 }
                 #endregion
 
-                #region Step I.B. Delete the node
-                totalX += node.X;
-                totalY += node.Y;
-                UndoRecorder.RecordDeletionForUndo(node);
-                Nodes.Remove(node);
+                #region Step II. Create the new code block node
+                var codeBlockNode = new CodeBlockNodeModel(
+                    code,
+                    nodeId,
+                    this,
+                    totalX/nodeCount,
+                    totalY/nodeCount);
+                UndoRecorder.RecordCreationForUndo(codeBlockNode);
+                Nodes.Add(codeBlockNode);
+                #endregion
+
+                #region Step III. Recreate the necessary connections
+                ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
                 #endregion
             }
-            #endregion
-
-            #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount );
-            UndoRecorder.RecordCreationForUndo(codeBlockNode);
-            Nodes.Add(codeBlockNode);
-            #endregion
-
-            #region Step III. Recreate the necessary connections
-            ReConnectInputConnections(externalInputConnections, codeBlockNode);
-            ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-            #endregion
-
-            UndoRecorder.EndActionGroup();
             //End UndoRedo Action Group------------------------------------------
 
             // select node
@@ -1048,12 +1053,11 @@ namespace Dynamo.Models
             if (!ShouldProceedWithRecording(models))
                 return;
 
-            undoRecorder.BeginActionGroup();
+            using (undoRecorder.BeginActionGroup())
             {
                 foreach (ModelBase model in models)
                     undoRecorder.RecordModificationForUndo(model);
             }
-            undoRecorder.EndActionGroup();
         }
 
         public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
@@ -1063,7 +1067,7 @@ namespace Dynamo.Models
             if (!ShouldProceedWithRecording(models))
                 return;
 
-            undoRecorder.BeginActionGroup();
+            using (undoRecorder.BeginActionGroup())
             {
                 foreach (var modelPair in models)
                 {
@@ -1081,16 +1085,16 @@ namespace Dynamo.Models
                     }
                 }
             }
-            undoRecorder.EndActionGroup();
         }
 
         internal void RecordCreatedModel(ModelBase model)
         {
             if (null != model)
             {
-                undoRecorder.BeginActionGroup();
-                undoRecorder.RecordCreationForUndo(model);
-                undoRecorder.EndActionGroup();
+                using (undoRecorder.BeginActionGroup())
+                {
+                    undoRecorder.RecordCreationForUndo(model);
+                }
             }
         }
 
@@ -1099,10 +1103,11 @@ namespace Dynamo.Models
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing created.
 
-            undoRecorder.BeginActionGroup();
-            foreach (ModelBase model in models)
-                undoRecorder.RecordCreationForUndo(model);
-            undoRecorder.EndActionGroup();
+            using (undoRecorder.BeginActionGroup())
+            {
+                foreach (ModelBase model in models)
+                    undoRecorder.RecordCreationForUndo(model);
+            }
         }
 
         internal void RecordAndDeleteModels(List<ModelBase> models)
@@ -1114,56 +1119,56 @@ namespace Dynamo.Models
             // to are deleted. We will have to delete the connectors first 
             // before 
 
-            undoRecorder.BeginActionGroup(); // Start a new action group.
-
-            foreach (ModelBase model in models)
+            // Start a new action group.
+            using (undoRecorder.BeginActionGroup())
             {
-                if (model is NoteModel)
+                foreach (ModelBase model in models)
                 {
-                    // Take a snapshot of the note before it goes away.
-                    undoRecorder.RecordDeletionForUndo(model);
-                    Notes.Remove(model as NoteModel);
-                }
-                else if (model is NodeModel)
-                {
-                    // Just to make sure we don't end up deleting nodes from 
-                    // another workspace (potentially two issues: the node was 
-                    // having its "Workspace" pointing to another workspace, 
-                    // or the selection set was not quite set up properly.
-                    // 
-                    var node = model as NodeModel;
-                    Debug.Assert(this == node.Workspace);
-
-                    // Note that AllConnectors is duplicated as a separate list 
-                    // by calling its "ToList" method. This is the because the 
-                    // "Connectors.Remove" will modify "AllConnectors", causing 
-                    // the Enumerator in this "foreach" to become invalid.
-                    // 
-                    List<ConnectorModel> connectors = node.AllConnectors.ToList();
-                    foreach (var conn in connectors)
+                    if (model is NoteModel)
                     {
-                        conn.NotifyConnectedPortsOfDeletion();
-                        Connectors.Remove(conn);
-                        undoRecorder.RecordDeletionForUndo(conn);
+                        // Take a snapshot of the note before it goes away.
+                        undoRecorder.RecordDeletionForUndo(model);
+                        Notes.Remove(model as NoteModel);
                     }
+                    else if (model is NodeModel)
+                    {
+                        // Just to make sure we don't end up deleting nodes from 
+                        // another workspace (potentially two issues: the node was 
+                        // having its "Workspace" pointing to another workspace, 
+                        // or the selection set was not quite set up properly.
+                        // 
+                        var node = model as NodeModel;
+                        Debug.Assert(this == node.Workspace);
 
-                    // Take a snapshot of the node before it goes away.
-                    undoRecorder.RecordDeletionForUndo(model);
+                        // Note that AllConnectors is duplicated as a separate list 
+                        // by calling its "ToList" method. This is the because the 
+                        // "Connectors.Remove" will modify "AllConnectors", causing 
+                        // the Enumerator in this "foreach" to become invalid.
+                        // 
+                        List<ConnectorModel> connectors = node.AllConnectors.ToList();
+                        foreach (var conn in connectors)
+                        {
+                            conn.NotifyConnectedPortsOfDeletion();
+                            Connectors.Remove(conn);
+                            undoRecorder.RecordDeletionForUndo(conn);
+                        }
 
-                    node.DisableReporting();
-                    node.Destroy();
-                    node.Cleanup();
-                    node.Workspace.Nodes.Remove(node);
+                        // Take a snapshot of the node before it goes away.
+                        undoRecorder.RecordDeletionForUndo(model);
+
+                        node.DisableReporting();
+                        node.Destroy();
+                        node.Cleanup();
+                        node.Workspace.Nodes.Remove(node);
+                    }
+                    else if (model is ConnectorModel)
+                    {
+                        var connector = model as ConnectorModel;
+                        Connectors.Remove(connector);
+                        undoRecorder.RecordDeletionForUndo(model);
+                    }
                 }
-                else if (model is ConnectorModel)
-                {
-                    var connector = model as ConnectorModel;
-                    Connectors.Remove(connector);
-                    undoRecorder.RecordDeletionForUndo(model);
-                }
-            }
-
-            undoRecorder.EndActionGroup(); // Conclude the deletion.
+            } // Conclude the deletion.
         }
 
         private static bool ShouldProceedWithRecording(List<ModelBase> models)
