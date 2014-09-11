@@ -31,8 +31,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -101,13 +99,15 @@
         </Grid>
 
         <Border BorderThickness="0,0,0,1"
-                BorderBrush="#3F3F3F"
+                BorderBrush="#555555"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"
-                  Height="30"
+                  Height="27"
                   VerticalAlignment="Center"
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
-                  MouseLeave="OnSearchTextBoxGridMouseLeave">
+                  MouseLeave="OnSearchTextBoxGridMouseLeave"
+                  Background="#444444">
+                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -131,9 +131,10 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left" />
 
-                    <TextBlock FontSize="14"
+                    <TextBlock Name="SearchTextBlock"
+                               FontSize="14"
                                IsHitTestVisible="False"
-                               Foreground="#666"
+                               Foreground="#878787"
                                VerticalAlignment="Center"
                                Visibility="{Binding Path=SearchText, 
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
@@ -146,7 +147,7 @@
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
-                         Foreground="#DDD"
+                         Foreground="#CCCCCC"
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
@@ -157,8 +158,8 @@
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
-                         CaretBrush="#DDD"
-                         Margin="26,6,-6,5"
+                         CaretBrush="#CCCCCC"
+                         Margin="26,0,0,5"
                          Grid.ColumnSpan="3" />
 
                 <Button Name="SearchCancelButton"

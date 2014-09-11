@@ -303,12 +303,14 @@ namespace Dynamo.Search
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
+            SearchTextBlock.Foreground = new BrushConverter().ConvertFromString("#AAAAAA") as SolidColorBrush;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
+            SearchTextBlock.Foreground = new BrushConverter().ConvertFromString("#878787") as SolidColorBrush;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
