@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
-using Dynamo.Utilities;
+
 using ProtoCore.AST.AssociativeAST;
 using Image = System.Windows.Controls.Image;
 

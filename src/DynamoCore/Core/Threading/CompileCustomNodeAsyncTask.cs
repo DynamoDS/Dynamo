@@ -1,16 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-
-using Dynamo.DSEngine;
-using Dynamo.Models;
-
-using ProtoCore.AST.AssociativeAST;
-
-using ProtoScript.Runners;
-
-namespace Dynamo.Core.Threading
+﻿namespace Dynamo.Core.Threading
 {
 #if ENABLE_DYNAMO_SCHEDULER
 

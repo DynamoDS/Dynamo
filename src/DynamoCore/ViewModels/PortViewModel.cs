@@ -1,10 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Linq;
+﻿using System.Windows;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
-using System.Collections.Generic;
 
 namespace Dynamo.ViewModels
 {

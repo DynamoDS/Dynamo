@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
+
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
