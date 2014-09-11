@@ -256,6 +256,35 @@ namespace Dynamo.Nodes.Search
             }
         }
 
+        public SearchElementGroup PrimaryHeaderGroup { get; set; }
+        public SearchElementGroup SecondaryHeaderLeftGroup { get; set; }
+        public SearchElementGroup SecondaryHeaderRightGroup { get; set; }
+        public bool IsPrimaryHeaderVisible { get; set; }
+        public bool IsSecondaryHeaderLeftVisible { get; set; }
+        public bool IsSecondaryHeaderRightVisible { get; set; }
+
+        public enum DisplayMode { None, Query, Action };
+
+
+        /// <summary>
+        /// Specifies which of QueryMembers of ActionMembers list is active for the moment.
+        /// If any of CreateMembers, ActionMembers or QueryMembers lists is empty
+        /// it returns 'None'.
+        /// </summary>
+        private DisplayMode currentDisplayMode;
+        public DisplayMode CurrentDisplayMode
+        {
+            get
+            {
+                return currentDisplayMode;
+            }
+            set
+            {
+                currentDisplayMode = value;
+                RaisePropertyChanged("CurrentDisplayMode");
+            }
+        }
+
         public ClassInformation()
             : base()
         {
