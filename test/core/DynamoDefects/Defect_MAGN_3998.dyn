@@ -1,0 +1,29 @@
+<Workspace Version="0.7.2.30936" X="-125.933607122691" Y="-1288.0025992052" zoom="0.841603276644033" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="963a56ae-6a61-42ab-a797-aaec4fd903b4" nickname="Code Block" x="15.9633375259659" y="1008.73591774662" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="// Draw a Hockey rink&#xA;// Set width and depth of rink, radius of corner&#xA;x = 60.96;&#xA;y = 25.9;&#xA;rad = 6.5;&#xA;&#xA;p1a = Point.ByCoordinates(x/2-rad,y/2);&#xA;p1b = Point.ByCoordinates(x/2,y/2-rad);&#xA;p2a = Point.ByCoordinates(-x/2,y/2-rad);&#xA;p2b = Point.ByCoordinates(-x/2+rad,y/2);&#xA;p3a = Point.ByCoordinates(-x/2+rad,-y/2);&#xA;p3b = Point.ByCoordinates(-x/2,-y/2+rad);&#xA;p4a = Point.ByCoordinates(x/2,-y/2+rad);&#xA;p4b = Point.ByCoordinates(x/2-rad,-y/2);&#xA;&#xA;L1 = Line.ByStartPointEndPoint(p1a, p2b);&#xA;L2 = Line.ByStartPointEndPoint(p2a, p3b);&#xA;L3 = Line.ByStartPointEndPoint(p3a, p4b);&#xA;L4 = Line.ByStartPointEndPoint(p4a, p1b);&#xA;&#xA;A1 = Arc.ByFillet(L4,L1,rad);&#xA;A2 = Arc.ByFillet(L1,L2,rad);&#xA;A3 = Arc.ByFillet(L2,L3,rad);&#xA;A4 = Arc.ByFillet(L3,L4,rad);&#xA;&#xA;PolyCurve.ByJoinedCurves({A1,L1,A2,L2,A3,L3,A4,L4});" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ca8c6ad0-6bee-4308-838f-6754cc9442ec" nickname="PolyCurve.Offset" x="609.972696207435" y="1709.00958142919" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.Offset@double,bool" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="8f85b7e8-6345-415b-836b-365d29e845db" nickname="Boolean" x="394.238887377934" y="1865.38456307802" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>False</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="007acc7e-b695-47d0-9c3c-5de8d689354a" nickname="Curve.PointAtParameter" x="1081.27303269856" y="1704.20794394656" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7cc4be33-d3ed-44c8-b3fc-e992cbf55b7e" nickname="Curve.TangentAtParameter" x="1084.77292049774" y="1895.41768733563" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.TangentAtParameter@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="7e825844-c428-4067-a916-11ff14bc0715" nickname="Code Block" x="799.157683390189" y="1973.63507285231" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..1..#100;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8f881d38-0e61-470b-af96-68ec0ab96d49" nickname="Code Block" x="448.352431175282" y="1770.39609117786" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="963a56ae-6a61-42ab-a797-aaec4fd903b4" start_index="19" end="ca8c6ad0-6bee-4308-838f-6754cc9442ec" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca8c6ad0-6bee-4308-838f-6754cc9442ec" start_index="0" end="007acc7e-b695-47d0-9c3c-5de8d689354a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca8c6ad0-6bee-4308-838f-6754cc9442ec" start_index="0" end="7cc4be33-d3ed-44c8-b3fc-e992cbf55b7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f85b7e8-6345-415b-836b-365d29e845db" start_index="0" end="ca8c6ad0-6bee-4308-838f-6754cc9442ec" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e825844-c428-4067-a916-11ff14bc0715" start_index="0" end="7cc4be33-d3ed-44c8-b3fc-e992cbf55b7e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e825844-c428-4067-a916-11ff14bc0715" start_index="0" end="007acc7e-b695-47d0-9c3c-5de8d689354a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f881d38-0e61-470b-af96-68ec0ab96d49" start_index="0" end="ca8c6ad0-6bee-4308-838f-6754cc9442ec" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Connecting this causes crash" x="1084.90785473476" y="1857.07979850067" />
+  </Notes>
+</Workspace>

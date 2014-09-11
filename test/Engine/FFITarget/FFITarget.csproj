@@ -51,6 +51,9 @@
     <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="DummyMath.cs" />
+    <Compile Include="GlobalClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestCSharpAttribute.cs" />
     <Compile Include="DisposeTracer.cs" />
     <Compile Include="DummyCollection.cs" />

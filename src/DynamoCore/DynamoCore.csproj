@@ -365,8 +365,8 @@ limitations under the License.
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\SearchView.xaml.cs">
-      <DependentUpon>SearchView.xaml</DependentUpon>
+    <Compile Include="UI\Views\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Views\WatchTree.xaml.cs">
@@ -676,7 +676,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\SearchView.xaml">
+    <Page Include="UI\Views\LibraryContainerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

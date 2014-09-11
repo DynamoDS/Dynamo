@@ -22,6 +22,11 @@ namespace Dynamo.DSEngine
         string DisplayName { get; }
 
         /// <summary>
+        /// Name to create node
+        /// </summary>
+        string MangledName { get; }
+
+        /// <summary>
         ///     Return keys for multi-output functions.
         /// </summary>
         IEnumerable<string> ReturnKeys { get; }
@@ -279,7 +284,7 @@ namespace Dynamo.DSEngine
                     return string.Empty;
 
                 int idx = ClassName.LastIndexOf('.');
-                return idx < 0 ? String.Empty : ClassName.Substring(idx + 1);
+                return idx < 0 ? ClassName : ClassName.Substring(idx + 1);
             }
         }
 

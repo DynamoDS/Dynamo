@@ -264,8 +264,10 @@ namespace Dynamo.Search
 
         private bool ContainsSpecialCharacters(string element)
         {
+
             return element.Contains("*") || element.Contains(".") || element.Contains(" ")
                 || element.Contains("\\");
+
         }
 
         /// <summary>
@@ -277,6 +279,7 @@ namespace Dynamo.Search
         public IEnumerable<V> Search(string query, int numResults = 10, int minResultsForTolerantSearch = 0)
         {
             var searchDict = new Dictionary<V, double>();
+
 
             query = query.ToLower();
 

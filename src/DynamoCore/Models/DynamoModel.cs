@@ -331,9 +331,13 @@ namespace Dynamo.Models
             this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            this.Reset();
+            // Reset virtual machine to avoid a race condition by causing a 
+            // thread join inside the vm exec. Since DynamoModel is being called 
+            // on the main/idle thread, it is safe to call ResetEngineInternal 
+            // directly (we cannot call virtual method ResetEngine here).
+            // 
+            ResetEngineInternal();
+            Nodes.ForEach(n => n.RequiresRecalc = true);
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
@@ -398,33 +402,21 @@ namespace Dynamo.Models
             }
 #endif
         }
-        
+
         /// <summary>
-        /// Force reset of the execution substrait. Executing this will have a negative performance impact
+        /// Call this method to reset the virtual machine, avoiding a race 
+        /// condition by using a thread join inside the vm executive.
+        /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
-        public void Reset()
+        /// <param name="markNodesAsDirty">Set this parameter to true to force 
+        /// reset of the execution substrait. Note that setting this parameter 
+        /// to true will have a negative performance impact.</param>
+        /// 
+        public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            //TODO(Luke): Push this into a resync call with the engine controller
-            ResetEngine();
-
-            foreach (var node in Nodes)
-            {
-                node.RequiresRecalc = true;
-            }
-        }
-
-        public virtual void ResetEngine()
-        {
-            if (EngineController != null)
-            {
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
-            CustomNodeManager.RecompileAllNodes(EngineController);
+            ResetEngineInternal();
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
         }
 
 #if !ENABLE_DYNAMO_SCHEDULER
@@ -447,9 +439,21 @@ namespace Dynamo.Models
         /// 
         public void RunExpression()
         {
-            var task = new UpdateGraphAsyncTask(scheduler, OnUpdateGraphCompleted);
+            var traceData = HomeSpace.PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
+            var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
+            {
+                task.Completed += OnUpdateGraphCompleted;
                 scheduler.ScheduleForExecution(task);
+            }
         }
 
         /// <summary>
@@ -458,7 +462,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
         /// 
-        private static void OnUpdateGraphCompleted(AsyncTask task)
+        private void OnUpdateGraphCompleted(AsyncTask task)
         {
             var updateTask = task as UpdateGraphAsyncTask;
             var messages = new Dictionary<Guid, string>();
@@ -491,6 +495,21 @@ namespace Dynamo.Models
 
                 node.Warning(message.Value); // Update node warning message.
             }
+
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
+            // 
+            if (task.Exception != null && (DynamoModel.IsTestMode == false))
+            {
+                Action showFailureMessage = () => 
+                    Utils.DisplayEngineFailureMessage(this, task.Exception);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
+            // Notify listeners (optional) of completion.
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
 #endif
@@ -510,11 +529,24 @@ namespace Dynamo.Models
             else
             {
                 Logger.Log("Beginning engine reset");
-                Reset();
+                ResetEngine(markNodesAsDirty: true);
                 Logger.Log("Reset complete");
 
                 RunExpression();
             }
+        }
+
+        protected void ResetEngineInternal()
+        {
+            if (EngineController != null)
+            {
+                EngineController.Dispose();
+                EngineController = null;
+            }
+
+            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            EngineController = new EngineController(this, geomFactory);
+            CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
         /// <summary>

@@ -2,12 +2,13 @@
 
 namespace Dynamo.Core.Threading
 {
+    internal delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
+
     internal abstract class AsyncTask
     {
         #region Private Class Data Members
 
         private readonly DynamoScheduler scheduler;
-        private readonly Action<AsyncTask> callback;
 
         #endregion
 
@@ -18,16 +19,13 @@ namespace Dynamo.Core.Threading
         /// </summary>
         /// <param name="scheduler">A reference to the DynamoScheduler, this 
         /// parameter cannot be null.</param>
-        /// <param name="callback">A delegate to be invoked when the AsyncTask 
-        /// completes asynchronously. This parameter is optional.</param>
         /// 
-        protected AsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
+        protected AsyncTask(DynamoScheduler scheduler)
         {
             if (scheduler == null)
                 throw new ArgumentNullException("scheduler");
 
             this.scheduler = scheduler;
-            this.callback = callback;
             CreationTime = scheduler.NextTimeStamp;
         }
 
@@ -68,9 +66,9 @@ namespace Dynamo.Core.Threading
             Exception = exception;
             HandleTaskCompletionCore();
 
-            // If exists, the registered callback Action is invoked.
-            if (callback != null)
-                callback(this);
+            // Notify registered event handlers of task completion.
+            if (Completed != null)
+                Completed(this);
         }
 
         #endregion
@@ -82,6 +80,13 @@ namespace Dynamo.Core.Threading
         internal TimeStamp ExecutionStartTime { get; private set; }
         internal TimeStamp ExecutionEndTime { get; private set; }
         internal Exception Exception { get; private set; }
+
+        /// <summary>
+        /// This event is raised when the AsyncTask is completed. The event is 
+        /// being raised in the context of ISchedulerThread, any UI element 
+        /// access that is needed should be dispatched onto the UI dispatcher.
+        /// </summary>
+        internal event AsyncTaskCompletedHandler Completed;
 
         #endregion
 
