@@ -105,16 +105,22 @@
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>call "$(DevEnvDir)..\Tools\vsvars32.bat"
-resgen /usesourcepath "$(ProjectDir)images.resx" "$(ProjectDir)images.resources"
-al /target:lib /embed:"$(ProjectDir)images.resources" /out:"$(OutDir)$(TargetName).resources.dll"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  </Target>  
   -->
+  <Target Name="AfterBuild">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths"
+              PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <GenerateResource UseSourcePath="true"
+                      Sources="$(ProjectDir)images.resx"
+                      OutputResources="$(ProjectDir)images.resources"
+                      References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library"
+        EmbedResources="$(ProjectDir)images.resources"
+        OutputAssembly="$(OutDir)$(TargetName).resources.dll" />
+  </Target>
 </Project>
