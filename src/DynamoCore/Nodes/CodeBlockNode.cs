@@ -579,10 +579,12 @@ namespace Dynamo.Nodes
                     tooltip = Formatting.ToolTipForTempVariable;
 
                 double portCoordsY = Formatting.InitialMargin;
-                portCoordsY += visualIndex * Configurations.PortHeightInPixels;
+                portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
+                
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom
+                    VerticalMargin = portCoordsY - prevPortBottom,
+                    Height = Configurations.CodeBlockPortHeightInPixels
                 });
 
                 // Since we compute the "delta" between the top of the current 
@@ -590,7 +592,7 @@ namespace Dynamo.Nodes
                 // down the bottom coordinate value before proceeding to the next 
                 // port.
                 // 
-                prevPortBottom = portCoordsY + Configurations.PortHeightInPixels;
+                prevPortBottom = portCoordsY + Configurations.CodeBlockPortHeightInPixels;
             }
         }
 
