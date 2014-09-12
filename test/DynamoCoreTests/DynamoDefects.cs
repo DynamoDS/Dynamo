@@ -6,12 +6,23 @@ using System.Collections.Generic;
 using Dynamo.Nodes;
 using DSCoreNodesUI;
 using ProtoCore.Mirror;
+using Dynamo.Tests;
+using Dynamo.Controls;
+using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Tests
 {
+    public delegate void CommandCallback(string commandTag);
     [TestFixture]
     class DynamoDefects : DSEvaluationViewModelUnitTest
     {
+        private IEnumerable<string> customNodesToBeLoaded = null;
+        private CommandCallback commandCallback = null;
+
+        protected DynamoView dynamoView = null;
+        protected WorkspaceModel workspace = null;
+        protected WorkspaceViewModel workspaceViewModel = null;
         // Note: Pelase only add test cases those are related to defects.
 
         [Test, Category("RegressionTests")]
@@ -231,6 +242,14 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_3113()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
+            RunCommandsFromFile("Defect_MAGN_3113.xml", true);
+            AssertPreviewValue("2b50812f-c6bf-449e-9dd4-f6a906ad4473", new int[] { 6 });
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3726()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3726
@@ -314,6 +333,94 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3998.dyn");
             RunModel(openPath);
             AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
+        }
+
+        protected void RunCommandsFromFile(string commandFileName,
+            bool autoRun = false, CommandCallback commandCallback = null)
+        {
+            this.ViewModel = null;
+            string commandFilePath = GetTestDirectory(ExecutingDirectory);
+            commandFilePath = Path.Combine(commandFilePath, @"core\DynamoDefects\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+
+            if (this.ViewModel != null)
+            {
+                var message = "Multiple DynamoViewModel instances detected!";
+                throw new InvalidOperationException(message);
+            }
+
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            // Create the DynamoViewModel to control the view
+            this.ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            this.ViewModel.DynamicRunEnabled = autoRun;
+
+            // Load all custom nodes if there is any specified for this test.
+            if (this.customNodesToBeLoaded != null)
+            {
+                foreach (var customNode in this.customNodesToBeLoaded)
+                {
+                    if (ViewModel.Model.CustomNodeManager.AddFileToPath(customNode) == null)
+                    {
+                        throw new System.IO.FileFormatException(string.Format(
+                            "Failed to load custom node: {0}", customNode));
+                    }
+                }
+            }
+
+            RegisterCommandCallback(commandCallback);
+
+            // Create the view.
+            dynamoView = new DynamoView(this.ViewModel);
+            dynamoView.ShowDialog();
+            workspace = this.ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
+        }
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+        }
+
+        private void RegisterCommandCallback(CommandCallback commandCallback)
+        {
+            if (commandCallback == null)
+                return;
+
+            if (this.commandCallback != null)
+                throw new InvalidOperationException("RunCommandsFromFile called twice");
+
+            this.commandCallback = commandCallback;
+            var automation = this.ViewModel.Automation;
+            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
+        }
+
+        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
+        {
+            if (e.OldState == AutomationSettings.State.Paused)
+            {
+                if (e.NewState == AutomationSettings.State.Playing)
+                {
+                    // Call back to the delegate registered by the test case. We
+                    // only handle command transition from Paused to Playing. Note 
+                    // that "commandCallback" is not checked against "null" value 
+                    // because "OnAutomationPlaybackStateChanged" would not have 
+                    // been called if the "commandCallback" was not registered.
+                    // 
+                    this.commandCallback(e.NewTag);
+                }
+            }
         }
     }
 }

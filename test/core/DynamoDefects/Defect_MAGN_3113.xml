@@ -1,0 +1,26 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8afc2fee-8391-4769-9284-0443f47d22ed" NodeName="Code Block" X="330" Y="346" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8afc2fee-8391-4769-9284-0443f47d22ed" Name="Code" Value="6" />
+  <CreateNodeCommand NodeId="2b50812f-c6bf-449e-9dd4-f6a906ad4473" NodeName="DSCoreNodesUI.CreateList" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="8afc2fee-8391-4769-9284-0443f47d22ed" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2b50812f-c6bf-449e-9dd4-f6a906ad4473" PortIndex="0" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="2b50812f-c6bf-449e-9dd4-f6a906ad4473" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="8afc2fee-8391-4769-9284-0443f47d22ed" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2b50812f-c6bf-449e-9dd4-f6a906ad4473" PortIndex="1" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="2b50812f-c6bf-449e-9dd4-f6a906ad4473" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="2b50812f-c6bf-449e-9dd4-f6a906ad4473" PortIndex="2" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8afc2fee-8391-4769-9284-0443f47d22ed" PortIndex="0" Type="1" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="2b50812f-c6bf-449e-9dd4-f6a906ad4473" Modifiers="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <ModelEventCommand ModelGuid="2b50812f-c6bf-449e-9dd4-f6a906ad4473" EventName="RemoveInPort" />
+  <ModelEventCommand ModelGuid="2b50812f-c6bf-449e-9dd4-f6a906ad4473" EventName="RemoveInPort" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>
