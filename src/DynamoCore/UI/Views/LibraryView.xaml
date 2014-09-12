@@ -278,32 +278,6 @@
 
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
-            <Style x:Key="ScrollThumbs"
-                   TargetType="{x:Type Thumb}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Thumb}">
-                            <Grid x:Name="Grid">
-                                <Rectangle HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch"
-                                           Width="Auto"
-                                           Height="Auto"
-                                           Fill="#01000000"
-                                           Opacity="0.5"/>
-                                <Border x:Name="Rectangle1"
-                                        CornerRadius="2"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Width="7"
-                                        Height="Auto"
-                                        Background="#aaaaaa"
-                                        Opacity="0.5" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid" MouseEnter="LibraryGridMouseEnter" MouseLeave="LibraryGridMouseLeave">
@@ -311,6 +285,8 @@
                       PreviewMouseWheel="OnPreviewMouseWheel"
                       Background="Transparent"
                       Name="ScrollViewer">
+            <Border>
+            
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
@@ -356,6 +332,7 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
+            </Border>
         </ScrollViewer>
     </Grid>
 </UserControl>
