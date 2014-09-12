@@ -194,7 +194,6 @@ namespace Dynamo.UI
 
         public const string SmallIconPostfix = ".Small";
         public const string LargeIconPostfix = ".Large";
-        public const string DefaultAssembly = "DynamoCore";
         public const string ResourcesDLL = ".resources.dll";
 
         #endregion
