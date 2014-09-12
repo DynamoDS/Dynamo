@@ -114,7 +114,7 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.BoundingBox ToProtoType(this Autodesk.Revit.DB.BoundingBoxXYZ xyz, bool convertUnits = true)
         {
             xyz.Enabled = true;
-            var corners = new[] {xyz.Min.ToPoint(), xyz.Max.ToPoint()};
+            var corners = new[] { xyz.Min.ToPoint(convertUnits), xyz.Max.ToPoint(convertUnits) };
             return Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(corners);
         }
 
