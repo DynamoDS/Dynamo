@@ -301,55 +301,6 @@ namespace Dynamo.Nodes
 
                 foreach (var stableRef in Selection)
                 {
-                    var elRef =
-                    Reference.ParseFromStableRepresentation(doc, stableRef);
-
-                    // POINT ON FACE
-                    var pt = elRef.GlobalPoint;
-                    if (pt != null)
-                    {
-                        //this is a selected point on a face
-                        var ptArgs = new List<AssociativeNode>()
-                        {
-                            AstFactory.BuildDoubleNode(pt.X),
-                            AstFactory.BuildDoubleNode(pt.Y),
-                            AstFactory.BuildDoubleNode(pt.Z)
-                        };
-
-                        var ptNode = AstFactory.BuildFunctionCall
-                        (
-                            "Autodesk.DesignScript.Geometry.Point",
-                            "ByCoordinates",
-                            ptArgs
-                        );
-
-                        newInputs.Add(ptNode);
-                        continue;
-                    }
-
-                    // UV POINT ON FACE
-                    var uv = elRef.UVPoint;
-                    if (uv != null)
-                    {
-                        //this is a selected point on a face
-                        var ptArgs = new List<AssociativeNode>()
-                        {
-                            AstFactory.BuildDoubleNode(uv.U),
-                            AstFactory.BuildDoubleNode(uv.V)
-                        };
-
-                        var uvNode = AstFactory.BuildFunctionCall
-                        (
-                            "Autodesk.DesignScript.Geometry.UV",
-                            "ByCoordinates",
-                            ptArgs
-                        );
-
-                        newInputs.Add(uvNode);
-                        continue;
-                    }
-
-
                     var refNode = AstFactory.BuildFunctionCall(
                         new Func<string, object>(
                             GeometryObjectSelector.ByReferenceStableRepresentation),
