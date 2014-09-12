@@ -100,6 +100,8 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
+            this.InnerTextEditor.TextArea.ClearSelection();
+
             this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
