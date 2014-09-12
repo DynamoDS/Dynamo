@@ -6,17 +6,15 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System.Windows.Media;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using System.Windows.Threading;
-using Dynamo.Core;
+
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
@@ -220,7 +218,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var editWindow = new EditWindow
+            var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
                 Title = "Edit Node Name"

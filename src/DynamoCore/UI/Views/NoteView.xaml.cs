@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
@@ -88,7 +86,8 @@ namespace Dynamo.Nodes
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
             // Setup a binding with the edit window's text field
-            var editWindow = new EditWindow(true);
+            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            var editWindow = new EditWindow(dynamoViewModel, true);
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,

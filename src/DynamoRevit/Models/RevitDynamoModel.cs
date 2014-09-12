@@ -10,23 +10,20 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
+using ProtoCore;
 using DSIronPython;
-
 using DSNodeServices;
 
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
-using ProtoCore;
-
 using Revit.Elements;
-
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
@@ -35,6 +32,12 @@ namespace Dynamo.Applications.Models
 {
     public class RevitDynamoModel : DynamoModel
     {
+        /// <summary>
+        ///     Flag for syncing up document switches between Application.DocumentClosing and
+        ///     Application.DocumentClosed events.
+        /// </summary>
+        private bool updateCurrentUIDoc;
+
         #region Events
 
         public event EventHandler RevitDocumentChanged;
@@ -93,7 +96,6 @@ namespace Dynamo.Applications.Models
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
@@ -142,6 +144,8 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+
+                MaterialsManager.Instance.InitializeForActiveDocument();
             }
         }
 
@@ -175,6 +179,8 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeDocumentManagerEvents()
         {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosing +=
+                Application_DocumentClosing;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
@@ -186,6 +192,8 @@ namespace Dynamo.Applications.Models
 
         private void UnsubscribeDocumentManagerEvents()
         {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosing -=
+                Application_DocumentClosing;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed -=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened -=
@@ -226,21 +234,27 @@ namespace Dynamo.Applications.Models
             {
                 // this method cannot be called without Revit 2014
                 var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-
                 UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
+
+                IdlePromise.ExecuteOnIdleAsync(
+                    () =>
+                    {
+                        if (uiapp.CanPostCommand(exitCommand))
+                            uiapp.PostCommand(exitCommand);
+                        else
+                        {
+                            MessageBox.Show(
+                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                        }
+                    });
             }
         }
 
-        public override void ResetEngine()
+        public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
         }
 
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
@@ -304,6 +318,21 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
+        /// Handler for Revit's DocumentClosing event.
+        /// This handler is called when a document is closing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Application_DocumentClosing(object sender, DocumentClosingEventArgs e)
+        {
+            // ReSharper disable once PossibleUnintendedReferenceComparison
+            if (DocumentManager.Instance.CurrentDBDocument.Equals(e.Document))
+            {
+                updateCurrentUIDoc = true;
+            }
+        }
+
+        /// <summary>
         /// Handler for Revit's DocumentClosed event.
         /// This handler is called when a document is closed.
         /// </summary>
@@ -326,8 +355,9 @@ namespace Dynamo.Applications.Models
             {
                 // If Dynamo's active UI document's document is the one that was just closed
                 // then set Dynamo's active UI document to whatever revit says is active.
-                if (DocumentManager.Instance.CurrentUIDocument.Document == null)
+                if (updateCurrentUIDoc)
                 {
+                    updateCurrentUIDoc = false;
                     DocumentManager.Instance.CurrentUIDocument =
                         DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 }
@@ -355,6 +385,11 @@ namespace Dynamo.Applications.Models
             {
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+
+                // Ensure that the active document has the needed
+                // materials and graphic styles to support visualization
+                // in Revit.
+                MaterialsManager.Instance.InitializeForActiveDocument();
 
                 this.RunEnabled = true;
             }

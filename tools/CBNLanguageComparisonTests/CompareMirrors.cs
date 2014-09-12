@@ -25,8 +25,8 @@ namespace Dynamo.Tests
     /// The testframework to take the DesignScript code and dump into CBN for evaluation through Dynamo
     /// 
     /// </summary>
-   
-    public class CBNEngineTests : DSEvaluationUnitTest
+
+    public class CBNEngineTests : DSEvaluationViewModelUnitTest
     {
         
 
@@ -36,14 +36,13 @@ namespace Dynamo.Tests
         {
             /// Method that takes the DesignScript language code and dumps into CBN.
             /// Then evaluate in Dynamo and return the guid of the CBN
-            var model = Controller.DynamoModel;
             var guid = Guid.NewGuid();
-            var command1 = new Dynamo.ViewModels.DynamoViewModel.CreateNodeCommand(guid, "Code Block", 0, 0, false, false);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command1);
-            var command2 = new Dynamo.ViewModels.DynamoViewModel.UpdateModelValueCommand(guid, "Code", dscode);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command2);
-            var cbn = model.Nodes[0] as Dynamo.Nodes.CodeBlockNodeModel;
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            var command1 = new DynamoViewModel.CreateNodeCommand(guid, "Code Block", 0, 0, false, false);
+
+            ViewModel.ExecuteCommand(command1);
+            var command2 = new DynamoViewModel.UpdateModelValueCommand(guid, "Code", dscode);
+            ViewModel.ExecuteCommand(command2);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
             return guid;
         }
         internal void CompareCores(ProtoCore.Core c1, ProtoCore.Core c2,Guid guid)
@@ -72,7 +71,7 @@ namespace Dynamo.Tests
                             langMirror = new ProtoCore.Mirror.RuntimeMirror(symNode.name, 0, c1);
                             string name = symNode.name + "_" + guid.ToString();
                             name = name.Replace("-", string.Empty);
-                            dynamoMirror = Controller.EngineController.GetMirror(name);
+                            dynamoMirror = ViewModel.Model.EngineController.GetMirror(name);
                             if (langMirror != null || dynamoMirror != null)
                             {
                                 lookupOk = true;
@@ -111,7 +110,7 @@ namespace Dynamo.Tests
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             ProtoCore.Core core = thisTest.GetTestCore();
             Guid guid = RunDSScriptInCBN(code);
-            ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;
+            ProtoCore.Core dynamoCore = ViewModel.Model.EngineController.LiveRunnerCore;
             CompareCores(core, dynamoCore,guid);
         }
         

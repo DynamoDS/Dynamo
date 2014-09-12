@@ -1,19 +1,11 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.UI.Commands;
-using Dynamo.Models;
+
 using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
-using System.Windows.Resources;
-using System;
-using System.Windows.Shapes;
-using Dynamo.Core;
 
 namespace Dynamo.Controls
 {

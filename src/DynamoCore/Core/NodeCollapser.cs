@@ -46,417 +46,437 @@ namespace Dynamo.Utilities
             // workspace basis, it does not work across different workspaces.
             // 
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
-            undoRecorder.BeginActionGroup();
-
-            var newNodeWorkspace = new CustomNodeWorkspaceModel(dynamoModel, args.Name, args.Category, args.Description, 0, 0)
+            using (undoRecorder.BeginActionGroup())
             {
-                WatchChanges = false,
-                HasUnsavedChanges = true
-            };
 
-            var newNodeDefinition = new CustomNodeDefinition(Guid.NewGuid())
-            {
-                WorkspaceModel = newNodeWorkspace
-            };
+                var newNodeWorkspace = new CustomNodeWorkspaceModel(
+                    dynamoModel,
+                    args.Name,
+                    args.Category,
+                    args.Description,
+                    0,
+                    0) { WatchChanges = false, HasUnsavedChanges = true };
 
-            currentWorkspace.DisableReporting();
+                var newNodeDefinition = new CustomNodeDefinition(Guid.NewGuid())
+                {
+                    WorkspaceModel = newNodeWorkspace
+                };
 
-            #region Determine Inputs and Outputs
+                currentWorkspace.DisableReporting();
 
-            //Step 1: determine which nodes will be inputs to the new node
-            var inputs = new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasConnectedInput)
-                        .Select(data => Tuple.Create(node, data, node.Inputs[data]))
-                        .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
+                #region Determine Inputs and Outputs
 
-            var outputs = new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.OutPortData.Count).Where(node.HasOutput).SelectMany(
-                        data => node.Outputs[data]
-                                    .Where(output => !selectedNodeSet.Contains(output.Item2))
-                                    .Select(output => Tuple.Create(node, data, output)))));
+                //Step 1: determine which nodes will be inputs to the new node
+                var inputs =
+                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.InPortData.Count)
+                                .Where(node.HasConnectedInput)
+                                .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
-            #endregion
+                var outputs =
+                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.OutPortData.Count)
+                                .Where(node.HasOutput)
+                                .SelectMany(
+                                    data =>
+                                        node.Outputs[data].Where(
+                                            output => !selectedNodeSet.Contains(output.Item2))
+                                        .Select(output => Tuple.Create(node, data, output)))));
 
-            #region Detect 1-node holes (higher-order function extraction)
+                #endregion
 
-            var curriedNodeArgs =
-                new HashSet<NodeModel>(
-                    inputs
-                        .Select(x => x.Item3.Item2)
-                        .Intersect(outputs.Select(x => x.Item3.Item2)))
-                    .Select(
-                        outerNode =>
-                        {
-                            //var node = new Apply1();
-                            var node = newNodeWorkspace.AddNode<Apply1>();
-                            node.SetNickNameFromAttribute();
+                #region Detect 1-node holes (higher-order function extraction)
 
-                            node.DisableReporting();
+                var curriedNodeArgs =
+                    new HashSet<NodeModel>(
+                        inputs.Select(x => x.Item3.Item2)
+                            .Intersect(outputs.Select(x => x.Item3.Item2))).Select(
+                                outerNode =>
+                                {
+                                    //var node = new Apply1();
+                                    var node = newNodeWorkspace.AddNode<Apply1>();
+                                    node.SetNickNameFromAttribute();
 
-                            node.X = outerNode.X;
-                            node.Y = outerNode.Y;
+                                    node.DisableReporting();
 
-                            //Fetch all input ports
-                            // in order
-                            // that have inputs
-                            // and whose input comes from an inner node
-                            List<int> inPortsConnected = Enumerable.Range(0, outerNode.InPortData.Count)
-                                                                   .Where(
-                                                                       x =>
-                                                                       outerNode.HasInput(x) &&
-                                                                       selectedNodeSet.Contains(
-                                                                           outerNode.Inputs[x].Item2))
-                                                                   .ToList();
+                                    node.X = outerNode.X;
+                                    node.Y = outerNode.Y;
 
-                            var nodeInputs = outputs
-                                .Where(output => output.Item3.Item2 == outerNode)
-                                .Select(
-                                    output =>
-                                    new
-                                    {
-                                        InnerNodeInputSender = output.Item1,
-                                        OuterNodeInPortData = output.Item3.Item1
-                                    }).ToList();
+                                    //Fetch all input ports
+                                    // in order
+                                    // that have inputs
+                                    // and whose input comes from an inner node
+                                    List<int> inPortsConnected =
+                                        Enumerable.Range(0, outerNode.InPortData.Count)
+                                            .Where(
+                                                x =>
+                                                    outerNode.HasInput(x)
+                                                        && selectedNodeSet.Contains(
+                                                            outerNode.Inputs[x].Item2))
+                                            .ToList();
 
-                            nodeInputs.ForEach(_ => node.AddInput());
+                                    var nodeInputs =
+                                        outputs.Where(output => output.Item3.Item2 == outerNode)
+                                            .Select(
+                                                output =>
+                                                    new
+                                                    {
+                                                        InnerNodeInputSender = output.Item1,
+                                                        OuterNodeInPortData = output.Item3.Item1
+                                                    })
+                                            .ToList();
 
-                            node.RegisterAllPorts();
+                                    nodeInputs.ForEach(_ => node.AddInput());
 
-                            return new
+                                    node.RegisterAllPorts();
+
+                                    return
+                                        new
+                                        {
+                                            OuterNode = outerNode,
+                                            InnerNode = node,
+                                            Outputs =
+                                                inputs.Where(
+                                                    input => input.Item3.Item2 == outerNode)
+                                                    .Select(input => input.Item3.Item1),
+                                            Inputs = nodeInputs,
+                                            OuterNodePortDataList = inPortsConnected
+                                        };
+                                }).ToList();
+
+                #endregion
+
+                #region UI Positioning Calculations
+
+                double avgX = selectedNodeSet.Average(node => node.X);
+                double avgY = selectedNodeSet.Average(node => node.Y);
+
+                double leftMost = selectedNodeSet.Min(node => node.X);
+                double topMost = selectedNodeSet.Min(node => node.Y);
+                double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
+
+                #endregion
+
+                #region Handle full selected connectors
+
+                // Step 2: Determine all the connectors whose start/end owners are 
+                // both in the selection set, and then move them from the current 
+                // workspace into the new workspace.
+
+                var fullySelectedConns =
+                    new HashSet<ConnectorModel>(
+                        currentWorkspace.Connectors.Where(
+                            conn =>
                             {
-                                OuterNode = outerNode,
-                                InnerNode = node,
-                                Outputs = inputs.Where(input => input.Item3.Item2 == outerNode)
-                                                .Select(input => input.Item3.Item1),
-                                Inputs = nodeInputs,
-                                OuterNodePortDataList = inPortsConnected
-                            };
-                        }).ToList();
+                                bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
+                                bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
+                                return startSelected && endSelected;
+                            }));
 
-            #endregion
-
-            #region UI Positioning Calculations
-
-            double avgX = selectedNodeSet.Average(node => node.X);
-            double avgY = selectedNodeSet.Average(node => node.Y);
-
-            double leftMost = selectedNodeSet.Min(node => node.X);
-            double topMost = selectedNodeSet.Min(node => node.Y);
-            double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
-
-            #endregion
-
-            #region Handle full selected connectors
-
-            // Step 2: Determine all the connectors whose start/end owners are 
-            // both in the selection set, and then move them from the current 
-            // workspace into the new workspace.
-
-            var fullySelectedConns = new HashSet<ConnectorModel>(
-                currentWorkspace.Connectors.Where(conn =>
+                foreach (var ele in fullySelectedConns)
                 {
-                    bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
-                    bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
-                    return startSelected && endSelected;
-                }));
-
-            foreach (var ele in fullySelectedConns)
-            {
-                undoRecorder.RecordDeletionForUndo(ele);
-                currentWorkspace.Connectors.Remove(ele);
-            }
-
-            #endregion
-
-            #region Handle partially selected connectors
-
-            // Step 3: Partially selected connectors (either one of its start 
-            // and end owners is in the selection) are to be destroyed.
-
-            var partiallySelectedConns =
-                currentWorkspace.Connectors.Where(
-                    conn =>
-                        selectedNodeSet.Contains(conn.Start.Owner)
-                        || selectedNodeSet.Contains(conn.End.Owner)).ToList();
-
-            foreach (ConnectorModel connector in partiallySelectedConns)
-            {
-                undoRecorder.RecordDeletionForUndo(connector);
-                connector.NotifyConnectedPortsOfDeletion();
-                currentWorkspace.Connectors.Remove(connector);
-            }
-
-            #endregion
-
-            #region Transfer nodes and connectors to new workspace
-
-            // Step 4: move all nodes to new workspace remove from old
-            // PB: This could be more efficiently handled by a copy paste, but we
-            // are preservering the node 
-            foreach (var ele in selectedNodeSet)
-            {
-                undoRecorder.RecordDeletionForUndo(ele);
-                ele.SaveResult = false;
-                currentWorkspace.Nodes.Remove(ele);
-                ele.Workspace = newNodeWorkspace;
-            }
-
-            //  add to new
-            newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
-            newNodeWorkspace.Connectors.AddRange(fullySelectedConns);
-
-            foreach (var node in newNodeWorkspace.Nodes)
-                node.DisableReporting();
-
-            double leftShift = leftMost - 250;
-            foreach (NodeModel node in newNodeWorkspace.Nodes)
-            {
-                node.X = node.X - leftShift;
-                node.Y = node.Y - topMost;
-            }
-
-            #endregion
-
-
-            #region Process inputs
-
-            var inConnectors = new List<Tuple<NodeModel, int>>();
-            var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
-
-            //Step 3: insert variables (reference step 1)
-            foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
-            {
-                int inputIndex = input.Item1;
-
-                NodeModel inputReceiverNode = input.Item2.Item1;
-                int inputReceiverData = input.Item2.Item2;
-
-                NodeModel inputNode = input.Item2.Item3.Item2;
-                int inputData = input.Item2.Item3.Item1;
-
-                Symbol node;
-
-                var key = Tuple.Create(inputNode, inputData);
-                if (uniqueInputSenders.ContainsKey(key))
-                {
-                    node = uniqueInputSenders[key];
+                    undoRecorder.RecordDeletionForUndo(ele);
+                    currentWorkspace.Connectors.Remove(ele);
                 }
-                else
+
+                #endregion
+
+                #region Handle partially selected connectors
+
+                // Step 3: Partially selected connectors (either one of its start 
+                // and end owners is in the selection) are to be destroyed.
+
+                var partiallySelectedConns =
+                    currentWorkspace.Connectors.Where(
+                        conn =>
+                            selectedNodeSet.Contains(conn.Start.Owner)
+                                || selectedNodeSet.Contains(conn.End.Owner)).ToList();
+
+                foreach (ConnectorModel connector in partiallySelectedConns)
                 {
-                    inConnectors.Add(Tuple.Create(inputNode, inputData));
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.NotifyConnectedPortsOfDeletion();
+                    currentWorkspace.Connectors.Remove(connector);
+                }
 
-                    node = newNodeWorkspace.AddNode<Symbol>();
-                    node.InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName;
+                #endregion
 
-                    node.SetNickNameFromAttribute();
+                #region Transfer nodes and connectors to new workspace
 
+                // Step 4: move all nodes to new workspace remove from old
+                // PB: This could be more efficiently handled by a copy paste, but we
+                // are preservering the node 
+                foreach (var ele in selectedNodeSet)
+                {
+                    undoRecorder.RecordDeletionForUndo(ele);
+                    ele.SaveResult = false;
+                    currentWorkspace.Nodes.Remove(ele);
+                    ele.Workspace = newNodeWorkspace;
+                }
+
+                //  add to new
+                newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
+                newNodeWorkspace.Connectors.AddRange(fullySelectedConns);
+
+                foreach (var node in newNodeWorkspace.Nodes)
                     node.DisableReporting();
 
-                    node.X = 0;
-                    node.Y = inputIndex * (50 + node.Height);
-
-                    uniqueInputSenders[key] = node;
+                double leftShift = leftMost - 250;
+                foreach (NodeModel node in newNodeWorkspace.Nodes)
+                {
+                    node.X = node.X - leftShift;
+                    node.Y = node.Y - topMost;
                 }
 
-                var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
+                #endregion
 
-                if (curriedNode == null)
+
+                #region Process inputs
+
+                var inConnectors = new List<Tuple<NodeModel, int>>();
+                var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+
+                //Step 3: insert variables (reference step 1)
+                foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
                 {
-                    newNodeWorkspace.AddConnection(node,
-                                                  inputReceiverNode,
-                                                  0,
-                                                  inputReceiverData );
+                    int inputIndex = input.Item1;
+
+                    NodeModel inputReceiverNode = input.Item2.Item1;
+                    int inputReceiverData = input.Item2.Item2;
+
+                    NodeModel inputNode = input.Item2.Item3.Item2;
+                    int inputData = input.Item2.Item3.Item1;
+
+                    Symbol node;
+
+                    var key = Tuple.Create(inputNode, inputData);
+                    if (uniqueInputSenders.ContainsKey(key))
+                    {
+                        node = uniqueInputSenders[key];
+                    }
+                    else
+                    {
+                        inConnectors.Add(Tuple.Create(inputNode, inputData));
+
+                        node = newNodeWorkspace.AddNode<Symbol>();
+                        node.InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName;
+
+                        node.SetNickNameFromAttribute();
+
+                        node.DisableReporting();
+
+                        node.X = 0;
+                        node.Y = inputIndex*(50 + node.Height);
+
+                        uniqueInputSenders[key] = node;
+                    }
+
+                    var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
+
+                    if (curriedNode == null)
+                    {
+                        newNodeWorkspace.AddConnection(
+                            node,
+                            inputReceiverNode,
+                            0,
+                            inputReceiverData);
+                    }
+                    else
+                    {
+                        //Connect it to the applier
+                        newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
+
+                        //Connect applier to the inner input receive
+                        newNodeWorkspace.AddConnection(
+                            curriedNode.InnerNode,
+                            inputReceiverNode,
+                            0,
+                            inputReceiverData);
+                    }
+                }
+
+                #endregion
+
+                #region Process outputs
+
+                //List of all inner nodes to connect an output. Unique.
+                var outportList = new List<Tuple<NodeModel, int>>();
+
+                var outConnectors = new List<Tuple<NodeModel, int, int>>();
+
+                int i = 0;
+                if (outputs.Any())
+                {
+                    foreach (var output in outputs)
+                    {
+                        if (
+                            outportList.All(
+                                x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                        {
+                            NodeModel outputSenderNode = output.Item1;
+                            int outputSenderData = output.Item2;
+                            NodeModel outputReceiverNode = output.Item3.Item2;
+
+                            if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
+                                continue;
+
+                            outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+
+                            //Create Symbol Node
+                            var node = newNodeWorkspace.AddNode<Output>();
+                            node.Symbol = outputSenderNode.OutPortData[outputSenderData].NickName;
+
+                            node.SetNickNameFromAttribute();
+                            node.DisableReporting();
+
+                            node.X = rightMost + 75 - leftShift;
+                            node.Y = i*(50 + node.Height);
+
+                            newNodeWorkspace.AddConnection(
+                                outputSenderNode,
+                                node,
+                                outputSenderData,
+                                0);
+
+                            i++;
+                        }
+                    }
+
+                    //Connect outputs to new node
+                    foreach (var output in outputs)
+                    {
+                        //Node to be connected to in CurrentWorkspace
+                        NodeModel outputSenderNode = output.Item1;
+
+                        //Port to be connected to on outPutNode_outer
+                        int outputSenderData = output.Item2;
+
+                        int outputReceiverData = output.Item3.Item1;
+                        NodeModel outputReceiverNode = output.Item3.Item2;
+
+                        var curriedNode =
+                            curriedNodeArgs.FirstOrDefault(x => x.OuterNode == outputReceiverNode);
+
+                        if (curriedNode == null)
+                        {
+                            // we create the connectors in the current space later
+                            outConnectors.Add(
+                                Tuple.Create(
+                                    outputReceiverNode,
+                                    outportList.FindIndex(
+                                        x =>
+                                            x.Item1 == outputSenderNode
+                                                && x.Item2 == outputSenderData),
+                                    outputReceiverData));
+                        }
+                        else
+                        {
+                            int targetPort =
+                                curriedNode.Inputs.First(
+                                    x => x.InnerNodeInputSender == outputSenderNode)
+                                    .OuterNodeInPortData;
+
+                            int targetPortIndex =
+                                curriedNode.OuterNodePortDataList.IndexOf(targetPort);
+
+                            //Connect it (new dynConnector)
+                            newNodeWorkspace.AddConnection(
+                                outputSenderNode,
+                                curriedNode.InnerNode,
+                                outputSenderData,
+                                targetPortIndex + 1);
+
+                        }
+                    }
                 }
                 else
                 {
-                    //Connect it to the applier
-                    newNodeWorkspace.AddConnection(node,
-                                                     curriedNode.InnerNode,
-                                                     0,
-                                                     0 );
-
-                    //Connect applier to the inner input receive
-                    newNodeWorkspace.AddConnection(
-                        curriedNode.InnerNode,
-                        inputReceiverNode,
-                        0,
-                        inputReceiverData );
-                }
-            }
-
-            #endregion
-
-            #region Process outputs
-
-            //List of all inner nodes to connect an output. Unique.
-            var outportList = new List<Tuple<NodeModel, int>>();
-
-            var outConnectors = new List<Tuple<NodeModel, int, int>>();
-
-            int i = 0;
-            if (outputs.Any())
-            {
-                foreach (var output in outputs)
-                {
-                    if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                    foreach (var hanging in
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.OutPortData.Count)
+                                .Where(port => !node.HasOutput(port))
+                                .Select(port => new { node, port })).Distinct())
                     {
-                        NodeModel outputSenderNode = output.Item1;
-                        int outputSenderData = output.Item2;
-                        NodeModel outputReceiverNode = output.Item3.Item2;
-
-                        if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                            continue;
-
-                        outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
-
                         //Create Symbol Node
                         var node = newNodeWorkspace.AddNode<Output>();
-                        node.Symbol = outputSenderNode.OutPortData[outputSenderData].NickName;
+                        node.Symbol = hanging.node.OutPortData[hanging.port].NickName;
 
                         node.SetNickNameFromAttribute();
+
+                        //store the element in the elements list
                         node.DisableReporting();
 
                         node.X = rightMost + 75 - leftShift;
-                        node.Y = i * (50 + node.Height);
+                        node.Y = i*(50 + node.Height);
 
-                        newNodeWorkspace.AddConnection(
-                            outputSenderNode,
-                            node,
-                            outputSenderData,
-                            0 );
+                        newNodeWorkspace.AddConnection(hanging.node, node, hanging.port, 0);
 
                         i++;
                     }
                 }
 
-                //Connect outputs to new node
-                foreach (var output in outputs)
+                #endregion
+
+                // save and load the definition from file
+                newNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
+                dynamoModel.Workspaces.Add(newNodeWorkspace);
+
+                string name = newNodeDefinition.FunctionId.ToString();
+                var collapsedNode = currentWorkspace.AddNode(avgX, avgY, name);
+                undoRecorder.RecordCreationForUndo(collapsedNode);
+
+                // place the node as intended, not centered
+                collapsedNode.X = avgX;
+                collapsedNode.Y = avgY;
+
+                collapsedNode.DisableReporting();
+
+                foreach (
+                    var nodeTuple in
+                        inConnectors.Select(
+                            (x, idx) => new { node = x.Item1, from = x.Item2, to = idx }))
                 {
-                    //Node to be connected to in CurrentWorkspace
-                    NodeModel outputSenderNode = output.Item1;
+                    var conn = currentWorkspace.AddConnection(
+                        nodeTuple.node,
+                        collapsedNode,
+                        nodeTuple.from,
+                        nodeTuple.to);
 
-                    //Port to be connected to on outPutNode_outer
-                    int outputSenderData = output.Item2;
-
-                    int outputReceiverData = output.Item3.Item1;
-                    NodeModel outputReceiverNode = output.Item3.Item2;
-
-                    var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == outputReceiverNode);
-
-                    if (curriedNode == null)
+                    if (conn != null)
                     {
-                        // we create the connectors in the current space later
-                        outConnectors.Add(
-                            Tuple.Create(
-                                outputReceiverNode,
-                                outportList.FindIndex(
-                                    x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                                outputReceiverData));
-                    }
-                    else
-                    {
-                        int targetPort =
-                            curriedNode.Inputs.First(x => x.InnerNodeInputSender == outputSenderNode)
-                                .OuterNodeInPortData;
-
-                        int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
-
-                        //Connect it (new dynConnector)
-                        newNodeWorkspace.AddConnection(
-                            outputSenderNode,
-                            curriedNode.InnerNode,
-                            outputSenderData,
-                            targetPortIndex + 1 );
-
+                        undoRecorder.RecordCreationForUndo(conn);
                     }
                 }
-            }
-            else
-            {
-                foreach (var hanging in
-                    selectedNodeSet.SelectMany(
-                        node =>
-                            Enumerable.Range(0, node.OutPortData.Count)
-                                .Where(port => !node.HasOutput(port))
-                                .Select(port => new { node, port })).Distinct())
+
+                foreach (var nodeTuple in outConnectors)
                 {
-                    //Create Symbol Node
-                    var node = newNodeWorkspace.AddNode<Output>();
-                    node.Symbol = hanging.node.OutPortData[hanging.port].NickName;
 
-                    node.SetNickNameFromAttribute();
+                    var conn = currentWorkspace.AddConnection(
+                        collapsedNode,
+                        nodeTuple.Item1,
+                        nodeTuple.Item2,
+                        nodeTuple.Item3);
 
-                    //store the element in the elements list
-                    node.DisableReporting();
-
-                    node.X = rightMost + 75 - leftShift;
-                    node.Y = i * (50 + node.Height);
-
-                    newNodeWorkspace.AddConnection(
-                        hanging.node,
-                        node,
-                        hanging.port,
-                        0 );
-
-                    i++;
+                    if (conn != null)
+                    {
+                        undoRecorder.RecordCreationForUndo(conn);
+                    }
                 }
+
+                collapsedNode.EnableReporting();
+                currentWorkspace.EnableReporting();
+
+                foreach (var node in newNodeWorkspace.Nodes)
+                    node.EnableReporting();
+
+                newNodeWorkspace.WatchChanges = true;
             }
-
-            #endregion
-
-            // save and load the definition from file
-            newNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
-            dynamoModel.Workspaces.Add(newNodeWorkspace);
-
-            string name = newNodeDefinition.FunctionId.ToString();
-            var collapsedNode = currentWorkspace.AddNode(avgX, avgY, name);
-            undoRecorder.RecordCreationForUndo(collapsedNode);
-
-            // place the node as intended, not centered
-            collapsedNode.X = avgX;
-            collapsedNode.Y = avgY;
-
-            collapsedNode.DisableReporting();
-
-            foreach (var nodeTuple in inConnectors.Select((x, idx) => new { node = x.Item1, from = x.Item2, to = idx }))
-            {
-                var conn = currentWorkspace.AddConnection(
-                                    nodeTuple.node,
-                                    collapsedNode,
-                                    nodeTuple.from,
-                                    nodeTuple.to );
-
-                if (conn != null)
-                {
-                    undoRecorder.RecordCreationForUndo(conn);
-                }
-            }
-
-            foreach (var nodeTuple in outConnectors)
-            {
-
-                var conn = currentWorkspace.AddConnection(
-                                    collapsedNode,
-                                    nodeTuple.Item1,
-                                    nodeTuple.Item2,
-                                    nodeTuple.Item3 );
-
-                if (conn != null)
-                {
-                    undoRecorder.RecordCreationForUndo(conn);
-                }
-            }
-
-            undoRecorder.EndActionGroup();
-            collapsedNode.EnableReporting();
-            currentWorkspace.EnableReporting();
-
-            foreach (var node in newNodeWorkspace.Nodes)
-                node.EnableReporting();
-
-            newNodeWorkspace.WatchChanges = true;
         }
 
         private static void SetNickNameFromAttribute(this NodeModel node)

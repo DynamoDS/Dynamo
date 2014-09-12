@@ -14,6 +14,7 @@ using System.Xml;
 using DSNodeServices;
 
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -67,10 +68,10 @@ namespace Dynamo.Models
 
         #region internal members
 
+        private DynamoScheduler scheduler;
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
-
         #endregion
 
         #region Static properties
@@ -103,7 +104,8 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
-        public IUpdateManager UpdateManager { get; private set; }
+        public DynamoScheduler Scheduler { get { return scheduler; } }
+        public bool ShutdownRequested { get; internal set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -244,8 +246,8 @@ namespace Dynamo.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public DynamoRunner Runner { get; set; }
+            public ISchedulerThread SchedulerThread { get; set; }
         }
 
         /// <summary>
@@ -287,7 +289,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             DynamoRunner runner = configuration.Runner;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
@@ -299,6 +300,11 @@ namespace Dynamo.Models
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
 
+#if ENABLE_DYNAMO_SCHEDULER
+            var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
+            scheduler = new DynamoScheduler(thread);
+#endif
+
             if (preferences is PreferenceSettings)
             {
                 this.PreferenceSettings = preferences as PreferenceSettings;
@@ -306,8 +312,9 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager(updateManager);
             InitializeInstrumentationLogger();
+
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
 
             SearchModel = new SearchModel(this);
 
@@ -324,9 +331,13 @@ namespace Dynamo.Models
             this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            this.Reset();
+            // Reset virtual machine to avoid a race condition by causing a 
+            // thread join inside the vm exec. Since DynamoModel is being called 
+            // on the main/idle thread, it is safe to call ResetEngineInternal 
+            // directly (we cannot call virtual method ResetEngine here).
+            // 
+            ResetEngineInternal();
+            Nodes.ForEach(n => n.RequiresRecalc = true);
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
@@ -345,12 +356,6 @@ namespace Dynamo.Models
             InstrumentationLogger.Start(this);
         }
 
-        private void InitializeUpdateManager(IUpdateManager updateManager)
-        {
-            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
-        }
-
         private void InitializeCurrentWorkspace()
         {
             this.AddHomeWorkspace();
@@ -359,7 +364,7 @@ namespace Dynamo.Models
             this.CurrentWorkspace.Y = 0;
         }
 
-        private void InitializePreferences(IPreferences preferences)
+        private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
             BaseUnit.AreaUnit = preferences.AreaUnit;
@@ -371,11 +376,13 @@ namespace Dynamo.Models
 
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString();  }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            ShutdownRequested = true;
+
             CleanWorkbench();
 
             EngineController.Dispose();
@@ -386,40 +393,126 @@ namespace Dynamo.Models
             OnCleanup(args);
 
             Logger.Dispose();
+
+#if ENABLE_DYNAMO_SCHEDULER
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
+            }
+#endif
         }
-        
+
         /// <summary>
-        /// Force reset of the execution substrait. Executing this will have a negative performance impact
+        /// Call this method to reset the virtual machine, avoiding a race 
+        /// condition by using a thread join inside the vm executive.
+        /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
-        public void Reset()
+        /// <param name="markNodesAsDirty">Set this parameter to true to force 
+        /// reset of the execution substrait. Note that setting this parameter 
+        /// to true will have a negative performance impact.</param>
+        /// 
+        public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            //TODO(Luke): Push this into a resync call with the engine controller
-            ResetEngine();
-
-            foreach (var node in Nodes)
-            {
-                node.RequiresRecalc = true;
-            }
+            ResetEngineInternal();
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
         }
 
-        public virtual void ResetEngine()
-        {
-            if (EngineController != null)
-            {
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
-            CustomNodeManager.RecompileAllNodes(EngineController);
-        }
+#if !ENABLE_DYNAMO_SCHEDULER
 
         public void RunExpression()
         {
             Runner.RunExpression(this.HomeSpace);
         }
+
+#else
+
+        /// <summary>
+        /// This method is typically called from the main application thread (as 
+        /// a result of user actions such as button click or node UI changes) to
+        /// schedule an update of the graph. This call may or may not represent 
+        /// an actual update. In the event that the user action does not result 
+        /// in actual graph update (e.g. moving of node on UI), the update task 
+        /// will not be scheduled for execution.
+        /// </summary>
+        /// 
+        public void RunExpression()
+        {
+            var traceData = HomeSpace.PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
+            var task = new UpdateGraphAsyncTask(scheduler);
+            if (task.Initialize(EngineController, HomeSpace))
+            {
+                task.Completed += OnUpdateGraphCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        /// <summary>
+        /// This callback method is invoked in the context of ISchedulerThread 
+        /// when UpdateGraphAsyncTask is completed.
+        /// </summary>
+        /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
+        /// 
+        private void OnUpdateGraphCompleted(AsyncTask task)
+        {
+            var updateTask = task as UpdateGraphAsyncTask;
+            var messages = new Dictionary<Guid, string>();
+
+            // Runtime warnings take precedence over build warnings.
+            foreach (var warning in updateTask.RuntimeWarnings)
+            {
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            foreach (var warning in updateTask.BuildWarnings)
+            {
+                // If there is already runtime warnings for 
+                // this node, then ignore the build warnings.
+                if (messages.ContainsKey(warning.Key))
+                    continue;
+
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            var workspace = updateTask.TargetedWorkspace;
+            foreach (var message in messages)
+            {
+                var guid = message.Key;
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node == null)
+                    continue;
+
+                node.Warning(message.Value); // Update node warning message.
+            }
+
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
+            // 
+            if (task.Exception != null && (DynamoModel.IsTestMode == false))
+            {
+                Action showFailureMessage = () => 
+                    Utils.DisplayEngineFailureMessage(this, task.Exception);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
+            // Notify listeners (optional) of completion.
+            OnEvaluationCompleted(this, EventArgs.Empty);
+        }
+
+#endif
 
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
@@ -436,11 +529,24 @@ namespace Dynamo.Models
             else
             {
                 Logger.Log("Beginning engine reset");
-                Reset();
+                ResetEngine(markNodesAsDirty: true);
                 Logger.Log("Reset complete");
 
                 RunExpression();
             }
+        }
+
+        protected void ResetEngineInternal()
+        {
+            if (EngineController != null)
+            {
+                EngineController.Dispose();
+                EngineController = null;
+            }
+
+            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            EngineController = new EngineController(this, geomFactory);
+            CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
         /// <summary>
@@ -479,8 +585,6 @@ namespace Dynamo.Models
             {
                 NodeMap.Remove(n.GUID);
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         private void AddNodeToMap(NodeModel n)
@@ -496,11 +600,8 @@ namespace Dynamo.Models
             }
             else
             {
-                //NodeMap[n.GUID] = n;
                 throw new Exception("Duplicate node GUID in map!");
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         internal void OpenInternal(string xmlPath)
@@ -1184,20 +1285,37 @@ namespace Dynamo.Models
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
-
+                
                 var xmlDoc = new XmlDocument();
-                var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
-                xmlDoc.AppendChild(dynEl);
-                node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                var newNode = CurrentWorkspace.AddNode(
-                    newGuid,
-                    nodeName,
-                    node.X,
-                    node.Y + 100,
-                    false,
-                    false,
-                    dynEl);
+                NodeModel newNode;
+
+                if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
+                {
+                    var symbol = (node is Symbol
+                        ? (node as Symbol).InputSymbol
+                        : (node as Output).Symbol);
+                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
+                    newNode = new CodeBlockNodeModel(CurrentWorkspace, code);
+
+                    CurrentWorkspace.AddNode(newNode, newGuid, node.X, node.Y + 100, false, false);
+                }
+                else
+                {
+                    var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
+                    xmlDoc.AppendChild(dynEl);
+                    node.Save(xmlDoc, dynEl, SaveContext.Copy);
+
+                    newNode = CurrentWorkspace.AddNode(
+                        newGuid,
+                        nodeName,
+                        node.X,
+                        node.Y + 100,
+                        false,
+                        false,
+                        dynEl);
+                }
+
                 createdModels.Add(newNode);
 
                 newNode.ArgumentLacing = node.ArgumentLacing;

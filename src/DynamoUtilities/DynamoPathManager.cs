@@ -13,11 +13,9 @@ namespace DynamoUtilities
     /// </summary>
     public class DynamoPathManager
     {
-        public enum Asm{ Version219,Version220}
-
         private List<string> preloadLibaries = new List<string>();
         private List<string> addResolvePaths = new List<string>();
-        private Asm asmVersion = Asm.Version219;
+
         private static DynamoPathManager instance;
 
         /// <summary>
@@ -89,16 +87,6 @@ namespace DynamoUtilities
         public string AsmPreloader { get; set; }
 
         /// <summary>
-        /// A directory containing the ASM 219 DLLs
-        /// </summary>
-        public string ASM219Host { get; set; }
-
-        /// <summary>
-        /// A directory containing the ASM 220 DLLs
-        /// </summary>
-        public string ASM220Host { get; set; }
-
-        /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
@@ -106,12 +94,6 @@ namespace DynamoUtilities
         {
             get { return addResolvePaths; }
             set { addResolvePaths = value; }
-        }
-
-        public Asm ASMVersion
-        {
-            get { return asmVersion; }
-            set { asmVersion = value; }
         }
 
         public static DynamoPathManager Instance
@@ -170,22 +152,6 @@ namespace DynamoUtilities
             {
                 Directory.CreateDirectory(CommonSamples);
             }
-
-            switch (asmVersion)
-            {
-                case Asm.Version219:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
-                    break;
-                case Asm.Version220:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_220"));
-                    break;
-                default:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
-                    break;
-            }
-
-            ASM219Host = null;
-            ASM220Host = null;
 
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -314,9 +280,9 @@ namespace DynamoUtilities
             }
         }
 
-        public void SetLibGPath(string path)
+        public void SetLibGPath(string version)
         {
-            LibG = path;
+            LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
             var splits = LibG.Split('\\');
             GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
             AsmPreloader = Path.Combine(
@@ -331,7 +297,7 @@ namespace DynamoUtilities
         /// <param name="version"> The version of ASM which you would like to find. Ex. "219" or "220"</param>
         /// <param name="host"></param>
         /// <returns>True if it finds the specified ASM version on the user's machine, false if it does not.</returns>
-        public bool FindAsm(string version, out string host)
+        private static bool FindAsm(string version, out string host)
         {
             host = null;
 
@@ -355,9 +321,7 @@ namespace DynamoUtilities
             {
                 subDirs = root.GetDirectories();
             }
-            // This is thrown if even one of the files requires permissions greater 
-            // than the application provides. 
-            catch (UnauthorizedAccessException e)
+            catch (Exception e)
             {
                 // TODO: figure out how to print to the console that Sandbox needs higher permissions
                 return false;
@@ -378,7 +342,7 @@ namespace DynamoUtilities
                 {
                     if (fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL",version))
                     {
-                        // we found a match for the ASM 219 dir
+                        // we found a match for the ASM dir
                         host = dirInfo.FullName;
                         return true;
                     }
@@ -391,20 +355,19 @@ namespace DynamoUtilities
         /// <summary>
         /// Preload a specific version of ASM.
         /// </summary>
-        /// <param name="version"></param>
-        public static void PreloadAsm(Asm version)
+        /// <param name="version">The version as ex. "219"</param>
+        public static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
         {
-            switch (version)
+            Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
+
+            string hostLocation;
+            if (!FindAsm(version, out hostLocation))
             {
-                case Asm.Version219:
-                    Instance.SetLibGPath("libg_219");
-                    Instance.ASMVersion = Asm.Version219;
-                    break;
-                case Asm.Version220:
-                    Instance.SetLibGPath("libg_220");
-                    Instance.ASMVersion = Asm.Version220;
-                    break;
+                Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                return false;
             }
+
+            pathManager.SetLibGPath(version);
 
             var libG = Assembly.LoadFrom(Instance.AsmPreloader);
 
@@ -414,19 +377,28 @@ namespace DynamoUtilities
                 "PreloadAsmLibraries",
                 BindingFlags.Public | BindingFlags.Static);
 
-            var methodParams = new object[1];
+            if (preloadMethod == null)
+                throw new MissingMethodException(@"Method ""PreloadAsmLibraries"" not found");
 
-            switch (version)
-            {
-                case Asm.Version219:
-                    methodParams[0] = Instance.ASM219Host;
-                    break;
-                case Asm.Version220:
-                    methodParams[0] = Instance.ASM220Host;
-                    break;
-            }
+            var methodParams = new object[1];
+            methodParams[0] = hostLocation;
 
             preloadMethod.Invoke(null, methodParams);
+
+            Debug.WriteLine(string.Format("Successfully loaded ASM version {0}", version));
+            return true;
+        }
+
+        /// <summary>
+        /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs,
+        /// determines the correct version of ASM and loads the binaries.
+        /// </summary>
+        public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
+        {
+            //if (PreloadAsmVersion("220", pathManager)) return true;
+            if (PreloadAsmVersion("219", pathManager)) return true;
+
+            return false;
         }
     }
 }

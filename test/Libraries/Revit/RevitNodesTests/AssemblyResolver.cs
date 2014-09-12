@@ -14,7 +14,6 @@ namespace DSRevitNodesTests
         {
             if (resolverSetup) return;
 
-            DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
             DynamoPathManager.Instance.InitializeCore(GetDynamoRootDirectory());
 
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;

@@ -24,7 +24,7 @@ namespace DynamoCoreUITests
             }
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
             var viz = ViewModel.VisualizationManager;
@@ -40,7 +40,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void BackgroundPreviewDrawsOnOpen()
         {
             //var model = ViewModel.Model;
@@ -58,7 +58,7 @@ namespace DynamoCoreUITests
             Assert.Inconclusive("Finish me!");
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CleansUpGeometryWhenNodeFails()
         {
             Assert.Inconclusive("Can not test post-failure visualization state as we need to " +
@@ -88,7 +88,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(0, renderables.Count());
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreview()
         {
             var model = ViewModel.Model;
@@ -134,7 +134,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -171,7 +171,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizePoints()
         {
             //var model = ViewModel.Model;
@@ -201,7 +201,7 @@ namespace DynamoCoreUITests
             Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CleansUpGeometryWhenNodesAreDisconnected()
         {
             //test to ensure that when nodes are disconnected 
@@ -234,7 +234,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeASMSolids()
         {
             var model = ViewModel.Model;
@@ -250,7 +250,7 @@ namespace DynamoCoreUITests
             model.HomeSpace.HasUnsavedChanges = false;
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeASMSurfaces()
         {
             var viz = ViewModel.VisualizationManager;
@@ -265,7 +265,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeCoordinateSystems()
         {
             var viz = ViewModel.VisualizationManager;
@@ -281,7 +281,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanVisualizeGeometryFromPython()
         {
             var viz = ViewModel.VisualizationManager;
@@ -299,7 +299,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
             var model = ViewModel.Model;
@@ -326,7 +326,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
             var model = ViewModel.Model;
@@ -347,7 +347,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void VisualizationsAreCreatedForCustomNodes()
         {
             Assert.IsTrue(
@@ -363,7 +363,7 @@ namespace DynamoCoreUITests
             Assert.Greater(BackgroundPreview.Points.Count, 0);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void HonorsPreviewSaveState()
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
@@ -377,7 +377,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanDrawNodeLabels()
         {
             var model = ViewModel.Model;
@@ -418,7 +418,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Text.Count());
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CanDrawNodeLabelsOnCurves()
         {
             var model = ViewModel.Model;

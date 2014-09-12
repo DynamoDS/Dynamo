@@ -1,5 +1,7 @@
 ﻿using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
+
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,10 +13,24 @@ namespace Dynamo
 {
     #region Mock Classes for Test Cases
 
+    class SampleSchedulerThread : ISchedulerThread
+    {
+        private DynamoScheduler scheduler;
+
+        public void Initialize(DynamoScheduler owningScheduler)
+        {
+            scheduler = owningScheduler;
+        }
+
+        public void Shutdown()
+        {
+        }
+    }
+
     class SampleAsyncTask : AsyncTask
     {
-        internal SampleAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal SampleAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 
@@ -58,9 +74,10 @@ namespace Dynamo
         /// </summary>
         /// 
         [Test]
+        [Category("UnitTests")]
         public void TimeStampGenerator00()
         {
-            var scheduler = new DynamoScheduler();
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
             Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
@@ -75,6 +92,7 @@ namespace Dynamo
         /// </summary>
         /// 
         [Test, RequiresMTA]
+        [Category("UnitTests")]
         public void TimeStampGenerator01()
         {
             const int EventCount = 16;
@@ -89,7 +107,7 @@ namespace Dynamo
             }
 
             // Start all time-stamp grabbers "at one go".
-            var scheduler = new DynamoScheduler();
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
             Parallel.For(0, EventCount, ((index) =>
             {
                 grabbers[index].GrabTimeStamp(scheduler);
@@ -110,6 +128,7 @@ namespace Dynamo
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TimeStampGenerator02()
         {
             var generator = new TimeStampGenerator();
@@ -146,23 +165,13 @@ namespace Dynamo
         #region AsyncTask Related Test Cases
 
         [Test]
+        [Category("UnitTests")]
         public void AsyncTask00()
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // The first argument cannot be null.
-                var task = new SampleAsyncTask(null, null);
-            });
-
-            var dummyCallback = new Action<AsyncTask>((task) =>
-            {
-                // Dummy callback method that does not do anything.
-            });
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                // Exception is thrown regardless of the second parameter.
-                var task = new SampleAsyncTask(null, dummyCallback);
+                var task = new SampleAsyncTask(null);
             });
         }
 

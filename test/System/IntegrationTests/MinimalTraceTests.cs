@@ -29,6 +29,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public static void ExecTraceClassWithoutSupport()
         {
@@ -37,6 +38,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public static void ExecTraceClassWithoutSupport2()
         {
@@ -46,6 +48,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public static void ExecTraceClassVerifyCleanThread()
         {
@@ -57,6 +60,7 @@ namespace IntegrationTests
 
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public void SanityCheckVMExecution()
         {

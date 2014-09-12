@@ -22,17 +22,7 @@ namespace DynamoSandbox
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            string hostLocation;
-            if (DynamoPathManager.Instance.FindAsm("220", out hostLocation))
-            {
-                DynamoPathManager.Instance.ASM220Host = hostLocation;
-                DynamoPathManager.PreloadAsm(DynamoPathManager.Asm.Version220);
-            }
-            else if (DynamoPathManager.Instance.FindAsm("219", out hostLocation))
-            {
-                DynamoPathManager.Instance.ASM219Host = hostLocation;
-                DynamoPathManager.PreloadAsm(DynamoPathManager.Asm.Version219);
-            }
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
