@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Views
 {
@@ -18,5 +19,17 @@ namespace Dynamo.UI.Views
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void LibraryGridMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+        }
+
+
+        private void LibraryGridMouseEnter(object sender, MouseEventArgs e)
+        {
+            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+        }
+
     }
 }
