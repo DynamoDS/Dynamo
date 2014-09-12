@@ -1,17 +1,12 @@
-﻿using Dynamo.Core;
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Dynamo.UI;
-using Dynamo.Utilities;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows;
-using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {

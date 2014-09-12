@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Models;
 
@@ -106,10 +103,25 @@ namespace Dynamo.Core
         /// action group. Failing to do so will result in subsequent calls to 
         /// BeginActionGroup to throw an exception.</para>
         /// </summary>
-        public void BeginActionGroup()
+        public IDisposable BeginActionGroup()
         {
             EnsureValidRecorderStates();
             currentActionGroup = document.CreateElement(ActionGroup);
+            return new ActionGroupDisposable(this);
+        }
+
+        private sealed class ActionGroupDisposable : IDisposable
+        {
+            private readonly UndoRedoRecorder recorder;
+            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            {
+                this.recorder = recorder;
+            }
+            
+            public void Dispose()
+            {
+                recorder.EndActionGroup();
+            }
         }
 
         /// <summary>
@@ -117,7 +129,7 @@ namespace Dynamo.Core
         /// all recorded actions as part of the group. Actions in an action group
         /// get undone/redone at one go with a single undo/redo command.
         /// </summary>
-        public void EndActionGroup()
+        private void EndActionGroup()
         {
             if (null == currentActionGroup)
                 throw new InvalidOperationException("No open group to end");
