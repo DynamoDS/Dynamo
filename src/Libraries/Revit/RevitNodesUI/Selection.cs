@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -201,6 +202,26 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+
+            // Check the selection for valid elements
+            var savedUuids =
+                nodeElement.ChildNodes.Cast<XmlNode>()
+                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
+                    .Select(subNode => subNode.Attributes[0].Value)
+                    .ToList();
+
+            Selection =
+                savedUuids.Select(doc.GetElement)
+                    .Where(el => el != null)
+                    .Select(el => el.UniqueId).ToList();
+
+            RequiresRecalc = true;
+            RaisePropertyChanged("Selection");
+        }
+
         #endregion
     }
 
@@ -283,7 +304,7 @@ namespace Dynamo.Nodes
             SelectionObjectType selectionObjectType,
             string message,
             string prefix)
-            : base(workspaceModel, selectionType, selectionObjectType, message, prefix) { }
+            : base(workspaceModel, selectionType, selectionObjectType, message, prefix){}
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -356,8 +377,34 @@ namespace Dynamo.Nodes
             var ids = refs.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
 
             return ids.Any()
-                ? System.String.Join(" ", ids.Take(20))
+                ? String.Join(" ", ids.Take(20))
                 : "";
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+
+            // Check the selection for valid references
+            var savedStableRefs =
+                nodeElement.ChildNodes.Cast<XmlNode>()
+                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
+                    .Select(subNode => subNode.Attributes[0].Value)
+                    .ToList();
+
+            Selection = new List<string>();
+            foreach (var stableRef in savedStableRefs)
+            {
+                try
+                {
+                    var geob = Reference.ParseFromStableRepresentation(doc, stableRef);
+                    Selection.Add(stableRef);
+                }
+                catch (Exception) {}
+            }
+
+            RequiresRecalc = true;
+            RaisePropertyChanged("Selection");
         }
     }
     
