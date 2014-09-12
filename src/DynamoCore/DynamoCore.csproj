@@ -145,11 +145,6 @@ limitations under the License.
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
-    <Compile Include="images.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>images.resx</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
@@ -449,10 +444,7 @@ limitations under the License.
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
-    <EmbeddedResource Include="images.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>images.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="images.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
