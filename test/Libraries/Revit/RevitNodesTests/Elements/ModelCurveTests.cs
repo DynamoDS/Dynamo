@@ -44,9 +44,9 @@ namespace DSRevitNodesTests.Elements
             var modelCurve = ModelCurve.ByCurve(nurbsCurve);
             Assert.NotNull(nurbsCurve);
 
-            modelCurve.Curve.Length.ShouldBeApproximately(10);
+            modelCurve.Curve.Length.ShouldBeApproximately(9);
             modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.Origin());
-            modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.ByCoordinates(10,0,0));
+            modelCurve.Curve.EndPoint.ShouldBeApproximately(Point.ByCoordinates(9,0,0));
 
         }
 
