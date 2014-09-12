@@ -124,8 +124,16 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.LargeIcon, false)
-                              + Dynamo.UI.Configurations.LargeIconPostfix);
+                var name = GetResourceName(ResourceType.LargeIcon, false);
+                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.LargeIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                }
+                return icon;
             }
         }
 
@@ -253,6 +261,35 @@ namespace Dynamo.Nodes.Search
             get
             {
                 return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
+            }
+        }
+
+        public SearchElementGroup PrimaryHeaderGroup { get; set; }
+        public SearchElementGroup SecondaryHeaderLeftGroup { get; set; }
+        public SearchElementGroup SecondaryHeaderRightGroup { get; set; }
+        public bool IsPrimaryHeaderVisible { get; set; }
+        public bool IsSecondaryHeaderLeftVisible { get; set; }
+        public bool IsSecondaryHeaderRightVisible { get; set; }
+
+        public enum DisplayMode { None, Query, Action };
+
+
+        /// <summary>
+        /// Specifies which of QueryMembers of ActionMembers list is active for the moment.
+        /// If any of CreateMembers, ActionMembers or QueryMembers lists is empty
+        /// it returns 'None'.
+        /// </summary>
+        private DisplayMode currentDisplayMode;
+        public DisplayMode CurrentDisplayMode
+        {
+            get
+            {
+                return currentDisplayMode;
+            }
+            set
+            {
+                currentDisplayMode = value;
+                RaisePropertyChanged("CurrentDisplayMode");
             }
         }
 

@@ -11,8 +11,10 @@
              Background="Transparent"
              MinWidth="100">
     <UserControl.Resources>
-        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
+        <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -21,7 +23,7 @@
                     Value="Transparent" />
             <Setter Property="BorderThickness"
                     Value="1" />
-            <Setter Property="Height" 
+            <Setter Property="Height"
                     Value="40" />
 
             <Setter Property="Template">
@@ -57,26 +59,33 @@
     <Grid DataContextChanged="GridDataContextChanged"
           Background="#272727"
           Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityConverter},
-                               ConverterParameter='Collapse'}">
+                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="topCategoryHeader"
+        <TextBlock x:Name="primaryHeader"
                    Foreground="#777777"
                    VerticalAlignment="Center"
                    FontSize="9"
                    Margin="16,0,0,0">
+            <TextBlock.Visibility>
+                <Binding Path="IsPrimaryHeaderVisible"
+                         Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+            </TextBlock.Visibility>
+            <TextBlock.Text>
+                <Binding Path="PrimaryHeaderGroup"
+                         Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+            </TextBlock.Text>
             <TextBlock.TextDecorations>
                 <TextDecoration Location="Underline"
                                 PenOffset="2"
                                 PenOffsetUnit="Pixel" />
             </TextBlock.TextDecorations>
-            CREATE</TextBlock>
-        <ListBox x:Name="topCategoryList"
+        </TextBlock>
+        <ListBox x:Name="primaryMembers"
                  Grid.Row="1"
                  Background="Transparent"
                  BorderBrush="Transparent"
@@ -103,12 +112,79 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel x:Name="addCategoryHeaders"
-                    Orientation="Horizontal"
+        <StackPanel Orientation="Horizontal"
                     Grid.Row="2"
                     Margin="16,0,0,0">
+            <TextBlock x:Name="secondaryHeaderLeft"
+                       Tag="Query"
+                       PreviewMouseDown="OnHeaderMouseDown"
+                       Foreground="#777777"
+                       VerticalAlignment="Center"
+                       FontSize="9"
+                       Margin="0,0,10,0">
+                <TextBlock.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderLeftGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
+                <TextBlock.TextDecorations>
+                    <TextDecoration PenOffset="2"
+                                    PenOffsetUnit="Pixel">
+                        <TextDecoration.Pen>
+                            <Pen Brush="#777777">
+                                <Pen.Thickness>
+                                    <Binding Path="CurrentDisplayMode"
+                                             Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                             ConverterParameter="Query" />
+                                </Pen.Thickness>
+                            </Pen>
+                        </TextDecoration.Pen>
+                    </TextDecoration>
+                </TextBlock.TextDecorations>
+            </TextBlock>
+            <Ellipse Fill="#777777"
+                     Height="3"
+                     Width="3"
+                     Margin="0,0,10,0">
+                <Ellipse.Visibility>
+                    <Binding Path="IsSecondaryHeaderRightVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Ellipse.Visibility>
+            </Ellipse>
+            <TextBlock x:Name="secondaryHeaderRight"
+                       Tag="Action"
+                       PreviewMouseDown="OnHeaderMouseDown"
+                       Foreground="#777777"
+                       VerticalAlignment="Center"
+                       FontSize="9">
+                <TextBlock.Visibility>
+                    <Binding Path="IsSecondaryHeaderRightVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderRightGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
+                <TextBlock.TextDecorations>
+                    <TextDecoration PenOffset="2"
+                                    PenOffsetUnit="Pixel">
+                        <TextDecoration.Pen>
+                            <Pen Brush="#777777">
+                                <Pen.Thickness>
+                                    <Binding Path="CurrentDisplayMode"
+                                             Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                             ConverterParameter="Action" />
+                                </Pen.Thickness>
+                            </Pen>
+                        </TextDecoration.Pen>
+                    </TextDecoration>
+                </TextBlock.TextDecorations>
+            </TextBlock>
         </StackPanel>
-        <ListBox x:Name="addCategoryList"
+        <ListBox x:Name="secondaryMembers"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
                  Background="Transparent"
