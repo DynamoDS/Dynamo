@@ -21,6 +21,7 @@ namespace DynamoWebServer.Messages
 
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoViewModel dynamoViewModel;
+		private FileUploader uploader;
         private RenderCompleteEventHandler RenderCompleteHandler;
 
         public MessageHandler(DynamoViewModel dynamoViewModel)
@@ -83,6 +84,10 @@ namespace DynamoWebServer.Messages
             {
                 SaveFile(dynamo, message, sessionId);
             }
+            else if (message is UploadFileMessage)
+            {
+                UploadFile(dynamo, message, sessionId);
+            }
             else if (message is GetNodeGeometryMessage)
             {
                 RetrieveGeometry(((GetNodeGeometryMessage)message).NodeID, sessionId);
@@ -106,6 +111,27 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
+        private void UploadFile(DynamoViewModel dynamo, Message message, string sessionId)
+        {
+            if (uploader == null)
+                uploader = new FileUploader();
+
+            if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
+            {
+                var manager = dynamo.VisualizationManager;
+                RenderCompleteHandler = (sender, e) => NodesDataCreated(sender, e, sessionId);
+                manager.RenderComplete += RenderCompleteHandler;
+                dynamo.ExecuteCommand(new DynamoViewModel.RunCancelCommand(false, false));
+            }
+            else
+            {
+                OnResultReady(this, new ResultReadyEventArgs(new UploadFileResponse
+                {
+                    Status = ResponceStatuses.Error,
+                    StatusMessage = "Bad file request"
+                }, sessionId));
+            }
+        }
 
         private void SaveFile(DynamoViewModel dynamo, Message message, string sessionId)
         {
@@ -224,56 +250,7 @@ namespace DynamoWebServer.Messages
 
         private void NodesDataModified(object sender, RenderCompletionEventArgs e, string sessionId)
         {
-            var nodes = new List<ExecutedNode>();
-            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
-
-            foreach (var node in currentWorkspace.Nodes)
-            {
-                string data;
-                var codeBlock = node as CodeBlockNodeModel;
-                if (codeBlock != null)
-                {
-                    var inPorts = codeBlock.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
-                    var outPorts = codeBlock.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
-
-                    var stringBuilder = new StringBuilder();
-
-                    stringBuilder.Append("{\"Code\":\"");
-                    stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
-                    stringBuilder.Append("\", \"InPorts\": [");
-                    stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
-                    stringBuilder.Append("], \"OutPorts\": [");
-                    stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-                    stringBuilder.Append("]}");
-
-                    data = stringBuilder.ToString();
-                }
-                else
-                {
-                    data = "null";
-                    if (node.CachedValue != null)
-                    {
-                        if (node.CachedValue.IsCollection)
-                        {
-                            data = "Array";
-                        }
-                        else
-                        {
-                            if (node.CachedValue.Data != null)
-                            {
-                                data = node.CachedValue.Data.ToString();
-                            }
-                        }
-                    }
-                }
-
-                // send only updated nodes back
-                if (node.IsUpdated)
-                {
-                    var execNode = new ExecutedNode(node, data);
-                    nodes.Add(execNode);
-                }
-            }
+            var nodes = GetExecutedNodes();
 
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
             {
@@ -281,6 +258,169 @@ namespace DynamoWebServer.Messages
             }, sessionId));
 
             dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
+        }
+
+        private void NodesDataCreated(object sender, RenderCompletionEventArgs e, string sessionId)
+        {
+            var nodes = GetExecutedNodes();
+
+            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
+
+            foreach (var node in currentWorkspace.Nodes)
+            {
+                string data;
+                ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeID == node.GUID.ToString());
+                if (node is Function)
+                {
+                    // include data about number of inputs and outputs
+                    data = GetInOutPortsData(node);
+                }
+                else if (exnode != null)
+                {
+                    // needed data is already computed and contains in executed nodes
+                    data = exnode.Data;
+                }
+                else
+                {
+                    // all nodes in custom node workspace are always considered as not updated
+                    // so node.IsUpdated=false and there are no executed nodes for them
+                    data = GetData(node);
+                }
+
+                uploader.AddCreationData(node, data);
+            }
+
+
+            var response = new NodeCreationDataResponse
+            {
+                Nodes = uploader.NodesToCreate,
+                Connections = uploader.ConnectorsToCreate,
+                NodesResult = nodes
+            };
+
+            var proxyNodesResponses = new List<UpdateProxyNodesResponse>();
+            if (uploader.IsCustomNode)
+            {
+                var model = currentWorkspace as CustomNodeWorkspaceModel;
+                response.WorkspaceID = model.CustomNodeDefinition.FunctionId.ToString();
+
+                // after uploading custom node definition there may be proxy nodes
+                // that were updated 
+                var allWorkspaces = dynamoViewModel.Model.Workspaces;
+                foreach (var ws in allWorkspaces)
+                {
+                    // current workspace id
+                    string wsID = ws is CustomNodeWorkspaceModel ?
+                        (ws as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId.ToString() : "";
+                    var nodeIDs = new List<string>();
+
+                    // foreach custom node within current workspace
+                    foreach (var node in ws.Nodes.Where(n => n is Function))
+                    {
+                        Function func = node as Function;
+                        // if this node was updated by uploading current custom node definition
+                        if (func.Definition.FunctionId == model.CustomNodeDefinition.FunctionId)
+                            nodeIDs.Add(node.GUID.ToString());
+                    }
+
+                    // if there are updated nodes add the response data
+                    if (nodeIDs.Any())
+                    {
+                        proxyNodesResponses.Add(new UpdateProxyNodesResponse()
+                        {
+                            WorkspaceID = wsID,
+                            NodesIDs = nodeIDs,
+                            CustomNodeID = response.WorkspaceID
+                        });
+                    }
+                }
+            }
+
+            OnResultReady(this, new ResultReadyEventArgs(response, sessionId));
+
+            foreach (var pnResponse in proxyNodesResponses)
+            {
+                OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
+            }
+
+            dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
+        }
+
+        private string GetData(NodeModel node)
+        {
+            string data;
+            if (node is CodeBlockNodeModel)
+            {
+                data = GetInOutPortsData(node);
+            }
+            else
+            {
+                data = "null";
+                if (node.CachedValue != null)
+                {
+                    if (node.CachedValue.IsCollection)
+                    {
+                        data = "Array";
+                    }
+                    else if (node.CachedValue.Data != null)
+                    {
+                        data = node.CachedValue.Data.ToString();
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        private IEnumerable<ExecutedNode> GetExecutedNodes()
+        {
+            var result = new List<ExecutedNode>();
+            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
+
+            foreach (var node in currentWorkspace.Nodes)
+            {
+                // send only updated nodes back
+                if (node.IsUpdated)
+                {
+                    string data;
+                    if (node is CodeBlockNodeModel)
+                    {
+                        data = GetInOutPortsData(node);
+                    }
+                    else
+                    {
+                        data = GetData(node);
+                    }
+
+                    var execNode = new ExecutedNode(node, data);
+                    result.Add(execNode);
+                }
+            }
+
+            return result;
+        }
+
+        private string GetInOutPortsData(NodeModel node)
+        {
+            var inPorts = node.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
+            var outPorts = node.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
+
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.Append("{");
+            if (node is CodeBlockNodeModel)
+            {
+                stringBuilder.Append("\"Code\":\"");
+                stringBuilder.Append((node as CodeBlockNodeModel).Code.Replace("\n", "\\n") + "\", ");
+            }
+
+            stringBuilder.Append("\"InPorts\": [");
+            stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
+            stringBuilder.Append("], \"OutPorts\": [");
+            stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
+            stringBuilder.Append("]}");
+
+            return stringBuilder.ToString();
         }
 
         private void RetrieveGeometry(string nodeId, string sessionId)
@@ -298,6 +438,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
+        /// <summary>
         /// Cleanup workspace
         /// </summary>
         private void ClearWorkspace()
