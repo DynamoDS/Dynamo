@@ -18,7 +18,7 @@ using ReferencePoint = Revit.Elements.ReferencePoint;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    internal class ReferencePointTests : RevitNodeTestBase
+    internal class ReferencePointTests : GeometricRevitNodeTest
     {
 
         internal XYZ InternalPosition(Revit.Elements.ReferencePoint point)

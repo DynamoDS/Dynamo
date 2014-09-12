@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 using Dynamo.Utilities;
-
 using DynamoUtilities;
 
 namespace DSRevitNodesTests
@@ -20,6 +15,7 @@ namespace DSRevitNodesTests
             if (resolverSetup) return;
 
             DynamoPathManager.Instance.InitializeCore(GetDynamoRootDirectory());
+
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
             resolverSetup = true;

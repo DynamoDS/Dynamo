@@ -149,8 +149,7 @@ namespace Dynamo.Applications
             var versionInt = int.Parse(application.ControlledApplication.VersionNumber);
             if (versionInt > 2014)
             {
-                DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
-                DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
+                DynamoPathManager.Instance.SetLibGPath("220");
             }
         }
 
