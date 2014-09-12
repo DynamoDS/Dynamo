@@ -264,13 +264,26 @@ namespace Revit.Elements
             {
                 TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                 DocumentManager.Regenerate();
-                var pts = new List<Point>();
-                var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
                 TransactionManager.Instance.TransactionTaskDone();
-                foreach (var id in ids)
+
+                var pts = new List<Point>();
+                if (AdaptiveComponentInstanceUtils.IsAdaptiveComponentInstance(InternalFamilyInstance))
                 {
-                    var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
-                    pts.Add(p.Position.ToPoint());
+                    var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
+                    foreach (var id in ids)
+                    {
+                        var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                        pts.Add(p.Position.ToPoint());
+                    }
+                }
+                else
+                {
+                    var ptRefs = InternalFamilyInstance.GetFamilyPointPlacementReferences();
+                    pts.AddRange(ptRefs.Select(x =>
+                    {
+                        var xyz = x.Location.Origin;
+                        return Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
+                    }));
                 }
                 return pts;
             }

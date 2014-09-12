@@ -1,13 +1,6 @@
 ﻿using System.Windows;
-using Dynamo.Utilities;
 using System.Windows.Controls;
-using System.IO;
-using System.Xml;
-using System.Windows.Documents;
-using System.Windows.Markup;
-using System.Diagnostics;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 

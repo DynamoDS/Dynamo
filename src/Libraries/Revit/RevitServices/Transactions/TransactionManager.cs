@@ -302,7 +302,7 @@ namespace RevitServices.Transactions
         /// <summary>
         ///     Starts a RevitAPI Transaction that will be managed by this TransactionManager instance.
         /// </summary>
-        /// <param name="document">Document (DB) to start a Transaction for.</param>
+        /// <param name="document">Document (DB) to start a Transaction for. The parameter can not be null.</param>
         public TransactionHandle StartTransaction(Document document)
         {
             if (Transaction == null || Transaction.GetStatus() != TransactionStatus.Started)
@@ -310,7 +310,7 @@ namespace RevitServices.Transactions
                 TransactionManager.Log("Starting Transaction.");
                 
                 // Dispose the old transaction so that it won't impact the new transaction
-                if (null != Transaction)
+                if (null != Transaction && Transaction.IsValidObject)
                     Transaction.Dispose();
 
                 Transaction = new Transaction(document, "Dynamo Script");
@@ -332,7 +332,7 @@ namespace RevitServices.Transactions
         {
             get
             {
-                return Transaction != null 
+                return Transaction != null && Transaction.IsValidObject
                     && Transaction.GetStatus() == TransactionStatus.Started;
             }
         }

@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Dynamo.Controls;
-using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {

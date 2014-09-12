@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Dynamo.Core
+﻿namespace Dynamo.Core
 {
     //KILLDYNSETTINGS: This should live in DynamoRevit
     public static class Context

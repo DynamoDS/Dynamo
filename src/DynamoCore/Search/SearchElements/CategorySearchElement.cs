@@ -1,6 +1,4 @@
-﻿using Dynamo.Utilities;
-
-namespace Dynamo.Search.SearchElements
+﻿namespace Dynamo.Search.SearchElements
 {
     class CategorySearchElement : SearchElementBase
     {

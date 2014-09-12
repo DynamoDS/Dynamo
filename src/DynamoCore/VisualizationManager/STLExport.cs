@@ -2,8 +2,6 @@
 using System.Linq;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo
 {
