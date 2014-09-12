@@ -151,7 +151,12 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+            
+            if(node.OutPorts.Count > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected string GetVarName(string guid)
@@ -159,7 +164,12 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+            
+            if(node.OutPorts.Count > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected RuntimeMirror GetRuntimeMirror(string varName)
