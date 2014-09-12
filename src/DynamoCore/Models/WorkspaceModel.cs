@@ -18,7 +18,6 @@ using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Utils = Dynamo.Nodes.Utilities;
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -377,18 +376,18 @@ namespace Dynamo.Models
         {
             get
             {
-                return this.preloadedTraceData;
+                return preloadedTraceData;
             }
 
             set
             {
-                if (value != null && (this.preloadedTraceData != null))
+                if (value != null && (preloadedTraceData != null))
                 {
                     var message = "PreloadedTraceData cannot be set twice";
                     throw new InvalidOperationException(message);
                 }
 
-                this.preloadedTraceData = value;
+                preloadedTraceData = value;
             }
         }
 
@@ -399,7 +398,7 @@ namespace Dynamo.Models
         protected WorkspaceModel( DynamoModel dynamoModel, String name, IEnumerable<NodeModel> e,
             IEnumerable<ConnectorModel> c, double x, double y)
         {
-            this.DynamoModel = dynamoModel;
+            DynamoModel = dynamoModel;
             NodeFactory = new NodeFactory(this, dynamoModel);
 
             Name = name;
@@ -457,10 +456,10 @@ namespace Dynamo.Models
 
         public T AddNode<T>() where T : NodeModel
         {
-            var node = this.NodeFactory.CreateNodeInstance<T>();
+            var node = NodeFactory.CreateNodeInstance<T>();
             if (node == null) throw new Exception("The supplied node Type was invalid!");
 
-            this.Nodes.Add(node);
+            Nodes.Add(node);
 
             return node;
         }
@@ -501,7 +500,7 @@ namespace Dynamo.Models
             if (nodeId == Guid.Empty)
                 throw new ArgumentException("Node ID must be specified", "nodeId");
 
-            NodeModel node = this.NodeFactory.CreateNodeInstance(nodeName);
+            NodeModel node = NodeFactory.CreateNodeInstance(nodeName);
             if (node == null)
             {
                 string format = "Failed to create node '{0}' (GUID: {1})";
@@ -509,13 +508,21 @@ namespace Dynamo.Models
                 return null;
             }
 
+            AddNode(node, nodeId, x, y, useDefaultPos, transformCoordinates, xmlNode);
+            return node;
+        }
+
+        public void AddNode(
+            NodeModel node, Guid nodeId, double x, double y,
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
+        {
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
                 node.Y = y;
             }
 
-            this.Nodes.Add(node);
+            Nodes.Add(node);
 
             if (null != xmlNode)
                 node.Load(xmlNode);
@@ -532,7 +539,7 @@ namespace Dynamo.Models
                 args = new ModelEventArgs(node, transformCoordinates);
             }
 
-            this.OnRequestNodeCentered(this, args);
+            OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
@@ -540,7 +547,6 @@ namespace Dynamo.Models
                 node.SaveResult = true;
 
             DynamoModel.OnNodeAdded(node);
-            return node;
         }
 
         public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.INPUT )
@@ -550,9 +556,9 @@ namespace Dynamo.Models
                 var c = ConnectorModel.Make(this, start, end, startIndex, endIndex, portType );
 
                 if (c != null)
-                    this.Connectors.Add(c);
+                    Connectors.Add(c);
 
-                this.DynamoModel.OnConnectorAdded(c);
+                DynamoModel.OnConnectorAdded(c);
 
                 return c;
             }
@@ -576,14 +582,14 @@ namespace Dynamo.Models
             if (centerNote)
             {
                 var args = new ModelEventArgs(noteModel, true);
-                this.OnRequestNodeCentered(this, args);
+                OnRequestNodeCentered(this, args);
             }
 
             noteModel.Text = "New Note";
             if (!string.IsNullOrEmpty(text))
                 noteModel.Text = text;
 
-            this.Notes.Add(noteModel);
+            Notes.Add(noteModel);
             return noteModel;
         }
 
@@ -660,19 +666,19 @@ namespace Dynamo.Models
             document.CreateXmlDeclaration("1.0", null, null);
             document.AppendChild(document.CreateElement("Workspace"));
 
-            Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, targetFilePath);
+            Utils.SetDocumentXmlPath(document, targetFilePath);
 
-            if (!this.PopulateXmlDocument(document))
+            if (!PopulateXmlDocument(document))
                 return false;
 
-            this.SerializeSessionData(document);
+            SerializeSessionData(document);
 
             try
             {
-                Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
+                Utils.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 return false;
             }
@@ -789,7 +795,7 @@ namespace Dynamo.Models
 
                 // Selecting all nodes that are either a DSFunction,
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids = this.Nodes.Where((n) =>
+                var nodeGuids = Nodes.Where((n) =>
                 {
                     return (n is DSFunction
                         || (n is DSVarArgFunction)
@@ -813,7 +819,7 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            ModelBase model = this.GetModelInternal(modelGuid);
+            ModelBase model = GetModelInternal(modelGuid);
             if (null != model)
             {
                 RecordModelForModification(model);
@@ -833,7 +839,7 @@ namespace Dynamo.Models
                     throw new InvalidOperationException(message);
                 }
 
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
             }
         }
 
@@ -860,7 +866,7 @@ namespace Dynamo.Models
                     throw new InvalidOperationException(message);
                 }
 
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
             }
         }
 
@@ -871,7 +877,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = this.DynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+            string code = DynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
@@ -951,7 +957,7 @@ namespace Dynamo.Models
             //End UndoRedo Action Group------------------------------------------
 
             // select node
-            var placedNode = this.DynamoModel.Nodes.Find((node) => node.GUID == nodeId);
+            var placedNode = DynamoModel.Nodes.Find((node) => node.GUID == nodeId);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -980,7 +986,7 @@ namespace Dynamo.Models
             model.HasUnsavedChanges = false;
 
             // KILLDYNSETTINGS - just expose this as an event on dynamoModel
-            this.DynamoModel.OnWorkspaceSaved(model);
+            DynamoModel.OnWorkspaceSaved(model);
         }
 
         private void MarkUnsaved(
@@ -1328,7 +1334,7 @@ namespace Dynamo.Models
                 string variableName = kvp.Value;
                 int startIndex = 0, endIndex = 0;
 
-                //Get the start and end idex for the ports for the connection
+                //Get the start and end index for the ports for the connection
                 endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
                 int i = 0;
                 for (i = 0; i < codeBlockNode.OutPorts.Count; i++)
@@ -1336,12 +1342,16 @@ namespace Dynamo.Models
                     if (codeBlockNode.GetAstIdentifierForOutputIndex(i).Value == variableName)
                         break;
                 }
+
                 var portModel = codeBlockNode.OutPorts[i];
                 startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
-                var newConnector = this.AddConnection(codeBlockNode, connector.End.Owner,
-                    startIndex, endIndex, PortType.INPUT);
+                var newConnector = AddConnection(
+                    codeBlockNode,
+                    connector.End.Owner,
+                    startIndex,
+                    endIndex);
 
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
@@ -1373,7 +1383,7 @@ namespace Dynamo.Models
                     x.End == codeBlockNode.InPorts[endIndex])) == null)
                 {
                     //Make the new connection and then record and add it
-                    var newConnector = this.AddConnection(connector.Start.Owner, codeBlockNode,
+                    var newConnector = AddConnection(connector.Start.Owner, codeBlockNode,
                         startIndex, endIndex);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
@@ -1398,13 +1408,13 @@ namespace Dynamo.Models
 
                     //This is only used for computing relative offsets, it's not actually created
                     string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
-                    Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, virtualFileName);
+                    Utils.SetDocumentXmlPath(document, virtualFileName);
 
-                    if (!this.PopulateXmlDocument(document))
+                    if (!PopulateXmlDocument(document))
                         return;
 
                     //Now unset the temp file name again
-                    Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, null);
+                    Utils.SetDocumentXmlPath(document, null);
 
 
                     outData = document.OuterXml;
