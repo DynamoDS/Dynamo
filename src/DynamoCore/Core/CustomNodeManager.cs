@@ -7,7 +7,6 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
-using Dynamo.ViewModels;
 
 using DynamoUtilities;
 

@@ -3,13 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
 

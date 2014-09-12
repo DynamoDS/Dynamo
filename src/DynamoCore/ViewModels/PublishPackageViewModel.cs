@@ -4,24 +4,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Threading;
 
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
 using Greg.Requests;
-using Greg.Responses;
+
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;

@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;

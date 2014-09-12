@@ -1,8 +1,7 @@
 ﻿using System.IO;
+using System.Linq;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using Revit.Elements;
 using RTF.Framework;
 
 namespace Dynamo.Tests
@@ -72,25 +71,24 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
-
             ViewModel.Model.RunExpression();
 
-            var refPtNodeId = "ac5bd8f9-fcf5-46db-b795-3590044edb56";
-            AssertPreviewCount(refPtNodeId, 5);
+            const string adaptiveComponentNodeId = "ac5bd8f9-fcf5-46db-b795-3590044edb56";
+            AssertPreviewCount(adaptiveComponentNodeId, 5);
 
-            var refPt = GetPreviewValueAtIndex(refPtNodeId, 3) as Family;
-            Assert.IsNotNull(refPt);
+            var acNode = ViewModel.Model.Nodes.FirstOrDefault(x => x.GUID.ToString() == adaptiveComponentNodeId);
+            Assert.NotNull(acNode);
+
+            var adaptiveComponent = GetPreviewValueAtIndex(adaptiveComponentNodeId, 3) as Revit.Elements.AdaptiveComponent;
+            Assert.IsNotNull(adaptiveComponent);
 
             // change slider value and re-evaluate graph
-            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace
+            var slider = model.CurrentWorkspace.NodeFromWorkspace
                 ("91b7e7ef-9db3-4aa2-8762-6a863188e7ec") as DoubleSlider;
             slider.Value = 3;
 
             RunCurrentModel();
-            AssertPreviewCount(refPtNodeId, 3);
+            AssertPreviewCount(adaptiveComponentNodeId, 3);
 
         }
     }

@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
-using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Utilities;
+
 using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.DSEngine;
 
 namespace Dynamo.ViewModels
 {

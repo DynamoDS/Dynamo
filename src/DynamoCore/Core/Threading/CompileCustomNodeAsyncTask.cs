@@ -1,16 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-
-using Dynamo.DSEngine;
-using Dynamo.Models;
-
-using ProtoCore.AST.AssociativeAST;
-
-using ProtoScript.Runners;
-
-namespace Dynamo.Core.Threading
+﻿namespace Dynamo.Core.Threading
 {
 #if ENABLE_DYNAMO_SCHEDULER
 
@@ -33,8 +21,8 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 
