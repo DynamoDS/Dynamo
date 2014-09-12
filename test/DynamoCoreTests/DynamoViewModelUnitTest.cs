@@ -29,9 +29,10 @@ namespace Dynamo.Tests
         {
             try
             {
-                ViewModel.Model.ShutDown(false, null);
+                var vm = ViewModel;
                 ViewModel = null;
                 DynamoSelection.Instance.ClearSelection();
+                vm.Model.ShutDown(false, null);
             }
             catch (Exception ex)
             {

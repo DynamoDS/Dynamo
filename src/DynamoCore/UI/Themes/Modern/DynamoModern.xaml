@@ -19,7 +19,7 @@
     <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
     <Color x:Key="DisabledForegroundColor">#FF888888</Color>
 
-    <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+    <Color x:Key="SelectedBackgroundColor">#a1dbff</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
 
     <Color x:Key="ControlLightColor">White</Color>
@@ -1256,16 +1256,17 @@
                             <ContentControl />
                             <Label x:Name="label"
                                    Content="Show Samples In Folder"
-                                   Foreground="#000000"
-                                   FontSize="14" />
+                                   Foreground="#888888"
+                                   FontSize="12"
+                                   FontFamily="{StaticResource OpenSansRegular}"/>
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
                                  Value="True">
-                            <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#B4DAFF" />
+                            <Setter TargetName="label"
+                                    Property="Foreground"
+                                    Value="#333" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

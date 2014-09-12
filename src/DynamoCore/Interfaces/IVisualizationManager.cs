@@ -1,6 +1,4 @@
-﻿using Dynamo.Models;
-
-namespace Dynamo.Interfaces
+﻿namespace Dynamo.Interfaces
 {
     public interface IVisualizationManager
     {

@@ -13,7 +13,6 @@ using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
-using ProtoCore.Mirror;
 using ProtoCore.Utils;
 
 using ProtoFFI;

@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI

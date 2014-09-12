@@ -5,7 +5,6 @@ using Dynamo.Utilities;
 
 using Greg.Responses;
 
-
 namespace Dynamo.PackageManager
 {
     internal static class PackageUtilities

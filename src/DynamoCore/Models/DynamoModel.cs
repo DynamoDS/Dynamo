@@ -1286,20 +1286,37 @@ namespace Dynamo.Models
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
-
+                
                 var xmlDoc = new XmlDocument();
-                var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
-                xmlDoc.AppendChild(dynEl);
-                node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                var newNode = CurrentWorkspace.AddNode(
-                    newGuid,
-                    nodeName,
-                    node.X,
-                    node.Y + 100,
-                    false,
-                    false,
-                    dynEl);
+                NodeModel newNode;
+
+                if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
+                {
+                    var symbol = (node is Symbol
+                        ? (node as Symbol).InputSymbol
+                        : (node as Output).Symbol);
+                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
+                    newNode = new CodeBlockNodeModel(CurrentWorkspace, code);
+
+                    CurrentWorkspace.AddNode(newNode, newGuid, node.X, node.Y + 100, false, false);
+                }
+                else
+                {
+                    var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
+                    xmlDoc.AppendChild(dynEl);
+                    node.Save(xmlDoc, dynEl, SaveContext.Copy);
+
+                    newNode = CurrentWorkspace.AddNode(
+                        newGuid,
+                        nodeName,
+                        node.X,
+                        node.Y + 100,
+                        false,
+                        false,
+                        dynEl);
+                }
+
                 createdModels.Add(newNode);
 
                 newNode.ArgumentLacing = node.ArgumentLacing;
