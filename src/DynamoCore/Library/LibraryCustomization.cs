@@ -144,7 +144,9 @@ namespace Dynamo.DSEngine
         public string GetNamespaceCategory(string namespaceName)
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
-            var obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            object obj = String.Empty;
+            if (XmlDocument != null)
+                obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
         }
 

@@ -445,6 +445,7 @@ limitations under the License.
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
     <EmbeddedResource Include="images.resx" />
+    <EmbeddedResource Include="imagesProtoGeometry.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -890,7 +891,7 @@ copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"
 copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>    
+  <PropertyGroup>
     <PostBuildEvent>mkdir "$(OutputPath)\dll"
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"</PostBuildEvent>
     <PostBuildEvent>xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
@@ -906,15 +907,11 @@ xcopy  /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"</PostBuildEve
   -->
   <Target Name="AfterBuild">
     <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths"
-              PropertyName="FrameworkAssembliesPath" />
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
-    <GenerateResource UseSourcePath="true"
-                      Sources="$(ProjectDir)images.resx"
-                      OutputResources="$(ProjectDir)images.resources"
-                      References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library"
-        EmbedResources="$(ProjectDir)images.resources"
-        OutputAssembly="$(OutDir)$(TargetName).resources.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)images.resx" OutputResources="$(ProjectDir)images.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)images.resources" OutputAssembly="$(OutDir)$(TargetName).resources.dll" />
+	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)imagesProtoGeometry.resx" OutputResources="$(ProjectDir)imagesProtoGeometry.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)imagesProtoGeometry.resources" OutputAssembly="$(OutDir)ProtoGeometry.resources.dll" />
   </Target>
 </Project>
