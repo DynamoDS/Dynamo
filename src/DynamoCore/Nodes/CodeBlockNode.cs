@@ -159,9 +159,9 @@ namespace Dynamo.Nodes
                         string warningMessage = string.Empty;
 
                         DisableReporting();
-                        {
-                            Workspace.UndoRecorder.BeginActionGroup();
 
+                        using (Workspace.UndoRecorder.BeginActionGroup())
+                        {
                             var inportConnections = new OrderedDictionary();
                             var outportConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
@@ -179,8 +179,8 @@ namespace Dynamo.Nodes
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
-                            Workspace.UndoRecorder.EndActionGroup();
                         }
+
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         ReportPosition();
