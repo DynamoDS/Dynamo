@@ -11,8 +11,10 @@
              Background="Transparent"
              MinWidth="100">
     <UserControl.Resources>
-        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
+        <controls:DisplayModeToFontWeightConverter x:Key="DisplayModeToFontWeightConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -54,17 +56,25 @@
     </UserControl.Resources>
     <Grid DataContextChanged="GridDataContextChanged"
           Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityConverter},
-                               ConverterParameter='Collapse'}">
+                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="topCategoryHeader"
-                   Foreground="#DDD">CREATE</TextBlock>
-        <ListBox x:Name="topCategoryList"
+        <TextBlock x:Name="primaryHeader"
+                   Foreground="#DDD">
+            <TextBlock.Visibility>
+                <Binding Path="IsPrimaryHeaderVisible"
+                         Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+            </TextBlock.Visibility>
+            <TextBlock.Text>
+                <Binding Path="PrimaryHeaderGroup"
+                         Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+            </TextBlock.Text>
+        </TextBlock>
+        <ListBox x:Name="primaryMembers"
                  Grid.Row="1"
                  Background="Transparent"
                  BorderBrush="Transparent"
@@ -90,11 +100,47 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel x:Name="addCategoryHeaders"
-                    Orientation="Horizontal"
+        <StackPanel Orientation="Horizontal"
                     Grid.Row="2">
+            <TextBlock x:Name="secondaryHeaderLeft"
+                       Tag="Query"
+                       Foreground="#DDD"
+                       PreviewMouseDown="OnHeaderMouseDown">
+                <TextBlock.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderLeftGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
+                <TextBlock.FontWeight>
+                    <Binding Path="CurrentDisplayMode"
+                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
+                             ConverterParameter="Query" />
+                </TextBlock.FontWeight>
+            </TextBlock>
+            <TextBlock x:Name="secondaryHeaderRight"
+                       Tag="Action"
+                       Foreground="#DDD"
+                       Margin="10,0,0,0"
+                       PreviewMouseDown="OnHeaderMouseDown">
+                <TextBlock.Visibility>
+                    <Binding Path="IsSecondaryHeaderRightVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </TextBlock.Visibility>
+                <TextBlock.Text>
+                    <Binding Path="SecondaryHeaderRightGroup"
+                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                </TextBlock.Text>
+                <TextBlock.FontWeight>
+                    <Binding Path="CurrentDisplayMode"
+                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
+                             ConverterParameter="Action" />
+                </TextBlock.FontWeight>
+            </TextBlock>
         </StackPanel>
-        <ListBox x:Name="addCategoryList"
+        <ListBox x:Name="secondaryMembers"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
                  Background="Transparent"

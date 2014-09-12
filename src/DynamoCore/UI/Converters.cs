@@ -22,6 +22,7 @@ using System.Windows.Controls.Primitives;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
+using Dynamo.Search;
 using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
@@ -1682,6 +1683,54 @@ namespace Dynamo.Controls
                 return rootElement.ClassDetails;
 
             return rootElement;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter displays correct header text on StandarPanel
+    /// by using SearchElement as value parameter.
+    public class SearchElementGroupToHeaderConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((SearchElementGroup)value)
+            {
+                case SearchElementGroup.Create:
+                    return "CREATE";
+                case SearchElementGroup.Action:
+                    return "ACTIONS";
+                case SearchElementGroup.Query:
+                    return "QUERY";
+                default:
+                    return "Header is undefined";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter makes TextBlock fornt weight as UltraBold if it is currently selected.
+    /// To know for which TextBlock the converter works the parameter used.
+    /// Converter is used on StandardPanel.
+    public class DisplayModeToFontWeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var displayMode = (ClassInformation.DisplayMode)value;
+            if (parameter == null)
+                return FontWeights.Normal;
+
+            if (displayMode.ToString() == parameter.ToString())
+                return FontWeights.UltraBold;
+
+            return FontWeights.Normal;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
