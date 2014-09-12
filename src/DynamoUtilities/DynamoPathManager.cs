@@ -395,7 +395,7 @@ namespace DynamoUtilities
         /// </summary>
         public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
         {
-            //if (PreloadAsmVersion("220", pathManager)) return true;
+            if (PreloadAsmVersion("220", pathManager)) return true;
             if (PreloadAsmVersion("219", pathManager)) return true;
 
             return false;
