@@ -152,8 +152,11 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            
-            if(node.OutPorts.Count > 1) 
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if(outportCount > 1) 
                 return node.AstIdentifierBase; 
             else 
                 return node.GetAstIdentifierForOutputIndex(0).Value;
@@ -165,8 +168,11 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            
-            if(node.OutPorts.Count > 1) 
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if (outportCount > 1) 
                 return node.AstIdentifierBase; 
             else 
                 return node.GetAstIdentifierForOutputIndex(0).Value;
