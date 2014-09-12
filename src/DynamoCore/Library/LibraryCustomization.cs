@@ -97,7 +97,7 @@ namespace Dynamo.DSEngine
                 fn = fn + Configurations.ResourcesDLL;
 
                 resourceAssemblyPath = Path.Combine(dir, fn);
-                
+
                 return File.Exists(resourceAssemblyPath);
             }
             catch
