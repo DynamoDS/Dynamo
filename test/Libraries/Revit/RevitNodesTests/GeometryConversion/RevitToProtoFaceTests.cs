@@ -32,7 +32,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Assert.AreEqual(1, r.Count());
 
-            r.First().Area.ShouldBeApproximately(face.Area);
+            r.First().Area.ShouldBeApproximately(face.Area, 1e-1);
          
         }
     }
