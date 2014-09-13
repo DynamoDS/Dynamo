@@ -84,7 +84,7 @@ namespace Dynamo.Services
                 {
                     StabilityCookie.WriteUptimeBeat(DateTime.Now.Subtract(startTime));
 
-                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString() );
+                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
