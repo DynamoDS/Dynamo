@@ -175,24 +175,16 @@ namespace Dynamo.UI.Controls
                 secondaryMembers.ItemsSource = allMembers;
                 castedDataContext.HiddenMembers = null;
             }
-
-            castedDataContext.IsMoreButtonVisible = false;
         }
 
         private void TruncateSecondaryMembers()
         {
-            var moreButtonVisisbility = false;
-
             var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
             if (members != null && members.Count() > TruncatedMembersCount)
             {
                 castedDataContext.HiddenMembers = members.Skip(TruncatedMembersCount);
                 secondaryMembers.ItemsSource = members.Take(TruncatedMembersCount);
-
-                moreButtonVisisbility = true;
             }
-
-            castedDataContext.IsMoreButtonVisible = moreButtonVisisbility;
         }
     }
 }

@@ -263,20 +263,6 @@ namespace Dynamo.Nodes.Search
         public bool IsSecondaryHeaderLeftVisible { get; set; }
         public bool IsSecondaryHeaderRightVisible { get; set; }
 
-        private bool isMoreButtonVisible;
-        public bool IsMoreButtonVisible
-        {
-            get
-            {
-                return isMoreButtonVisible;
-            }
-            set
-            {
-                isMoreButtonVisible = value;
-                RaisePropertyChanged("IsMoreButtonVisible");
-            }
-        }
-
         public enum DisplayMode { None, Query, Action };
 
         /// <summary>
@@ -298,7 +284,24 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public IEnumerable<BrowserInternalElement> HiddenMembers { get; set; }
+        private IEnumerable<BrowserInternalElement> hiddenMembers;
+        public IEnumerable<BrowserInternalElement> HiddenMembers
+        {
+            get { return hiddenMembers; }
+            set
+            {
+                hiddenMembers = value;
+                RaisePropertyChanged("IsMoreButtonVisible");
+            }
+        }
+
+        public bool IsMoreButtonVisible
+        {
+            get
+            {
+                return HiddenMembers != null && HiddenMembers.Any();
+            }
+        }
 
         public ClassInformation()
             : base()
