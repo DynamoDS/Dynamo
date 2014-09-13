@@ -2541,6 +2541,11 @@
             The maximum point
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
+            <summary>
+            The CoordinateSystem that this BoundingBox is defined in
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>
             Get a string representation of the Cylinder

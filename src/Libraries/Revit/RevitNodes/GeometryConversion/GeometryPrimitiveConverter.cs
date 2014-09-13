@@ -15,18 +15,31 @@ namespace Revit.GeometryConversion
     {
         #region Proto -> Revit types
 
-        public static Autodesk.Revit.DB.BoundingBoxXYZ ToRevitType(this Autodesk.DesignScript.Geometry.BoundingBox bb, bool convertUnits = true)
+        public static Autodesk.Revit.DB.BoundingBoxXYZ ToRevitBoundingBox(
+            Autodesk.DesignScript.Geometry.CoordinateSystem cs,
+            Autodesk.DesignScript.Geometry.Point minPoint,
+            Autodesk.DesignScript.Geometry.Point maxPoint, bool convertUnits = true)
         {
             var rbb = new BoundingBoxXYZ();
             rbb.Enabled = true;
 
-            // placeholder until we can get coordinate system from bounding box
-            rbb.Transform = Transform.Identity;
+            var rtrans = Transform.Identity;
+            rtrans.Origin = cs.Origin.ToXyz(convertUnits);
+            rtrans.BasisX = cs.XAxis.ToXyz(convertUnits);
+            rtrans.BasisY = cs.YAxis.ToXyz(convertUnits);
+            rtrans.BasisZ = cs.ZAxis.ToXyz(convertUnits);
 
-            rbb.Max = bb.MaxPoint.ToXyz(convertUnits);
-            rbb.Min = bb.MinPoint.ToXyz(convertUnits);
+            rbb.Transform = rtrans;
+
+            rbb.Max = maxPoint.ToXyz(convertUnits);
+            rbb.Min = minPoint.ToXyz(convertUnits);
 
             return rbb;
+        }
+
+        public static Autodesk.Revit.DB.BoundingBoxXYZ ToRevitType(this Autodesk.DesignScript.Geometry.BoundingBox bb, bool convertUnits = true)
+        {
+            return ToRevitBoundingBox(bb.ContextCoordinateSystem, bb.MinPoint, bb.MaxPoint, convertUnits);
         }
 
         public static Autodesk.Revit.DB.XYZ ToRevitType(this Autodesk.DesignScript.Geometry.Point pt, bool convertUnits = true)
