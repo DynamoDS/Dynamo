@@ -279,7 +279,6 @@ namespace Dynamo.Nodes.Search
 
         public enum DisplayMode { None, Query, Action };
 
-
         /// <summary>
         /// Specifies which of QueryMembers of ActionMembers list is active for the moment.
         /// If any of CreateMembers, ActionMembers or QueryMembers lists is empty
@@ -298,6 +297,8 @@ namespace Dynamo.Nodes.Search
                 RaisePropertyChanged("CurrentDisplayMode");
             }
         }
+
+        public IEnumerable<BrowserInternalElement> HiddenMembers { get; set; }
 
         public ClassInformation()
             : base()

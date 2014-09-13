@@ -18,13 +18,13 @@ namespace Dynamo.UI.Controls
 
         private const string ActionHeaderTag = "Action";
         private const string QueryHeaderTag = "Query";
+        private const int TruncatedMembersCount = 4;
 
         #endregion
 
         // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
         // and should be presented on StandardPanel.
         private bool areAllListsPresented;
-        private IEnumerable<BrowserInternalElement> hiddenMembers;
         private ClassInformation castedDataContext;
 
         public StandardPanel()
@@ -56,7 +56,7 @@ namespace Dynamo.UI.Controls
                 secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
             }
 
-            ShowMoreButton();
+            TruncateSecondaryMembers();
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -132,7 +132,7 @@ namespace Dynamo.UI.Controls
                 if (hasQueryMembers && hasActionMembers)
                     castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
-                ShowMoreButton();
+                TruncateSecondaryMembers();
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace Dynamo.UI.Controls
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
-                ShowMoreButton();
+                TruncateSecondaryMembers();
                 return;
             }
 
@@ -166,36 +166,33 @@ namespace Dynamo.UI.Controls
 
         private void OnMoreButtonClick(object sender, RoutedEventArgs e)
         {
-            HideMoreButton();
-        }
-
-        private void ShowMoreButton()
-        {
-            castedDataContext.IsMoreButtonVisible = false;
-
-            var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
-            if (members != null && members.Count() > 4)
-            {
-                hiddenMembers = members.Skip(4);
-                secondaryMembers.ItemsSource = members.Take(4);
-
-                castedDataContext.IsMoreButtonVisible = true;
-            }
-        }
-
-        private void HideMoreButton()
-        {
-            if (hiddenMembers != null)
+            if (castedDataContext.HiddenMembers != null)
             {
                 var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
                 var allMembers = members.ToList();
-                allMembers.AddRange(hiddenMembers);
+                allMembers.AddRange(castedDataContext.HiddenMembers);
 
                 secondaryMembers.ItemsSource = allMembers;
-                hiddenMembers = null;
+                castedDataContext.HiddenMembers = null;
             }
 
             castedDataContext.IsMoreButtonVisible = false;
+        }
+
+        private void TruncateSecondaryMembers()
+        {
+            var moreButtonVisisbility = false;
+
+            var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
+            if (members != null && members.Count() > TruncatedMembersCount)
+            {
+                castedDataContext.HiddenMembers = members.Skip(TruncatedMembersCount);
+                secondaryMembers.ItemsSource = members.Take(TruncatedMembersCount);
+
+                moreButtonVisisbility = true;
+            }
+
+            castedDataContext.IsMoreButtonVisible = moreButtonVisisbility;
         }
     }
 }
