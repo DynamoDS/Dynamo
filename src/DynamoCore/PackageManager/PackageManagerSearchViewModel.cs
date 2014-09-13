@@ -5,9 +5,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Dynamo.Nodes.Search;
+
 using Dynamo.Search;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.Commands;

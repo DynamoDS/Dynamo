@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Nodes;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI
