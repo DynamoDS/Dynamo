@@ -42,6 +42,7 @@ namespace DynamoWebServer
             webSocketServer.Start();
 
             var app = new Application();
+            app.Exit += webSocketServer.ProcessExit;
             app.Run(view);
         }
     }

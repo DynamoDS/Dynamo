@@ -106,6 +106,11 @@ namespace DynamoWebServer
             ExecuteMessageFromSocket(msg, sessionId);
         }
 
+        public void ProcessExit(object sender, EventArgs e)
+        {
+            messageQueue.Shutdown();
+        }
+
         #endregion
 
         #region Private methods
@@ -165,7 +170,6 @@ namespace DynamoWebServer
         {
             if (reason == CloseReason.ServerShutdown)
             {
-                messageQueue.Shutdown();
                 return;
             }
 
@@ -195,7 +199,7 @@ namespace DynamoWebServer
 
         void ExecuteMessageFromSocket(Message message, string sessionId)
         {
-            messageQueue.EnqueueItem(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
+            messageQueue.EnqueueMessage(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
         }
 
         void LogInfo(string info)
