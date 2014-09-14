@@ -150,6 +150,10 @@ namespace Dynamo.Applications
             {
                 DynamoPathManager.Instance.SetLibGPath("220");
             }
+            else
+            {
+                DynamoPathManager.Instance.SetLibGPath("219");
+            }
         }
 
         private void SubscribeAssemblyResolvingEvent()
