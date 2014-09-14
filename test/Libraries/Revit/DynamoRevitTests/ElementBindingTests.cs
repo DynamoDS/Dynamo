@@ -200,12 +200,12 @@ namespace Dynamo.Tests
 
             //Select one of the walls
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection);
-            var selNode = selNodes.First() as ElementSelection;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
+            var selNode = selNodes.First() as ElementSelection<Element>;
 
             var elId = new ElementId(184273);
-            var uuid = DocumentManager.Instance.CurrentDBDocument.GetElement(elId).UniqueId;
-            selNode.Selection.Add(uuid);
+            var el = DocumentManager.Instance.CurrentDBDocument.GetElement(elId);
+            selNode.Selection.Add(el);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -232,11 +232,12 @@ namespace Dynamo.Tests
         {
             //Create a reference point in Revit
             string rpID;
+            ReferencePoint rp;
             using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateInRevit"))
             {
                 trans.Start();
 
-                ReferencePoint rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
                 rpID = rp.UniqueId;
 
                 trans.Commit();
@@ -249,9 +250,9 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection);
-            var selNode = selNodes.First() as ElementSelection;
-            selNode.Selection.Add(rpID);
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
+            var selNode = selNodes.First() as ElementSelection<Element>;
+            selNode.Selection.Add(rp);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -268,13 +269,14 @@ namespace Dynamo.Tests
 
             //Create two reference points in Revit
             string rpID1, rpID2;
+            ReferencePoint rp1, rp2;
             using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateInRevit"))
             {
                 trans.Start();
 
-                ReferencePoint rp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                rp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
                 rpID1 = rp1.UniqueId;
-                ReferencePoint rp2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(10, 0, 0));
+                rp2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(10, 0, 0));
                 rpID2 = rp2.UniqueId;
 
                 trans.Commit();
@@ -287,14 +289,14 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection);
-            var selNode = selNodes.First() as ElementSelection;
-            selNode.Selection.Add(rpID1);
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
+            var selNode = selNodes.First() as ElementSelection<Element>;
+            selNode.Selection.Add(rp1);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id1 = selNode.Selection.First();
 
             //Select the second reference point in Dynamo
-            selNode.Selection.Add(rpID2);
+            selNode.Selection.Add(rp2);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id2 = selNode.Selection.First();
 

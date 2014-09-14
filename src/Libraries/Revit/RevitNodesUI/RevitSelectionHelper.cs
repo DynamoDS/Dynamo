@@ -27,96 +27,48 @@ namespace Revit.Interactivity
         /// <param name="selectionType">The selection type.</param>
         /// <param name="objectType">The selection object type.</param>
         /// <returns></returns>
-        public List<string> RequestSelectionOfType<T>(string selectionMessage, 
+        public List<T> RequestSelectionOfType<T>(string selectionMessage, 
             SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
         {
             switch(selectionType)
             {
                 case SelectionType.One:
-                    return RequestElementSelection<T>(selectionMessage, logger);
+                    if (typeof(Element).IsAssignableFrom(typeof(T)))
+                    {
+                        return RequestElementSelection<T>(selectionMessage, logger);
+                    }
+                    
+                    if (typeof(Reference).IsAssignableFrom(typeof(T)))
+                    {
+                        return RequestReferenceSelection(selectionMessage, logger, objectType).Cast<T>().ToList();
+                    }
+                    break;
+                    
                 case SelectionType.Many:
-                    return RequestMultipleElementsSelection<T>(
+                    if (typeof(T).IsAssignableFrom(typeof(Element)))
+                    {
+                        return RequestMultipleElementsSelection<T>(
                         selectionMessage,
                         logger);
+                    }
+                    
+                    if (typeof(T).IsAssignableFrom(typeof(Reference)))
+                    {
+                        return RequestMultipleReferencesSelection(selectionMessage, 
+                            logger, objectType).Cast<T>().ToList();
+                    }
+                    break;
             }
 
             return null;
         }
 
-        /// <summary>
-        /// Request the selection of sub-elements of an element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="selectionMessage">The selection message.</param>
-        /// <param name="selectionTarget">The object against which to apply updates.</param>
-        /// <param name="selectionType">The selection type.</param>
-        /// <param name="objectType">The selection object type.</param>
-        /// <param name="logger">A logger.</param>
-        /// <returns></returns>
-        public Dictionary<string,List<string>> RequestSubSelectionOfType<T>(
-            string selectionMessage, SelectionType selectionType,
-            SelectionObjectType objectType, ILogger logger)
+        public static List<Element> GetFamilyInstancesFromDividedSurface(List<Element> divSurfs)
         {
-            List<string> selection = null;
-            
-            switch (selectionType)
+            var result = new List<FamilyInstance>();
+
+            foreach (var ds in divSurfs.Cast<DividedSurface>())
             {
-                case SelectionType.One:
-                    selection = RequestElementSelection<T>(selectionMessage, logger);
-                    break;
-                case SelectionType.Many:
-                    selection = RequestMultipleElementsSelection<T>(
-                        selectionMessage,
-                        logger);
-                    break;
-            }
-
-            Dictionary<string, List<string>> result = null;
-
-            if (typeof(T) == typeof(DividedSurface))
-            {
-                result = GetFamilyInstancesFromDividedSurface(selection);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Request a selection and return a stable reference to that reference.
-        /// </summary>
-        /// <param name="selectionMessage">The message to display.</param>
-        /// <param name="selectionTarget">The object against which to apply updates.</param>
-        /// <param name="logger">A logger.</param>
-        /// <param name="selectionType">The type of reference selection.</param>
-        /// <param name="objectType">The selection object type.</param>
-        /// <returns></returns>
-        public Dictionary<string,List<string>> RequestSelection(string selectionMessage, 
-            SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
-        {
-            switch (selectionType)
-            {
-                case SelectionType.One:
-                    return RequestReferenceSelection(selectionMessage, logger, objectType);
-                case SelectionType.Many:
-                    return RequestMultipleReferencesSelection(selectionMessage, logger, objectType);
-            }
-
-            return null;
-        }
-
-        public static Dictionary<string, List<string>> GetFamilyInstancesFromDividedSurface(List<string> uuids)
-        {
-            var doc = DocumentManager.Instance.CurrentDBDocument;
-
-            var divSurfs =
-                uuids.Select(doc.GetElement).Where(el => el != null).Cast<DividedSurface>();
-
-            var result = new Dictionary<string, List<string>>();
-
-            foreach (var ds in divSurfs)
-            {
-                var panels = new List<string>();
-
                 var gn = new GridNode();
 
                 var u = 0;
@@ -137,7 +89,7 @@ namespace Revit.Interactivity
                             if (fi != null)
                             {
                                 //put the family instance into the tree
-                                panels.Add(fi.UniqueId);
+                                result.Add(fi);
                             }
                         }
                         v = v + 1;
@@ -145,19 +97,14 @@ namespace Revit.Interactivity
 
                     u = u + 1;
                 }
-
-                if (panels.Any())
-                {
-                    result.Add(ds.UniqueId, panels);
-                }
             }
 
-            return result;
+            return result.Cast<Element>().ToList();
         }
 
         #region private static methods
       
-        private static List<string> RequestElementSelection<T>(string selectionMessage, ILogger logger)
+        private static List<T> RequestElementSelection<T>(string selectionMessage, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -178,10 +125,10 @@ namespace Revit.Interactivity
                 e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
             }
 
-            return new List<string>() { e.UniqueId };
+            return new List<Element>() { e }.Cast<T>().ToList();
         }
 
-        private static List<string> RequestMultipleElementsSelection<T>(string selectionMessage, ILogger logger)
+        private static List<T> RequestMultipleElementsSelection<T>(string selectionMessage, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -190,16 +137,15 @@ namespace Revit.Interactivity
 
             logger.Log(selectionMessage);
 
-            var elementRefs = doc.Selection.PickElementsByRectangle(
+            var elements = doc.Selection.PickElementsByRectangle(
                 new ElementSelectionFilter<T>(),
                 selectionMessage);
 
-            var uuids = elementRefs.Select(x => x.UniqueId).ToList();
-            return uuids;
+            return elements.Cast<T>().ToList();
 
         }
 
-        private static Dictionary<string,List<string>> RequestReferenceSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static List<Reference> RequestReferenceSelection(string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -223,18 +169,10 @@ namespace Revit.Interactivity
                     break;
             }
 
-            if (reference == null)
-                return null;
-
-            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
-            var targetUniqueId = dbDoc.GetElement(reference.ElementId).UniqueId;
-            var stableRef = reference.ConvertToStableRepresentation(doc.Document);
-            var dict = new Dictionary<string, List<string>> { { targetUniqueId, new List<string>() {stableRef} } };
-
-            return dict;
+            return reference == null ? null : new List<Reference>(){reference};
         }
 
-        private static Dictionary<string,List<string>> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static List<Reference> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -261,25 +199,7 @@ namespace Revit.Interactivity
             if (references == null || !references.Any())
                 return null;
 
-            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
-
-            var results = new Dictionary<string, List<string>>();
-
-            foreach (var sref in references)
-            {
-                var uuid = dbDoc.GetElement(sref).UniqueId;
-                var stableRef = sref.ConvertToStableRepresentation(doc.Document);
-                if (!results.ContainsKey(uuid))
-                {
-                    results.Add(uuid, new List<string>() { stableRef });
-                }
-                else
-                {
-                    results[uuid].Add(stableRef);
-                }
-            }
-
-            return results;
+            return references.ToList();
         }
 
         #endregion

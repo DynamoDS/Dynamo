@@ -18,21 +18,23 @@ using RevitServices.Persistence;
 
 using Element = Autodesk.Revit.DB.Element;
 using RevitDynamoModel = Dynamo.Applications.Models.RevitDynamoModel;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using UV = Autodesk.DesignScript.Geometry.UV;
 
 namespace Dynamo.Nodes
 {
-    public abstract class ElementSelection : SelectionBase
+    public abstract class ElementSelection<T> : SelectionBase<T> where T: Element
     {
         protected Document selectionOwner;
-
         protected RevitDynamoModel RevitDynamoModel { get; private set; }
+        protected Func<List<Element>, List<Element>> Update;
 
         #region public properties
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public override List<string> Selection
+        public override List<T> Selection
         {
             get { return selection; }
             set
@@ -67,6 +69,8 @@ namespace Dynamo.Nodes
             string prefix)
             : base(workspaceModel, selectionType, selectionObjectType, message, prefix)
         {
+            logger = workspaceModel.DynamoModel.Logger;
+
             SelectionHelper = RevitSelectionHelper.Instance;
 
             RevitDynamoModel = Workspace.DynamoModel as RevitDynamoModel;
@@ -77,6 +81,7 @@ namespace Dynamo.Nodes
             if (revMod == null) return;
 
             revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
+            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
@@ -100,7 +105,7 @@ namespace Dynamo.Nodes
                     .Where(el => el != null)
                     .Select(el => el.UniqueId);
 
-                Selection = Selection.Where(x => !uuids.Contains(x)).ToList();
+                Selection = Selection.Where(x => !uuids.Contains(x.UniqueId)).ToList();
 
                 RaisePropertyChanged("Selection");
                 RaisePropertyChanged("Text");
@@ -116,6 +121,7 @@ namespace Dynamo.Nodes
         {
             base.Destroy();
             RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
+            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -135,7 +141,7 @@ namespace Dynamo.Nodes
                     new Func<string, bool, Revit.Elements.Element>(ElementSelector.ByUniqueId),
                     new List<AssociativeNode>
                     {
-                        AstFactory.BuildStringNode(el),
+                        AstFactory.BuildStringNode(el.UniqueId),
                         AstFactory.BuildBooleanNode(true)
                     }
                     )).ToList();
@@ -157,147 +163,47 @@ namespace Dynamo.Nodes
 
         #region private methods
 
-        protected virtual string FormatSelectionText(IEnumerable<string> elements)
+        private void Updater_ElementsModified(IEnumerable<string> updated)
         {
-            var doc = DocumentManager.Instance.CurrentDBDocument;
-            var ids = elements.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
-            return ids.Any()
-                ? System.String.Join(" ", ids.Take(20))
-                : "";
+            if (Selection == null || !Selection.Select(x => x.UniqueId).Any(updated.Contains))
+                return;
+
+            if (Update == null) return;
+
+            RequiresRecalc = true;
+            Selection.Clear();
+            Selection = Update.Invoke(Selection.Cast<Element>().ToList()).Cast<T>().ToList();
         }
 
         #endregion
 
         #region protected methods
 
-        /// <summary>
-        /// Callback when selection button is clicked. 
-        /// Calls the selection action, and stores the ElementId(s) of the selected objects.
-        /// </summary>
-        protected override void Select(object parameter)
+        protected override string FormatSelectionText(List<T> elements)
         {
-            try
-            {
-                CanSelect = false;
-
-                //call the delegate associated with a selection type
-                Selection =
-                    SelectionHelper.RequestSelectionOfType<Element>(
-                        selectionMessage,
-                        selectionType,
-                        selectionObjectType,
-                        RevitDynamoModel.Logger);
-
-                RequiresRecalc = true;
-
-                CanSelect = true;
-            }
-            catch (OperationCanceledException)
-            {
-                CanSelect = true;
-            }
-            catch (Exception e)
-            {
-                RevitDynamoModel.Logger.Log(e);
-            }
+            var ids = elements.Select(el => el.Id).ToArray();
+            return ids.Any()
+                ? System.String.Join(" ", ids.Take(20))
+                : "";
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override T GetModelObjectFromIdentifer(string id)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
+            var e = doc.GetElement(id);
+            return (T)e;
+        }
 
-            // Check the selection for valid elements
-            var savedUuids =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
-                    .Select(subNode => subNode.Attributes[0].Value)
-                    .ToList();
-
-            Selection =
-                savedUuids.Select(doc.GetElement)
-                    .Where(el => el != null)
-                    .Select(el => el.UniqueId).ToList();
-
-            RequiresRecalc = true;
-            RaisePropertyChanged("Selection");
+        protected override string GetIdentifierFromModelObject(T modelObject)
+        {
+            return modelObject == null ? null : modelObject.UniqueId;
         }
 
         #endregion
     }
 
-    public abstract class SubElementSelection<T> : ElementSelection
+    public abstract class ReferenceSelection : SelectionBase<Reference>
     {
-        protected Dictionary<string, List<string>> subSelections = new Dictionary<string, List<string>>();
-        protected Func<List<string>, Dictionary<string, List<string>>> Update;
-
-        protected SubElementSelection(
-            WorkspaceModel workspaceModel,
-            SelectionType selectionType,
-            SelectionObjectType selectionObjectType,
-            string message,
-            string prefix)
-            : base(workspaceModel, selectionType, selectionObjectType, message, prefix)
-        {
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
-            if (revMod == null) return;
-            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
-            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
-        }
-
-        protected override void Select(object parameter)
-        {
-            try
-            {
-                CanSelect = false;
-
-                //call the delegate associated with a selection type
-                subSelections = SelectionHelper.RequestSubSelectionOfType<T>(
-                    selectionMessage,
-                    selectionType,
-                    selectionObjectType,
-                    RevitDynamoModel.Logger);
-
-                Selection = subSelections.Values.SelectMany(x => x).ToList();
-
-                RequiresRecalc = true;
-
-                CanSelect = true;
-            }
-            catch (OperationCanceledException)
-            {
-                CanSelect = true;
-            }
-            catch (Exception e)
-            {
-                RevitDynamoModel.Logger.Log(e);
-            }
-        }
-
-        private void Updater_ElementsModified(IEnumerable<string> updated)
-        {
-            if (Selection != null && Selection.Any(updated.Contains))
-            {
-                RequiresRecalc = true;
-
-                if (Update != null)
-                {
-                    Selection.Clear();
-                    subSelections = Update.Invoke(Selection);
-                    Selection = subSelections.Values.SelectMany(x => x).ToList();
-                }
-            }
-        }
-    }
-
-    public abstract class ReferenceSelection : ElementSelection
-    {
-        protected Dictionary<string, List<string>> subSelections = new Dictionary<string, List<string>>();
-
         protected ReferenceSelection(
             WorkspaceModel workspaceModel,
             SelectionType selectionType,
@@ -318,9 +224,10 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var doc = DocumentManager.Instance.CurrentDBDocument;
 
-                foreach (var stableRef in Selection)
+                var stableRefs = Selection.Select(GetIdentifierFromModelObject);
+
+                foreach (var stableRef in stableRefs)
                 {
                     var refNode = AstFactory.BuildFunctionCall(
                         new Func<string, object>(
@@ -331,7 +238,6 @@ namespace Dynamo.Nodes
                         }
                         );
                     newInputs.Add(refNode);
-
                 }
 
                 node = AstFactory.BuildExprList(newInputs);
@@ -340,71 +246,47 @@ namespace Dynamo.Nodes
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
-        protected override void Select(object parameter)
-        {
-            try
-            {
-                CanSelect = false;
-
-                //call the delegate associated with a selection type
-                subSelections = SelectionHelper.RequestSelection(
-                    selectionMessage,
-                    selectionType,
-                    selectionObjectType,
-                    RevitDynamoModel.Logger);
-
-                Selection = subSelections.Values.SelectMany(x => x).ToList();
-
-                RequiresRecalc = true;
-
-                CanSelect = true;
-            }
-            catch (OperationCanceledException)
-            {
-                CanSelect = true;
-            }
-            catch (Exception e)
-            {
-                RevitDynamoModel.Logger.Log(e);
-            }
-        }
-
-        protected override string FormatSelectionText(IEnumerable<string> elements)
+        protected override string FormatSelectionText(List<Reference> elements)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
-            var refs = Selection.Select(r => Reference.ParseFromStableRepresentation(doc, r));
-            var ids = refs.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
+            var ids = elements.Select(doc.GetElement).Where(el => el != null).Select(el => el.Id).ToArray();
 
             return ids.Any()
                 ? String.Join(" ", ids.Take(20))
                 : "";
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override Reference GetModelObjectFromIdentifer(string id)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
-
-            // Check the selection for valid references
-            var savedStableRefs =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
-                    .Select(subNode => subNode.Attributes[0].Value)
-                    .ToList();
-
-            Selection = new List<string>();
-            foreach (var stableRef in savedStableRefs)
+            try
             {
-                try
-                {
-                    var geob = Reference.ParseFromStableRepresentation(doc, stableRef);
-                    Selection.Add(stableRef);
-                }
-                catch (Exception) {}
+                var reference = Reference.ParseFromStableRepresentation(doc, id);
+                return reference;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        protected override string GetIdentifierFromModelObject(Reference modelObject)
+        {
+            if (modelObject == null)
+            {
+                return null;
             }
 
-            RequiresRecalc = true;
-            RaisePropertyChanged("Selection");
+            try
+            {
+                var doc = DocumentManager.Instance.CurrentDBDocument;
+                return modelObject.ConvertToStableRepresentation(doc);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
     
@@ -413,7 +295,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Select analysis results from the document.")]
     [IsDesignScriptCompatible]
     [IsVisibleInDynamoLibrary(false)]
-    public class DSAnalysisResultSelection : ElementSelection
+    public class DSAnalysisResultSelection : ElementSelection<Element>
     {
         public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
@@ -427,7 +309,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a model element from the document.")]
     [IsDesignScriptCompatible]
-    public class DSModelElementSelection : ElementSelection
+    public class DSModelElementSelection : ElementSelection<Element>
     {
         public DSModelElementSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
@@ -477,6 +359,48 @@ namespace Dynamo.Nodes
             SelectionObjectType.PointOnFace, 
             "Select a point on a face.",
             "Point on Element"){ }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (Selection == null || !Selection.Any())
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var newInputs = new List<AssociativeNode>();
+
+                foreach (var reference in Selection)
+                {
+                    if (reference.GlobalPoint == null)
+                    {
+                        return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+                    }
+
+                    var pt = reference.GlobalPoint;
+
+                    //this is a selected point on a face
+                    var ptArgs = new List<AssociativeNode>()
+                    {
+                        AstFactory.BuildDoubleNode(pt.X),
+                        AstFactory.BuildDoubleNode(pt.Y),
+                        AstFactory.BuildDoubleNode(pt.Z)
+                    };
+
+                    var functionCallNode = AstFactory.BuildFunctionCall(
+                        new Func<double, double, double, Point>(Point.ByCoordinates),
+                        ptArgs);
+
+                    newInputs.Add(functionCallNode);
+                }
+
+                node = AstFactory.BuildExprList(newInputs);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
     }
 
     [NodeName("Select UV on Face")]
@@ -491,13 +415,54 @@ namespace Dynamo.Nodes
             SelectionObjectType.PointOnFace, 
             "Select a point on a face.",
             "UV on Element"){ }
+        
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (Selection == null || !Selection.Any())
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var newInputs = new List<AssociativeNode>();
+
+                foreach (var reference in Selection)
+                {
+                    if (reference.UVPoint == null)
+                    {
+                        return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+                    }
+
+                    var pt = reference.UVPoint;
+
+                    //this is a selected point on a face
+                    var ptArgs = new List<AssociativeNode>()
+                    {
+                        AstFactory.BuildDoubleNode(pt.U),
+                        AstFactory.BuildDoubleNode(pt.V),
+                    };
+
+                    var functionCallNode = AstFactory.BuildFunctionCall(
+                        new Func<double, double, UV>(UV.ByCoordinates),
+                        ptArgs);
+
+                    newInputs.Add(functionCallNode);
+                }
+
+                node = AstFactory.BuildExprList(newInputs);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
     }
 
     [NodeName("Select Divided Surface Families")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a divided surface and get its family instances.")]
     [IsDesignScriptCompatible]
-    public class DSDividedSurfaceFamiliesSelection : SubElementSelection<Autodesk.Revit.DB.DividedSurface>
+    public class DSDividedSurfaceFamiliesSelection : ElementSelection<Autodesk.Revit.DB.DividedSurface>
     {
         public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel,
@@ -516,7 +481,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select multiple elements from the Revit document.")]
     [IsDesignScriptCompatible]
-    public class DSModelElementsSelection : ElementSelection
+    public class DSModelElementsSelection : ElementSelection<Element>
     {
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 

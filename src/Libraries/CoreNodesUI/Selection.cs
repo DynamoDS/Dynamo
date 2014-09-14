@@ -20,42 +20,36 @@ namespace Dynamo.Nodes
 
     public class DefaultSelectionHelper : IModelSelectionHelper
     {
-        public Dictionary<string, List<string>> RequestSelection(
+        public List<T> RequestSelectionOfType<T>(
             string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
             ILogger logger)
         {
-            return new Dictionary<string, List<string>>();
+            return new List<T>();
         }
 
-        public List<string> RequestSelectionOfType<T>(
+        public List<T> RequestSubSelectionOfType<T>(
             string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
             ILogger logger)
         {
-            return new List<string>();
-        }
-
-        public Dictionary<string, List<string>> RequestSubSelectionOfType<T>(
-            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
-            ILogger logger)
-        {
-            return new Dictionary<string, List<string>>();
+            return new List<T>();
         }
     }
 
-    public abstract class SelectionBase : NodeModel, IWpfNode
+    public abstract class SelectionBase<T> : NodeModel, IWpfNode
     {
         protected bool canSelect = true;
         protected string selectionMessage;
-        protected List<string> selection = new List<string>();
+        protected List<T> selection = new List<T>();
         protected SelectionType selectionType;
         protected SelectionObjectType selectionObjectType;
+        protected ILogger logger;
 
         #region public properties
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public virtual List<string> Selection
+        public virtual List<T> Selection
         {
             get { return selection; }
             set
@@ -149,10 +143,10 @@ namespace Dynamo.Nodes
             return CanSelect;
         }
 
-        protected virtual string FormatSelectionText(IEnumerable<string> elements)
+        protected virtual string FormatSelectionText(List<T> elements)
         {
-            return Selection.Any()
-                ? System.String.Join(" ", Selection.Take(20))
+            return elements.Any()
+                ? System.String.Join(" ", Selection.Take(20).Select(x=>x.ToString()))
                 : "";
         }
 
@@ -164,28 +158,57 @@ namespace Dynamo.Nodes
         /// Callback when selection button is clicked. 
         /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
-        protected virtual void Select(object parameter){}
+        protected virtual void Select(object parameter)
+        {
+            try
+            {
+                CanSelect = false;
+
+                //call the delegate associated with a selection type
+                Selection =
+                    SelectionHelper.RequestSelectionOfType<T>(
+                        selectionMessage,
+                        selectionType,
+                        selectionObjectType,
+                        logger);
+
+                RequiresRecalc = true;
+
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                CanSelect = true;
+                logger.Log(e);
+            }
+        }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            if (Selection != null)
+            if (!Selection.Any()) return;
+
+            var uuids =
+                Selection.Select(GetIdentifierFromModelObject).Where(x => x != null);
+            foreach (var id in uuids)
             {
-                foreach (string selectedElement in selection.Where(x => x != null))
-                {
-                    XmlElement outEl = xmlDoc.CreateElement("instance");
-                    outEl.SetAttribute("id", selectedElement);
-                    nodeElement.AppendChild(outEl);
-                }
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", id);
+                nodeElement.AppendChild(outEl);
             }
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            selection =
+            // Check the selection for valid elements
+            var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
+
+            Selection =
+                savedUuids.Select(GetModelObjectFromIdentifer)
+                    .Where(el => el  != null).ToList();
 
             RequiresRecalc = true;
             RaisePropertyChanged("Selection");
@@ -194,6 +217,26 @@ namespace Dynamo.Nodes
         protected override bool ShouldDisplayPreviewCore()
         {
             return false; // Previews are not shown for this node type.
+        }
+
+        /// <summary>
+        /// Get an object in the model from a string identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>The object or null if the object cannot be found.</returns>
+        protected virtual T GetModelObjectFromIdentifer(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Get an object's unique identifier.
+        /// </summary>
+        /// <param name="modelObject"></param>
+        /// <returns>A unique identifier or null if no unique identifier can be derived.</returns>
+        protected virtual string GetIdentifierFromModelObject(T modelObject)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

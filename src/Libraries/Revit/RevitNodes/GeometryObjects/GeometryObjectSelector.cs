@@ -22,20 +22,6 @@ namespace Revit.GeometryObjects
                 var elRef =
                     Reference.ParseFromStableRepresentation(doc, referenceString);
 
-                // POINT ON FACE
-                var pt = elRef.GlobalPoint;
-                if (pt != null)
-                {
-                    return pt.ToPoint();
-                }
-
-                // UV POINT ON FACE
-                var uv = elRef.UVPoint;
-                if (uv != null)
-                {
-                    return uv.ToProtoType();
-                }
-
                 var geob =
                     DocumentManager.Instance
                         .CurrentDBDocument.GetElement(elRef)
