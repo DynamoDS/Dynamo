@@ -20,18 +20,6 @@ namespace Dynamo.Interfaces
     public interface IModelSelectionHelper
     {
         /// <summary>
-        /// Request a selection.
-        /// </summary>
-        /// <param name="selectionMessage"></param>
-        /// <param name="selectionType"></param>
-        /// <param name="objectType"></param>
-        /// <param name="logger"></param>
-        /// <returns></returns>
-        //List<object> RequestSelection(
-        //    string selectionMessage, SelectionType selectionType,
-        //    SelectionObjectType objectType, ILogger logger);
-
-        /// <summary>
         /// Request a selection filtered by a type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
