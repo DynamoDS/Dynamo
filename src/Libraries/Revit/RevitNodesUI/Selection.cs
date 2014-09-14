@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -204,9 +205,10 @@ namespace Dynamo.Nodes
             if (Selection == null || !Selection.Select(x => x.UniqueId).Any(updated.Contains))
                 return;
 
+            RequiresRecalc = true;
+
             if (Update == null) return;
 
-            RequiresRecalc = true;
             Selection.Clear();
             Selection = Update.Invoke(Selection.Cast<Element>().ToList()).Cast<T>().ToList();
         }
@@ -234,7 +236,6 @@ namespace Dynamo.Nodes
             }
             else
             {
-
                 var stableRefs = Selection.Select(GetIdentifierFromModelObject);
 
                 foreach (var stableRef in stableRefs)
@@ -297,6 +298,31 @@ namespace Dynamo.Nodes
             {
                 return null;
             }
+        }
+
+        protected override void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        {
+            // If an element is deleted, ensure all references which refer
+            // to that element are removed from the selection
+
+            if (!Selection.Any() || !document.Equals(selectionOwner)) return;
+
+            Selection = Selection.Where(x => !deleted.Contains(x.ElementId)).ToList();
+
+            RaisePropertyChanged("Selection");
+            RaisePropertyChanged("Text");
+            RequiresRecalc = true;
+        }
+
+        protected override void Updater_ElementsModified(IEnumerable<string> updated)
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+
+            // If an element is modified, require recalc
+            if (Selection == null || !Selection.Select(r => doc.GetElement(r).UniqueId).Any(updated.Contains))
+                return;
+
+            RequiresRecalc = true;
         }
     }
     
