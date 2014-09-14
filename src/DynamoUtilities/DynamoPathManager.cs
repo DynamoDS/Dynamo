@@ -288,6 +288,11 @@ namespace DynamoUtilities
             AsmPreloader = Path.Combine(
                 MainExecPath,
                 splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
+
+            if (!AdditionalResolutionPaths.Contains(LibG))
+            {
+                AdditionalResolutionPaths.Add(LibG);
+            }
         }
 
         /// <summary>
