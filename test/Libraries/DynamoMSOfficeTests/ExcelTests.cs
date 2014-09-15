@@ -197,6 +197,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CanReadMultiDimensionalWorksheet()
         {
 
