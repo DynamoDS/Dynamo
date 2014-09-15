@@ -12,7 +12,6 @@ using Dynamo.Models;
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
