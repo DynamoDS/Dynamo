@@ -177,17 +177,6 @@ namespace Dynamo.DSEngine
                 return null;
             }
 
-            /*MemoryStream memory = new MemoryStream();
-            Bitmap bitmap;
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmap = iconData.Value as Bitmap;
-            bitmap.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();*/
-
             BitmapSource bitSrc = null;
 
             Bitmap source = iconData.Value as Bitmap;
