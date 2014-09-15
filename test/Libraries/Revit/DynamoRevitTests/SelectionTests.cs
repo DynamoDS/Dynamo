@@ -140,6 +140,15 @@ namespace Dynamo.Tests
             TestSelection<Reference,Surface>(SelectionType.Many);
         }
 
+        /// <summary>
+        /// Find the first selection node in a graph, run the graph
+        /// and assert that the returned object is valid. Then
+        /// clear the selection and re-run, ensuring that the result
+        /// is null.
+        /// </summary>
+        /// <typeparam name="T1">The type parameter for the selector method.</typeparam>
+        /// <typeparam name="T2">The expected return type for elements in the selection.</typeparam>
+        /// <param name="selectionType"></param>
         private void TestSelection<T1,T2>(SelectionType selectionType)
         {
             RunCurrentModel();
