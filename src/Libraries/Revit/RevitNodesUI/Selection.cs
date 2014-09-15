@@ -443,9 +443,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
-    public class DSUVOnElementSelection : ReferenceSelection
+    public class DSUvOnElementSelection : ReferenceSelection
     {
-        public DSUVOnElementSelection(WorkspaceModel workspaceModel)
+        public DSUvOnElementSelection(WorkspaceModel workspaceModel)
             : base(workspaceModel, 
             SelectionType.One,
             SelectionObjectType.PointOnFace, 

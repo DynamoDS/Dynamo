@@ -121,7 +121,7 @@ namespace Dynamo.Tests
         public void SelectUVOnFace()
         {
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectUVOnFace.dyn"));
-            TestSelection<Reference,Autodesk.DesignScript.Geometry.Point>(SelectionType.One);
+            TestSelection<Reference,Autodesk.DesignScript.Geometry.UV>(SelectionType.One);
         }
 
         [Test]
