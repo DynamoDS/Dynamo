@@ -10,7 +10,6 @@ using DSNodeServices;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
 
 #endregion
 
@@ -153,7 +152,7 @@ namespace Dynamo.Core
 
             if (cancelSet)
             {
-                dynamoModel.Reset();
+                dynamoModel.ResetEngine(true);
                 cancelSet = false;
             }
         }

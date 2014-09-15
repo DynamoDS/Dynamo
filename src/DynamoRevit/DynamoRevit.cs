@@ -136,16 +136,19 @@ namespace Dynamo.Applications
                 IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
-                        TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-
-                        var keeperId = vizManager.KeeperId;
-
-                        if (keeperId != ElementId.InvalidElementId)
+                        if (null != DocumentManager.Instance.CurrentDBDocument)
                         {
-                            DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                        }
+                            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
-                        TransactionManager.Instance.ForceCloseTransaction();
+                            var keeperId = vizManager.KeeperId;
+
+                            if (keeperId != ElementId.InvalidElementId)
+                            {
+                                DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                            }
+
+                            TransactionManager.Instance.ForceCloseTransaction();
+                        }
                     });
 
             return viewModel;

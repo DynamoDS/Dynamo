@@ -336,7 +336,7 @@ t4 = __Map(getPointKey, r6);
             thisTest.Verify("t4", new object[] { 6, 9});
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestGroupByKey()
         {
             string code =

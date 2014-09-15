@@ -135,9 +135,12 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
+    <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\SetTraceDataAsyncTask.cs" />
     <Compile Include="Core\Threading\TimeStampGenerator.cs" />
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
@@ -188,6 +191,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\FilePathMutator.cs" />
     <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
     <Compile Include="TestInfrastructure\ListMutator.cs" />
+    <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
@@ -347,8 +351,8 @@ limitations under the License.
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\SearchView.xaml.cs">
-      <DependentUpon>SearchView.xaml</DependentUpon>
+    <Compile Include="UI\Views\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Views\WatchTree.xaml.cs">
@@ -658,7 +662,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\SearchView.xaml">
+    <Page Include="UI\Views\LibraryContainerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

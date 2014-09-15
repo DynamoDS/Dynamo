@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Dynamo.DSEngine;
-using Dynamo.Models;
-using ProtoScript.Runners;
-
-using BuildWarning = ProtoCore.BuildData.WarningEntry;
+﻿using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.Core.Threading
@@ -19,8 +13,8 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 

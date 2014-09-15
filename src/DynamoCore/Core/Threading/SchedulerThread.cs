@@ -11,7 +11,12 @@ namespace Dynamo.Core.Threading
         public void Initialize(DynamoScheduler owningScheduler)
         {
             scheduler = owningScheduler;
-            internalThread = new Thread(ThreadProc) { IsBackground = true };
+            internalThread = new Thread(ThreadProc)
+            {
+                IsBackground = true,
+                Name = "DynamoSchedulerThread"
+            };
+
             internalThread.Start();
         }
 

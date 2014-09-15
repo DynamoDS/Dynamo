@@ -29,8 +29,8 @@ namespace Dynamo
 
     class SampleAsyncTask : AsyncTask
     {
-        internal SampleAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal SampleAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 
@@ -171,18 +171,7 @@ namespace Dynamo
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // The first argument cannot be null.
-                var task = new SampleAsyncTask(null, null);
-            });
-
-            var dummyCallback = new Action<AsyncTask>((task) =>
-            {
-                // Dummy callback method that does not do anything.
-            });
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                // Exception is thrown regardless of the second parameter.
-                var task = new SampleAsyncTask(null, dummyCallback);
+                var task = new SampleAsyncTask(null);
             });
         }
 

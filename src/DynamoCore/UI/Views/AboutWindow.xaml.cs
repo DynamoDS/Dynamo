@@ -5,8 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Dynamo.Interfaces;
-using Dynamo.UpdateManager;
+
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -17,48 +16,20 @@ namespace Dynamo.UI.Views
     public partial class AboutWindow : Window
     {
         bool ignoreClose;
-        ILogger logger;
 
-        public AboutWindow(ILogger logger, DynamoViewModel dynamoViewModel)
+        public AboutWindow(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
-            this.logger = logger;
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
-
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
-        }
-
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
-        {
-            var um = UpdateManager.UpdateManager.Instance;
-            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
 
         public bool InstallNewUpdate { get; private set; }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            //Request a check for update version info
-            DisplayVersionInformation(null);
-            var um = UpdateManager.UpdateManager.Instance;
-            um.UpdateDownloaded += OnUpdatePackageDownloaded;
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(
-                new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
-        }
-
         private void HandleEsc(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                Close();
-        }
-
-        private void OnWindowClick(object sender, MouseButtonEventArgs e)
-        {
-            if (ignoreClose)
-                ignoreClose = false;
-            else
                 Close();
         }
 
@@ -69,39 +40,7 @@ namespace Dynamo.UI.Views
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/DynamoDS/Dynamo");
-        }
-
-        private void OnUpdatePackageDownloaded(object sender, UpdateDownloadedEventArgs e)
-        {
-            DisplayVersionInformation(e);
-        }
-
-        private void OnUpdateInfoMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            logger.Log("AboutWindow-OnUpdateInfoMouseUp", "AboutWindow-OnUpdateInfoMouseUp");
-            this.InstallNewUpdate = true;
-            this.Close();
-        }
-
-        private void DisplayVersionInformation(UpdateDownloadedEventArgs e)
-        {
-            if ((null != e) && e.UpdateAvailable)
-            {
-                this.UpdateInfo.Cursor = Cursors.Hand;
-                this.UpdateInfo.MouseUp += new MouseButtonEventHandler(OnUpdateInfoMouseUp);
-            }
-            else
-            {
-                this.UpdateInfo.Cursor = Cursors.Arrow;
-                this.UpdateInfo.MouseUp -= new MouseButtonEventHandler(OnUpdateInfoMouseUp);
-            }
-        }
-
-        private void AboutWindow_OnClosed(object sender, EventArgs e)
-        {
-            var um = UpdateManager.UpdateManager.Instance;
-            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
+            Process.Start("https://github.com/DynamoDS/Dynamo");
         }
     }
 
