@@ -4,6 +4,8 @@ using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 
+using Revit.GeometryReferences;
+
 using RevitServices.Persistence;
 
 using RTF.Framework;
@@ -44,8 +46,16 @@ namespace DSRevitNodesTests
         [TestModel(@".\empty.rfa")]
         public void ByCurveAndEqualDivisions_NullArgument()
         {
+
             // build dividedPath
-            Assert.Throws(typeof (ArgumentNullException), () => DividedPath.ByCurveAndDivisions(null, 5));
+            ElementCurveReference faceRef = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedPath.ByCurveAndDivisions(faceRef, 5));
+
+            Autodesk.DesignScript.Geometry.Curve surface = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedPath.ByCurveAndDivisions(surface, 5));
+
+            Revit.Elements.Element element = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedPath.ByCurveAndDivisions(element, 5));
         }
 
         [Test]
