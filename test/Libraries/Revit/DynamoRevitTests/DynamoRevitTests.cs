@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -255,13 +256,24 @@ namespace Dynamo.Tests
             return mirror.GetData().Data;
         }
 
+        public List<T> GetPreviewCollection<T>(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            return !mirror.GetData().IsCollection ? null : mirror.GetData().GetElements().Select(x=>x.Data).Cast<T>().ToList();
+        }
+
         public object GetPreviewValueAtIndex(string guid, int index)
         {
             string varname = GetVarName(guid);
             var mirror = GetRuntimeMirror(varname);
             Assert.IsNotNull(mirror);
-
-            return mirror.GetData().GetElements()[index].Data;
+            var data = mirror.GetData();
+            if (data == null) return null;
+            return !mirror.GetData().IsCollection ? null : mirror.GetData().GetElements()[index].Data;
         }
 
         public void AssertClassName(string guid, string className)
