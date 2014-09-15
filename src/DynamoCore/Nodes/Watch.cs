@@ -201,8 +201,8 @@ namespace Dynamo.Nodes
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
             
             return Root != null
-                ? dynamoViewModel.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
-                : dynamoViewModel.WatchHandler.Process(CachedValue, inputVar);
+                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar, Root.ShowRawData)
+                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar);
         }
 
         public override void UpdateRenderPackage(int maxTessDivs)
