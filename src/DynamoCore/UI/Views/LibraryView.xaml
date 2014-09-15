@@ -436,8 +436,6 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
-            <Border>
-            
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
@@ -483,7 +481,6 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-            </Border>
         </ScrollViewer>
     </Grid>
 </UserControl>
