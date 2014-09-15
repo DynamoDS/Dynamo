@@ -61,6 +61,11 @@ namespace Dynamo.Controls
             }
 
             double x = 0, y = 0, currentRowHeight = 0;
+
+            int itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
+            double sizeBetweenItems = (finalSize.Width - itemsPerRow*classObjectWidth) / (itemsPerRow+1);
+
+
             foreach (UIElement child in this.Children)
             {
                 var desiredSize = child.DesiredSize;
@@ -71,8 +76,8 @@ namespace Dynamo.Controls
                     currentRowHeight = 0;
                 }
 
-                child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
-                x = x + desiredSize.Width;
+                child.Arrange(new Rect(x + sizeBetweenItems, y, desiredSize.Width, desiredSize.Height));
+                x = x + desiredSize.Width + sizeBetweenItems;
                 if (desiredSize.Height > currentRowHeight)
                     currentRowHeight = desiredSize.Height;
             }
