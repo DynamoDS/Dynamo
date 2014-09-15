@@ -1,16 +1,15 @@
-﻿using System.Linq;
-
-using Dynamo.Controls;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+
+using Dynamo.Controls;
+using Dynamo.Interfaces;
+using Dynamo.ViewModels;
+
+using ProtoCore.Mirror;
 
 namespace Dynamo.UI.Controls
 {
@@ -284,7 +283,7 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.Process(
+            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                 mirrorData, string.Empty, false);
 
             rootDataContext.Children.Add(cachedLargeContent);
