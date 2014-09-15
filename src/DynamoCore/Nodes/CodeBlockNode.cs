@@ -45,11 +45,18 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double XPos, double YPos) : base(workspace)
+        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode) 
+            : this(workspace)
+        {
+            code = userCode;
+            ProcessCodeDirect();
+        }
+
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos) : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            this.X = XPos;
-            this.Y = YPos;
+            this.X = xPos;
+            this.Y = yPos;
             this.code = userCode;
             this.GUID = guid;
             this.shouldFocus = false;
@@ -152,9 +159,9 @@ namespace Dynamo.Nodes
                         string warningMessage = string.Empty;
 
                         DisableReporting();
-                        {
-                            Workspace.UndoRecorder.BeginActionGroup();
 
+                        using (Workspace.UndoRecorder.BeginActionGroup())
+                        {
                             var inportConnections = new OrderedDictionary();
                             var outportConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
@@ -172,8 +179,8 @@ namespace Dynamo.Nodes
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
-                            Workspace.UndoRecorder.EndActionGroup();
                         }
+
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         ReportPosition();
