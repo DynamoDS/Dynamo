@@ -1,24 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
-using Dynamo.Utilities;
+
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
-using Dynamo.Core;
+
 using DynamoUnits;
-using ProtoCore.AST.ImperativeAST;
-using System.Windows.Controls.Primitives;
+
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
@@ -1547,11 +1544,9 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
-            if (!(parameter is DynamoViewModel)) return "Could not get version";
+            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
 
-            var dvm = parameter as DynamoViewModel;
-            var latest = dvm.Model.UpdateManager.AvailableVersion;
-            return latest;
+            return latest != null? latest.ToString() : "Could not get version.";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

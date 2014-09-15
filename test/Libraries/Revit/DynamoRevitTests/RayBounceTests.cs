@@ -11,7 +11,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class RayBounceTests:DynamoRevitUnitTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\RayBounce\RayBounce.rvt")]
         public void RayBounce()
         {

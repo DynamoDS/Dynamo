@@ -1491,7 +1491,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         }
 
         [Test]
-        [Category("Trace")]
+        [Category("failure")]
+        //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void ReplicatedToAllExceptionToReplicated()
         {
 
@@ -1657,7 +1658,8 @@ mtcAID = mtcA.ID;";
         //Reproductions
 
         [Test]
-        [Category("Trace")]
+        [Category("failure")]
+        //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void Repo_01()
         {
             //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false

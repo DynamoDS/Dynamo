@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ProtoCore.Utils;
 using ProtoCore.AST.AssociativeAST;
+using System.Globalization;
 
 namespace GraphToDSCompiler
 {
@@ -352,12 +353,12 @@ namespace GraphToDSCompiler
             bool flag;
             string val = node.ToScript();
             // If LiternalNode is double
-            if(Double.TryParse(val, out real))
+            if(Double.TryParse(val, NumberStyles.Number, CultureInfo.InvariantCulture, out real))
             {
                 rightNode = new DoubleNode(real); 
             }
             // If LiteralNode type is Int
-            else if (Int64.TryParse(val, out number))
+            else if (Int64.TryParse(val, NumberStyles.Number, CultureInfo.InvariantCulture, out number))
             {
             
                 rightNode = new IntNode(number);

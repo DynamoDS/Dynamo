@@ -92,6 +92,8 @@ namespace Dynamo.Applications
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
             return RevitDynamoModel.Start(
                 new RevitDynamoModel.StartConfiguration()
                 {
@@ -99,6 +101,19 @@ namespace Dynamo.Applications
                     DynamoCorePath = corePath,
                     Context = GetRevitContext(commandData)
                 });
+
+#else
+
+            return RevitDynamoModel.Start(
+                new RevitDynamoModel.StartConfiguration()
+                {
+                    Preferences = prefs,
+                    DynamoCorePath = corePath,
+                    Context = GetRevitContext(commandData),
+                    SchedulerThread = new RevitSchedulerThread(commandData.Application)
+                });
+
+#endif
         }
 
         private static DynamoViewModel InitializeCoreViewModel(RevitDynamoModel revitDynamoModel)
@@ -121,16 +136,19 @@ namespace Dynamo.Applications
                 IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
-                        TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-
-                        var keeperId = vizManager.KeeperId;
-
-                        if (keeperId != ElementId.InvalidElementId)
+                        if (null != DocumentManager.Instance.CurrentDBDocument)
                         {
-                            DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                        }
+                            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
-                        TransactionManager.Instance.ForceCloseTransaction();
+                            var keeperId = vizManager.KeeperId;
+
+                            if (keeperId != ElementId.InvalidElementId)
+                            {
+                                DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                            }
+
+                            TransactionManager.Instance.ForceCloseTransaction();
+                        }
                     });
 
             return viewModel;

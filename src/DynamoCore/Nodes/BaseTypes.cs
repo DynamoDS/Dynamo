@@ -11,8 +11,6 @@ using System.Globalization;
 
 using Dynamo.ViewModels;
 
-using DynamoUtilities;
-
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;

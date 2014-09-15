@@ -19,6 +19,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakePoint()
         {
             TransactionManager.SetupManager();
@@ -35,6 +36,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakePointThenCancel()
         {
             TransactionManager.SetupManager();
@@ -50,6 +52,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionStartedEventFires()
         {
             bool eventWasFired = false;
@@ -66,6 +69,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionCommittedEventFires()
         {
             bool eventWasFired = false;
@@ -84,6 +88,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionCancelledEventFires()
         {
             bool eventWasFired = false;
@@ -102,6 +107,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionActive()
         {
             TransactionManager.SetupManager();
@@ -122,6 +128,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionHandleStatus()
         {
             TransactionManager.SetupManager();
@@ -142,6 +149,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void FailuresRaisedEvent()
         {
             //TODO
@@ -150,6 +158,7 @@ namespace RevitServicesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public void TestRoundTripElementSerialisation()
         {
             IFormatter formatter = new SoapFormatter();
@@ -177,6 +186,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void RawTraceInteractionTest()
         {
             var elementId = new SerializableId
@@ -197,6 +207,7 @@ namespace RevitServicesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public void TestRoundTripElementSerialisationForMultipleIDs()
         {
             IFormatter formatter = new SoapFormatter();
@@ -229,6 +240,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void RawTraceInteractionTestWithMultipleIDs()
         {
             var elementIDs = new MultipleSerializableId

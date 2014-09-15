@@ -165,18 +165,10 @@ namespace ProtoCore
 
                 int ptr = (int)svData.opdata;
                 HeapElement hs = core.Heap.Heaplist[ptr];
-                for (int n = 0; n < hs.VisibleSize; ++n)
+                foreach (var sv in hs.VisibleItems)
                 {
-                    StackValue sv = hs.Stack[n];
                     if (sv.IsArray)
                     {
-                        /*List<string> arrtypes = new List<string>();
-                        arrtypes = GetArrayTypes(sv);
-                        foreach (string type in arrtypes)
-                        {
-                            if (!types.Contains(type))
-                                types.Add(type);
-                        }*/
                         Dictionary<string, List<string>> types = GetArrayTypes(sv);
                         foreach (var kvp in types)
                         {
@@ -193,16 +185,11 @@ namespace ProtoCore
                                     if (!cTypes.Contains(s))
                                         cTypes.Add(s);
                                 }
-                                //cTypes.AddRange(kvp.Value);
                             }
                         }
                     }
                     else
                     {
-                        //string type = GetType(sv);
-                        //if (!types.Contains(type))
-                          //  types.Add(type);
-                        
                         Dictionary<string, List<string>> asmType = GetType(sv);
                         var iter = asmType.GetEnumerator();
                         iter.MoveNext();

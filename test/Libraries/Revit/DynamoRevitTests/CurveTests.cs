@@ -179,7 +179,7 @@ namespace Dynamo.Tests
 
          * */
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void CurvebyPointsEllipse()
         {

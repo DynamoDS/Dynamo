@@ -40,6 +40,12 @@ namespace Dynamo.Tests
             return model.Nodes.OfType<T>().FirstOrDefault();
         }
 
+        public static NodeModel GetDSFunctionNodeFromWorkspace(this WorkspaceModel model, string nodeName)
+        {
+            return model.Nodes.FirstOrDefault(node => node is Dynamo.Nodes.DSFunction &&
+                node.NickName == nodeName);
+        }
+
         //public static double GetDoubleFromFSchemeValue(this FScheme.Value value)
         //{
         //    var doubleWatchVal = 0.0;

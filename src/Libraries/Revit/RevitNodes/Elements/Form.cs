@@ -175,6 +175,11 @@ namespace Revit.Elements
 
         public static Form ByLoftCrossSections(object[][] curves, bool isSolid = true)
         {
+            if (curves.SelectMany(x=>x).Any(x=>x==null))
+            {
+                throw new ArgumentException("Some of the input curves are null.");    
+            }
+
             if (curves == null) throw new ArgumentNullException("curves");
 
             var refArrArr = new ReferenceArrayArray();

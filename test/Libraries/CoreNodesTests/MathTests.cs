@@ -11,6 +11,7 @@ namespace DSCoreNodesTests
     {
 
         [Test]
+        [Category("UnitTests")]
         public static void Sum()
         {
 

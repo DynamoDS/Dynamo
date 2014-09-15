@@ -1714,7 +1714,7 @@ c = [Imperative]
 
         [Test]
         [Category("Variable resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
         {
             string error = "MAGN-1511 Sprint 22 : rev 2362 : [Design Issue ]Global variables cannot be accessed from class scope";

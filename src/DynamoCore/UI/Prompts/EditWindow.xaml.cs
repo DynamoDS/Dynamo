@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Controls;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
@@ -12,13 +10,16 @@ namespace Dynamo.UI.Prompts
     /// <summary>
     /// Interaction logic for dynEditWindow.xaml
     /// </summary>
-    public partial class EditWindow : Window
+    public partial class EditWindow
     {
-        public EditWindow(bool updateSourceOnTextChange = false)
+        private readonly DynamoViewModel dynamoViewModel;
+
+        public EditWindow(DynamoViewModel dynamoViewModel,
+            bool updateSourceOnTextChange = false)
         {
             InitializeComponent();
+            this.dynamoViewModel = dynamoViewModel;
 
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(Application.Current.MainWindow);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             this.editText.Focus();
 
@@ -50,12 +51,9 @@ namespace Dynamo.UI.Prompts
             if (expr != null)
             {
                 ModelBase model = GetBoundModel(expr.DataItem);
-
-                var ele = this.Owner as DynamoView;
-
                 string propName = expr.ParentBinding.Path.Path;
 
-                ele.dynamoViewModel.ExecuteCommand(
+                dynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
                         model.GUID, propName, editText.Text));
             }

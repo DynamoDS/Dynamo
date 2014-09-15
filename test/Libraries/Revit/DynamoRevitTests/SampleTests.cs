@@ -693,7 +693,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcAndLine()
         {

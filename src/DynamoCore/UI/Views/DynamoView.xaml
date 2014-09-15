@@ -15,6 +15,7 @@
         d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:um="clr-namespace:Dynamo.UpdateManager"
         x:Name="_this"
         Height="768" 
         Width="1024"
@@ -396,10 +397,10 @@
                                     Command="{Binding MutateTestDelegateCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Path=Model}"
-                                  IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Path=Model}"
-                                      IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
+                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
+                                  IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
+                                      IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 

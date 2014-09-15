@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -122,8 +121,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
-
-            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -186,14 +183,6 @@ namespace Dynamo.Controls
             redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
-
-            //ShortcutBarItem updateButton = new ShortcutBarItem();
-            ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
-            //updateButton.ShortcutCommandParameter = null;
-            //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
 
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
@@ -341,7 +330,7 @@ namespace Dynamo.Controls
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(dynamoViewModel.Model.Logger, model);
+                _aboutWindow = new AboutWindow(model);
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
@@ -761,9 +750,34 @@ namespace Dynamo.Controls
                     }
                 }
 
-                if (this.startPage != null)
-                    this.startPage.PopulateSampleFileList(sampleFiles);
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = "Show In Folder",
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    SamplesMenu.Items.Add(new Separator());
+                    SamplesMenu.Items.Add(showInFolder);
+                }
+
+                if (sampleFiles.Any()&&this.startPage != null)
+                {
+                    var firstFilePath=Path.GetDirectoryName(sampleFiles.ToArray()[0]);
+                    var rootPath = Path.GetDirectoryName(firstFilePath);
+                    var root = new DirectoryInfo(rootPath);
+                    var rootProperty = new SampleFileEntry("Samples", "Path");
+                    this.startPage.WalkDirectoryTree(root, rootProperty);
+                    this.startPage.SampleFiles.Add(rootProperty);
+                }
             }
+        }
+
+        private static void OnShowInFolder(object sender, RoutedEventArgs e)
+        {
+            var folderPath = (string)((MenuItem)sender).Tag;
+            Process.Start("explorer.exe", "/select," + folderPath);
         }
 #endif
 
@@ -980,30 +994,25 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-		private void Button_Click(object sender, EventArgs e)
+        private void Button_Click(object sender, EventArgs e)
         {
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            if (sv.Visibility == Visibility.Collapsed)
+            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            if (view.Visibility == Visibility.Collapsed)
             {
-                //this.sidebarGrid.Width = restoreWidth;
-                sv.Width = double.NaN;
-                sv.HorizontalAlignment = HorizontalAlignment.Stretch;
-                sv.Height = double.NaN;
-                sv.VerticalAlignment = VerticalAlignment.Stretch;
+                view.Width = double.NaN;
+                view.HorizontalAlignment = HorizontalAlignment.Stretch;
+                view.Height = double.NaN;
+                view.VerticalAlignment = VerticalAlignment.Stretch;
 
                 this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
                 this.verticalSplitter.Visibility = Visibility.Visible;
-                sv.Visibility = Visibility.Visible;
+                view.Visibility = Visibility.Visible;
                 this.sidebarGrid.Visibility = Visibility.Visible;
                 this.collapsedSidebar.Visibility = Visibility.Collapsed;
             }
-            //SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            //sv.Width = double.NaN;
-            //this.sidebarGrid.Width = 250;
-            //this.collapsedSidebar.Visibility = Visibility.Collapsed;
         }
 
-		private void Button_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -1022,17 +1031,15 @@ namespace Dynamo.Controls
 
         private void LibraryClicked(object sender, EventArgs e)
         {
-            // this.sidebarGrid.Visibility = Visibility.Collapsed;
             restoreWidth = this.sidebarGrid.ActualWidth;
 
-            // this.sidebarGrid.Width = 0;
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
             this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
-            
+
             this.horizontalSplitter.Width = double.NaN;
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            sv.Visibility = Visibility.Collapsed;
+            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            view.Visibility = Visibility.Collapsed;
 
             this.sidebarGrid.Visibility = Visibility.Collapsed;
             this.collapsedSidebar.Visibility = Visibility.Visible;

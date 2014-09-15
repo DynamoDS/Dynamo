@@ -2797,7 +2797,7 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4011
@@ -3921,7 +3921,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV39_Defect_1449956_2()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4012
@@ -5705,7 +5705,7 @@ b;c;d;
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV78_Defect_1460866()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
@@ -6116,7 +6116,7 @@ d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV84_Function_Pointer_Implicit_Conversion_4()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4014
@@ -6611,7 +6611,7 @@ d1 = [Imperative]
         [Test]
         [Category("Design Issue")]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV88_Defect_1463489_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
@@ -6885,7 +6885,7 @@ y1;y2;y3;y4;
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV91_Defect_1463703_3()
         {
             // Tracked  by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
@@ -7491,7 +7491,7 @@ b1 = foo ( a1 );";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV89_typeConversion_FunctionArguments_1467060_6()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -8306,7 +8306,7 @@ d = foo(1.5);";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void TV106_Defect_1467132()
         {
@@ -8736,7 +8736,7 @@ r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestFunctionOverloadFromNestedLanguageBlock01()
         {
             string code = @"
