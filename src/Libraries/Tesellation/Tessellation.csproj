@@ -75,9 +75,6 @@
   <ItemGroup>
     <Content Include="Tessellation_DynamoCustomization.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="images.resx" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
@@ -89,11 +86,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)images.resx" OutputResources="$(ProjectDir)images.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)images.resources" OutputAssembly="$(OutDir)$(TargetName).resources.dll" />
-  </Target>
 </Project>
