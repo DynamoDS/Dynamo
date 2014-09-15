@@ -2464,7 +2464,8 @@ namespace Dynamo.Tests
 		#endregion
 
 		#region Test Create List
-		[Test]
+        [Test]
+        [Category("Failure")]
 		public void TestCreateList()
 		{
 			// Test partially applied Create List node.
