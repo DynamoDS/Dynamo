@@ -37,6 +37,7 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
+            InstrumentationLogger.LogAnonymousEvent("CrashPrompt", "Stability");
             StabilityTracking.GetInstance().NotifyCrash();
 
             if (args.HasDetails())

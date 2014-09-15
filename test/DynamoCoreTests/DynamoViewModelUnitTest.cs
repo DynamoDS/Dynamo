@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             DynamoPathManager.Instance.InitializeCore(
                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.Instance.PreloadASMLibraries();
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
@@ -152,7 +152,15 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if(outportCount > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected string GetVarName(string guid)
@@ -160,7 +168,15 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if (outportCount > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected RuntimeMirror GetRuntimeMirror(string varName)

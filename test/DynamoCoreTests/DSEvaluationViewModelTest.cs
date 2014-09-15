@@ -720,6 +720,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void UsingFunctionObject02()
         {
             RunModel(@"core\dsevaluation\Apply.dyn");
@@ -835,6 +836,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Apply_With_PropertyMethod()
         {
             // Function object to property method and used in apply 
