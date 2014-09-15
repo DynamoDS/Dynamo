@@ -129,6 +129,9 @@ namespace Dynamo.ViewModels
 
         public enum ViewMode { LibraryView, LibrarySearchView };
 
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
         public ViewMode CurrentMode
         {
             get
