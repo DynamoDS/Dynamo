@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace Dynamo.UI.Views
 {
@@ -19,6 +18,5 @@ namespace Dynamo.UI.Views
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
-
     }
 }
