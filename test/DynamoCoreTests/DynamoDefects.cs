@@ -315,5 +315,20 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
         }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_2607()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2607
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2607.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 12);
+            IntegerSlider input = model.CurrentWorkspace.NodeFromWorkspace
+                ("7cbafd1f-cec2-48b2-ac52-c9605acfb644") as IntegerSlider;
+            input.Value = 12;
+            RunCurrentModel();
+            AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 24);
+        }
     }
 }
