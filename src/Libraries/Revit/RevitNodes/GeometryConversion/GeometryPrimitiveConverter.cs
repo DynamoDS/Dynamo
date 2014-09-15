@@ -23,13 +23,7 @@ namespace Revit.GeometryConversion
             var rbb = new BoundingBoxXYZ();
             rbb.Enabled = true;
 
-            var rtrans = Transform.Identity;
-            rtrans.Origin = cs.Origin.ToXyz(convertUnits);
-            rtrans.BasisX = cs.XAxis.ToXyz(convertUnits);
-            rtrans.BasisY = cs.YAxis.ToXyz(convertUnits);
-            rtrans.BasisZ = cs.ZAxis.ToXyz(convertUnits);
-
-            rbb.Transform = rtrans;
+            rbb.Transform = cs.ToTransform(convertUnits);
 
             rbb.Max = maxPoint.ToXyz(convertUnits);
             rbb.Min = minPoint.ToXyz(convertUnits);
@@ -128,24 +122,9 @@ namespace Revit.GeometryConversion
         {
             xyz.Enabled = true;
 
-            var corners = new[] {xyz.Min.ToPoint(), xyz.Max.ToPoint()};
-            var bboxTransform = xyz.Transform;
-            var csOrigin = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
-                bboxTransform.Origin.X,
-                bboxTransform.Origin.Y,
-                bboxTransform.Origin.Z);
-            var csX = Vector.ByCoordinates(
-                bboxTransform.BasisX.X,
-                bboxTransform.BasisX.Y,
-                bboxTransform.BasisX.Z);
-            var csY = Vector.ByCoordinates(
-                bboxTransform.BasisY.X,
-                bboxTransform.BasisY.Y,
-                bboxTransform.BasisY.Z);
-            var cs = CoordinateSystem.ByOriginVectors(csOrigin, csX, csY);
-            return Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(
-                corners,
-                cs);
+            return Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(
+                xyz.Min.ToPoint(convertUnits), xyz.Max.ToPoint(convertUnits),
+                xyz.Transform.ToCoordinateSystem(convertUnits));
         }
 
         public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz, bool convertUnits = true)
