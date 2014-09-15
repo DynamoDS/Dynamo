@@ -69,9 +69,7 @@
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                     </Grid.Width>
-                    <Border Padding="0,10,0,10">
                         <uicontrols:StandardPanel Name="standardPanel" />
-                    </Border>
                 </Grid>
             </DataTemplate>
 
