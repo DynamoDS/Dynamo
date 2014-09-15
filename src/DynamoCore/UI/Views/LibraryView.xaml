@@ -278,13 +278,27 @@
 
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
+            <Style x:Key="ScrollLibraryViewerStyle"
+                   TargetType="ScrollViewer">
+                <Setter Property="VerticalScrollBarVisibility"
+                        Value="Hidden" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="true">
+                        <Setter Property="VerticalScrollBarVisibility"
+                                Value="Auto" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Name="LibraryGrid" MouseEnter="LibraryGridMouseEnter" MouseLeave="LibraryGridMouseLeave">
+    <Grid Name="LibraryGrid">
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
                       Background="Transparent"
-                      Name="ScrollViewer">
+                      Name="ScrollLibraryViewer"
+                      Style="{StaticResource ScrollLibraryViewerStyle}">
             <Border>
             
             <!-- This is the outer list (showing categories) -->

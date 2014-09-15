@@ -20,16 +20,5 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private void LibraryGridMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-        }
-
-
-        private void LibraryGridMouseEnter(object sender, MouseEventArgs e)
-        {
-            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-        }
-
     }
 }
