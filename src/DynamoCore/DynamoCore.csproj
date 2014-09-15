@@ -181,6 +181,7 @@ limitations under the License.
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
     <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
@@ -196,6 +197,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\RunAllTests.cs" />
     <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>

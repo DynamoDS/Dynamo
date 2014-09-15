@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("ListMutator")]
+    [MutationTest("List.Create test")]
     class ListMutator : AbstractMutator
     {
         public ListMutator(DynamoViewModel viewModel)

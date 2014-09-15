@@ -13,7 +13,7 @@ using Dynamo.Core;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("CustomNodeCompatibilityMutator")]
+    [MutationTest("Custom node compatibility test")]
     class CustomNodeCompatibilityMutator : AbstractMutator
     {
         public CustomNodeCompatibilityMutator(DynamoViewModel viewModel)

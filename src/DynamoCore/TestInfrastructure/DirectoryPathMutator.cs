@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("DirectoryPathMutator")]
+    [MutationTest("Directory path test")]
     class DirectoryPathMutator : AbstractMutator
     {
         public DirectoryPathMutator(DynamoViewModel viewModel)

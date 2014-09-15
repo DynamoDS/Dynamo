@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading;
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("IntegerSliderMutator")]
+    [MutationTest("Integer slider test")]
     class IntegerSliderMutator : AbstractMutator
     {
         public IntegerSliderMutator(DynamoViewModel viewModel)

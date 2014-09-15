@@ -423,7 +423,21 @@ namespace Dynamo.ViewModels
             protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
             {
                 dynamoViewModel.MutateTestImpl();
+            }
 
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+            }
+
+        }
+
+        public class SelectTestFolderCommand : RecordableCommand
+        {
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.SelectTestFolderImpl();
             }
 
             protected override void SerializeCore(XmlElement element)

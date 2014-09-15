@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("StringInputMutator")]
+    [MutationTest("String input test")]
     class StringInputMutator : AbstractMutator
     {
         public StringInputMutator(DynamoViewModel viewModel)

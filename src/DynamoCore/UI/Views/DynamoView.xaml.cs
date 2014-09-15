@@ -31,6 +31,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.TestInfrastructure;
 
 namespace Dynamo.Controls
 {
@@ -61,6 +62,8 @@ namespace Dynamo.Controls
 
             _timer = new Stopwatch();
             _timer.Start();
+
+            MutatorDriver.Instance.Init(dynamoViewModel);
 
             InitializeComponent();
 

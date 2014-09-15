@@ -109,8 +109,15 @@ namespace Dynamo.ViewModels
 
         private void MutateTestImpl()
         {
-            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
+            var mutatorDriver = Dynamo.TestInfrastructure.MutatorDriver.Instance;
+            mutatorDriver.Init(this);
             mutatorDriver.RunMutationTests();
+        }
+
+        private void SelectTestFolderImpl()
+        {
+            var mutatorDriver = Dynamo.TestInfrastructure.MutatorDriver.Instance;
+            mutatorDriver.RunOnSelectedFolder();
         }
 
         private void CreateNodeImpl(CreateNodeCommand command)

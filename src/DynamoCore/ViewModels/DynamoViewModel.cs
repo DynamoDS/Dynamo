@@ -630,6 +630,17 @@ namespace Dynamo.ViewModels
             this.ExecuteCommand(command);
         }
 
+        internal void SelectTestFolderCmd(object parameters)
+        {
+            var command = new DynamoViewModel.SelectTestFolderCommand();
+            this.ExecuteCommand(command);
+        }
+
+        internal bool CanSelectFolderCmd(object parameters)
+        {
+            return true;
+        }
+
         public void DisplayFunction(object parameters)
         {
             Model.CustomNodeManager.GetFunctionDefinition((Guid)parameters);

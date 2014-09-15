@@ -8,7 +8,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("CodeBlockNodeMutator")]
+    [MutationTest("CodeBlockNode test")]
     class CodeBlockNodeMutator : AbstractMutator
     {
         public CodeBlockNodeMutator(DynamoViewModel viewModel)
