@@ -110,7 +110,7 @@ namespace Dynamo.Applications.Models
         {
             if (setupPython) return;
 
-            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => ElementWrapper.ToDSType(element, (bool)true));
+            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Autodesk.Revit.DB.Element element) => ElementWrapper.ToDSType(element, (bool)true));
 
             // Turn off element binding during iron python script execution
             IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
@@ -121,6 +121,7 @@ namespace Dynamo.Applications.Models
             {
                 var marshaler = new DataMarshaler();
                 marshaler.RegisterMarshaler((Revit.Elements.Element element) => element.InternalElement);
+                marshaler.RegisterMarshaler((Revit.Elements.Category element) => element.InternalCategory);
 
                 Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
