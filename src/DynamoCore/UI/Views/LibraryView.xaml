@@ -69,7 +69,7 @@
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                     </Grid.Width>
-                        <uicontrols:StandardPanel Name="standardPanel" />
+                    <uicontrols:StandardPanel Name="standardPanel" />
                 </Grid>
             </DataTemplate>
 
@@ -253,8 +253,7 @@
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                   OverridesDefaultStyle="True"
-                                  Height="27">
-                    </ToggleButton>
+                                  Height="27" />
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
