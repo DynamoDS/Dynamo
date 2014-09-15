@@ -139,9 +139,17 @@ namespace RevitServices.Transactions
         /// </summary>
         public void AssertInIdleThread()
         {
+#if !ENABLE_DYNAMO_SCHEDULER
+            // SCHEDULER: The stub for IdlePromise has been moved out into DynamoRevit,
+            // which means we do not have a way to check here to see if the call's been 
+            // made from within an idle thread. This needs a little tweaking if we are 
+            // not ready to "assume" that callers of this method always get invoked in 
+            // an idle thread.
+            // 
             if (DoAssertInIdleThread)
                 if (!IdlePromise.InIdleThread)
                     throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
+#endif
         }
 
         /// <summary>

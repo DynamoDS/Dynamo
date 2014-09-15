@@ -1,3 +1,5 @@
+using Dynamo.Applications;
+
 #region
 using System;
 using System.Diagnostics;
@@ -15,6 +17,7 @@ using Autodesk.Revit.UI.Events;
 using Dynamo.Applications.Models;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -32,12 +35,63 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 #endregion
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+namespace RevitServices.Threading
+{
+    // SCHEDULER: This class will be removed once DynamoScheduler work is 
+    // tested working. When that happens, all the callers will be redirected
+    // to use RevitDynamoModel.DynamoScheduler directly for task scheduling.
+    // 
+    public static class IdlePromise
+    {
+        [ThreadStatic]
+        private static bool idle;
+        public static bool InIdleThread
+        {
+            get { return idle; }
+            set { idle = value; }
+        }
+
+        public static void ClearPromises()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RegisterIdle(UIApplication uIApplication)
+        {
+            // SCHEDULER: No-op, method to be removed eventually.
+        }
+
+        public static void ExecuteOnIdleAsync(Action p)
+        {
+            var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
+            var task = new DelegateBasedAsyncTask(scheduler);
+            task.Initialize(p);
+            scheduler.ScheduleForExecution(task);
+        }
+
+        public static void ExecuteOnShutdown(Action p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+#endif
+
 namespace Dynamo.Applications
 {
     [Transaction(TransactionMode.Manual),
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevit : IExternalCommand
     {
+        private static ExternalCommandData extCommandData;
         private static DynamoViewModel dynamoViewModel;
         private static RevitDynamoModel revitDynamoModel;
         private static bool handledCrash;
@@ -50,6 +104,11 @@ namespace Dynamo.Applications
 
             try
             {
+#if ENABLE_DYNAMO_SCHEDULER
+                extCommandData = commandData;
+                commandData.Application.Idling += OnRevitIdleOnce;
+#else
+
                 IdlePromise.ExecuteOnIdleAsync(
                     delegate
                     {
@@ -63,7 +122,7 @@ namespace Dynamo.Applications
                         TryOpenWorkspaceInCommandData(commandData);
                         SubscribeViewActivating(commandData);
                     });
-
+#endif
                 // Disable the Dynamo button to prevent a re-run
                 DynamoRevitApp.DynamoButton.Enabled = false;
             }
@@ -82,6 +141,38 @@ namespace Dynamo.Applications
 
             return Result.Succeeded;
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        internal static RevitDynamoModel RevitDynamoModel
+        {
+            get { return revitDynamoModel; }
+        }
+
+        /// <summary>
+        /// This method (Application.Idling event handler) is called exactly once
+        /// during the creation of Dynamo Revit plug-in. It is in this call both 
+        /// DynamoScheduler and its RevitSchedulerThread objects are created. All 
+        /// other AsyncTask beyond this point are scheduled through the scheduler.
+        /// </summary>
+        /// 
+        private static void OnRevitIdleOnce(object sender, IdlingEventArgs e)
+        {
+            // We only need to initialize this once, unregister.
+            extCommandData.Application.Idling -= OnRevitIdleOnce;
+
+            // create core data models
+            revitDynamoModel = InitializeCoreModel(extCommandData);
+            dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
+
+            // show the window
+            InitializeCoreView().Show();
+
+            TryOpenWorkspaceInCommandData(extCommandData);
+            SubscribeViewActivating(extCommandData);
+        }
+
+#endif
 
         #region Initialization
 
