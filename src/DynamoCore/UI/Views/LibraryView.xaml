@@ -278,6 +278,142 @@
 
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
+            <ControlTemplate x:Key="ScrollViewerControlTemplate"
+                             TargetType="{x:Type ScrollViewer}">
+                <Grid x:Name="Grid"
+                      Background="{TemplateBinding Background}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                            CanContentScroll="{TemplateBinding CanContentScroll}"
+                                            CanHorizontallyScroll="False"
+                                            CanVerticallyScroll="True"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Content="{TemplateBinding Content}"
+                                            Grid.RowSpan="2"
+                                            Margin="{TemplateBinding Padding}"
+                                            Grid.ColumnSpan="2" />
+                    <ScrollBar x:Name="PART_VerticalScrollBar"
+                               AutomationProperties.AutomationId="VerticalScrollBar"
+                               Cursor="Arrow"
+                               Grid.Column="1"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               Minimum="0"
+                               Grid.Row="0"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                               Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Width="8" />
+                </Grid>
+            </ControlTemplate>
+
+            <Style x:Key="VerticalThumb"
+                   TargetType="{x:Type Thumb}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid>
+                                <Rectangle HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           Width="Auto"
+                                           Height="Auto"
+                                           Fill="Transparent" />
+                                <Border x:Name="Rectangle1"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Width="7"
+                                        Height="Auto"
+                                        Background="#aaaaaa"
+                                        Opacity="0.5"
+                                        CornerRadius="2" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Stylus.IsPressAndHoldEnabled"
+                        Value="false" />
+                <Setter Property="Stylus.IsFlicksEnabled"
+                        Value="false" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="Width"
+                        Value="10" />
+                <Setter Property="MinWidth"
+                        Value="10" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="Bg"
+                                  SnapsToDevicePixels="true"
+                                  Background="Transparent">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.00001*" />
+                                </Grid.RowDefinitions>
+                                <Track x:Name="PART_Track"
+                                       IsDirectionReversed="true"
+                                       IsEnabled="{TemplateBinding IsMouseOver}">
+                                    <Track.Thumb>
+                                        <Thumb Style="{DynamicResource VerticalThumb}"
+                                               Width="8" />
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Orientation"
+                             Value="Horizontal">
+                        <Setter Property="Width"
+                                Value="Auto" />
+                        <Setter Property="MinWidth"
+                                Value="0" />
+                        <Setter Property="Height"
+                                Value="10" />
+                        <Setter Property="MinHeight"
+                                Value="10" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                    <Grid x:Name="Bg"
+                                          SnapsToDevicePixels="true"
+                                          Background="#7FA7A7A7">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.00001*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Track x:Name="PART_Track"
+                                               IsEnabled="{TemplateBinding IsMouseOver}">
+                                            <Track.DecreaseRepeatButton>
+                                                <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}"
+                                                              Style="{StaticResource ScrollBarPageButton}" />
+                                            </Track.DecreaseRepeatButton>
+                                            <Track.IncreaseRepeatButton>
+                                                <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}"
+                                                              Style="{StaticResource ScrollBarPageButton}" />
+                                            </Track.IncreaseRepeatButton>
+                                            <Track.Thumb>
+                                                <Thumb Style="{DynamicResource HorizontalThumb}"
+                                                       Height="8" />
+                                            </Track.Thumb>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!--Hide scrollbar, when mouse is not over.-->
             <Style x:Key="ScrollLibraryViewerStyle"
                    TargetType="ScrollViewer">
                 <Setter Property="VerticalScrollBarVisibility"
@@ -298,6 +434,7 @@
                       PreviewMouseWheel="OnPreviewMouseWheel"
                       Background="Transparent"
                       Name="ScrollLibraryViewer"
+                      Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
             <Border>
             
