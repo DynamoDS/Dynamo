@@ -23,6 +23,18 @@ namespace Dynamo.Search
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
 
+        private BitmapImage searchIconBitmapNormal =
+            new BitmapImage(
+                new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png"));
+        private BitmapImage searchIconBitmapHover =
+            new BitmapImage(
+                new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png"));
+
+        private SolidColorBrush searchForegroundBrushNormal =
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#878787"));//"#878787"
+        private SolidColorBrush searchForegroundBrushHover =
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
+
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
             this.viewModel = searchViewModel;
@@ -42,6 +54,9 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+
+            searchForegroundBrushNormal.Freeze();
+            searchForegroundBrushHover.Freeze();
         }
 
         private void OnDispatcherShutdownStarted(object sender, EventArgs e)
@@ -301,16 +316,14 @@ namespace Dynamo.Search
 
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
-            SearchIcon.Source = new BitmapImage(searchIconSource);
-            SearchTextBlock.Foreground = new BrushConverter().ConvertFromString("#AAAAAA") as SolidColorBrush;
+            SearchIcon.Source = searchIconBitmapHover;
+            SearchTextBlock.Foreground = searchForegroundBrushHover;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
-            SearchIcon.Source = new BitmapImage(searchIconSource);
-            SearchTextBlock.Foreground = new BrushConverter().ConvertFromString("#878787") as SolidColorBrush;
+            SearchIcon.Source = searchIconBitmapNormal;
+            SearchTextBlock.Foreground = searchForegroundBrushNormal;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
