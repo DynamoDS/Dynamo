@@ -113,13 +113,13 @@ namespace Dynamo.Search
         {
 
             // ignore the key command if modifiers are present
-            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
-                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
-                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
-                e.KeyboardDevice.IsKeyDown(Key.RightAlt) )
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) ||
+                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) ||
+                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) ||
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
             {
                 return;
-            } 
+            }
 
             switch (e.Key)
             {
@@ -136,14 +136,15 @@ namespace Dynamo.Search
 
                     //if there are no nodes being selected, the delete key should 
                     //delete the text in the search box of library preview
-                    else {
+                    else
+                    {
 
                         //if there is no text, then jump out of the switch
                         if (String.IsNullOrEmpty(SearchTextBox.Text))
                         {
                             break;
                         }
-                        else 
+                        else
                         {
                             int cursorPosition = SearchTextBox.SelectionStart;
                             string searchBoxText = SearchTextBox.Text;
@@ -152,20 +153,20 @@ namespace Dynamo.Search
                             //delete this piece of text
                             if (SearchTextBox.SelectedText != "")
                             {
-                                searchBoxText = searchBoxText.Remove(cursorPosition, 
+                                searchBoxText = searchBoxText.Remove(cursorPosition,
                                     SearchTextBox.SelectionLength);
                             }
 
                             //if there is no text selected, delete the character after the cursor
-                            else 
+                            else
                             {
-                                
+
                                 //the cursor is at the end of this text string
                                 if (cursorPosition == searchBoxText.Length)
                                 {
                                     break;
                                 }
-                                else 
+                                else
                                 {
                                     searchBoxText = searchBoxText.Remove(cursorPosition, 1);
                                 }
@@ -221,9 +222,6 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            var searcTextEmpty = string.IsNullOrEmpty(this.viewModel.SearchText);
-            libraryView.Visibility = searcTextEmpty ? Visibility.Visible : Visibility.Collapsed;
-
             // Do not search.
             // Search functionality isn't ready for now.
             //this.viewModel.SearchCommand.Execute(null);
@@ -232,20 +230,20 @@ namespace Dynamo.Search
         // Not used anywhere.
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((SearchViewModel) DataContext).Execute();
+            ((SearchViewModel)DataContext).Execute();
         }
 
         // Not used anywhere.
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
-            ((ListBoxItem) sender).IsSelected = true;
+            ((ListBoxItem)sender).IsSelected = true;
             Keyboard.Focus(this.SearchTextBox);
         }
 
         // Not used anywhere.
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
+            ((SearchViewModel)DataContext).RemoveLastPartOfSearchText();
             Keyboard.Focus(this.SearchTextBox);
         }
 
@@ -256,7 +254,7 @@ namespace Dynamo.Search
             e.Handled = true;
         }
 
-		private void OnLibraryExpanderClick(object sender, RoutedEventArgs e)
+        private void OnLibraryExpanderClick(object sender, RoutedEventArgs e)
         {
             //this.Width = 5;
             //if (this.Visibility == Visibility.Collapsed)
@@ -281,7 +279,7 @@ namespace Dynamo.Search
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            
+
             this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
@@ -295,7 +293,7 @@ namespace Dynamo.Search
             Image collapsestate = (Image)(b).Content;
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            
+
             this.Cursor = null;
         }
 
@@ -330,7 +328,7 @@ namespace Dynamo.Search
 
         private void TextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-           if (viewModel != null)
+            if (viewModel != null)
             {
                 if (string.IsNullOrEmpty(viewModel.SearchText))
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
