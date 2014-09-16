@@ -21,6 +21,7 @@ namespace Dynamo.Tests
     {
         // OpenCommand
         [Test]
+        [Category("Failure")]
         public void CanOpenGoodFile()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");

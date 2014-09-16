@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Globalization;
-using System.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.ViewModels;
-using DynamoUnits;
+
 using ProtoCore.Mirror;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
@@ -14,7 +12,7 @@ namespace Dynamo.Applications
 {
     /// <summary>
     ///     An Revit-specific implementation of IWatchHandler that is set on the DynamoViewModel at startup.
-    ///     The main Process method dynamically dispatches to the appropriate
+    ///     The main GenerateWatchViewModelForData method dynamically dispatches to the appropriate
     ///     internal method based on the type. For every time for which you would like
     ///     to have a custom representation in the watch, you will need an additional
     ///     method on this handler
@@ -32,7 +30,7 @@ namespace Dynamo.Applications
             visualizationManager = vizManager;
         }
 
-        internal WatchViewModel ProcessThing(Element element, string tag, bool showRawData)
+        private WatchViewModel ProcessThing(Element element, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             var id = element.Id;
 
@@ -50,28 +48,28 @@ namespace Dynamo.Applications
         }
 
         //If no dispatch target is found, then invoke base watch handler.
-        internal WatchViewModel ProcessThing(object obj, string tag, bool showRawData)
+        private WatchViewModel ProcessThing(object obj, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return baseHandler.Process(obj, tag, showRawData);
+            return baseHandler.Process(obj, tag, showRawData, callback);
         }
 
-        internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData)
+        private WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             try
             {
-                return baseHandler.Process(data, tag, showRawData);
+                return baseHandler.Process(data, tag, showRawData, callback);
             }
             catch (Exception)
             {
-                return Process(data.Data, tag, showRawData);
+                return callback(data.Data, tag, showRawData);
             }
         }
 
-        public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
+        public WatchViewModel Process(dynamic value, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return Object.ReferenceEquals(value, null)
                 ? new WatchViewModel(visualizationManager, "null", tag)
-                : ProcessThing(value, tag, showRawData);
+                : ProcessThing(value, tag, showRawData, callback);
         }
     }
 }

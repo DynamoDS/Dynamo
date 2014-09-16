@@ -6,9 +6,10 @@ using Autodesk.Revit.DB;
 
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Utilities;
+
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
+
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
