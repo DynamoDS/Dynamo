@@ -1994,6 +1994,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForUnresolvedNodes()
         {
             var model = ViewModel.Model;
@@ -2033,6 +2034,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForDeprecatedNodes()
         {
             var model = ViewModel.Model;
