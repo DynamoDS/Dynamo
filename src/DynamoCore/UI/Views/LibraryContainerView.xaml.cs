@@ -23,6 +23,18 @@ namespace Dynamo.Search
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
 
+        private const string baseUrl = @"pack://application:,,,/DynamoCore;component/UI/Images/";
+
+        private BitmapImage searchIconBitmapNormal =
+            new BitmapImage(new Uri(baseUrl + "search_normal.png"));
+        private BitmapImage searchIconBitmapHover =
+            new BitmapImage(new Uri(baseUrl + "search_hover.png"));
+
+        private SolidColorBrush searchForegroundBrushNormal =
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#878787"));
+        private SolidColorBrush searchForegroundBrushHover =
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
+
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
             this.viewModel = searchViewModel;
@@ -42,6 +54,9 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+
+            searchForegroundBrushNormal.Freeze();
+            searchForegroundBrushHover.Freeze();
         }
 
         private void OnDispatcherShutdownStarted(object sender, EventArgs e)
@@ -299,14 +314,14 @@ namespace Dynamo.Search
 
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
-            SearchIcon.Source = new BitmapImage(searchIconSource);
+            SearchIcon.Source = searchIconBitmapHover;
+            SearchTextBlock.Foreground = searchForegroundBrushHover;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
-            SearchIcon.Source = new BitmapImage(searchIconSource);
+            SearchIcon.Source = searchIconBitmapNormal;
+            SearchTextBlock.Foreground = searchForegroundBrushNormal;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
