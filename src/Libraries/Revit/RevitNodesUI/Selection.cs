@@ -91,9 +91,8 @@ namespace Dynamo.Nodes
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-            Selection.Clear();
-            RaisePropertyChanged("Selection");
-            RaisePropertyChanged("Text");
+            Selection = new List<T1>();
+            SubSelection = new List<T2>();
         }
 
         #endregion
@@ -195,10 +194,6 @@ namespace Dynamo.Nodes
 
             Selection = Selection.Where(x => !uuids.Contains(x.UniqueId)).ToList();
 
-            RaisePropertyChanged("Selection");
-            RaisePropertyChanged("Text");
-            RequiresRecalc = true;
-
             UpdateSubElements();
         }
 
@@ -210,10 +205,6 @@ namespace Dynamo.Nodes
             if (Selection == null || !Selection.Select(x => x.UniqueId).Any(enumerable.Contains))
                 return;
 
-            RequiresRecalc = true;
-
-            RaisePropertyChanged("Selection");
-            RaisePropertyChanged("Text");
             RequiresRecalc = true;
 
             UpdateSubElements();
