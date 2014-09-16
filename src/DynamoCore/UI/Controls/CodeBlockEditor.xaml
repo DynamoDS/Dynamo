@@ -9,24 +9,26 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
-        <FontFamily x:Key="OpenSansRegular">../../Fonts/#Open Sans</FontFamily>
+        
     </UserControl.Resources>
     <Grid>
         <Border BorderBrush="#aaa"
-                BorderThickness="1,0,1,0">
+                BorderThickness="1,0,1,0"
+                VerticalAlignment="Top">
             <avalonedit:TextEditor x:Name="InnerTextEditor"
                                    FontSize="15px"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontFamily="Consolas"
                                    WordWrap="True"
                                    Foreground="#444"
                                    Padding="3 0 3 0"
                                    Background="#88FFFFFF"
-                                   MaxWidth="500"/>
+                                   MaxWidth="500"
+                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
         <TextBlock x:Name="WatermarkLabel"
                    Text="Your code goes here"
                    Foreground="#777777"
-                   FontFamily="{StaticResource OpenSansRegular}"
+                   FontFamily="Consolas"
                    FontSize="14.67px"
                    Padding="3 0 3 0"
                    Margin="3 0 3 0"

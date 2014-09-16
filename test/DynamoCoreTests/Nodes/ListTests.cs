@@ -1464,7 +1464,6 @@ namespace Dynamo.Tests
 			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
 			//AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new int[]{new int[]{null,0}});
-
 		}
 
 		[Test]
@@ -2464,7 +2463,8 @@ namespace Dynamo.Tests
 		#endregion
 
 		#region Test Create List
-		[Test]
+        [Test]
+        [Category("Failure")]
 		public void TestCreateList()
 		{
 			// Test partially applied Create List node.

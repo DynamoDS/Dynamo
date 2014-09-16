@@ -313,6 +313,7 @@ namespace Dynamo.Models
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
+            Height = 0;
         }
 
         public bool HasDefaultValue
