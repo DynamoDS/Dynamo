@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
@@ -151,6 +149,9 @@ namespace Dynamo.DSEngine
             return obj.ToString().Trim();
         }
 
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
         internal BitmapSource LoadIconInternal(string iconKey)
         {
             //If there is no icons, there is no need to go further.
@@ -177,14 +178,14 @@ namespace Dynamo.DSEngine
                 return null;
             }
 
-            BitmapSource bitSrc = null;
+            BitmapSource bitmapSource = null;
 
-            Bitmap source = iconData.Value as Bitmap;
+            var source = iconData.Value as Bitmap;
             var hBitmap = source.GetHbitmap();
 
             try
             {
-                bitSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                     hBitmap,
                     IntPtr.Zero,
                     Int32Rect.Empty,
@@ -192,12 +193,16 @@ namespace Dynamo.DSEngine
             }
             catch (Win32Exception)
             {
-                bitSrc = null;
+                bitmapSource = null;
+            }
+            finally
+            {
+                DeleteObject(hBitmap);
             }
 
-            cachedIcons.Add(iconKey, bitSrc);
+            cachedIcons.Add(iconKey, bitmapSource);
 
-            return bitSrc;
+            return bitmapSource;
         }
     }
 }
