@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using RTF.Framework;
 using Autodesk.Revit.DB;
-using Dynamo.Utilities;
+
 using Dynamo.Nodes;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
+
 using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
@@ -200,8 +198,8 @@ namespace Dynamo.Tests
 
             //Select one of the walls
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
-            var selNode = selNodes.First() as ElementSelection<Element>;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
 
             var elId = new ElementId(184273);
             var el = DocumentManager.Instance.CurrentDBDocument.GetElement(elId);
@@ -250,8 +248,8 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
-            var selNode = selNodes.First() as ElementSelection<Element>;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
             selNode.Selection.Add(rp);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
@@ -289,8 +287,8 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Element>);
-            var selNode = selNodes.First() as ElementSelection<Element>;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
             selNode.Selection.Add(rp1);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id1 = selNode.Selection.First();

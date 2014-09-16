@@ -24,18 +24,17 @@ using UV = Autodesk.DesignScript.Geometry.UV;
 
 namespace Dynamo.Nodes
 {
-    public abstract class RevitSelection<T> : SelectionBase<T>
+    public abstract class RevitSelection<T1, T2> : SelectionBase<T1, T2>
     {
         protected Document selectionOwner;
         protected RevitDynamoModel RevitDynamoModel { get; private set; }
-        protected Func<List<Element>, List<Element>> Update;
 
         #region public properties
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public override List<T> Selection
+        public override List<T1> Selection
         {
             get { return selection; }
             set
@@ -108,13 +107,6 @@ namespace Dynamo.Nodes
             RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
         }
 
-        public override string ToString()
-        {
-            return selection.Any() ?
-                string.Format("{0} : {1}", Prefix, FormatSelectionText(selection)) :
-                "Nothing Selected";
-        }
-
         #endregion
 
         #region protected methods
@@ -126,7 +118,7 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    public abstract class ElementSelection <T> : RevitSelection<T> where T: Element
+    public abstract class ElementSelection<Tsel> : RevitSelection<Tsel, Element> where Tsel : Element
     {
         protected ElementSelection(WorkspaceModel workspaceModel,
             SelectionType selectionType,
@@ -139,13 +131,16 @@ namespace Dynamo.Nodes
         {
             AssociativeNode node;
 
-            if (Selection == null || !Selection.Any())
+            if ((Selection == null || !Selection.Any()) && 
+                (!SubSelection.Any() || SubSelection == null))
             {
                 node = AstFactory.BuildNullNode();
             }
             else
             {
-                var els = selection;
+                var els = SubSelection.Any() ?
+                    SubSelection.Cast<Element>():
+                    Selection.Cast<Element>();
 
                 var newInputs = els.Select(el =>
                     AstFactory.BuildFunctionCall(
@@ -163,58 +158,69 @@ namespace Dynamo.Nodes
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
-        protected override string FormatSelectionText(List<T> elements)
+        protected override string FormatSelectionText<T>(List<T> elements)
         {
-            var ids = elements.Select(el => el.Id).ToArray();
+            if (typeof(T) != typeof(Element)) return "";
+
+            var ids = elements.Cast<Element>().Where(el=>el.IsValidObject).Select(el => el.Id).ToArray();
             return ids.Any()
                 ? System.String.Join(" ", ids.Take(20))
                 : "";
         }
 
-        protected override T GetModelObjectFromIdentifer(string id)
+        protected override object GetModelObjectFromIdentifer(string id)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
             var e = doc.GetElement(id);
-            return (T)e;
+            return e;
         }
 
-        protected override string GetIdentifierFromModelObject(T modelObject)
+        protected override string GetIdentifierFromModelObject(object modelObject)
         {
-            return modelObject == null ? null : modelObject.UniqueId;
+            var element = (Element)modelObject;
+            return modelObject == null ? null : element.UniqueId;
         }
 
         protected override void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            if (Selection.Any() && document.Equals(selectionOwner))
-            {
-                var uuids =
-                deleted.Select(document.GetElement)
+            var elementIds = deleted as ElementId[] ?? deleted.ToArray();
+            if (!elementIds.Any()) return;
+
+            if (!Selection.Any() || !document.Equals(selectionOwner)) return;
+
+            var uuids =
+                elementIds.Select(document.GetElement)
                     .Where(el => el != null)
                     .Select(el => el.UniqueId);
 
-                Selection = Selection.Where(x => !uuids.Contains(x.UniqueId)).ToList();
+            Selection = Selection.Where(x => !uuids.Contains(x.UniqueId)).ToList();
 
-                RaisePropertyChanged("Selection");
-                RaisePropertyChanged("Text");
-                RequiresRecalc = true;
-            }
+            RaisePropertyChanged("Selection");
+            RaisePropertyChanged("Text");
+            RequiresRecalc = true;
+
+            UpdateSubElements();
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
-            if (Selection == null || !Selection.Select(x => x.UniqueId).Any(updated.Contains))
+            var enumerable = updated as string[] ?? updated.ToArray();
+            if (!enumerable.Any()) return;
+
+            if (Selection == null || !Selection.Select(x => x.UniqueId).Any(enumerable.Contains))
                 return;
 
             RequiresRecalc = true;
 
-            if (Update == null) return;
+            RaisePropertyChanged("Selection");
+            RaisePropertyChanged("Text");
+            RequiresRecalc = true;
 
-            Selection.Clear();
-            Selection = Update.Invoke(Selection.Cast<Element>().ToList()).Cast<T>().ToList();
+            UpdateSubElements();
         }
     }
 
-    public abstract class ReferenceSelection : RevitSelection<Reference>
+    public abstract class ReferenceSelection : RevitSelection<Reference, Reference>
     {
         protected ReferenceSelection(
             WorkspaceModel workspaceModel,
@@ -226,8 +232,6 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var newInputs = new List<AssociativeNode>();
-
             AssociativeNode node;
 
             if (Selection == null || !Selection.Any())
@@ -238,18 +242,14 @@ namespace Dynamo.Nodes
             {
                 var stableRefs = Selection.Select(GetIdentifierFromModelObject);
 
-                foreach (var stableRef in stableRefs)
-                {
-                    var refNode = AstFactory.BuildFunctionCall(
-                        new Func<string, object>(
-                            GeometryObjectSelector.ByReferenceStableRepresentation),
-                        new List<AssociativeNode>
-                        {
-                            AstFactory.BuildStringNode(stableRef),
-                        }
-                        );
-                    newInputs.Add(refNode);
-                }
+                var newInputs = stableRefs.Select(stableRef =>
+                    AstFactory.BuildFunctionCall(
+                    new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation),
+                    new List<AssociativeNode>
+                    {
+                        AstFactory.BuildStringNode(stableRef),
+                    }
+                    )).ToList();
 
                 node = AstFactory.BuildExprList(newInputs);
             }
@@ -257,7 +257,7 @@ namespace Dynamo.Nodes
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
-        protected override string FormatSelectionText(List<Reference> elements)
+        protected override string FormatSelectionText<T>(List<T> elements)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
@@ -268,7 +268,7 @@ namespace Dynamo.Nodes
                 : "";
         }
 
-        protected override Reference GetModelObjectFromIdentifer(string id)
+        protected override object GetModelObjectFromIdentifer(string id)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
             try
@@ -282,7 +282,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override string GetIdentifierFromModelObject(Reference modelObject)
+        protected override string GetIdentifierFromModelObject(object modelObject)
         {
             if (modelObject == null)
             {
@@ -292,7 +292,7 @@ namespace Dynamo.Nodes
             try
             {
                 var doc = DocumentManager.Instance.CurrentDBDocument;
-                return modelObject.ConvertToStableRepresentation(doc);
+                return ((Reference)modelObject).ConvertToStableRepresentation(doc);
             }
             catch (Exception ex)
             {
@@ -509,7 +509,7 @@ namespace Dynamo.Nodes
         {
             // Set an update method. When the target object is modified in
             // Revit, this will cause the sub-elements to be modified.
-            Update = RevitSelectionHelper.GetFamilyInstancesFromDividedSurface;
+            SubElementUpdate = RevitSelectionHelper.GetFamilyInstancesFromDividedSurface;
         }
     }
 

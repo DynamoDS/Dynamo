@@ -63,9 +63,9 @@ namespace Revit.Interactivity
             return null;
         }
 
-        public static List<Element> GetFamilyInstancesFromDividedSurface(List<Element> divSurfs)
+        public static List<Element> GetFamilyInstancesFromDividedSurface(List<DividedSurface> divSurfs)
         {
-            var result = new List<FamilyInstance>();
+            var result = new List<Element>();
 
             foreach (var ds in divSurfs.Cast<DividedSurface>())
             {
@@ -77,6 +77,7 @@ namespace Revit.Interactivity
                     gn.UIndex = u;
 
                     var v = 0;
+
                     while (v < ds.NumberOfVGridlines)
                     {
                         gn.VIndex = v;
@@ -99,7 +100,7 @@ namespace Revit.Interactivity
                 }
             }
 
-            return result.Cast<Element>().ToList();
+            return result.ToList();
         }
 
         #region private static methods

@@ -35,21 +35,28 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class SelectionBase<T> : NodeModel, IWpfNode
+    /// <summary>
+    /// The base class for all selection nodes.
+    /// </summary>
+    /// <typeparam name="T1">The type which is used to constrain the selection.</typeparam>
+    /// <typeparam name="T2">The type which is returned from the selection or subselection.</typeparam>
+    public abstract class SelectionBase<T1, T2> : NodeModel, IWpfNode
     {
         protected bool canSelect = true;
         protected string selectionMessage;
-        protected List<T> selection = new List<T>();
+        protected List<T1> selection = new List<T1>();
+        protected List<T2> subSelection = new List<T2>();
         protected SelectionType selectionType;
         protected SelectionObjectType selectionObjectType;
         protected ILogger logger;
+        protected Func<List<T1>, List<T2>> SubElementUpdate;
 
         #region public properties
 
         /// <summary>
-        /// The Element which is selected.
+        /// A list of selected model objects
         /// </summary>
-        public virtual List<T> Selection
+        public virtual List<T1> Selection
         {
             get { return selection; }
             set
@@ -64,6 +71,29 @@ namespace Dynamo.Nodes
                 }
 
                 RaisePropertyChanged("Selection");
+                RaisePropertyChanged("Text");
+            }
+        }
+
+        /// <summary>
+        /// A list of model objects which are sub-selections
+        /// of those in Selection
+        /// </summary>
+        public virtual List<T2> SubSelection
+        {
+            get { return subSelection; }
+            set
+            {
+                bool dirty = value != null;
+
+                subSelection = value;
+
+                if (dirty)
+                {
+                    RequiresRecalc = true;
+                }
+
+                RaisePropertyChanged("SubSelection");
                 RaisePropertyChanged("Text");
             }
         }
@@ -129,9 +159,17 @@ namespace Dynamo.Nodes
 
         public override string ToString()
         {
-            return selection.Any() ?
-                string.Format("{0} : {1}", Prefix, FormatSelectionText(selection)) :
-                "Nothing Selected";
+            if (SubSelection.Any())
+            {
+                return string.Format("{0} : {1}", Prefix, FormatSelectionText(SubSelection));
+            }
+            
+            if (Selection.Any())
+            {
+                return string.Format("{0} : {1}", Prefix, FormatSelectionText(Selection));
+            }
+
+            return "Nothing selected.";
         }
 
         #endregion
@@ -143,7 +181,7 @@ namespace Dynamo.Nodes
             return CanSelect;
         }
 
-        protected virtual string FormatSelectionText(List<T> elements)
+        protected virtual string FormatSelectionText<T>(List<T> elements)
         {
             return elements.Any()
                 ? System.String.Join(" ", Selection.Take(20).Select(x=>x.ToString()))
@@ -164,13 +202,22 @@ namespace Dynamo.Nodes
             {
                 CanSelect = false;
 
-                //call the delegate associated with a selection type
+                // Call the delegate associated with a selection type
                 Selection =
-                    SelectionHelper.RequestSelectionOfType<T>(
+                    SelectionHelper.RequestSelectionOfType<T1>(
                         selectionMessage,
                         selectionType,
                         selectionObjectType,
                         logger);
+
+                // If there is a sub element selctor, then run it
+                // using the selection as an input. If not, attempt
+                // to cast the temp selection type to the 
+                // stored collection type.
+                if (SubElementUpdate != null)
+                {
+                    SubSelection = SubElementUpdate.Invoke(Selection); 
+                }
 
                 RequiresRecalc = true;
 
@@ -185,21 +232,34 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            if (!Selection.Any()) return;
+            if (!Selection.Any() || !SubSelection.Any()) return;
 
-            var uuids =
-                Selection.Select(GetIdentifierFromModelObject).Where(x => x != null);
-            foreach (var id in uuids)
+            // ELEMENTS
+            var uuidsSelection =
+                Selection.Select(x=>GetIdentifierFromModelObject(x)).Where(x => x != null);
+
+            foreach (var id in uuidsSelection)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
                 outEl.SetAttribute("id", id);
                 nodeElement.AppendChild(outEl);
             }
+
+            // SUB ELEMENTS
+            //var uuidsSubSelection =
+            //    SubSelection.Select(x=>GetIdentifierFromModelObject(x)).Where(x => x != null);
+
+            //foreach (var id in uuidsSubSelection)
+            //{
+            //    XmlElement outEl = xmlDoc.CreateElement("instance_sub");
+            //    outEl.SetAttribute("id", id);
+            //    nodeElement.AppendChild(outEl);
+            //}
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            // Check the selection for valid elements
+            // ELEMENTS
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
@@ -207,8 +267,25 @@ namespace Dynamo.Nodes
                     .ToList();
 
             Selection =
-                savedUuids.Select(GetModelObjectFromIdentifer)
-                    .Where(el => el  != null).ToList();
+                    savedUuids.Select(GetModelObjectFromIdentifer).Cast<T1>()
+                        .Where(el => el != null).ToList();
+
+
+            if (SubElementUpdate != null)
+            {
+                SubSelection = SubElementUpdate.Invoke(Selection);
+            }
+
+            // SUB ELEMENTS
+            //var saved_subUuids =
+            //    nodeElement.ChildNodes.Cast<XmlNode>()
+            //        .Where(subNode => subNode.Name.Equals("instance_sub") && subNode.Attributes != null)
+            //        .Select(subNode => subNode.Attributes[0].Value)
+            //        .ToList();
+
+            //SubSelection =
+            //    saved_subUuids.Select(GetModelObjectFromIdentifer).Cast<T2>()
+            //        .Where(el => el != null).ToList();
 
             RequiresRecalc = true;
             RaisePropertyChanged("Selection");
@@ -224,7 +301,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="id"></param>
         /// <returns>The object or null if the object cannot be found.</returns>
-        protected virtual T GetModelObjectFromIdentifer(string id)
+        protected virtual object GetModelObjectFromIdentifer(string id)
         {
             throw new NotImplementedException();
         }
@@ -234,11 +311,22 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="modelObject"></param>
         /// <returns>A unique identifier or null if no unique identifier can be derived.</returns>
-        protected virtual string GetIdentifierFromModelObject(T modelObject)
+        protected virtual string GetIdentifierFromModelObject(object modelObject)
         {
             throw new NotImplementedException();
         }
 
+        protected virtual object GetParentForObject(object modelObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void UpdateSubElements()
+        {
+            if (SubElementUpdate == null) return;
+            SubSelection.Clear();
+            SubSelection = SubElementUpdate.Invoke(Selection);
+        }
         #endregion
     }
 
