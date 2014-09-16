@@ -72,10 +72,10 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Finds the visual child.
+        /// Finds the visual children.
         /// </summary>
         /// <typeparam name="childItem">The type of the child item.</typeparam>
-        /// <param name="obj">The obj.</param>
+        /// <param name="obj">The object, where to search.</param>
         /// <returns></returns>
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject obj) where T : DependencyObject
         {
