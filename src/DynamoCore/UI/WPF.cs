@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Dynamo.Utilities
@@ -68,6 +69,35 @@ namespace Dynamo.Utilities
             }
 
             return foundChild;
+        }
+
+        /// <summary>
+        /// Finds the visual child.
+        /// </summary>
+        /// <typeparam name="childItem">The type of the child item.</typeparam>
+        /// <param name="obj">The obj.</param>
+        /// <returns></returns>
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject obj) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is T)
+                {
+                    yield return (T)child;
+                }
+                else
+                {
+                    var childOfChild = FindVisualChildren<T>(child);
+                    if (childOfChild != null)
+                    {
+                        foreach (var subchild in childOfChild)
+                        {
+                            yield return subchild;
+                        }
+                    }
+                }
+            }
         }
 
     }

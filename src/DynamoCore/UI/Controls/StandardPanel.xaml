@@ -15,6 +15,7 @@
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
         <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
+        <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -117,7 +118,8 @@
                      Grid.Row="1"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     SizeChanged="RefreshListBoxItems">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -130,11 +132,16 @@
 
                             <TextBlock HorizontalAlignment="Left"
                                        TextWrapping="Wrap"
-                                       Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13" />
+                                       FontSize="13">
+                                <TextBlock.Text>
+                                    <Binding RelativeSource="{RelativeSource Self}"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                             ConverterParameter="MethodButton" />
+                                </TextBlock.Text>
+                            </TextBlock>
 
                         </StackPanel>
                     </DataTemplate>

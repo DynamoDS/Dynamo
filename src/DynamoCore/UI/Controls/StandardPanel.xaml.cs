@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Controls
 {
@@ -185,6 +187,21 @@ namespace Dynamo.UI.Controls
                 castedDataContext.HiddenMembers = members.Skip(TruncatedMembersCount);
                 secondaryMembers.ItemsSource = members.Take(TruncatedMembersCount);
             }
+        }
+
+        private void RefreshListBoxItems(object sender, SizeChangedEventArgs e)
+        {
+            var listBox = sender as UIElement;
+            if (listBox == null) return;
+
+            var buttons = WPF.FindVisualChildren<ListBoxItem>(listBox).ToList();
+            foreach (var button in buttons)
+            {
+                var textBlock = WPF.FindChild<TextBlock>(button,"");
+                    BindingOperations.GetBindingExpression(textBlock, TextBlock.TextProperty)
+                        .UpdateTarget();
+            }
+
         }
     }
 }
