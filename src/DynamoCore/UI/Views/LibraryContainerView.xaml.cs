@@ -23,15 +23,15 @@ namespace Dynamo.Search
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
 
+        private const string baseUrl = @"pack://application:,,,/DynamoCore;component/UI/Images/";
+
         private BitmapImage searchIconBitmapNormal =
-            new BitmapImage(
-                new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png"));
+            new BitmapImage(new Uri(baseUrl + "search_normal.png"));
         private BitmapImage searchIconBitmapHover =
-            new BitmapImage(
-                new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png"));
+            new BitmapImage(new Uri(baseUrl + "search_hover.png"));
 
         private SolidColorBrush searchForegroundBrushNormal =
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#878787"));//"#878787"
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#878787"));
         private SolidColorBrush searchForegroundBrushHover =
             new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
 
