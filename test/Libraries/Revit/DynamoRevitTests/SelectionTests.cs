@@ -63,6 +63,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectModelElement()
         {
@@ -71,6 +72,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectModelElements()
         {
@@ -79,6 +81,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectFace()
         {
@@ -104,6 +107,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectEdge()
         {
@@ -128,6 +132,7 @@ namespace Dynamo.Tests
         //}
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectDividedSurfaceFamilies()
         {
@@ -182,6 +187,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
         public void SelectFaces()
         {
