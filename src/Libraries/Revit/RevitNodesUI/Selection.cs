@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
+using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -314,8 +315,9 @@ namespace Dynamo.Nodes
 
             RequiresRecalc = true;
         }
-    }
     
+    }
+
     [NodeName("Select Analysis Results")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]

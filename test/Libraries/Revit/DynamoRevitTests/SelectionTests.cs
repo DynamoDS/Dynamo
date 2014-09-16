@@ -10,8 +10,6 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using NUnit.Framework;
 
-using ProtoCore.Mirror;
-
 using RevitServices.Persistence;
 using RTF.Framework;
 
@@ -113,21 +111,21 @@ namespace Dynamo.Tests
             TestSelection<Reference,Reference>(SelectionType.One);
         }
 
-        [Test]
-        [TestModel(@".\Selection\Selection.rfa")]
-        public void SelectPointOnFace()
-        {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectPointOnFace.dyn"));
-            TestSelection<Reference,Reference>(SelectionType.One);
-        }
+        //[Test]
+        //[TestModel(@".\Selection\Selection.rfa")]
+        //public void SelectPointOnFace()
+        //{
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectPointOnFace.dyn"));
+        //    TestSelection<Reference,Reference>(SelectionType.One);
+        //}
 
-        [Test]
-        [TestModel(@".\Selection\Selection.rfa")]
-        public void SelectUVOnFace()
-        {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectUVOnFace.dyn"));
-            TestSelection<Reference,Reference>(SelectionType.One);
-        }
+        //[Test]
+        //[TestModel(@".\Selection\Selection.rfa")]
+        //public void SelectUVOnFace()
+        //{
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectUVOnFace.dyn"));
+        //    TestSelection<Reference,Reference>(SelectionType.One);
+        //}
 
         [Test]
         [TestModel(@".\Selection\Selection.rfa")]
