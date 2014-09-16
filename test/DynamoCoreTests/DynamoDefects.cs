@@ -328,6 +328,20 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1971()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1971
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1971.dyn");
+            RunModel(openPath);
+            var pythonNode = model.CurrentWorkspace.NodeFromWorkspace
+                ("768780b5-0902-4756-93dc-2d6a8690df53");
+            string var = pythonNode.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_4046()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4046
