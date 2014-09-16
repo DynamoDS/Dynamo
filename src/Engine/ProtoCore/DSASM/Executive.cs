@@ -3546,7 +3546,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.BuildNullArray(0);
+                    StackValue array = rmem.Heap.AllocateArray(new StackValue[] {}, null);
                     GCRetain(array);
                     rmem.SetAtSymbol(symbolnode, array);
                     ArrayUtils.SetValueForIndex(array, 0, value, core);
@@ -3611,7 +3611,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.BuildNullArray(0);
+                    StackValue array = rmem.Heap.AllocateArray(new StackValue[] {}, null);
                     GCRetain(array);
                     rmem.SetAtSymbol(symbolnode, array);
                     if (!value.IsNull)

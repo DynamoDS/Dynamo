@@ -466,12 +466,6 @@ namespace ProtoCore
                 return Heap.AllocateArray(arrayElements);
             }
 
-            public StackValue BuildNullArray(int size)
-            {
-                StackValue[] nulls = Enumerable.Range(0, size).Select(i => StackValue.Null).ToArray();
-                return BuildArray(nulls); 
-           }
-
             public StackValue BuildArrayFromStack(int size)
             {
                 List<StackValue> svs = new List<StackValue>();
