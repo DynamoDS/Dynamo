@@ -439,7 +439,7 @@ namespace ProtoCore.Lang
                             {
                                 GCUtils.GCRetain(key, core); 
                             }
-                            ret = HeapUtils.StoreArray(result, null, core);
+                            ret = core.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -457,7 +457,7 @@ namespace ProtoCore.Lang
                             {
                                 GCUtils.GCRetain(key, core);
                             }
-                            ret = HeapUtils.StoreArray(result.ToArray(), null, core);
+                            ret = core.Heap.AllocateArray(result.ToArray(), null);
                         }
                         break;
                     }
@@ -1152,7 +1152,7 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : HeapUtils.StoreArray(range, null, core);
+            return range == null ? StackValue.Null : core.Heap.AllocateArray(range, null);
         }
     }
     internal class ArrayUtilsForBuiltIns
@@ -1189,7 +1189,7 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return HeapUtils.StoreArray(newElements.ToArray(), null, runtime.runtime.Core);
+            return runtime.runtime.Core.Heap.AllocateArray(newElements.ToArray(), null);
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -2050,7 +2050,7 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return HeapUtils.StoreArray(svList.ToArray(), null, runtime.runtime.Core);
+                return runtime.runtime.Core.Heap.AllocateArray(svList.ToArray(), null);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2060,7 +2060,7 @@ namespace ProtoCore.Lang
             for (; countBraces > 0; countBraces--)
             {
                 GCUtils.GCRetain(sv, runtime.runtime.Core);
-                sv = HeapUtils.StoreArray(new StackValue[] { sv }, null, runtime.runtime.Core);
+                sv = runtime.runtime.Core.Heap.AllocateArray(new StackValue[] { sv }, null);
             }
             return sv;
         }

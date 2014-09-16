@@ -7228,7 +7228,7 @@ namespace ProtoCore.DSASM
 
                 if (core.ContinuationStruct.Done)
                 {
-                    RX = HeapUtils.StoreArray(core.ContinuationStruct.RunningResult.ToArray(), null, core);
+                    RX = core.Heap.AllocateArray(core.ContinuationStruct.RunningResult.ToArray(), null);
                     GCUtils.GCRetain(RX, core);
 
                     core.ContinuationStruct.RunningResult.Clear();

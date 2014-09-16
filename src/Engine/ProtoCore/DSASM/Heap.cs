@@ -272,9 +272,10 @@ namespace ProtoCore.DSASM
             return StackValue.BuildString(index);
         }
 
-        public StackValue AllocateArray(StackValue[] values)
+        public StackValue AllocateArray(StackValue[] values, Dictionary<StackValue, StackValue> dict = null)
         {
             int index = AllocateInternal(values);
+            Heaplist[index].Dict = dict;
             return StackValue.BuildArrayPointer(index);
         }
 

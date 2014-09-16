@@ -646,7 +646,7 @@ namespace ProtoCore.Utils
                 // auto-promotion
                 if (!subArray.IsArray)
                 {
-                    subArray = HeapUtils.StoreArray(new StackValue[] { subArray }, null, core);
+                    subArray = core.Heap.AllocateArray(new StackValue[] { subArray }, null);
                     GCUtils.GCRetain(subArray, core);
                     SetValueForIndex(array, index, subArray, core);
                 }
@@ -702,7 +702,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return HeapUtils.StoreArray(oldValues, null, core);
+                return core.Heap.AllocateArray(oldValues, null);
             }
             else
             {
@@ -718,7 +718,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return HeapUtils.StoreArray(oldValues, null, core);
+                return core.Heap.AllocateArray(oldValues, null);
             }
         }
 
@@ -887,7 +887,7 @@ namespace ProtoCore.Utils
                     GCUtils.GCRetain(values[i], core);
                 }
 
-                return HeapUtils.StoreArray(values, null, core);
+                return core.Heap.AllocateArray(values, null);
             }
             else
             {
@@ -951,7 +951,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            return HeapUtils.StoreArray(elements, dict, core);
+            return core.Heap.AllocateArray(elements, dict);
         }
 
         /// <summary>
@@ -1180,7 +1180,7 @@ namespace ProtoCore.Utils
 
             if (hasValue)
             {
-                value = HeapUtils.StoreArray(values.ToArray(), null, core);
+                value = core.Heap.AllocateArray(values.ToArray(), null);
                 return true;
             }
             else

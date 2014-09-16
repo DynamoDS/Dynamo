@@ -1488,7 +1488,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
             }
@@ -1654,7 +1654,7 @@ namespace ProtoCore
 #endif
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
 
@@ -1831,12 +1831,7 @@ namespace ProtoCore
                 for (int p = 0; p < promotionsRequired; p++)
                 {
 
-                    StackValue newSV = HeapUtils.StoreArray(
-                        new StackValue[1]
-                            {
-                                oldSv
-                            }
-                        , null, core);
+                    StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
 
                     GCUtils.GCRetain(newSV, core);
                     // GCUtils.GCRelease(oldSv, core);
