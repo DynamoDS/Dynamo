@@ -16,51 +16,6 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
-        /// Traverses graphnodes under langblockGraphNode and marks all nodes that depend on executingGraphNode as dirty
-        /// </summary>
-        /// <param name="executingGraphNode"></param>
-        /// <param name="langblockGraphNode"></param>
-        /// <param name="dependencyGraph"></param>
-        public static void UpdateLanguageBlockGraphnodes(
-            InstructionStream[] instrStream,
-            ProtoCore.AssociativeGraph.DependencyGraph dependencyGraph, 
-            ProtoCore.AssociativeGraph.GraphNode executingGraphNode, 
-            ProtoCore.AssociativeGraph.GraphNode langblockGraphNode)
-        {
-            if (!langblockGraphNode.isLanguageBlock)
-            {
-                return;
-            }
-
-            if (dependencyGraph == null || dependencyGraph.GraphList.Count <= 0)
-            {
-                return;
-            }
-
-            int langblockScope = langblockGraphNode.languageBlockId;
-            int classIndex = executingGraphNode.classIndex;
-            int procIndex = executingGraphNode.procIndex;
-            List<ProtoCore.AssociativeGraph.GraphNode> nodesInScope = dependencyGraph.GetGraphNodesAtScope(langblockScope, classIndex, procIndex);
-
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in nodesInScope)
-            {
-                foreach (var noderef in executingGraphNode.updateNodeRefList)
-                {
-                    ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
-                    if (node.DependsOn(noderef, ref matchingNode))
-                    {
-                        node.isDirty = true;
-                        if (node.isLanguageBlock)
-                        {
-                            ProtoCore.AssociativeGraph.DependencyGraph depGraph = instrStream[node.languageBlockId].dependencyGraph;
-                            ProtoCore.AssociativeEngine.Utils.UpdateLanguageBlockGraphnodes(instrStream, dependencyGraph, executingGraphNode, node);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Find the first dirty node of the graphnode residing at indexOfDirtyNode
         /// </summary>
         /// <param name="indexOfDirtyNode"></param>
@@ -863,13 +818,6 @@ namespace ProtoCore.AssociativeGraph
         {
             List<GraphNode> nodes;
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
-            return nodes;
-        }
-
-        public List<GraphNode> GetGraphNodesAtScope(int languageBlockId, int classIndex, int procIndex)
-        {
-            List<GraphNode> nodes = GetGraphNodesAtScope(classIndex, procIndex);
-            nodes = nodes.Where(x => x.languageBlockId == languageBlockId).ToList();
             return nodes;
         }
 
