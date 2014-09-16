@@ -91,8 +91,7 @@ namespace Dynamo.Nodes
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-            Selection = new List<T1>();
-            SubSelection = new List<T2>();
+            ClearSelections();
         }
 
         #endregion

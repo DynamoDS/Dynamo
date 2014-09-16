@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSRevitNodesUI;
 
@@ -11,10 +10,11 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using NUnit.Framework;
 
+using ProtoCore.Mirror;
+
 using RevitServices.Persistence;
 using RTF.Framework;
 
-using Element = Revit.Elements.Element;
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
 
@@ -85,7 +85,24 @@ namespace Dynamo.Tests
         public void SelectFace()
         {
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFace.dyn"));
-            TestSelection<Reference,Reference>(SelectionType.One);
+
+            RunCurrentModel();
+
+            // Get the selection node
+            var selectNode = (ReferenceSelection)(ViewModel.Model.Nodes.FirstOrDefault(x => x is ReferenceSelection));
+            Assert.NotNull(selectNode);
+
+            // The select faces node returns a list of lists
+            var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
+            Assert.AreEqual(1, list.Count);
+
+            // Clear the selection
+            selectNode.ClearSelections();
+
+            RunCurrentModel();
+
+            list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
+            Assert.Null(list);
         }
 
         [Test]
@@ -171,7 +188,24 @@ namespace Dynamo.Tests
         public void SelectFaces()
         {
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFaces.dyn"));
-            TestSelection<Reference,Reference>(SelectionType.Many);
+
+            RunCurrentModel();
+
+            // Get the selection node
+            var selectNode = (ReferenceSelection)(ViewModel.Model.Nodes.FirstOrDefault(x => x is ReferenceSelection));
+            Assert.NotNull(selectNode);
+
+            // The select faces node returns a list of lists
+            var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
+            Assert.AreEqual(3, list.Count);
+
+            // Clear the selection
+            selectNode.ClearSelections();
+
+            RunCurrentModel();
+
+            list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
+            Assert.Null(list);
         }
 
         /// <summary>

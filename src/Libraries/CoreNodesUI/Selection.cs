@@ -172,6 +172,12 @@ namespace Dynamo.Nodes
             return "Nothing selected.";
         }
 
+        public void ClearSelections()
+        {
+            Selection = new List<T1>();
+            SubSelection = new List<T2>();
+        }
+
         #endregion
 
         #region private methods
@@ -327,6 +333,7 @@ namespace Dynamo.Nodes
             SubSelection.Clear();
             SubSelection = SubElementUpdate.Invoke(Selection);
         }
+
         #endregion
     }
 
