@@ -1216,7 +1216,8 @@ namespace ProtoCore.DSASM
                 else if (snode.IsArray)
                 {
                     StackValue ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope);
-                    rhs = "Array:ptr(" + ptr + "):{" + GetArrayTrace(ptr, blockId, index, new HashSet<int> { (int)ptr.opdata }) + "}";
+                    int rawPtr = (int)ptr.opdata;
+                    rhs = "Array:ptr(" + rawPtr + "):{" + GetArrayTrace(ptr, blockId, index, new HashSet<int> { rawPtr } ) + "}";
                 }
                 else if (snode.IsFunctionPointer)
                 {
