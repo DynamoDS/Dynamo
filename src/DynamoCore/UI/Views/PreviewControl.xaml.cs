@@ -1,4 +1,5 @@
 ﻿using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -280,7 +281,7 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.Process(
+            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                 mirrorData, string.Empty, false);
 
             rootDataContext.Children.Add(cachedLargeContent);
