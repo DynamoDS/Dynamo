@@ -2,10 +2,12 @@
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
-using Microsoft.Practices.Prism.ViewModel;
+
 using System;
 using System.Windows;
 using Dynamo.UI;
+
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 
 namespace Dynamo.Services
 {
@@ -42,15 +44,10 @@ namespace Dynamo.Services
         /// </summary>
         public bool IsUsageReportingApproved
         {
-            get
-            {
-                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
-                    return false;
-
-                if (dynamoModel != null)
-                    return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
-                
-                return false;
+            get {
+                return !DynamoModel.IsTestMode
+                    && (dynamoModel != null
+                        && dynamoModel.PreferenceSettings.IsUsageReportingApproved);
             }
             private set
             {

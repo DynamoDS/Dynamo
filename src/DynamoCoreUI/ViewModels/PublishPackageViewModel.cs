@@ -423,7 +423,7 @@ namespace Dynamo.PackageManager
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
                 FunctionDefinitions =
                     l.LoadedCustomNodes.Select(
-                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
+                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid, TODO, TODO))
                         .ToList(),
                 Name = l.Name,
                 Package = l
@@ -613,7 +613,7 @@ namespace Dynamo.PackageManager
                     this.dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
                     this.dynamoViewModel.Model.CustomNodeManager.UpdateSearchPath();
 
-                    var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                    var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid, TODO, TODO);
 
                     if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                     {

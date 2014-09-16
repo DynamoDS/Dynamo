@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
@@ -13,7 +13,7 @@ namespace Dynamo.Models
     /// </summary>
     public class ScopedNodeModel: NodeModel
     {
-        public ScopedNodeModel(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+        public ScopedNodeModel(WorkspaceModel workspaceModel) : base() { }
 
         /// <summary>
         /// If all nodes that the node outputs to are in scopes list. I.e.,

@@ -9,7 +9,7 @@ namespace Dynamo.Applications.Models
 {
     public abstract class RevitNodeModel : NodeModel
     {
-        protected RevitNodeModel(WorkspaceModel workspaceModel) : base(workspaceModel)
+        protected RevitNodeModel(WorkspaceModel workspaceModel) : base()
         {
             this.RevitDynamoModel = Workspace.DynamoModel as RevitDynamoModel;
         }

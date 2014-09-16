@@ -375,7 +375,7 @@ namespace Dynamo.TestInfrastructure
                         if (n.OutPorts.Count > 0)
                         {
                             Guid guid = n.GUID;
-                            Object data = n.GetValue(0).Data;
+                            Object data = n.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -471,7 +471,7 @@ namespace Dynamo.TestInfrastructure
                             try
                             {
                                 String valmap = valueMap[n.GUID].ToString();
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String nodeVal = data != null ? data.ToString() : "null";
 
                                 if (valmap != nodeVal)
@@ -630,7 +630,7 @@ namespace Dynamo.TestInfrastructure
                             if (n.OutPorts.Count > 0)
                             {
                                 Guid guid = n.GUID;
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String val = data != null ? data.ToString() : "null";
                                 valueMap.Add(guid, val);
                                 writer.WriteLine(guid + " :: " + val);
@@ -689,7 +689,7 @@ namespace Dynamo.TestInfrastructure
                                 try
                                 {
                                     String valmap = valueMap[n.GUID].ToString();
-                                    Object data = n.GetValue(0).Data;
+                                    Object data = n.GetValue(0, TODO).Data;
                                     String nodeVal = data != null ? data.ToString() : "null";
 
                                     if (valmap != nodeVal)
@@ -768,7 +768,7 @@ namespace Dynamo.TestInfrastructure
                             if (n.OutPorts.Count > 0)
                             {
                                 Guid guid = n.GUID;
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String val = data != null ? data.ToString() : "null";
                                 valueMap.Add(guid, val);
                                 writer.WriteLine(guid + " :: " + val);
@@ -829,7 +829,7 @@ namespace Dynamo.TestInfrastructure
                                 try
                                 {
                                     String valmap = valueMap[n.GUID].ToString();
-                                    Object data = n.GetValue(0).Data;
+                                    Object data = n.GetValue(0, TODO).Data;
                                     String nodeVal = data != null ? data.ToString() : "null";
 
                                     if (valmap != nodeVal)
@@ -915,7 +915,7 @@ namespace Dynamo.TestInfrastructure
                         if (n.OutPorts.Count > 0)
                         {
                             Guid guid = n.GUID;
-                            Object data = n.GetValue(0).Data;
+                            Object data = n.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -973,7 +973,7 @@ namespace Dynamo.TestInfrastructure
                             try
                             {
                                 String valmap = valueMap[n.GUID].ToString();
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String nodeVal = data != null ? data.ToString() : "null";
 
                                 if (valmap != nodeVal)
@@ -1054,7 +1054,7 @@ namespace Dynamo.TestInfrastructure
                         if (n.OutPorts.Count > 0)
                         {
                             Guid guid = n.GUID;
-                            Object data = n.GetValue(0).Data;
+                            Object data = n.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -1112,7 +1112,7 @@ namespace Dynamo.TestInfrastructure
                             try
                             {
                                 String valmap = valueMap[n.GUID].ToString();
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String nodeVal = data != null ? data.ToString() : "null";
 
                                 if (valmap != nodeVal)
@@ -1188,7 +1188,7 @@ namespace Dynamo.TestInfrastructure
                         if (n.OutPorts.Count > 0)
                         {
                             Guid guid = n.GUID;
-                            Object data = n.GetValue(0).Data;
+                            Object data = n.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -1246,7 +1246,7 @@ namespace Dynamo.TestInfrastructure
                             try
                             {
                                 String valmap = valueMap[n.GUID].ToString();
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String nodeVal = data != null ? data.ToString() : "null";
 
                                 if (valmap != nodeVal)
@@ -1318,7 +1318,7 @@ namespace Dynamo.TestInfrastructure
                         if (n.OutPorts.Count > 0)
                         {
                             Guid guid = n.GUID;
-                            Object data = n.GetValue(0).Data;
+                            Object data = n.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -1379,7 +1379,7 @@ namespace Dynamo.TestInfrastructure
                             try
                             {
                                 String valmap = valueMap[n.GUID].ToString();
-                                Object data = n.GetValue(0).Data;
+                                Object data = n.GetValue(0, TODO).Data;
                                 String nodeVal = data != null ? data.ToString() : "null";
 
                                 if (valmap != nodeVal)
@@ -1495,7 +1495,7 @@ namespace Dynamo.TestInfrastructure
                                     Guid guid = connector.Start.Owner.GUID;
                                     if (!valueMap.ContainsKey(guid))
                                     {
-                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                         String val = data != null ? data.ToString() : "null";
                                         valueMap.Add(guid, val);
                                         writer.WriteLine(guid + " :: " + val);
@@ -1553,7 +1553,7 @@ namespace Dynamo.TestInfrastructure
                                     foreach (ConnectorModel connector in firstNodeConnectors)
                                     {
                                         String valmap = valueMap[connector.Start.Owner.GUID].ToString();
-                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                         String nodeVal = data != null ? data.ToString() : "null";
 
                                         if (valmap != nodeVal)
@@ -1686,7 +1686,7 @@ namespace Dynamo.TestInfrastructure
                                     Guid guid = connector.Start.Owner.GUID;
                                     if (!valueMap.ContainsKey(guid))
                                     {
-                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                         String val = data != null ? data.ToString() : "null";
                                         valueMap.Add(guid, val);
                                         writer.WriteLine(guid + " :: " + val);
@@ -1744,7 +1744,7 @@ namespace Dynamo.TestInfrastructure
                                     foreach (ConnectorModel connector in firstNodeConnectors)
                                     {
                                         String valmap = valueMap[connector.Start.Owner.GUID].ToString();
-                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                         String nodeVal = data != null ? data.ToString() : "null";
 
                                         if (valmap != nodeVal)
@@ -1864,7 +1864,7 @@ namespace Dynamo.TestInfrastructure
                                 Guid guid = connector.Start.Owner.GUID;
                                 if (!valueMap.ContainsKey(guid))
                                 {
-                                    Object data = connector.Start.Owner.GetValue(0).Data;
+                                    Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                     String val = data != null ? data.ToString() : "null";
                                     valueMap.Add(guid, val);
                                     writer.WriteLine(guid + " :: " + val);
@@ -1921,7 +1921,7 @@ namespace Dynamo.TestInfrastructure
                                 foreach (ConnectorModel connector in firstNodeConnectors)
                                 {
                                     String valmap = valueMap[connector.Start.Owner.GUID].ToString();
-                                    Object data = connector.Start.Owner.GetValue(0).Data;
+                                    Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                     String nodeVal = data != null ? data.ToString() : "null";
 
                                     if (valmap != nodeVal)
@@ -2035,7 +2035,7 @@ namespace Dynamo.TestInfrastructure
                             foreach (ConnectorModel connector in firstNodeConnectors)
                             {
                                 Guid guid = connector.Start.Owner.GUID;
-                                Object data = connector.Start.Owner.GetValue(0).Data;
+                                Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                 String val = data != null ? data.ToString() : "null";
                                 valueMap.Add(guid, val);
                                 writer.WriteLine(guid + " :: " + val);
@@ -2093,7 +2093,7 @@ namespace Dynamo.TestInfrastructure
                                         foreach (ConnectorModel connector in firstNodeConnectors)
                                         {
                                             Guid guid = connector.Start.Owner.GUID;
-                                            Object data = connector.Start.Owner.GetValue(0).Data;
+                                            Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                             String val = data != null ? data.ToString() : "null";
 
                                             if (valueMap[guid] != val)
@@ -2177,7 +2177,7 @@ namespace Dynamo.TestInfrastructure
                         if (connector.End.Owner.GUID != node.GUID)
                         {
                             Guid guid = connector.Start.Owner.GUID;
-                            Object data = connector.Start.Owner.GetValue(0).Data;
+                            Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                             String val = data != null ? data.ToString() : "null";
                             valueMap.Add(guid, val);
                             writer.WriteLine(guid + " :: " + val);
@@ -2292,7 +2292,7 @@ namespace Dynamo.TestInfrastructure
                                 {
                                     if (connector.End.Owner.GUID != node.GUID)
                                     {
-                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        Object data = connector.Start.Owner.GetValue(0, TODO).Data;
                                         String nodeVal = data != null ? data.ToString() : "null";
 
                                         if (valueMap[connector.Start.Owner.GUID] != nodeVal)

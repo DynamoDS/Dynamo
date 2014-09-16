@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
+
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using Greg.Utility;
 
 namespace Dynamo.PackageManager
 {
@@ -39,8 +36,8 @@ namespace Dynamo.PackageManager
 
         #region Events
 
-        public delegate void RequestAuthenticationHandler();
-        public event RequestAuthenticationHandler RequestAuthentication;
+        internal delegate void RequestAuthenticationHandler();
+        internal event RequestAuthenticationHandler RequestAuthentication;
         private void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)

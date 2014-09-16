@@ -8,7 +8,7 @@ namespace Dynamo.Nodes
     public class NewExcelWorkbook : NodeModel
     {
         public NewExcelWorkbook(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             OutPortData.Add(new PortData("workbook", "The new Excel Workbook "));
             RegisterAllPorts();
@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
     {
 
         public GetWorksheetsFromExcelWorkbook(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("workbook", "The excel workbook"));
             OutPortData.Add(new PortData("worksheets", "A list of worksheets"));
@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
     {
 
         public GetExcelWorksheetByName(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("workbook", "The excel workbook"));
             InPortData.Add(new PortData("name", "Name of the worksheet to get"));
@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
     {
 
         public GetDataFromExcelWorksheet(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("worksheet", "The excel workbook"));
             OutPortData.Add(new PortData("worksheet", "The worksheet with the given name"));
@@ -116,7 +116,7 @@ namespace Dynamo.Nodes
     {
 
         public WriteDataToExcelWorksheet(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to."));
             InPortData.Add(new PortData("start row", "Row index to insert data.", 0));
@@ -143,7 +143,7 @@ namespace Dynamo.Nodes
     {
 
         public AddExcelWorksheetToWorkbook(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("workbook", "The Excel Worksheet to write to"));
             InPortData.Add(new PortData("name", "Name of new Worksheet to add"));
@@ -167,7 +167,7 @@ namespace Dynamo.Nodes
     public class SaveAsExcelWorkbook : NodeModel
     {
         public SaveAsExcelWorkbook(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("workbook", "The Excel Workbook to save"));
             InPortData.Add(new PortData("filename", "Filename to save the Workbook to"));

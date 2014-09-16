@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Properties;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 
 namespace Dynamo.Services
 {

@@ -12,6 +12,7 @@ using DynamoUtilities;
 
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
@@ -352,7 +353,7 @@ namespace Dynamo.Utilities
             {
                 item.ResyncWithDefinition(def);
                 item.State = ElementState.Dead;
-                item.ValidateConnections();
+                item.ValidateConnectionsSync();
             }
 
             return def;

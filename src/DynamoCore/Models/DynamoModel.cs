@@ -37,7 +37,7 @@ using Double = System.Double;
 
 namespace Dynamo.Models
 {
-    public partial class DynamoModel : ModelBase
+    public partial class DynamoModel// : ModelBase
     {
         #region Events
 
@@ -60,15 +60,7 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        #region internal members
-
-        private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
-        private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
-        private bool runEnabled = true;
-
-        #endregion
-
+        
         #region Static properties
 
         /// <summary>
@@ -76,7 +68,7 @@ namespace Dynamo.Models
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public static bool IsTestMode { get; set; }
+        protected static bool IsTestMode { get; set; }
 
         /// <summary>
         /// Setting this flag enables creation of an XML in following format that records 
@@ -89,7 +81,7 @@ namespace Dynamo.Models
         #region public properties
 
         // core app
-        public string Context { get; set; }
+        public string Context { get; private set; }
         public DynamoLoader Loader { get; private set; }
         public PackageManagerClient PackageManagerClient { get; private set; }
         public CustomNodeManager CustomNodeManager { get; private set; }
@@ -100,54 +92,32 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
         public IUpdateManager UpdateManager { get; private set; }
+        public NodeFactory NodeFactory { get; private set; }
 
-        // KILLDYNSETTINGS: wut am I!?!
-        public string UnlockLoadPath { get; set; }
+        //private WorkspaceModel currentWorkspace;
+        public WorkspaceModel CurrentWorkspace { get; internal set;
+            //get { return currentWorkspace; }
+            //internal set
+            //{
+            //    if (currentWorkspace != value)
+            //    {
+            //        if (currentWorkspace != null)
+            //            currentWorkspace.IsCurrentSpace = false;
 
-        private WorkspaceModel currentWorkspace;
-        public WorkspaceModel CurrentWorkspace
-        {
-            get { return currentWorkspace; }
-            internal set
-            {
-                if (currentWorkspace != value)
-                {
-                    if (currentWorkspace != null)
-                        currentWorkspace.IsCurrentSpace = false;
+            //        currentWorkspace = value;
 
-                    currentWorkspace = value;
+            //        if (currentWorkspace != null)
+            //            currentWorkspace.IsCurrentSpace = true;
 
-                    if (currentWorkspace != null)
-                        currentWorkspace.IsCurrentSpace = true;
-
-                    OnCurrentWorkspaceChanged(currentWorkspace);
-                    RaisePropertyChanged("CurrentWorkspace");
-                }
-            }
+            //        OnCurrentWorkspaceChanged(currentWorkspace);
+            //        RaisePropertyChanged("CurrentWorkspace");
+            //    }
+            //}
         }
 
         public HomeWorkspaceModel HomeSpace { get; protected set; }
 
-        private ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
-        public ObservableCollection<ModelBase> ClipBoard
-        {
-            get { return clipBoard; }
-            set { clipBoard = value; }
-        }
-
-        private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
-            new SortedDictionary<string, TypeLoadData>();
-        public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
-        {
-            get { return builtinTypesByNickname; }
-        }
-
-        private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
-            new Dictionary<string, TypeLoadData>();
-        public Dictionary<string, TypeLoadData> BuiltInTypesByName
-        {
-            get { return builtinTypesByTypeName; }
-        }
+        public ObservableCollection<ModelBase> ClipBoard { get; set; }
 
         public bool IsShowingConnectors
         {
@@ -173,32 +143,28 @@ namespace Dynamo.Models
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public ObservableCollection<WorkspaceModel> Workspaces
-        {
-            get { return workspaces; }
-            set 
-            { 
-                workspaces = value;
-            }
-        }
+        public ObservableCollection<WorkspaceModel> Workspaces { get; set; }
 
         /// <summary>
         /// Returns a shallow copy of the collection of Nodes in the model.
         /// </summary>
+        [Obsolete("Access CurrentWorkspace.Nodes directly", true)]
         public List<NodeModel> Nodes
         {
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
+        public bool RunEnabled { get; set; }
+
+        //{
+        //    get { return runEnabled; }
+        //    set
+        //    {
+        //        runEnabled = value;
+        //        //RaisePropertyChanged("RunEnabled");
+        //    }
+        //}
+
         public bool RunInDebug { get; set; }
 
         /// <summary>
@@ -220,16 +186,6 @@ namespace Dynamo.Models
         public ObservableDictionary<string, Guid> CustomNodes
         {
             get { return CustomNodeManager.GetAllNodeNames(); }
-        }
-
-        /// <summary>
-        /// A map of all nodes in the model in the home workspace
-        /// keyed by their GUID.
-        /// </summary>
-        public Dictionary<Guid, NodeModel> NodeMap
-        {
-            get { return nodeMap; }
-            set { nodeMap = value; }
         }
 
         #endregion
@@ -279,6 +235,8 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            Workspaces = new ObservableCollection<WorkspaceModel>();
+            ClipBoard = new ObservableCollection<ModelBase>();
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -288,7 +246,14 @@ namespace Dynamo.Models
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
+            NodeFactory = new NodeFactory();
+
             Runner = runner;
+            Runner.RunStarted += Runner_RunStarted;
+            Runner.RunCompleted += Runner_RunCompeleted;
+            Runner.EvaluationCompleted += Runner_EvaluationCompleted;
+            Runner.ExceptionOccurred += Runner_ExceptionOccurred;
+
             Context = context;
             IsTestMode = isTestMode;
             DebugSettings = new DebugSettings();
@@ -336,10 +301,60 @@ namespace Dynamo.Models
             PackageManagerClient = new PackageManagerClient(Loader.PackageLoader.RootPackagesDirectory, CustomNodeManager);
         }
 
+        public void Dispose()
+        {
+            Runner.RunStarted -= Runner_RunStarted;
+            Runner.RunCompleted -= Runner_RunCompeleted;
+            Runner.EvaluationCompleted -= Runner_EvaluationCompleted;
+        }
+
+        private void Runner_RunStarted()
+        {
+            RunEnabled = false;
+        }
+
+        private void Runner_RunCompeleted(bool success, bool cancelled)
+        {
+            RunEnabled = true;
+            if (cancelled)
+                Reset();
+            OnRunCompleted(this, success);
+        }
+
+        private void Runner_EvaluationCompleted()
+        {
+            OnEvaluationCompleted(this, EventArgs.Empty);
+        }
+
+        private void Runner_ExceptionOccurred(Exception exception, bool fatal)
+        {
+            // If there's a fatal exception, show it to the user, unless of course 
+            // if we're running in a unit-test, in which case there's no user. I'd 
+            // like not to display the dialog and hold up the continuous integration.
+            if (!IsTestMode)
+            {
+                if (fatal)
+                {
+                    OnRequestDispatcherBeginInvoke(
+                        () => Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(this, exception));
+                }
+            }
+            else
+            {
+                //If we are testing, we need to throw an exception here
+                //which will, in turn, throw an Assert.Fail in the 
+                //Evaluation thread.
+                throw new Exception(exception.Message);
+            }
+        }
+
         private void InitializeUpdateManager(IUpdateManager updateManager)
         {
             UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), Logger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(
+                new Uri(Configurations.UpdateDownloadLocation),
+                Logger,
+                UpdateManager.UpdateDataAvailable));
         }
 
         private void InitializeCurrentWorkspace()
@@ -389,7 +404,7 @@ namespace Dynamo.Models
             //TODO(Luke): Push this into a resync call with the engine controller
             ResetEngine();
 
-            foreach (var node in Nodes)
+            foreach (var node in CurrentWorkspace.Nodes)
             {
                 node.RequiresRecalc = true;
             }
@@ -403,13 +418,13 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+            EngineController = new EngineController(DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
         public void RunExpression()
         {
-            Runner.RunExpression(HomeSpace);
+            Runner.RunExpression(HomeSpace, EngineController, IsTestMode, Logger);
         }
 
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
@@ -457,41 +472,6 @@ namespace Dynamo.Models
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
-        }
-
-        private void RemoveNodeFromMap(NodeModel n)
-        {
-            if (n.Workspace != HomeSpace)
-            {
-                return;
-            }
-
-            if (NodeMap.ContainsKey(n.GUID))
-            {
-                NodeMap.Remove(n.GUID);
-            }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
-        }
-
-        private void AddNodeToMap(NodeModel n)
-        {
-            if (n.Workspace != HomeSpace)
-            {
-                return;
-            }
-
-            if (!NodeMap.ContainsKey(n.GUID))
-            {
-                NodeMap.Add(n.GUID, n);
-            }
-            else
-            {
-                //NodeMap[n.GUID] = n;
-                throw new Exception("Duplicate node GUID in map!");
-            }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         internal void OpenInternal(string xmlPath)
@@ -585,21 +565,16 @@ namespace Dynamo.Models
             return OpenWorkspace(xmlPath);
         }
 
+        [Obsolete("Use HomeWorkspace.Clear() instead", true)]
         internal void CleanWorkbench()
         {
             Logger.Log("Clearing workflow...");
-
-            //Copy locally
-            List<NodeModel> elements = Nodes.ToList();
-
-            foreach (NodeModel el in elements)
+            
+            foreach (NodeModel el in CurrentWorkspace.Nodes)
             {
-                el.DisableReporting();
+                el.DisableReporting(); //TODO: Disposable.Create to unregister/reregister modified event handler
                 el.Destroy();
-            }
 
-            foreach (NodeModel el in elements)
-            {
                 foreach (PortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
@@ -610,8 +585,6 @@ namespace Dynamo.Models
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
                         port.Connectors[i].NotifyConnectedPortsOfDeletion();
                 }
-
-                RemoveNodeFromMap(el);
             }
 
             CurrentWorkspace.Connectors.Clear();
@@ -634,12 +607,12 @@ namespace Dynamo.Models
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
         {
-            if (null == currentWorkspace)
+            if (null == CurrentWorkspace)
                 return;
 
             OnDeletionStarted(this, EventArgs.Empty);
 
-            currentWorkspace.RecordAndDeleteModels(modelsToDelete);
+            CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
             var selection = DynamoSelection.Instance.Selection;
             foreach (ModelBase model in modelsToDelete)
@@ -665,8 +638,8 @@ namespace Dynamo.Models
 
         public void HideWorkspace(WorkspaceModel workspace)
         {
-            CurrentWorkspace = workspaces[0];  // go home
-            workspaces.Remove(workspace);
+            CurrentWorkspace = Workspaces[0];  // go home
+            Workspaces.Remove(workspace);
             OnWorkspaceHidden(workspace);
         }
 
@@ -675,12 +648,13 @@ namespace Dynamo.Models
         /// </summary>
         private void AddHomeWorkspace()
         {
-            var workspace = new HomeWorkspaceModel(this)
+            var workspace = new HomeWorkspaceModel
             {
                 WatchChanges = true
             };
+
             HomeSpace = workspace;
-            workspaces.Insert(0, workspace); // to front
+            Workspaces.Insert(0, workspace); // to front
         }
 
         /// <summary>
@@ -689,7 +663,7 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
-            workspaces.Remove(workspace);
+            Workspaces.Remove(workspace);
         }
 
         /// <summary>
@@ -789,7 +763,7 @@ namespace Dynamo.Models
                             fileVersion = new Version(0, 6, 0, 0);
 
                         MigrationManager.Instance.ProcessWorkspaceMigrations(
-                            this,
+                            currentVersion,
                             xmlDoc,
                             fileVersion);
                         MigrationManager.Instance.ProcessNodesInWorkspace(this, xmlDoc, fileVersion);
@@ -873,7 +847,7 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                            el = NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
 
                         if (el != null)
                         {
@@ -909,7 +883,7 @@ namespace Dynamo.Models
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
+                        el = NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 
@@ -975,7 +949,7 @@ namespace Dynamo.Models
                     NodeModel start = null;
                     NodeModel end = null;
 
-                    foreach (NodeModel e in Nodes)
+                    foreach (NodeModel e in CurrentWorkspace.Nodes)
                     {
                         if (e.GUID == guidStart)
                         {
@@ -991,7 +965,7 @@ namespace Dynamo.Models
                         }
                     }
 
-                    var newConnector = currentWorkspace.AddConnection( start, end,
+                    var newConnector = CurrentWorkspace.AddConnection( start, end,
                         startIndex, endIndex, portType);
 
                     OnConnectorAdded(newConnector);
@@ -1063,27 +1037,22 @@ namespace Dynamo.Models
             return true;
         }
 
-        public CustomNodeDefinition NewCustomNodeWorkspace(   Guid id,
-                                                            string name,
-                                                            string category,
-                                                            string description,
-                                                            bool makeCurrentWorkspace,
-                                                            double workspaceOffsetX = 0,
-                                                            double workspaceOffsetY = 0)
+        [Obsolete("Use AddCustomNodeWorkspace(CustomNodeWorkspaceModel) instead", true)]
+        public CustomNodeDefinition NewCustomNodeWorkspace(
+            Guid id, string name, string category, string description, bool makeCurrentWorkspace,
+            double workspaceOffsetX = 0, double workspaceOffsetY = 0)
         {
-
-            var workSpace = new CustomNodeWorkspaceModel(this,
-                name, category, description, workspaceOffsetX, workspaceOffsetY)
-            {
-                WatchChanges = true
-            };
+            var workSpace = new CustomNodeWorkspaceModel(
+                this,
+                name,
+                category,
+                description,
+                workspaceOffsetX,
+                workspaceOffsetY) { WatchChanges = true };
 
             Workspaces.Add(workSpace);
 
-            var functionDefinition = new CustomNodeDefinition(id)
-            {
-                WorkspaceModel = workSpace
-            };
+            var functionDefinition = new CustomNodeDefinition(id) { WorkspaceModel = workSpace };
 
             functionDefinition.SyncWithWorkspace(this, true, true);
 
@@ -1133,10 +1102,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Paste ISelectable objects from the clipboard to the workspace.
+        ///     Paste ISelectable objects from the clipboard to the workspace.
         /// </summary>
-        /// <param name="parameters"></param>
-        public void Paste(object parameters)
+        public void Paste()
         {
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
@@ -1182,8 +1150,8 @@ namespace Dynamo.Models
                     node.X,
                     node.Y + 100,
                     false,
-                    false,
-                    dynEl);
+                    false, TODO, TODO,
+                    xmlNode: dynEl);
                 createdModels.Add(newNode);
 
                 newNode.ArgumentLacing = node.ArgumentLacing;
@@ -1289,26 +1257,5 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            // I don't think anyone is serializing/deserializing DynamoModel 
-            // directly. If that is not the case, please let me know and I'll 
-            // fix it.
-            throw new NotImplementedException();
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            // I don't think anyone is serializing/deserializing DynamoModel 
-            // directly. If that is not the case, please let me know and I'll 
-            // fix it.
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
     }
 }

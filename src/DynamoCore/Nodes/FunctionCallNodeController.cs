@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -13,12 +14,35 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller for nodes that act as function calls.
     /// </summary>
-    public abstract class FunctionCallNodeController
+    public abstract class FunctionCallNodeController<T> where T : IFunctionDescriptor
     {
+        private T definition;
+
         /// <summary>
         ///     A FunctionDescriptor describing the function that this controller will call.
         /// </summary>
-        public IFunctionDescriptor Definition { get; protected set; }
+        public T Definition
+        {
+            get { return definition; }
+            protected set
+            {
+                OnDefinitionChanging();
+                definition = value;
+                OnDefinitionChanged();
+            }
+        }
+
+        public event Action DefinitionChanged;
+        protected virtual void OnDefinitionChanged()
+        {
+            var handler = DefinitionChanged;
+            if (handler != null) handler();
+        }
+
+        protected virtual void OnDefinitionChanging()
+        {
+            
+        }
 
         /// <summary>
         ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.
@@ -36,7 +60,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual IEnumerable<string> ReturnKeys { get { return Definition.ReturnKeys; } }
 
-        protected FunctionCallNodeController(IFunctionDescriptor def)
+        protected FunctionCallNodeController(T def)
         {
             Definition = def;
         }

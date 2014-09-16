@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
         public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
         public DSVarArgFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
-            : base(workspaceModel, new ZeroTouchVarArgNodeController(workspaceModel.DynamoModel.EngineController, descriptor))
+            : base(new ZeroTouchVarArgNodeController(workspaceModel.dynamoModel.EngineController, descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
         }

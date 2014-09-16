@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeModel
     {
-        public Python(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+        public Python(WorkspaceModel workspaceModel) : base() { }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Runs a IronPython script from a string")]
     public class PythonString : NodeModel
     {
-        public PythonString(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+        public PythonString(WorkspaceModel workspaceModel) : base() { }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)

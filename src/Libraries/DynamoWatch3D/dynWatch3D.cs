@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public Watch3D(WorkspaceModel workspace) : base(workspace)
+        public Watch3D(WorkspaceModel workspace) : base()
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void UpdateRenderPackage(int maxTessDivisions)
+        public override void UpdateRenderPackage(int maxTessDivisions, object engineController)
         {
             //do nothing
             //a watch should not draw its outputs

@@ -186,7 +186,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Element", "The selected element."));
             RegisterAllPorts();
 
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            var revMod = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revMod == null) return;
 
             revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
@@ -414,7 +414,7 @@ namespace Dynamo.Nodes
 
             // we need to obtain the dynamo model directly from the workspace model 
             // here, as it is not yet initialized on the base class
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            var revMod = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revMod == null) return;
 
             var u = revMod.RevitServicesUpdater;
@@ -675,7 +675,7 @@ namespace Dynamo.Nodes
 
             // we need to obtain the dynamo model directly from the workspace model 
             // here, as it is not yet initialized on the base constructor
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            var revMod = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revMod == null) return;
 
             revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;

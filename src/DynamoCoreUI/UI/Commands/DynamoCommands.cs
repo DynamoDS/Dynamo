@@ -99,14 +99,12 @@ namespace Dynamo.ViewModels
 
         private void RunCancelImpl(RunCancelCommand command)
         {
-            model.RunCancelInternal(
-                command.ShowErrors, command.CancelRun);
+            model.RunCancelInternal(command.CancelRun);
         }
 
         private void ForceRunCancelImpl(RunCancelCommand command)
         {
-            model.ForceRunCancelInternal(
-                command.ShowErrors, command.CancelRun);
+            model.ForceRunCancelInternal(command.CancelRun);
         }
 
         private void MutateTestImpl()
@@ -117,13 +115,14 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
+            //TODO: (SJE) Move to DynamoModel [AddNodeToCurrentWorkspace]
             NodeModel nodeModel = CurrentSpace.AddNode(
                 command.NodeId,
                 command.NodeName,
                 command.X,
                 command.Y,
                 command.DefaultPosition,
-                command.TransformCoordinates);
+                command.TransformCoordinates, TODO, TODO);
 
             CurrentSpace.RecordCreatedModel(nodeModel);
 

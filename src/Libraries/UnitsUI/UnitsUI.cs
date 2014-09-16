@@ -24,7 +24,7 @@ namespace UnitsUI
     {
         protected SIUnit _measure;
 
-        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base() { }
 
         public double Value
         {

@@ -10,13 +10,13 @@ namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        public HomeWorkspaceModel(DynamoModel dynamoModel)
-            : this(dynamoModel, new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public HomeWorkspaceModel()
+            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public HomeWorkspaceModel(DynamoModel dynamoModel, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(dynamoModel, "Home", e, c, x, y)
+        public HomeWorkspaceModel(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+            : base("Home", e, c, x, y)
         {
         }
 
@@ -24,16 +24,16 @@ namespace Dynamo.Models
         {
             (sender as DispatcherTimer).Stop();
 
-            this.DynamoModel.RunExpression();
+            this.dynamoModel.RunExpression();
         }
 
         private DispatcherTimer runExpressionTimer;
 
-        public override void Modified()
+        public override void OnModified()
         {
-            base.Modified();
+            base.OnModified();
 
-            if (this.DynamoModel.DynamicRunEnabled)
+            if (this.dynamoModel.DynamicRunEnabled)
             {
 
                 // This dispatch timer is to avoid updating graph too frequently.
@@ -53,7 +53,7 @@ namespace Dynamo.Models
                 {
                     runExpressionTimer = new DispatcherTimer();
                     runExpressionTimer.Interval += new TimeSpan(0, 0, 0, 0, 100);
-                    runExpressionTimer.Tick += new EventHandler(OnRunExpression);
+                    runExpressionTimer.Tick += OnRunExpression;
                 }
 
                 runExpressionTimer.Stop();

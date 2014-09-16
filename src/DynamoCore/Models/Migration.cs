@@ -105,9 +105,10 @@ namespace Dynamo.Models
         /// <summary>
         /// Runs all migration methods found on the listed migration target types.
         /// </summary>
+        /// <param name="currentVersion"></param>
         /// <param name="xmlDoc"></param>
-        /// <param name="version"></param>
-        public void ProcessWorkspaceMigrations(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
+        /// <param name="workspaceVersion"></param>
+        public void ProcessWorkspaceMigrations(Version currentVersion, XmlDocument xmlDoc, Version workspaceVersion)
         {
             var methods = MigrationTargets.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static));
 
@@ -121,8 +122,6 @@ namespace Dynamo.Models
                     let result = new { method, attribute.From, attribute.To }
                     orderby result.From
                     select result).ToList();
-
-            var currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {

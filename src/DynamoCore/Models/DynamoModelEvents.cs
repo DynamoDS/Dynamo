@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 using Dynamo.Core;
 
@@ -240,8 +238,6 @@ namespace Dynamo.Models
         public event NodeHandler NodeAdded;
         internal void OnNodeAdded(NodeModel node)
         {
-            AddNodeToMap(node);
-
             if (NodeAdded != null && node != null)
             {
                 NodeAdded(node);
@@ -263,8 +259,6 @@ namespace Dynamo.Models
         public event NodeHandler NodeDeleted;
         internal void OnNodeDeleted(NodeModel node)
         {
-            RemoveNodeFromMap(node);
-
             this.OnRequestCancelActiveStateForNode(node);
 
             if (NodeDeleted != null)

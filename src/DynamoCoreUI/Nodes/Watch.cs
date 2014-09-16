@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
         #endregion
 
         public Watch(WorkspaceModel ws)
-            : base(ws)
+            : base()
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
             OutPortData.Add(new PortData("", "Watch contents."));
@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
                 : dynamoViewModel.WatchHandler.Process(CachedValue, inputVar);
         }
 
-        public override void UpdateRenderPackage(int maxTessDivs)
+        public override void UpdateRenderPackage(int maxTessDivs, object engineController)
         {
             //do nothing
             //a watch should not draw its outputs

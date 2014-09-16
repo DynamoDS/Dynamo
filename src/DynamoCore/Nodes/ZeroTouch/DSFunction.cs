@@ -23,17 +23,19 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {
-        public DSFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+        public DSFunction(EngineController engineController) 
+            : this(engineController, null)
+        { }
 
-        public DSFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
-            : base(workspaceModel, new ZeroTouchNodeController(workspaceModel.DynamoModel.EngineController, 
-                descriptor)) { }
+        public DSFunction(EngineController engineController, FunctionDescriptor descriptor)
+            : base(new ZeroTouchNodeController(engineController, descriptor))
+        { }
     }
 
     /// <summary>
     ///     Controller that synchronizes a node with a zero-touch function definition.
     /// </summary>
-    public class ZeroTouchNodeController : FunctionCallNodeController
+    public class ZeroTouchNodeController : FunctionCallNodeController<FunctionDescriptor>
     {
         private readonly EngineController engineController;
 
@@ -42,15 +44,6 @@ namespace Dynamo.Nodes
                 base(zeroTouchDef)
         {
             this.engineController = engineController;
-        }
-
-        /// <summary>
-        ///     Definition of a zero-touch-imported function.
-        /// </summary>
-        public new FunctionDescriptor Definition
-        {
-            get { return base.Definition as FunctionDescriptor; }
-            set { base.Definition = value; }
         }
 
         /// <summary>

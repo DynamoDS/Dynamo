@@ -90,7 +90,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var defs = nodeList.Select(DynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition).ToList();
+            var defs = nodeList.Select((id, workspace) => DynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(id, workspace, TODO, TODO)).ToList();
 
             if (defs.Any(x => x == null))
                 MessageBox.Show("There was a problem getting the node from the workspace.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);

@@ -189,7 +189,7 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+                previewControl.BindToDataSource(ViewModel.NodeLogic.GetCachedValueFromEngine());
             }));
         }
 
@@ -371,7 +371,7 @@ namespace Dynamo.Controls
             if (PreviewControl.IsHidden)
             {
                 if (PreviewControl.IsDataBound == false)
-                    PreviewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+                    PreviewControl.BindToDataSource(ViewModel.NodeLogic.GetCachedValueFromEngine());
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }

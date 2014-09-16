@@ -15,7 +15,7 @@ namespace DSCoreNodesUI
     public class NumberRange : NodeModel
     {
         public NumberRange(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("end", "Number to end the sequence at"));
@@ -52,7 +52,7 @@ namespace DSCoreNodesUI
     public class NumberSeq : NodeModel
     {
         public NumberSeq(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("amount", "Amount of numbers in the sequence"));

@@ -367,10 +367,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
         {
-            if (e.Node == nodeLogic)
+            if (e.Node == nodeLogic.GUID)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node.GUID));
+                sb.AppendLine(string.Format("{0} AST:", e.Node));
 
                 foreach (var assocNode in e.AstNodes)
                 {
@@ -709,7 +709,7 @@ namespace Dynamo.ViewModels
 
         private void ValidateConnections(object parameter)
         {
-            nodeLogic.ValidateConnections();
+            nodeLogic.ValidateConnectionsSync();
         }
 
         private bool CanValidateConnections(object parameter)

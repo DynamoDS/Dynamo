@@ -13,8 +13,8 @@ namespace Dynamo.Nodes
     /// </summary>
     public abstract class DSFunctionBase : FunctionCallBase
     {
-        protected DSFunctionBase(WorkspaceModel workspaceModel, ZeroTouchNodeController controller)
-            : base(workspaceModel, controller)
+        protected DSFunctionBase(ZeroTouchNodeController controller)
+            : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
         }

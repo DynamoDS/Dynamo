@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
 
+using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
 
@@ -157,7 +157,7 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        public bool InUse()
+        internal bool InUse()
         {
             return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
         }

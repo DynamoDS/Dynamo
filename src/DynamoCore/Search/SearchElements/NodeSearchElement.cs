@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
-using Dynamo.Utilities;
+
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {

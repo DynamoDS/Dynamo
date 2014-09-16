@@ -6,11 +6,8 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Globalization;
-
-using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
@@ -518,7 +515,7 @@ namespace Dynamo.Nodes
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
@@ -559,7 +556,7 @@ namespace Dynamo.Nodes
             }
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
@@ -568,10 +565,8 @@ namespace Dynamo.Nodes
             args.Exception = exception;
 
             dynamoModel.OnRequestTaskDialog(null, args);
-
-            //SEPARATECORE
-            //if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit){}
-            //    DynamoViewModel.ReportABug(null);
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
+                DynamoViewModel.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -605,7 +600,7 @@ namespace Dynamo.Nodes
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
@@ -618,8 +613,7 @@ namespace Dynamo.Nodes
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
                 // this should be an event on DynamoModel
-                // SEPARATECORE
-                //DynamoViewModel.DownloadDynamo();
+                DynamoViewModel.DownloadDynamo();
                 return false;
             }
 
@@ -630,7 +624,7 @@ namespace Dynamo.Nodes
     public abstract partial class VariableInput : NodeModel
     {
         public VariableInput(WorkspaceModel ws)
-            : base(ws)
+            : base()
         {
         }
 
@@ -736,7 +730,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInputAndOutput : NodeModel
     {
-        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
+        protected VariableInputAndOutput(WorkspaceModel ws) : base()
         {
         }
 
@@ -1159,7 +1153,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeModel
     { 
-        public ComposeFunctions(WorkspaceModel ws) : base(ws)
+        public ComposeFunctions(WorkspaceModel ws) : base()
         {
             InPortData.Add(new PortData("f", "A Function"));
             InPortData.Add(new PortData("g", "A Function"));
@@ -1303,7 +1297,7 @@ namespace Dynamo.Nodes
         protected abstract string SerializeValue(T val);
 
         protected BasicInteractive(WorkspaceModel ws)
-            : base(ws)
+            : base()
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
@@ -1539,7 +1533,7 @@ namespace Dynamo.Nodes
     public partial class DoubleInput : NodeModel
     {
         public DoubleInput(WorkspaceModel ws)
-            : base(ws)
+            : base()
         {
             OutPortData.Add(new PortData("", ""));
             RegisterAllPorts();
@@ -2221,7 +2215,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected DropDrownBase(WorkspaceModel ws) : base(ws)
+        protected DropDrownBase(WorkspaceModel ws) : base()
         {
             Items.CollectionChanged += Items_CollectionChanged;
         }

@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
         }
 
         public Formula(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             ArgumentLacing = LacingStrategy.Shortest;
             OutPortData.Add(new PortData("", "Result of math computation"));

@@ -22,7 +22,7 @@ namespace DSRevitNodesUI
 
         protected RevitDropDownBase(WorkspaceModel workspaceModel, string value) : base(workspaceModel, value)
         {
-            var revModel = workspaceModel.DynamoModel as RevitDynamoModel;
+            var revModel = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revModel != null) 
                 revModel.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }

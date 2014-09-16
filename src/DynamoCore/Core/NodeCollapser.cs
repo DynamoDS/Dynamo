@@ -46,7 +46,7 @@ namespace Dynamo.Utilities
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
             undoRecorder.BeginActionGroup();
 
-            var newNodeWorkspace = new CustomNodeWorkspaceModel(dynamoModel, args.Name, args.Category, args.Description, 0, 0)
+            var newNodeWorkspace = new CustomNodeWorkspaceModel(args.Name, args.Category, args.Description, 0, 0)
             {
                 WatchChanges = false,
                 HasUnsavedChanges = true
@@ -405,7 +405,13 @@ namespace Dynamo.Utilities
             #endregion
 
             // save and load the definition from file
-            newNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
+            newNodeDefinition.SyncWithWorkspace(
+                dynamoModel.EngineController,
+                dynamoModel.CustomNodeManager,
+                dynamoModel.SearchModel,
+                dynamoModel.Logger,
+                true,
+                true);
             dynamoModel.Workspaces.Add(newNodeWorkspace);
 
             string name = newNodeDefinition.FunctionId.ToString();

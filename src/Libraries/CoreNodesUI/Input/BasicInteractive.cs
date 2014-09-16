@@ -40,7 +40,7 @@ namespace DSCoreNodesUI
         protected abstract string SerializeValue();
 
         protected BasicInteractive(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));

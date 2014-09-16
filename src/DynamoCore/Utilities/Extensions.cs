@@ -16,8 +16,8 @@ namespace Dynamo.Utilities
 
         public static Collection<T> AddRange<T>(this Collection<T> collection, IEnumerable<T> items)
         {
-            if (collection == null) throw new System.ArgumentNullException("collection");
-            if (items == null) throw new System.ArgumentNullException("items");
+            if (collection == null) throw new ArgumentNullException("collection");
+            if (items == null) throw new ArgumentNullException("items");
 
             foreach (var each in items)
             {
@@ -81,16 +81,10 @@ namespace Dynamo.Utilities
         {
             // base case: 
             IEnumerable<IEnumerable<T>> result = new[] { Enumerable.Empty<T>() };
-            foreach (var sequence in sequences)
-            {
-                var s = sequence; // don't close over the loop variable 
-                // recursive case: use SelectMany to build the new product out of the old one 
-                result =
-                  from seq in result
-                  from item in s
-                  select seq.Concat(new[] { item });
-            }
-            return result;
+            return sequences.Aggregate(
+                result,
+                (current, s) =>
+                    (from seq in current from item in s select seq.Concat(new[] { item })));
         }
         
         /// <summary>
@@ -127,17 +121,18 @@ namespace Dynamo.Utilities
             return result;
         }
 
-        public static IEnumerable<IEnumerable<T>> ShortestSet<T>(this IEnumerable<IEnumerable<T>> sequences)
+        public static IEnumerable<IEnumerable<T>> ShortestSet<T>(
+            this IEnumerable<IEnumerable<T>> sequences)
         {
             //find the shortest sequences
             int shortest = sequences.Min(x => x.Count());
 
             //the result is a an enumerable
-            List<List<T>> result = new List<List<T>>();
+            var result = new List<List<T>>();
 
             for (int i = 0; i < shortest; i++)
             {
-                List<T> inner = new List<T>();
+                var inner = new List<T>();
 
                 foreach (var seq in sequences)
                 {
@@ -152,20 +147,14 @@ namespace Dynamo.Utilities
             return result;
         }
 
-        public static IEnumerable<IEnumerable<T>> SingleSet<T>(this IEnumerable<IEnumerable<T>> sequences)
+        public static IEnumerable<IEnumerable<T>> SingleSet<T>(
+            this IEnumerable<IEnumerable<T>> sequences)
         {
-            //find the longest sequences
-            int shortest = sequences.Min(x => x.Count());
-
             //the result is a an enumerable
-            List<List<T>> result = new List<List<T>>();
+            var result = new List<List<T>>();
 
-            List<T> inner = new List<T>();
+            var inner = sequences.Select(seq => seq.ElementAt(0)).ToList();
 
-            foreach (var seq in sequences)
-            {
-                inner.Add(seq.ElementAt(0));
-            }
             result.Add(inner);
 
             return result;

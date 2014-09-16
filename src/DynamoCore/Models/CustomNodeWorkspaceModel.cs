@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+
 using String = System.String;
 
 namespace Dynamo.Models
@@ -31,7 +31,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(DynamoModel dynamoModel, 
             String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(dynamoModel, name, e, c, x, y)
+            : base(name, e, c, x, y)
         {
             WatchChanges = true;
             HasUnsavedChanges = false;
@@ -56,9 +56,9 @@ namespace Dynamo.Models
             get { return DynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
-        public override void Modified()
+        public override void OnModified()
         {
-            base.Modified();
+            base.OnModified();
 
             if (CustomNodeDefinition == null) 
                 return;
@@ -162,7 +162,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        protected override void SerializeSessionData(XmlDocument document)
+        protected override void SerializeSessionData(XmlDocument document, object core)
         {
             // Since custom workspace does not have any runtime data to persist,
             // do not allow base class to serialize any session data.

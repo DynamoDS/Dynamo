@@ -1,4 +1,5 @@
 ﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +9,9 @@ using System.Threading;
 using DSNodeServices;
 
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace Dynamo.Core
 
         private bool cancelSet;
         private int? execInternval;
-        private Thread evaluationThread = null;
+        private Thread evaluationThread;
 
         public bool Running { get; protected set; }
 
@@ -51,10 +52,8 @@ namespace Dynamo.Core
             }
         }
 
-        public void RunExpression(HomeWorkspaceModel workspaceModel, int? executionInterval = null)
+        public void RunExpression(HomeWorkspaceModel workspaceModel, EngineController engineController, bool isTestMode, ILogger dynamoLogger, int? executionInterval = null)
         {
-            var dynamoModel = workspaceModel.DynamoModel;
-
             execInternval = executionInterval;
 
             lock (RunControlMutex)
@@ -76,44 +75,51 @@ namespace Dynamo.Core
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
                     workspaceModel.PreloadedTraceData;
                 workspaceModel.PreloadedTraceData = null; // Reset.
-                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
+                engineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
                 //We are now considered running
                 Running = true;
             }
 
-            if (!DynamoModel.IsTestMode)
+            if (!isTestMode)
             {
                 //Setup background worker
-                dynamoModel.RunEnabled = false;
+                OnRunStarted();
 
                 //As we are the only place that is allowed to activate this, it is a trap door, so this is safe
                 lock (RunControlMutex)
                 {
                     Validity.Assert(Running);
                 }
-                RunAsync(workspaceModel);
+                RunAsync(workspaceModel, engineController, dynamoLogger);
             }
             else
             {
                 //for testing, we do not want to run asynchronously, as it will finish the 
                 //test before the evaluation (and the run) is complete
                 //RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
-                RunSync(workspaceModel);
+                RunSync(workspaceModel, engineController, dynamoLogger);
             }
         }
 
-        private void RunAsync(HomeWorkspaceModel workspaceModel)
+        public event Action RunStarted;
+        protected virtual void OnRunStarted()
         {
-            evaluationThread = new Thread(() => RunSync(workspaceModel));
+            var handler = RunStarted;
+            if (handler != null) handler();
+        }
+
+        private void RunAsync(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger dynamoLogger)
+        {
+            evaluationThread = new Thread(() => RunSync(workspaceModel, engineController, dynamoLogger));
             evaluationThread.Start();
         }
 
-        private void RunSync(HomeWorkspaceModel workspaceModel)
+        private void RunSync(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger dynamoLogger)
         {
             do
             {
-                Evaluate(workspaceModel);
+                Evaluate(workspaceModel, engineController, dynamoLogger);
 
                 if (execInternval == null)
                     break;
@@ -122,57 +128,42 @@ namespace Dynamo.Core
                 Thread.Sleep(sleep);
             } while (!cancelSet);
 
-            RunComplete(workspaceModel);
+            RunComplete();
         }
 
         /// <summary>
         ///     Method to group together all the tasks associated with an execution being complete
         /// </summary>
-        private void RunComplete(HomeWorkspaceModel workspaceModel)
+        private void RunComplete()
         {
-            var dynamoModel = workspaceModel.DynamoModel;
-
-            dynamoModel.OnRunCompleted(this, false);
-
             lock (RunControlMutex)
             {
                 Running = false;
-                dynamoModel.RunEnabled = true;
-            }
-
-            if (cancelSet)
-            {
-                dynamoModel.Reset();
+                OnRunCompleted(false, cancelSet);
                 cancelSet = false;
             }
         }
 
-        protected virtual void Evaluate(HomeWorkspaceModel workspace)
+        public event Action<bool, bool> RunCompleted;
+        protected virtual void OnRunCompleted(bool obj, bool obj2)
         {
-            var dynamoModel = workspace.DynamoModel;
+            var handler = RunCompleted;
+            if (handler != null) handler(obj, obj2);
+        }
 
+        protected virtual void Evaluate(HomeWorkspaceModel workspace, EngineController engineController, ILogger logger)
+        {
             var sw = new Stopwatch();
 
             try
             {
                 sw.Start();
 
-                dynamoModel.EngineController.GenerateGraphSyncData(workspace.Nodes);
+                engineController.GenerateGraphSyncData(workspace.Nodes);
 
                 //No additional work needed
-                if (dynamoModel.EngineController.HasPendingGraphSyncData)
-                    Eval(workspace);
-            }
-            catch (Exception ex)
-            {
-                //Catch unhandled exception
-                if (ex.Message.Length > 0)
-                    dynamoModel.Logger.Log(ex);
-
-                OnRunCancelled(true);
-
-                if (DynamoModel.IsTestMode) // Throw exception for NUnit.
-                    throw new Exception(ex.Message + ":" + ex.StackTrace);
+                if (engineController.HasPendingGraphSyncData)
+                    Eval(workspace, engineController, logger);
             }
             finally
             {
@@ -181,52 +172,39 @@ namespace Dynamo.Core
                 InstrumentationLogger.LogAnonymousEvent("Run", "Eval");
                 InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed);
 
-                dynamoModel.Logger.Log(
+                logger.Log(
                     string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
-            dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
+            OnEvaluationCompleted();
         }
 
-        private void Eval(HomeWorkspaceModel workspaceModel)
+        public event Action EvaluationCompleted;
+        protected virtual void OnEvaluationCompleted()
         {
-            var dynamoModel = workspaceModel.DynamoModel;
+            var handler = EvaluationCompleted;
+            if (handler != null) handler();
+        }
 
-            //Print some stuff if we're in debug mode
-            if (dynamoModel.RunInDebug) { }
-
+        private void Eval(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger logger)
+        {
             // We have caught all possible exceptions in UpdateGraph call, I am 
             // not certain if this try-catch block is still meaningful or not.
             try
             {
                 Exception fatalException = null;
-                bool updated = dynamoModel.EngineController.UpdateGraph(ref fatalException);
+                bool updated = engineController.UpdateGraph(ref fatalException);
 
-                // If there's a fatal exception, show it to the user, unless of course 
-                // if we're running in a unit-test, in which case there's no user. I'd 
-                // like not to display the dialog and hold up the continuous integration.
-                // 
-                if (DynamoModel.IsTestMode == false && (fatalException != null))
-                {
-                    Action showFailureMessage =
-                        () => Nodes.Utilities.DisplayEngineFailureMessage(dynamoModel, fatalException);
-
-                    // The "Run" method is guaranteed to be called on a background 
-                    // thread (for Revit's case, it is the idle thread). Here we 
-                    // schedule the message to show up when the UI gets around and 
-                    // handle it.
-                    // 
-                    dynamoModel.OnRequestDispatcherBeginInvoke(showFailureMessage);
-                }
-
+                if (fatalException != null)
+                    OnExceptionOccurred(fatalException, true);
+                
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
                 // updated in this execution session will be required to update 
                 // preview value.
                 if (updated)
                 {
-                    ObservableCollection<NodeModel> nodes =
-                        workspaceModel.Nodes;
+                    ObservableCollection<NodeModel> nodes = workspaceModel.Nodes;
                     foreach (NodeModel node in nodes)
                         node.IsUpdated = true;
                 }
@@ -235,21 +213,23 @@ namespace Dynamo.Core
             {
                 /* Evaluation failed due to error */
 
-                dynamoModel.Logger.Log(ex);
+                logger.Log(ex);
 
-                OnRunCancelled(true);
-
-                //If we are testing, we need to throw an exception here
-                //which will, in turn, throw an Assert.Fail in the 
-                //Evaluation thread.
-                if (DynamoModel.IsTestMode)
-                    throw new Exception(ex.Message);
+                //OnRunCancelled(true);
+                OnExceptionOccurred(ex, false);
             }
         }
 
-        protected virtual void OnRunCancelled(bool error)
+        public event Action<Exception, bool> ExceptionOccurred;
+        protected virtual void OnExceptionOccurred(Exception obj, bool fatal)
         {
-            //dynamoModel.DynamoLogger.Log("Run cancelled. Error: " + error);
+            var handler = ExceptionOccurred;
+            if (handler != null) handler(obj, fatal);
         }
+
+        //protected virtual void OnRunCancelled(bool error)
+        //{
+        //    //dynamoModel.DynamoLogger.Log("Run cancelled. Error: " + error);
+        //}
     }
 }

@@ -30,14 +30,14 @@ namespace DSRevitNodesUI
 
         public SunAndShadowSettings PickedSunAndShadowSettings { get; set; }
 
-        public SunPathDirection(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public SunPathDirection(WorkspaceModel workspaceModel) : base()
         {
             OutPortData.Add(new PortData("direction", "The sun direction vector."));
             RegisterAllPorts();
 
             // we need to obtain the dynamo model directly from the workspace model 
             // here, as it is not yet initialized on the base class
-            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            var revMod = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revMod == null) return;
 
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;

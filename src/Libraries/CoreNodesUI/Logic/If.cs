@@ -19,7 +19,7 @@ namespace DSCoreNodesUI.Logic
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
-        public If(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public If(WorkspaceModel workspaceModel) : base()
         {
             InPortData.Add(new PortData("test", "Test block"));
             InPortData.Add(new PortData("true", "True block"));

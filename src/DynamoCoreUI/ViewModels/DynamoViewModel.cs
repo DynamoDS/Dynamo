@@ -646,7 +646,7 @@ namespace Dynamo.ViewModels
 
         public void DisplayFunction(object parameters)
         {
-            Model.CustomNodeManager.GetFunctionDefinition((Guid)parameters);
+            Model.CustomNodeManager.GetFunctionDefinition((Guid)parameters, TODO, TODO);
         }
 
         internal bool CanDisplayFunction(object parameters)
@@ -1284,7 +1284,7 @@ namespace Dynamo.ViewModels
         {
             if (parameter is Guid && model.CustomNodeManager.Contains((Guid)parameter))
             {
-                FocusCustomNodeWorkspace(model.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
+                FocusCustomNodeWorkspace(model.CustomNodeManager.GetFunctionDefinition((Guid)parameter, TODO, TODO));
             }
         }
 

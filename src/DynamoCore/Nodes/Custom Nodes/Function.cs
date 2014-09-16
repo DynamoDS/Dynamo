@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -21,12 +20,19 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : FunctionCallBase
     {
-        public Function(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+        public Function(CustomNodeManager manager) : this(manager, null) { }
 
-        protected internal Function(WorkspaceModel workspace, CustomNodeDefinition def)
-            : base(workspace, new CustomNodeController(workspace.DynamoModel, def))
+        protected internal Function(CustomNodeManager manager, CustomNodeDefinition def)
+            : base(new CustomNodeController(manager, def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            Controller.DefinitionChanged += ResyncWithDefinition;
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            Controller.DefinitionChanged -= ResyncWithDefinition;
         }
 
         public new string Name
@@ -297,7 +303,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public void ResyncWithDefinition()
+        private void ResyncWithDefinition()
         {
             Controller.SyncNodeWithDefinition(this);
         }
@@ -305,7 +311,6 @@ namespace Dynamo.Nodes
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             Controller.Definition = def;
-            ResyncWithDefinition();
         }
     }
 
@@ -320,7 +325,7 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = "";
 
-        public Symbol(WorkspaceModel workspace) : base(workspace)
+        public Symbol(WorkspaceModel workspace) : base()
         {
             OutPortData.Add(new PortData("", "Symbol"));
 
@@ -404,7 +409,7 @@ namespace Dynamo.Nodes
     {
         private string symbol = "";
 
-        public Output(WorkspaceModel workspace) : base(workspace)
+        public Output(WorkspaceModel workspace) : base()
         {
             InPortData.Add(new PortData("", ""));
 

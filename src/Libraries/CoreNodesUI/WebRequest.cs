@@ -22,7 +22,7 @@ namespace DSCoreNodesUI
         }
 
         public WebRequest(WorkspaceModel workspace)
-            : base(workspace)
+            : base()
         {
             InPortData.Add(new PortData("url", "The url for the web request."));
             OutPortData.Add(new PortData("result", "The result of the web request."));

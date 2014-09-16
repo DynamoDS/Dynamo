@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
     {
         private Image image;
 
-        public WatchImageCore(WorkspaceModel ws) : base(ws)
+        public WatchImageCore(WorkspaceModel ws) : base()
         {
             InPortData.Add(new PortData("image", "image"));
             OutPortData.Add(new PortData("image", "image"));
@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
             return null;
         }
 
-        public override void UpdateRenderPackage(int maxTessDivisions)
+        public override void UpdateRenderPackage(int maxTessDivisions, object engineController)
         {
             //do nothing
             //a watch should not draw its outputs

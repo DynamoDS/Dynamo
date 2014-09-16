@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
-using Autodesk.DesignScript.Geometry;
+
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -13,6 +14,7 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
@@ -35,25 +37,24 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private bool saveResult;
         private string description;
-        private const string FailureString = "Node evaluation failed";
-        protected IdentifierNode identifier;
+
 
         // Data caching related class members.
-        private bool isUpdated = false;
-        private MirrorData cachedMirrorData = null;
-
+        private bool isUpdated;
+        private MirrorData cachedMirrorData;
+        
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
+        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
 
         #endregion
 
         #region public members
 
-        public WorkspaceModel Workspace { get; internal set; }
+        //public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -67,14 +68,14 @@ namespace Dynamo.Models
             {
                 lock (RenderPackagesMutex)
                 {
-                    return _renderPackages; 
+                    return renderPackages; 
                 }
             }
             set
             {
                 lock (RenderPackagesMutex)
                 {
-                    _renderPackages = value;
+                    renderPackages = value;
                 }
                 RaisePropertyChanged("RenderPackages");
             }
@@ -82,10 +83,13 @@ namespace Dynamo.Models
 
         public bool HasRenderPackages { get; set; }
 
+        protected IdentifierNode Identifier;
+
         #endregion
 
         #region events
 
+        [Obsolete("Model should not have to worry about UI thread synchronization")]
         public event DispatchedToUIThreadHandler DispatchedToUI;
 
         #endregion
@@ -151,6 +155,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
+        [Obsolete("Warning: This can be set from various threads, handle on UI thread at VM level")]
         public ElementState State
         {
             get { return state; }
@@ -161,11 +166,7 @@ namespace Dynamo.Models
 
                 state = value;
 
-                // Suppress notification if not reporting. Reporting is disabled 
-                // in cases like clearing the workbench to avoid nodes recoloring 
-                // as connectors are deleted.
-                if (IsReportingModifications)
-                    RaisePropertyChanged("State");
+                RaisePropertyChanged("State");
             }
         }
 
@@ -245,8 +246,8 @@ namespace Dynamo.Models
                 if (argumentLacing != value)
                 {
                     argumentLacing = value;
-                    RequiresRecalc = true;
                     RaisePropertyChanged("ArgumentLacing");
+                    OnModified();
                 }
             }
         }
@@ -295,28 +296,24 @@ namespace Dynamo.Models
             }
         }
 
-        public MirrorData CachedValue
+        public MirrorData GetCachedValueFromEngine(EngineController engine)
         {
-            get
-            {
-                if (cachedMirrorData != null)
-                    return cachedMirrorData;
-
-                // Do not have an identifier for preview right now. For an example,
-                // this can be happening at the beginning of a code block node creation.
-                if (AstIdentifierForPreview.Value == null)
-                    return null;
-
-                cachedMirrorData = null;
-
-                var engine = Workspace.DynamoModel.EngineController;
-                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-                if (runtimeMirror != null)
-                    cachedMirrorData = runtimeMirror.GetData();
-
+            if (cachedMirrorData != null)
                 return cachedMirrorData;
-            }
+
+            // Do not have an identifier for preview right now. For an example,
+            // this can be happening at the beginning of a code block node creation.
+            if (AstIdentifierForPreview.Value == null)
+                return null;
+
+            cachedMirrorData = null;
+
+            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+
+            if (runtimeMirror != null)
+                cachedMirrorData = runtimeMirror.GetData();
+
+            return cachedMirrorData;
         }
 
         /// <summary>
@@ -328,7 +325,7 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated != false)      // When a NodeModel is updated, its 
+                if (isUpdated)      // When a NodeModel is updated, its 
                     cachedMirrorData = null; // cached data should be invalidated.
 
                 RaisePropertyChanged("IsUpdated");
@@ -405,7 +402,7 @@ namespace Dynamo.Models
         /// </summary>
         internal IdentifierNode AstIdentifierForPreview
         {
-            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
+            get { return Identifier ?? (Identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
         }
 
         /// <summary>
@@ -427,7 +424,11 @@ namespace Dynamo.Models
         /// </summary>
         public virtual string AstIdentifierBase
         {
-            get { return AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty); }
+            get
+            {
+                return AstBuilder.StringConstants.VarPrefix
+                    + GUID.ToString().Replace("-", string.Empty);
+            }
         }
 
         /// <summary>
@@ -438,29 +439,27 @@ namespace Dynamo.Models
             get { return displayLabels; }
             set
             {
-                if (displayLabels != value)
-                {
-                    displayLabels = value;
-                    RaisePropertyChanged("DisplayLabels");
-                }
+                if (displayLabels == value) 
+                    return;
+
+                displayLabels = value;
+                RaisePropertyChanged("DisplayLabels");
             }
         }
 
         /// <summary>
         ///     Is this node being applied partially, resulting in a partial function?
         /// </summary>
-        public bool IsPartiallyApplied
+        public bool IsPartiallyApplied //TODO (SJE): Move to Graph level
         {
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
-
-
 
         /// <summary>
         ///     Return if all input ports of the node have connections.
         /// </summary>
         /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property")]
+        [Obsolete("Use IsPartiallyApplied property", true)]
         public bool HasUnconnectedInput()
         {
             return IsPartiallyApplied;
@@ -469,7 +468,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
-        [Obsolete("Use RequiresRecalc = true")]
+        [Obsolete("Use RequiresRecalc = true", true)]
         public void ResetOldValue()
         {
             RequiresRecalc = true;
@@ -507,10 +506,8 @@ namespace Dynamo.Models
 
         #endregion
 
-        protected NodeModel(WorkspaceModel workspaceModel)
+        protected NodeModel()
         {
-            this.Workspace = workspaceModel;
-
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
@@ -553,7 +550,7 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
-            IsReportingModifications = true;
+            //IsReportingModifications = true;
         }
 
         /// <summary>
@@ -566,10 +563,9 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Cleanup() { }
 
-        public MirrorData GetValue(int outPortIndex)
+        public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
-            return Workspace.DynamoModel.EngineController.GetMirror(
-                GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
+            return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
         #region Modification Reporting
@@ -577,12 +573,13 @@ namespace Dynamo.Models
         /// <summary>
         ///     Is this Node reporting state modifications?
         /// </summary>
+        [Obsolete("Use OnModified Event", true)]
         protected internal bool IsReportingModifications { get; set; }
 
         /// <summary>
         ///     Disable reporting of state modifications.
         /// </summary>
-        //[Obsolete("Use IsReportingModifications = false")]
+        [Obsolete("Use OnModified Event", true)]
         protected internal void DisableReporting()
         {
             IsReportingModifications = false;
@@ -591,22 +588,29 @@ namespace Dynamo.Models
         /// <summary>
         ///     Enable reporting of state modifications.
         /// </summary>
-        //[Obsolete("Use IsReportingModifications = true")]
+        [Obsolete("Use OnModified Event", true)]
         protected internal void EnableReporting()
         {
             IsReportingModifications = true;
-            ValidateConnections();
+            ValidateConnectionsSync();
         }
 
         /// <summary>
         ///     Report to Dynamo that this node's state has been modified.
         /// </summary>
-        protected internal void ReportModification()
+        [Obsolete("Use OnModified Event", true)]
+        protected internal void ReportModification(WorkspaceModel workspace)
         {
-            if (IsReportingModifications && Workspace != null)
-                Workspace.Modified();
+            //if (IsReportingModifications && workspace != null)
+            //    workspace.OnModified();
         }
 
+        public event Action Modified;
+        protected virtual void OnModified()
+        {
+            var handler = Modified;
+            if (handler != null) handler();
+        }
         #endregion
 
         #region Load/Save
@@ -800,7 +804,7 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-            RequiresRecalc = true;
+            OnModified();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -813,7 +817,7 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-            RequiresRecalc = true;
+            OnModified();
         }
 
         /// <summary>
@@ -880,6 +884,51 @@ namespace Dynamo.Models
 
         #region UI Framework
 
+        /// <summary>
+        ///     Called back from the view to enable users to setup their own view elements
+        /// </summary>
+        /// <param name="view"></param>
+        internal void InitializeUI(dynamic view)
+        {
+            //Runtime dispatch
+            (this as dynamic).SetupCustomUIElements(view);
+        }
+
+        /// <summary>
+        /// Used as a catch-all if runtime dispatch for UI initialization is unimplemented.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private void SetupCustomUIElements(object view) { }
+
+        /// <summary>
+        /// As hacky as the name sounds, this method is used to retrieve the 
+        /// "DynamoViewModel" from a given "MenuItem" object. The reason it is
+        /// needed boils down to the fact that we still do "SetupCustomUIElements"
+        /// at the "NodeModel" level. This method will be removed when we 
+        /// eventually refactor "SetupCustomUIElements" out into view layer.
+        /// </summary>
+        /// <param name="menuItem">The MenuItem from which DynamoViewModel is to 
+        /// be retrieved.</param>
+        /// <returns>Returns the corresponding DynamoViewModel retrieved from the 
+        /// given MenuItem.</returns>
+        [Obsolete("TODO: Move to ViewModel layer", true)] //TODO
+        protected object /* DynamoViewModel */ GetDynamoViewModelFromMenuItem(object /* MenuItem */ menuItem)
+        {
+            //if (menuItem == null || (menuItem.Tag == null))
+            //    throw new ArgumentNullException("menuItem");
+
+            //var dynamoViewModel = menuItem.Tag as DynamoViewModel;
+            //if (dynamoViewModel == null)
+            //{
+            //    const string message = "MenuItem.Tag is not DynamoViewModel";
+            //    throw new ArgumentException(message);
+            //}
+
+            //return dynamoViewModel;
+            throw new NotImplementedException();
+        }
+
         private void ClearTooltipText()
         {
             ToolTipText = "";
@@ -911,11 +960,13 @@ namespace Dynamo.Models
         ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
         /// </summary>
         /// <param name="a"></param>
+        [Obsolete("Model should not have to worry about UI thread synchronization", true)]
         public void DispatchOnUIThread(Action a)
         {
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
+        [Obsolete("Model should not have to worry about UI thread synchronization", true)]
         public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
         {
             if (DispatchedToUI != null)
@@ -926,6 +977,11 @@ namespace Dynamo.Models
 
         #region Interaction
 
+        internal void DisableInteraction()
+        {
+            State = ElementState.Dead;
+            InteractionEnabled = false;
+        }
 
         internal void EnableInteraction()
         {
@@ -938,49 +994,52 @@ namespace Dynamo.Models
         #region Node State
 
         /// <summary>
-        /// Color the connection according to it's port connectivity
-        /// if all ports are connected, color green, else color orange
+        ///     Color the connection according to it's port connectivity
+        ///     if all ports are connected, color green, else color orange
         /// </summary>
+        [Obsolete("Use ValidateConnections() and dispatch manually", true)]
+        public void ValidateConnectionsSync()
+        {
+            //Action setState = ValidateConnections;
+
+            //// This is put in place to solve the crashing issue outlined in 
+            //// the following defect. ValidateConnectionsSync can be called from 
+            //// a background evaluation thread at any point in time, we do 
+            //// not want such calls to update UI in anyway while we're here 
+            //// (the UI update is caused by setting State property which leads
+            //// to tool-tip update that triggers InfoBubble to update its UI,
+            //// a problem that is currently being resolved and tested on a 
+            //// separate branch). When the InfoBubble restructuring gets over,
+            //// please ensure the following scenario is tested and continue to 
+            //// work:
+            //// 
+            ////      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            //// 
+
+            //if (this.Workspace.DynamoModel != null)
+            //    this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
+        }
+
+        //TODO (SJE): When decoupling ConnectorModel and NodeModel, this should be handled at graph level
         public void ValidateConnections()
         {
-
-            Action setState = (() =>
+            // if there are inputs without connections
+            // mark as dead; otherwise, if the original state is dead,
+            // update it as active.
+            if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+            {
+                if (State == ElementState.Active)
                 {
-
-                    // if there are inputs without connections
-                    // mark as dead; otherwise, if the original state is dead,
-                    // update it as active.
-                    if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
-                    {
-                        if (State == ElementState.Active)
-                        {
-                            State = ElementState.Dead;
-                        }
-                    }
-                    else
-                    {
-                        if (State == ElementState.Dead)
-                        {
-                            State = ElementState.Active;
-                        }
-                    }
-                });
-
-            // This is put in place to solve the crashing issue outlined in 
-            //    // the following defect. ValidateConnections can be called from 
-            //    // a background evaluation thread at any point in time, we do 
-            //    // not want such calls to update UI in anyway while we're here 
-            //    // (the UI update is caused by setting State property which leads
-            //    // to tool-tip update that triggers InfoBubble to update its UI,
-            //    // a problem that is currently being resolved and tested on a 
-            //    // separate branch). When the InfoBubble restructuring gets over,
-            //    // please ensure the following scenario is tested and continue to 
-            //    // work:
-            //    // 
-            //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-            //    // 
-
-            if (this.Workspace.DynamoModel != null) this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
+                    State = ElementState.Dead;
+                }
+            }
+            else
+            {
+                if (State == ElementState.Dead)
+                {
+                    State = ElementState.Active;
+                }
+            }
         }
 
         public void Error(string p)
@@ -988,7 +1047,7 @@ namespace Dynamo.Models
             State = ElementState.Error;
             ToolTipText = p;
         }
-
+        
         public void Warning(string p)
         {
             State = ElementState.Warning;
@@ -1026,6 +1085,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="portModel"> The portModel whose height is to be found</param>
         /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        [Obsolete("This kind of UI calculation should probably live on the VM...")]
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
@@ -1038,17 +1098,18 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            if (portType == PortType.INPUT)
+            switch (portType)
             {
-                for (int i = 0; i < index; i++)
-                    verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
-                verticalOffset += inPorts[index].MarginThickness.Top;
-            }
-            else if (portType == PortType.OUTPUT)
-            {
-                for (int i = 0; i < index; i++)
-                    verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
-                verticalOffset += outPorts[index].MarginThickness.Top;
+                case PortType.INPUT:
+                    for (int i = 0; i < index; i++)
+                        verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
+                    verticalOffset += inPorts[index].MarginThickness.Top;
+                    break;
+                case PortType.OUTPUT:
+                    for (int i = 0; i < index; i++)
+                        verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
+                    verticalOffset += outPorts[index].MarginThickness.Top;
+                    break;
             }
 
             return verticalOffset;
@@ -1172,7 +1233,7 @@ namespace Dynamo.Models
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
                         if (args.PropertyName == "UsingDefaultValue")
-                            RequiresRecalc = true;
+                            OnModified();
                     };
 
                     InPorts.Add(p);
@@ -1347,16 +1408,16 @@ namespace Dynamo.Models
             GUID = helper.ReadGuid("guid", Guid.NewGuid());
 
             // Resolve node nick name.
-            string nickName = helper.ReadString("nickname", string.Empty);
-            if (!string.IsNullOrEmpty(nickName))
-                this.nickName = nickName;
+            string name = helper.ReadString("nickname", string.Empty);
+            if (!string.IsNullOrEmpty(name))
+                nickName = name;
             else
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
                 var attrib = attribs[0] as NodeNameAttribute;
                 if (null != attrib)
-                    this.nickName = attrib.Name;
+                    nickName = attrib.Name;
             }
 
             X = helper.ReadDouble("x", 0.0);
@@ -1402,6 +1463,7 @@ namespace Dynamo.Models
         ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
         ///     trigger an evaluation.
         /// </summary>
+        [Obsolete("Call OnModified() instead", true)]
         public bool RequiresRecalc 
         {
             get { return dirty; }
@@ -1409,27 +1471,15 @@ namespace Dynamo.Models
             {
                 dirty = value;
                 if (dirty)
-                    ReportModification();
+                    ReportModification(null);
             } 
         }
-
-        private bool forceReExec = false;
 
         /// <summary>
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
-        public virtual bool ForceReExecuteOfNode
-        {
-            get
-            {
-                return forceReExec;
-            }
-            set
-            {
-                forceReExec = value;
-            }
-        }
+        public virtual bool ForceReExecuteOfNode { get; set; }
         #endregion
 
         /// <summary>
@@ -1438,17 +1488,11 @@ namespace Dynamo.Models
         /// each of the node's ports and processing the underlying
         /// CLR data as IGraphicItems.
         /// </summary>
-        public virtual void UpdateRenderPackage(int maxTesselationDivisions)
+        public virtual void UpdateRenderPackage(int maxTesselationDivisions, EngineController engineController)
         {
-            if (Workspace.DynamoModel == null)
-            {
-                return;
-            }
-
             ClearRenderPackages();
-            if (State == ElementState.Error ||
-                !IsVisible ||
-                CachedValue == null)
+            if (State == ElementState.Error || !IsVisible
+                || GetCachedValueFromEngine(engineController) == null)
             {
                 return;
             }
@@ -1457,12 +1501,11 @@ namespace Dynamo.Models
 
             int count = 0;
             var labelMap = new List<string>();
-            var sizeMap = new List<double>();
 
             var ident = AstIdentifierForPreview.Name;
 
             var data = from varName in drawableIds
-                        select Workspace.DynamoModel.EngineController.GetMirror(varName)
+                        select engineController.GetMirror(varName)
                         into mirror
                         where mirror != null
                         select mirror.GetData();
@@ -1474,10 +1517,10 @@ namespace Dynamo.Models
             }
 
             count = 0;
-            List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
+            var newRenderPackages = new List<IRenderPackage>();
             foreach (var varName in drawableIds)
             {
-                var graphItems = Workspace.DynamoModel.EngineController.GetGraphicItems(varName);
+                var graphItems = engineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
@@ -1488,7 +1531,6 @@ namespace Dynamo.Models
                     PushGraphicItemIntoPackage(gItem, 
                         package, 
                         labelMap.Count > count ? labelMap[count] : "?",
-                        sizeMap.Count > count ? sizeMap[count] : -1.0,
                         maxTesselationDivisions );
 
                     package.ItemsCount++;
@@ -1498,14 +1540,7 @@ namespace Dynamo.Models
             }
 
             RenderPackages = newRenderPackages;
-            if (RenderPackages.Any())
-            {
-                HasRenderPackages = true;
-            }
-            else
-            {
-                HasRenderPackages = false;
-            }
+            HasRenderPackages = RenderPackages.Any();
         }
 
         public void ClearRenderPackages()
@@ -1517,8 +1552,9 @@ namespace Dynamo.Models
             }
         }
 
-        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, 
-            double size, int maxTesselationDivisions )
+        private static void PushGraphicItemIntoPackage(
+            IGraphicItem graphicItem, IRenderPackage package, string tag,
+            int maxTesselationDivisions)
         {
             try
             {
@@ -1527,7 +1563,7 @@ namespace Dynamo.Models
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
+                Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
             }
         }
 
@@ -1538,7 +1574,7 @@ namespace Dynamo.Models
         /// <param name="data"></param>
         /// <param name="map"></param>
         /// <param name="tag"></param>
-        private void AddToLabelMap(MirrorData data, List<string> map, string tag)
+        private static void AddToLabelMap(MirrorData data, List<string> map, string tag)
         {
             if (data.IsCollection)
             {
@@ -1585,6 +1621,7 @@ namespace Dynamo.Models
             }
         }
 
+/*
         private void AddToSizeMap(MirrorData data, ICollection<double> map)
         {
             if (data.IsCollection)
@@ -1605,7 +1642,9 @@ namespace Dynamo.Models
                 map.Add(ComputeBBoxDiagonalSize(data.Data));
             }
         }
+*/
 
+/*
         private static void AddToSizeMap(IEnumerable list, ICollection<double> map)
         {
             foreach (var obj in list)
@@ -1620,7 +1659,9 @@ namespace Dynamo.Models
                 }
             }
         }
+*/
 
+/*
         private static double ComputeBBoxDiagonalSize(object obj)
         {
             var size = -1.0;
@@ -1632,21 +1673,21 @@ namespace Dynamo.Models
             }
             return size;
         }
+*/
 
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
         /// </summary>
-        /// <param name="node">Node</param>
         /// <returns>List of Drawable Ids</returns>
         private IEnumerable<string> GetDrawableIds()
         {
             var drawables = new List<String>();
             for (int i = 0; i < OutPortData.Count; ++i)
             {
-                string identifier = GetDrawableId(i);
-                if (!string.IsNullOrEmpty(identifier))
-                    drawables.Add(identifier);
+                string id = GetDrawableId(i);
+                if (!string.IsNullOrEmpty(id))
+                    drawables.Add(id);
             }
 
             return drawables;
@@ -1656,16 +1697,12 @@ namespace Dynamo.Models
         /// Gets the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>
-        /// <param name="node">Node</param>
         /// <param name="outPortIndex">Output port index</param>
         /// <returns>Drawable Id</returns>
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
-            if (output == null)
-                return null;
-
-            return output.ToString();
+            return output == null ? null : output.ToString();
         }
 
         #region Node Migration Helper Methods
@@ -1723,14 +1760,16 @@ namespace Dynamo.Models
                 BlockingEnded(this, e);
             }
         }
-
+        
+        //TODO: (SJE) This should probably be on the VM anyway
+        [Obsolete("Use Display Preview setter instead.", true)]
         public bool ShouldDisplayPreview()
         {
             // Previews are only shown in Home Workspace.
             if (!(this.Workspace is HomeWorkspaceModel))
                 return false;
 
-            return this.ShouldDisplayPreviewCore();
+            return ShouldDisplayPreviewCore();
         }
 
         protected virtual bool ShouldDisplayPreviewCore()

@@ -196,7 +196,7 @@ namespace Dynamo
         /// <param name="node"></param>
         private void RenderSpecificNodeSync(NodeModel node, int maxTesselationDivs)
         {
-            node.UpdateRenderPackage(maxTesselationDivs);
+            node.UpdateRenderPackage(maxTesselationDivs, TODO);
         }
 
     }

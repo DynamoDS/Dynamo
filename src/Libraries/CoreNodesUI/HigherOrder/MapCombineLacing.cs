@@ -14,7 +14,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
-        public Map(WorkspaceModel workspace) : base(workspace)
+        public Map(WorkspaceModel workspace) : base()
         {
             InPortData.Add(new PortData("list", "The list to map over."));
             InPortData.Add(new PortData("f(x)", "The procedure used to map elements"));
@@ -458,7 +458,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
-        public Filter(WorkspaceModel workspace) : base(workspace)
+        public Filter(WorkspaceModel workspace) : base()
         {
             InPortData.Add(new PortData("list", "List to filter"));
             InPortData.Add(new PortData("condition", "Predicate used to determine if an element is filtered in or out."));
@@ -502,7 +502,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {
-        public Replace(WorkspaceModel workspace) : base(workspace)
+        public Replace(WorkspaceModel workspace) : base()
         {
             InPortData.Add(new PortData("item", "Item to potentially be replaced"));
             InPortData.Add(new PortData("replaceWith", "Object to replace with"));

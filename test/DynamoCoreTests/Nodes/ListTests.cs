@@ -493,7 +493,7 @@ namespace Dynamo.Tests
 			ViewModel.Model.RunExpression();
 			var watch = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
-			var actual = watch.GetValue(0).GetElements();
+			var actual = watch.GetValue(0, TODO).GetElements();
 			Assert.AreEqual(0, actual.Count);
 		}
 
@@ -524,7 +524,7 @@ namespace Dynamo.Tests
 
 			string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
 			var nodeTranspose = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
-			var elements = nodeTranspose.GetValue(0).GetElements();
+			var elements = nodeTranspose.GetValue(0, TODO).GetElements();
 
 			Assert.AreEqual(4, elements.Count);
 			Assert.AreEqual(3, elements[0].GetElements().Count);

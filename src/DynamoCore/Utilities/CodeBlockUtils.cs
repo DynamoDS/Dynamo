@@ -1,16 +1,12 @@
-﻿using System.Globalization;
-using System.Windows;
-using System.Windows.Media;
-
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Dynamo.Nodes;
+
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-
-using Dynamo.UI;
-
-using FontFamily = System.Drawing.FontFamily;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Dynamo.Utilities
 {
@@ -182,8 +178,7 @@ namespace Dynamo.Utilities
             // 
             string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
             var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-
-            var textFontFamily = new System.Windows.Media.FontFamily(uri, ResourceNames.FontResourceUri);
+            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
 
             var typeface = new Typeface(textFontFamily, FontStyles.Normal,
                 FontWeights.Normal, FontStretches.Normal);
@@ -206,6 +201,7 @@ namespace Dynamo.Utilities
                 // in "ft.Extent" to be 0.0, but the line still occupies one line
                 // visually. This is why we need to make sure "lineCount" cannot be 
                 // zero.
+                // 
                 var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
                 totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
             }

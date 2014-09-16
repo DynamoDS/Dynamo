@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.Utilities;
 
 using DynamoUtilities;
 
-using Greg.Requests;
 using Greg.Responses;
-using RestSharp;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {
@@ -48,11 +39,19 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
+        private readonly DynamoViewModel dynamoViewModel;
+
+        public PackageDownloadHandle(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header, PackageVersion version)
         {
+            this.dynamoViewModel = dynamoViewModel;
             this.Header = header;
             this.DownloadPath = "";
             this.VersionName = version.version;
+        }
+
+        public void Start()
+        {
+            dynamoViewModel.PackageManagerClientViewModel.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)
@@ -73,7 +72,7 @@ namespace Dynamo.PackageManager
             return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
         }
 
-        public bool Extract( DynamoModel dynamoModel, out Package pkg )
+        public bool Extract( out Package pkg )
         {
             this.DownloadState = State.Installing;
 
@@ -96,7 +95,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(dynamoModel, installedPath, Header.name, VersionName);
+            pkg = new Package(dynamoViewModel.Model, installedPath, Header.name, VersionName);
 
             return true;
         }

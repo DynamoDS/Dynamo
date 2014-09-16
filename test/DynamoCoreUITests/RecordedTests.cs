@@ -2040,7 +2040,7 @@ namespace DynamoCoreUITests
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
 
-            Assert.IsNotNull(nodeModel.CachedValue.Data);
+            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine().Data);
 
             AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -15,7 +16,7 @@ namespace Dynamo
     {
         internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
 
-        internal CustomNodeDefinition( Guid id)
+        internal CustomNodeDefinition(Guid id)
         {
             FunctionId = id;
         }
@@ -117,6 +118,13 @@ namespace Dynamo
         
         #region DS Compilation
 
+        public event Action Updated;
+        protected virtual void OnUpdated()
+        {
+            var handler = Updated;
+            if (handler != null) handler();
+        }
+
         /// <summary>
         /// Compiles this custom node definition, updating all UI instances to match
         /// inputs and outputs and registering new definition with the EngineController.
@@ -216,12 +224,7 @@ namespace Dynamo
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            var customNodeInstances = dynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this);
-            
-            foreach (var node in customNodeInstances)
-                node.ResyncWithDefinition();
+            OnUpdated();
 
             //Call OnSave for all saved elements
             foreach (var node in WorkspaceModel.Nodes)
@@ -229,11 +232,39 @@ namespace Dynamo
 
             #endregion
 
+            var outputNodes = topMost.Select((x) =>
+            {
+                var n = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
+                return n as AssociativeNode;
+            });
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+            var initParams = new CompileCustomNodeParams()
+            {
+                EngineController = controller,
+                Definition = this,
+                Nodes = WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
+                Parameters = parameters,
+                Outputs = outputNodes
+            };
+
+            // Schedule the compilation of CustomNodeDefinition, we are 
+            // not interested in when it will be completed, so no callback.
+            var scheduler = dynamoModel.Scheduler;
+            var task = new CompileCustomNodeAsyncTask(scheduler);
+            if (task.Initialize(initParams))
+                scheduler.ScheduleForExecution(task);
+
+#else
+
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
-                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                outputNodes,
                 parameters);
+
+#endif
 
             // Not update graph until Run 
             // if (success)

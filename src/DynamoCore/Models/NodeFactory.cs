@@ -1,46 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting;
-using System.Text;
 
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
-    internal class NodeFactory
+    public class NodeFactory
     {
-        private readonly DynamoModel dynamoModel;
-        private readonly WorkspaceModel workspaceModel;
+        //TODO: (SJE) Kill these. Nodes should be loaded based off of TypeLoadData.
+        //TODO: (SJE) TypeLoadData should be abstract, takes appropriate action based off of node type (0-touch, Custom, ModelExtension)
+        private readonly Dictionary<string, TypeLoadData> builtInTypesByName =
+            new Dictionary<string, TypeLoadData>();
 
-        internal NodeFactory(WorkspaceModel workspaceModel, DynamoModel dynamoModel)
+        public IDictionary<string, TypeLoadData> BuiltInTypesByName
         {
-            this.dynamoModel = dynamoModel;
-            this.workspaceModel = workspaceModel;
+            get { return builtInTypesByName; }
+        }
+
+        private readonly SortedDictionary<string, TypeLoadData> builtInTypesByNickname =
+            new SortedDictionary<string, TypeLoadData>();
+
+        public IDictionary<string, TypeLoadData> BuiltInTypesByNickname
+        {
+            get { return builtInTypesByNickname; }
         }
 
         /// <summary>
         ///     Create a NodeModel from a function descriptor name, a NodeModel name, a NodeModel nickname, or a custom node name
         /// </summary>
         /// <param name="name">A name</param>
+        /// <param name="engineController"></param>
         /// <returns>If the name is valid, a new NodeModel.  Otherwise, null.</returns>
-        internal NodeModel CreateNodeInstance(string name)
+        public NodeModel CreateNodeInstance(string name, EngineController engineController)
         {
             NodeModel node;
 
             // Depending on node type, get a node instance
-            FunctionDescriptor functionItem = (dynamoModel.EngineController.GetFunctionDescriptor(name));
+            FunctionDescriptor functionItem = engineController.GetFunctionDescriptor(name);
             if (functionItem != null)
             {
                 node = GetDSFunctionFromFunctionItem(functionItem);
             }
-            else if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
+            else if (builtInTypesByName.ContainsKey(name))
             {
                 node = GetNodeModelInstanceByName(name);
             }
-            else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(name))
+            else if (builtInTypesByNickname.ContainsKey(name))
             {
                 node = GetNodeModelInstanceByNickName(name);
             }
@@ -56,10 +62,11 @@ namespace Dynamo.Models
         ///     Create a NodeModel with a given type as the method generic parameter
         /// </summary>
         /// <returns> The newly instantiated NodeModel with a new guid</returns>
-        internal T CreateNodeInstance<T>() where T : NodeModel
+        public T CreateNodeInstance<T>() where T : NodeModel
         {
-            var node = this.GetNodeModelInstanceByType<T>();
-            if (node == null) return node;
+            var node = GetNodeModelInstanceByType<T>();
+            if (node == null) 
+                return null;
 
             node.GUID = Guid.NewGuid();
 
@@ -74,9 +81,9 @@ namespace Dynamo.Models
         /// <param name="signature"> The signature of the function along with parameter information </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated NodeModel</returns>
-        internal NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
+        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = this.GetNodeModelInstanceByType(elementType);
+            object createdNode = GetNodeModelInstanceByType(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -121,7 +128,7 @@ namespace Dynamo.Models
 
             if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
             {
-                return new Function(this.workspaceModel, def)
+                return new Function(def)
                 {
                     NickName = def.WorkspaceModel.Name
                 };
@@ -134,13 +141,13 @@ namespace Dynamo.Models
         private NodeModel GetNodeModelInstanceByName(string name)
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
-            return this.GetNodeModelInstanceByType(tld.Type);
+            return GetNodeModelInstanceByType(tld.Type);
         }
 
         private NodeModel GetNodeModelInstanceByNickName(string name)
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
-            return this.GetNodeModelInstanceByType(tld.Type);
+            return GetNodeModelInstanceByType(tld.Type);
         }
 
         private T GetNodeModelInstanceByType<T>() where T : NodeModel

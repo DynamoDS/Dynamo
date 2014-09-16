@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -14,6 +12,7 @@ namespace Dynamo.PackageManager
 {
     static class PackageUploadBuilder
     {
+
         public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();

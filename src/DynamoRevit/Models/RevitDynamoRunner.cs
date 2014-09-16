@@ -18,10 +18,10 @@ namespace Dynamo.Applications
 {
     internal class RevitDynamoRunner : DynamoRunner
     {
-        protected override void Evaluate(HomeWorkspaceModel workspace)
+        protected override void Evaluate(HomeWorkspaceModel workspace, object engineController)
         {
             //Run in idle thread no matter what
-            IdlePromise.ExecuteOnIdleSync(() => base.Evaluate(workspace));
+            IdlePromise.ExecuteOnIdleSync(() => base.Evaluate(workspace, engineController, TODO, TODO));
         }
     }
 }
