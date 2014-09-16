@@ -12,7 +12,6 @@ namespace Dynamo.Tests
     {
         [Test]
         [Category("Failure")]
-        [Category("UnitTests")]
         public void CanLoadValidLibraryCustomization()
         {
             var fn = Path.Combine(GetTestDirectory(), @"core/library/ProtoGeometry.dll");
