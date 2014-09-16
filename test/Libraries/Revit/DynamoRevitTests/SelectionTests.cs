@@ -64,19 +64,6 @@ namespace Dynamo.Tests
 
         [Test]
         [TestModel(@".\Selection\Selection.rfa")]
-        public void AllSelectionNodes()
-        {
-            var model = ViewModel.Model;
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\Selection.dyn"));
-
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-
-            var selNodes = model.AllNodes.Where(x => x is DSModelElementsSelection);
-            Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));
-        }
-
-        [Test]
-        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectModelElement()
         {
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath,@".\Selection\SelectModelElement.dyn"));
