@@ -500,6 +500,8 @@ namespace ProtoCore.Lang
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
+            GCUtils.GCRetain(ret, core);
+
             // Dot operator is a special case and its arguments are not meant to be gc'd
             // The debugger will always get to here as it applies for only those built-ins that are also external
             // and therefore that the debugger does not break out of - pratapa
@@ -511,7 +513,6 @@ namespace ProtoCore.Lang
                 }
             }
 
-            GCUtils.GCRetain(ret, core);
             return ret;
 
         }

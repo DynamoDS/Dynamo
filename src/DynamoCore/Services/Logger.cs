@@ -21,7 +21,7 @@ namespace Dynamo.Services
 
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
-        private static string userID = GetUserID();
+        private static readonly string userID = GetUserID();
         private static string sessionID = Guid.NewGuid().ToString();
         private static Log loggerImpl;
 
@@ -50,10 +50,7 @@ namespace Dynamo.Services
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log("Dynamo", userID, sessionID);
 
-            // The following starts the heartbeat, do not remove this 
-            // because of the unreferenced "heartbeat" variable.
-            var heartbeat = Heartbeat.GetInstance(dynamoModel);
-
+            
             CSharpAnalytics.AutoMeasurement.Start(mc);
             client = AutoMeasurement.Client;
 
@@ -63,6 +60,13 @@ namespace Dynamo.Services
             }
 
             started = true;
+
+            // The following starts the heartbeat, do not remove this 
+            // because of the unreferenced "heartbeat" variable.
+
+// ReSharper disable UnusedVariable
+            var heartbeat = Heartbeat.GetInstance(dynamoModel);
+// ReSharper restore UnusedVariable
 
         }
 

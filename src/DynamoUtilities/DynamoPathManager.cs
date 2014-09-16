@@ -13,11 +13,9 @@ namespace DynamoUtilities
     /// </summary>
     public class DynamoPathManager
     {
-        public enum Asm{ Version219,Version220}
-
         private List<string> preloadLibaries = new List<string>();
         private List<string> addResolvePaths = new List<string>();
-        private Asm asmVersion = Asm.Version219;
+
         private static DynamoPathManager instance;
 
         /// <summary>
@@ -89,16 +87,6 @@ namespace DynamoUtilities
         public string AsmPreloader { get; set; }
 
         /// <summary>
-        /// A directory containing the ASM 219 DLLs
-        /// </summary>
-        public string ASM219Host { get; set; }
-
-        /// <summary>
-        /// A directory containing the ASM 220 DLLs
-        /// </summary>
-        public string ASM220Host { get; set; }
-
-        /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
@@ -106,12 +94,6 @@ namespace DynamoUtilities
         {
             get { return addResolvePaths; }
             set { addResolvePaths = value; }
-        }
-
-        public Asm ASMVersion
-        {
-            get { return asmVersion; }
-            set { asmVersion = value; }
         }
 
         public static DynamoPathManager Instance
@@ -170,22 +152,6 @@ namespace DynamoUtilities
             {
                 Directory.CreateDirectory(CommonSamples);
             }
-
-            switch (asmVersion)
-            {
-                case Asm.Version219:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
-                    break;
-                case Asm.Version220:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_220"));
-                    break;
-                default:
-                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
-                    break;
-            }
-
-            ASM219Host = null;
-            ASM220Host = null;
 
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -314,20 +280,32 @@ namespace DynamoUtilities
             }
         }
 
-        public void SetLibGPath(string path)
+        public void SetLibGPath(string version)
         {
-            LibG = path;
+            LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
             var splits = LibG.Split('\\');
             GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
-            AsmPreloader = splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll";
+            AsmPreloader = Path.Combine(
+                MainExecPath,
+                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
+
+            if (!AdditionalResolutionPaths.Contains(LibG))
+            {
+                AdditionalResolutionPaths.Add(LibG);
+            }
         }
 
         /// <summary>
         /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
+        /// for the specified version.
         /// </summary>
-        /// <returns>True if it finds a directory, false if it can't find a directory</returns>
-        private bool FindAndSetASMHostPath()
+        /// <param name="version"> The version of ASM which you would like to find. Ex. "219" or "220"</param>
+        /// <param name="host"></param>
+        /// <returns>True if it finds the specified ASM version on the user's machine, false if it does not.</returns>
+        private static bool FindAsm(string version, out string host)
         {
+            host = null;
+
             string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
 
             DirectoryInfo root = null;
@@ -338,8 +316,6 @@ namespace DynamoUtilities
             }
             catch (Exception e)
             {
-                // TODO: print to console
-
                 return false;
             }
 
@@ -367,67 +343,67 @@ namespace DynamoUtilities
 
                 files = dirInfo.GetFiles("*.*");
 
-                foreach (System.IO.FileInfo fi in files)
+                foreach (FileInfo fi in files)
                 {
-                    if (fi.Name.ToUpper() == "ASMAHL219A.DLL")
+                    if (fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL",version))
                     {
-                        // we found a match for the ASM 219 dir
-                        ASM219Host = dirInfo.FullName;
-
-                        break;
-                    }
-
-                    if (fi.Name.ToUpper() == "ASMAHL220A.DLL")
-                    {
-                        // we found a match for the ASM 220 dir
-                        ASM220Host = dirInfo.FullName;
-
-                        break;
+                        // we found a match for the ASM dir
+                        host = dirInfo.FullName;
+                        return true;
                     }
                 }
-
-                if (ASM219Host != null && ASM220Host != null)
-                    return true;
             }
 
-            return ASM219Host != null || ASM220Host != null;
+            return false;
+        }
+
+        /// <summary>
+        /// Preload a specific version of ASM.
+        /// </summary>
+        /// <param name="version">The version as ex. "219"</param>
+        public static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
+        {
+            Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
+
+            string hostLocation;
+            if (!FindAsm(version, out hostLocation))
+            {
+                Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                return false;
+            }
+
+            pathManager.SetLibGPath(version);
+
+            var libG = Assembly.LoadFrom(Instance.AsmPreloader);
+
+            Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
+
+            MethodInfo preloadMethod = preloadType.GetMethod(
+                "PreloadAsmLibraries",
+                BindingFlags.Public | BindingFlags.Static);
+
+            if (preloadMethod == null)
+                throw new MissingMethodException(@"Method ""PreloadAsmLibraries"" not found");
+
+            var methodParams = new object[1];
+            methodParams[0] = hostLocation;
+
+            preloadMethod.Invoke(null, methodParams);
+
+            Debug.WriteLine(string.Format("Successfully loaded ASM version {0}", version));
+            return true;
         }
 
         /// <summary>
         /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs,
-        /// determines correct version of ASM and loads binaries
+        /// determines the correct version of ASM and loads the binaries.
         /// </summary>
-        public bool PreloadASMLibraries()
+        public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
         {
-            if (!DynamoPathManager.Instance.FindAndSetASMHostPath())
-                return false;
-            
-            if (DynamoPathManager.Instance.ASM219Host == null)
-            {
-                DynamoPathManager.Instance.SetLibGPath("libg_220");
-                DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
-            }
+            if (PreloadAsmVersion("220", pathManager)) return true;
+            if (PreloadAsmVersion("219", pathManager)) return true;
 
-            var libG = Assembly.LoadFrom(DynamoPathManager.Instance.AsmPreloader);
-
-            Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
-
-            MethodInfo preloadMethod = preloadType.GetMethod("PreloadAsmLibraries",
-                BindingFlags.Public | BindingFlags.Static);
-
-            if(preloadMethod == null)
-                throw new MissingMethodException(@"Method ""PreloadAsmLibraries"" not found");
-
-            object[] methodParams = new object[1];
-
-            if (DynamoPathManager.Instance.ASM219Host == null)
-                methodParams[0] = DynamoPathManager.Instance.ASM220Host;
-            else
-                methodParams[0] = DynamoPathManager.Instance.ASM219Host;
-
-            preloadMethod.Invoke(null, methodParams);
-                
-            return true;
+            return false;
         }
     }
 }

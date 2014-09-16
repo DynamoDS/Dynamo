@@ -9,8 +9,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSOffice
 {
-    [SupressImportIntoVM]
-    public class ExcelCloseEventArgs : EventArgs
+    internal class ExcelCloseEventArgs : EventArgs
     {
         public ExcelCloseEventArgs(bool saveWorkbooks = true)
         {
@@ -75,7 +74,7 @@ namespace DSOffice
             }
 
             // KILLDYNSETTINGS - is this safe
-            AppDomain.CurrentDomain.ProcessExit += DynamoModelOnCleaningUp;
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             excel.Visible = ShowOnStartup;
 
@@ -105,7 +104,7 @@ namespace DSOffice
         /// Close all Excel workbooks and provide SaveAs dialog if needed.  Also, perform
         /// garbage collection and remove references to Excel App
         /// </summary>
-        public static void TryQuitAndCleanup(bool saveWorkbooks)
+        private static void TryQuitAndCleanup(bool saveWorkbooks)
         {
             if (HasValidExcelReference)
             {
@@ -127,7 +126,7 @@ namespace DSOffice
             }
         }
 
-        private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
+        internal static void OnProcessExit(object sender, EventArgs eventArgs)
         {
             if(eventArgs != null)
             {

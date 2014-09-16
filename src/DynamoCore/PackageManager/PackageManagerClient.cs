@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using System.Windows;
+
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
-using Dynamo.Utilities;
+
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using Greg.Utility;
 
 namespace Dynamo.PackageManager
 {
