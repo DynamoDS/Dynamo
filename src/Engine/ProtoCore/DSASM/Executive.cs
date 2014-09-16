@@ -2346,6 +2346,12 @@ namespace ProtoCore.DSASM
                     // For every graphnode in the dependency list
                     foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
                     {
+                        // Do not check for xlang dependencies from within the same block
+                        if (graphNode.languageBlockId == executingBlock)
+                        {
+                            continue;
+                        }
+
                         if (graphNode.classIndex != classScope || graphNode.procIndex != functionScope)
                         {
                             continue;
@@ -2441,7 +2447,6 @@ namespace ProtoCore.DSASM
                                     runtimeVerify(DSASM.Constants.kInvalidIndex != firstSymbolInUpdatedRef.runtimeTableIndex);
                                     StackValue svGraphNode = GetOperandData(firstSymbolInUpdatedRef.runtimeTableIndex, svSym, svClass);
                                     StackValue svPropagateNode = modifiedRef.symbolData;
-
                                     if (IsNodeModified(svGraphNode, svPropagateNode))
                                     {
                                         graphNode.isDirty = true;
@@ -6573,14 +6578,7 @@ namespace ProtoCore.DSASM
                 StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
 
                 ProtoCore.Language bounceLangauge = exe.instrStreamList[blockId].language;
-
-                // In an associative language block, the start pc of the bounce, is the pc of the first dirty graphnode in the language block
-                int startPC = 0;
-                if (bounceLangauge == Language.kAssociative)
-                {
-                    startPC = 0;
-                }
-                BounceExplicit(blockId, startPC, bounceLangauge, stackFrame);
+                BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
             }
 
             return;

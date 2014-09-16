@@ -2036,13 +2036,33 @@ y = [Associative]
     return = a + 200;
 }
 a = 10;
-}
                 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             string err = "MAGN-4585: Failure to trigger update in an inner associative block";
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 110, err);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 210, err);
+            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 210, err);
         }
+        [Test]
+        [Category("Failure")]
+        public void TestXLangUpdate_AssociativeTriggersAssociative03()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
+            String code =
+                @"a = 1;
+b = 1;
+x = [Associative]
+{
+    b = b + 1;
+    return = a + 10;
+}
+a = 2;
+                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4585: Failure to trigger update in an inner associative block";
+            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 12, err);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 2, err);
+        }
+
 
 
         [Test]
