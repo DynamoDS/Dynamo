@@ -474,31 +474,20 @@ namespace ProtoCore
 
             public StackValue BuildNullArray(int size)
             {
-                lock (Heap.cslock)
-                {
-                    int ptr = Heap.Allocate(size);
-                    for (int n = 0; n < size; ++n)
-                    {
-                        Heap.GetHeapElement(ptr).Stack[n] = StackValue.Null;
-                    }
-                    return StackValue.BuildArrayPointer(ptr);
-                }
-            }
+                StackValue[] nulls = Enumerable.Range(0, size).Select(i => StackValue.Null).ToArray();
+                return BuildArray(nulls); 
+           }
 
             public StackValue BuildArrayFromStack(int size)
             {
-                lock (Heap.cslock)
+                List<StackValue> svs = new List<StackValue>();
+                for (int i = 0; i < size; ++i)
                 {
-                    int ptr = Heap.Allocate(size);
-                    for (int n = size - 1; n >= 0; --n)
-                    {
-                        StackValue sv = Pop();
-                        Heap.IncRefCount(sv);
-                        Heap.GetHeapElement(ptr).Stack[n] = sv;
-                    }
-                    return StackValue.BuildArrayPointer(ptr);
+                    svs.Add(Pop());
                 }
-            }
+
+                return BuildArray(svs.ToArray());
+           }
 
             public bool IsHeapActive(StackValue sv)
             {
