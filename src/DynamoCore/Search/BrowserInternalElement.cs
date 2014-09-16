@@ -105,7 +105,7 @@ namespace Dynamo.Nodes.Search
             get
             {
                 var name = GetResourceName(ResourceType.SmallIcon, false);
-                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
 
                 if (icon == null)
                 {
@@ -125,7 +125,7 @@ namespace Dynamo.Nodes.Search
             get
             {
                 var name = GetResourceName(ResourceType.LargeIcon, false);
-                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
 
                 if (icon == null)
                 {
@@ -223,7 +223,7 @@ namespace Dynamo.Nodes.Search
                 return null;
 
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            BitmapImage icon = null;
+            BitmapSource icon = null;
             if (cust != null)
                 icon = cust.LoadIconInternal(fullNameOfIcon);
             return icon;
