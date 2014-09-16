@@ -676,7 +676,10 @@ namespace Dynamo.ViewModels
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
-            Exit(true, true);
+            if (SetAllowCancelAndRequestUIClose(true))
+                return;
+
+            model.ShutDown(true);
             UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
         }
 
@@ -1388,16 +1391,6 @@ namespace Dynamo.ViewModels
             }
 
             model.ShutDown(false);
-        }
-
-        internal void Exit(bool allowCancel, bool shutDownHost)
-        {
-            if (SetAllowCancelAndRequestUIClose(allowCancel))
-            {
-                return;
-            }
-
-            model.ShutDown(true);
         }
 
         private bool SetAllowCancelAndRequestUIClose(object allowCancel)
