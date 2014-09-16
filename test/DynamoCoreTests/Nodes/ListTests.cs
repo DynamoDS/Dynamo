@@ -1129,8 +1129,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-        [Category("Failure")]
-		public void LaceLongest_ListWith10000Element()
+        public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
 

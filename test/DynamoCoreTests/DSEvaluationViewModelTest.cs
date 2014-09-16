@@ -252,7 +252,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Regress618()
         {
             // a=0..10;
@@ -269,7 +268,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
