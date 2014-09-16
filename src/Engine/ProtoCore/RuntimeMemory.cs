@@ -483,16 +483,6 @@ namespace ProtoCore
                 return BuildArray(svs.ToArray());
            }
 
-            public bool IsHeapActive(StackValue sv)
-            {
-                if (!sv.IsReferenceType)
-                {
-                    return false;
-                }
-
-                return Heap.GetHeapElement(sv).Active;
-            }
-
             private StackAlignToFramePointerRestorer StackRestorer { get; set; }
 
             public void AlignStackForExprInterpreter()
