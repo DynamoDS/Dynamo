@@ -466,17 +466,6 @@ namespace ProtoCore
                 return Heap.AllocateArray(arrayElements);
             }
 
-            public StackValue BuildArrayFromStack(int size)
-            {
-                List<StackValue> svs = new List<StackValue>();
-                for (int i = 0; i < size; ++i)
-                {
-                    svs.Add(Pop());
-                }
-
-                return BuildArray(svs.ToArray());
-           }
-
             private StackAlignToFramePointerRestorer StackRestorer { get; set; }
 
             public void AlignStackForExprInterpreter()

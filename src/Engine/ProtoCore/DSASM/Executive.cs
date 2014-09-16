@@ -6435,7 +6435,14 @@ namespace ProtoCore.DSASM
             }
 
             runtimeVerify(DSASM.Constants.kInvalidIndex != size);
-            StackValue pointer = rmem.BuildArrayFromStack(size);
+
+            List<StackValue> svs = new List<StackValue>();
+            for (int i = 0; i < size; ++i)
+            {
+                svs.Add(rmem.Pop());
+            }
+            StackValue pointer = rmem.Heap.AllocateArray(svs.ToArray());
+
             if (instruction.op2.IsString)
             {
                 pointer = StackValue.BuildString(pointer.opdata);
