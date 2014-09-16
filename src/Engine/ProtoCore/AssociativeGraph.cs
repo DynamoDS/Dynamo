@@ -22,6 +22,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="langblockGraphNode"></param>
         /// <param name="dependencyGraph"></param>
         public static void UpdateLanguageBlockGraphnodes(
+            InstructionStream[] instrStream,
             ProtoCore.AssociativeGraph.DependencyGraph dependencyGraph, 
             ProtoCore.AssociativeGraph.GraphNode executingGraphNode, 
             ProtoCore.AssociativeGraph.GraphNode langblockGraphNode)
@@ -51,7 +52,8 @@ namespace ProtoCore.AssociativeEngine
                         node.isDirty = true;
                         if (node.isLanguageBlock)
                         {
-                            ProtoCore.AssociativeEngine.Utils.UpdateLanguageBlockGraphnodes(dependencyGraph, executingGraphNode, node);
+                            ProtoCore.AssociativeGraph.DependencyGraph depGraph = instrStream[node.languageBlockId].dependencyGraph;
+                            ProtoCore.AssociativeEngine.Utils.UpdateLanguageBlockGraphnodes(instrStream, dependencyGraph, executingGraphNode, node);
                         }
                     }
                 }

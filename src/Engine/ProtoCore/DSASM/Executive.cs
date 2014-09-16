@@ -1658,11 +1658,11 @@ namespace ProtoCore.DSASM
                     bool isSSAAssign = node.IsSSANode();
                     if (core.Options.ExecuteSSA)
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, true);
+                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
                     }
                     else
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, true);
+                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, istream.dependencyGraph, executingBlock, true);
                     }
                     node.propertyChanged = false;
                 }
@@ -1679,7 +1679,7 @@ namespace ProtoCore.DSASM
                     UpdatePropertyChangedGraphNode();
                 }
             }
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
+            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
 
             if (Properties.executingGraphNode != null)
             {
@@ -1918,6 +1918,8 @@ namespace ProtoCore.DSASM
             int modBlkId,
             bool isSSAAssign,
             AssociativeGraph.GraphNode executingGraphNode,
+            AssociativeGraph.DependencyGraph dependencyGraph,
+            int languageBlockID,
             bool propertyChanged = false)
         {
             int nodesMarkedDirty = 0;
@@ -1929,7 +1931,7 @@ namespace ProtoCore.DSASM
             int classIndex = executingGraphNode.classIndex;
             int procIndex = executingGraphNode.procIndex;
 
-            var graph = istream.dependencyGraph;
+            var graph = dependencyGraph; // istream.dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes == null)
             {
@@ -1981,7 +1983,13 @@ namespace ProtoCore.DSASM
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        ProtoCore.AssociativeEngine.Utils.UpdateLanguageBlockGraphnodes(istream.dependencyGraph, executingGraphNode, graphNode);
+                        ProtoCore.AssociativeGraph.DependencyGraph depGraph = exe.instrStreamList[graphNode.languageBlockId].dependencyGraph;
+                        //ProtoCore.AssociativeEngine.Utils.UpdateLanguageBlockGraphnodes(exe.instrStreamList, depGraph, executingGraphNode, graphNode);
+                        int dirtyNodes = UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, executingGraphNode, exe.instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                        if (dirtyNodes > 0)
+                        {
+                            graphNode.isDirty = true;
+                        }
                     }
                     else
                     {
