@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ProtoCore.Utils;
 
 
@@ -226,10 +227,10 @@ namespace ProtoCore.DSASM
     public class Heap
     {
         public int TotalSize { get; set; }
-        public List<HeapElement> Heaplist { get; set; }
         public Object cslock { get; private set; }
 
         private List<int> freeList;
+        public List<HeapElement> Heaplist { get; set; }
 
         public Heap()
         {
@@ -246,11 +247,47 @@ namespace ProtoCore.DSASM
             return AddHeapElement(hpe);
         }
 
-        public int Allocate(int size, int symbol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        private int AllocateInternal(int size)
         {
             TotalSize += size;
-            HeapElement hpe = new HeapElement(size, symbol);
+            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
             return AddHeapElement(hpe);
+        }
+
+        private int AllocateInternal(StackValue[] values)
+        {
+            int size = values.Count();
+            int index = AllocateInternal(size);
+            for (int i = 0; i < values.Count(); ++i)
+            {
+                Heaplist[index].Stack[i] = values[i];
+            }
+            return index;
+        }
+
+        public StackValue AllocateString(string str)
+        {
+            var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
+            int index = AllocateInternal(chs);
+            return StackValue.BuildString(index);
+        }
+
+        public StackValue AllocateArray(StackValue[] values)
+        {
+            int index = AllocateInternal(values);
+            return StackValue.BuildArrayPointer(index);
+        }
+
+        public StackValue AllocatePointer(int size)
+        {    
+            int index = AllocateInternal(size);
+            return StackValue.BuildPointer(index);
+        }
+
+        public StackValue AllocatePointer(int size, MetaData metadata)
+        {    
+            int index = AllocateInternal(size);
+            return StackValue.BuildPointer(index, metadata);
         }
 
         private int AddHeapElement(HeapElement hpe)
@@ -301,6 +338,11 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+        }
+
+        public HeapElement GetHeapElement(int index)
+        {
+            return Heaplist[index];
         }
 
         public HeapElement GetHeapElement(StackValue pointer)

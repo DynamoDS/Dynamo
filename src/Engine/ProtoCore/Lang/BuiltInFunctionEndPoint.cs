@@ -554,7 +554,7 @@ namespace ProtoCore.Lang
             int functionArgs = (int)argumentCount.opdata;
 
             // Build the function arguments
-            HeapElement heapElem = rmem.Heap.GetHeapElement((int)functionArguments.opdata);
+            HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
             var arguments = heapElem.VisibleItems.ToList();
 
             if (arguments.Count > 0)
@@ -618,13 +618,12 @@ namespace ProtoCore.Lang
             {
                 int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunction.Name);
 
-                int thisPtr = (int)thisObject.opdata;
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
-                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisPtr).Stack[memvarIndex];
+                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisObject).Stack[memvarIndex];
                     if (svMemberPtr.IsPointer)
                     {
-                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement((int)svMemberPtr.opdata).Stack[0];
+                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement(svMemberPtr).Stack[0];
                         if (svFunctionPtr.IsFunctionPointer)
                         {
                             // It is a function pointer
@@ -870,43 +869,47 @@ namespace ProtoCore.Lang
             }
             //convert to 2-D array
             int rowNum = CSVdatalist.Count;
-            int result = runtime.runtime.rmem.Heap.Allocate(rowNum);
+            StackValue[] rows = new StackValue[rowNum];
+
             for (int i = 0; i < rowNum; i++)
             {
-                int eachRow = runtime.runtime.rmem.Heap.Allocate(colNum);
+                StackValue[] values = new StackValue[colNum];
+
                 for (int k = 0; k < colNum; k++)
                 {
                     if (CSVdatalist[i].Length <= k)
                     {
-                        runtime.runtime.rmem.Heap.GetHeapElement(eachRow).Stack[k] = DSASM.StackValue.Null;
+                        values[k] = StackValue.Null;
                     }
                     else if (null == CSVdatalist[i][k])
                     {
-                        runtime.runtime.rmem.Heap.GetHeapElement(eachRow).Stack[k] = DSASM.StackValue.Null;
+                        values[k] = StackValue.Null;
                     }
                     else if (CSVdatalist[i][k] is Double)
                     {
-                        runtime.runtime.rmem.Heap.GetHeapElement(eachRow).Stack[k] = DSASM.StackValue.BuildDouble((double)CSVdatalist[i][k]);
+                        values[k] = StackValue.BuildDouble((double)CSVdatalist[i][k]);
                     }
                     else if (CSVdatalist[i][k] is Int32)
                     {
-                        runtime.runtime.rmem.Heap.GetHeapElement(eachRow).Stack[k] = DSASM.StackValue.BuildInt((int)CSVdatalist[i][k]);
+                        values[i] = StackValue.BuildInt((int)CSVdatalist[i][k]);
                     }
                     else
                     {
-                        runtime.runtime.rmem.Heap.GetHeapElement(eachRow).Stack[k] = DSASM.StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
+                        values[i] = StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
                     }
                 }
-                runtime.runtime.rmem.Heap.GetHeapElement(result).Stack[i] = DSASM.StackValue.BuildArrayPointer(eachRow);
+
+                rows[i] = runtime.runtime.rmem.Heap.AllocateArray(values);
             }
+            StackValue result = runtime.runtime.rmem.Heap.AllocateArray(rows);
             //Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)
             if (trans.opdata == 1)
             {
-                return DSASM.StackValue.BuildArrayPointer(result);
+                return result; 
             }
             else
             {
-                return ArrayUtilsForBuiltIns.Transpose(DSASM.StackValue.BuildArrayPointer(result), runtime);
+                return ArrayUtilsForBuiltIns.Transpose(result, runtime);
             }
         }
         //Print(msg) & Print(msg, mode)
@@ -2084,7 +2087,7 @@ namespace ProtoCore.Lang
                 if (element.IsArray)
                 {
                     is2DArray = true;
-                    numOfCols = Math.Max(heap.GetHeapElement((int)element.opdata).VisibleSize, numOfCols);
+                    numOfCols = Math.Max(heap.GetHeapElement(element).VisibleSize, numOfCols);
                 }
             if (is2DArray == false)
                 return sv;

@@ -472,8 +472,7 @@ namespace ProtoFFI
                 }
             }
 
-            int ptr = (int)dsObject.opdata;
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(ptr);
+            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject);
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -981,22 +980,11 @@ namespace ProtoFFI
                     type = classTable.IndexOf(GetTypeName(objType));
             }
 
-            int ptr = ProtoCore.DSASM.Constants.kInvalidPointer;
-            lock (core.Heap.cslock)
-            {
-                ptr = core.Heap.Allocate(classTable.ClassNodes[type].size);
-            }
-
             MetaData metadata;
             metadata.type = type;
-            StackValue retval = StackValue.BuildPointer(ptr, metadata);
+            StackValue retval = core.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
             BindObjects(obj, retval);
             dsi.runtime.Core.FFIPropertyChangedMonitor.AddFFIObject(obj);
-
-            //If we are in debug mode, populate primary properties if there is any.
-            //if (core.Options.IDEDebugMode)
-            //    PopulatePrimaryProperties(obj, retval, context, dsi, type);
-
             return retval;
         }
 
@@ -1016,7 +1004,7 @@ namespace ProtoFFI
                 return;
 
             var core = dsi.runtime.Core;
-            StackValue[] svs = core.Heap.GetHeapElement((int)dsObject.opdata).Stack;
+            StackValue[] svs = core.Heap.GetHeapElement(dsObject).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];

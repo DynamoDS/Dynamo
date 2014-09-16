@@ -458,18 +458,12 @@ namespace ProtoCore
 
             public StackValue BuildArray(StackValue[] arrayElements)
             {
-                int size = arrayElements.Length;
-                lock (Heap.cslock)
+                foreach (var element in arrayElements)
                 {
-                    int ptr = Heap.Allocate(size);
-                    for (int n = size - 1; n >= 0; --n)
-                    {
-                        StackValue sv = arrayElements[n];
-                        Heap.IncRefCount(sv);
-                        Heap.GetHeapElement(ptr).Stack[n] = sv;
-                    }
-                    return StackValue.BuildArrayPointer(ptr);
+                   Heap.IncRefCount(element);
                 }
+
+                return Heap.AllocateArray(arrayElements);
             }
 
             public StackValue BuildNullArray(int size)

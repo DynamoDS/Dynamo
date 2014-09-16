@@ -70,7 +70,7 @@ namespace ProtoCore.Utils
                         {
                             return true;
                         }
-                        return IsHeapCyclic(core.Heap.GetHeapElement((int)sv.opdata), core, HeapID);
+                        return IsHeapCyclic(core.Heap.GetHeapElement(sv), core, HeapID);
                     }
                 }
             }

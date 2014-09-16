@@ -368,7 +368,7 @@ namespace ProtoCore.Utils
                 return null;
             }
 
-            return core.Heap.GetHeapElement((int)heapObject.opdata);
+            return core.Heap.GetHeapElement(heapObject);
         }
 
         public static bool IsUniform(StackValue sv, Core core)
@@ -396,8 +396,7 @@ namespace ProtoCore.Utils
                 return false;
             }
 
-            int ptr = (int)svArray.opdata;
-            HeapElement he = core.Rmem.Heap.GetHeapElement(ptr);
+            HeapElement he = core.Rmem.Heap.GetHeapElement(svArray);
 
             if (null == he.Stack || he.Stack.Length == 0)
             {
@@ -407,7 +406,7 @@ namespace ProtoCore.Utils
             while (he.Stack[0].IsArray)
             {
 
-                ptr = (int)he.Stack[0].opdata;
+                int ptr = (int)he.Stack[0].opdata;
 
                 // Handle the case where the array is valid but empty
                 if (he.Stack.Length == 0)
