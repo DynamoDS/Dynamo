@@ -1618,6 +1618,13 @@ namespace Dynamo.Controls
                                 Configurations.TwoDots;
                     }
                     return text;
+                case "MethodButton":
+                {
+                    var mainDynamoWindow = WPF.FindUpVisualTree<SearchView>(value as FrameworkElement);
+                    double buttonLength = mainDynamoWindow.ActualWidth;
+                    text = ((value as FrameworkElement).DataContext as SearchElementBase).Name;  
+                    return "";
+                }
 
                 // Maybe, later we need more string converters.
                 default:
