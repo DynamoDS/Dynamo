@@ -15,15 +15,15 @@ namespace RevitServices.Persistence
     /// </summary>
     public class DocumentManager
     {
-        public delegate void DocumentChangedHandler(DocumentChangeArguments args);
-
         public static event Action<string> OnLogError;
+
         internal static void LogError(string obj)
         {
             var handler = OnLogError;
             if (handler != null)
                 handler(obj);
         }
+
         internal static void LogError(Exception exception)
         {
             var handler = OnLogError;
@@ -33,9 +33,6 @@ namespace RevitServices.Persistence
 
         private static DocumentManager instance;
         private static readonly Object mutex = new Object();
-        private UIDocument currentUIDocument;
-
-        public event DocumentChangedHandler DocumentChanged;
 
         public static DocumentManager Instance
         {
@@ -112,18 +109,7 @@ namespace RevitServices.Persistence
         /// Provides the currently active UI document.
         /// This is the document to which Dynamo is bound.
         /// </summary>
-        public UIDocument CurrentUIDocument
-        {
-            get { return currentUIDocument; }
-            set
-            {
-                if (currentUIDocument == value) return;
-
-                var oldDoc = currentUIDocument;
-                OnDocumentChanged(new DocumentChangeArguments(oldDoc, currentUIDocument));
-                currentUIDocument = value;
-            }
-        }
+        public UIDocument CurrentUIDocument {get; set; }
 
         /// <summary>
         /// Provides the current UIApplication
@@ -163,26 +149,6 @@ namespace RevitServices.Persistence
             {
                 Instance.CurrentDBDocument.Regenerate();
             }
-        }
-
-        private void OnDocumentChanged(DocumentChangeArguments args)
-        {
-            if (DocumentChanged != null)
-            {
-                DocumentChanged(args);
-            }
-        }
-    }
-
-    public class DocumentChangeArguments : EventArgs
-    {
-        public UIDocument OldDocument { get; set; }
-        public UIDocument NewDocument { get; set; }
-
-        public DocumentChangeArguments(UIDocument oldDoc, UIDocument newDoc)
-        {
-            OldDocument = oldDoc;
-            NewDocument = newDoc;
         }
     }
 }

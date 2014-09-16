@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSRevitNodesUI;
 
@@ -13,6 +14,7 @@ using NUnit.Framework;
 using RevitServices.Persistence;
 using RTF.Framework;
 
+using Element = Revit.Elements.Element;
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
 

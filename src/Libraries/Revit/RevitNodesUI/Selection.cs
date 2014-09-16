@@ -83,14 +83,6 @@ namespace Dynamo.Nodes
             revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
             revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
-
-            DocumentManager.Instance.DocumentChanged += Instance_DocumentChanged;
-        }
-
-        private void Instance_DocumentChanged(DocumentChangeArguments args)
-        {
-            Selection = new List<T1>();
-            SubSelection = new List<T2>();
         }
 
         #endregion
@@ -203,6 +195,10 @@ namespace Dynamo.Nodes
 
             Selection = Selection.Where(x => !uuids.Contains(x.UniqueId)).ToList();
 
+            RaisePropertyChanged("Selection");
+            RaisePropertyChanged("Text");
+            RequiresRecalc = true;
+
             UpdateSubElements();
         }
 
@@ -213,6 +209,12 @@ namespace Dynamo.Nodes
 
             if (Selection == null || !Selection.Select(x => x.UniqueId).Any(enumerable.Contains))
                 return;
+
+            RequiresRecalc = true;
+
+            RaisePropertyChanged("Selection");
+            RaisePropertyChanged("Text");
+            RequiresRecalc = true;
 
             UpdateSubElements();
         }
