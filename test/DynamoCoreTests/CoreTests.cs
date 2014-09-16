@@ -556,7 +556,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public void CanSumTwoNumbers()
         {

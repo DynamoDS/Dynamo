@@ -1129,8 +1129,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-        [Category("Failure")]
-		public void LaceLongest_ListWith10000Element()
+        public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
 
@@ -1450,41 +1449,27 @@ namespace Dynamo.Tests
 			Assert.AreEqual(4, childList.Count);
 			Assert.AreEqual(-10, childList[0].Data);
 		}
+        
+        [Test]
+        [Category("Failure")]
+        public void AddToList_EmptyList()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
+            RunModel(openPath);
 
-		[Test]
-		public void AddToList_EmptyList()
-		{
-			var model = ViewModel.Model;
+            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new[] { 0 } });
+        }
 
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
-			RunModel(openPath);
+        [Test]
+        public void AddToList_Complex()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
+            RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-
-			//AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new int[]{new int[]{null,0}});
-
-		}
-
-		[Test]
-		public void AddToList_Complex()
-		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
-			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Connectors.Count);
-
-			AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
-				{
-					new int[]{3}, new int[]{6}, new int[]{9}
-				});
-
-		}
+            AssertPreviewValue(
+                "cfdfc020-05d0-4442-96df-8d97aad9c38c",
+                new[] { new[] { 3 }, new[] { 6 }, new[] { 9 } });
+        }
 
 		[Test]
 		public void AddToList_GeometryToList()
@@ -2464,7 +2449,8 @@ namespace Dynamo.Tests
 		#endregion
 
 		#region Test Create List
-		[Test]
+        [Test]
+        [Category("Failure")]
 		public void TestCreateList()
 		{
 			// Test partially applied Create List node.

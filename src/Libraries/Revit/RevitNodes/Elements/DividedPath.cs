@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
+
 using Revit.GeometryConversion;
 using Revit.GeometryReferences;
 using RevitServices.Persistence;
@@ -14,7 +15,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit DividedPath
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class DividedPath: Element
     {
         #region Private fields
@@ -119,13 +120,17 @@ namespace Revit.Elements
 
         #endregion
 
-        #region Static constructors
+        #region Hidden public static constructors
 
-        public static DividedPath ByCurveAndDivisions(object curveReference, int divisions)
+        // These constructors are hidden, but allow this constructor to be more tolerant of
+        // incorrect types without breaking replication guides
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static DividedPath ByCurveAndDivisions(ElementCurveReference element, int divisions)
         {
-            if (curveReference == null)
+            if (element == null)
             {
-                throw new ArgumentNullException("curveReference");
+                throw new ArgumentNullException("element");
             }
 
             if (divisions < 2)
@@ -133,10 +138,11 @@ namespace Revit.Elements
                 throw new Exception("The number of divisions must be greater than 2!");
             }
 
-            return new DividedPath(new[] { ElementCurveReference.TryGetCurveReference(curveReference) }, divisions);
+            return new DividedPath(new[] { ElementCurveReference.TryGetCurveReference(element) }, divisions);
         }
 
-        public static DividedPath ByCurvesAndDivisions(object[] curveReferences, int divisions)
+        [IsVisibleInDynamoLibrary(false)]
+        public static DividedPath ByCurvesAndDivisions(ElementCurveReference[] curveReferences, int divisions)
         {
             if (curveReferences == null)
             {
@@ -154,6 +160,82 @@ namespace Revit.Elements
             }
 
             return new DividedPath(curveReferences.Select(x => ElementCurveReference.TryGetCurveReference(x)).ToArray(), divisions);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static DividedPath ByCurveAndDivisions(Revit.Elements.Element element, int divisions)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("element");
+            }
+
+            if (divisions < 2)
+            {
+                throw new Exception("The number of divisions must be greater than 2!");
+            }
+
+            return new DividedPath(new[] { ElementCurveReference.TryGetCurveReference(element) }, divisions);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static DividedPath ByCurvesAndDivisions(Revit.Elements.Element[] elements, int divisions)
+        {
+            if (elements == null)
+            {
+                throw new ArgumentNullException("elements");
+            }
+
+            if (divisions < 2)
+            {
+                throw new Exception("The number of divisions must be greater than 2!");
+            }
+
+            if (elements.Any(x => x == null))
+            {
+                throw new ArgumentNullException(String.Format("curves[{0}]", Array.FindIndex(elements, x => x == null)));
+            }
+
+            return new DividedPath(elements.Select(x => ElementCurveReference.TryGetCurveReference(x)).ToArray(), divisions);
+        }
+
+        #endregion
+
+        #region Static constructors
+
+        public static DividedPath ByCurveAndDivisions(Autodesk.DesignScript.Geometry.Curve curve, int divisions)
+        {
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
+
+            if (divisions < 2)
+            {
+                throw new Exception("The number of divisions must be greater than 2!");
+            }
+
+            return new DividedPath(new[] { ElementCurveReference.TryGetCurveReference(curve) }, divisions);
+        }
+
+        public static DividedPath ByCurvesAndDivisions(Autodesk.DesignScript.Geometry.Curve[] curve, int divisions)
+        {
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
+
+            if (divisions < 2)
+            {
+                throw new Exception("The number of divisions must be greater than 2!");
+            }
+
+            if (curve.Any(x => x == null))
+            {
+                throw new ArgumentNullException(String.Format("curves[{0}]", Array.FindIndex(curve, x => x == null)));
+            }
+
+            return new DividedPath(curve.Select(x => ElementCurveReference.TryGetCurveReference(x)).ToArray(), divisions);
         }
 
         #endregion
