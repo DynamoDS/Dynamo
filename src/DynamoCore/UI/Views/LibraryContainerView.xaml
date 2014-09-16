@@ -31,6 +31,7 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -839,22 +840,21 @@
                            Grid.Row="2"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch"
-                           Visibility="Visible"
-                           DataContext="{Binding}"></views:LibraryView>
+                           DataContext="{Binding}">
+            <views:LibraryView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibraryView" />
+            </views:LibraryView.Visibility>
+        </views:LibraryView>
 
         <!-- LIBRARYSEARCH VIEW -->
         <views:LibrarySearchView Grid.Row="2">
-            <views:LibrarySearchView.Style>
-                <Style>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=libraryView, Path=Visibility}"
-                                     Value="Visible">
-                            <Setter Property="UserControl.Visibility"
-                                    Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </views:LibrarySearchView.Style>
+            <views:LibrarySearchView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibrarySearchView" />
+            </views:LibrarySearchView.Visibility>
         </views:LibrarySearchView>
 
         <!--
