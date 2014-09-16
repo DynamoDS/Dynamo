@@ -456,16 +456,6 @@ namespace ProtoCore
                 return sv;
             }
 
-            public StackValue BuildArray(StackValue[] arrayElements)
-            {
-                foreach (var element in arrayElements)
-                {
-                   Heap.IncRefCount(element);
-                }
-
-                return Heap.AllocateArray(arrayElements);
-            }
-
             private StackAlignToFramePointerRestorer StackRestorer { get; set; }
 
             public void AlignStackForExprInterpreter()

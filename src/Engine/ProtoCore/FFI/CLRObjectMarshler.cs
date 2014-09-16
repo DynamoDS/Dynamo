@@ -362,10 +362,11 @@ namespace ProtoFFI
             foreach (var item in collection)
             {
                 sv[index] = MarshalToStackValue(item, context, dsi);
+                dsi.runtime.rmem.Heap.IncRefCount(sv[index]);
                 ++index;
             }
 
-            var retVal = dsi.runtime.rmem.BuildArray(sv);
+            var retVal = dsi.runtime.rmem.Heap.AllocateArray(sv);
             return retVal;
         }
 
@@ -378,7 +379,9 @@ namespace ProtoFFI
                 svs.Add(MarshalToStackValue(item, context, dsi));
             }
 
-            var retVal = dsi.runtime.rmem.BuildArray(svs.ToArray());
+            var heap = dsi.runtime.rmem.Heap;
+            svs.ForEach(sv => heap.IncRefCount(sv));
+            var retVal = heap.AllocateArray(svs.ToArray());
             return retVal;
         }
 
@@ -386,7 +389,7 @@ namespace ProtoFFI
         {
             var core = dsi.runtime.Core;
 
-            var array = dsi.runtime.rmem.BuildArray(new StackValue[] { });
+            var array = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] { });
             HeapElement ho = ArrayUtils.GetHeapElement(array, core);
             ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(core));
 
