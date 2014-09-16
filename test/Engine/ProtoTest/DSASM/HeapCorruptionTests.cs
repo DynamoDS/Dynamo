@@ -69,7 +69,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
             // Build a pointer whose data points to its own heap element
             StackValue sv = StackValue.BuildPointer(pointerData);
             core.Rmem.Heap.IncRefCount(sv);
-            core.Rmem.Heap.Heaplist[ptr].Stack[0] = sv;
+            core.Rmem.Heap.GetHeapElement(ptr).Stack[0] = sv;
 
             // Verify the heap contains a cycle
             Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
@@ -88,13 +88,13 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
             // Build a pointer whose data points to its own heap element
             StackValue svPtr1 = StackValue.BuildPointer(ptr2);
             core.Rmem.Heap.IncRefCount(svPtr1);
-            core.Rmem.Heap.Heaplist[ptr1].Stack[0] = svPtr1;
+            core.Rmem.Heap.GetHeapElement(ptr1).Stack[0] = svPtr1;
 
 
             // Build a 2nd pointer that points to the first pointer
             StackValue svPtr2 = StackValue.BuildPointer(ptr1);
             core.Rmem.Heap.IncRefCount(svPtr2);
-            core.Rmem.Heap.Heaplist[ptr2].Stack[0] = svPtr2;
+            core.Rmem.Heap.GetHeapElement(ptr2).Stack[0] = svPtr2;
 
             // Verify the heap contains a cycle
             Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));

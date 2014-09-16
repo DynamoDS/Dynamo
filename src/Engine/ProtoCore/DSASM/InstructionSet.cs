@@ -608,7 +608,7 @@ namespace ProtoCore.DSASM
 
                 for (int i = 0; i < size; ++i)
                 {
-                    heap.Heaplist[ptr].Stack[i] = BuildChar(str[i]);
+                    heap.GetHeapElement(ptr).Stack[i] = BuildChar(str[i]);
                 }
 
                 return BuildString(ptr);

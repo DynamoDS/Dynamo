@@ -39,7 +39,7 @@ namespace ProtoCore.Utils
         {
             for (int n = 0; n < core.Heap.Heaplist.Count; ++n)
             {
-                HeapElement heapElem = core.Heap.Heaplist[n];
+                HeapElement heapElem = core.Heap.GetHeapElement(n);
                 if (IsHeapCyclic(heapElem, core, n))
                 {
                     return true;
@@ -70,7 +70,7 @@ namespace ProtoCore.Utils
                         {
                             return true;
                         }
-                        return IsHeapCyclic(core.Heap.Heaplist[(int)sv.opdata], core, HeapID);
+                        return IsHeapCyclic(core.Heap.GetHeapElement((int)sv.opdata), core, HeapID);
                     }
                 }
             }

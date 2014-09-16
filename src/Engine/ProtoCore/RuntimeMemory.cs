@@ -421,15 +421,15 @@ namespace ProtoCore
             public StackValue GetMemberData(int symbolindex, int scope)
             {
 
-                int thisptr = (int)GetAtRelative(GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr)).opdata;
+                StackValue thisptr = GetAtRelative(GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
 
                 // Get the heapstck offset
                 int offset = ClassTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
-                if (null == Heap.Heaplist[thisptr].Stack || Heap.Heaplist[thisptr].Stack.Length == 0)
+                if (null == Heap.GetHeapElement(thisptr).Stack || Heap.GetHeapElement(thisptr).Stack.Length == 0)
                     return StackValue.Null;
 
-                StackValue sv = Heap.Heaplist[thisptr].Stack[offset];
+                StackValue sv = Heap.GetHeapElement(thisptr).Stack[offset];
                 Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
@@ -442,11 +442,11 @@ namespace ProtoCore
                     return sv;
                 }
 
-                int nextPtr = (int)sv.opdata;
-                Validity.Assert(nextPtr >= 0);
-                if (null != Heap.Heaplist[nextPtr].Stack && Heap.Heaplist[nextPtr].Stack.Length > 0)
+                StackValue nextPtr = sv;
+                Validity.Assert(nextPtr.opdata >= 0);
+                if (null != Heap.GetHeapElement(nextPtr).Stack && Heap.GetHeapElement(nextPtr).Stack.Length > 0)
                 {
-                    StackValue data = Heap.Heaplist[nextPtr].Stack[0];
+                    StackValue data = Heap.GetHeapElement(nextPtr).Stack[0];
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {
@@ -466,7 +466,7 @@ namespace ProtoCore
                     {
                         StackValue sv = arrayElements[n];
                         Heap.IncRefCount(sv);
-                        Heap.Heaplist[ptr].Stack[n] = sv;
+                        Heap.GetHeapElement(ptr).Stack[n] = sv;
                     }
                     return StackValue.BuildArrayPointer(ptr);
                 }
@@ -479,7 +479,7 @@ namespace ProtoCore
                     int ptr = Heap.Allocate(size);
                     for (int n = 0; n < size; ++n)
                     {
-                        Heap.Heaplist[ptr].Stack[n] = StackValue.Null;
+                        Heap.GetHeapElement(ptr).Stack[n] = StackValue.Null;
                     }
                     return StackValue.BuildArrayPointer(ptr);
                 }
@@ -494,7 +494,7 @@ namespace ProtoCore
                     {
                         StackValue sv = Pop();
                         Heap.IncRefCount(sv);
-                        Heap.Heaplist[ptr].Stack[n] = sv;
+                        Heap.GetHeapElement(ptr).Stack[n] = sv;
                     }
                     return StackValue.BuildArrayPointer(ptr);
                 }
@@ -507,7 +507,7 @@ namespace ProtoCore
                     return false;
                 }
 
-                return Heap.Heaplist[(int)sv.opdata].Active;
+                return Heap.GetHeapElement(sv).Active;
             }
 
             private StackAlignToFramePointerRestorer StackRestorer { get; set; }

@@ -303,6 +303,12 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public HeapElement GetHeapElement(StackValue pointer)
+        {
+            int index = (int)pointer.opdata; 
+            return Heaplist[index];
+        }
+
         private int FindFree()
         {
             int freeItemCount = freeList.Count;

@@ -474,11 +474,11 @@ namespace ProtoFFI
                     int thisptr = (int)thisObject.opdata;
 
                     int idx = core.ClassTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = core.Heap.Heaplist[(int)thisObject.opdata].GetValue(idx, core);
+                    StackValue oldValue = core.Heap.GetHeapElement((int)thisObject.opdata).GetValue(idx, core);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
                         GCUtils.GCRetain(propValue, core);
-                        core.Heap.Heaplist[thisptr].SetValue(idx, propValue);
+                        core.Heap.GetHeapElement(thisptr).SetValue(idx, propValue);
                     }
                 }
             }

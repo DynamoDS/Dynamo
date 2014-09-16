@@ -184,7 +184,7 @@ namespace ProtoCore.DSASM.Mirror
         private string GetStringTrace(int strptr, Heap heap)
         {
             string str = "";
-            foreach (var sv in heap.Heaplist[strptr].VisibleItems)
+            foreach (var sv in heap.GetHeapElement(strptr).VisibleItems)
             {
                 if (!sv.IsChar)
                 {
@@ -221,7 +221,7 @@ namespace ProtoCore.DSASM.Mirror
             else
             {
                 int ptr = (int)val.opdata;
-                HeapElement hs = heap.Heaplist[ptr];
+                HeapElement hs = heap.GetHeapElement(ptr);
 
                 List<string> visibleProperties = null;
                 if (null != propertyFilter)
@@ -311,7 +311,7 @@ namespace ProtoCore.DSASM.Mirror
                 return "...";
 
             StringBuilder arrayElements = new StringBuilder();
-            HeapElement hs = heap.Heaplist[pointer];
+            HeapElement hs = heap.GetHeapElement(pointer);
 
             int halfArraySize = -1;
             if (formatParams.MaxArraySize > 0) // If the caller did specify a max value...
@@ -958,7 +958,7 @@ namespace ProtoCore.DSASM.Mirror
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
             int classIndex = obj.DsasmValue.metaData.type;
             IDictionary<int,SymbolNode> symbolList = core.ClassTable.ClassNodes[classIndex].symbols.symbolList;
-            StackValue[] svs = core.Heap.Heaplist[(int)obj.DsasmValue.opdata].Stack;
+            StackValue[] svs = core.Heap.GetHeapElement((int)obj.DsasmValue.opdata).Stack;
             int index = 0;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
@@ -969,10 +969,10 @@ namespace ProtoCore.DSASM.Mirror
 
                 // check if the members are primitive type
                 if (val.IsPointer &&
-                    core.Heap.Heaplist[(int)val.opdata].Stack.Length == 1 &&
-                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsPointer &&
-                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsArray)
-                    val = core.Heap.Heaplist[(int)val.opdata].Stack[0];
+                    core.Heap.GetHeapElement((int)val.opdata).Stack.Length == 1 &&
+                    !core.Heap.GetHeapElement((int)val.opdata).Stack[0].IsPointer &&
+                    !core.Heap.GetHeapElement((int)val.opdata).Stack[0].IsArray)
+                    val = core.Heap.GetHeapElement((int)val.opdata).Stack[0];
 
                 ret[name] = Unpack(val);
                 index++;
@@ -989,7 +989,7 @@ namespace ProtoCore.DSASM.Mirror
             List<string> ret = new List<string>();
             int classIndex = obj.DsasmValue.metaData.type;
 
-            StackValue[] svs = core.Heap.Heaplist[(int)obj.DsasmValue.opdata].Stack;
+            StackValue[] svs = core.Heap.GetHeapElement((int)obj.DsasmValue.opdata).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 string propertyName = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix].name;
@@ -1005,7 +1005,7 @@ namespace ProtoCore.DSASM.Mirror
             if ( obj == null || !obj.DsasmValue.IsArray)
                 return null;
 
-            return core.Heap.Heaplist[(int)obj.DsasmValue.opdata].Stack.Select(x => Unpack(x)).ToList();
+            return core.Heap.GetHeapElement((int)obj.DsasmValue.opdata).Stack.Select(x => Unpack(x)).ToList();
         }
 
         public StackValue GetGlobalValue(string name, int startBlock = 0)
@@ -1115,7 +1115,7 @@ namespace ProtoCore.DSASM.Mirror
                         //Pull the item out of the heap
 
 
-                        HeapElement hs = heap.Heaplist[(int)ptr];
+                        HeapElement hs = heap.GetHeapElement((int)ptr);
 
                         StackValue[] nodes = hs.Stack;
                         ret.members = new Obj[hs.VisibleSize];
@@ -1229,7 +1229,7 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 ptr = val.opdata;
 
                         DsasmArray ret = new DsasmArray();
-                        HeapElement hs = core.Heap.Heaplist[(int)ptr];
+                        HeapElement hs = core.Heap.GetHeapElement((int)ptr);
 
                         StackValue[] nodes = hs.Stack;
                         ret.members = new Obj[nodes.Length];
@@ -1432,10 +1432,10 @@ namespace ProtoCore.DSASM.Mirror
                 lock (heap.cslock)
                 {
                     int ptr = heap.Allocate(size);
-                    ++heap.Heaplist[ptr].Refcount;
+                    ++heap.GetHeapElement(ptr).Refcount;
                     for (int n = size - 1; n >= 0; --n)
                     {
-                        heap.Heaplist[ptr].Stack[n] = sv[n];
+                        heap.GetHeapElement(ptr).Stack[n] = sv[n];
                     }
 
                     StackValue overallSv = StackValue.BuildArrayPointer(ptr);

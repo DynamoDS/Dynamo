@@ -473,7 +473,7 @@ namespace ProtoFFI
             }
 
             int ptr = (int)dsObject.opdata;
-            HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
+            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(ptr);
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -1016,7 +1016,7 @@ namespace ProtoFFI
                 return;
 
             var core = dsi.runtime.Core;
-            StackValue[] svs = core.Heap.Heaplist[(int)dsObject.opdata].Stack;
+            StackValue[] svs = core.Heap.GetHeapElement((int)dsObject.opdata).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
