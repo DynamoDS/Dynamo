@@ -14,15 +14,17 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
-        <controls:DisplayModeToFontWeightConverter x:Key="DisplayModeToFontWeightConverter" />
+        <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="#272727" />
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="BorderThickness"
                     Value="1" />
+            <Setter Property="Height"
+                    Value="40" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -40,7 +42,7 @@
                                                Value="False" />
                                 </MultiTrigger.Conditions>
                                 <Setter Property="Background"
-                                        Value="#2F2F2F" />
+                                        Value="#444444" />
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -53,130 +55,212 @@
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
         </Style>
+        <Style x:Key="STextButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid x:Name="container">
+                            <TextBlock x:Name="text"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Foreground="#DDD"
+                                       FontSize="20px"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver"
+                                     Value="true">
+                                <Setter TargetName="container"
+                                        Property="Background"
+                                        Value="#2F2F2F" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-    <Grid DataContextChanged="GridDataContextChanged"
-          Visibility="{Binding Path=ClassDetailsVisibility,
+    <Border Padding="0,10,0,10"
+            Visibility="{Binding Path=ClassDetailsVisibility,
                                Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock x:Name="primaryHeader"
-                   Foreground="#DDD">
-            <TextBlock.Visibility>
-                <Binding Path="IsPrimaryHeaderVisible"
-                         Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-            </TextBlock.Visibility>
-            <TextBlock.Text>
-                <Binding Path="PrimaryHeaderGroup"
-                         Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-            </TextBlock.Text>
-        </TextBlock>
-        <ListBox x:Name="primaryMembers"
-                 Grid.Row="1"
-                 Background="Transparent"
-                 BorderBrush="Transparent"
-                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image HorizontalAlignment="Left"
-                               Height="32"
-                               Margin="5,5,0,0"
-                               VerticalAlignment="Top"
-                               Width="32"
-                               Source="{Binding SmallIcon}" />
-
-                        <TextBlock HorizontalAlignment="Left"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Name}"
-                                   VerticalAlignment="Top"
-                                   Margin="5,10,0,0"
-                                   Foreground="#DDD" />
-
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="2">
-            <TextBlock x:Name="secondaryHeaderLeft"
-                       Tag="Query"
-                       Foreground="#DDD"
-                       PreviewMouseDown="OnHeaderMouseDown">
+        <Grid DataContextChanged="GridDataContextChanged"
+              Background="#272727">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="primaryHeader"
+                       Foreground="#777777"
+                       VerticalAlignment="Center"
+                       FontSize="9"
+                       Margin="16,0,0,0">
                 <TextBlock.Visibility>
-                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                    <Binding Path="IsPrimaryHeaderVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </TextBlock.Visibility>
                 <TextBlock.Text>
-                    <Binding Path="SecondaryHeaderLeftGroup"
+                    <Binding Path="PrimaryHeaderGroup"
                              Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
                 </TextBlock.Text>
-                <TextBlock.FontWeight>
-                    <Binding Path="CurrentDisplayMode"
-                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
-                             ConverterParameter="Query" />
-                </TextBlock.FontWeight>
+                <TextBlock.TextDecorations>
+                    <TextDecoration Location="Underline"
+                                    PenOffset="2"
+                                    PenOffsetUnit="Pixel" />
+                </TextBlock.TextDecorations>
             </TextBlock>
-            <TextBlock x:Name="secondaryHeaderRight"
-                       Tag="Action"
-                       Foreground="#DDD"
-                       Margin="10,0,0,0"
-                       PreviewMouseDown="OnHeaderMouseDown">
-                <TextBlock.Visibility>
-                    <Binding Path="IsSecondaryHeaderRightVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                </TextBlock.Visibility>
-                <TextBlock.Text>
-                    <Binding Path="SecondaryHeaderRightGroup"
-                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                </TextBlock.Text>
-                <TextBlock.FontWeight>
-                    <Binding Path="CurrentDisplayMode"
-                             Converter="{StaticResource DisplayModeToFontWeightConverter}"
-                             ConverterParameter="Action" />
-                </TextBlock.FontWeight>
-            </TextBlock>
-        </StackPanel>
-        <ListBox x:Name="secondaryMembers"
-                 Grid.Row="3"
-                 Grid.ColumnSpan="2"
-                 Background="Transparent"
-                 BorderBrush="Transparent"
-                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image HorizontalAlignment="Left"
-                               Height="32"
-                               Margin="5,5,0,0"
-                               VerticalAlignment="Top"
-                               Width="32"
-                               Source="{Binding SmallIcon}" />
+            <ListBox x:Name="primaryMembers"
+                     Grid.Row="1"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image HorizontalAlignment="Left"
+                                   Height="32"
+                                   Margin="16,0,16,0"
+                                   VerticalAlignment="Center"
+                                   Width="32"
+                                   Source="{Binding SmallIcon}" />
 
-                        <TextBlock HorizontalAlignment="Left"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Name}"
-                                   VerticalAlignment="Top"
-                                   Margin="5,10,0,0"
-                                   Foreground="#DDD" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
-                                        AttachmentSide="Right"
-                                        StaysOpen="True"
-                                        AllowsTransparency="True"
-                                        MouseLeave="OnPopupMouseLeave">
-            <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
-            </uicontrols:LibraryToolTipPopup.IsOpen>
-        </uicontrols:LibraryToolTipPopup>
-    </Grid>
+                            <TextBlock HorizontalAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Top"
+                                       Margin="5,10,0,0"
+                                       Foreground="#CCCCCC"
+                                       FontSize="13" />
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="2"
+                        Margin="16,0,0,0">
+                <TextBlock x:Name="secondaryHeaderLeft"
+                           Tag="Query"
+                           PreviewMouseDown="OnHeaderMouseDown"
+                           Foreground="#777777"
+                           VerticalAlignment="Center"
+                           FontSize="9"
+                           Margin="0,0,10,0">
+                    <TextBlock.Visibility>
+                        <Binding Path="IsSecondaryHeaderLeftVisible"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    </TextBlock.Visibility>
+                    <TextBlock.Text>
+                        <Binding Path="SecondaryHeaderLeftGroup"
+                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                    </TextBlock.Text>
+                    <TextBlock.TextDecorations>
+                        <TextDecoration PenOffset="2"
+                                        PenOffsetUnit="Pixel">
+                            <TextDecoration.Pen>
+                                <Pen Brush="#777777">
+                                    <Pen.Thickness>
+                                        <Binding Path="CurrentDisplayMode"
+                                                 Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                 ConverterParameter="Query" />
+                                    </Pen.Thickness>
+                                </Pen>
+                            </TextDecoration.Pen>
+                        </TextDecoration>
+                    </TextBlock.TextDecorations>
+                </TextBlock>
+                <Ellipse Fill="#777777"
+                         Height="3"
+                         Width="3"
+                         Margin="0,0,10,0">
+                    <Ellipse.Visibility>
+                        <Binding Path="IsSecondaryHeaderRightVisible"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    </Ellipse.Visibility>
+                </Ellipse>
+                <TextBlock x:Name="secondaryHeaderRight"
+                           Tag="Action"
+                           PreviewMouseDown="OnHeaderMouseDown"
+                           Foreground="#777777"
+                           VerticalAlignment="Center"
+                           FontSize="9">
+                    <TextBlock.Visibility>
+                        <Binding Path="IsSecondaryHeaderRightVisible"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    </TextBlock.Visibility>
+                    <TextBlock.Text>
+                        <Binding Path="SecondaryHeaderRightGroup"
+                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                    </TextBlock.Text>
+                    <TextBlock.TextDecorations>
+                        <TextDecoration PenOffset="2"
+                                        PenOffsetUnit="Pixel">
+                            <TextDecoration.Pen>
+                                <Pen Brush="#777777">
+                                    <Pen.Thickness>
+                                        <Binding Path="CurrentDisplayMode"
+                                                 Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                 ConverterParameter="Action" />
+                                    </Pen.Thickness>
+                                </Pen>
+                            </TextDecoration.Pen>
+                        </TextDecoration>
+                    </TextBlock.TextDecorations>
+                </TextBlock>
+            </StackPanel>
+            <ListBox x:Name="secondaryMembers"
+                     Grid.Row="3"
+                     Grid.ColumnSpan="2"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image HorizontalAlignment="Left"
+                                   Height="32"
+                                   Margin="16,0,16,0"
+                                   VerticalAlignment="Center"
+                                   Width="32"
+                                   Source="{Binding SmallIcon}" />
+
+                            <TextBlock HorizontalAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Top"
+                                       Margin="5,10,0,0"
+                                       Foreground="#CCCCCC"
+                                       FontSize="13" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Row="4"
+                    Height="32"
+                    Style="{StaticResource STextButton}"
+                    Click="OnMoreButtonClick"
+                    Content="...">
+                <Button.Visibility>
+                    <Binding Path="IsMoreButtonVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Button.Visibility>
+            </Button>
+            <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                            AttachmentSide="Right"
+                                            StaysOpen="True"
+                                            AllowsTransparency="True"
+                                            MouseLeave="OnPopupMouseLeave">
+                <uicontrols:LibraryToolTipPopup.IsOpen>
+                    <Binding ElementName="libraryToolTipPopup"
+                             Path="DataContext"
+                             Mode="OneWay"
+                             Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                </uicontrols:LibraryToolTipPopup.IsOpen>
+            </uicontrols:LibraryToolTipPopup>
+        </Grid>
+    </Border>
 </UserControl>
