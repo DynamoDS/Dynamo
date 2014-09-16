@@ -389,14 +389,6 @@
                                         </Grid.ColumnDefinitions>
                                         <Track x:Name="PART_Track"
                                                IsEnabled="{TemplateBinding IsMouseOver}">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}"
-                                                              Style="{StaticResource ScrollBarPageButton}" />
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}"
-                                                              Style="{StaticResource ScrollBarPageButton}" />
-                                            </Track.IncreaseRepeatButton>
                                             <Track.Thumb>
                                                 <Thumb Style="{DynamicResource HorizontalThumb}"
                                                        Height="8" />
