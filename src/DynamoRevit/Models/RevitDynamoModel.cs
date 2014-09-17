@@ -203,7 +203,7 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
-        public override void ShutDown(bool shutDownHost)
+        protected override void ShutDownCore(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
 

@@ -379,10 +379,25 @@ namespace Dynamo.Models
             get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
-        public virtual void ShutDown(bool shutDownHost)
+        /// <summary>
+        /// External components call this method to shutdown DynamoModel. This 
+        /// method marks 'ShutdownRequested' property to 'true'. This illustrates 
+        /// the main reason why public virtual methods are not desirable -- making 
+        /// 'ShutDownCore' public virtual will not give us a reliable way to set 
+        /// 'ShutdownRequested' to 'true' since the overridden method may not 
+        /// even call 'base.ShutDownCore'.
+        /// </summary>
+        /// <param name="shutDownHost">Set this to true if shutting down the 
+        /// DynamoModel should also shutdown the host application.</param>
+        /// 
+        public void ShutDown(bool shutDownHost)
         {
             ShutdownRequested = true;
+            ShutDownCore(shutDownHost);
+        }
 
+        protected virtual void ShutDownCore(bool shutDownHost)
+        {
             CleanWorkbench();
 
             EngineController.Dispose();
