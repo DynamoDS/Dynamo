@@ -93,6 +93,13 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+            if (index == -1)
+            {
+                var currentClassInformationIndex = GetClassInformationIndex();
+                if (currentClassInformationIndex != -1)
+                    collection[currentClassInformationIndex] = new ClassInformation();
+                return;
+            }
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
@@ -117,6 +124,7 @@ namespace Dynamo.Controls
         private int GetClassInformationIndex()
         {
             var query = collection.Select(c => c).Where(c => c is ClassInformation);
+            if (!query.Any()) return -1;
             var classObjectBase = query.ElementAt(0);
             return collection.IndexOf(classObjectBase);
         }
@@ -135,8 +143,7 @@ namespace Dynamo.Controls
             // If there is no selection, then mark the StandardPanel as hidden.
             var classInformation = classObjectBase as ClassInformation;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
-                return;
-
+                return;                                
             //Add members of selected class to StandardPanel            
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 

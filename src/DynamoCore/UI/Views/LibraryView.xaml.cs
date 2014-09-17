@@ -18,5 +18,15 @@ namespace Dynamo.UI.Views
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void CollapseClassButton(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!(sender as ListViewItem).IsSelected) return;
+
+            var classButton = sender as ListViewItem;
+            classButton.IsSelected = false;
+            e.Handled = true;
+        }
+
     }
 }

@@ -107,6 +107,9 @@
                                                  Color="#00000000" />
                             </Style.Resources>
 
+                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                         Handler="CollapseClassButton" />
+
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
