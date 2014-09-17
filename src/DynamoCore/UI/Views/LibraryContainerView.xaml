@@ -99,11 +99,11 @@
             </Button>
         </Grid>
 
-        <Border BorderThickness="0,0,0,1"
+        <Border BorderThickness="0,1,0,1"
                 BorderBrush="#555555"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"
-                  Height="27"
+                  Height="25"
                   VerticalAlignment="Center"
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
                   MouseLeave="OnSearchTextBoxGridMouseLeave"
@@ -141,8 +141,8 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                HorizontalAlignment="Center"
                                Height="18"
-                               Width="48">
-                        Search
+                               Width="52">
+                        SEARCH
                     </TextBlock>
                 </StackPanel>
 
