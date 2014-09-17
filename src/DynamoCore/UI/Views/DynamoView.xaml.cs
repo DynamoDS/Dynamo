@@ -598,24 +598,12 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            if (dynamoViewModel.exitInvoked)
-                return;
-
-            var res = dynamoViewModel.AskUserToSaveWorkspacesOrCancel();
-            if (!res)
+            var sp = new DynamoViewModel.ShutdownParams(false, true, false);
+            if (dynamoViewModel.PerformShutdownSequence(sp))
             {
-                e.Cancel = true;
-                return;
+                SizeChanged -= DynamoView_SizeChanged;
+                LocationChanged -= DynamoView_LocationChanged;
             }
-
-            SizeChanged -= DynamoView_SizeChanged;
-            LocationChanged -= DynamoView_LocationChanged;
-
-            if (!DynamoModel.IsTestMode)
-            {
-                dynamoViewModel.Model.ShutDown(false);
-            }
-
         }
 
         private void WindowClosed(object sender, EventArgs e)

@@ -678,11 +678,7 @@ namespace Dynamo.ViewModels
 
         void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
-            if (SetAllowCancelAndRequestUIClose(true))
-                return;
-
-            model.ShutDown(true);
-            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+            PerformShutdownSequence(new ShutdownParams(true, true));
         }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1037,8 +1033,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool exitInvoked = false;
-
         internal bool CanVisibilityBeToggled(object parameters)
         {
             return true;
@@ -1387,34 +1381,16 @@ namespace Dynamo.ViewModels
 
         public void Exit(object allowCancel)
         {
-            if (SetAllowCancelAndRequestUIClose(allowCancel))
-            {
-                return;
-            }
-
-            model.ShutDown(false);
-        }
-
-        private bool SetAllowCancelAndRequestUIClose(object allowCancel)
-        {
-            bool allowCancelBool = true;
+            var allowCancellation = true;
             if (allowCancel != null)
-            {
-                allowCancelBool = (bool)allowCancel;
-            }
-            if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
-                return true;
+                allowCancellation = ((bool)allowCancel);
 
-            exitInvoked = true;
-
-            //request the UI to close its window
-            OnRequestClose(this, EventArgs.Empty);
-            return false;
+            PerformShutdownSequence(new ShutdownParams(false, allowCancellation));
         }
 
         internal bool CanExit(object allowCancel)
         {
-            return !exitInvoked;
+            return !model.ShutdownRequested;
         }
 
         /// <summary>
@@ -1428,37 +1404,6 @@ namespace Dynamo.ViewModels
             OnRequestUserSaveWorkflow(this, args);
             if (!args.Success)
                 return false;
-            return true;
-        }
-
-        /// <summary>
-        ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
-        /// </summary>
-        /// <param name="allowCancel">Whether to show cancel button to user. </param>
-        /// <returns>Whether the cleanup was completed or cancelled.</returns>
-        public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
-        {
-            if (null != automationSettings)
-            {
-                // In an automation run, Dynamo should not be asking user to save 
-                // the modified file. Instead it should be shutting down, leaving 
-                // behind unsaved changes (if saving is desired, then the save command 
-                // should have been recorded for the test case to it can be replayed).
-                // 
-                if (automationSettings.IsInPlaybackMode)
-                    return true; // In playback mode, just exit without saving.
-            }
-
-            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
-            {
-                //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
-                //    return false;
-
-                var args = new WorkspaceSaveEventArgs(wvm.Model, allowCancel);
-                OnRequestUserSaveWorkflow(this, args);
-                if (!args.Success)
-                    return false;
-            }
             return true;
         }
 
@@ -1979,6 +1924,106 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        #region Shutdown related methods
+
+        internal struct ShutdownParams
+        {
+            internal ShutdownParams(
+                bool shutdownHost,
+                bool allowCancellation)
+                : this()
+            {
+                ShutdownHost = shutdownHost;
+                AllowCancellation = allowCancellation;
+                CloseDynamoView = true;
+            }
+
+            internal ShutdownParams(
+                bool shutdownHost,
+                bool allowCancellation,
+                bool closeDynamoView) : this()
+            {
+                ShutdownHost = shutdownHost;
+                AllowCancellation = allowCancellation;
+                CloseDynamoView = closeDynamoView;
+            }
+
+            /// <summary>
+            /// The call to PerformShutdownSequence results in host 
+            /// application being shutdown if this property is set to true.
+            /// </summary>
+            internal bool ShutdownHost { get; private set; }
+
+            /// <summary>
+            /// If this property is set to true, user is given
+            /// an option to cancel the shutdown process.
+            /// </summary>
+            internal bool AllowCancellation { get; private set; }
+
+            /// <summary>
+            /// Set this to true to close down DynamoView as part of shutdown 
+            /// process. This is typically desirable for calls originated from 
+            /// within the DynamoViewModel layer to shutdown Dynamo. If the 
+            /// shutdown is initiated by DynamoView when it is being closed, 
+            /// then this should be set to false since DynamoView is already 
+            /// being closed.
+            /// </summary>
+            internal bool CloseDynamoView { get; private set; }
+        }
+
+        internal bool PerformShutdownSequence(ShutdownParams shutdownParams)
+        {
+            if (model.ShutdownRequested) // There was a prior call to shutdown.
+                return false;
+
+            if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
+                return false;
+
+            //request the UI to close its window
+            OnRequestClose(this, EventArgs.Empty);
+
+            model.ShutDown(shutdownParams.ShutdownHost);
+            if (shutdownParams.ShutdownHost)
+                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Ask the user if they want to save any unsaved changes.
+        /// </summary>
+        /// <param name="allowCancel">Whether to show cancel button to user. </param>
+        /// <returns>Returns true if the cleanup is completed and that the shutdown 
+        /// can proceed, or false if the user chooses to cancel the operation.</returns>
+        /// 
+        private bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
+        {
+            if (null != automationSettings)
+            {
+                // In an automation run, Dynamo should not be asking user to save 
+                // the modified file. Instead it should be shutting down, leaving 
+                // behind unsaved changes (if saving is desired, then the save command 
+                // should have been recorded for the test case to it can be replayed).
+                // 
+                if (automationSettings.IsInPlaybackMode)
+                    return true; // In playback mode, just exit without saving.
+            }
+
+            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
+            {
+                //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
+                //    return false;
+
+                var args = new WorkspaceSaveEventArgs(wvm.Model, allowCancel);
+                OnRequestUserSaveWorkflow(this, args);
+                if (!args.Success)
+                    return false;
+            }
+            return true;
+        }
+
+        #endregion
+
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
@@ -2008,5 +2053,4 @@ namespace Dynamo.ViewModels
 
         #endregion
     }
-
 }
