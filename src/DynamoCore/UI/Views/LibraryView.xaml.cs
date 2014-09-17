@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Dynamo.UI.Views
 {
@@ -26,6 +27,13 @@ namespace Dynamo.UI.Views
             var classButton = sender as ListViewItem;
             classButton.IsSelected = false;
             e.Handled = true;
+        }
+
+        private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var expanderContent = (sender as FrameworkElement);
+            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent,"");
+            buttons.UnselectAll();
         }
 
     }

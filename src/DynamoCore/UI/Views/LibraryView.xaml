@@ -440,7 +440,8 @@
                     <DataTemplate>
                         <Expander Header="{Binding Path=Name}"
                                   OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}">
+                                  Template="{StaticResource CategoryExpanderTemplate}"
+                                  Collapsed="OnExpanderCollapsed">
                             <!--Select not more than one category-->
                             <Expander.IsExpanded>
                                 <Binding Path="IsSelected"
