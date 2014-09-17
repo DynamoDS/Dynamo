@@ -5657,7 +5657,7 @@ namespace ProtoCore.DSASM
 
                     lock (core.Heap.cslock)
                     {
-                        StackValue svNewProperty = StackValue.BuildPointer(Constants.kPointerSize);
+                        StackValue svNewProperty = core.Heap.AllocatePointer(Constants.kPointerSize);
                         core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
 
                         core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
