@@ -148,7 +148,7 @@ namespace Dynamo.Controls
             var classInformation = classObjectBase as ClassInformation;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
                 return;
-                                
+
             //Add members of selected class to StandardPanel            
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
