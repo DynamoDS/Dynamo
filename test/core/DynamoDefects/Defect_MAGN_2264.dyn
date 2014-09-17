@@ -1,0 +1,10 @@
+<Workspace Version="0.7.0.15975" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6cbb495c-66d1-4248-a0df-2509be47487e" nickname="Math.Rand" x="242.8" y="234.8" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Rand@double,double" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4abef297-03f2-4677-8332-7433df29c9f1" nickname="Watch" x="452.4" y="269.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6cbb495c-66d1-4248-a0df-2509be47487e" start_index="0" end="4abef297-03f2-4677-8332-7433df29c9f1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

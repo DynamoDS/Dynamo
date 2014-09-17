@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Properties;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 
 namespace Dynamo.Services
 {
@@ -25,12 +20,6 @@ namespace Dynamo.Services
         private Thread heartbeatThread;
         private readonly DynamoModel dynamoModel;
 
-        // We need to play nicely with the background thread and ask politely 
-        // when the application is shutting down. Whenever this event is raised,
-        // the thread loop exits, causing the thread to terminate. Since garbage
-        // collector does not collect an unreferenced thread, setting "instance"
-        // to "null" will not help release the thread.
-        // 
         private AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
         private Heartbeat(DynamoModel dynamoModel)
@@ -38,6 +27,8 @@ namespace Dynamo.Services
             // KILLDYNSETTINGS - this is provisional - but we need to enforce that Hearbeat is 
             // not referencing multiple DynamoModels
             this.dynamoModel = dynamoModel;
+
+            StabilityCookie.Startup();
 
             startTime = DateTime.Now;
             heartbeatThread = new Thread(this.ExecThread);
@@ -47,6 +38,14 @@ namespace Dynamo.Services
 
         private void DestroyInternal()
         {
+            //Are we shutting down clean if so write 'nice shutdown' cookie
+            if (DynamoModel.IsCrashing)
+                StabilityCookie.WriteCrashingShutdown();
+            else
+                StabilityCookie.WriteCleanShutdown();
+
+            System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
+
             shutdownEvent.Set(); // Signal the shutdown event... 
             heartbeatThread.Join(); // ... wait for thread to end.
             heartbeatThread = null;
@@ -83,7 +82,9 @@ namespace Dynamo.Services
             {
                 try
                 {
-                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString() );
+                    StabilityCookie.WriteUptimeBeat(DateTime.Now.Subtract(startTime));
+
+                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());

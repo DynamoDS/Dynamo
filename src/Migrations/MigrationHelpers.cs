@@ -20,7 +20,12 @@ namespace Migrations
             element.SetAttribute("assembly", assembly);
             element.SetAttribute("nickname", nickname);
             element.SetAttribute("function", funcName);
-            element.SetAttribute("lacing", xmlNode.Attributes["lacing"].Value);
+
+            var lacingAttribute = xmlNode.Attributes["lacing"];
+            if (lacingAttribute != null)
+            {
+                element.SetAttribute("lacing", lacingAttribute.Value);
+            }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);

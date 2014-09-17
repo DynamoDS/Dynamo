@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Collections.ObjectModel;
-using System.Windows.Threading;
+
 using Dynamo.Models;
-using Dynamo.Selection;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 

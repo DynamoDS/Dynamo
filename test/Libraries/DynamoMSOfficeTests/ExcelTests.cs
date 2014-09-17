@@ -36,8 +36,9 @@ namespace Dynamo.Tests
             try
             {
                 EventArgs args = new ExcelCloseEventArgs(false);
-                ViewModel.Model.ShutDown(false, args);
+                ViewModel.Model.ShutDown(false);
                 this.ViewModel = null;
+                ExcelInterop.OnProcessExit(this, args);
             }
             catch (Exception ex)
             {
@@ -196,6 +197,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CanReadMultiDimensionalWorksheet()
         {
 
@@ -605,9 +607,9 @@ namespace Dynamo.Tests
         /// <summary>
         /// TODO: This is to verify the fix for the following user report issue.
         /// Note that however this test case does not completely simulate the 
-        /// user scenario -- the "Watch.Process" does not even get called for 
+        /// user scenario -- the "Watch.GenerateWatchViewModelForData" does not even get called for 
         /// some reason. This test case passes now, but should be revisit later
-        /// for an enhancement which allows "Watch.Process" to be called (and 
+        /// for an enhancement which allows "Watch.GenerateWatchViewModelForData" to be called (and 
         /// crash without the fix).
         /// </summary>
         [Test]
