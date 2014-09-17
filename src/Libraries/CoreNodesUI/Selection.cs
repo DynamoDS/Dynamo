@@ -238,7 +238,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            if (!Selection.Any() || !SubSelection.Any()) return;
+            if (!Selection.Any()) return;
 
             // ELEMENTS
             var uuidsSelection =
