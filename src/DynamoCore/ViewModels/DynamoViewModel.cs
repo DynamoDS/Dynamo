@@ -14,6 +14,8 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
+
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -674,7 +676,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
             if (SetAllowCancelAndRequestUIClose(true))
                 return;
