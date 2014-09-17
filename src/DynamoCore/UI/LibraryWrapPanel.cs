@@ -93,6 +93,8 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+
+            //If index is -1, that means user click on the same button. We have to collapse it.
             if (index == -1)
             {
                 var currentClassInformationIndex = GetClassInformationIndex();
@@ -124,6 +126,8 @@ namespace Dynamo.Controls
         private int GetClassInformationIndex()
         {
             var query = collection.Select(c => c).Where(c => c is ClassInformation);
+
+            //If ClassInformation wasn't found, return -1.
             if (!query.Any()) return -1;
             var classObjectBase = query.ElementAt(0);
             return collection.IndexOf(classObjectBase);
@@ -143,7 +147,8 @@ namespace Dynamo.Controls
             // If there is no selection, then mark the StandardPanel as hidden.
             var classInformation = classObjectBase as ClassInformation;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
-                return;                                
+                return;
+                                
             //Add members of selected class to StandardPanel            
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
