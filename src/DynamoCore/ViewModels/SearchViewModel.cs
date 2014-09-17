@@ -59,6 +59,7 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
+                RaisePropertyChanged("CurrentMode");
             }
         }
 
@@ -120,6 +121,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public enum ViewMode { LibraryView, LibrarySearchView };
+
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
+        public ViewMode CurrentMode
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                    ViewMode.LibrarySearchView;
+            }
+        }
+
         /// <summary>
         ///     SearchResults property
         /// </summary>
@@ -170,7 +185,7 @@ namespace Dynamo.ViewModels
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             topResult = this.Model.AddRootCategoryToStart("Top Result");
-            
+
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
         }
@@ -218,7 +233,7 @@ namespace Dynamo.ViewModels
             var result = this.Model.Search(query).ToList();
 
             //sw.Stop();
-            
+
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             // Remove old execute handler from old top result

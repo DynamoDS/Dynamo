@@ -100,12 +100,12 @@ namespace Dynamo.Nodes.Search
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
-        public BitmapImage SmallIcon
+        public BitmapSource SmallIcon
         {
             get
             {
                 var name = GetResourceName(ResourceType.SmallIcon, false);
-                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
 
                 if (icon == null)
                 {
@@ -120,12 +120,12 @@ namespace Dynamo.Nodes.Search
         ///<summary>
         /// Large icon for tooltips.
         ///</summary>
-        public BitmapImage LargeIcon
+        public BitmapSource LargeIcon
         {
             get
             {
                 var name = GetResourceName(ResourceType.LargeIcon, false);
-                BitmapImage icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
 
                 if (icon == null)
                 {
@@ -217,13 +217,13 @@ namespace Dynamo.Nodes.Search
             return string.Empty;
         }
 
-        private BitmapImage GetIcon(string fullNameOfIcon)
+        private BitmapSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(this.Assembly))
                 return null;
 
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            BitmapImage icon = null;
+            BitmapSource icon = null;
             if (cust != null)
                 icon = cust.LoadIconInternal(fullNameOfIcon);
             return icon;

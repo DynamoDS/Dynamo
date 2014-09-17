@@ -1713,21 +1713,44 @@ namespace Dynamo.Controls
         }
     }
 
-    /// This converter makes TextBlock fornt weight as UltraBold if it is currently selected.
+    /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
     /// To know for which TextBlock the converter works the parameter used.
     /// Converter is used on StandardPanel.
-    public class DisplayModeToFontWeightConverter : IValueConverter
+    public class DisplayModeToTextDecorationsConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var displayMode = (ClassInformation.DisplayMode)value;
+
             if (parameter == null)
-                return FontWeights.Normal;
+                return 0;
 
             if (displayMode.ToString() == parameter.ToString())
-                return FontWeights.UltraBold;
+                return 1;
 
-            return FontWeights.Normal;
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -56,11 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dynWatch3D.cs" />
-    <Compile Include="images.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>images.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,29 +74,12 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="images.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>images.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />  
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>  
-  -->
-  <Target Name="AfterBuild">
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths"
-              PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <GenerateResource UseSourcePath="true"
-                      Sources="$(ProjectDir)images.resx"
-                      OutputResources="$(ProjectDir)images.resources"
-                      References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library"
-        EmbedResources="$(ProjectDir)images.resources"
-        OutputAssembly="$(OutDir)../$(TargetName).resources.dll" />
+  <Target Name="AfterBuild">    
   </Target>
+  -->
 </Project>

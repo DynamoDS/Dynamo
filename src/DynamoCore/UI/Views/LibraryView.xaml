@@ -23,37 +23,48 @@
                 <StackPanel Orientation="Vertical"
                             Width="96"
                             Height="96">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-                        <Image Source="{Binding Path=SmallIcon}"
-                               Width="32"
-                               Height="32"
-                               Margin="8"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Grid.Row="0" />
-                        <TextBlock HorizontalAlignment="Center"
+                    <Border Padding="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Path=SmallIcon}"
+                                   Width="32"
+                                   Height="32"
+                                   Margin="8"
+                                   HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   TextAlignment="Center"
-                                   Foreground="#989898"
-                                   Grid.Row="1">
-                            <TextBlock.Text>
-                                <Binding Path="Name"
-                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                         ConverterParameter="ClassButton" />
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Foreground="#989898"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="13">
+                                <TextBlock.Text>
+                                    <Binding Path="Name"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                             ConverterParameter="ClassButton" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </DataTemplate>
             <!-- This data template is used to show StandardPanel
                  for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
+                <Grid Background="#272727">
                     <Grid.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -115,7 +126,7 @@
                                 <Trigger Property="IsSelected"
                                          Value="true">
                                     <Setter Property="Background"
-                                            Value="{StaticResource WorkspaceBackgroundBrush}" />
+                                            Value="#272727" />
                                     <Setter Property="BorderThickness"
                                             Value="0" />
                                 </Trigger>
@@ -145,13 +156,13 @@
             <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
                              TargetType="{x:Type ToggleButton}">
                 <Border x:Name="ExpanderButtonBorder"
-                        Background="{StaticResource WorkspaceBackgroundBrush}"
+                        Background="#282828"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
+                        Padding="16,0,0,0">
                     <Grid MinHeight="27"
                           MinWidth="66"
-                          Margin="16,0,0,2">
+                          Margin="0,0,0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -184,6 +195,9 @@
                             <Setter Property="Source"
                                     TargetName="ExpandCollapseStateIcon"
                                     Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -238,8 +252,8 @@
                                   Template="{StaticResource CategoryExpanderButtonTemplate}"
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                  OverridesDefaultStyle="True">
-                    </ToggleButton>
+                                  OverridesDefaultStyle="True"
+                                  Height="27" />
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -260,19 +274,161 @@
             </ControlTemplate>
 
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
+
+            <ControlTemplate x:Key="ScrollViewerControlTemplate"
+                             TargetType="{x:Type ScrollViewer}">
+                <Grid x:Name="Grid"
+                      Background="{TemplateBinding Background}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                            CanContentScroll="{TemplateBinding CanContentScroll}"
+                                            CanHorizontallyScroll="False"
+                                            CanVerticallyScroll="True"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Content="{TemplateBinding Content}"
+                                            Grid.RowSpan="2"
+                                            Margin="{TemplateBinding Padding}"
+                                            Grid.ColumnSpan="2" />
+                    <ScrollBar x:Name="PART_VerticalScrollBar"
+                               AutomationProperties.AutomationId="VerticalScrollBar"
+                               Cursor="Arrow"
+                               Grid.Column="1"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               Minimum="0"
+                               Grid.Row="0"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                               Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Width="8" />
+                </Grid>
+            </ControlTemplate>
+
+            <Style x:Key="VerticalThumb"
+                   TargetType="{x:Type Thumb}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid>
+                                <Rectangle HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           Width="Auto"
+                                           Height="Auto"
+                                           Fill="Transparent" />
+                                <Border x:Name="Rectangle1"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Width="7"
+                                        Height="Auto"
+                                        Background="#aaaaaa"
+                                        Opacity="0.5"
+                                        CornerRadius="2" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Stylus.IsPressAndHoldEnabled"
+                        Value="false" />
+                <Setter Property="Stylus.IsFlicksEnabled"
+                        Value="false" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="Width"
+                        Value="10" />
+                <Setter Property="MinWidth"
+                        Value="10" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="Bg"
+                                  SnapsToDevicePixels="true"
+                                  Background="Transparent">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.00001*" />
+                                </Grid.RowDefinitions>
+                                <Track x:Name="PART_Track"
+                                       IsDirectionReversed="true"
+                                       IsEnabled="{TemplateBinding IsMouseOver}">
+                                    <Track.Thumb>
+                                        <Thumb Style="{DynamicResource VerticalThumb}"
+                                               Width="8" />
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Orientation"
+                             Value="Horizontal">
+                        <Setter Property="Width"
+                                Value="Auto" />
+                        <Setter Property="MinWidth"
+                                Value="0" />
+                        <Setter Property="Height"
+                                Value="10" />
+                        <Setter Property="MinHeight"
+                                Value="10" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                    <Grid x:Name="Bg"
+                                          SnapsToDevicePixels="true"
+                                          Background="#7FA7A7A7">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.00001*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Track x:Name="PART_Track"
+                                               IsEnabled="{TemplateBinding IsMouseOver}">
+                                            <Track.Thumb>
+                                                <Thumb Style="{DynamicResource HorizontalThumb}"
+                                                       Height="8" />
+                                            </Track.Thumb>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!--Hide scrollbar, when mouse is not over.-->
+            <Style x:Key="ScrollLibraryViewerStyle"
+                   TargetType="ScrollViewer">
+                <Setter Property="VerticalScrollBarVisibility"
+                        Value="Hidden" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="true">
+                        <Setter Property="VerticalScrollBarVisibility"
+                                Value="Auto" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="{StaticResource WorkspaceBackgroundBrush}">
+                      Background="Transparent"
+                      Name="ScrollLibraryViewer"
+                      Template="{DynamicResource ScrollViewerControlTemplate}"
+                      Style="{StaticResource ScrollLibraryViewerStyle}">
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
-                      Background="{StaticResource WorkspaceBackgroundBrush}"
+                      Background="#282828"
                       BorderThickness="0"
                       ItemsSource="{Binding Model.BrowserRootCategories}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -281,9 +437,7 @@
                     <DataTemplate>
                         <Expander Header="{Binding Path=Name}"
                                   OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}"
-                                  Foreground="#DDD"
-                                  FontSize="13">
+                                  Template="{StaticResource CategoryExpanderTemplate}">
                             <!--Select not more than one category-->
                             <Expander.IsExpanded>
                                 <Binding Path="IsSelected"
@@ -306,7 +460,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderThickness="0,0,0,2"
+                                    <Border BorderThickness="0,0,0,1"
                                             BorderBrush="#2F2F2F">
                                         <ContentPresenter />
                                     </Border>
