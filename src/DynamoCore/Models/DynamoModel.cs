@@ -40,6 +40,9 @@ using Dynamo.DSEngine;
 
 using Double = System.Double;
 
+using ADG = Autodesk.DesignScript.Geometry;
+using ADI = Autodesk.DesignScript.Interfaces;
+
 namespace Dynamo.Models
 {
     public partial class DynamoModel : ModelBase
@@ -329,6 +332,15 @@ namespace Dynamo.Models
             DisposeLogic.IsShuttingDown = false;
 
             this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+
+            //Reset/Set the geometry factory for the application
+            if (ADG.Application.Instance.AppConfig.Contains(ADI.ConfigurationKeys.GeometryFactory))
+                ADG.Application.Instance.AppConfig[ADI.ConfigurationKeys.GeometryFactory] = 
+                    DynamoPathManager.Instance.GeometryFactory;
+            else
+                ADG.Application.Instance.AppConfig.Add(ADI.ConfigurationKeys.GeometryFactory,
+                    DynamoPathManager.Instance.GeometryFactory);
+
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             // Reset virtual machine to avoid a race condition by causing a 
