@@ -3064,6 +3064,28 @@ c = [Associative]
         }
 
         [Test]
+        public void TestLongestLacingWithEmptyList()
+        {
+            string code =
+@"
+        def foo(a : int, b : int)
+{
+    return = a + b;
+}
+
+x = {};
+x1 = {1};
+y = {1};
+
+o2 = foo(x<1L>, y<1L>);
+
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("o2", 0);
+        }
+
+
+        [Test]
         [Category("Failure")]
         public void TestComplexAssociativeUpdate()
         {
