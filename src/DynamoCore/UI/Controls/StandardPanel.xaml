@@ -67,7 +67,7 @@
                                        TextAlignment="Center"
                                        Foreground="#DDD"
                                        FontSize="20px"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Button.IsMouseOver"
@@ -85,7 +85,7 @@
         <Style TargetType="{x:Type TextBlock}"
                x:Key="secondaryMembersTextBlock">
             <Setter Property="Foreground"
-                    Value="#777777"/>
+                    Value="#777777" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver"
                          Value="True">
@@ -105,27 +105,29 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="primaryHeader"
-                       Foreground="#777777"
-                       VerticalAlignment="Center"
-                       FontSize="9"
-                       Margin="16,0,0,0">
-                <TextBlock.Visibility>
-                    <Binding Path="IsPrimaryHeaderVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                </TextBlock.Visibility>
-                <TextBlock.Text>
-                    <Binding Path="PrimaryHeaderGroup"
-                             Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                </TextBlock.Text>
-                <TextBlock.TextDecorations>
-                    <TextDecoration Location="Underline"
-                                    PenOffset="2"
-                                    PenOffsetUnit="Pixel" />
-                </TextBlock.TextDecorations>
-            </TextBlock>
+            <Border Padding="0,0,0,10">
+                <TextBlock x:Name="primaryHeader"
+                           Foreground="#777777"
+                           VerticalAlignment="Center"
+                           FontSize="9"
+                           Margin="16,0,0,0">
+                    <TextBlock.Visibility>
+                        <Binding Path="IsPrimaryHeaderVisible"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    </TextBlock.Visibility>
+                    <TextBlock.Text>
+                        <Binding Path="PrimaryHeaderGroup"
+                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                    </TextBlock.Text>
+                    <TextBlock.TextDecorations>
+                        <TextDecoration Location="Underline"
+                                        PenOffset="2"
+                                        PenOffsetUnit="Pixel" />
+                    </TextBlock.TextDecorations>
+                </TextBlock>
+            </Border>
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Background="Transparent"
@@ -153,78 +155,80 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="2"
-                        Margin="16,0,0,0">
-                <TextBlock x:Name="secondaryHeaderLeft"
-                           Tag="Query"
-                           PreviewMouseDown="OnHeaderMouseDown"
-                           VerticalAlignment="Center"
-                           FontSize="9"
-                           Margin="0,0,10,0"
-                           Style="{StaticResource secondaryMembersTextBlock}">
-                    <TextBlock.Visibility>
-                        <Binding Path="IsSecondaryHeaderLeftVisible"
-                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                    </TextBlock.Visibility>
-                    <TextBlock.Text>
-                        <Binding Path="SecondaryHeaderLeftGroup"
-                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                    </TextBlock.Text>
-                    <TextBlock.TextDecorations>
-                        <TextDecoration PenOffset="2"
-                                        PenOffsetUnit="Pixel">
-                            <TextDecoration.Pen>
-                                <Pen Brush="#777777">
-                                    <Pen.Thickness>
-                                        <Binding Path="CurrentDisplayMode"
-                                                 Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                 ConverterParameter="Query" />
-                                    </Pen.Thickness>
-                                </Pen>
-                            </TextDecoration.Pen>
-                        </TextDecoration>
-                    </TextBlock.TextDecorations>
-                </TextBlock>
-                <Ellipse Fill="#777777"
-                         Height="3"
-                         Width="3"
-                         Margin="0,0,10,0">
-                    <Ellipse.Visibility>
-                        <Binding Path="IsSecondaryHeaderRightVisible"
-                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                    </Ellipse.Visibility>
-                </Ellipse>
-                <TextBlock x:Name="secondaryHeaderRight"
-                           Tag="Action"
-                           PreviewMouseDown="OnHeaderMouseDown"
-                           VerticalAlignment="Center"
-                           FontSize="9"
-                           Style="{StaticResource secondaryMembersTextBlock}">
-                    <TextBlock.Visibility>
-                        <Binding Path="IsSecondaryHeaderRightVisible"
-                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                    </TextBlock.Visibility>
-                    <TextBlock.Text>
-                        <Binding Path="SecondaryHeaderRightGroup"
-                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                    </TextBlock.Text>
-                    <TextBlock.TextDecorations>
-                        <TextDecoration PenOffset="2"
-                                        PenOffsetUnit="Pixel">
-                            <TextDecoration.Pen>
-                                <Pen Brush="#777777">
-                                    <Pen.Thickness>
-                                        <Binding Path="CurrentDisplayMode"
-                                                 Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                 ConverterParameter="Action" />
-                                    </Pen.Thickness>
-                                </Pen>
-                            </TextDecoration.Pen>
-                        </TextDecoration>
-                    </TextBlock.TextDecorations>
-                </TextBlock>
-            </StackPanel>
+            <Border Padding="0,10,0,10"
+                    Grid.Row="2">
+                <StackPanel Orientation="Horizontal"
+                            Margin="16,0,0,0">
+                    <TextBlock x:Name="secondaryHeaderLeft"
+                               Tag="Query"
+                               PreviewMouseDown="OnHeaderMouseDown"
+                               VerticalAlignment="Center"
+                               FontSize="9"
+                               Margin="0,0,13.5,0"
+                               Style="{StaticResource secondaryMembersTextBlock}">
+                        <TextBlock.Visibility>
+                            <Binding Path="IsSecondaryHeaderLeftVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </TextBlock.Visibility>
+                        <TextBlock.Text>
+                            <Binding Path="SecondaryHeaderLeftGroup"
+                                     Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                        </TextBlock.Text>
+                        <TextBlock.TextDecorations>
+                            <TextDecoration PenOffset="2"
+                                            PenOffsetUnit="Pixel">
+                                <TextDecoration.Pen>
+                                    <Pen Brush="#777777">
+                                        <Pen.Thickness>
+                                            <Binding Path="CurrentDisplayMode"
+                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                     ConverterParameter="Query" />
+                                        </Pen.Thickness>
+                                    </Pen>
+                                </TextDecoration.Pen>
+                            </TextDecoration>
+                        </TextBlock.TextDecorations>
+                    </TextBlock>
+                    <Ellipse Fill="#777777"
+                             Height="3"
+                             Width="3"
+                             Margin="0,0,13.5,0">
+                        <Ellipse.Visibility>
+                            <Binding Path="IsSecondaryHeaderRightVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </Ellipse.Visibility>
+                    </Ellipse>
+                    <TextBlock x:Name="secondaryHeaderRight"
+                               Tag="Action"
+                               PreviewMouseDown="OnHeaderMouseDown"
+                               VerticalAlignment="Center"
+                               FontSize="9"
+                               Style="{StaticResource secondaryMembersTextBlock}">
+                        <TextBlock.Visibility>
+                            <Binding Path="IsSecondaryHeaderRightVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </TextBlock.Visibility>
+                        <TextBlock.Text>
+                            <Binding Path="SecondaryHeaderRightGroup"
+                                     Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
+                        </TextBlock.Text>
+                        <TextBlock.TextDecorations>
+                            <TextDecoration PenOffset="2"
+                                            PenOffsetUnit="Pixel">
+                                <TextDecoration.Pen>
+                                    <Pen Brush="#777777">
+                                        <Pen.Thickness>
+                                            <Binding Path="CurrentDisplayMode"
+                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                     ConverterParameter="Action" />
+                                        </Pen.Thickness>
+                                    </Pen>
+                                </TextDecoration.Pen>
+                            </TextDecoration>
+                        </TextBlock.TextDecorations>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
                      Grid.ColumnSpan="2"
