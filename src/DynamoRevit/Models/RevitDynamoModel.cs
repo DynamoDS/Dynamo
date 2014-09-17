@@ -209,7 +209,7 @@ namespace Dynamo.Applications.Models
 
             OnShuttingDown();
 
-            base.ShutDown(shutDownHost);
+            base.ShutDownCore(shutDownHost);
 
             // unsubscribe events
             RevitServicesUpdater.UnRegisterAllChangeHooks();
