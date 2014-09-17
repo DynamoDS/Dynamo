@@ -76,8 +76,16 @@ namespace Dynamo.Controls
                     currentRowHeight = 0;
                 }
 
-                child.Arrange(new Rect(x + sizeBetweenItems, y, desiredSize.Width, desiredSize.Height));
-                x = x + desiredSize.Width + sizeBetweenItems;
+                if (child.DesiredSize.Width > classObjectWidth) //Then it's Standard panel, we do not need margin it.
+                {
+                    child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
+                    x = x + desiredSize.Width;
+                }
+                else
+                {
+                    child.Arrange(new Rect(x + sizeBetweenItems, y, desiredSize.Width, desiredSize.Height));
+                    x = x + desiredSize.Width + sizeBetweenItems;
+                }
                 if (desiredSize.Height > currentRowHeight)
                     currentRowHeight = desiredSize.Height;
             }
