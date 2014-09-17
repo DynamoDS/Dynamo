@@ -891,11 +891,11 @@ namespace ProtoCore.Lang
                     }
                     else if (CSVdatalist[i][k] is Int32)
                     {
-                        values[i] = StackValue.BuildInt((int)CSVdatalist[i][k]);
+                        values[k] = StackValue.BuildInt((int)CSVdatalist[i][k]);
                     }
                     else
                     {
-                        values[i] = StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
+                        values[k] = StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
                     }
                 }
 

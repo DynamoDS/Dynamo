@@ -396,8 +396,7 @@ namespace ProtoCore.Utils
                 return false;
             }
 
-            HeapElement he = core.Rmem.Heap.GetHeapElement(svArray);
-
+            HeapElement he = core.Heap.GetHeapElement(svArray);
             if (null == he.Stack || he.Stack.Length == 0)
             {
                 return false;
@@ -405,8 +404,7 @@ namespace ProtoCore.Utils
 
             while (he.Stack[0].IsArray)
             {
-
-                int ptr = (int)he.Stack[0].opdata;
+                he = core.Heap.GetHeapElement(he.Stack[0]);
 
                 // Handle the case where the array is valid but empty
                 if (he.Stack.Length == 0)
