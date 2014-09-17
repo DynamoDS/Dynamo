@@ -60,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+  <Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
+		<Link>Properties\AssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
+		<Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Adapters\Tetrahedron.cs" />
     <Compile Include="Adapters\Cell2.cs" />
     <Compile Include="Adapters\Cell3.cs" />

@@ -82,6 +82,12 @@
     <Compile Include="DependencyPass\GraphOptimiser.cs" />
     <Compile Include="DependencyPass\Analyser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
+		<Link>Properties\AssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
+		<Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
