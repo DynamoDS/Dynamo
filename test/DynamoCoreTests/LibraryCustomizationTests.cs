@@ -11,7 +11,6 @@ namespace Dynamo.Tests
     class LibraryCustomizationTests : UnitTestBase
     {
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public void CanLoadValidLibraryCustomization()
         {

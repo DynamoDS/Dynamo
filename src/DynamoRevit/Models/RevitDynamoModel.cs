@@ -216,13 +216,13 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
-        public override void ShutDown(bool shutDownHost, EventArgs args = null)
+        public override void ShutDown(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
 
             OnShuttingDown();
 
-            base.ShutDown(shutDownHost, args);
+            base.ShutDown(shutDownHost);
 
             // unsubscribe events
             RevitServicesUpdater.UnRegisterAllChangeHooks();
