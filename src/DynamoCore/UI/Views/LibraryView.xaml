@@ -45,7 +45,7 @@
                                    Grid.Row="1"
                                    Grid.Column="1" />
                             <TextBlock HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
+                                       VerticalAlignment="Top"
                                        TextAlignment="Center"
                                        Foreground="#989898"
                                        Grid.Row="2"

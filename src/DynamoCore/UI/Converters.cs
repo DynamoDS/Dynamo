@@ -1611,7 +1611,8 @@ namespace Dynamo.Controls
                     text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
                     if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
                     {
-                        text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.IndexOf(" ") != -1)
+                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
                         if (text.Length > Configurations.MaxLengthClassButtonTitle)
                             // If title is too long, we can cat it.
                             text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
