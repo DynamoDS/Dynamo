@@ -6437,10 +6437,12 @@ namespace ProtoCore.DSASM
 
             runtimeVerify(DSASM.Constants.kInvalidIndex != size);
 
-            List<StackValue> svs = new List<StackValue>();
-            for (int i = 0; i < size; ++i)
+            StackValue[] svs = new StackValue[size];
+            for (int i = size - 1; i >= 0; i--)
             {
-                svs.Add(rmem.Pop());
+                StackValue value = rmem.Pop();
+                GCRetain(value);
+                svs[i] = value;
             }
             StackValue pointer = rmem.Heap.AllocateArray(svs.ToArray());
 
