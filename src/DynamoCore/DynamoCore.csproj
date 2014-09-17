@@ -397,6 +397,12 @@ limitations under the License.
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Nodes\Watch.cs" />
+	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
+		<Link>Properties\AssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
+		<Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

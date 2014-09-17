@@ -153,6 +153,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeometryReferences\ElementPlaneReference.cs" />
     <Compile Include="Transaction\Transaction.cs" />
+	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
+		<Link>Properties\AssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
+		<Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
