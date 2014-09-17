@@ -14,6 +14,8 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
+
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -674,9 +676,12 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
-            Exit(true, true);
+            if (SetAllowCancelAndRequestUIClose(true))
+                return;
+
+            model.ShutDown(true);
             UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
         }
 
@@ -1388,16 +1393,6 @@ namespace Dynamo.ViewModels
             }
 
             model.ShutDown(false);
-        }
-
-        internal void Exit(bool allowCancel, bool shutDownHost)
-        {
-            if (SetAllowCancelAndRequestUIClose(allowCancel))
-            {
-                return;
-            }
-
-            model.ShutDown(true);
         }
 
         private bool SetAllowCancelAndRequestUIClose(object allowCancel)
