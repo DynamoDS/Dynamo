@@ -559,7 +559,7 @@ namespace Dynamo
             renderManager.RequestRenderAsync(new RenderTask());
         }
 
-        private void Clear(object sender, EventArgs e)
+        private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
             QueueRenderTask();

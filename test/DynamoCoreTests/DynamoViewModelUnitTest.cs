@@ -32,7 +32,7 @@ namespace Dynamo.Tests
                 var vm = ViewModel;
                 ViewModel = null;
                 DynamoSelection.Instance.ClearSelection();
-                vm.Model.ShutDown(false, null);
+                vm.Model.ShutDown(false);
             }
             catch (Exception ex)
             {
