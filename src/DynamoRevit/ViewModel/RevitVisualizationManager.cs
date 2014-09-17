@@ -54,6 +54,16 @@ namespace Dynamo
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
+            CleanupVisualizations();
+        }
+
+        private void CleanupVisualizations(DynamoModel model)
+        {
+            CleanupVisualizations();
+        }
+
+        private void CleanupVisualizations()
+        {
             RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
