@@ -81,6 +81,19 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style TargetType="{x:Type TextBlock}"
+               x:Key="secondaryMembersTextBlock">
+            <Setter Property="Foreground"
+                    Value="#777777"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="#999999" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Border Padding="0,10,0,10"
             Visibility="{Binding Path=ClassDetailsVisibility,
@@ -146,10 +159,10 @@
                 <TextBlock x:Name="secondaryHeaderLeft"
                            Tag="Query"
                            PreviewMouseDown="OnHeaderMouseDown"
-                           Foreground="#777777"
                            VerticalAlignment="Center"
                            FontSize="9"
-                           Margin="0,0,10,0">
+                           Margin="0,0,10,0"
+                           Style="{StaticResource secondaryMembersTextBlock}">
                     <TextBlock.Visibility>
                         <Binding Path="IsSecondaryHeaderLeftVisible"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -185,9 +198,9 @@
                 <TextBlock x:Name="secondaryHeaderRight"
                            Tag="Action"
                            PreviewMouseDown="OnHeaderMouseDown"
-                           Foreground="#777777"
                            VerticalAlignment="Center"
-                           FontSize="9">
+                           FontSize="9"
+                           Style="{StaticResource secondaryMembersTextBlock}">
                     <TextBlock.Visibility>
                         <Binding Path="IsSecondaryHeaderRightVisible"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
