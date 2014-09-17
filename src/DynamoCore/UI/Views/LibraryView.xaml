@@ -218,6 +218,9 @@
                             <Setter Property="TextBlock.Foreground"
                                     TargetName="HeaderContent"
                                     Value="#bbbbbb" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
