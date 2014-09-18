@@ -66,8 +66,12 @@
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        Foreground="#DDD"
-                                       FontSize="20px"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                       FontSize="20px">
+                                <TextBlock.Text>
+                                    <Binding Path="Content"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Button.IsMouseOver"
