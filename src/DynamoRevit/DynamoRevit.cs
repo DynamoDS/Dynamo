@@ -254,7 +254,6 @@ namespace Dynamo.Applications
             handledCrash = false;
 
             dynamoView.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
-            dynamoView.Closing += DynamoView_Closing;
             dynamoView.Closed += DynamoView_Closed;
 
             SingleSignOnManager.UIDispatcher = dynamoView.Dispatcher;
@@ -427,17 +426,6 @@ namespace Dynamo.Applications
         #region Shutdown
 
         /// <summary>
-        ///     Executes right before Dynamo closes, gives you the chance to cache whatever you might want.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void DynamoView_Closing(object sender, EventArgs e)
-        {
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
-        }
-
-        /// <summary>
         ///     Executes after Dynamo closes.
         /// </summary>
         /// <param name="sender"></param>
@@ -450,7 +438,6 @@ namespace Dynamo.Applications
             DocumentManager.OnLogError -= revitDynamoModel.Logger.Log;
 
             view.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
-            view.Closing -= DynamoView_Closing;
             view.Closed -= DynamoView_Closed;
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -=
                 Application_ViewActivating;

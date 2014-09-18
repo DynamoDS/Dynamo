@@ -224,7 +224,7 @@ namespace Dynamo.Applications.Models
                 var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
                 UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
 
-                IdlePromise.ExecuteOnIdleAsync(
+                IdlePromise.ExecuteOnShutdown(
                     () =>
                     {
                         if (uiapp.CanPostCommand(exitCommand))
@@ -236,6 +236,9 @@ namespace Dynamo.Applications.Models
                         }
                     });
             }
+
+            IdlePromise.ClearPromises();
+            IdlePromise.Shutdown();
         }
 
         public override void ResetEngine(bool markNodesAsDirty = false)
