@@ -392,6 +392,12 @@ namespace Dynamo.Models
         /// 
         public void ShutDown(bool shutDownHost)
         {
+            if (ShutdownRequested)
+            {
+                const string message = "'DynamoModel.ShutDown' called twice";
+                throw new InvalidOperationException(message);
+            }
+
             ShutdownRequested = true;
             ShutDownCore(shutDownHost);
         }
