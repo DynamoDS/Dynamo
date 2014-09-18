@@ -2,10 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Media;
 using System.Xml;
-using Dynamo.Utilities;
+
 using Dynamo.UI;
 
 namespace Dynamo.Models

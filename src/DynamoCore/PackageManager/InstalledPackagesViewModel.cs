@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 
-using Dynamo.Controls;
 using Dynamo.PackageManager;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 

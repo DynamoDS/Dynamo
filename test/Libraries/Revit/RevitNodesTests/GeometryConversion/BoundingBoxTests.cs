@@ -32,8 +32,13 @@ namespace DSRevitNodesTests.Conversion
             var max = bbox.MaxPoint;
             var min = bbox.MinPoint;
 
-            max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
-            min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
+            // the box is 30ft x 30ft x 30ft
+            // the placement point is the center of the bottom face of the box
+            var boxOffsetTop = Vector.ByCoordinates(15,15,30).AsPoint().InDynamoUnits().AsVector();
+            var boxOffsetBottom = Vector.ByCoordinates(-15,-15,0).AsPoint().InDynamoUnits().AsVector();
+
+            min.ShouldBeApproximately((Point)pt.Translate(boxOffsetBottom));
+            max.ShouldBeApproximately((Point)pt.Translate(boxOffsetTop));
 
         }
 
@@ -49,8 +54,16 @@ namespace DSRevitNodesTests.Conversion
 
             var bbxyz = bbox.ToRevitType();
 
-            bbxyz.Max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
-            bbxyz.Min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
+            var max = bbxyz.Max;
+            var min = bbxyz.Min;
+
+            // the box is 30ft x 30ft x 30ft
+            // the placement point is the center of the bottom face of the box
+            var boxOffsetTop = Vector.ByCoordinates(15, 15, 30);
+            var boxOffsetBottom = Vector.ByCoordinates(-15, -15, 0);
+
+            min.ShouldBeApproximately((Point)pt.InHostUnits().Translate(boxOffsetBottom));
+            max.ShouldBeApproximately((Point)pt.InHostUnits().Translate(boxOffsetTop));
 
         }
     }

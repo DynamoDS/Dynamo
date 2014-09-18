@@ -51,7 +51,7 @@ namespace ProtoTestConsoleRunner
 #endif
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"c:\project\github\test.ds", core);
+            ExecutionMirror mirror = runner.LoadAndExecute(@"C:\Users\Yu\dev\github\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();

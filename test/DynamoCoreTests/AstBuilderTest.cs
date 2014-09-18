@@ -68,7 +68,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSortNode2()
         {
             // The connections of CBNs are
@@ -109,7 +108,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSortNode3()
         {
             // The connections of CBNs are
@@ -150,7 +148,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSortNode4()
         {
             // The connections of CBNs are
@@ -190,7 +187,6 @@ namespace Dynamo.Tests
 
 
         [Test]
-        [Category("Failure")]
         public void TestSortNode5()
         {
             // The connections of CBNs are
@@ -228,7 +224,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSortNode6()
         {
             // The connections of CBNs are

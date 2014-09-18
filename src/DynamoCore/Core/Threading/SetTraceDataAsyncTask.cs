@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Dynamo.DSEngine;
-using Dynamo.Models;
-
-namespace Dynamo.Core.Threading
+﻿namespace Dynamo.Core.Threading
 {
 #if ENABLE_DYNAMO_SCHEDULER
 

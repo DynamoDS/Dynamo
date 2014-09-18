@@ -10,9 +10,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 
-using Greg;
 using Greg.Requests;
-using Greg.Responses;
 
 namespace Dynamo.ViewModels
 {

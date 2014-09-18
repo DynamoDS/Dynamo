@@ -7,7 +7,6 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -17,7 +16,7 @@ using Microsoft.Practices.Prism.ViewModel;
 namespace Dynamo.UpdateManager
 {
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);
-    public delegate void ShutdownRequestedEventHandler(object sender, EventArgs e);
+    public delegate void ShutdownRequestedEventHandler(IUpdateManager updateManager);
 
     public class UpdateDownloadedEventArgs : EventArgs
     {
@@ -489,7 +488,7 @@ namespace Dynamo.UpdateManager
             if (installUpdate)
             {
                 if (ShutdownRequested != null)
-                    ShutdownRequested(this, new EventArgs());
+                    ShutdownRequested(this);
             }
             
         }
