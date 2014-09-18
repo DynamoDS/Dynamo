@@ -125,11 +125,11 @@ namespace Dynamo.UI.Controls
 
                     if (!hasQueryMembers)
                         secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
+
+                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
                 }
 
-                // For case when all lists are presented we should specify
-                // correct CurrentDisplayMode.
-                if (hasQueryMembers && hasActionMembers)
+                if (hasQueryMembers)
                     castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
                 TruncateSecondaryMembers();
@@ -148,6 +148,8 @@ namespace Dynamo.UI.Controls
                 if (hasQueryMembers)
                 {
                     castedDataContext.IsSecondaryHeaderLeftVisible = true;
+                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
@@ -166,25 +168,24 @@ namespace Dynamo.UI.Controls
 
         private void OnMoreButtonClick(object sender, RoutedEventArgs e)
         {
-            if (castedDataContext.HiddenMembers != null)
-            {
-                var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
-                var allMembers = members.ToList();
-                allMembers.AddRange(castedDataContext.HiddenMembers);
+            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Query)
+                collection = castedDataContext.QueryMembers;
 
-                secondaryMembers.ItemsSource = allMembers;
-                castedDataContext.HiddenMembers = null;
-            }
+            secondaryMembers.ItemsSource = collection;
+
+            castedDataContext.IsMoreButtonVisible = false;
         }
 
         private void TruncateSecondaryMembers()
         {
-            var members = secondaryMembers.ItemsSource as IEnumerable<BrowserInternalElement>;
-            if (members != null && members.Count() > TruncatedMembersCount)
-            {
-                castedDataContext.HiddenMembers = members.Skip(TruncatedMembersCount);
-                secondaryMembers.ItemsSource = members.Take(TruncatedMembersCount);
-            }
+            IEnumerable<BrowserInternalElement> collection = castedDataContext.QueryMembers;
+            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Action)
+                collection = castedDataContext.ActionMembers;
+
+            secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
+
+            castedDataContext.IsMoreButtonVisible = collection.Count() > TruncatedMembersCount;
         }
     }
 }

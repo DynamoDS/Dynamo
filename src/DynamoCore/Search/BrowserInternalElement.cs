@@ -292,22 +292,15 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        private IEnumerable<BrowserInternalElement> hiddenMembers;
-        public IEnumerable<BrowserInternalElement> HiddenMembers
-        {
-            get { return hiddenMembers; }
-            set
-            {
-                hiddenMembers = value;
-                RaisePropertyChanged("IsMoreButtonVisible");
-            }
-        }
-
+        private bool isMoreButtonVisible;
         public bool IsMoreButtonVisible
         {
             get
+            { return isMoreButtonVisible; }
+            set
             {
-                return HiddenMembers != null && HiddenMembers.Any();
+                isMoreButtonVisible = value;
+                RaisePropertyChanged("IsMoreButtonVisible");
             }
         }
 
