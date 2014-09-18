@@ -18,7 +18,9 @@
     </UserControl.Resources>
 
     <Grid Name="startPageGrid"
-          Background="White">
+          Background="White"
+          AllowDrop="True"
+          Drop="StartPage_OnDrop">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="21"></RowDefinition>
