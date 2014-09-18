@@ -1692,9 +1692,13 @@ namespace ProtoCore.DSASM
                 }
                 if (!isssa)
                 {
-                    for (int n = 0; n < istream.dependencyGraph.GraphList.Count; ++n)
+                    int currentScopeClass = Constants.kInvalidIndex;
+                    int currentScopeFunction = Constants.kInvalidIndex;
+                    GetCallerInformation(out currentScopeClass, out currentScopeFunction);
+                    var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(currentScopeClass, currentScopeFunction);
+                    for (int n = 0; n < nodesInScope.Count; ++n)
                     {
-                        ProtoCore.AssociativeGraph.GraphNode graphNode = istream.dependencyGraph.GraphList[n];
+                        ProtoCore.AssociativeGraph.GraphNode graphNode = nodesInScope[n];
 
                         bool allowRedefine = true;
 
@@ -2199,6 +2203,7 @@ namespace ProtoCore.DSASM
                     //
                     GCAnonymousSymbols(gnode.symbolListWithinExpression);
                     gnode.symbolListWithinExpression.Clear();
+                    gnode.isActive = false;
                 }
             }
         }
