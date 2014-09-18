@@ -47,7 +47,17 @@ namespace Dynamo.Services
             System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
 
             shutdownEvent.Set(); // Signal the shutdown event... 
-            heartbeatThread.Join(); // ... wait for thread to end.
+
+            // TODO: Temporary comment out this Join statement. It currently 
+            // causes Dynamo to go into a deadlock when it is shutdown for the 
+            // second time on Revit (that's when the HeartbeatThread is trying 
+            // to call 'GetStringRepOfWorkspaceSync' below (the method has no 
+            // chance of executing, and therefore, will never return due to the
+            // main thread being held up here waiting for the heartbeat thread 
+            // to end).
+            // 
+            // heartbeatThread.Join(); // ... wait for thread to end.
+
             heartbeatThread = null;
         }
 
@@ -84,7 +94,8 @@ namespace Dynamo.Services
                 {
                     StabilityCookie.WriteUptimeBeat(DateTime.Now.Subtract(startTime));
 
-                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
+                    //Disable heartbeat to avoid 150 event/session limit
+                    //InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
