@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo.Utilities;
+
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
-using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {

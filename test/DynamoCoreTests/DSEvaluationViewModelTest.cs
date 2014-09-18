@@ -209,9 +209,9 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
+            base.Cleanup();
             Dynamo.DSEngine.LibraryServices.DestroyInstance();
             GraphToDSCompiler.GraphUtilities.Reset();
-            base.Cleanup();
         }
     }
 
@@ -252,7 +252,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Regress618()
         {
             // a=0..10;
@@ -269,7 +268,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
@@ -720,6 +718,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void UsingFunctionObject02()
         {
             RunModel(@"core\dsevaluation\Apply.dyn");
@@ -835,6 +834,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Apply_With_PropertyMethod()
         {
             // Function object to property method and used in apply 

@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
 using Color = System.Windows.Media.Color;

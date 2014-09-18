@@ -334,6 +334,49 @@ namespace Dynamo.Tests
             });
         }
 
+        /// <summary>
+        ///     Pasting an Input or Output node into the Home Workspace converts them
+        ///     to a Code Block node.
+        /// </summary>
+        [Test]
+        public void PasteInputAndOutputNodeInHomeWorkspace()
+        {
+            const string name = "Custom Node Creation Test";
+            const string description = "Description";
+            const string category = "Custom Node Category";
+
+            ViewModel.ExecuteCommand(new DynamoViewModel.CreateCustomNodeCommand(
+                    Guid.NewGuid(),
+                    name,
+                    category,
+                    description,
+                    true));
+
+            ViewModel.ExecuteCommand(new DynamoViewModel.CreateNodeCommand(
+                Guid.NewGuid(),
+                typeof(Symbol).ToString(),
+                0, 0,
+                true, true));
+
+            ViewModel.ExecuteCommand(new DynamoViewModel.CreateNodeCommand(
+                Guid.NewGuid(),
+                typeof(Output).ToString(),
+                0, 0, true, true));
+
+            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
+                ViewModel.Model.AddToSelection(node); 
+
+            ViewModel.Model.Copy(null);
+            ViewModel.HomeCommand.Execute(null);
+            ViewModel.Model.Paste(null);
+
+            var homeNodes = ViewModel.Model.HomeSpace.Nodes;
+
+            Assert.AreEqual(2, homeNodes.Count);
+            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[0]);
+            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
+        }
+
         // SaveImage
 
         //[Test]
@@ -513,7 +556,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public void CanSumTwoNumbers()
         {

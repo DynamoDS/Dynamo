@@ -4,13 +4,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Microsoft.Practices.Prism.Commands;
+
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
