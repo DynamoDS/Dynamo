@@ -253,14 +253,20 @@ namespace Dynamo.Nodes.Search
 
         #endregion
 
+        private bool overrideVisibility = false;
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
         public bool ClassDetailsVisibility
         {
+            set
+            {
+                overrideVisibility = value;
+            }
+
             get
             {
-                return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
+                return overrideVisibility;
             }
         }
 

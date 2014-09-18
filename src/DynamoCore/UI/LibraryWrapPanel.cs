@@ -102,16 +102,23 @@ namespace Dynamo.Controls
         {
             var index = ((sender as ListView).SelectedIndex);
 
+            int currentClassInformationIndex = GetClassInformationIndex();
+
+            ClassInformation classInformation = new ClassInformation();
+            if (currentClassInformationIndex != -1)
+                classInformation = collection[currentClassInformationIndex] as ClassInformation;
+            
             //If index is -1, that means user click on the same button. We have to collapse it.
             if (index == -1)
             {
-                var currentClassInformationIndex = GetClassInformationIndex();
-                if (currentClassInformationIndex != -1)
-                    collection[currentClassInformationIndex] = new ClassInformation();
+                classInformation.ClassDetailsVisibility = false;
+                OrderListItems();
                 return;
             }
+
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
+            classInformation.ClassDetailsVisibility = true;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
