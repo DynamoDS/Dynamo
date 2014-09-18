@@ -67,6 +67,7 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
                 searchElement.Execute();
+            e.Handled = true;
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
