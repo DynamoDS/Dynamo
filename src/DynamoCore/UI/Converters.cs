@@ -10,6 +10,7 @@ using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
 
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
@@ -1618,17 +1619,8 @@ namespace Dynamo.Controls
                     return text;
                 case "MethodButton":
                 {
-                    var libraryContainerView = WPF.FindUpVisualTree<SearchView>(value as FrameworkElement);
-                    double buttonLength = libraryContainerView.ActualWidth;
-                    int maxLengthForTitle = (int)buttonLength/5; //Let's say, that 5 pixes are 1 character.
-                    maxLengthForTitle -= 30; //And minus 30 for icon.
-
-                    text = ((value as FrameworkElement).DataContext as SearchElementBase).Name;
-
-                    if (text.Length < maxLengthForTitle) return text;
-
-                    text = text.Substring(0, maxLengthForTitle) + Configurations.TwoDots;
-                    return text;
+                    var width = (double)value;
+                    return width-80; // 80 pixes for icon.
                 }
 
                 // Maybe, later we need more string converters.

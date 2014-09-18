@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:search="clr-namespace:Dynamo.Search"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -133,11 +134,11 @@
                      Grid.Row="1"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                     SizeChanged="RefreshListBoxItems">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
+                            
                             <Image HorizontalAlignment="Left"
                                    Height="32"
                                    Margin="16,0,16,0"
@@ -146,16 +147,18 @@
                                    Source="{Binding SmallIcon}" />
 
                             <TextBlock HorizontalAlignment="Left"
-                                       TextWrapping="Wrap"
+                                       Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13">
-                                <TextBlock.Text>
-                                    <Binding RelativeSource="{RelativeSource Self}"
+                                       FontSize="13"
+                                       TextTrimming="CharacterEllipsis">
+                                <TextBlock.Width>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
                                              Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
                                              ConverterParameter="MethodButton" />
-                                </TextBlock.Text>
+                                </TextBlock.Width>
                             </TextBlock>
 
                         </StackPanel>
@@ -253,12 +256,19 @@
                                    Source="{Binding SmallIcon}" />
 
                             <TextBlock HorizontalAlignment="Left"
-                                       TextWrapping="Wrap"
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13" />
+                                       FontSize="13"
+                                       TextTrimming="CharacterEllipsis">
+                                <TextBlock.Width>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                             ConverterParameter="MethodButton" />
+                                </TextBlock.Width>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
