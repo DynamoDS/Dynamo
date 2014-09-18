@@ -17,7 +17,12 @@
         </Grid.RowDefinitions>
         <Button Content="{Binding Selection, Converter={StaticResource SelectionButtonContentConverter}}" 
                 Command="{Binding SelectCommand}"
-                Grid.Row="0" IsEnabled="{Binding CanSelect}"/>
+                Grid.Row="0" IsEnabled="{Binding CanSelect}"
+                ToolTipService.ShowOnDisabled="True">
+            <Button.ToolTip>
+                <TextBlock Text="{Binding SelectionSuggestion}" />
+            </Button.ToolTip>
+        </Button>
         <TextBlock Text="{Binding Text}" 
                    TextTrimming="WordEllipsis" 
                    TextWrapping="Wrap"

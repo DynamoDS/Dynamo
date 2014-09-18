@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
-using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -59,6 +57,28 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool CanSelect
+        {
+            get
+            {
+                return base.CanSelect && RevitDynamoModel.RunEnabled;
+            }
+            set
+            {
+                base.CanSelect = value;
+            }
+        }
+
+        public override string SelectionSuggestion
+        {
+            get
+            {
+                return RevitDynamoModel.RunEnabled? 
+                    base.SelectionSuggestion:
+                    "Selection is disabled when Dynamo run is disabled.";
+            }
+        }
+
         #endregion
 
         #region protected constructors
@@ -84,6 +104,25 @@ namespace Dynamo.Nodes
             revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
             revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
             revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            revMod.PropertyChanged += revMod_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Handler for the RevitDynamoModel's PropertyChanged event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void revMod_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // Use the RunEnabled flag on the dynamo model
+            // to set the CanSelect flag, enabling or disabling
+            // any bound UI when the dynamo model is not
+            // in a runnable state.
+            if (e.PropertyName == "RunEnabled")
+            {
+                RaisePropertyChanged("CanSelect");
+                RaisePropertyChanged("SelectionSuggestion");
+            }
         }
 
         #endregion
@@ -117,6 +156,11 @@ namespace Dynamo.Nodes
         #endregion
     }
 
+    /// <summary>
+    /// A selection type where the derived class specifies the type to select,
+    /// and returns an element.
+    /// </summary>
+    /// <typeparam name="Tsel"></typeparam>
     public abstract class ElementSelection<Tsel> : RevitSelection<Tsel, Element> where Tsel : Element
     {
         protected ElementSelection(WorkspaceModel workspaceModel,
@@ -211,6 +255,9 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// A selection type for selecting reference objects in Revit (Faces, Edges, etc.)
+    /// </summary>
     public abstract class ReferenceSelection : RevitSelection<Reference, Reference>
     {
         protected ReferenceSelection(

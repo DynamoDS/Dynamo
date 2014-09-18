@@ -50,6 +50,7 @@ namespace Dynamo.Nodes
         protected SelectionObjectType selectionObjectType;
         protected ILogger logger;
         protected Func<List<T1>, List<T2>> SubElementUpdate;
+        protected string selectionSuggestion = "Select something in the model.";
 
         #region public properties
 
@@ -105,7 +106,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Whether or not the Select button is enabled in the UI.
         /// </summary>
-        public bool CanSelect
+        public virtual bool CanSelect
         {
             get { return canSelect; }
             set
@@ -121,6 +122,16 @@ namespace Dynamo.Nodes
         }
 
         public IModelSelectionHelper SelectionHelper { get; protected set; }
+
+        /// <summary>
+        /// A string which can be used to convey information about the
+        /// selection state to the user. This is different than the SelectionMessage
+        /// which is used to prompt the user.
+        /// </summary>
+        public virtual string SelectionSuggestion
+        {
+            get { return selectionSuggestion; }
+        }
 
         #endregion
 
