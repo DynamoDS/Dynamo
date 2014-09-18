@@ -1595,6 +1595,9 @@ namespace Dynamo.Controls
 
     public class FullyQualifiedNameToDisplayConverter : IValueConverter
     {
+        // Pixels for icon at the left side + scrollbar at the right side.
+        private const double iconWidth = 80;
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string text = value.ToString();
@@ -1620,7 +1623,7 @@ namespace Dynamo.Controls
                 case "MethodButton":
                 {
                     var width = (double)value;
-                    return width-80; // 80 pixes for icon.
+                    return width - iconWidth;
                 }
 
                 // Maybe, later we need more string converters.
