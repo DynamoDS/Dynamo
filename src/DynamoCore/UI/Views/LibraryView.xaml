@@ -108,7 +108,7 @@
                             </Style.Resources>
 
                             <EventSetter Event="PreviewMouseLeftButtonDown"
-                                         Handler="CollapseClassButton" />
+                                         Handler="OnClassButtonCollapse" />
 
                             <Setter Property="Template">
                                 <Setter.Value>
