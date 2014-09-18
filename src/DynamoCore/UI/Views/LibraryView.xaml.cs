@@ -35,7 +35,8 @@ namespace Dynamo.UI.Views
         {
             var expanderContent = (sender as FrameworkElement);
             var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent,"");
-            buttons.UnselectAll();
+            if (buttons != null)
+                buttons.UnselectAll();
         }
 
     }

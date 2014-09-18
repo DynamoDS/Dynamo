@@ -118,7 +118,6 @@ namespace Dynamo.Controls
 
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
-            classInformation.ClassDetailsVisibility = true;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
