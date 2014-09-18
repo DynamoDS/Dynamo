@@ -45,7 +45,7 @@
                                    Grid.Row="1"
                                    Grid.Column="1" />
                             <TextBlock HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
+                                       VerticalAlignment="Top"
                                        TextAlignment="Center"
                                        Foreground="#989898"
                                        Grid.Row="2"
@@ -159,7 +159,7 @@
                         Background="#282828"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="16,0,0,0">
+                        Padding="8,0,0,0">
                     <Grid MinHeight="27"
                           MinWidth="66"
                           Margin="0,0,0,2">
@@ -172,14 +172,14 @@
                                Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
                                Width="16"
                                Height="16"
-                               VerticalAlignment="Center"
-                               Margin="0" />
+                               VerticalAlignment="Center" />
                         <ContentPresenter x:Name="HeaderContent"
                                           Grid.Column="1"
                                           ContentSource="Content"
                                           VerticalAlignment="Center"
                                           TextBlock.FontSize="13"
-                                          TextBlock.Foreground="#989898" />
+                                          TextBlock.Foreground="#989898"
+                                          Margin="8,0,0,0"/>
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
@@ -218,6 +218,9 @@
                             <Setter Property="TextBlock.Foreground"
                                     TargetName="HeaderContent"
                                     Value="#bbbbbb" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -428,7 +431,7 @@
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
-                      Background="#282828"
+                      Background="#343434"
                       BorderThickness="0"
                       ItemsSource="{Binding Model.BrowserRootCategories}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
