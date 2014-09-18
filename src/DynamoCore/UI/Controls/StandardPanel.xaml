@@ -149,8 +149,7 @@
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13"
-                                       TextTrimming="CharacterEllipsis">
+                                       FontSize="13">
                                 <TextBlock.Width>
                                     <Binding Path="ActualWidth"
                                              RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
@@ -258,8 +257,7 @@
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13"
-                                       TextTrimming="CharacterEllipsis">
+                                       FontSize="13">
                                 <TextBlock.Width>
                                     <Binding Path="ActualWidth"
                                              RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
