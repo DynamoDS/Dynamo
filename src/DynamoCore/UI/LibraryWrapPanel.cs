@@ -76,7 +76,8 @@ namespace Dynamo.Controls
                     currentRowHeight = 0;
                 }
 
-                if (child.DesiredSize.Width > classObjectWidth) //Then it's Standard panel, we do not need margin it.
+                if ((child as FrameworkElement).DataContext is ClassInformation)
+                //Then it's Standard panel, we do not need margin it.
                 {
                     child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
                     x = x + desiredSize.Width;
