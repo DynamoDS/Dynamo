@@ -245,7 +245,7 @@ namespace Dynamo.DSEngine
 
             try
             {
-                int globalFunctionNumber = GraphUtilities.GetGlobalMethods(string.Empty).Count;
+                int globalFunctionNumber = GraphUtilities.GetGlobalMethods().Count;
 
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
                 IList<ClassNode> importedClasses = GraphUtilities.GetClassesForAssembly(library);
@@ -335,7 +335,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GraphUtilities.BuiltInMethods
+            IEnumerable<FunctionDescriptor> functions = from method in GraphUtilities.GetBuiltInMethods()
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -418,13 +418,10 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
-            foreach (ClassNode classNode in GraphUtilities.ClassTable.ClassNodes)
+            foreach (ClassNode classNode in GraphUtilities.GetImportedClasses())
             {
-                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
-                {
-                    string library = Path.GetFileName(classNode.ExternLib);
-                    ImportClass(library, classNode);
-                }
+                string library = Path.GetFileName(classNode.ExternLib);
+                ImportClass(library, classNode);
             }
         }
 

@@ -1417,18 +1417,6 @@ namespace ProtoScript.Runners
 
         #region Internal Implementation
 
-        private ProtoCore.Mirror.RuntimeMirror GetWatchValue(string varname)
-        {
-            runnerCore.Options.IsDeltaCompile = true;
-            CompileAndExecuteForDeltaExecution(GraphUtilities.GetWatchExpression(varname));
-
-            const int blockID = 0;
-            ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(ProtoCore.DSASM.Constants.kWatchResultVar, blockID, runnerCore);
-            return runtimeMirror;
-
-        }
-
-
         /// <summary>
         /// This is being called currently as it uses the Expression interpreter which does not
         /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors

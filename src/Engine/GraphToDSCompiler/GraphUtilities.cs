@@ -216,54 +216,24 @@ namespace GraphToDSCompiler
         private static List<ProcedureNode> builtInMethods = null;
 
         private static Dictionary<string, string> importedAssemblies = new Dictionary<string,string>();
-        /// <summary>
-        /// List of built-in methods available in Core
-        /// </summary>
-        public static List<ProcedureNode> BuiltInMethods
-        {
-            get
-            {
-                return GetBuiltInMethods();
-            }
-        }
 
-        /// <summary>
-        /// The ClassTable of imported class libraries
-        /// </summary>
-        public static ProtoCore.DSASM.ClassTable ClassTable
+        public static IEnumerable<ClassNode> GetImportedClasses()
         {
-            get
+            foreach (ClassNode classNode in GraphUtilities.GetCore().ClassTable.ClassNodes)
             {
-                if (core != null)
-                    return core.ClassTable;
-                else
-                    return null;
-            }
-
-        }
-
-        public static ProtoCore.AST.AssociativeAST.CodeBlockNode ImportNodes
-        {
-            get
-            {
-                if (core != null)
-                    return core.ImportNodes;
-                else
-                    return null;
+                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
+                {
+                    yield return classNode;
+                }
             }
         }
 
         public static ProtoCore.BuildStatus BuildStatus { get { return core.BuildStatus; } }
 
-        public static uint runningUID = Constants.UIDStart;
+        private static uint runningUID = Constants.UIDStart;
         public static uint GenerateUID() { return runningUID++; }
 
         private static bool resetCore = true;
-
-        public static void Reset()
-        {
-            CleanUp();
-        }
 
         private static void BuildCore(bool isCodeBlockNode = false, bool isPreloadedAssembly = false)
         {
@@ -290,7 +260,7 @@ namespace GraphToDSCompiler
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
         }
 
-        private static void CleanUp()
+        public static void Reset()
         {
             resetCore = true;
             if (core != null)
@@ -303,52 +273,6 @@ namespace GraphToDSCompiler
             builtInMethods = null;
             importedAssemblies.Clear();
             rootModulePath = string.Empty;
-        }
-
-        /// <summary>
-        /// This function returns the AST form of a variable to be watched
-        /// If input is 'a' then output is binary expression AST 'watch_result_var = a'
-        /// </summary>
-        /// <param name="lhsValueToInspect"></param>
-        /// <returns></returns>
-        public static ProtoCore.AST.AssociativeAST.BinaryExpressionNode GetWatchExpressionAST(string lhsValueToInspect)
-        {
-            if (string.IsNullOrEmpty(lhsValueToInspect))
-            {
-                return null;
-            }
-
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode bnode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode(ProtoCore.DSASM.Constants.kWatchResultVar),
-                new ProtoCore.AST.AssociativeAST.IdentifierNode(lhsValueToInspect),
-                ProtoCore.DSASM.Operator.assign);
-
-            return bnode;
-        } 
-        
-        /// <summary>
-        /// This function returns the DS code form of a variable to be watched
-        /// If input is 'a' then output is binary expression 'watch_result_var = a'
-        /// </summary>
-        /// <param name="lhsValueToInspect"></param>
-        /// <returns></returns>
-        public static string GetWatchExpression(string lhsValueToInspect)
-        {
-            if (string.IsNullOrEmpty(lhsValueToInspect))
-            {
-                return string.Empty;
-            }
-            return ProtoCore.DSASM.Constants.kWatchResultVar + "=" + lhsValueToInspect + ";";
-        }
-
-        public static void SetRootModulePath(string rootModulePath)
-        {
-            if (null == rootModulePath)
-                rootModulePath = string.Empty;
-            if (null == core)
-                GraphUtilities.rootModulePath = rootModulePath;
-            else
-                core.Options.RootModulePathName = rootModulePath;
         }
 
         private static bool LocateAssembly(string assembly, out string assemblyPath)
@@ -413,17 +337,6 @@ namespace GraphToDSCompiler
 
         }
 
-        /// <summary>
-        /// This is for Graph UI to preload assemblies as and when they are loaded from Library viewer
-        /// to pre-populate class tables with imported classes and methods
-        /// </summary>
-        /// <param name="assemblies"></param>
-        public static void PreloadAssembly(string assembly)
-        {
-            List<string> assemblies = new List<string>();
-            assemblies.Add(assembly);
-            PreloadAssembly(assemblies);
-        }
 
         /// <summary>
         /// This method iterates over each imported assembly in the importedAssemblies
@@ -460,192 +373,24 @@ namespace GraphToDSCompiler
         /// <returns></returns>
         public static IList<ClassNode> GetClassesForAssembly(string assembly)
         {
-            int currentCI = ClassTable.ClassNodes.Count;
+            int currentCI = core.ClassTable.ClassNodes.Count;
 
             List<string> assemblies = new List<string>();
             assemblies.Add(assembly);
             PreloadAssembly(assemblies);
 
-            int postCI = ClassTable.ClassNodes.Count;
+            int postCI = core.ClassTable.ClassNodes.Count;
 
             IList<ClassNode> classNodes = new List<ClassNode>();
             for (int i = currentCI; i < postCI; ++i)
             {
-                classNodes.Add(ClassTable.ClassNodes[i]);
+                classNodes.Add(core.ClassTable.ClassNodes[i]);
             }
 
             return classNodes;
         }
 
-        /// <summary>
-        /// Returns the LibraryMirror for reflection for each assembly that is imported into the UI
-        /// </summary>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
-        public static ProtoCore.Mirror.LibraryMirror GetLibraryMirror(string assembly)
-        {
-            IList<ClassNode> classNodes = GetClassesForAssembly(assembly);
-
-            ProtoCore.Mirror.LibraryMirror libraryMirror = new ProtoCore.Mirror.LibraryMirror(core, assembly, classNodes);
-
-            return libraryMirror;
-        }
-
-
-        /// <summary>
-        /// Given a class name, this returns the list of base classes for that class
-        /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static List<string> GetParentClasses(string className)
-        {
-            List<string> parentClass = new List<string>();
-
-            if (string.IsNullOrEmpty(className))
-                return parentClass;
-
-            Validity.Assert(core != null);
-            ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-            int ci = classTable.IndexOf(className);
-
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-            {
-
-                ProtoCore.DSASM.ClassNode classNode = classTable.ClassNodes[ci];
-                while (classNode.baseList.Count > 0)
-                {
-
-                    ci = classNode.baseList[0];
-                    Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
-
-                    parentClass.Add(classTable.ClassNodes[ci].name);
-
-                    classNode = classTable.ClassNodes[ci];
-                }
-
-            }
-
-            return parentClass;
-        }
-
-        /// <summary>
-        /// Given a class, this returns the assembly name it is defined in
-        /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static string GetAssemblyFromClassName(string className)
-        {
-            string assembly = "";
-
-            if (string.IsNullOrEmpty(className))
-                return assembly;
-
-            Validity.Assert(core != null);
-            ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-            int ci = classTable.IndexOf(className);
-
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-            {
-                ProtoCore.DSASM.ClassNode classNode = classTable.ClassNodes[ci];
-                assembly = classNode.ExternLib;
-            }
-
-            return assembly;
-        }
-
-        /// <summary>
-        /// Returns the list of constructors for a given class
-        /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static List<string> GetConstructors(string className)
-        {
-            List<string> constructors = new List<string>();
-            Validity.Assert(core != null);
-            ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-            int ci = classTable.IndexOf(className);
-
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-            {
-                ClassNode classNode = classTable.ClassNodes[ci];
-                ProcedureTable procedureTable = classNode.vtable;
-                List<ProcedureNode> procList = procedureTable.procList;
-                foreach (ProcedureNode pNode in procList)
-                {
-                    if (pNode.isConstructor == true)
-                        constructors.Add(pNode.name);
-                }
-            }
-            return constructors;
-        }
-
-        /// <summary>
-        /// Returns the list of properties for a given class
-        /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static List<string> GetProperties(string className)
-        {
-            List<string> properties = new List<string>();
-            Validity.Assert(core != null);
-            ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-            int ci = classTable.IndexOf(className);
-            string name = string.Empty;
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-            {
-                ClassNode classNode = classTable.ClassNodes[ci];
-                ProcedureTable procedureTable = classNode.vtable;
-                List<ProcedureNode> procList = procedureTable.procList;
-                string prefix = ProtoCore.DSASM.Constants.kGetterPrefix;
-                ArgumentInfo aInfo = new ArgumentInfo();
-                aInfo.Name = ProtoCore.DSASM.Constants.kThisPointerArgName;
-                foreach (ProcedureNode pNode in procList)
-                {
-                    name = pNode.name;
-                    if (name.Contains(prefix) && pNode.argInfoList.Count == 0 && !pNode.argInfoList.Contains(aInfo))
-                    {
-                        int prefixLength = prefix.Length;
-                        name = name.Substring(prefixLength);
-                        properties.Add(name);
-                    }
-                }
-            }
-            return properties;
-        }
-
-        /// <summary>
-        /// Returns a list of member functions for a given class
-        /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static List<string> GetMethods(string className)
-        {
-            List<string> methods = new List<string>();
-            Validity.Assert(core != null);
-            ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-            int ci = classTable.IndexOf(className);
-            string name = string.Empty;
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
-            {
-                ClassNode classNode = classTable.ClassNodes[ci];
-                ProcedureTable procedureTable = classNode.vtable;
-                List<ProcedureNode> procList = procedureTable.procList;
-                string prefix = ProtoCore.DSASM.Constants.kGetterPrefix;
-                ArgumentInfo aInfo = new ArgumentInfo();
-                aInfo.Name = ProtoCore.DSASM.Constants.kThisPointerArgName;
-                foreach (ProcedureNode pNode in procList)
-                {
-                    name = pNode.name;
-                    if (name.Contains(prefix) == false && pNode.isConstructor == false && !pNode.argInfoList.Contains(aInfo))
-                    {
-                        methods.Add(name);
-                    }
-                }
-            }
-            return methods;
-        }
-
-        private static List<ProcedureNode> GetBuiltInMethods()
+        public static List<ProcedureNode> GetBuiltInMethods()
         {
             Validity.Assert(core != null);
 
@@ -671,11 +416,9 @@ namespace GraphToDSCompiler
         }
 
         /// <summary>
-        ///  Given a DS file, this returns the list of global functions defined in the file
         /// </summary>
-        /// <param name="dsFile"></param>
         /// <returns></returns>
-        public static List<ProcedureNode> GetGlobalMethods(string dsFile)
+        public static List<ProcedureNode> GetGlobalMethods()
         {
             List<ProcedureNode> methods = new List<ProcedureNode>();
             Validity.Assert(core != null);
@@ -694,49 +437,6 @@ namespace GraphToDSCompiler
 
             numBuiltInMethods = procNodes.Count;
             return methods;
-        }
-
-        private static void InsertCommentsInCode(string stmt, ProtoCore.AST.Node node, 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode, ref int cNodeNum, ref List<string> compiled, string expression)
-        {
-            if (node == null)
-            {
-                for (int i = cNodeNum; i < commentNode.Body.Count; ++i)
-                {
-                    ProtoCore.AST.AssociativeAST.CommentNode cnode = commentNode.Body[i] as ProtoCore.AST.AssociativeAST.CommentNode;
-                    if (cnode == null)
-                        continue;
-                    string commentString = ProtoCore.Utils.ParserUtils.ExtractCommentStatementFromCode(expression, cnode);
-                    compiled.Add(commentString);
-                }
-                return;
-            }
-
-            string[] lines = stmt.Split('\n');
-            int numLines = lines.Length;
-            int nodeEndLine = node.line + numLines - 1;
-            int nodeEndCol = lines[numLines - 1].Length + 1;
-
-            //int commentCount = 0;
-            for (int i = cNodeNum; i < commentNode.Body.Count; ++i)
-            {
-                ProtoCore.AST.AssociativeAST.CommentNode cnode = commentNode.Body[i] as ProtoCore.AST.AssociativeAST.CommentNode;
-                if (cnode == null)
-                    continue;
-
-                //Get the statement with the line spaces
-                string commentString = ProtoCore.Utils.ParserUtils.ExtractCommentStatementFromCode(expression, cnode);
-
-                // If comment appears on line before statement
-                if (cnode.line < node.line)
-                {
-                    //compiled.Insert(nodeNum + commentCount++, cnode.Value);
-                    compiled.Insert(compiled.Count - 1, commentString);
-                    cNodeNum = i + 1;
-                }
-                else // By this point we know the comment appears on a line after the statement
-                    break;
-            }
         }
 
         private static IEnumerable<ProtoCore.AST.Node> ParseUserCodeCore(string expression, string postfixGuid, ref bool parseSuccess)
@@ -937,52 +637,7 @@ namespace GraphToDSCompiler
             } while (index != -1);
             return expr;
         }
-        /*attempt ends*/
-        private static string GetFunctionString(string input)
-        {
-            Stack<int> openingBraces = new Stack<int>();
-            string output = "";
-            int index = input.IndexOf("{");
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (input[i] == '{')
-                {
-                    openingBraces.Push(i);
-                }
-                else if (input[i] == '}')
-                {
-                    int closer = openingBraces.Pop();
-                    output += string.Format("{0} - {1}\n", closer, i);
-                    if (closer == index) index = i;
-                }
-            }
-            if (index < input.Length - 1) { if (input[index + 1].Equals('\n')) index += 1; }
-            return input.Substring(0, index + 1);
-        }
 
-        /// <summary>
-        /// Takes in a string and returns a list of AST nodes and a list of unbound variables
-        /// </summary>
-        /// <param name="compilableText"></param>
-        /// <param name="unboundIdentifiers"></param>
-        /// <param name="astNodes"></param>
-        /// <returns>Returns true if compilation succeeded, or false otherwise. Returning true may still 
-        /// result in warnings, which suggests that the compilation was successful with warning.</returns>             
-
-
-
-        public static List<SynchronizeData> GetSDList(string filepath)
-        {
-            BuildCore(true);
-            List<SynchronizeData> sdList = new List<SynchronizeData>();
-            string readContents = filepath;
-            //using (StreamReader streamReader = new StreamReader(filepath, Encoding.UTF8))
-            //{
-            //    readContents = streamReader.ReadToEnd();
-            //}
-            sdList = (SynchronizeDataCollection.Deserialize(readContents)).sdList;
-            return sdList;
-        }
 
         /// <summary>
         /// Checks if the string in code block node is a literal or an identifier or has multiple lines of code.
@@ -1010,22 +665,7 @@ namespace GraphToDSCompiler
                 //if syntax return SnapshotNodeType as None
                 return SnapshotNodeType.CodeBlock;
             }
-            /* 
-             string LiteralPatternInt = @"^\s*-?\d+\s*$";
-             string LiteralPatternDouble = @"^\d+([\.]\d+)?$";
-             string LiteralPatternString = "^\"([^\"\\\\]|\\\\.)*\"$";
-             string IdentifierPattern = @"^\s*[_a-zA-Z][_a-z0-9A-Z@]*\s*$";
-             Match matchInt = Regex.Match(code, LiteralPatternInt);
-             Match matchDouble = Regex.Match(code, LiteralPatternDouble);
-             Match matchString = Regex.Match(code, LiteralPatternString);
-             Match matchIdentifier = Regex.Match(code, IdentifierPattern);
 
-            if (matchInt.Success || matchString.Success || matchDouble.Success)
-                type = StringExpressionType.Literal;
-            else if (matchIdentifier.Success)
-                type = StringExpressionType.Identifier;
-            else
-                type = StringExpressionType.CodeBlock;*/
             if (n.Count > 1 || n.Count == 0)
                 type = SnapshotNodeType.CodeBlock;
             else if (n[0] is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
@@ -1037,8 +677,6 @@ namespace GraphToDSCompiler
             else type = SnapshotNodeType.CodeBlock;
             return type;
         }
-
-
 
         /// <summary>
         /// Does the first pass of compilation and returns a list of wanrnings in compilation
@@ -1085,90 +723,6 @@ namespace GraphToDSCompiler
 
             return core.BuildStatus;
         }
-
-        private static List<VariableLine> DfsTraverse(ProtoCore.AST.AssociativeAST.AssociativeNode node)
-        {
-            List<VariableLine> result = new List<VariableLine>();
-            if (node is ProtoCore.AST.AssociativeAST.FunctionCallNode)
-            {
-                foreach (ProtoCore.AST.AssociativeAST.AssociativeNode argNode in
-                    (node as ProtoCore.AST.AssociativeAST.FunctionCallNode).FormalArguments)
-                {
-                    if (argNode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                    {
-                        result.Add(new VariableLine()
-                        {
-                            variable = argNode.Name,
-                            line = argNode.line
-                        });
-                    }
-
-                    if (argNode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
-                    {
-                        result.AddRange(DfsTraverse(argNode));
-                    }
-                }
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.IdentifierNode)
-            {
-                result.Add(new VariableLine()
-                {
-                    variable = node.Name,
-                    line = node.line
-                });
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
-            {
-                //result.AddRange(DfsTraverse((node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).LeftNode));
-                result.AddRange(DfsTraverse((node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).RightNode));
-            }
-
-            return result;
-        }
-
-        /*private static void GetInputLines(string compilableText, List<ProtoCore.BuildData.WarningEntry> warnings,
-            Dictionary<int, List<VariableLine>> inputLines)
-        {
-            string plainCode = compilableText.Replace("\n", "");
-            string[] statementsList = plainCode.Split(';');
-
-            List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
-
-            int codeLineNumber = 1;             //last line number of the current statement
-            int newLineIndex = 0;               //not for use now
-            int oldStmtLine = 0;                //last line number of the last statement
-            int stmtNumber = 0;                 //the current statement number
-
-            List<VariableLine> variableLineList = new List<VariableLine>();
-            for (int k = newLineIndex; k < compilableText.Length; k++)
-            {
-                if (compilableText[k] == '\n')
-                {
-                    codeLineNumber++;
-                }
-                if (compilableText[k] == ';')
-                {
-                    stmtNumber++;
-                    variableLineList.Clear();
-
-                    variableLineList.AddRange(warningVLList);
-                    foreach (VariableLine varLinePair in warningVLList)
-                    {
-                        if (varLinePair.line > codeLineNumber || varLinePair.line <= oldStmtLine)
-                        {
-                            variableLineList.Remove(varLinePair);
-                        }
-                    }
-                    if (variableLineList.Count != 0)
-                    {
-
-                        inputLines.Add(stmtNumber, new List<VariableLine>(variableLineList));
-
-                    }
-                    oldStmtLine = codeLineNumber;
-                }
-            }
-        }*/
 
         private static void GetInputLines(IEnumerable<ProtoCore.AST.Node> astNodes, IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
             Dictionary<int, List<VariableLine>> inputLines)
@@ -1342,84 +896,13 @@ namespace GraphToDSCompiler
                 return false;
             }
         }
-
-        private static void GetOutputLines(string code, ProtoCore.Core core, Dictionary<int, string> outputLines)
-        {
-            Validity.Assert(code != null);
-            if (!String.IsNullOrEmpty(code))
-            {
-
-                System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
-                ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-                ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-
-                p.Parse();
-
-                foreach (var astNode in core.AstNodeList)
-                {
-                    var binaryExpr = astNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                    while (binaryExpr != null)
-                    {
-                        var lhsVariable = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                        if (lhsVariable != null)
-                        {
-                            outputLines[lhsVariable.line] = lhsVariable.Name;
-                        }
-
-                        // deal with the case of continuous assingment
-                        binaryExpr = binaryExpr.RightNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                    }
-                }
-            }
-        }
-        
-
-        private static void GetOutputLines(string code, ProtoCore.Core core, HashSet<VariableLine> outputLines)
-        {
-            
-            foreach (var astNode in core.AstNodeList)
-            {
-                var binaryExpr = astNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                while (binaryExpr != null)
-                {
-                    var lhsVariable = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                    if (lhsVariable != null)
-                    {
-                        var varlinePair = new VariableLine(lhsVariable.Name, lhsVariable.line);
-                        outputLines.Add(varlinePair);
-                    }
-                    else 
-                    {
-                        var lhs = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
-                        Validity.Assert(lhs != null);
-
-                        // TODO: Get identifier list name by DFS Traversing the node
-                        /*List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-                        astList.Add(lhs as ProtoCore.AST.AssociativeAST.AssociativeNode);
-                        ProtoCore.SourceGen codegen = new ProtoCore.SourceGen(astList);
-                        codegen.GenerateCode();*/
-
-                        string stmt = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(code, lhs);
-                        int equalIndex = stmt.IndexOf('=');
-                        string identListName = ProtoCore.Utils.ParserUtils.GetLHSatAssignment(stmt, equalIndex)[0]; // codegen.Code;
-                        
-                        string varname = identListName.Split('.')[0];
-                        var varlinePair = new VariableLine(varname, lhs.line);
-                        //var varlinePair = new VariableLine(identListName, lhs.line);
-                        outputLines.Add(varlinePair);
-                    }
-
-                    // deal with the case of continuous assingment
-                    binaryExpr = binaryExpr.RightNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                }
-            }            
-        }
+      
         /// <summary>
         /// Temporary implementation for importing external libraries
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string MD5Hash(string text)
+        private static string MD5Hash(string text)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
 
@@ -1453,238 +936,6 @@ namespace GraphToDSCompiler
                 code = codeGen.GenerateCode();
             }
             return code;
-        }
-
-        public static List<SnapshotNode> NodeToCodeBlocks(List<SnapshotNode> inputs, GraphToDSCompiler.GraphCompiler originalGC)
-        {
-            List<SnapshotNode> codeBlocks = new List<SnapshotNode>();
-            GraphToDSCompiler.GraphCompiler newGC = GraphCompiler.CreateInstance();
-
-            newGC.SetCore(core);
-            GraphToDSCompiler.SynchronizeData newSyncData = new SynchronizeData();
-            newSyncData.AddedNodes = inputs;
-            newSyncData.ModifiedNodes = new List<SnapshotNode>();
-            newSyncData.RemovedNodes = new List<uint>();
-            GraphToDSCompiler.GraphBuilder GB = new GraphBuilder(newSyncData, newGC);
-
-            #region fix connection for multi-line CBN
-            /*for multi-line code blocks*/
-            List<Node> completeList = originalGC.Graph.nodeList;
-            List<uint> originalNodeUIDList = new List<uint>();
-            foreach (Node oriGcNode in completeList)
-            {
-                originalNodeUIDList.Add(oriGcNode.Guid);
-            }
-
-            GB.AddNodesToAST();
-            
-            //List<SnapshotNode> inputsCopy = new List<SnapshotNode>(inputs);
-            for (int i = 0; i < inputs.Count; i++)
-            {
-                SnapshotNode inputSnapshotNode = inputs[i];
-                for (int j = 0; j < inputSnapshotNode.InputList.Count; j++)
-                {
-                    Connection inputConnection = inputSnapshotNode.InputList[j];
-                    if (!originalNodeUIDList.Contains(inputConnection.OtherNode))
-                    {
-                        Connection correctedInputConnection = new Connection();
-                        correctedInputConnection.LocalName = inputConnection.LocalName;
-                        correctedInputConnection.LocalIndex = inputConnection.LocalIndex;
-                        correctedInputConnection.IsImplicit = inputConnection.IsImplicit;
-                        correctedInputConnection.OtherIndex = inputConnection.OtherIndex;
-                        if (newGC.codeBlockUIDMap.ContainsKey(inputConnection.OtherNode))
-                        {
-                            correctedInputConnection.OtherNode = newGC.codeBlockUIDMap[inputConnection.OtherNode][inputConnection.OtherIndex];
-                        }
-                        else 
-                        {
-                            correctedInputConnection.OtherNode = originalGC.codeBlockUIDMap[inputConnection.OtherNode][inputConnection.OtherIndex];
-                        }
-                        inputSnapshotNode.InputList.Remove(inputConnection);
-                        inputSnapshotNode.InputList.Insert(j, correctedInputConnection);
-                    }
-                }
-                for (int j = 0; j < inputSnapshotNode.OutputList.Count; j++)
-                {
-                    Connection outputConnection = inputSnapshotNode.OutputList[j];
-                    if (!originalNodeUIDList.Contains(outputConnection.OtherNode))                       // if the other node is split
-                    {
-                        Connection correctedInputConnection = new Connection();
-                        correctedInputConnection.LocalName = outputConnection.LocalName;
-                        correctedInputConnection.LocalIndex = outputConnection.LocalIndex;
-                        correctedInputConnection.IsImplicit = outputConnection.IsImplicit;
-                        correctedInputConnection.OtherIndex = outputConnection.OtherIndex;
-                        if (newGC.codeBlockUIDMap.ContainsKey(outputConnection.OtherNode))
-                        {
-                            correctedInputConnection.OtherNode = newGC.GetUidOfRHSIdentifierInCodeBlock(
-                                outputConnection.OtherNode, outputConnection.OtherIndex, outputConnection.LocalName);
-                            //correctedInputConnection.OtherNode = newGC.codeBlockUIDMap[outputConnection.OtherNode][outputConnection.OtherIndex];
-                        }
-                        else
-                        {
-                            correctedInputConnection.OtherNode = originalGC.codeBlockUIDMap[outputConnection.OtherNode][outputConnection.OtherIndex];
-                        }
-                        inputSnapshotNode.OutputList.Remove(outputConnection);
-                        inputSnapshotNode.OutputList.Insert(j, correctedInputConnection);
-                    }
-                }
-            }
-            GB.nodesToAdd = inputs;
-            GB.MakeConnectionsForAddedNodes_NodeToCode(GB.nodesToAdd);
-            newGC.PrintGraph();
-            #endregion
-
-            //GB.BuildGraphForCodeBlock();
-            
-            List<uint> nodesToBeAdded = new List<uint>();
-            List<Node> nodesToBeReplaced = new List<Node>();
-
-            //adding children node from the originalGC to the newGC needed for the newGC to generate code
-            foreach (Node n in completeList)
-            {
-                foreach (Node child in n.GetChildren())
-                {
-                    if (newGC.Graph.GetNode(child.Guid) != null)
-                    {
-                        if (child.Name != newGC.Graph.GetNode(child.Guid).Name)
-                        {
-                            nodesToBeReplaced.Add(child);
-                        }
-                    }
-                }
-            }
-
-            foreach (uint n in nodesToBeAdded)
-            {
-                Node n1 = completeList.FirstOrDefault(q => q.Guid == n);
-                //n1.children.Clear();
-                nodesToBeReplaced.Add(n1);
-                //newSyncData.RemovedNodes.Add(n);
-            }
-
-            List<uint> nodeToCodeUIDs = new List<uint>();
-            foreach (SnapshotNode ssn in inputs)
-                nodeToCodeUIDs.Add(ssn.Id);
-            newGC.nodeToCodeUIDs = nodeToCodeUIDs;
-
-            /*create output snapshot nodes*/
-            List<Connection> inputNodeInputConnections = new List<Connection>();
-            List<Connection> inputNodeOutputConnections = new List<Connection>();
-            foreach (SnapshotNode ssn in inputs)
-            {
-                foreach (Connection inputConnection in ssn.InputList)
-                {
-                    if (!nodeToCodeUIDs.Contains(inputConnection.OtherNode))
-                        inputNodeInputConnections.Add(inputConnection);
-                }
-                foreach (Connection outputConnection in ssn.OutputList)
-                {
-                    if (!nodeToCodeUIDs.Contains(outputConnection.OtherNode))
-                        inputNodeOutputConnections.Add(outputConnection);
-                }
-            }
-
-            newGC.ReplaceNodesFromAList(nodesToBeReplaced);
-            newSyncData.AddedNodes = new List<SnapshotNode>();
-            newSyncData.ModifiedNodes = new List<SnapshotNode>();
-            newSyncData.RemovedNodes = new List<uint>();
-            GB = new GraphBuilder(newSyncData, newGC);
-            //string result = GB.BuildGraphDAG();           
-            List<SnapshotNode> nodeToCodeBlocks = GB.PrintCodeForSelectedNodes(originalGC, inputs);
-
-            
-
-            /*for now, only connected nodes are supported: return all connections that are not internal connections (connections between the selected nodes)*/
-            //uint id = 0;
-            //foreach (string content in toCode)
-            //{
-            //    SnapshotNode ssn = new SnapshotNode();
-            //    ssn.Type = SnapshotNodeType.CodeBlock;
-            //    ssn.Content = content;
-            //    ssn.Id = id++;
-            //    ssn.InputList = new List<Connection>();
-            //    //stupid stub
-            //    foreach (Connection inputConnection in inputNodeInputConnections)
-            //    {
-            //        Connection newInputConnection = new Connection();
-            //        newInputConnection.OtherNode = inputConnection.OtherNode;
-            //        newInputConnection.OtherIndex = inputConnection.OtherIndex;
-            //        newInputConnection.IsImplicit = inputConnection.IsImplicit;
-            //        string[] tokens = newGC.Graph.GetNode(inputConnection.OtherNode).Name.Split('=');
-            //        newInputConnection.LocalName = tokens[0];
-            //        ssn.InputList.Add(newInputConnection);
-            //    }
-            //    //ssn.InputList = inputNodeInputConnections; 
-            //    ssn.OutputList = new List<Connection>();
-            //    foreach (Connection outputConnection in inputNodeOutputConnections)
-            //    {
-            //        Connection newOutputConnection = new Connection();
-            //        newOutputConnection.OtherNode = outputConnection.OtherNode;
-            //        newOutputConnection.OtherIndex = outputConnection.OtherIndex;
-            //        newOutputConnection.IsImplicit = outputConnection.IsImplicit;
-            //        //string[] tokens = originalGC.Graph.GetNode(outputConnection.OtherNode).Name.Split('=');
-            //        newOutputConnection.LocalName = outputConnection.LocalName;
-            //        ssn.OutputList.Add(newOutputConnection);
-            //    }
-            //    //ssn.OutputList = inputNodeOutputConnections;
-            //    codeBlocks.Add(ssn);
-            //}
-            
-            /*update the original GC*/
-            foreach (SnapshotNode inputNode in inputs)
-            {
-                if (originalNodeUIDList.Contains(inputNode.Id))
-                    originalGC.RemoveNodes(inputNode.Id, false);
-                else 
-                {
-                    foreach (KeyValuePair<uint, Dictionary<int, uint>> kvp in originalGC.codeBlockUIDMap)
-                    {
-                        if (kvp.Value.ContainsValue(inputNode.Id))
-                        {
-                            originalGC.RemoveNodes(kvp.Key, false);
-                        }
-                    }
-                }
-            }
-            foreach (Node node in newGC.Graph.nodeList)
-            {
-                node.Name = node.Name.TrimEnd(';') + ";";
-            }
-            originalGC.Graph.nodeList.Union<Node>(newGC.Graph.nodeList);
-            //originalGC = newGC;
-            /**/
-
-            return nodeToCodeBlocks;
-            //return codeBlocks;
-        }
-
-        public static bool CompareCode(string s1, string s2)
-        {
-            Validity.Assert(!string.IsNullOrEmpty(s1));
-            Validity.Assert(!string.IsNullOrEmpty(s2));
-
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = Parse(s2, out commentNode);
-            return s1Root.Equals(s2Root);
-        }
-
-        public static string ConvertAbsoluteToRelative(string absolutePath)
-        {
-            if (!Path.IsPathRooted(absolutePath))
-                return absolutePath; //it's already a relative path
-
-            Uri current = new Uri(Directory.GetCurrentDirectory());
-            string currentPath = current.ToString()+@"\";
-            Uri correctCurrent = new Uri(currentPath);          //the function MakeRelativeUri doesn't work correctly if current doesn't end with a "\"
-            Uri path = new Uri(absolutePath);
-
-            return correctCurrent.MakeRelativeUri(path).ToString();
-        }
-
-        public static string ConvertRelativeToAbsolute(string relative)
-        {
-            return Path.GetFullPath(relative);
         }
     }
 }
