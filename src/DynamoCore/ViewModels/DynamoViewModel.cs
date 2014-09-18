@@ -1966,13 +1966,27 @@ namespace Dynamo.ViewModels
             internal bool CloseDynamoView { get; private set; }
         }
 
+        private bool shutdownSequenceInitiated = false;
+
         internal bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
-            if (model.ShutdownRequested) // There was a prior call to shutdown.
-                return false;
+            // There was a prior call to shutdown. This could happen for example
+            // when user presses 'ALT + F4' to close the DynamoView, the 'Exit' 
+            // handler calls this method to close Dynamo, which in turn closes 
+            // the DynamoView ('OnRequestClose' below). When DynamoView closes,
+            // its "Window.Closing" event fires and "DynamoView.WindowClosing" 
+            // gets called before 'PerformShutdownSequence' is called again.
+            // 
+            if (shutdownSequenceInitiated)
+                return true;
 
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
+
+            // Note that 'shutdownSequenceInitiated' is only marked as 'true'
+            // here when it goes past the point-of-no-return, in which case 
+            // there is no stopping of shutdown sequence.
+            shutdownSequenceInitiated = true;
 
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
