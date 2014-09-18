@@ -955,6 +955,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
@@ -978,6 +979,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestDummyNodeInternals01()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");

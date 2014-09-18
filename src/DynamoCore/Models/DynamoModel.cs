@@ -379,7 +379,7 @@ namespace Dynamo.Models
             get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
-        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
+        public virtual void ShutDown(bool shutDownHost)
         {
             ShutdownRequested = true;
 
@@ -390,7 +390,7 @@ namespace Dynamo.Models
 
             PreferenceSettings.Save();
 
-            OnCleanup(args);
+            OnCleanup();
 
             Logger.Dispose();
 

@@ -58,7 +58,7 @@ namespace DynamoCoreUITests
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
-                    this.ViewModel.Model.ShutDown(true);
+                    this.ViewModel.Model.ShutDown(false);
                 }
                 this.ViewModel = null;
             }

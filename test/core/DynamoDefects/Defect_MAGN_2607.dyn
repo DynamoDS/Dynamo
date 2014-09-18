@@ -1,0 +1,23 @@
+<Workspace Version="0.7.2.27415" X="469.983576527133" Y="502.572526645896" zoom="0.989005846727377" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="99975a42-f887-4b99-9b0a-e36513d2bd6d" nickname="ok" x="-32.7441554638225" y="-209.273900658432" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cf77b7e8-fa0f-4779-b431-77c959ba33be" />
+      <Name value="ok" />
+      <Description value="ok" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="c" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="7cbafd1f-cec2-48b2-ac52-c9605acfb644" nickname="Integer Slider" x="-236.484103682293" y="-354.874657697934" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>6</System.Int32>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.IntegerSlider>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7cbafd1f-cec2-48b2-ac52-c9605acfb644" start_index="0" end="99975a42-f887-4b99-9b0a-e36513d2bd6d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

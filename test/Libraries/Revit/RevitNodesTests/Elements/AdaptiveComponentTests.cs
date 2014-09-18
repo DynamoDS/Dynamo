@@ -17,6 +17,7 @@ using RTF.Framework;
 
 using FamilyInstance = Autodesk.Revit.DB.FamilyInstance;
 using FamilySymbol = Revit.Elements.FamilySymbol;
+using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -155,14 +156,30 @@ namespace DSRevitNodesTests
 
         }
 
-        [Test, Ignore]
+        [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]
-        public void ByPointsOnFace_ValidInput()
+        public void ByParametersOnFace_CreatesValidACFromElementFaceReference()
         {
-            Assert.Inconclusive();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
+            Assert.NotNull(ele);
+
+            var form = ele as Form;
+            var faces = form.ElementFaceReferences;
+            Assert.IsTrue(faces.All(x => x != null));
+            Assert.AreEqual(6, faces.Length);
+
+            var fs = FamilySymbol.ByName("3PointAC");
+
+            var uvs = new[]
+            {
+                Autodesk.DesignScript.Geometry.UV.ByCoordinates(0, 0),
+                Autodesk.DesignScript.Geometry.UV.ByCoordinates(0.5, 0.5),
+                Autodesk.DesignScript.Geometry.UV.ByCoordinates(0.5, 0)
+            };
+
+            var ac = AdaptiveComponent.ByParametersOnFace(uvs, faces.First(), fs);
+
+            Assert.NotNull(ac);
         }
-
-        // tests for properties, null input
-
     }
 }

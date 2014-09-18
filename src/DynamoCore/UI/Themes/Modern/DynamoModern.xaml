@@ -4,6 +4,7 @@
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" 
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
@@ -75,6 +76,7 @@
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
          Link: http://www.google.com/fonts/specimen/Open+Sans -->
+    <FontFamily x:Key="Inconsolata">../../Fonts/#Inconsolata</FontFamily>
     <FontFamily x:Key="OpenSansRegular">../../Fonts/#Open Sans</FontFamily>
     <FontFamily x:Key="OpenSansItalic">../../Fonts/#Open Sans Italic</FontFamily>
     <FontFamily x:Key="OpenSansLight">../../Fonts/#Open Sans Light</FontFamily>
@@ -993,86 +995,6 @@
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
 
-    <!-- CodeBlockNode Text Box Watermark -->
-
-    <Style x:Key="CodeBlockNodeTextBox"
-           BasedOn="{StaticResource {x:Type TextBox}}"
-           TargetType="{x:Type TextBox}">
-        <Setter Property="Foreground"
-                Value="#444" />
-        <Setter Property="CaretBrush"
-                Value="#333" />
-        <Setter Property="HorizontalAlignment"
-                Value="Stretch" />
-        <Setter Property="FontSize"
-                Value="15px" />
-        <Setter Property="TextBlock.LineHeight"
-                Value="26" />
-        <Setter Property="TextBlock.LineStackingStrategy"
-                Value="BlockLineHeight" />
-        <Setter Property="TextBlock.VerticalAlignment"
-                Value="Center"/>
-        <Setter Property="Padding"
-                Value="3" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border Name="borderText"
-                            BorderThickness="1,0,1,0"
-                            BorderBrush="#aaa"
-                            Background="#88FFFFFF">
-                        <Grid>
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            <TextBlock x:Name="previewText"
-                                       Foreground="#777777"
-                                       FontSize="14.67px"
-                                       Padding="3"
-                                       Margin="4 0 4 0"
-                                       IsHitTestVisible="False"
-                                       Text="{TemplateBinding Tag}">
-                                <TextBlock.Visibility>
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="Text.IsEmpty"
-                                             Converter="{StaticResource BooleanToVisibilityConverter}"
-                                             ConverterParameter="Collapse" />
-                                </TextBlock.Visibility>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsKeyboardFocusWithin"
-                                 Value="True">
-                            <Setter TargetName="borderText"
-                                    Property="BorderBrush"
-                                    Value="#666" />
-                            <Setter Property="Background"
-                                    Value="#aaa" />
-                        </Trigger>
-
-                        <Trigger Property="IsEnabled"
-                                 Value="False">
-                            <Setter Property="Foreground"
-                                    Value="#444" />
-                            <Setter TargetName="borderText"
-                                    Property="BorderBrush"
-                                    Value="#444" />
-                        </Trigger>
-
-                        <Trigger Property="Text"
-                                 Value="">
-                            <Setter Property="Visibility"
-                                    TargetName="previewText"
-                                    Value="Visible" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Port Model -->
-    <clr:Double x:Key="port_height">26</clr:Double>
 
     <!-- Tool Tip Control -->
     <Style x:Key="SLightToolTip"
