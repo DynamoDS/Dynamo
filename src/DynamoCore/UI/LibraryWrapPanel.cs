@@ -101,17 +101,13 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
-
-            int currentClassInformationIndex = GetClassInformationIndex();
-
-            ClassInformation classInformation = new ClassInformation();
-            if (currentClassInformationIndex != -1)
-                classInformation = collection[currentClassInformationIndex] as ClassInformation;
             
             //If index is -1, that means user click on the same button. We have to collapse it.
             if (index == -1)
             {
-                classInformation.ClassDetailsVisibility = false;
+                int classInfoIndex = GetClassInformationIndex();
+                if (classInfoIndex != -1)
+                    (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
                 OrderListItems();
                 return;
             }
