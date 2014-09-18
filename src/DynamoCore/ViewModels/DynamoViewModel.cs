@@ -1931,12 +1931,7 @@ namespace Dynamo.ViewModels
             internal ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation)
-                : this()
-            {
-                ShutdownHost = shutdownHost;
-                AllowCancellation = allowCancellation;
-                CloseDynamoView = true;
-            }
+                : this(shutdownHost, allowCancellation, true) { }
 
             internal ShutdownParams(
                 bool shutdownHost,
@@ -1979,8 +1974,10 @@ namespace Dynamo.ViewModels
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
 
-            //request the UI to close its window
-            OnRequestClose(this, EventArgs.Empty);
+            // Request the View layer to close its window (see 
+            // ShutdownParams.CloseDynamoView member for details).
+            if (shutdownParams.CloseDynamoView)
+                OnRequestClose(this, EventArgs.Empty);
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
