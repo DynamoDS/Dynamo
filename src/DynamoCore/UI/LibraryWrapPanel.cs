@@ -141,7 +141,6 @@ namespace Dynamo.Controls
         private int GetClassInformationIndex()
         {
             var query = collection.Select(c => c).Where(c => c is ClassInformation);
-
             var classObjectBase = query.ElementAt(0);
             return collection.IndexOf(classObjectBase);
         }
