@@ -149,14 +149,7 @@
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13">
-                                <TextBlock.Width>
-                                    <Binding Path="ActualWidth"
-                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
-                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                             ConverterParameter="MethodButton" />
-                                </TextBlock.Width>
-                            </TextBlock>
+                                       FontSize="13" />
 
                         </StackPanel>
                     </DataTemplate>
@@ -257,14 +250,7 @@
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
-                                       FontSize="13">
-                                <TextBlock.Width>
-                                    <Binding Path="ActualWidth"
-                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=uicontrols:StandardPanel}"
-                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                             ConverterParameter="MethodButton" />
-                                </TextBlock.Width>
-                            </TextBlock>
+                                       FontSize="13" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
