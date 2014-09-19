@@ -64,6 +64,20 @@ namespace Dynamo.Models
             }
         }
 
+        public event DynamoModelHandler ShutdownStarted;
+        private void OnShutdownStarted()
+        {
+            if (ShutdownStarted != null)
+                ShutdownStarted(this);
+        }
+
+        public event DynamoModelHandler ShutdownCompleted;
+        private void OnShutdownCompleted()
+        {
+            if (ShutdownCompleted != null)
+                ShutdownCompleted(this);
+        }
+
         #endregion
 
         #region internal members
@@ -400,9 +414,13 @@ namespace Dynamo.Models
 
             ShutdownRequested = true;
 
-            PreShutdownCore(shutdownHost);
-            ShutDownCore(shutdownHost);
-            PostShutdownCore(shutdownHost);
+            OnShutdownStarted(); // Notify possible event handlers.
+            {
+                PreShutdownCore(shutdownHost);
+                ShutDownCore(shutdownHost);
+                PostShutdownCore(shutdownHost);
+            }
+            OnShutdownCompleted(); // Notify possible event handlers.
         }
 
         protected virtual void PreShutdownCore(bool shutdownHost)
