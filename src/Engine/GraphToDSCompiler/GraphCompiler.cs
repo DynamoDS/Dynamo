@@ -10,6 +10,20 @@ using ProtoCore.Utils;
 
 namespace GraphToDSCompiler
 {
+    public struct kw
+    {
+        public const string tempPrefix = "temp";
+    }
+
+    public struct Constants
+    {
+        public const uint TempMask = 0x80000000;
+        public const uint UIDStart = 10000;
+        public const char ReplicationGuideDelimiter = '¡';
+
+        public const string kwTempNull = "temp_NULL";
+    }
+
     public class GraphCompiler
     {
         AST graph = new AST();
