@@ -528,7 +528,7 @@ namespace GraphToDSCompiler
             // Parse program statement in node.Name
             string code = node.Name + ";";
 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode = (ProtoCore.AST.AssociativeAST.CodeBlockNode)ProtoCore.Utils.ParserUtils.Parse(null, code);
+            ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode = (ProtoCore.AST.AssociativeAST.CodeBlockNode)ProtoCore.Utils.ParserUtils.Parse(code);
             Validity.Assert(codeBlockNode != null);
 
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = codeBlockNode.Body;

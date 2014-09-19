@@ -2553,8 +2553,8 @@ r = foo(3);";
             string s1 = "a = 1;";
             string s2 = "a=(1);";
 
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2564,8 +2564,8 @@ r = foo(3);";
         {
             string s1 = "a = 1; b=2;";
             string s2 = "a=(1) ; b = (2);";
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2576,8 +2576,8 @@ r = foo(3);";
             string s1 = "a     =   1;  c = a+1;";
             string s2 = "a = 1; c=a +    1;";
             var core = thisTest.SetupTestCore();
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
