@@ -92,7 +92,6 @@
     <Compile Include="RegressionTests.cs" />
     <Compile Include="SampleTests.cs" />
     <Compile Include="TestUtils.cs" />
-    <Compile Include="UVTests.cs" />
     <Compile Include="ViewTests.cs" />
   </ItemGroup>
   <ItemGroup>
