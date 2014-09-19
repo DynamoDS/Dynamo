@@ -203,7 +203,7 @@ namespace Dynamo.Tests
 
             var elId = new ElementId(184273);
             var el = DocumentManager.Instance.CurrentDBDocument.GetElement(elId);
-            selNode.SelectionResults.Add(el);
+            //selNode.SelectionResults.Add(el);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -250,7 +250,7 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
             var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
-            selNode.SelectionResults.Add(rp);
+            //selNode.SelectionResults.Add(rp);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -289,12 +289,12 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
             var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
-            selNode.SelectionResults.Add(rp1);
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp1 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id1 = selNode.SelectionResults.First();
 
             //Select the second reference point in Dynamo
-            selNode.SelectionResults.Add(rp2);
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp2 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id2 = selNode.SelectionResults.First();
 

@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
-        protected override string FormatSelectionText<T>(List<T> elements)
+        protected override string FormatSelectionText<T>(IEnumerable<T> elements)
         {
             if (typeof(T) != typeof(Element)) return "";
 
@@ -273,7 +273,7 @@ namespace Dynamo.Nodes
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
-        protected override string FormatSelectionText<T>(List<T> elements)
+        protected override string FormatSelectionText<T>(IEnumerable<T> elements)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
 

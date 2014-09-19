@@ -43,19 +43,20 @@ namespace Dynamo.Nodes
         /// <summary>
         /// A list of selected model objects
         /// </summary>
-        public List<TResult> SelectionResults
+        public IEnumerable<TResult> SelectionResults
         {
             get { return selectionResults; }
             private set
             {
                 bool dirty = value != null;
 
-                selectionResults = value;
-
                 if (dirty)
                 {
+                    selectionResults = value.ToList();
                     RequiresRecalc = true;
                 }
+                else
+                    selectionResults = null;
 
                 RaisePropertyChanged("SelectionResults");
                 RaisePropertyChanged("Text");
@@ -150,7 +151,7 @@ namespace Dynamo.Nodes
             return CanSelect;
         }
 
-        protected virtual string FormatSelectionText<T>(List<T> elements)
+        protected virtual string FormatSelectionText<T>(IEnumerable<T> elements)
         {
             return elements.Any()
                 ? System.String.Join(" ", SelectionResults.Take(20).Select(x=>x.ToString()))
@@ -252,7 +253,7 @@ namespace Dynamo.Nodes
         public virtual void UpdateSelection(IEnumerable<TSelection> newSelection)
         {
             selection = newSelection.ToList();
-            SelectionResults = selection.SelectMany(ExtractSelectionResults).ToList();
+            SelectionResults = selection.SelectMany(ExtractSelectionResults);
         }
 
         #endregion
