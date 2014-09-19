@@ -22,6 +22,7 @@ namespace DynamoCoreUITests
     {
         #region Generic Set-up Routines and Data Members
 
+        private double codeBlockPortHeight = 17.563333333333336;
         private System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded = null;
         private CommandCallback commandCallback = null;
@@ -1047,7 +1048,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
@@ -1069,7 +1070,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
@@ -2010,13 +2011,13 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(1, workspace.Nodes.Count);
                     Assert.AreEqual(0, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
-                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
+                    Assert.AreEqual(ElementState.Error, nodeModel.State);
 
                 }
                 else if (commandTag == "WithoutWarning")
                 {
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
                     Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
                 }
             });
@@ -2039,7 +2040,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(3, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreEqual(ElementState.Warning, nodeModel.State);
 
                 }
@@ -2048,10 +2049,10 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(4, workspace.Nodes.Count);
                     Assert.AreEqual(4, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
 
-                    AssertPreviewValue("5778488b-4ab2-484a-b92e-79eb016cb776", 0);
+                    AssertPreviewValue("ff465a31-efd6-425f-96d5-3b593f3324a1", 2);
 
                 }
             });
@@ -2319,21 +2320,21 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(10, workspace.Nodes.Count);
+                    Assert.AreEqual(7, workspace.Nodes.Count);
                     Assert.AreEqual(13, workspace.Connectors.Count);
 
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 2, 8, 9, 3 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 2, 3, 8, 9 });
                 }
                 else if (commandTag == "SecondRun")
                 {
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 2, 8, 3, 9 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 2, 3, 9, 8 } );
                 }
                 else if (commandTag == "LastRun")
                 {
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 8, 2, 3, 9 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 3, 2, 9, 8 } );
                 }
 
             });
@@ -2371,26 +2372,26 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 23);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 17);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 10);
                 }
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 21);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
 
             });
@@ -2895,12 +2896,10 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            AssertPreviewValue("428fc0eb-aacf-41ca-b4d9-d4152e945ad8", 10);
-
-            AssertPreviewValue("635bd033-03f6-4b98-b03d-a5c3c2969607", 10);
+            AssertPreviewValue("56e07af9-6a16-4f61-a673-54e33a8556d8", 0);
         }
 
         [Test, Category("Failure")]
