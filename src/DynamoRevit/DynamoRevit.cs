@@ -223,13 +223,14 @@ namespace Dynamo.Applications
             viewModel.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
-            revitDynamoModel.ShuttingDown += (drm) =>
+            revitDynamoModel.ShutdownStarted += (drm) =>
                 IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
-                        if (null != DocumentManager.Instance.CurrentDBDocument)
+                        var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+                        if (null != dbDoc)
                         {
-                            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                            TransactionManager.Instance.EnsureInTransaction(dbDoc);
 
                             var keeperId = vizManager.KeeperId;
 

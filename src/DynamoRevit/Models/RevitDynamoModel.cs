@@ -40,16 +40,6 @@ namespace Dynamo.Applications.Models
                 RevitDocumentChanged(this, EventArgs.Empty);
         }
 
-        public delegate void DynamoRevitModelHandler(RevitDynamoModel model);
-        public event DynamoRevitModelHandler ShuttingDown;
-        private void OnShuttingDown()
-        {
-            if (ShuttingDown != null)
-            {
-                ShuttingDown(this);
-            }
-        }
-
         #endregion
 
         #region Properties/Fields
@@ -230,8 +220,6 @@ namespace Dynamo.Applications.Models
         protected override void ShutDownCore(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
-
-            OnShuttingDown();
 
             base.ShutDownCore(shutDownHost);
 
