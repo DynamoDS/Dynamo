@@ -102,6 +102,22 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+            int classInfoIndex = GetClassInformationIndex();
+
+            // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
+            // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
+            // called again, with 'SelectedIndex' set to '-1', indicating that no item is selected,
+            // in which case we need to hide the standard panel.
+            if (index == -1)
+            {
+                if (classInfoIndex != -1)
+                    (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
+                OrderListItems();
+                return;
+            }
+            else
+                (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = true;
+
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.

@@ -107,6 +107,9 @@
                                                  Color="#00000000" />
                             </Style.Resources>
 
+                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                         Handler="OnClassButtonCollapse" />
+
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -440,7 +443,8 @@
                     <DataTemplate>
                         <Expander Header="{Binding Path=Name}"
                                   OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}">
+                                  Template="{StaticResource CategoryExpanderTemplate}"
+                                  Collapsed="OnExpanderCollapsed">
                             <!--Select not more than one category-->
                             <Expander.IsExpanded>
                                 <Binding Path="IsSelected"

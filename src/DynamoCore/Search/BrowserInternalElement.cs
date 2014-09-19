@@ -253,13 +253,27 @@ namespace Dynamo.Nodes.Search
 
         #endregion
 
+        private bool hideClassDetails = false;
+
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
         public bool ClassDetailsVisibility
         {
+            set
+            {
+                // If a caller sets the 'ClassDetailsVisibility' to 'false',
+                // then it is intended that we hide away the class details.
+                hideClassDetails = !value;
+            }
+
             get
             {
+                if (hideClassDetails)
+                    return false;
+
+                // If we don't forcefully hide the class detail, then the overall 
+                // visibility is dependent on the availability of the following lists.
                 return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
             }
         }

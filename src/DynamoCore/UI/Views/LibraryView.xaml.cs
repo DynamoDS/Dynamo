@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Dynamo.UI.Views
 {
@@ -18,5 +19,25 @@ namespace Dynamo.UI.Views
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var classButton = sender as ListViewItem;
+            if ((classButton == null) || !classButton.IsSelected) return;
+
+            classButton.IsSelected = false;
+            e.Handled = true;
+        }
+
+        /// When a category is collapsed, the selection of underlying sub-category 
+        /// list is cleared. As a result any visible StandardPanel will be hidden.
+        private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var expanderContent = (sender as FrameworkElement);
+            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent,"");
+            if (buttons != null)
+                buttons.UnselectAll();
+        }
+
     }
 }
