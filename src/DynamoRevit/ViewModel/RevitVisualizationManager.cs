@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 
 using Dynamo.Core;
