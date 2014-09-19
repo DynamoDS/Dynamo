@@ -12,7 +12,6 @@ using Dynamo.Models;
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -91,7 +90,10 @@ namespace Dynamo
                 .Select(x => x.CachedValue);
 
             var geoms = new List<GeometryObject>();
-            values.ToList().ForEach(md=>RevitGeometryFromMirrorData(md, ref geoms));
+            foreach (var value in values)
+            {
+                RevitGeometryFromMirrorData(value, ref geoms);
+            }
 
             Draw(geoms);
         }
@@ -167,7 +169,14 @@ namespace Dynamo
                     var geom = data.Data as PolyCurve;
                     if (geom != null)
                     {
-                        geoms.AddRange(geom.ToRevitType());
+                        // We extract the curves explicitly rather than using PolyCurve's ToRevitType
+                        // extension method.  There is a potential issue with CurveLoop which causes
+                        // this method to introduce corrupt GNodes.  
+                        foreach (var c in geom.Curves())
+                        {
+                            geoms.Add(c.ToRevitType());
+                        }
+                        
                         return;
                     }
 

@@ -15,6 +15,28 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Find the first dirty node of the graphnode residing at indexOfDirtyNode
+        /// </summary>
+        /// <param name="indexOfDirtyNode"></param>
+        /// <param name="nodesInScope"></param>
+        /// <returns></returns>
+        public static ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int indexOfDirtyNode, List<AssociativeGraph.GraphNode> nodesInScope)
+        {
+            while (nodesInScope[indexOfDirtyNode].IsSSANode())
+            {
+                --indexOfDirtyNode;
+                if (indexOfDirtyNode < 0)
+                {
+                    // In this case, the first SSA statemnt is the first graphnode
+                    break;
+                }
+
+                Validity.Assert(indexOfDirtyNode >= 0);
+            }
+            return nodesInScope[indexOfDirtyNode + 1];
+        }
+
+        /// <summary>
         /// Finds all graphnodes associated with each AST and marks them dirty
         /// </summary>
         /// <param name="nodeList"></param>

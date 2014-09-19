@@ -390,6 +390,8 @@ namespace Dynamo.Models
 
             Logger.Dispose();
 
+            InstrumentationLogger.End();
+
 #if ENABLE_DYNAMO_SCHEDULER
             if (scheduler != null)
             {
