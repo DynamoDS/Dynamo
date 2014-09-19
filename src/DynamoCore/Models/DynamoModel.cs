@@ -387,10 +387,10 @@ namespace Dynamo.Models
         /// 'ShutdownRequested' to 'true' since the overridden method may not 
         /// even call 'base.ShutDownCore'.
         /// </summary>
-        /// <param name="shutDownHost">Set this to true if shutting down the 
+        /// <param name="shutdownHost">Set this to true if shutting down the 
         /// DynamoModel should also shutdown the host application.</param>
         /// 
-        public void ShutDown(bool shutDownHost)
+        public void ShutDown(bool shutdownHost)
         {
             if (ShutdownRequested)
             {
@@ -399,10 +399,17 @@ namespace Dynamo.Models
             }
 
             ShutdownRequested = true;
-            ShutDownCore(shutDownHost);
+
+            PreShutdownCore(shutdownHost);
+            ShutDownCore(shutdownHost);
+            PostShutdownCore(shutdownHost);
         }
 
-        protected virtual void ShutDownCore(bool shutDownHost)
+        protected virtual void PreShutdownCore(bool shutdownHost)
+        {
+        }
+
+        protected virtual void ShutDownCore(bool shutdownHost)
         {
             CleanWorkbench();
 
@@ -424,6 +431,10 @@ namespace Dynamo.Models
                 scheduler = null;
             }
 #endif
+        }
+
+        protected virtual void PostShutdownCore(bool shutdownHost)
+        {
         }
 
         /// <summary>

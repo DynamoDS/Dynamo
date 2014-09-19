@@ -203,6 +203,11 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
+        protected override void PreShutdownCore(bool shutdownHost)
+        {
+            base.PreShutdownCore(shutdownHost);
+        }
+
         protected override void ShutDownCore(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
@@ -236,9 +241,13 @@ namespace Dynamo.Applications.Models
                         }
                     });
             }
+        }
 
+        protected override void PostShutdownCore(bool shutdownHost)
+        {
             IdlePromise.ClearPromises();
             IdlePromise.Shutdown();
+            base.PostShutdownCore(shutdownHost);
         }
 
         public override void ResetEngine(bool markNodesAsDirty = false)
