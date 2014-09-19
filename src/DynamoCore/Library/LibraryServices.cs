@@ -245,7 +245,7 @@ namespace Dynamo.DSEngine
 
             try
             {
-                int globalFunctionNumber = GraphUtilities.GetGlobalMethods().Count;
+                int globalFunctionNumber = GetGlobalMethods(GraphUtilities.GetCore()).Count;
 
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
                 IList<ClassNode> importedClasses = GraphUtilities.GetClassesForAssembly(library);
@@ -270,7 +270,7 @@ namespace Dynamo.DSEngine
                 // GraphUtilities.GetGlobalMethods() ignores input and just 
                 // return all global functions. The workaround is to get 
                 // new global functions after importing this assembly.
-                List<ProcedureNode> globalFunctions = GraphUtilities.GetGlobalMethods(string.Empty);
+                List<ProcedureNode> globalFunctions = GetGlobalMethods(GraphUtilities.GetCore());
                 for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
                     ImportProcedure(library, globalFunctions[i]);
             }
@@ -335,7 +335,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GraphUtilities.GetBuiltInMethods()
+            IEnumerable<FunctionDescriptor> functions = from method in GetBuiltInMethods(GraphUtilities.GetCore())
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -561,6 +561,37 @@ namespace Dynamo.DSEngine
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
                 handler(this, e);
+        }
+
+        private IEnumerable<ClassNode> GetImportedClasses(ProtoCore.Core core)
+        {
+            foreach (ClassNode classNode in core.ClassTable.ClassNodes)
+            {
+                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
+                {
+                    yield return classNode;
+                }
+            }
+        }
+
+        private IEnumerable<ProcedureNode> GetGlobalMethods(ProtoCore.Core core)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(core.CodeBlockList.Count > 0);
+            return core.CodeBlockList[0].procedureTable.procList;
+        }
+
+        public IEnumerable<ProcedureNode> GetBuiltInMethods(ProtoCore.Core core)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(core.CodeBlockList.Count > 0);
+
+            var procNodes = core.CodeBlockList[0].procedureTable.procList;
+            foreach (ProcedureNode procNode in procNodes)
+            {
+                if (!procNode.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) && !procNode.name.Equals("Break"))
+                    yield return procNode;
+            }
         }
 
         public static class Categories

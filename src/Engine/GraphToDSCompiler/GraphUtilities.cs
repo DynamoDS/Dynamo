@@ -9,6 +9,7 @@ using ProtoCore.Utils;
 using System.IO;
 using ProtoCore.DSASM;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore;
 
 namespace GraphToDSCompiler
 {
@@ -121,7 +122,7 @@ namespace GraphToDSCompiler
             this.OriginalCode = code;
         }
 
-        internal void AppendTemporaryVariable(string variable)
+        public void AppendTemporaryVariable(string variable)
         {
             if (this.temporaries == null)
                 this.temporaries = new List<string>();
@@ -129,7 +130,7 @@ namespace GraphToDSCompiler
             this.temporaries.Add(variable);
         }
 
-        internal void AppendUnboundIdentifier(string identifier)
+        public void AppendUnboundIdentifier(string identifier)
         {
             if (this.unboundIdentifiers == null)
                 this.unboundIdentifiers = new List<string>();
@@ -138,7 +139,7 @@ namespace GraphToDSCompiler
                 this.unboundIdentifiers.Add(identifier);
         }
 
-        internal void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
+        public void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
         {
             if (this.parsedNodes == null)
                 this.parsedNodes = new List<ProtoCore.AST.Node>();
@@ -146,7 +147,7 @@ namespace GraphToDSCompiler
             this.parsedNodes.AddRange(parsedNodes);
         }
 
-        internal void AppendErrors(IEnumerable<ProtoCore.BuildData.ErrorEntry> errors)
+        public void AppendErrors(IEnumerable<ProtoCore.BuildData.ErrorEntry> errors)
         {
             if (errors == null || (errors.Count() <= 0))
                 return;
@@ -157,7 +158,7 @@ namespace GraphToDSCompiler
             this.errors.AddRange(errors);
         }
 
-        internal void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
+        public void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
         {
             if (warnings == null || (warnings.Count() <= 0))
                 return;
@@ -207,54 +208,20 @@ namespace GraphToDSCompiler
         // TODO Jun: is it better to have GraphUtils as a singleton rather than checking for core? 
         // We only need core to be instantiated once
         private static ProtoCore.Core core = null;
-        private static string rootModulePath = string.Empty;
-
         public static ProtoCore.Core GetCore() { return core; }
 
-        private static int numBuiltInMethods = 0;
-
-        private static List<ProcedureNode> builtInMethods = null;
-
         private static Dictionary<string, string> importedAssemblies = new Dictionary<string,string>();
-
-        public static IEnumerable<ClassNode> GetImportedClasses()
-        {
-            foreach (ClassNode classNode in GraphUtilities.GetCore().ClassTable.ClassNodes)
-            {
-                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
-                {
-                    yield return classNode;
-                }
-            }
-        }
-
+        
         public static ProtoCore.BuildStatus BuildStatus { get { return core.BuildStatus; } }
 
         private static uint runningUID = Constants.UIDStart;
         public static uint GenerateUID() { return runningUID++; }
 
-        private static bool resetCore = true;
-
-        private static void BuildCore(bool isCodeBlockNode = false, bool isPreloadedAssembly = false)
+        private static void SetParsingFlagsForCore(ProtoCore.Core core, bool isCodeBlockNode = false, bool isPreloadedAssembly = false)
         {
             // Reuse the core for every succeeding run
             // TODO Jun: Check with UI - what instances need a new core and what needs reuse
-            if (core == null || resetCore)
-            {
-                resetCore = false;
-                ProtoCore.Options options = new ProtoCore.Options();
-                options.RootModulePathName = rootModulePath;
-                core = new ProtoCore.Core(options);
-                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-
-            }
-            else
-            {
-                //core.ResetDeltaExecution();
-                core.ResetForPrecompilation();
-
-            }
+            core.ResetForPrecompilation();
             core.IsParsingPreloadedAssembly = isPreloadedAssembly;
             core.IsParsingCodeBlockNode = isCodeBlockNode;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
@@ -262,24 +229,25 @@ namespace GraphToDSCompiler
 
         public static void Reset()
         {
-            resetCore = true;
             if (core != null)
             {
                 core.Cleanup();
             }
-            core = null;
 
-            numBuiltInMethods = 0;
-            builtInMethods = null;
             importedAssemblies.Clear();
-            rootModulePath = string.Empty;
+
+            ProtoCore.Options options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            core = new ProtoCore.Core(options);
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
         }
 
         private static bool LocateAssembly(string assembly, out string assemblyPath)
         {
             ProtoCore.Options options = null;
             if (null == core)
-                options = new ProtoCore.Options() { RootModulePathName = GraphUtilities.rootModulePath };
+                options = new ProtoCore.Options();
             else
                 options = core.Options;
 
@@ -302,7 +270,7 @@ namespace GraphToDSCompiler
             string expression = string.Empty;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            BuildCore(false, true);
+            SetParsingFlagsForCore(core, false, true); 
 
             foreach (string assembly in assemblies)
             {
@@ -325,18 +293,15 @@ namespace GraphToDSCompiler
                 ProtoCore.BuildStatus status = null;
                 if (!string.IsNullOrEmpty(expression))
                 {
-                    status = PreCompile(expression, core, out blockId);
+                    status = CompilerUtils.PreCompile(expression, core, null, out blockId);
                 }
 
                 if (status != null && status.ErrorCount > 0)
                 {
                     importedAssemblies.Remove(key);
                 }
-
             }
-
         }
-
 
         /// <summary>
         /// This method iterates over each imported assembly in the importedAssemblies
@@ -390,256 +355,7 @@ namespace GraphToDSCompiler
             return classNodes;
         }
 
-        public static List<ProcedureNode> GetBuiltInMethods()
-        {
-            Validity.Assert(core != null);
-
-            Validity.Assert(core.CodeBlockList.Count > 0);
-
-            if (builtInMethods == null)
-            {
-                List<ProcedureNode> procNodes = core.CodeBlockList[0].procedureTable.procList;
-                numBuiltInMethods = procNodes.Count;
-                List<ProcedureNode> builtIns = new List<ProcedureNode>();
-
-                foreach (ProcedureNode procNode in procNodes)
-                {
-                    if (!procNode.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) && !procNode.name.Equals("Break"))
-                        builtIns.Add(procNode);
-                }
-                builtInMethods = builtIns;
-
-            }
-            Validity.Assert(builtInMethods.Count > 0);
-
-            return builtInMethods;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public static List<ProcedureNode> GetGlobalMethods()
-        {
-            List<ProcedureNode> methods = new List<ProcedureNode>();
-            Validity.Assert(core != null);
-
-            Validity.Assert(core.CodeBlockList.Count > 0);
-
-            List<ProcedureNode> procNodes = core.CodeBlockList[0].procedureTable.procList;
-
-            int numNewMethods = procNodes.Count - numBuiltInMethods;
-            Validity.Assert(numNewMethods >= 0);
-
-            for (int i = numBuiltInMethods; i < procNodes.Count; ++i)
-            {
-                methods.Add(procNodes[i]);
-            }
-
-            numBuiltInMethods = procNodes.Count;
-            return methods;
-        }
-
-        private static IEnumerable<ProtoCore.AST.Node> ParseUserCodeCore(string expression, string postfixGuid, ref bool parseSuccess)
-        {
-            List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
-
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node codeBlockNode = Parse(expression, out commentNode);
-            parseSuccess = true;
-            List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
-            Validity.Assert(nodes != null);
-
-            int index = 0;
-            foreach (var node in nodes)
-            {
-                ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
-                ProtoCore.Utils.Validity.Assert(n != null);
-
-                // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
-
-                // Handle non Binary expression nodes separately
-                if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
-                {
-                    core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
-                }
-                else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
-                {
-                    core.BuildStatus.LogSemanticError("Import statements are not supported in CodeBlock Nodes.");
-                }            
-                else if (isFunctionOrClassDef)
-                {
-                    // Add node as it is
-                    astNodes.Add(node);
-                }
-                else
-                {
-                    // Handle temporary naming for temporary Binary exp. nodes and non-assignment nodes
-                    BinaryExpressionNode ben = node as BinaryExpressionNode;
-                    if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
-                    {
-                        ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
-                        if (mNode != null)
-                        {
-                            core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
-                        }
-                        IdentifierNode lNode = ben.LeftNode as IdentifierNode;
-                        if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
-                        {
-                            string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
-                            BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
-                            astNodes.Add(newNode);
-                        }
-                        else
-                        {
-                            // Add node as it is
-                            astNodes.Add(node);
-                        }
-                    }
-                    else
-                    {
-                        // These nodes are non-assignment nodes
-                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
-                        BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
-                        astNodes.Add(newNode);
-                    }
-                }
-            }            
-            return astNodes;
-        }
-
-        private static IEnumerable<ProtoCore.AST.Node> ParseUserCode(string expression, string postfixGuid)
-        {
-            IEnumerable<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
-
-            if (expression == null)
-                return astNodes;
-
-            expression = expression.Replace("\r\n", "\n");
-            
-            bool parseSuccess = false;
-            try
-            {
-                return ParseUserCodeCore(expression, postfixGuid, ref parseSuccess);
-            }
-            catch
-            {
-                // For modifier blocks, language blocks, etc. that are currently ignored
-                if (parseSuccess)
-                    return astNodes;
-
-                // Reset core above as we don't wish to propagate these errors - pratapa
-                core.ResetForPrecompilation();
-
-                // Use manual parsing for invalid functional associative statement errors like for "a+b;"
-                return ParseNonAssignments(expression, postfixGuid);
-            }
-        }
-
-        private static IEnumerable<ProtoCore.AST.Node> ParseNonAssignments(string expression, string postfixGuid)
-        {
-            List<string> compiled = new List<string>();
-
-            string[] expr = GetStatementsString(expression);
-            foreach (string s in expr)
-                compiled.Add(s);
-
-            for (int i = 0; i < compiled.Count(); i++)
-            {
-                if (compiled[i].StartsWith("\n"))
-                {
-                    string newlines = string.Empty;
-                    int lastPosButOne = 0;
-                    string original = compiled[i];
-                    for (int j = 0; j < original.Length; j++)
-                    {
-                        if (!original[j].Equals('\n')) 
-                        { 
-                            lastPosButOne = j; 
-                            break; 
-                        } 
-                        else 
-                            newlines += original[j];
-                    }
-                    string newStatement = original.Substring(lastPosButOne);
-
-                    if (!IsNotAssigned(newStatement))
-                    {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
-                        newStatement = name + " = " + newStatement;
-                    }
-                    compiled[i] = newlines + newStatement;
-                }
-                else
-                {
-                    if (!IsNotAssigned(compiled[i]))
-                    {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
-                        compiled[i] = name + " = " + compiled[i];
-                    }
-                }
-            }
-            StringBuilder newCode = new StringBuilder();
-            compiled.ForEach(x => newCode.Append(x));
-            CodeBlockNode commentNode = null;
-           
-            try
-            {
-                ProtoCore.AST.Node codeBlockNode = Parse(newCode.ToString(), out commentNode);
-                return ParserUtils.GetAstNodes(codeBlockNode);
-            }
-            catch (Exception)
-            {
-                return new List<ProtoCore.AST.Node>();
-            }
-        }
-
-        private static bool IsNotAssigned(string code)
-        {
-            code = code.Trim(';', ' ');
-            if (string.IsNullOrEmpty(code)) 
-                return true;
-            bool hasLHS = code.Contains("=");
-            return hasLHS;
-        }
-
-        /*Given a block of code that has only usual statements and Modifier Stacks*/
-        private static string[] GetStatementsString(string input)
-        {
-            var expr = new List<string>();
-            
-            expr.AddRange(GetBinaryStatementsList(input));
-            return expr.ToArray();
-        }
-        /*attempt*/
-        /*Given a block of code that has only usual binary statements*/
-        private static List<string> GetBinaryStatementsList(string input)
-        {
-            var expr = new List<string>();
-            int index = 0;
-            int oldIndex = 0;
-            do
-            {
-                index = input.IndexOf(";", oldIndex);
-                if (index != -1)
-                {
-                    string sub;
-                    if (index < input.Length - 1)
-                    {
-                        if (input[index + 1].Equals('\n'))
-                            index += 1;
-                    }
-                    sub = input.Substring(oldIndex, index - oldIndex + 1);
-                    expr.Add(sub);
-                    //index++;
-                    oldIndex = index + 1;
-                }
-            } while (index != -1);
-            return expr;
-        }
-
-
-        /// <summary>
+       /// <summary>
         /// Checks if the string in code block node is a literal or an identifier or has multiple lines of code.
         /// </summary>
         /// <param name="code"></param>
@@ -651,7 +367,7 @@ namespace GraphToDSCompiler
             List<ProtoCore.AST.Node> n = new List<ProtoCore.AST.Node>();
             try
             {
-                BuildCore(true);
+                SetParsingFlagsForCore(core, true, false);
                 System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
                 ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
                 ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
@@ -679,224 +395,17 @@ namespace GraphToDSCompiler
         }
 
         /// <summary>
-        /// Does the first pass of compilation and returns a list of wanrnings in compilation
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="core"></param>
-        /// <param name="blockId"></param>
-        /// <returns></returns>
-        private static ProtoCore.BuildStatus PreCompile(string code, ProtoCore.Core core, out int blockId, CodeBlockNode codeBlock = null)
-        {
-            bool buildSucceeded = false;
-
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
-            blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            try
-            {
-                //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-                globalBlock.body = code;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
-
-                //passing the global Assoc wrapper block to the compiler
-                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                ProtoCore.Language id = globalBlock.language;
-
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
-
-                core.BuildStatus.ReportBuildResult();
-
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                if (!(ex is ProtoCore.BuildHaltException))
-                {
-                    throw ex;
-                }
-            }
-
-            return core.BuildStatus;
-        }
-
-        private static void GetInputLines(IEnumerable<ProtoCore.AST.Node> astNodes, IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
-            Dictionary<int, List<VariableLine>> inputLines)
-        {
-            List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
-
-            if (warningVLList.Count == 0)
-                return;
-
-            int stmtNumber = 1;
-            foreach (var node in astNodes)
-            {
-                // Only binary expression need warnings. 
-                // Function definition nodes do not have input and output ports
-                if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
-                {
-                    List<VariableLine> variableLineList = new List<VariableLine>();
-                    foreach (var warning in warningVLList)
-                    {
-                        if (warning.line >= node.line && warning.line <= node.endLine)
-                            variableLineList.Add(warning);
-                    }
-
-                    if (variableLineList.Count > 0)
-                    {
-                        inputLines.Add(stmtNumber, variableLineList);
-                    }
-                    stmtNumber++;
-                }
-            }
-        }
-
-        private static List<VariableLine> GetVarLineListFromWarning(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
-        {
-            List<VariableLine> result = new List<VariableLine>();
-            foreach (ProtoCore.BuildData.WarningEntry warningEntry in warnings)
-            {
-                if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
-                {
-                    result.Add(new VariableLine()
-                    {
-                        variable = warningEntry.Message.Split(' ')[1].Replace("'", ""),
-                        line = warningEntry.Line
-                    });
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
         /// This is called to Parse individual assignment statements in Codeblock nodes in GraphUI
         /// and return the resulting ProtoAST node
         /// </summary>
         /// <param name="statement"></param>
-        public static ProtoCore.AST.Node Parse(string statement, out ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode)
+        public static ProtoCore.AST.Node Parse(string statement)
         {
-            commentNode = null;
-            BuildCore(true);
+            CodeBlockNode commentNode = null;
+            SetParsingFlagsForCore(core, true, false); 
             return ProtoCore.Utils.ParserUtils.Parse(core, statement, out commentNode);
         }
 
-        /// <summary>
-        /// Pre-compiles DS code in code block node, 
-        /// checks for syntax, converts non-assignments to assignments,
-        /// stores list of AST nodes, errors and warnings
-        /// Evaluates and stores list of unbound identifiers
-        /// </summary>
-        /// <param name="parseParams"></param>
-        /// <returns></returns>
-        public static bool PreCompileCodeBlock(ParseParam parseParams)
-        {
-            string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
-
-            // Parse code to generate AST and add temporaries to non-assignment nodes
-            IEnumerable<ProtoCore.AST.Node> astNodes = ParseUserCode(parseParams.OriginalCode, postfixGuid);
-            
-            // Catch the syntax errors and errors for unsupported 
-            // language constructs thrown by compile expression
-            if (core.BuildStatus.ErrorCount > 0)
-            {
-                parseParams.AppendErrors(core.BuildStatus.Errors);
-                parseParams.AppendWarnings(core.BuildStatus.Warnings);
-                return false;
-            }
-            parseParams.AppendParsedNodes(astNodes);
-
-            // Compile the code to get the resultant unboundidentifiers  
-            // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(parseParams);
-        }
-
-        public static List<ProtoCore.AST.Node> ParseCodeBlock(string code)
-        {
-            Validity.Assert(code != null);
-
-            if (string.IsNullOrEmpty(code))
-                return null;
-
-            // TODO: Change the logic to ignore Import statements in this case using parser - pratapa
-            // Check if this will work with modifier blocks as well
-            /*string[] stmts = code.Split(';');
-            string source = "";
-            for (int i=0; i < stmts.Length; ++i)
-            {
-                if (!stmts[i].Contains("import"))
-                    source += stmts[i] + ";";
-            }*/
-
-
-            ProtoCore.Options options = new ProtoCore.Options();
-            ProtoCore.Core core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-
-            p.Parse();
-            ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-
-            Validity.Assert(cbn != null);
-            return p.GetParsedASTList(cbn);
-        }
-
-        private static bool CompileCodeBlockAST(ParseParam parseParams)
-        {
-            Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings = null;
-
-            ProtoCore.BuildStatus buildStatus = null;
-            try
-            {
-                BuildCore(true);
-                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
-                List<AssociativeNode> nodes = new List<AssociativeNode>();
-                foreach (var i in parseParams.ParsedNodes)
-                {
-                    AssociativeNode assocNode = i as AssociativeNode;
-
-                    if (assocNode != null)
-                        nodes.Add(NodeUtils.Clone(assocNode));  
-                }
-                codeblock.Body.AddRange(nodes);
-
-                buildStatus = PreCompile(string.Empty, core, out blockId, codeblock);
-
-                parseParams.AppendErrors(buildStatus.Errors);
-                parseParams.AppendWarnings(buildStatus.Warnings);
-
-                if (buildStatus.ErrorCount > 0)
-                {
-                    return false;
-                }
-                warnings = buildStatus.Warnings;
-
-                // Get the unboundIdentifiers from the warnings
-                GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);                
-                foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
-                {
-                    foreach (VariableLine vl in kvp.Value)
-                        parseParams.AppendUnboundIdentifier(vl.variable);
-                }
-
-                return true;
-            }
-            catch (Exception)
-            {
-                buildStatus = null;
-                return false;
-            }
-        }
-      
         /// <summary>
         /// Temporary implementation for importing external libraries
         /// </summary>
@@ -920,22 +429,6 @@ namespace GraphToDSCompiler
                 strBuilder.Append(result[i].ToString("x2"));
             }
             return strBuilder.ToString();
-        }
-
-        /// <summary>
-        /// This converts a list of ProtoASTs into ds using CodeGenDS
-        /// </summary>
-        /// <param name="astList"></param>
-        /// <returns></returns>
-        public static string ASTListToCode(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList)
-        {
-            string code = string.Empty;
-            if (null != astList && astList.Count > 0)
-            {
-                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(astList);
-                code = codeGen.GenerateCode();
-            }
-            return code;
         }
     }
 }

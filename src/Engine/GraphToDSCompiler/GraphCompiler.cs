@@ -1956,6 +1956,29 @@ namespace GraphToDSCompiler
             return newBlockList;
         }*/
 
+        private List<ProtoCore.AST.Node> ParseCodeBlock(string code)
+        {
+            Validity.Assert(code != null);
+
+            if (string.IsNullOrEmpty(code))
+                return null;
+
+            ProtoCore.Options options = new ProtoCore.Options();
+            ProtoCore.Core core = new ProtoCore.Core(options);
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
+            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+            p.Parse();
+            ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+
+            Validity.Assert(cbn != null);
+            return p.GetParsedASTList(cbn);
+        }
+
         private List<Block> RewriteCodeBlock(Block codeblock)
         {
             Validity.Assert(codeblock != null);
