@@ -205,6 +205,25 @@ namespace Dynamo.Applications.Models
 
         protected override void PreShutdownCore(bool shutdownHost)
         {
+            if (shutdownHost)
+            {
+                // this method cannot be called without Revit 2014
+                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+
+                IdlePromise.ExecuteOnShutdown(
+                    () =>
+                    {
+                        if (uiApplication.CanPostCommand(exitCommand))
+                            uiApplication.PostCommand(exitCommand);
+                        else
+                        {
+                            MessageBox.Show("A command in progress prevented Dynamo from " +
+                                "closing revit. Dynamo update will be cancelled.");
+                        }
+                    });
+            }
+
             base.PreShutdownCore(shutdownHost);
         }
 
@@ -222,25 +241,6 @@ namespace Dynamo.Applications.Models
             UnsubscribeDocumentManagerEvents();
             UnsubscribeRevitServicesUpdaterEvents();
             UnsubscribeTransactionManagerEvents();
-
-            if (shutDownHost)
-            {
-                // this method cannot be called without Revit 2014
-                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-
-                IdlePromise.ExecuteOnShutdown(
-                    () =>
-                    {
-                        if (uiapp.CanPostCommand(exitCommand))
-                            uiapp.PostCommand(exitCommand);
-                        else
-                        {
-                            MessageBox.Show(
-                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                        }
-                    });
-            }
         }
 
         protected override void PostShutdownCore(bool shutdownHost)
