@@ -26,6 +26,7 @@ namespace DSRevitNodesTests
     [TestFixture]
     class AdaptiveComponentTests : GeometricRevitNodeTest
     {
+
         public List<XYZ> GetInternalPoints(FamilyInstance adaptiveComponent)
         {
             var pts = new List<XYZ>();
