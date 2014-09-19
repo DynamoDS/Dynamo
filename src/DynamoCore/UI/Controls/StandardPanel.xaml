@@ -132,7 +132,8 @@
                      Grid.Row="1"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -144,7 +145,6 @@
                                    Source="{Binding SmallIcon}" />
 
                             <TextBlock HorizontalAlignment="Left"
-                                       TextWrapping="Wrap"
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
@@ -234,7 +234,8 @@
                      Grid.ColumnSpan="2"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -246,7 +247,6 @@
                                    Source="{Binding SmallIcon}" />
 
                             <TextBlock HorizontalAlignment="Left"
-                                       TextWrapping="Wrap"
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"

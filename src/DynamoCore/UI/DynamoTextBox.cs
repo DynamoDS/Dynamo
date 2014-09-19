@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Search;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
@@ -538,8 +539,8 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = target.Width + 2.5*gap;
-                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                    x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth + 2.5*gap;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)
                         y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
