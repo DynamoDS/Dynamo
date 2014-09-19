@@ -53,41 +53,6 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        #region Private methods
-        private void InitializeSyntaxHighlighter()
-        {
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
-
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
-            // Highlighting Digits
-            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            var highlightingRule = new HighlightingRule();
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-            highlightingRule.Color = new HighlightingColor()
-            {
-                Foreground = new CustomizedBrush(color)
-            };
-
-            // These Regex's must match with the grammars in the DS ATG for digits
-
-            // number with optional floating point
-            string number = @"(-?\d+(\.[0-9]+)?)";
-            // optional exponent
-            string exponent = @"([eE][+-]?[0-9]+)?";
-
-            String regex = String.Format(number + exponent);
-            highlightingRule.Regex = new Regex(regex);
-
-            rules.Add(highlightingRule);
-        }
-
-        
-        #endregion
-
         #region Generic Properties
         internal TextEditor InternalEditor
         {
@@ -150,6 +115,41 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Helper Methods
+        private void InitializeSyntaxHighlighter()
+        {
+            var stream = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+
+            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(stream), HighlightingManager.Instance);
+
+            // Highlighting Digits
+            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
+
+            var highlightingRule = new HighlightingRule();
+            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            highlightingRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            // These Regex's must match with the grammars in the DS ATG for digits
+            // Refer to the 'number' and 'float' tokens in Start.atg
+            //*******************************************************************************
+            // number = digit {digit} .
+            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+            //*******************************************************************************
+
+            // number with optional floating point
+            string number = @"(-?\d+(\.[0-9]+)?)";
+            // optional exponent
+            string exponent = @"([eE][+-]?[0-9]+)?";
+
+            highlightingRule.Regex = new Regex(number + exponent);
+
+            rules.Add(highlightingRule);
+        }
+
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -191,6 +191,8 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
+    // Refer to link: 
+    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
     internal sealed class CustomizedBrush : HighlightingBrush
     {
         private readonly SolidColorBrush brush;
