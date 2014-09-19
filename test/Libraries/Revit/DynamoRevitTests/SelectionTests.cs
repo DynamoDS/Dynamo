@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -25,7 +24,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void FamilyTypeSelectorNode()
         {
-            string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
+            string samplePath = Path.Combine(_testPath, @".\SelectionResults\SelectFamily.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
@@ -39,18 +38,11 @@ namespace Dynamo.Tests
 
             //assert that we have the right number of family symbols
             //in the node's items source
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(Family));
-            int count = 0;
-            foreach (Family f in fec.ToElements())
-            {
-                foreach (FamilySymbol fs in f.Symbols)
-                {
-                    count++;
-                }
-            }
+            int count = fec.ToElements().Cast<Family>().Sum(f => f.Symbols.Cast<FamilySymbol>().Count());
 
-            FamilyTypes typeSelNode = (FamilyTypes)ViewModel.Model.Nodes.First();
+            var typeSelNode = (FamilyTypes)ViewModel.Model.Nodes.First();
             Assert.AreEqual(typeSelNode.Items.Count, count);
 
             //assert that the selected index is correct
@@ -64,28 +56,28 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectModelElement()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath,@".\Selection\SelectModelElement.dyn"));
-            TestSelection<Autodesk.Revit.DB.Element, Autodesk.Revit.DB.Element>(SelectionType.One);
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath,@".\SelectionResults\SelectModelElement.dyn"));
+            TestSelection<Element, Element>(SelectionType.One);
         }
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectModelElements()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectModelElements.dyn"));
-            TestSelection<Autodesk.Revit.DB.Element, Autodesk.Revit.DB.Element>(SelectionType.Many);
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectModelElements.dyn"));
+            TestSelection<Element, Element>(SelectionType.Many);
         }
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectFace()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFace.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectFace.dyn"));
 
             RunCurrentModel();
 
@@ -108,35 +100,35 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectEdge()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectEdge.dyn"));
             TestSelection<Reference,Reference>(SelectionType.One);
         }
 
         //[Test]
-        //[TestModel(@".\Selection\Selection.rfa")]
+        //[TestModel(@".\SelectionResults\SelectionResults.rfa")]
         //public void SelectPointOnFace()
         //{
-        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectPointOnFace.dyn"));
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectPointOnFace.dyn"));
         //    TestSelection<Reference,Reference>(SelectionType.One);
         //}
 
         //[Test]
-        //[TestModel(@".\Selection\Selection.rfa")]
+        //[TestModel(@".\SelectionResults\SelectionResults.rfa")]
         //public void SelectUVOnFace()
         //{
-        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectUVOnFace.dyn"));
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectUVOnFace.dyn"));
         //    TestSelection<Reference,Reference>(SelectionType.One);
         //}
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectDividedSurfaceFamilies()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectDividedSurfaceFamilies.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectDividedSurfaceFamilies.dyn"));
 
             // Get the selection node
             var selectNode = (ElementSelection<DividedSurface>)(ViewModel.Model.Nodes.FirstOrDefault(x => x is ElementSelection<DividedSurface>));
@@ -154,7 +146,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(25, elements.Count);
 
             // Reset the selection
-            selectNode.Selection = new List<DividedSurface>() { ds };
+            selectNode.UpdateSelection(new[] { ds });
 
             using (var trans = new Transaction(DocumentManager.Instance.CurrentDBDocument))
             {
@@ -163,7 +155,7 @@ namespace Dynamo.Tests
                     trans.Start("SelectDividedSurfaceFamilies_Test");
 
                     // Flex the divided surface division and ensure the 
-                    // Selection is updated.
+                    // SelectionResults is updated.
                     ds.USpacingRule.Number = 3;
                     ds.VSpacingRule.Number = 3;
 
@@ -188,10 +180,10 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\Selection\Selection.rfa")]
+        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
         public void SelectFaces()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFaces.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectFaces.dyn"));
 
             RunCurrentModel();
 
@@ -221,12 +213,13 @@ namespace Dynamo.Tests
         /// <typeparam name="T1">The type parameter for the selector method.</typeparam>
         /// <typeparam name="T2">The expected return type for elements in the selection.</typeparam>
         /// <param name="selectionType"></param>
-        private List<T1> TestSelection<T1,T2>(SelectionType selectionType)
+        private void TestSelection<T1,T2>(SelectionType selectionType)
         {
             RunCurrentModel();
 
             // Find the first node of the specified selection type
-            var selectNode = (RevitSelection<T1,T2>)(ViewModel.Model.Nodes.FirstOrDefault(x => x is RevitSelection<T1,T2>));
+            var selectNode =
+                ViewModel.Model.HomeSpace.FirstNodeFromWorkspace<RevitSelection<T1, T2>>();
             Assert.NotNull(selectNode);
 
             switch (selectionType)
@@ -238,34 +231,24 @@ namespace Dynamo.Tests
                     TestMultipleSelection(selectNode);
                     break;
             }
-
-            return selectNode.Selection;
         }
 
         private void TestSingleSelection<T1, T2>(SelectionBase<T1, T2> selectNode)
         {
-            var element = GetPreviewValueAtIndex(
-                selectNode.GUID.ToString(),
-                0);
+            var element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
             Assert.NotNull(element);
-            selectNode.Selection = new List<T1>();
             RunCurrentModel();
-            element = GetPreviewValueAtIndex(
-                selectNode.GUID.ToString(),
-                0);
+            element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
             Assert.Null(element);
         }
 
         private void TestMultipleSelection<T1, T2>(SelectionBase<T1, T2> selectNode)
         {
-            var elements = GetPreviewCollection(
-                selectNode.GUID.ToString());
+            var elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.NotNull(elements);
             Assert.Greater(elements.Count(), 0);
-            selectNode.Selection = new List<T1>();
             RunCurrentModel();
-            elements = GetPreviewCollection(
-                selectNode.GUID.ToString());
+            elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.Null(elements);
         }
 

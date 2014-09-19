@@ -9,144 +9,36 @@ using RevitServices.Persistence;
 
 namespace Revit.Interactivity
 {
-    internal class RevitSelectionHelper : IModelSelectionHelper
+    internal class RevitReferenceSelectionHelper : IModelSelectionHelper<Reference>
     {
-        private static readonly RevitSelectionHelper instance = new RevitSelectionHelper();
+        private static readonly RevitReferenceSelectionHelper instance =
+            new RevitReferenceSelectionHelper();
 
-        public static RevitSelectionHelper Instance
+        public static RevitReferenceSelectionHelper Instance
         {
             get { return instance; }
         }
 
-        /// <summary>
-        /// Request an element in a selection.
-        /// </summary>
-        /// <typeparam name="T">The type of the Element.</typeparam>
-        /// <param name="selectionMessage">The message to display.</param>
-        /// <param name="logger">A logger.</param>
-        /// <param name="selectionType">The selection type.</param>
-        /// <param name="objectType">The selection object type.</param>
-        /// <returns></returns>
-        public List<T> RequestSelectionOfType<T>(string selectionMessage, 
-            SelectionType selectionType, SelectionObjectType objectType, ILogger logger)
+        public IEnumerable<Reference> RequestSelectionOfType(
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
+            ILogger logger)
         {
-            switch(selectionType)
+            switch (selectionType)
             {
                 case SelectionType.One:
-                    if (typeof(Element).IsAssignableFrom(typeof(T)))
-                    {
-                        return RequestElementSelection<T>(selectionMessage, logger);
-                    }
-                    
-                    if (typeof(Reference).IsAssignableFrom(typeof(T)))
-                    {
-                        return RequestReferenceSelection(selectionMessage, logger, objectType).Cast<T>().ToList();
-                    }
-                    break;
-                    
+                    return RequestReferenceSelection(selectionMessage, logger, objectType);
+
                 case SelectionType.Many:
-                    if (typeof(T).IsAssignableFrom(typeof(Element)))
-                    {
-                        return RequestMultipleElementsSelection<T>(
-                        selectionMessage,
-                        logger);
-                    }
-                    
-                    if (typeof(T).IsAssignableFrom(typeof(Reference)))
-                    {
-                        return RequestMultipleReferencesSelection(selectionMessage, 
-                            logger, objectType).Cast<T>().ToList();
-                    }
-                    break;
+                    return RequestMultipleReferencesSelection(selectionMessage, logger, objectType);
             }
 
             return null;
         }
 
-        public static List<Element> GetFamilyInstancesFromDividedSurface(List<DividedSurface> divSurfs)
-        {
-            var result = new List<Element>();
-
-            foreach (var ds in divSurfs.Cast<DividedSurface>())
-            {
-                var gn = new GridNode();
-
-                var u = 0;
-                while (u < ds.NumberOfUGridlines)
-                {
-                    gn.UIndex = u;
-
-                    var v = 0;
-
-                    while (v < ds.NumberOfVGridlines)
-                    {
-                        gn.VIndex = v;
-
-                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
-                        if (ds.IsSeedNode(gn))
-                        {
-                            var fi = ds.GetTileFamilyInstance(gn, 0);
-
-                            if (fi != null)
-                            {
-                                //put the family instance into the tree
-                                result.Add(fi);
-                            }
-                        }
-                        v = v + 1;
-                    }
-
-                    u = u + 1;
-                }
-            }
-
-            return result.ToList();
-        }
-
         #region private static methods
-      
-        private static List<T> RequestElementSelection<T>(string selectionMessage, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            Element e = null;
-
-            var choices = doc.Selection;
-            choices.Elements.Clear();
-
-            logger.Log(selectionMessage);
-
-            var elementRef = doc.Selection.PickObject(
-            ObjectType.Element,
-            new ElementSelectionFilter<T>(),
-            selectionMessage);
-
-            if (elementRef != null)
-            {
-                e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
-            }
-
-            return new List<Element>() { e }.Cast<T>().ToList();
-        }
-
-        private static List<T> RequestMultipleElementsSelection<T>(string selectionMessage, ILogger logger)
-        {
-            var doc = DocumentManager.Instance.CurrentUIDocument;
-
-            var choices = doc.Selection;
-            choices.Elements.Clear();
-
-            logger.Log(selectionMessage);
-
-            var elements = doc.Selection.PickElementsByRectangle(
-                new ElementSelectionFilter<T>(),
-                selectionMessage);
-
-            return elements.Cast<T>().ToList();
-
-        }
-
-        private static List<Reference> RequestReferenceSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static IEnumerable<Reference> RequestReferenceSelection(
+            string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -170,10 +62,11 @@ namespace Revit.Interactivity
                     break;
             }
 
-            return reference == null ? null : new List<Reference>(){reference};
+            return reference == null ? null : new List<Reference> { reference };
         }
 
-        private static List<Reference> RequestMultipleReferencesSelection(string message, ILogger logger, SelectionObjectType selectionType)
+        private static IEnumerable<Reference> RequestMultipleReferencesSelection(
+            string message, ILogger logger, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -200,174 +93,121 @@ namespace Revit.Interactivity
             if (references == null || !references.Any())
                 return null;
 
-            return references.ToList();
+            return references;
         }
 
         #endregion
+    }
 
-        #region junk
+    internal class RevitElementSelectionHelper<T> : IModelSelectionHelper<T> where T : Element
+    {
+        private static readonly RevitElementSelectionHelper<T> instance = new RevitElementSelectionHelper<T>();
 
-        //public static Reference RequestFaceReferenceSelection(string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+        public static RevitElementSelectionHelper<T> Instance
+        {
+            get { return instance; }
+        }
 
-        //    Reference faceRef = null;
+        /// <summary>
+        /// Request an element in a selection.
+        /// </summary>
+        /// <typeparam name="T">The type of the Element.</typeparam>
+        /// <param name="selectionMessage">The message to display.</param>
+        /// <param name="logger">A logger.</param>
+        /// <param name="selectionType">The selection type.</param>
+        /// <param name="objectType">The selection object type.</param>
+        /// <returns></returns>
+        public IEnumerable<T> RequestSelectionOfType(
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
+            ILogger logger)
+        {
+            switch (selectionType)
+            {
+                case SelectionType.One:
+                    return RequestElementSelection(selectionMessage, logger);
 
-        //    var choices = doc.Selection;
-        //    choices.Elements.Clear();
+                case SelectionType.Many:
+                    return RequestMultipleElementsSelection(selectionMessage, logger);
+            }
 
-        //    logger.Log(message);
-        //    faceRef = doc.Selection.PickObject(ObjectType.Face);
+            return null;
+        }
 
-        //    return faceRef;
-        //}
+        public static IEnumerable<Element> GetFamilyInstancesFromDividedSurface(DividedSurface ds)
+        {
+            var gn = new GridNode();
 
-        //public static Reference RequestEdgeReferenceSelection(string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+            var u = 0;
+            while (u < ds.NumberOfUGridlines)
+            {
+                gn.UIndex = u;
 
-        //    var choices = doc.Selection;
-        //    choices.Elements.Clear();
+                var v = 0;
 
-        //    logger.Log(message);
-        //    var edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+                while (v < ds.NumberOfVGridlines)
+                {
+                    gn.VIndex = v;
 
-        //    return edgeRef;
-        //}
+                    //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                    if (ds.IsSeedNode(gn))
+                    {
+                        var fi = ds.GetTileFamilyInstance(gn, 0);
 
-        //public static DividedSurface RequestDividedSurfaceSelection(string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+                        if (fi != null)
+                        {
+                            //put the family instance into the tree
+                            yield return fi;
+                        }
+                    }
+                    v = v + 1;
+                }
 
-        //    DividedSurface f = null;
+                u = u + 1;
+            }
+        }
 
-        //    var choices = doc.Selection;
+        #region private static methods
 
-        //    choices.Elements.Clear();
+        private static IEnumerable<T> RequestElementSelection(string selectionMessage, ILogger logger)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
-        //    logger.Log(message);
+            Element e = null;
 
-        //    var formRef = doc.Selection.PickObject(
-        //        ObjectType.Element,
-        //        new DividedSurfaceSelectionFilter());
+            var choices = doc.Selection;
+            choices.Elements.Clear();
 
-        //    if (formRef != null)
-        //    {
-        //        //get the element
-        //        var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
-        //        f = (DividedSurface)el;
-        //    }
-        //    return f;
-        //}
+            logger.Log(selectionMessage);
 
-        //public static ElementId RequestAnalysisResultInstanceSelection(
-        //    string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
+            var elementRef = doc.Selection.PickObject(
+                ObjectType.Element,
+                new ElementSelectionFilter<T>(),
+                selectionMessage);
 
-        //    try
-        //    {
-        //        var view = doc.ActiveView;
+            if (elementRef != null)
+            {
+                e = DocumentManager.Instance.CurrentDBDocument.GetElement(elementRef);
+            }
 
-        //        var sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+            return new[] { e }.Cast<T>();
+        }
 
-        //        if (sfm != null)
-        //        {
-        //            sfm.GetRegisteredResults();
+        private static IEnumerable<T> RequestMultipleElementsSelection(
+            string selectionMessage, ILogger logger)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
-        //            var choices = doc.Selection;
+            var choices = doc.Selection;
+            choices.Elements.Clear();
 
-        //            choices.Elements.Clear();
+            logger.Log(selectionMessage);
 
-        //            logger.Log(message);
+            var elements = doc.Selection.PickElementsByRectangle(
+                new ElementSelectionFilter<T>(),
+                selectionMessage);
 
-        //            var fsRef = doc.Selection.PickObject(ObjectType.Element);
-
-        //            if (fsRef != null)
-        //            {
-        //                var analysisResult = doc.Document.GetElement(fsRef.ElementId);
-
-        //                return analysisResult.Id;
-        //            }
-        //            return null;
-        //        }
-        //        return null;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Log(ex);
-        //        return null;
-        //    }
-        //}
-
-        //public static ElementId RequestModelElementSelection(string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
-
-        //    Element selectedElement = null;
-
-        //    var choices = doc.Selection;
-        //    choices.Elements.Clear();
-
-        //    logger.Log(message);
-
-        //    var fsRef = doc.Selection.PickObject(ObjectType.Element);
-        //    if (fsRef != null)
-        //    {
-        //        selectedElement = doc.Document.GetElement(fsRef.ElementId);
-        //        if (selectedElement is FamilyInstance || selectedElement is HostObject ||
-        //            selectedElement is ImportInstance ||
-        //            selectedElement is CombinableElement)
-        //            return selectedElement.Id;
-        //    }
-
-        //    return selectedElement != null ? selectedElement.Id : null;
-        //}
-
-        //public static Reference RequestReferenceXYZSelection(string message, ILogger logger)
-        //{
-        //    var doc = DocumentManager.Instance.CurrentUIDocument;
-
-        //    var choices = doc.Selection;
-        //    choices.Elements.Clear();
-
-        //    logger.Log(message);
-
-        //    var xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
-
-        //    return xyzRef;
-        //}
-
-        //public class CurveSelectionFilter : ISelectionFilter
-        //{
-        //    public bool AllowElement(Element element)
-        //    {
-        //        if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
-        //            return true;
-        //        return false;
-        //    }
-
-        //    public bool AllowReference(Reference refer, XYZ point)
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        //public class DividedSurfaceSelectionFilter : ISelectionFilter
-        //{
-        //    public bool AllowElement(Element elem)
-        //    {
-        //        if (elem is DividedSurface)
-        //            return true;
-        //        return false;
-        //    }
-
-        //    public bool AllowReference(Reference reference, XYZ position)
-        //    {
-        //        return false;
-        //    }
-        //}
-
+            return elements.Cast<T>();
+        }
 
         #endregion
     }
@@ -384,4 +224,170 @@ namespace Revit.Interactivity
             return false;
         }
     }
+
+    #region junk
+
+    //public static Reference RequestFaceReferenceSelection(string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    Reference faceRef = null;
+
+    //    var choices = doc.Selection;
+    //    choices.Elements.Clear();
+
+    //    logger.Log(message);
+    //    faceRef = doc.Selection.PickObject(ObjectType.Face);
+
+    //    return faceRef;
+    //}
+
+    //public static Reference RequestEdgeReferenceSelection(string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    var choices = doc.Selection;
+    //    choices.Elements.Clear();
+
+    //    logger.Log(message);
+    //    var edgeRef = doc.Selection.PickObject(ObjectType.Edge);
+
+    //    return edgeRef;
+    //}
+
+    //public static DividedSurface RequestDividedSurfaceSelection(string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    DividedSurface f = null;
+
+    //    var choices = doc.Selection;
+
+    //    choices.Elements.Clear();
+
+    //    logger.Log(message);
+
+    //    var formRef = doc.Selection.PickObject(
+    //        ObjectType.Element,
+    //        new DividedSurfaceSelectionFilter());
+
+    //    if (formRef != null)
+    //    {
+    //        //get the element
+    //        var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
+    //        f = (DividedSurface)el;
+    //    }
+    //    return f;
+    //}
+
+    //public static ElementId RequestAnalysisResultInstanceSelection(
+    //    string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    try
+    //    {
+    //        var view = doc.ActiveView;
+
+    //        var sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+
+    //        if (sfm != null)
+    //        {
+    //            sfm.GetRegisteredResults();
+
+    //            var choices = doc.Selection;
+
+    //            choices.Elements.Clear();
+
+    //            logger.Log(message);
+
+    //            var fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+    //            if (fsRef != null)
+    //            {
+    //                var analysisResult = doc.Document.GetElement(fsRef.ElementId);
+
+    //                return analysisResult.Id;
+    //            }
+    //            return null;
+    //        }
+    //        return null;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        logger.Log(ex);
+    //        return null;
+    //    }
+    //}
+
+    //public static ElementId RequestModelElementSelection(string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    Element selectedElement = null;
+
+    //    var choices = doc.Selection;
+    //    choices.Elements.Clear();
+
+    //    logger.Log(message);
+
+    //    var fsRef = doc.Selection.PickObject(ObjectType.Element);
+    //    if (fsRef != null)
+    //    {
+    //        selectedElement = doc.Document.GetElement(fsRef.ElementId);
+    //        if (selectedElement is FamilyInstance || selectedElement is HostObject ||
+    //            selectedElement is ImportInstance ||
+    //            selectedElement is CombinableElement)
+    //            return selectedElement.Id;
+    //    }
+
+    //    return selectedElement != null ? selectedElement.Id : null;
+    //}
+
+    //public static Reference RequestReferenceXYZSelection(string message, ILogger logger)
+    //{
+    //    var doc = DocumentManager.Instance.CurrentUIDocument;
+
+    //    var choices = doc.Selection;
+    //    choices.Elements.Clear();
+
+    //    logger.Log(message);
+
+    //    var xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
+
+    //    return xyzRef;
+    //}
+
+    //public class CurveSelectionFilter : ISelectionFilter
+    //{
+    //    public bool AllowElement(Element element)
+    //    {
+    //        if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
+    //            return true;
+    //        return false;
+    //    }
+
+    //    public bool AllowReference(Reference refer, XYZ point)
+    //    {
+    //        return false;
+    //    }
+    //}
+
+    //public class DividedSurfaceSelectionFilter : ISelectionFilter
+    //{
+    //    public bool AllowElement(Element elem)
+    //    {
+    //        if (elem is DividedSurface)
+    //            return true;
+    //        return false;
+    //    }
+
+    //    public bool AllowReference(Reference reference, XYZ position)
+    //    {
+    //        return false;
+    //    }
+    //}
+
+
+    #endregion
 }

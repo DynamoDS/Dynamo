@@ -45,10 +45,10 @@ namespace Dynamo.Tests
             if (!ptSelectNodes.Any())
                 Assert.Fail("Could not find point selection nodes in dynamo graph.");
 
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(0)).Selection.Add(p1);
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(1)).Selection.Add(p2);
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(2)).Selection.Add(p3);
-            ((DSModelElementSelection)ptSelectNodes.ElementAt(3)).Selection.Add(p4);
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(0)).SelectionResults.Add(p1);
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(1)).SelectionResults.Add(p2);
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(2)).SelectionResults.Add(p3);
+            ((DSModelElementSelection)ptSelectNodes.ElementAt(3)).SelectionResults.Add(p4);
 
             ViewModel.Model.RunExpression();
 
