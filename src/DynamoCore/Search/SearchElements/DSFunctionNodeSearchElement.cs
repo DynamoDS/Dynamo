@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
+using Dynamo.Library;
+using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -69,7 +71,7 @@ namespace Dynamo.Search.SearchElements
                     }
 
                     // Case for overloaded methods.
-                    return TypedParametersToString(this.FunctionDescriptor);
+                    return Utils.TypedParametersToString(this.FunctionDescriptor);
                 }
                 case ResourceType.LargeIcon:
                 {
@@ -88,44 +90,11 @@ namespace Dynamo.Search.SearchElements
                     }
 
                     // Case for overloaded methods.
-                    return TypedParametersToString(this.FunctionDescriptor);
+                    return Utils.TypedParametersToString(this.FunctionDescriptor);
                 }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
-        }
-
-        internal static string TypedParametersToString(FunctionDescriptor descriptor)
-        {
-            string iconName = descriptor.QualifiedName + ".";
-            List<Tuple<string, string>> listInputs = new List<Tuple<string, string>>();
-            if (descriptor.InputParameters == null) return String.Empty;
-
-            foreach (var parameter in descriptor.InputParameters)
-                listInputs.Add(parameter);
-
-            for (int i = 0; i < listInputs.Count; i++)
-            {
-                string typeOfParameter = listInputs[i].Item2;
-
-                // Check if there simbols like "[]".
-                // And remove them, according how much we found.
-                // e.g. bool[][] -> bool2
-                int squareBrackets = typeOfParameter.Count(x => x == '[');
-                if (squareBrackets > 0)
-                {
-                    // Remove square brackets.
-                    typeOfParameter =
-                        typeOfParameter.Remove(typeOfParameter.Length - squareBrackets*2);
-                    // Add number of them.
-                    typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
-                }
-                if (i != 0)
-                    iconName += "-" + typeOfParameter;
-                else
-                    iconName += typeOfParameter;
-            }
-            return iconName;
         }
     }
 }

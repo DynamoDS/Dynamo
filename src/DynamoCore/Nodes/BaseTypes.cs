@@ -16,6 +16,8 @@ using System.IO;
 using Dynamo.UI;
 using System.Web;
 using System.Text;
+using Dynamo.Library;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Nodes
 {
@@ -139,6 +141,54 @@ namespace Dynamo.Nodes
             {
                 return value.Remove(desiredLength - 1) + "...";
             }
+        }
+
+        /// <summary>
+        /// This method returns a name for the icon based on type of this icon.
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <returns></returns>
+        public static string TypedParametersToString(FunctionDescriptor descriptor)
+        {
+            string iconName = descriptor.QualifiedName + ".";
+            int counter = 0;
+
+            foreach (TypedParameter tp in descriptor.Parameters)
+            {
+                string typeOfParameter = tp.Type;
+
+                // Check if there simbols like "[]".
+                // And remove them, according how much we found.
+                // e.g. bool[][] -> bool2
+                int squareBrackets = typeOfParameter.Count(x => x == '[');
+                if (squareBrackets > 0)
+                {
+                    if (typeOfParameter.Contains("[]..[]"))
+                    {
+                        // Remove square brackets.
+                        typeOfParameter =
+                            typeOfParameter.Replace("[]..[]", "");
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, "N");
+                    }
+                    else
+                    {
+                        // Remove square brackets.
+                        typeOfParameter =
+                            typeOfParameter.Remove(typeOfParameter.Length - squareBrackets*2);
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
+                    }
+                }
+                if (counter != 0)
+                    iconName += "-" + typeOfParameter;
+                else
+                    iconName += typeOfParameter;
+
+                counter++;
+            }
+
+            return iconName;
         }
 
         /// <summary>
