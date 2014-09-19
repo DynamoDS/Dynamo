@@ -1926,6 +1926,12 @@ namespace Dynamo.ViewModels
 
         #region Shutdown related methods
 
+        /// <summary>
+        /// This struct represents parameters for PerformShutdownSequence call.
+        /// It exposes several properties to control the way shutdown process 
+        /// goes, details of which can be found alongside each property below.
+        /// </summary>
+        /// 
         internal struct ShutdownParams
         {
             internal ShutdownParams(
