@@ -1163,15 +1163,4 @@ namespace Dynamo.Nodes
 
         #endregion
     }
-
-    internal class CodeBlockCompiler
-    {
-        private ProtoCore.Core core;
-
-        public CodeBlockCompiler(ProtoCore.Core core)
-        {
-            this.core = core;
-        }
-
-   }
 }
