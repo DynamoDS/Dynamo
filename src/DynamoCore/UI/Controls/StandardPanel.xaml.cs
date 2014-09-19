@@ -16,6 +16,9 @@ namespace Dynamo.UI.Controls
     {
         #region Constants
 
+        private const string CreateHeaderText = "CREATE";
+        private const string QueryHeaderText = "QUERY";
+        private const string ActionHeaderText = "ACTIONS";
         private const string ActionHeaderTag = "Action";
         private const string QueryHeaderTag = "Query";
         private const int TruncatedMembersCount = 4;
@@ -99,9 +102,9 @@ namespace Dynamo.UI.Controls
             castedDataContext.IsSecondaryHeaderRightVisible = false;
 
             // Set default values.
-            castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Create;
-            castedDataContext.SecondaryHeaderLeftGroup = SearchElementGroup.Query;
-            castedDataContext.SecondaryHeaderRightGroup = SearchElementGroup.Action;
+            castedDataContext.PrimaryHeaderText = CreateHeaderText;
+            castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
+            castedDataContext.SecondaryHeaderRightText = ActionHeaderText;
 
             castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
@@ -142,7 +145,7 @@ namespace Dynamo.UI.Controls
             if (hasActionMembers)
             {
                 castedDataContext.IsPrimaryHeaderVisible = true;
-                castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Action;
+                castedDataContext.PrimaryHeaderText = ActionHeaderText;
                 primaryMembers.ItemsSource = castedDataContext.ActionMembers;
 
                 if (hasQueryMembers)
@@ -161,7 +164,7 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in primaryMembers. 
             if (hasQueryMembers)
             {
-                castedDataContext.PrimaryHeaderGroup = SearchElementGroup.Query;
+                castedDataContext.PrimaryHeaderText = QueryHeaderText;
                 primaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
         }
