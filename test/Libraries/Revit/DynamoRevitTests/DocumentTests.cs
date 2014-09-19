@@ -1,15 +1,7 @@
 ﻿using System.IO;
-using System.Linq;
-
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-
-using Dynamo.Nodes;
-
+using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
-
 using RTF.Framework;
 
 namespace Dynamo.Tests
@@ -77,51 +69,6 @@ namespace Dynamo.Tests
         public void WhenActiveDocumentResetIsRequiredVisualizationsAreCleared()
         {
             Assert.Inconclusive("Cannot test. API required for allowing closing all docs.");
-        }
-
-        // Test moved from old CoreTests class.
-        [Test, Category("Failure")]
-        [TestModel(@".\empty.rfa")]
-        public void SwitchDocuments()
-        {
-            //open the workflow and run the expression
-            string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
-            ViewModel.OpenCommand.Execute(testPath);
-            Assert.AreEqual(3, ViewModel.Model.Nodes.Count());
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-
-            //verify we have a reference point
-            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
-            fec.OfClass(typeof(ReferencePoint));
-            Assert.AreEqual(1, fec.ToElements().Count());
-
-            //open a new document and activate it
-            var initialDoc = (UIDocument)DocumentManager.Instance.CurrentUIDocument;
-            string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
-            TransactionManager.Instance.ForceCloseTransaction();
-            ((UIApplication)DocumentManager.Instance.CurrentUIApplication).OpenAndActivateDocument(shellPath);
-            initialDoc.Document.Close(false);
-
-            ////assert that the doc is set on the DocumentManager
-            Assert.IsNotNull((Document)DocumentManager.Instance.CurrentDBDocument);
-
-            ////update the double node so the graph reevaluates
-            var doubleNodes = ViewModel.Model.Nodes.Where(x => x is BasicInteractive<double>);
-            BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
-            node.Value = node.Value + .1;
-
-            ////run the expression again
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(1, fec.ToElements().Count());
-
-            //finish out by restoring the original
-            //initialDoc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
-            //shellPath = Path.Combine(_testPath, @"empty.rfa");
-            //DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(shellPath);
-            //initialDoc.Document.Close(false);
-
         }
     }
 }
