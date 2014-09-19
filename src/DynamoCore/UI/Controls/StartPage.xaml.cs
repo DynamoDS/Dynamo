@@ -455,14 +455,16 @@ namespace Dynamo.UI.Controls
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
+                if (files != null && (files.Length > 0))
                 {
-                    dynamoViewModel.OpenCommand.Execute(files[0]);
+                    if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
+                    {
+                        dynamoViewModel.OpenCommand.Execute(files[0]);
+                        e.Handled = true;
+                    }
                 }
 
             }
-
-            e.Handled = true;
         }
 
     }
