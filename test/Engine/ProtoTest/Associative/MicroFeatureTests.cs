@@ -2533,6 +2533,19 @@ r = foo(3);";
             thisTest.Verify("r", new Object[] { 5.0, 6.0, 7.0 });
         }
 
+        private ProtoCore.Core CreateParsingCore()
+        {
+            ProtoCore.Options options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            ProtoCore.Core core = new ProtoCore.Core(options);
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.ResetForPrecompilation();
+            core.IsParsingPreloadedAssembly = false;
+            core.IsParsingCodeBlockNode = true;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            return core;
+        }
 
         [Test]
         public void Test_Compare_Node_01()
@@ -2540,8 +2553,8 @@ r = foo(3);";
             string s1 = "a = 1;";
             string s2 = "a=(1);";
 
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2551,8 +2564,8 @@ r = foo(3);";
         {
             string s1 = "a = 1; b=2;";
             string s2 = "a=(1) ; b = (2);";
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2562,8 +2575,9 @@ r = foo(3);";
         {
             string s1 = "a     =   1;  c = a+1;";
             string s2 = "a = 1; c=a +    1;";
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2);
+            var core = thisTest.SetupTestCore();
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(thisTest.CreateTestCore(), s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }

@@ -42,10 +42,13 @@ namespace Dynamo.DSEngine
 
         private List<string> libraries;
 
+        private ProtoCore.Core libraryManagementCore;
+
         private LibraryServices()
         {
-            PreloadLibraries();
+            CreateLibraryManagementCore();
 
+            PreloadLibraries();
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -105,6 +108,7 @@ namespace Dynamo.DSEngine
             importedFunctionGroups.Clear();
             builtinFunctionGroups.Clear();
 
+            CreateLibraryManagementCore();
             PreloadLibraries();
 
             PopulateBuiltIns();
@@ -114,9 +118,11 @@ namespace Dynamo.DSEngine
 
         private void PreloadLibraries()
         {
-            GraphUtilities.Reset();
             libraries = DynamoPathManager.Instance.PreloadLibraries;
-            GraphUtilities.PreloadAssembly(libraries);
+            foreach (var library in libraries)
+            {
+                ProtoCore.Utils.CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
+            }
         }
 
         /// <summary>
@@ -245,16 +251,17 @@ namespace Dynamo.DSEngine
 
             try
             {
-                int globalFunctionNumber = GetGlobalMethods(GraphUtilities.GetCore()).Count;
-
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-                IList<ClassNode> importedClasses = GraphUtilities.GetClassesForAssembly(library);
 
-                if (GraphUtilities.BuildStatus.ErrorCount > 0)
+                int globalFunctionNumber = libraryManagementCore.CodeBlockList[0].procedureTable.procList.Count();
+                int currentClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
+                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library);
+
+                if (libraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
                     logger.LogWarning(errorMessage, WarningLevel.Moderate);
-                    foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
+                    foreach (ErrorEntry error in libraryManagementCore.BuildStatus.Errors)
                     {
                         logger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
@@ -264,15 +271,17 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                foreach (ClassNode classNode in importedClasses)
-                    ImportClass(library, classNode);
+                int postClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
+                for (int i = currentClassNumber; i < postClassNumber; ++i)
+                {
+                    ImportClass(library, libraryManagementCore.ClassTable.ClassNodes[i]);
+                }
 
-                // GraphUtilities.GetGlobalMethods() ignores input and just 
-                // return all global functions. The workaround is to get 
-                // new global functions after importing this assembly.
-                List<ProcedureNode> globalFunctions = GetGlobalMethods(GraphUtilities.GetCore());
+                var globalFunctions = libraryManagementCore.CodeBlockList[0].procedureTable.procList;
                 for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
+                {
                     ImportProcedure(library, globalFunctions[i]);
+                }
             }
             catch (Exception e)
             {
@@ -335,7 +344,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GetBuiltInMethods(GraphUtilities.GetCore())
+            IEnumerable<FunctionDescriptor> functions = from method in GetBuiltInMethods(libraryManagementCore)
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -418,10 +427,13 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
-            foreach (ClassNode classNode in GraphUtilities.GetImportedClasses())
+            foreach (ClassNode classNode in libraryManagementCore.ClassTable.ClassNodes)
             {
-                string library = Path.GetFileName(classNode.ExternLib);
-                ImportClass(library, classNode);
+                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
+                {
+                    string library = Path.GetFileName(classNode.ExternLib);
+                    ImportClass(library, classNode);
+                }
             }
         }
 
@@ -443,7 +455,7 @@ namespace Dynamo.DSEngine
 
             if (classScope != ProtoCore.DSASM.Constants.kGlobalScope)
             {
-                var classNode = GraphUtilities.GetCore().ClassTable.ClassNodes[classScope];
+                var classNode = libraryManagementCore.ClassTable.ClassNodes[classScope];
 
                 classAttribute = classNode.ClassAttributes;
                 className = classNode.name;
@@ -563,25 +575,7 @@ namespace Dynamo.DSEngine
                 handler(this, e);
         }
 
-        private IEnumerable<ClassNode> GetImportedClasses(ProtoCore.Core core)
-        {
-            foreach (ClassNode classNode in core.ClassTable.ClassNodes)
-            {
-                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
-                {
-                    yield return classNode;
-                }
-            }
-        }
-
-        private IEnumerable<ProcedureNode> GetGlobalMethods(ProtoCore.Core core)
-        {
-            Validity.Assert(core != null);
-            Validity.Assert(core.CodeBlockList.Count > 0);
-            return core.CodeBlockList[0].procedureTable.procList;
-        }
-
-        public IEnumerable<ProcedureNode> GetBuiltInMethods(ProtoCore.Core core)
+        private IEnumerable<ProcedureNode> GetBuiltInMethods(ProtoCore.Core core)
         {
             Validity.Assert(core != null);
             Validity.Assert(core.CodeBlockList.Count > 0);
@@ -592,6 +586,21 @@ namespace Dynamo.DSEngine
                 if (!procNode.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) && !procNode.name.Equals("Break"))
                     yield return procNode;
             }
+        }
+
+        private void CreateLibraryManagementCore()
+        {
+            if (libraryManagementCore != null)
+            {
+                libraryManagementCore.Cleanup();
+            }
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+
+            libraryManagementCore = new ProtoCore.Core(options);
+            libraryManagementCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(libraryManagementCore));
+            libraryManagementCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(libraryManagementCore));
         }
 
         public static class Categories

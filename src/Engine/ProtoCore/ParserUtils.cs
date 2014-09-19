@@ -14,7 +14,6 @@ namespace ProtoCore.Utils
     /// </summary>
     public static class ParserUtils
     {
-
         private static string FindIdentifiers(string statement, int equalIndex)
         {
 

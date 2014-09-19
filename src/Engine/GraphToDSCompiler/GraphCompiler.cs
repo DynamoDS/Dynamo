@@ -16,6 +16,7 @@ namespace GraphToDSCompiler
         private ProtoCore.Core core = null;
         public GraphCompilationStatus gcs = new GraphCompilationStatus();
         static uint tguid = 20000;
+        private static uint runningUID = Constants.UIDStart;
 
         public List<uint> ModifiedStmtGuidList { get; private set; }
         public Dictionary<string, uint> mapModifiedName { get; private set; }
@@ -1999,7 +2000,7 @@ namespace GraphToDSCompiler
             //if (!codeblock.Name.EndsWith(";"))
               //  codeblock.Name += ";";
 
-            List<ProtoCore.AST.Node> nodes = GraphUtilities.ParseCodeBlock(codeblock.Name);
+            List<ProtoCore.AST.Node> nodes = ParseCodeBlock(codeblock.Name);
             if (nodes.Count <= 1)
             {
                 // Single line codeblocks need not be split
@@ -2022,7 +2023,7 @@ namespace GraphToDSCompiler
                 string code = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(codeblock.Name, node);
                 if (code.Length > 0)
                 {
-                    uint newGuid = GraphUtilities.GenerateUID();
+                    uint newGuid = ++runningUID; 
 
                     List<AssignmentStatement> assignmentData = new List<AssignmentStatement>();
                     if (codeblock.assignmentData.Count > 0)

@@ -5,12 +5,16 @@ using System.Text;
 using NUnit.Framework;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Utils;
+using ProtoTestFx.TD;
 
 namespace ProtoTest.GraphCompiler
 {
     [TestFixture]
     public class NewFrontEndTests
     {
+        private TestFrameWork thisTest = new TestFrameWork();
+
         [Test]
         public void ReproMAGN3603()
         {
@@ -20,7 +24,7 @@ namespace ProtoTest.GraphCompiler
                             c = 1 + 2 * 3;";
 
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
-            Assert.IsTrue(GraphToDSCompiler.GraphUtilities.PreCompileCodeBlock(parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);

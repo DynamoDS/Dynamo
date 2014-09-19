@@ -1009,7 +1009,6 @@ namespace ProtoScript.Runners
 
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
-        private GraphToDSCompiler.GraphCompiler graphCompiler;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
         {
@@ -1046,9 +1045,6 @@ namespace ProtoScript.Runners
         public LiveRunner(Configuration configuration)
         {
             this.configuration = configuration;
-
-            graphCompiler = GraphCompiler.CreateInstance();
-            graphCompiler.SetCore(GraphUtilities.GetCore());
 
             runner = new ProtoScriptTestRunner();
 
@@ -1442,8 +1438,6 @@ namespace ProtoScript.Runners
         private bool Compile(string code, out int blockId)
         {
             Dictionary<string, bool> execFlagList = null;
-            if (graphCompiler != null)
-                execFlagList = graphCompiler.ExecutionFlagList;
 
             staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
 
@@ -1497,9 +1491,6 @@ namespace ProtoScript.Runners
 
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
-            if (graphCompiler != null)
-                runtimeContext.execFlagList = graphCompiler.ExecutionFlagList;
 
             try
             {

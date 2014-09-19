@@ -211,7 +211,6 @@ namespace Dynamo.Tests
         {
             base.Cleanup();
             Dynamo.DSEngine.LibraryServices.DestroyInstance();
-            GraphToDSCompiler.GraphUtilities.Reset();
         }
     }
 

@@ -614,7 +614,8 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
+            //TODO-KEYU
+            ProtoCore.Core core = null;
             var cbs = core.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
