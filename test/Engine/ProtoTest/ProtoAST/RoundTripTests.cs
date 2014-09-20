@@ -532,7 +532,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestAstToCode()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4393

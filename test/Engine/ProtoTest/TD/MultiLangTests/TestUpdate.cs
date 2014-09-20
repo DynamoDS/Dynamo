@@ -1642,7 +1642,7 @@ x = [Associative]
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
@@ -1739,7 +1739,7 @@ y = a1.a;
 
         [Test]
         [Category("Modifier Block")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
 

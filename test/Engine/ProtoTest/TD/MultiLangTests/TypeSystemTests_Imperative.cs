@@ -1235,7 +1235,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
@@ -1272,7 +1272,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
@@ -1311,7 +1311,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
