@@ -182,7 +182,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void EllipseArc_Basic()
         {
@@ -237,9 +237,9 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately(revitArc.Radius);
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void Arc_Basic()
         {
@@ -258,9 +258,9 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately( revitArc.Radius );
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void Line_Basic()
         {
@@ -308,7 +308,7 @@ namespace DSRevitNodesTests.GeometryConversion
             revitHelix.GetEndPoint(0).ShouldBeApproximately(s);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void Ellipse_Basic()
         {

@@ -117,25 +117,25 @@ namespace DSRevitNodesTests.Elements
             Assert.Inconclusive();
         }
 
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         public void FamilyInstanceByElementId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         public void FamilyInstanceByUniqueId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         public void DividedPathByElementId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         public void DividedSurfaceByUniqueId_ValidArgs()
         {
             Assert.Inconclusive();
