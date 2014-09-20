@@ -8,7 +8,7 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class StructuralFramingTests : RevitNodeTestBase
+    public class StructuralFramingTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\Empty.rvt")]
