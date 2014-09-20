@@ -53,7 +53,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestDecimals()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4392
