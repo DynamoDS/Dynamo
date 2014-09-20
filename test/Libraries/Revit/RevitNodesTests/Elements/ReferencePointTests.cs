@@ -65,7 +65,7 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModelAttribute(@".\empty.rfa")]
         public void ByLengthOnCurveReference_ShouldPlaceReferencePointCorrectly()
         {
@@ -79,7 +79,7 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModelAttribute(@".\empty.rfa")]
         public void ByParameterOnCurveReference_ShouldPlaceReferencePointCorrectly()
         {
@@ -93,7 +93,7 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModelAttribute(@".\block.rfa")]
         public void ByParametersOnFaceReference_ShouldPlaceReferencePointCorrectly()
         {

@@ -62,7 +62,9 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
             ViewModel.Model.RunExpression();
             fec = null;
+
             fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(5, fec.ToElements().Count());
 
@@ -70,7 +72,9 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
             ViewModel.Model.RunExpression();
             fec = null;
+
             fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(20, fec.ToElements().Count());
         }
@@ -87,6 +91,7 @@ namespace Dynamo.Tests
 
             //verify we have a reference point
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
@@ -95,6 +100,7 @@ namespace Dynamo.Tests
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
             TransactionManager.Instance.ForceCloseTransaction();
             DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
+
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the DocumentManager
@@ -103,7 +109,6 @@ namespace Dynamo.Tests
             ////update the double node so the graph reevaluates
             var doubleNodes = ViewModel.Model.Nodes.Where(x => x is BasicInteractive<double>);
             BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
-
             node.Value = node.Value + .1;
 
             ////run the expression again

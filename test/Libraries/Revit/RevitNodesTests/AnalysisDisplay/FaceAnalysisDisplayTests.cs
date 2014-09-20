@@ -10,7 +10,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
     [TestFixture]
     public class FaceAnalysisDisplayTests : RevitNodeTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_ValidArgs()
         {

@@ -1,12 +1,15 @@
 ﻿using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,7 +31,7 @@ namespace Dynamo.UI.Controls
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
-
+        
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -42,16 +45,12 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
 
+            // Register text editing events
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
 
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
-
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
+            InitializeSyntaxHighlighter();
         }
 
         #region Generic Properties
@@ -91,7 +90,7 @@ namespace Dynamo.UI.Controls
         );
         #endregion
 
-        #region Event Handlers
+        #region Generic Event Handlers
         /// <summary>
         /// Called when the CBN is committed and the underlying source data 
         /// needs to be updated with the text typed in the CBN
@@ -116,6 +115,41 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Helper Methods
+        private void InitializeSyntaxHighlighter()
+        {
+            var stream = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+
+            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(stream), HighlightingManager.Instance);
+
+            // Highlighting Digits
+            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
+
+            var highlightingRule = new HighlightingRule();
+            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            highlightingRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            // These Regex's must match with the grammars in the DS ATG for digits
+            // Refer to the 'number' and 'float' tokens in Start.atg
+            //*******************************************************************************
+            // number = digit {digit} .
+            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+            //*******************************************************************************
+
+            // number with optional floating point
+            string number = @"(-?\d+(\.[0-9]+)?)";
+            // optional exponent
+            string exponent = @"([eE][+-]?[0-9]+)?";
+
+            highlightingRule.Regex = new Regex(number + exponent);
+
+            rules.Add(highlightingRule);
+        }
+
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -155,5 +189,33 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+    }
+
+    // Refer to link: 
+    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
+    internal sealed class CustomizedBrush : HighlightingBrush
+    {
+        private readonly SolidColorBrush brush;
+        public CustomizedBrush(Color color)
+        {
+            brush = CreateFrozenBrush(color);
+        }
+
+        public override Brush GetBrush(ITextRunConstructionContext context)
+        {
+            return brush;
+        }
+
+        public override string ToString()
+        {
+            return brush.ToString();
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            SolidColorBrush brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
     }
 }
