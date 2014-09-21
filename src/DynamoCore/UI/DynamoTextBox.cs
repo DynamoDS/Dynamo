@@ -298,7 +298,7 @@ namespace Dynamo.Nodes
 
         bool shift, enter;
         public CodeNodeTextBox(string s)
-            : base( s)
+            : base(s)
         {
             shift = enter = false;
 
@@ -514,6 +514,11 @@ namespace Dynamo.UI.Controls
             }
             dispatcherTimer.Stop();
             this.DataContext = dataContext;
+
+            // This line is needed to change position of Popup.
+            // As position changed PlacementCallback is called and
+            // Popup placed correctly.
+            this.HorizontalOffset++;
         }
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
@@ -569,8 +574,5 @@ namespace Dynamo.UI.Controls
                 }
             };
         }
-
-
-        
     }
 }
