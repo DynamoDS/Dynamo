@@ -19,7 +19,7 @@
   <Properties>
     <Property name="LineComment" value="//" />
   </Properties>
-  <Digits name="Digits" color="#2585E5" />
+  <!--<Digits name="Digits" color="#2585E5" />-->
   <RuleSets>
     <RuleSet ignorecase="false">
       <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>

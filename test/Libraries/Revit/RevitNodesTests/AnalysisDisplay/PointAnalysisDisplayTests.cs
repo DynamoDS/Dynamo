@@ -7,7 +7,7 @@ using RTF.Framework;
 namespace DSRevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
-    public class PointAnalysisDisplayTests : RevitNodeTestBase
+    public class PointAnalysisDisplayTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\Empty.rvt")]
