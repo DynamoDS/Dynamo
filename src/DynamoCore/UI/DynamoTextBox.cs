@@ -485,7 +485,7 @@ namespace Dynamo.UI.Controls
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
         }
@@ -517,8 +517,11 @@ namespace Dynamo.UI.Controls
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
-            // Popup placed correctly.
+            // Popup placed correctly.            
             this.HorizontalOffset++;
+
+            // Moving tooltip back.
+            this.HorizontalOffset--;
         }
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
@@ -532,8 +535,9 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
-            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
-                                        .Transform(new Point(0, 0));
+            Point targetLocation = this.PlacementTarget
+                .TransformToAncestor(Application.Current.MainWindow)
+                .Transform(new Point(0, 0));
 
             switch (this.AttachmentSide)
             {
@@ -544,11 +548,12 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth + 2.5*gap;
+                    x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+                        + 2.5 * gap;
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)
-                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
+                        y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
                     primaryAxis = PopupPrimaryAxis.Horizontal;
                     break;
 
