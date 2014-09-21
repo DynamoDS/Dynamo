@@ -160,7 +160,7 @@
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
                          CaretBrush="#CCCCCC"
-                         Margin="26,0,0,5"
+                         Margin="26,0,0,-1"
                          Grid.ColumnSpan="3" />
 
                 <Button Name="SearchCancelButton"
