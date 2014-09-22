@@ -2591,6 +2591,16 @@
             Provides information about whether to dump XML property for ToString() method
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometrySettings.GeometryFactoryFilePath">
+            <summary>
+            Provides information about where to load the geometry factory file
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometrySettings.PersistenceManagerFilePath">
+            <summary>
+            Provides information about where to load the persistence manager file
+            </summary>
+        </member>
         <member name="T:Autodesk.DesignScript.Geometry.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
