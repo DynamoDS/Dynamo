@@ -1176,7 +1176,7 @@ namespace ProtoCore.Utils
 
             if (hasValue)
             {
-                value = core.Heap.AllocateArray(values.ToArray(), null);
+                value = core.Heap.AllocateArray(values, null);
                 return true;
             }
             else

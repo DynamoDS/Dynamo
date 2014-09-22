@@ -62,7 +62,7 @@ namespace ProtoCore.Utils
             var v2 = op2.IsString ? ArrayUtils.GetValues(op2, core) : new StackValue[] { op2 };
             var v = v1.Concat(v2).ToList();
             v.ForEach(x => core.Heap.IncRefCount(x));
-            StackValue tmp = core.Heap.AllocateArray(v.ToArray());
+            StackValue tmp = core.Heap.AllocateArray(v);
             return StackValue.BuildString(tmp.opdata);
         }
     }

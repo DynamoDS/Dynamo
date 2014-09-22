@@ -3547,7 +3547,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.Heap.AllocateArray(new StackValue[] {}, null);
+                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>(), null);
                     GCRetain(array);
                     rmem.SetAtSymbol(symbolnode, array);
                     ArrayUtils.SetValueForIndex(array, 0, value, core);
@@ -3612,7 +3612,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.Heap.AllocateArray(new StackValue[] {}, null);
+                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>(), null);
                     GCRetain(array);
                     rmem.SetAtSymbol(symbolnode, array);
                     if (!value.IsNull)
@@ -7214,7 +7214,7 @@ namespace ProtoCore.DSASM
 
                 if (core.ContinuationStruct.Done)
                 {
-                    RX = core.Heap.AllocateArray(core.ContinuationStruct.RunningResult.ToArray(), null);
+                    RX = core.Heap.AllocateArray(core.ContinuationStruct.RunningResult, null);
                     GCUtils.GCRetain(RX, core);
 
                     core.ContinuationStruct.RunningResult.Clear();

@@ -224,7 +224,7 @@ namespace ProtoCore.DSASM
             return StackValue.BuildString(index);
         }
 
-        public StackValue AllocateArray(StackValue[] values, Dictionary<StackValue, StackValue> dict = null)
+        public StackValue AllocateArray(IEnumerable<StackValue> values, Dictionary<StackValue, StackValue> dict = null)
         {
             int index = AllocateInternal(values);
             Heaplist[index].Dict = dict;
@@ -261,15 +261,17 @@ namespace ProtoCore.DSASM
             return AddHeapElement(hpe);
         }
 
-        private int AllocateInternal(StackValue[] values)
+        private int AllocateInternal(IEnumerable<StackValue> values)
         {
             int size = values.Count();
             int index = AllocateInternal(size);
             var heapElement = Heaplist[index];
 
-            for (int i = 0; i < size; ++i)
+            int i = 0;
+            foreach (var item in values)
             {
-                heapElement.Stack[i] = values[i];
+                heapElement.Stack[i] = item;
+                i++;
             }
             return index;
         }

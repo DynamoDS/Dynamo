@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Linq;
 
 namespace ProtoFFI
 {
@@ -381,7 +382,7 @@ namespace ProtoFFI
 
             var heap = dsi.runtime.rmem.Heap;
             svs.ForEach(sv => heap.IncRefCount(sv));
-            var retVal = heap.AllocateArray(svs.ToArray());
+            var retVal = heap.AllocateArray(svs);
             return retVal;
         }
 
@@ -389,7 +390,7 @@ namespace ProtoFFI
         {
             var core = dsi.runtime.Core;
 
-            var array = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] { });
+            var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
             HeapElement ho = ArrayUtils.GetHeapElement(array, core);
             ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(core));
 
