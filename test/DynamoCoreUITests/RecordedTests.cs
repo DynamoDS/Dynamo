@@ -2227,6 +2227,38 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        public void Defect_MAGN_1463()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1463
+
+            RunCommandsFromFile("Defect_MAGN_1463.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 4);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+
+            });
+
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2593()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2593
