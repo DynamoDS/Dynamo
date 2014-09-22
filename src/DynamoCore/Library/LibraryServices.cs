@@ -35,7 +35,7 @@ namespace Dynamo.DSEngine
 
         private List<string> libraries;
 
-        private ProtoCore.Core libraryManagementCore;
+        private readonly ProtoCore.Core libraryManagementCore;
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {

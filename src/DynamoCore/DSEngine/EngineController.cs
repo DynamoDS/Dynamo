@@ -2,6 +2,8 @@
 
 using Dynamo.Models;
 using Dynamo.Nodes;
+
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -631,11 +633,10 @@ namespace Dynamo.DSEngine
 
         private void CreateParsingCore()
         {
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            parsingCore = new ProtoCore.Core(options);
+            parsingCore = new ProtoCore.Core(new Options() {RootCustomPropertyFilterPathName = string.Empty});
             parsingCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(parsingCore));
             parsingCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(parsingCore));
+            parsingCore.ParsingMode = ParseMode.AllowNonAssignment;
         }
 
         public bool TryParseCode(ref ParseParam parseParam)
