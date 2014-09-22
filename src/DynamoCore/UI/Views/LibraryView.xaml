@@ -5,14 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
-            <!--Converter to Make class details not focusable-->
-            <controls:DataContextToBool x:Key="DataContextToBool" />
-            
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
                  exception. -->
@@ -124,14 +122,8 @@
                                 </Setter.Value>
                             </Setter>
 
-                            <!--Make class details not focusable-->
-                            <Setter Property="Focusable">
-                                <Setter.Value>
-                                    <Binding RelativeSource="{RelativeSource Self}"
-                                             Path="DataContext"
-                                             Converter="{StaticResource DataContextToBool}" />
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Focusable"
+                                    Value="{Binding Path=Focusable}" />
 
                             <Style.Triggers>
                                 <Trigger Property="IsSelected"
