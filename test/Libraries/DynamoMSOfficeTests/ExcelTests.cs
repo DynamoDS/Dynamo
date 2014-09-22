@@ -36,7 +36,7 @@ namespace Dynamo.Tests
             try
             {
                 EventArgs args = new ExcelCloseEventArgs(false);
-                ViewModel.Model.ShutDown(false, args);
+                ViewModel.Model.ShutDown(false);
                 this.ViewModel = null;
                 ExcelInterop.OnProcessExit(this, args);
             }

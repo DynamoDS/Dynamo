@@ -5,6 +5,7 @@ using System.Windows;
 using System.Xml;
 
 using Dynamo.UI;
+using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
@@ -160,7 +161,7 @@ namespace Dynamo.Models
             get { return _usingDefaultValue; }
             set
             {
-                _usingDefaultValue = value; 
+                _usingDefaultValue = value;
                 RaisePropertyChanged("UsingDefaultValue");
             }
         }
@@ -193,16 +194,20 @@ namespace Dynamo.Models
 
         #endregion
 
-        public PortModel(PortType portType, NodeModel owner, string name)
+        public PortModel(PortType portType, NodeModel owner, PortData data)
         {
             IsConnected = false;
             PortType = portType;
             Owner = owner;
-            PortName = name;
+            PortName = data.NickName;
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-            this.Height = Configurations.PortHeightInPixels;
+
+            if (data.Height == 0)
+                this.Height = Configurations.PortHeightInPixels;
+            else
+                this.Height = data.Height;
         }
 
         /// <summary>
@@ -235,7 +240,7 @@ namespace Dynamo.Models
         {
             if (!connectors.Contains(connector))
                 return;
-            
+
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
 
@@ -243,7 +248,7 @@ namespace Dynamo.Models
             owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
-            
+
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
@@ -298,6 +303,8 @@ namespace Dynamo.Models
         public object DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
+        public double Height { get; set; }
+
         public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
         public PortData(string nickName, string toolTipString, object defaultValue)
@@ -306,9 +313,10 @@ namespace Dynamo.Models
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
+            Height = 0;
         }
 
-        public bool HasDefaultValue 
+        public bool HasDefaultValue
         {
             get
             {

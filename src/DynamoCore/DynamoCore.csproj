@@ -80,6 +80,11 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.1.0.7916, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -197,6 +202,9 @@ limitations under the License.
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
     <Compile Include="TestInfrastructure\StringInputMutator.cs" />
+    <Compile Include="UI\Controls\CodeBlockEditor.xaml.cs">
+      <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -522,6 +530,7 @@ limitations under the License.
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Fonts\Inconsolata.otf" />
     <Resource Include="UI\Images\add.png" />
     <Resource Include="UI\Images\add_32.png" />
     <Resource Include="UI\Images\add_32_white.png" />
@@ -550,6 +559,10 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\CodeBlockEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -566,6 +579,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <None Include="UI\Themes\Modern\Connectors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
