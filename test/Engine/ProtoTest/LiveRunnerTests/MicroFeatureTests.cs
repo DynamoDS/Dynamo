@@ -3291,6 +3291,147 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         }
 
         [Test]
+        public void TestForceReExecuteFFI01()
+        {
+            // This test simulates a node being run as force execution 
+            // Simulates the defect found in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4642
+            // 1. The node is initially force executed with the form "p_out = null; p = p_out"
+            // 2. The node is is force executed with the form "p_out = DummyPoint.ByCoordinates(1, 2, 3); p = p_out;"
+            // 3. Force re-execute the node another 4 times
+
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");", 
+                "p_out = null; p = p_out;",     // Initial state of CBN
+                "p_out = DummyPoint.ByCoordinates(1, 2, 3); p = p_out;",    // Next state of CBN 
+                "y = 1;",    // Simple CBN
+                "y = 2;",    // Modify the Simple CBN
+                "a = p.X;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN1 for import
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Create CBN2 
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            subtree.ForceExecution = true;
+            added.Add(subtree);
+
+            // Create CBN4 - output check
+            Guid guid4 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid4, codes[5]));
+
+            //========================================
+            // Execute 1st run
+            //========================================
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Set CBN2 as force execution
+            List<Subtree> modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Add CBN3: y = 1
+            Guid guid3 = System.Guid.NewGuid();
+            subtree = CreateSubTreeFromCode(guid3, codes[3]);
+            modified.Add(subtree);
+
+            //========================================
+            // Execute 2nd run
+            //========================================
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Set CBN2 as force execution
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Modify CBN3: y = 2
+            guid3 = System.Guid.NewGuid();
+            subtree = CreateSubTreeFromCode(guid3, codes[4]);
+            modified.Add(subtree);
+
+            //========================================
+            // Execute 3rd run
+            //========================================
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1.0);
+
+
+            // Set CBN2 as force execution
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Modify CBN3: y = 1
+            guid3 = System.Guid.NewGuid();
+            subtree = CreateSubTreeFromCode(guid3, codes[3]);
+            modified.Add(subtree);
+
+            //========================================
+            // Execute 4th run
+            //========================================
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1.0);
+
+
+            // Set CBN2 as force execution
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Modify CBN3: y = 2
+            guid3 = System.Guid.NewGuid();
+            subtree = CreateSubTreeFromCode(guid3, codes[4]);
+            modified.Add(subtree);
+
+            //========================================
+            // Execute 5th run
+            //========================================
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1.0);
+
+
+            // Set CBN2 as force execution
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid2, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Modify CBN3: y = 1
+            guid3 = System.Guid.NewGuid();
+            subtree = CreateSubTreeFromCode(guid3, codes[3]);
+            modified.Add(subtree);
+
+            //========================================
+            // Execute 6th run
+            //========================================
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1.0);
+
+        }
+
+
+        [Test]
         public void ReproMAGN3551()
         {
             List<string> codes = new List<string>() 

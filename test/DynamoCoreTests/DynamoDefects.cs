@@ -241,6 +241,20 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1292()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1292
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1292.dyn");
+            RunModel(openPath);
+            var listContainsItemNode = model.CurrentWorkspace.NodeFromWorkspace
+                ("3011fcbe-00d5-42e6-84c8-55bdf38b6a3b");
+            string var = listContainsItemNode.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_1905()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
@@ -323,6 +337,20 @@ namespace Dynamo.Tests
             var geometryTranslateNode = model.CurrentWorkspace.NodeFromWorkspace
                 ("f49e3857-2a08-4a1f-83ac-89f64b24a592");
             string var = geometryTranslateNode.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
+        }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1971()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1971
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1971.dyn");
+            RunModel(openPath);
+            var pythonNode = model.CurrentWorkspace.NodeFromWorkspace
+                ("768780b5-0902-4756-93dc-2d6a8690df53");
+            string var = pythonNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
             Assert.IsNotNull(mirror);
         }

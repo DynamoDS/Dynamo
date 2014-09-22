@@ -1,0 +1,20 @@
+<Workspace Version="0.6.3.27678" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="768780b5-0902-4756-93dc-2d6a8690df53" nickname="Python Script" x="171" y="212" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script># Default imports
+
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = IN * 10</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ca5a60d2-2b62-478c-8d78-21e52a727e62" nickname="Code Block" x="6" y="209" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f5530321-cad8-44dc-b8a8-920fd1897e8d" nickname="Watch" x="381" y="210" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="768780b5-0902-4756-93dc-2d6a8690df53" start_index="0" end="f5530321-cad8-44dc-b8a8-920fd1897e8d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca5a60d2-2b62-478c-8d78-21e52a727e62" start_index="0" end="768780b5-0902-4756-93dc-2d6a8690df53" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
