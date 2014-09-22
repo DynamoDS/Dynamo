@@ -1735,7 +1735,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode, istream.dependencyGraph, executingBlock, true);
+            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
 
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
