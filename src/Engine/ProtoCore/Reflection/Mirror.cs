@@ -295,6 +295,46 @@ namespace ProtoCore
                 Obj obj = new Obj(mirrorData.GetStackValue());
                 return mirror.GetType(obj);
             }
+
+            public IEnumerable<String> GetMembers()
+            {
+                List<string> members = new List<string>();
+                Validity.Assert(mirrorData != null);
+
+                ClassMirror type = mirrorData.Class;
+                if (type == null)
+                    return members;
+
+                List<ClassMirror> baseClasses = type.GetClassHierarchy();
+                foreach (var baseClass in baseClasses)
+                {
+                    foreach (var method in baseClass.GetFunctions())
+                    {
+                        if(!members.Contains(method.MethodName))
+                            members.Add(method.MethodName);
+                    }
+                    
+                    foreach (var property in baseClass.GetProperties())
+                    {
+                        if (!members.Contains(property.PropertyName))
+                            members.Add(property.PropertyName);
+                    }
+                }
+                
+                foreach (var method in type.GetFunctions())
+                {
+                    if (!members.Contains(method.MethodName))
+                        members.Add(method.MethodName);
+                }
+                foreach (var property in type.GetProperties())
+                {
+                    if (!members.Contains(property.PropertyName))
+                        members.Add(property.PropertyName);
+                }
+                return members;
+            }
+
+            
         }
 
         public abstract class StaticMirror : MirrorObject
@@ -458,8 +498,10 @@ namespace ProtoCore
 
                     if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
-                        classNode = classTable.ClassNodes[ci];                        
+                        classNode = classTable.ClassNodes[ci];
                     }
+                    else
+                        throw new Exception(String.Format("Class {0} not defined", className));
                 }
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
@@ -503,6 +545,59 @@ namespace ProtoCore
             public LibraryMirror GetAssembly()
             {
                 return libraryMirror;
+            }
+
+            /// <summary>
+            /// Returns the constructors and static methods and properties belonging to the type
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerable<StaticMirror> GetMembers()
+            {
+                List<StaticMirror> members = new List<StaticMirror>();
+                
+                List<ClassMirror> baseClasses = this.GetClassHierarchy();
+                foreach (var baseClass in baseClasses)
+                {
+                    foreach (var method in baseClass.GetFunctions())
+                    {
+                        if (method.IsStatic)
+                        {
+                            //if (!members.Contains(method.MethodName))
+                                members.Add(method);
+                        }
+                    }
+
+                    foreach (var property in baseClass.GetProperties())
+                    {
+                        if (property.IsStatic)
+                        {
+                            //if (!members.Contains(property.PropertyName))
+                                members.Add(property);
+                        }
+                    }
+                }
+                foreach (var ctor in this.GetConstructors())
+                {
+                    //if (!members.Contains(ctor.MethodName))
+                        members.Add(ctor);
+                }
+                foreach (var method in this.GetFunctions())
+                {
+                    if (method.IsStatic)
+                    {
+                        //if (!members.Contains(method.MethodName))
+                            members.Add(method);
+                    }
+                }
+                foreach (var property in this.GetProperties())
+                {
+                    if (property.IsStatic)
+                    {
+                        //if (!members.Contains(property.PropertyName))
+                            members.Add(property);
+                    }
+                }
+                return members;
             }
 
             /// <summary>
@@ -576,7 +671,7 @@ namespace ProtoCore
             ///  Returns the list of class properties of this class 
             /// </summary>
             /// <returns> symbol nodes</returns>
-            public List<PropertyMirror> GetProperties()
+            public IEnumerable<PropertyMirror> GetProperties()
             {
                 List<PropertyMirror> properties = new List<PropertyMirror>();
                 
@@ -639,7 +734,7 @@ namespace ProtoCore
             /// Returns the list of constructors defined for the given class
             /// </summary>
             /// <returns></returns>
-            public List<MethodMirror> GetConstructors()
+            public IEnumerable<MethodMirror> GetConstructors()
             {
                 List<MethodMirror> constructors = new List<MethodMirror>();
                 
@@ -670,7 +765,7 @@ namespace ProtoCore
             ///  Returns the list of function properties of the class only
             /// </summary>
             /// <returns> function nodes </returns>
-            public List<MethodMirror> GetFunctions()
+            public IEnumerable<MethodMirror> GetFunctions()
             {
                 List<MethodMirror> methods = new List<MethodMirror>();
                 string name = string.Empty;
@@ -694,7 +789,7 @@ namespace ProtoCore
                 foreach (ProcedureNode pNode in procList)
                 {
                     name = pNode.name;
-                    if (!pNode.isAssocOperator && !pNode.isAutoGenerated && !pNode.isAutoGeneratedThisProc && !pNode.isConstructor)
+                    if (!pNode.isAssocOperator && !pNode.isAutoGenerated && !pNode.isAutoGeneratedThisProc && !pNode.isConstructor && !CoreUtils.IsGetter(pNode.name))
                     {
                         methods.Add(new MethodMirror(pNode));
                     }

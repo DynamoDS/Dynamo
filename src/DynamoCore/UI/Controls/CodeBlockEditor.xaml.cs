@@ -1,10 +1,12 @@
 ﻿using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Rendering;
+using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,9 @@ namespace Dynamo.UI.Controls
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
+        private CompletionWindow completionWindow = null;
+        private CodeBlockNodeModel nodeModel = null;
+        private CodeCompletionParser codeParser = null;
         
         public CodeBlockEditor()
         {
@@ -44,14 +49,48 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
             // Register text editing events
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
 
+            // Register auto-completion callbacks
+            this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
+            this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
+
             InitializeSyntaxHighlighter();
         }
+
+        private ICompletionData[] GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
+        {
+            var completions = new List<CodeBlockCompletionData>();
+            var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // Determine if the string to be completed is a class
+            var type = engineController.GetStaticType(stringToComplete);
+            if (type == null)
+            {
+                // Check if the string to be completed is a declared variable
+                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
+                if (typeName != null)
+                    type = engineController.GetStaticType(typeName);
+            }
+            if (type != null)
+            {
+                var members = type.GetMembers();
+                completions = members.Select<StaticMirror, CodeBlockCompletionData>(
+                    x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)).ToList();
+            }
+            return completions.ToArray();
+        }
+
+        internal string GetDescription()
+        {
+            return "";
+        }
+
 
         #region Generic Properties
         internal TextEditor InternalEditor
@@ -88,6 +127,64 @@ namespace Dynamo.UI.Controls
                 target.Code = (string)args.NewValue;
             })
         );
+        #endregion
+
+        #region Auto-complete event handlers
+        private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                if (e.Text.Length > 0 && completionWindow != null)
+                {
+                    // If a completion item is highlighted and the user types
+                    // a special character or function key, select the item and insert it
+                    if (!char.IsLetterOrDigit(e.Text[0]))
+                        completionWindow.CompletionList.RequestInsertion(e);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                if (e.Text == ".")
+                {
+                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                    codeParser = new CodeCompletionParser();
+                    string stringToComplete = codeParser.GetStringToComplete(code).Trim('.');
+                    
+                    var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
+
+                    if (completions.Length == 0)
+                        return;
+
+                    completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+                    var data = completionWindow.CompletionList.CompletionData;
+
+                    foreach (var completion in completions)
+                        data.Add(completion);
+
+                    completionWindow.Show();
+                    completionWindow.Closed += delegate
+                    {
+                        completionWindow = null;
+                    };
+                }
+            }
+            catch (System.Exception ex)
+            {
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
         #endregion
 
         #region Generic Event Handlers
