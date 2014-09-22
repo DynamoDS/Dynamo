@@ -229,14 +229,20 @@ namespace ProtoCore.Utils
 
         public static bool TryLoadAssemblyInCore(Core core, string assemblyPath)
         {
-            core.ResetForPrecompilation();
+            bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
+            bool parsingCbnFlag = core.IsParsingCodeBlockNode;
             core.IsParsingPreloadedAssembly = true;
             core.IsParsingCodeBlockNode = false;
-            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
 
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int blockId;
             string importStatement = @"import (""" + assemblyPath + @""");";
+
+            core.ResetForPrecompilation();
             var status = PreCompile(importStatement, core, null, out blockId);
+
+            core.IsParsingPreloadedAssembly = parsingPreloadFlag;
+            core.IsParsingCodeBlockNode = parsingCbnFlag;
+
             return status == null || status.ErrorCount == 0;
         }
 
@@ -290,7 +296,16 @@ namespace ProtoCore.Utils
                 }
                 codeblock.Body.AddRange(nodes);
 
+                bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
+                bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
+                core.IsParsingPreloadedAssembly = false;
+                core.IsParsingCodeBlockNode = true;
+
+                core.ResetForPrecompilation();
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
+
+                core.IsParsingCodeBlockNode = parsingCbnFlag;
+                core.IsParsingPreloadedAssembly = parsingPreloadFlag;
 
                 parseParams.AppendErrors(buildStatus.Errors);
                 parseParams.AppendWarnings(buildStatus.Warnings);
