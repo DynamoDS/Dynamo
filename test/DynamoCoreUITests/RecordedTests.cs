@@ -1975,20 +1975,20 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 10);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
-                else if (commandTag == "Point-2")
+                else if (commandTag == "Point-5")
                 {
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 2);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 5);
                 }
-                else if (commandTag == "Point-12")
+                else if (commandTag == "Point10")
                 {
                     Assert.AreEqual(1, workspace.Connectors.Count);
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 12);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
                 else if (commandTag == "Point--5")
                 {
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", -5);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", -5);
                 }
             });
         }
