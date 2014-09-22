@@ -288,6 +288,13 @@ namespace Dynamo.DSEngine
             if (null == library || null == functions)
                 throw new ArgumentNullException();
 
+            // get the name of the XML file
+
+
+            // add these to the internal database keeping track of this sort of stuff
+
+
+
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
             {
