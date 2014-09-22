@@ -420,16 +420,16 @@ namespace ProtoCore
 
             public StackValue GetMemberData(int symbolindex, int scope)
             {
-
                 StackValue thisptr = GetAtRelative(GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
 
                 // Get the heapstck offset
                 int offset = ClassTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
-                if (null == Heap.GetHeapElement(thisptr).Stack || Heap.GetHeapElement(thisptr).Stack.Length == 0)
+                var heapElement = Heap.GetHeapElement(thisptr); 
+                if (null == heapElement.Stack || heapElement.Stack.Length == 0)
                     return StackValue.Null;
 
-                StackValue sv = Heap.GetHeapElement(thisptr).Stack[offset];
+                StackValue sv = heapElement.Stack[offset];
                 Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
@@ -444,9 +444,11 @@ namespace ProtoCore
 
                 StackValue nextPtr = sv;
                 Validity.Assert(nextPtr.opdata >= 0);
-                if (null != Heap.GetHeapElement(nextPtr).Stack && Heap.GetHeapElement(nextPtr).Stack.Length > 0)
+                heapElement = Heap.GetHeapElement(nextPtr);
+
+                if (null != heapElement.Stack && heapElement.Stack.Length > 0)
                 {
-                    StackValue data = Heap.GetHeapElement(nextPtr).Stack[0];
+                    StackValue data = heapElement.Stack[0];
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {
