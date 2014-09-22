@@ -100,11 +100,6 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public LibraryServices LibraryServices
-        {
-            get { return libraryServices; }
-        }
-
         #region Value queries
 
         /// <summary>
