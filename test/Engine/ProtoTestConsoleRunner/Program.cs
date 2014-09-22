@@ -51,7 +51,9 @@ namespace ProtoTestConsoleRunner
 #endif
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"C:\Users\Yu\dev\github\test.ds", core);
+
+            // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();

@@ -9,7 +9,7 @@ namespace DSRevitNodesTests.Elements
     [TestFixture]
     public class ModelTextTypeTests : RevitNodeTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {

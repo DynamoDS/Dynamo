@@ -46,7 +46,7 @@ namespace DynamoCoreUITests
         {
             if (this.ViewModel != null)
             {
-                this.ViewModel.Model.ShutDown(true);
+                this.ViewModel.Model.ShutDown(false);
                 this.ViewModel = null;
                 this.commandCallback = null;
             }

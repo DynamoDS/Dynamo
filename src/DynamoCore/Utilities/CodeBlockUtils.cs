@@ -51,7 +51,10 @@ namespace Dynamo.Utilities
                 if (portName.Length > maxLength)
                     portName = portName.Remove(maxLength - 3) + "...";
 
-                inputPorts.Add(new PortData(portName, name));
+                inputPorts.Add(new PortData(portName, name)
+                {
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                });
             }
 
             return inputPorts;
@@ -115,7 +118,7 @@ namespace Dynamo.Utilities
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
-           
+
             var currentVariables = statementVariables.ElementAt(index);
             for (int stmt = index + 1; stmt < statementCount; stmt++)
             {
