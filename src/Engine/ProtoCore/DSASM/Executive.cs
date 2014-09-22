@@ -6420,7 +6420,7 @@ namespace ProtoCore.DSASM
                 GCRetain(value);
                 svs[i] = value;
             }
-            StackValue pointer = rmem.Heap.AllocateArray(svs.ToArray());
+            StackValue pointer = rmem.Heap.AllocateArray(svs);
 
             if (instruction.op2.IsString)
             {
