@@ -241,6 +241,20 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1292()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1292
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1292.dyn");
+            RunModel(openPath);
+            var listContainsItemNode = model.CurrentWorkspace.NodeFromWorkspace
+                ("3011fcbe-00d5-42e6-84c8-55bdf38b6a3b");
+            string var = listContainsItemNode.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_1905()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
@@ -328,6 +342,20 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1971()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1971
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1971.dyn");
+            RunModel(openPath);
+            var pythonNode = model.CurrentWorkspace.NodeFromWorkspace
+                ("768780b5-0902-4756-93dc-2d6a8690df53");
+            string var = pythonNode.GetAstIdentifierForOutputIndex(0).Name;
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(var);
+            Assert.IsNotNull(mirror);
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_4046()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4046
@@ -355,7 +383,6 @@ namespace Dynamo.Tests
             AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
         }
 
-        [Test, Category("RegressionTests")]
         public void Defect_MAGN_2607()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2607
@@ -369,5 +396,38 @@ namespace Dynamo.Tests
             RunCurrentModel();
             AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 24);
         }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_4364()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4364
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4364.dyn");
+
+            RunModel(openPath);
+
+            string watchNodeID1 = "4d3e33b8-877e-4c7f-9b2e-25c5e2f7ca83";
+
+            AssertPreviewValue(watchNodeID1, new string[] { "10", "Jack", "Dynamo", "King", "40" });
+
+            string watchNodeID2 = "0a0f829d-fe4d-4f82-8565-dd620f39b702";
+            AssertPreviewValue(watchNodeID2, new string[] { "foo", "bar" });
+
+            string watchNodeID3 = "2ac27d00-2c4f-4a07-8ae4-e5ce8784e2dc";
+            AssertPreviewValue(watchNodeID3, new string[] { "a", "b", "c", "d" });
+
+            string watchNodeID4 = "b96146c7-7fbc-4ae5-b8e4-563c72bd6522";
+            AssertPreviewValue(watchNodeID4, "a");
+
+            string watchNodeID5 = "0805b17c-c007-461e-9c2e-33dc2bc6551e";
+            AssertPreviewValue(watchNodeID5, new int[] { 1, 2, 3 });
+
+            string watchNodeID6 = "775db841-b486-4e41-9a6b-2f319696d469";
+            AssertPreviewValue(watchNodeID6, new int[] { 1, 2, 3, 4 });
+
+            string watchNodeID7 = "862f1f50-4a40-47e0-b0aa-d8c9a28f4597";
+            AssertPreviewValue(watchNodeID7, new int[] { 1, 2, 1, 2 });
+        }
+
     }
 }

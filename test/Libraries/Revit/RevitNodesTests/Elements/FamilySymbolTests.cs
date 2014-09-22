@@ -18,7 +18,7 @@ namespace DSRevitNodesTests
             Assert.AreEqual("Box", famSym.Family.Name);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_BadArgs()
         {

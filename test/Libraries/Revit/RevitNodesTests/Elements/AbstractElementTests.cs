@@ -5,9 +5,9 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class AbstractElementTests : RevitNodeTestBase
+    public class AbstractElementTests : GeometricRevitNodeTest
     {
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void GetParameterByName_ValidArgs()
         {
@@ -48,7 +48,7 @@ namespace DSRevitNodesTests.Elements
                 (() => refPt.SetParameterByName("Name", -1.0));
         }
 
-        [Test, Ignore]
+        [Test, Ignore, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void OverrideColorInView_ValidArgs()
         {

@@ -58,7 +58,7 @@ namespace DynamoCoreUITests
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
-                    this.ViewModel.Model.ShutDown(true);
+                    this.ViewModel.Model.ShutDown(false);
                 }
                 this.ViewModel = null;
             }
@@ -2218,6 +2218,38 @@ namespace DynamoCoreUITests
                 else if (commandTag == "LastRun")
                 {
                     AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 4, 5, 6 });
+                }
+
+            });
+
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_1463()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1463
+
+            RunCommandsFromFile("Defect_MAGN_1463.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 4);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
                 }
 
             });

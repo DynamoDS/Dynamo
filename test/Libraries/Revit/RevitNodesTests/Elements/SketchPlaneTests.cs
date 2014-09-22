@@ -6,9 +6,9 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class SketchPlaneTests : RevitNodeTestBase
+    public class SketchPlaneTests : GeometricRevitNodeTest
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByPlane_CanBeUsedToCreateSketchPlaneInProjectDocument()
         {
@@ -25,7 +25,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(sketchPlane.ElementPlaneReference);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void ByPlane_CanBeUsedToCreateSketchPlaneInFamilyDocument()
         {

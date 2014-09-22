@@ -43,6 +43,7 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 - Improvements to search speed
 - Improved handling of updates to 0.6.3 packages
 - Improvements to If node uses in custom nodes
+- Fixed Vasari-specific compatibility issues
 - Fixed Model Line creations from Dynamo curves
 - Fixed Surface.ByPatch error with closed polycurve
 - Fixed Solid.ThinShell
