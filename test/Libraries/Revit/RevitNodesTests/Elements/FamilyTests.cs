@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.Elements
             Assert.AreEqual(1, fam.Symbols.Length);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_NonexistentName()
         {

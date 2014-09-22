@@ -237,7 +237,7 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately(revitArc.Radius);
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -258,7 +258,7 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately( revitArc.Radius );
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
         [Test]
         [TestModel(@".\empty.rfa")]

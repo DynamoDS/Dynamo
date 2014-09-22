@@ -37,7 +37,8 @@ namespace Dynamo.UI
         //public static readonly double Minimum
 
         // Generic Constants
-        public static readonly double PortHeightInPixels = 26.0;
+        public static readonly double PortHeightInPixels = 26;
+        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
 
         // Grid Settings
         public static readonly int GridSpacing = 100;
@@ -166,7 +167,9 @@ namespace Dynamo.UI
 
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly double CBNMaxTextBoxWidth = 500;
-        public static readonly double CBNFontSize = 14.67;
+        public static readonly double CBNFontSize = 15;
+        public static readonly string HighlightingFile =
+            "DesignScript.Resources.SyntaxHighlighting.xshd";
 
         #endregion
 

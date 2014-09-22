@@ -19,8 +19,6 @@ using DynamoUnits;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
-using Dynamo.Search;
-using Dynamo.Nodes.Search;
 
 namespace Dynamo.Controls
 {
