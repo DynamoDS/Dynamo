@@ -71,5 +71,6 @@ extern/ASM/
 /src/Libraries/IronPython/images.resources
 /src/Libraries/CoreNodes/images.resources
 /src/Libraries/CoreNodes/*.resources
+/src/DynamoIcons/*.resources
 images.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
