@@ -36,6 +36,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestScopedNode1()
         {
             //
@@ -100,6 +101,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Failure")]
         public void TestScopedNodeModel02()
         {
@@ -136,6 +138,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Failure")]
         public void TestScopedNodeModel03()
         {

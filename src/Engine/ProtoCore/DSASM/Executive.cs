@@ -623,10 +623,7 @@ namespace ProtoCore.DSASM
                 {
                     HeapElement he = rmem.Heap.Heaplist[(int)svArrayPtrDimesions.opdata];
                     Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
-                    for (int n = 0; n < he.VisibleSize; ++n)
-                    {
-                        dotCallDimensions.Add(he.Stack[n] /*(int)he.Stack[n].opdata*/);
-                    }
+                    dotCallDimensions.AddRange(he.VisibleItems);
                 }
             }
             else
@@ -1319,12 +1316,13 @@ namespace ProtoCore.DSASM
             HeapElement hs = rmem.Heap.Heaplist[pointer];
 
             string str = "";
-            for (int n = 0; n < hs.VisibleSize; ++n)
+            foreach (var item in hs.VisibleItems)
             {
-                if (!hs.Stack[n].IsChar)
+                if (!item.IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(hs.Stack[n].opdata);
+                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
             }
+
             if (str == "")
                 return null;
 
@@ -1646,33 +1644,6 @@ namespace ProtoCore.DSASM
             SetGraphNodeStackValue(graphNode, svNull);
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int index, int exprID)
-        {
-            //while (istream.dependencyGraph.GraphList[index].exprUID == exprID)
-            while (istream.dependencyGraph.GraphList[index].IsSSANode())
-            {
-                --index;
-                if (index < 0)
-                {
-                    // In this case, the first SSA statemnt is the first graphnode
-                    break;
-                }
-
-                //// This check will be deprecated on full SSA
-                //if (core.Options.FullSSA)
-                //{
-                //    if (!istream.dependencyGraph.GraphList[index].IsSSANode())
-                //    {
-                //        // The next graphnode is nolonger part of the current statement 
-                //        break;
-                //    }
-                //}
-
-                Validity.Assert(index >= 0);
-            }
-            return istream.dependencyGraph.GraphList[index + 1];
-        }
-
         private bool UpdatePropertyChangedGraphNode()
         {
             bool propertyChanged = false;
@@ -1699,35 +1670,39 @@ namespace ProtoCore.DSASM
             return propertyChanged;
         }
 
-        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        /// <summary>
+        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
+        /// 
+        /// Given:
+        ///     [1] a = b + c
+        ///     [2] a = d
+        /// Statement [1] has been redefined by statment [2]    
+        /// Deactivate and remove the dependencies of statement [1]
+        /// 
+        /// </summary>
+        /// <param name="executingGraphNode"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        private void HandleGraphNodeRedefinitionInScope(AssociativeGraph.GraphNode executingGraphNode, int classScope, int functionScope)
         {
-            if (null != Properties.executingGraphNode)
-            {
-                if (!Properties.executingGraphNode.IsSSANode())
-                {
-                    UpdatePropertyChangedGraphNode();
-                }
-            }
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
-
-            if (Properties.executingGraphNode != null)
+            if (executingGraphNode != null)
             {
                 // Remove this condition when full SSA is enabled
-                bool isssa = (!Properties.executingGraphNode.IsSSANode() && Properties.executingGraphNode.DependsOnTempSSA());
+                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
 
                 if (core.Options.ExecuteSSA)
                 {
-                    isssa = Properties.executingGraphNode.IsSSANode();
+                    isssa = executingGraphNode.IsSSANode();
                 }
                 if (!isssa)
                 {
-                    for (int n = 0; n < istream.dependencyGraph.GraphList.Count; ++n)
+                    // Get the graphnodes in the current scope
+                    var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+                    foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
                     {
-                        ProtoCore.AssociativeGraph.GraphNode graphNode = istream.dependencyGraph.GraphList[n];
-
                         bool allowRedefine = true;
 
-                        SymbolNode symbol = Properties.executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
+                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
                         bool isMember = symbol.classScope != Constants.kInvalidIndex
                             && symbol.functionIndex == Constants.kInvalidIndex;
 
@@ -1743,11 +1718,30 @@ namespace ProtoCore.DSASM
                         if (allowRedefine)
                         {
                             // Update redefinition that this graphnode may have cauased
-                            UpdateGraphNodeDependency(graphNode, Properties.executingGraphNode);
+                            UpdateGraphNodeDependency(graphNode, executingGraphNode);
                         }
                     }
                 }
             }
+        }
+
+        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        {
+            if (null != Properties.executingGraphNode)
+            {
+                if (!Properties.executingGraphNode.IsSSANode())
+                {
+                    UpdatePropertyChangedGraphNode();
+                }
+            }
+
+            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
+
+            int classScope = Constants.kInvalidIndex;
+            int functionScope = Constants.kInvalidIndex;
+            GetCallerInformation(out classScope, out functionScope);
+            HandleGraphNodeRedefinitionInScope(Properties.executingGraphNode, classScope, functionScope);
+           
         }
 
         /// <summary>
@@ -2110,34 +2104,6 @@ namespace ProtoCore.DSASM
                         }
                         else if (!graphNode.isDirty)
                         {
-                            // If the graphnode is not cyclic, then it can be safely marked as dirty, in preparation of its execution
-                            if (core.Options.EnableVariableAccumulator
-                                && !isSSAAssign
-                                && graphNode.IsSSANode())
-                            {
-                                //
-                                // Comment Jun: Backtrack and firt the first graphnode of this SSA transform and mark it dirty. 
-                                //              We want to execute the entire statement, not just the partial SSA nodes
-                                //
-
-                                // TODO Jun: Optimization - Statically determine the index of the starting graphnode of this SSA expression
-
-                                // Looks we should partially execuate graph
-                                // nodes otherwise we will get accumulative
-                                // update. - Yu Ke 
-
-                                /*
-                                int graphNodeIndex = 0;
-                                for (; graphNodeIndex < graph.GraphList.Count; graphNodeIndex++)
-                                {
-                                    if (graph.GraphList[graphNodeIndex].UID == graphNode.UID)
-                                        break;
-                                }
-                                var firstGraphNode = GetFirstSSAGraphnode(graphNodeIndex - 1, graphNode.exprUID);
-                                firstGraphNode.isDirty = true;
-                                */
-                            }
-
                             if (core.Options.ElementBasedArrayUpdate)
                             {
                                 UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
@@ -2168,7 +2134,8 @@ namespace ProtoCore.DSASM
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
-                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNode.exprUID);
+                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
+                                    var firstGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
@@ -2214,7 +2181,6 @@ namespace ProtoCore.DSASM
                 }
 
                 if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                //if (gnode.exprUID == executingNode.exprUID)
                 {
                     // These nodes are within the same expression, no redifinition can occur
                     return;
@@ -2255,6 +2221,7 @@ namespace ProtoCore.DSASM
                     //
                     GCAnonymousSymbols(gnode.symbolListWithinExpression);
                     gnode.symbolListWithinExpression.Clear();
+                    gnode.isActive = false;
                 }
             }
         }
@@ -4259,9 +4226,11 @@ namespace ProtoCore.DSASM
                         {
                             paramType.rank++;
                             int arrayHeapPtr = (int)paramSv.opdata;
-                            if (core.Heap.Heaplist[arrayHeapPtr].VisibleSize > 0)
+                            var he = core.Heap.Heaplist[arrayHeapPtr];
+
+                            if (he.VisibleItems.Any())
                             {
-                                paramSv = core.Heap.Heaplist[arrayHeapPtr].Stack[0];
+                                paramSv = he.VisibleItems.First();
                                 paramType.UID = (int)paramSv.metaData.type;
                             }
                             else
@@ -5295,7 +5264,7 @@ namespace ProtoCore.DSASM
             HeapElement he = ArrayUtils.GetHeapElement(array, core);
             if (he != null)
             {
-                if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
+                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
                 {
                     key = StackValue.BuildArrayKey(array, 0);
                 }
@@ -6018,7 +5987,7 @@ namespace ProtoCore.DSASM
             else if ((opdata1.IsChar || opdata1.IsString) &&
                      (opdata2.IsChar || opdata2.IsString))
             {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
+                opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
             }
             else if (opdata1.IsString || opdata2.IsString)
             {
@@ -6026,12 +5995,12 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, rmem);
+                    opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, rmem);
+                    opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)

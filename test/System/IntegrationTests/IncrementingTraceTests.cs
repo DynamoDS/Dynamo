@@ -1491,7 +1491,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         }
 
         [Test]
-        [Category("failure")]
+        [Category("Failure")]
         //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void ReplicatedToAllExceptionToReplicated()
         {
@@ -1658,7 +1658,7 @@ mtcAID = mtcA.ID;";
         //Reproductions
 
         [Test]
-        [Category("failure")]
+        [Category("Failure")]
         //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void Repo_01()
         {

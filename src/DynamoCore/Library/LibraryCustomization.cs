@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -115,7 +116,7 @@ namespace Dynamo.DSEngine
 
         // resourcesReader is a storage of our icons.
         private ResourceReader resourcesReader;
-        private Dictionary<string, BitmapImage> cachedIcons;
+        private Dictionary<string, BitmapSource> cachedIcons;
 
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
@@ -126,7 +127,7 @@ namespace Dynamo.DSEngine
 
         private void LoadResourceStream(Assembly assembly)
         {
-            cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+            cachedIcons = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
             var rsrcNames = assembly.GetManifestResourceNames();
             if (rsrcNames == null || (rsrcNames.Length <= 0))
@@ -144,11 +145,16 @@ namespace Dynamo.DSEngine
         public string GetNamespaceCategory(string namespaceName)
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
-            var obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            object obj = String.Empty;
+            if (XmlDocument != null)
+                obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
         }
 
-        internal BitmapImage LoadIconInternal(string iconKey)
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        internal BitmapSource LoadIconInternal(string iconKey)
         {
             //If there is no icons, there is no need to go further.
             if (cachedIcons == null) return null;
@@ -174,20 +180,31 @@ namespace Dynamo.DSEngine
                 return null;
             }
 
-            MemoryStream memory = new MemoryStream();
-            Bitmap bitmap;
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmap = iconData.Value as Bitmap;
-            bitmap.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
+            BitmapSource bitmapSource = null;
 
-            cachedIcons.Add(iconKey, bitmapImage);
+            var source = iconData.Value as Bitmap;
+            var hBitmap = source.GetHbitmap();
 
-            return bitmapImage;
+            try
+            {
+                bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+            }
+            catch (Win32Exception)
+            {
+                bitmapSource = null;
+            }
+            finally
+            {
+                DeleteObject(hBitmap);
+            }
+
+            cachedIcons.Add(iconKey, bitmapSource);
+
+            return bitmapSource;
         }
     }
 }

@@ -1387,19 +1387,24 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
                 }
 
+
+                bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
                 {
 
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core);
+                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core).ToArray();
                     }
                     else
                     {
                         subParameters = new StackValue[] { formalParameters[repIndex] };
                     }
                     parameters.Add(subParameters);
+
+                    if (subParameters.Length == 0)
+                        hasEmptyArg = true;
 
                     switch (algorithm)
                     {
@@ -1412,6 +1417,12 @@ namespace ProtoCore
                     }
 
                 }
+
+                // If we're being asked to replicate across an empty list
+                // then it's always going to be zero, as there will never be any
+                // data to pass to that parameter.
+                if (hasEmptyArg)
+                    retSize = 0;
 
                 StackValue[] retSVs = new StackValue[retSize];
                 SingleRunTraceData retTrace = newTraceData;
@@ -1510,7 +1521,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core);
+                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core).ToArray();
                     retSize = parameters.Length;
                 }
                 else

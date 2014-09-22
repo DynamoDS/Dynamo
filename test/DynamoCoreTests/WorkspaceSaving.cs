@@ -18,6 +18,7 @@ namespace Dynamo.Tests
     {
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceCanSaveAsNewFile()
         {
             // new home workspace
@@ -36,6 +37,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CleanWorkbenchClearsUndoStack()
         {
             var dynamoModel = ViewModel.Model;
@@ -63,6 +65,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceCanSaveAsNewFile()
         {
             // new custom node
@@ -138,6 +141,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceCanSaveAsFailsWithoutFilepathArg()
         {
             // open file
@@ -156,6 +160,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceSaveFailsWithoutFilepathProperty()
         {
             // new file
@@ -171,6 +176,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspacSaveFailsWithoutFilepathProperty()
         {
             // new file
@@ -188,6 +194,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceFilePathPropertyIsUpdatedOnSaveAs()
         {
             // open file
@@ -207,6 +214,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceFilePathIsUpdatedOnSaveAs()
         {
             // open file
@@ -229,6 +237,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceCanSaveAsMultipleTimes()
         {
             // open file
@@ -253,6 +262,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceCanSaveAsMultipleTimes()
         {
             // open file
@@ -279,6 +289,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceCanSaveAsAndThenSaveExistingFile()
         {
             // open file
@@ -313,6 +324,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceCanSaveAsAndThenSaveExistingFile()
         {
             // open file
@@ -348,6 +360,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceCanSaveMultipleTimes()
         {
             // open file
@@ -384,6 +397,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceCanSaveMultipleTimes()
         {
             // open file
@@ -423,6 +437,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void HomeWorkspaceHasUnsavedChangesPropertyIsSetOnSaveAs()
         {
             // open file
@@ -450,6 +465,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceHasUnsavedChangesPropertyIsSetOnSaveAs()
         {
             // open file
@@ -478,6 +494,7 @@ namespace Dynamo.Tests
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]
+        [Category("UnitTests")]
         public void CustomNodeSaveAsDoesNotGiveNewFunctionIdToNewCustomNode()
         {
             // new custom node

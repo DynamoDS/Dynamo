@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using ProtoCore.DSASM;
+using Dynamo.Search;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Rendering;
+using ICSharpCode.AvalonEdit.Editing;
 
 namespace Dynamo.Nodes
 {
@@ -302,7 +304,7 @@ namespace Dynamo.Nodes
 
         bool shift, enter;
         public CodeNodeTextBox(string s)
-            : base( s)
+            : base(s)
         {
             shift = enter = false;
 
@@ -489,7 +491,7 @@ namespace Dynamo.UI.Controls
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
         }
@@ -518,6 +520,14 @@ namespace Dynamo.UI.Controls
             }
             dispatcherTimer.Stop();
             this.DataContext = dataContext;
+
+            // This line is needed to change position of Popup.
+            // As position changed PlacementCallback is called and
+            // Popup placed correctly.            
+            this.HorizontalOffset++;
+
+            // Moving tooltip back.
+            this.HorizontalOffset--;
         }
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
@@ -531,8 +541,9 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
-            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
-                                        .Transform(new Point(0, 0));
+            Point targetLocation = this.PlacementTarget
+                .TransformToAncestor(Application.Current.MainWindow)
+                .Transform(new Point(0, 0));
 
             switch (this.AttachmentSide)
             {
@@ -543,11 +554,12 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = target.Width + 2.5*gap;
-                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                    x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+                        + 2.5 * gap;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)
-                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
+                        y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
                     primaryAxis = PopupPrimaryAxis.Horizontal;
                     break;
 
@@ -573,8 +585,5 @@ namespace Dynamo.UI.Controls
                 }
             };
         }
-
-
-        
     }
 }

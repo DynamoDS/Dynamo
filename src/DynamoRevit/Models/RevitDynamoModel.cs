@@ -22,6 +22,7 @@ using Dynamo.Utilities;
 using Revit.Elements;
 using RevitServices.Elements;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
@@ -109,7 +110,7 @@ namespace Dynamo.Applications.Models
         {
             if (setupPython) return;
 
-            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => ElementWrapper.ToDSType(element, (bool)true));
+            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Autodesk.Revit.DB.Element element) => ElementWrapper.ToDSType(element, (bool)true));
 
             // Turn off element binding during iron python script execution
             IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
@@ -120,6 +121,7 @@ namespace Dynamo.Applications.Models
             {
                 var marshaler = new DataMarshaler();
                 marshaler.RegisterMarshaler((Revit.Elements.Element element) => element.InternalElement);
+                marshaler.RegisterMarshaler((Revit.Elements.Category element) => element.InternalCategory);
 
                 Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
@@ -201,13 +203,13 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
-        public override void ShutDown(bool shutDownHost, EventArgs args = null)
+        public override void ShutDown(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
 
             OnShuttingDown();
 
-            base.ShutDown(shutDownHost, args);
+            base.ShutDown(shutDownHost);
 
             // unsubscribe events
             RevitServicesUpdater.UnRegisterAllChangeHooks();
@@ -220,21 +222,27 @@ namespace Dynamo.Applications.Models
             {
                 // this method cannot be called without Revit 2014
                 var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-
                 UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
+
+                IdlePromise.ExecuteOnIdleAsync(
+                    () =>
+                    {
+                        if (uiapp.CanPostCommand(exitCommand))
+                            uiapp.PostCommand(exitCommand);
+                        else
+                        {
+                            MessageBox.Show(
+                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                        }
+                    });
             }
         }
 
-        public override void ResetEngine()
+        public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
         }
 
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)

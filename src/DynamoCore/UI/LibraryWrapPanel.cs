@@ -61,6 +61,11 @@ namespace Dynamo.Controls
             }
 
             double x = 0, y = 0, currentRowHeight = 0;
+
+            int itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
+            double sizeBetweenItems = (finalSize.Width - itemsPerRow*classObjectWidth) / (itemsPerRow+1);
+
+
             foreach (UIElement child in this.Children)
             {
                 var desiredSize = child.DesiredSize;
@@ -71,8 +76,17 @@ namespace Dynamo.Controls
                     currentRowHeight = 0;
                 }
 
-                child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
-                x = x + desiredSize.Width;
+                if ((child as FrameworkElement).DataContext is ClassInformation)
+                //Then it's Standard panel, we do not need margin it.
+                {
+                    child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
+                    x = x + desiredSize.Width;
+                }
+                else
+                {
+                    child.Arrange(new Rect(x + sizeBetweenItems, y, desiredSize.Width, desiredSize.Height));
+                    x = x + desiredSize.Width + sizeBetweenItems;
+                }
                 if (desiredSize.Height > currentRowHeight)
                     currentRowHeight = desiredSize.Height;
             }
@@ -88,6 +102,22 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+            int classInfoIndex = GetClassInformationIndex();
+
+            // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
+            // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
+            // called again, with 'SelectedIndex' set to '-1', indicating that no item is selected,
+            // in which case we need to hide the standard panel.
+            if (index == -1)
+            {
+                if (classInfoIndex != -1)
+                    (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
+                OrderListItems();
+                return;
+            }
+            else
+                (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = true;
+
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
@@ -130,13 +160,7 @@ namespace Dynamo.Controls
             // If there is no selection, then mark the StandardPanel as hidden.
             var classInformation = classObjectBase as ClassInformation;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
-            {
-                classInformation.ClassDetailsVisibility = false;
                 return;
-            }
-
-            // Otherwise, if we get here it means the StandardPanel is shown!
-            classInformation.ClassDetailsVisibility = true;
 
             //Add members of selected class to StandardPanel            
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);

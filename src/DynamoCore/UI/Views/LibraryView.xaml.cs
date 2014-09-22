@@ -1,5 +1,5 @@
-﻿using System.Windows.Controls;
-using Dynamo.ViewModels;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Dynamo.UI.Views
 {
@@ -8,22 +8,9 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
-        //TODO: use LibraryViewModel if it will be ready
-        private readonly SearchViewModel viewModel;
-        private readonly DynamoViewModel dynamoViewModel;
-
-        public LibraryView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
+        public LibraryView()
         {
-            this.viewModel = searchViewModel;
-            this.dynamoViewModel = dynamoViewModel;
-
             InitializeComponent();
-            Loaded += LibraryViewLoaded;
-        }
-
-        void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            DataContext = this.viewModel;
         }
 
         private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -32,5 +19,25 @@ namespace Dynamo.UI.Views
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var classButton = sender as ListViewItem;
+            if ((classButton == null) || !classButton.IsSelected) return;
+
+            classButton.IsSelected = false;
+            e.Handled = true;
+        }
+
+        /// When a category is collapsed, the selection of underlying sub-category 
+        /// list is cleared. As a result any visible StandardPanel will be hidden.
+        private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var expanderContent = (sender as FrameworkElement);
+            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent,"");
+            if (buttons != null)
+                buttons.UnselectAll();
+        }
+
     }
 }

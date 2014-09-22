@@ -953,7 +953,7 @@ _c;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void T46_TestBooleanOperationOnNull()
         {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 
+using Dynamo.Interfaces;
+
 namespace Dynamo.Core.Threading
 {
     partial class DynamoScheduler
@@ -20,25 +22,13 @@ namespace Dynamo.Core.Threading
         };
 
         private bool taskQueueUpdated;
+        private readonly ISchedulerThread schedulerThread;
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
         private readonly TimeStampGenerator generator = new TimeStampGenerator();
 
         #endregion
 
         #region Private Class Helper Methods
-
-        private void ScheduleTask(AsyncTask asyncTask)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Add(asyncTask);
-                asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
-                taskQueueUpdated = true; // Mark task queue as being updated.
-
-                // Signal task availability so scheduler picks it up.
-                waitHandles[(int)EventIndex.TaskAvailable].Set();
-            }
-        }
 
         private void CompactTaskQueue()
         {

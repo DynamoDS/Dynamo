@@ -11,8 +11,6 @@ using System.Globalization;
 
 using Dynamo.ViewModels;
 
-using DynamoUtilities;
-
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
@@ -651,6 +649,32 @@ namespace Dynamo.Nodes
                 newText.Append(original[i]);
             }
             return newText.ToString();
+        }
+        /// <summary>
+        ///  Remove "bad" characters for resource name, like "%","+",">" etc.
+        /// </summary>
+        internal static string NormalizeAsResourceName(string resource)
+        {
+            if (string.IsNullOrWhiteSpace(resource))
+                return "";
+
+            StringBuilder newText = new StringBuilder(resource.Length);
+
+            // Dots and minus we add, they are for overloaded methods.
+            var query = resource.Where(
+                c =>
+                {
+                    if (c == '.' || (c == '-'))
+                        return true;
+
+                    return Char.IsLetterOrDigit(c);
+                });
+
+            foreach (var c in query)
+                newText.Append(c);
+
+            var result = newText.ToString();
+            return ((result == "-") ? string.Empty : result);
         }
     }
 

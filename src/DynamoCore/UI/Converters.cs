@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+
+using Dynamo.Nodes.Search;
 using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
-using Dynamo.Utilities;
+
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
-using Dynamo.Core;
+
 using DynamoUnits;
-using ProtoCore.AST.ImperativeAST;
-using System.Windows.Controls.Primitives;
+
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
@@ -1547,10 +1546,9 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
-            if (!(parameter is DynamoViewModel)) return "Could not get version";
-
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
-            return latest;
+
+            return latest != null? latest.ToString() : "Could not get version.";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1610,7 +1608,8 @@ namespace Dynamo.Controls
                     text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
                     if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
                     {
-                        text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.IndexOf(" ") != -1)
+                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
                         if (text.Length > Configurations.MaxLengthClassButtonTitle)
                             // If title is too long, we can cat it.
                             text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
@@ -1648,17 +1647,86 @@ namespace Dynamo.Controls
         {
             bool shouldPrefixColon = false;
 
-            if(parameter!=null)
+            if (parameter != null)
                 shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
-            if (string.IsNullOrEmpty(input) || input.Equals(NoneString)) 
-                    return NoneString;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return NoneString;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString,SpaceString, input);
-            else 
+                return String.Concat(ColonString, SpaceString, input);
+            else
                 return input;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter provides BrowserRootElement or ClassInformation
+    /// instance depending on value of IsPlaceHolder property. 
+    /// BrowserRootElement is needed to show subclasses in LibraryView.
+    /// ClassInformation is needed to show member list of root category
+    /// which doesn't have any subclasses.
+    public class BrowserRootElementToSubclassesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            BrowserRootElement rootElement = value as BrowserRootElement;
+
+            if (rootElement != null && rootElement.IsPlaceholder)
+                return rootElement.ClassDetails;
+
+            return rootElement;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
+    /// To know for which TextBlock the converter works the parameter used.
+    /// Converter is used on StandardPanel.
+    public class DisplayModeToTextDecorationsConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var displayMode = (ClassInformation.DisplayMode)value;
+
+            if (parameter == null)
+                return 0;
+
+            if (displayMode.ToString() == parameter.ToString())
+                return 1;
+
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1673,14 +1741,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Dynamo.Nodes.Search.BrowserInternalElement) return true;
+            if (value is BrowserInternalElement) return true;
             return false;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
-
 }

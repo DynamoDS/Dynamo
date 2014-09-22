@@ -2,6 +2,7 @@
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using System.Linq;
 
 namespace ProtoCore
 {
@@ -84,7 +85,7 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        List<DSASM.StackValue> stackValues = GetArrayStackValues(sv);
+                        var stackValues = ArrayUtils.GetValues(sv, core);
                         foreach (var item in stackValues)
                             GetPointersRecursively(item, values);
 
@@ -92,11 +93,6 @@ namespace ProtoCore
                     default:
                         break;
                 }
-            }
-
-            private List<StackValue> GetArrayStackValues(DSASM.StackValue sv)
-            {
-                return ArrayUtils.GetValues<StackValue>(sv, this.core, (DSASM.StackValue s) => s);
             }
 
             /// <summary>
@@ -150,8 +146,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                List<MirrorData> elements = ArrayUtils.GetValues<MirrorData>(svData, core, (StackValue sv) => new MirrorData(this.core, sv));
-                return elements;
+                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, x)).ToList();
             }
 
             /// <summary>

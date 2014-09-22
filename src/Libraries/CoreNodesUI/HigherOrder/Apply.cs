@@ -52,7 +52,7 @@ namespace DSCoreNodesUI.HigherOrder
                     GetAstIdentifierForOutputIndex(0),
                     new FunctionCallNode
                     {
-                        Function = AstFactory.BuildIdentifier("ApplyList"),
+                        Function = AstFactory.BuildIdentifier("__ApplyList"),
                         FormalArguments =
                             new List<AssociativeNode>
                             {

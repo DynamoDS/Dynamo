@@ -101,6 +101,9 @@ namespace Dynamo.Tests
         {
             try
             {
+                // create the transaction manager object
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
                 DynamoRevit.InitializeUnits();
 
                 var model = RevitDynamoModel.Start(
@@ -115,9 +118,6 @@ namespace Dynamo.Tests
                     {
                         DynamoModel = model
                     });
-
-                // create the transaction manager object
-                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
                 // Because the test framework does not work in the idle thread. 
                 // We need to trick Dynamo into believing that it's in the idle

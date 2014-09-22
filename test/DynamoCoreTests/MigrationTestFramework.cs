@@ -30,7 +30,6 @@ namespace Dynamo.Tests
             //throw an error
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            GetPreviewValues();
         }
 
         /// <summary>

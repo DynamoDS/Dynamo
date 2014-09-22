@@ -1247,7 +1247,7 @@ y = x;
 
         [Test]
         [Category("Negative")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T55_Associative_assign_If_condition_1467002()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941

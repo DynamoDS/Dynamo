@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.Search;
@@ -31,6 +30,34 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Property specifies if BrowserItem has members only as children. No any subcategories.
+        /// </summary>        
+        public bool IsPlaceholder
+        {
+            get
+            {
+                // If all childs are derived from NodeSearchElement they all are members
+                // not subcategories.
+                return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
+            }
+        }
+
+        private ClassInformation classDetails;
+        public ClassInformation ClassDetails
+        {
+            get
+            {
+                if (classDetails == null && IsPlaceholder)
+                {
+                    classDetails = new ClassInformation();
+                    classDetails.PopulateMemberCollections(this);
+                }
+
+                return classDetails;
+            }
+        }
+
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;
@@ -38,16 +65,16 @@ namespace Dynamo.Nodes.Search
             this._name = name;
         }
 
-        public void SortChildren()
-        {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-        }
-
         public BrowserRootElement(string name)
         {
             this.Height = 32;
             this.Siblings = null;
             this._name = name;
+        }
+
+        public void SortChildren()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
         }
     }
 
@@ -73,24 +100,40 @@ namespace Dynamo.Nodes.Search
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
-        public BitmapImage SmallIcon
+        public BitmapSource SmallIcon
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.SmallIcon)
-                              + Dynamo.UI.Configurations.SmallIconPostfix);
+                var name = GetResourceName(ResourceType.SmallIcon, false);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.SmallIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                }
+                return icon;
             }
         }
 
         ///<summary>
         /// Large icon for tooltips.
         ///</summary>
-        public BitmapImage LargeIcon
+        public BitmapSource LargeIcon
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.LargeIcon)
-                              + Dynamo.UI.Configurations.LargeIconPostfix);
+                var name = GetResourceName(ResourceType.LargeIcon, false);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.LargeIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                }
+                return icon;
             }
         }
 
@@ -132,7 +175,15 @@ namespace Dynamo.Nodes.Search
         private string assembly;
         public string Assembly
         {
-            get { return assembly; }
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's buildin function or operator.
+                // Icons for these members are in DynamoCore project.
+                return "DynamoCore";
+            }
 
             // Note: we need setter, when we set resource assembly in NodeSearchElement.
             set { assembly = value; }
@@ -155,21 +206,25 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
-        protected virtual string GetResourceName(ResourceType resourceType)
+        protected virtual string GetResourceName(
+            ResourceType resourceType, bool disambiguate = false)
         {
             if (resourceType == ResourceType.SmallIcon)
-                return this.Name;
-            else
-                return string.Empty;
+                return disambiguate ? String.Empty : this.Name;
+
+            return string.Empty;
         }
 
-        private BitmapImage GetIcon(string fullNameOfIcon)
+        private BitmapSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(this.Assembly))
                 return null;
 
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
+            BitmapSource icon = null;
+            if (cust != null)
+                icon = cust.LoadIconInternal(fullNameOfIcon);
+            return icon;
         }
     }
 
@@ -196,10 +251,70 @@ namespace Dynamo.Nodes.Search
 
         #endregion
 
+        private bool hideClassDetails = false;
+
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
-        public bool ClassDetailsVisibility { get; set; }
+        public bool ClassDetailsVisibility
+        {
+            set
+            {
+                // If a caller sets the 'ClassDetailsVisibility' to 'false',
+                // then it is intended that we hide away the class details.
+                hideClassDetails = !value;
+            }
+
+            get
+            {
+                if (hideClassDetails)
+                    return false;
+
+                // If we don't forcefully hide the class detail, then the overall 
+                // visibility is dependent on the availability of the following lists.
+                return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
+            }
+        }
+
+        public string PrimaryHeaderText { get; set; }
+        public string SecondaryHeaderLeftText { get; set; }
+        public string SecondaryHeaderRightText { get; set; }
+        public bool IsPrimaryHeaderVisible { get; set; }
+        public bool IsSecondaryHeaderLeftVisible { get; set; }
+        public bool IsSecondaryHeaderRightVisible { get; set; }
+
+        public enum DisplayMode { None, Query, Action };
+
+        /// <summary>
+        /// Specifies which of QueryMembers of ActionMembers list is active for the moment.
+        /// If any of CreateMembers, ActionMembers or QueryMembers lists is empty
+        /// it returns 'None'.
+        /// </summary>
+        private DisplayMode currentDisplayMode;
+        public DisplayMode CurrentDisplayMode
+        {
+            get
+            {
+                return currentDisplayMode;
+            }
+            set
+            {
+                currentDisplayMode = value;
+                RaisePropertyChanged("CurrentDisplayMode");
+            }
+        }
+
+        private bool isMoreButtonVisible;
+        public bool IsMoreButtonVisible
+        {
+            get
+            { return isMoreButtonVisible; }
+            set
+            {
+                isMoreButtonVisible = value;
+                RaisePropertyChanged("IsMoreButtonVisible");
+            }
+        }
 
         public ClassInformation()
             : base()
@@ -227,7 +342,7 @@ namespace Dynamo.Nodes.Search
             get { return this.queryMembers; }
         }
 
-        public void PopulateMemberCollections(BrowserInternalElement element)
+        public void PopulateMemberCollections(BrowserItem element)
         {
             createMembers.Clear();
             actionMembers.Clear();

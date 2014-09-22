@@ -2219,7 +2219,7 @@ xdata = { 1.5, 2 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_3()
         {
             String code =
@@ -2361,7 +2361,7 @@ xdata = { 1.5, 2 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_7()
         {
             String code =
@@ -2929,7 +2929,7 @@ a = fun({{1.0}, {2.0}});";
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
@@ -3194,7 +3194,7 @@ rad = foo(a, d);
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
@@ -3558,7 +3558,7 @@ test = a1.t;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
@@ -3592,7 +3592,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
@@ -3952,7 +3952,7 @@ y = x;
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T73_Defect_1467069_2()
         {
             String code =
@@ -3975,7 +3975,7 @@ y = x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T73_Defect_1467069_3()
         {
             String code =
@@ -4028,7 +4028,7 @@ y2 = a1.foo();
         }
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T74_Defect_1463465()
         {
             String code =
@@ -4340,7 +4340,7 @@ z2 = x [ -1..-3 ];
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T77_Defect_1467081_2()
         {
             String code =
@@ -4392,7 +4392,7 @@ y = x [ {0,1} ][{0,1}];
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467125()
         {
             String code =
@@ -4479,7 +4479,7 @@ rab = a*b;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467125_6()
         {
             String code =
@@ -4963,7 +4963,7 @@ c1 = add( a<1>, b<2>);
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T82_Defect_1467244()
         {
             String code =
@@ -5449,7 +5449,7 @@ y = x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T87_Defect_1467284()
         {
             String code =
@@ -5706,7 +5706,7 @@ d1 = x[3];
 
         [Test] 
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_Defect_1467285_5()
         {
             String code =
@@ -5725,7 +5725,7 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T92_add()
         {
             String code =
@@ -6265,7 +6265,7 @@ test2 = a.f2;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
@@ -6290,7 +6290,7 @@ a.x = 2..3;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T98_replication_1467453()
         {
             String code =
@@ -6443,7 +6443,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
             String code =

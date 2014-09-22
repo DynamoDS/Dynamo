@@ -389,7 +389,7 @@ x4 = a.foo(power(3)) >= power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T014_Inline_Using_Collections()
         {
 
@@ -569,7 +569,7 @@ a2 = foo2(3);
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T018_Inline_Using_Recursion()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
@@ -629,7 +629,13 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166()
         {
             String code =
-@"xx;[Imperative] {    a = { 0, 1, 2};     xx = a < 1 ? 1 : 0;}";
+@"xx;
+[Imperative] 
+{
+    a = { 0, 1, 2}; 
+    xx = a < 1 ? 1 : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -641,7 +647,13 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166_2()
         {
             String code =
-@"xx;[Imperative] {    a = { 0, 1, 2};     xx = 2 > 1 ? a : 0;}";
+@"xx;
+[Imperative] 
+{
+    a = { 0, 1, 2}; 
+    xx = 2 > 1 ? a : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -653,7 +665,18 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166_3()
         {
             String code =
-@"x1;x2;x3;x4;x5;[Imperative] {   def foo () = null;   x1 = null == null ? 1 : 0;   x2 = null != null ? 1 : 0;   x3 = null == a ? 1 : 0;   x4 = foo2(1) == a ? 1 : 0;   x5 = foo() == null ? 1 : 0;}";
+@"
+x1;x2;x3;x4;x5;
+[Imperative] 
+{
+   def foo () = null;
+   x1 = null == null ? 1 : 0;
+   x2 = null != null ? 1 : 0;
+   x3 = null == a ? 1 : 0;
+   x4 = foo2(1) == a ? 1 : 0;
+   x5 = foo() == null ? 1 : 0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -670,7 +693,9 @@ a3 = 1 > 2 ? true : b;";
         public void T23_1467403_inline_null()
         {
             String code =
-@"a = null;d2 = (a!=null)? 1 : 0;";
+@"a = null;
+d2 = (a!=null)? 1 : 0;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

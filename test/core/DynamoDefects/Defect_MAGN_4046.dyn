@@ -1,0 +1,15 @@
+<Workspace Version="0.7.1.17276" X="-3.92075658744434" Y="-50.5633745163204" zoom="1.130842140625" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="615cc15f-0798-43f3-810f-7e0f0dd88886" nickname="Code Block" x="554.429479512483" y="181.339113934959" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="t= {{0, 1}, {x, 3}};&#xA;v_out0 = t[0];&#xA;v_out1 = t[1];&#xA;v = {};&#xA;v[&quot;out&quot;] = v_out1;" ShouldFocus="false" />
+    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="65d226ea-cfb5-4c5a-940e-a5c4eab1915d" nickname="Integer Slider" x="190.863547414014" y="295.336677380306" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>55</System.Int32>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.IntegerSlider>
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="354ec30b-b13f-4399-beb2-a68753c09bfc" nickname="List.Create" x="831.094375387807" y="247.584654299388" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="615cc15f-0798-43f3-810f-7e0f0dd88886" start_index="4" end="354ec30b-b13f-4399-beb2-a68753c09bfc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65d226ea-cfb5-4c5a-940e-a5c4eab1915d" start_index="0" end="615cc15f-0798-43f3-810f-7e0f0dd88886" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

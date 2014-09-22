@@ -139,9 +139,17 @@ namespace RevitServices.Transactions
         /// </summary>
         public void AssertInIdleThread()
         {
+#if !ENABLE_DYNAMO_SCHEDULER
+            // SCHEDULER: The stub for IdlePromise has been moved out into DynamoRevit,
+            // which means we do not have a way to check here to see if the call's been 
+            // made from within an idle thread. This needs a little tweaking if we are 
+            // not ready to "assume" that callers of this method always get invoked in 
+            // an idle thread.
+            // 
             if (DoAssertInIdleThread)
                 if (!IdlePromise.InIdleThread)
                     throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
+#endif
         }
 
         /// <summary>
@@ -302,7 +310,7 @@ namespace RevitServices.Transactions
         /// <summary>
         ///     Starts a RevitAPI Transaction that will be managed by this TransactionManager instance.
         /// </summary>
-        /// <param name="document">Document (DB) to start a Transaction for.</param>
+        /// <param name="document">Document (DB) to start a Transaction for. The parameter can not be null.</param>
         public TransactionHandle StartTransaction(Document document)
         {
             if (Transaction == null || Transaction.GetStatus() != TransactionStatus.Started)
@@ -310,7 +318,7 @@ namespace RevitServices.Transactions
                 TransactionManager.Log("Starting Transaction.");
                 
                 // Dispose the old transaction so that it won't impact the new transaction
-                if (null != Transaction)
+                if (null != Transaction && Transaction.IsValidObject)
                     Transaction.Dispose();
 
                 Transaction = new Transaction(document, "Dynamo Script");
@@ -332,7 +340,7 @@ namespace RevitServices.Transactions
         {
             get
             {
-                return Transaction != null 
+                return Transaction != null && Transaction.IsValidObject
                     && Transaction.GetStatus() == TransactionStatus.Started;
             }
         }
