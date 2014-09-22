@@ -1689,31 +1689,6 @@ namespace Dynamo.Controls
         }
     }
 
-    /// This converter displays correct header text on StandarPanel
-    /// by using SearchElement as value parameter.
-    public class SearchElementGroupToHeaderConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            switch ((SearchElementGroup)value)
-            {
-                case SearchElementGroup.Create:
-                    return "CREATE";
-                case SearchElementGroup.Action:
-                    return "ACTIONS";
-                case SearchElementGroup.Query:
-                    return "QUERY";
-                default:
-                    return "Header is undefined";
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
     /// To know for which TextBlock the converter works the parameter used.
     /// Converter is used on StandardPanel.

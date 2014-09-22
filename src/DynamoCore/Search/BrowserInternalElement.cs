@@ -278,9 +278,9 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public SearchElementGroup PrimaryHeaderGroup { get; set; }
-        public SearchElementGroup SecondaryHeaderLeftGroup { get; set; }
-        public SearchElementGroup SecondaryHeaderRightGroup { get; set; }
+        public string PrimaryHeaderText { get; set; }
+        public string SecondaryHeaderLeftText { get; set; }
+        public string SecondaryHeaderRightText { get; set; }
         public bool IsPrimaryHeaderVisible { get; set; }
         public bool IsSecondaryHeaderLeftVisible { get; set; }
         public bool IsSecondaryHeaderRightVisible { get; set; }
@@ -306,22 +306,15 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        private IEnumerable<BrowserInternalElement> hiddenMembers;
-        public IEnumerable<BrowserInternalElement> HiddenMembers
-        {
-            get { return hiddenMembers; }
-            set
-            {
-                hiddenMembers = value;
-                RaisePropertyChanged("IsMoreButtonVisible");
-            }
-        }
-
+        private bool isMoreButtonVisible;
         public bool IsMoreButtonVisible
         {
             get
+            { return isMoreButtonVisible; }
+            set
             {
-                return HiddenMembers != null && HiddenMembers.Any();
+                isMoreButtonVisible = value;
+                RaisePropertyChanged("IsMoreButtonVisible");
             }
         }
 

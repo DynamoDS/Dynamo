@@ -13,7 +13,6 @@
     <UserControl.Resources>
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-        <controls:SearchElementGroupToHeaderConverter x:Key="SearchElementGroupToHeaderConverter" />
         <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
@@ -66,8 +65,12 @@
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        Foreground="#DDD"
-                                       FontSize="20px"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                       FontSize="20px">
+                                <TextBlock.Text>
+                                    <Binding Path="Content"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Button.IsMouseOver"
@@ -112,15 +115,12 @@
                            Foreground="#777777"
                            VerticalAlignment="Center"
                            FontSize="9"
-                           Margin="16,0,0,0">
+                           Margin="16,0,0,0"
+                           Text="{Binding PrimaryHeaderText}">
                     <TextBlock.Visibility>
                         <Binding Path="IsPrimaryHeaderVisible"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </TextBlock.Visibility>
-                    <TextBlock.Text>
-                        <Binding Path="PrimaryHeaderGroup"
-                                 Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                    </TextBlock.Text>
                     <TextBlock.TextDecorations>
                         <TextDecoration Location="Underline"
                                         PenOffset="2"
@@ -165,15 +165,12 @@
                                VerticalAlignment="Center"
                                FontSize="9"
                                Margin="0,0,13.5,0"
-                               Style="{StaticResource secondaryMembersTextBlock}">
+                               Style="{StaticResource secondaryMembersTextBlock}"
+                               Text="{Binding SecondaryHeaderLeftText}">
                         <TextBlock.Visibility>
                             <Binding Path="IsSecondaryHeaderLeftVisible"
                                      Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                         </TextBlock.Visibility>
-                        <TextBlock.Text>
-                            <Binding Path="SecondaryHeaderLeftGroup"
-                                     Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                        </TextBlock.Text>
                         <TextBlock.TextDecorations>
                             <TextDecoration PenOffset="2"
                                             PenOffsetUnit="Pixel">
@@ -203,15 +200,12 @@
                                PreviewMouseDown="OnHeaderMouseDown"
                                VerticalAlignment="Center"
                                FontSize="9"
-                               Style="{StaticResource secondaryMembersTextBlock}">
+                               Style="{StaticResource secondaryMembersTextBlock}"
+                               Text="{Binding SecondaryHeaderRightText}">
                         <TextBlock.Visibility>
                             <Binding Path="IsSecondaryHeaderRightVisible"
                                      Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                         </TextBlock.Visibility>
-                        <TextBlock.Text>
-                            <Binding Path="SecondaryHeaderRightGroup"
-                                     Converter="{StaticResource SearchElementGroupToHeaderConverter}" />
-                        </TextBlock.Text>
                         <TextBlock.TextDecorations>
                             <TextDecoration PenOffset="2"
                                             PenOffsetUnit="Pixel">
