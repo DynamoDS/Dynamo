@@ -70,7 +70,7 @@ namespace ProtoCore.DSASM
         //      1. Copying the temps can be optimized.
         //      2. Explore using List for the HeapStack stack. In this case we take advantage of .Net List arrays
         //
-        public void ReAllocate(int size)
+        private void ReAllocate(int size)
         {
             int newAllocatedSize = GetNewSize(size);
 
