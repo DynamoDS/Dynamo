@@ -28,8 +28,14 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
 
             string libraryPath = "FFITarget.dll";
-            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-            Assert.IsTrue(libraryLoaded);
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
 
             // Get function groups for global classes with no namespace
             var functions = libraryServices.GetFunctionGroups(libraryPath)
