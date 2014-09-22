@@ -89,10 +89,10 @@ namespace DSRevitNodesTests.Conversion
                 minPoint,
                 maxPoint);
 
-            boundingBoxXYZ.Min.ShouldBeApproximately(minPoint);
-            boundingBoxXYZ.Max.ShouldBeApproximately(maxPoint);
+            boundingBoxXYZ.Min.ShouldBeApproximately(minPoint.InHostUnits());
+            boundingBoxXYZ.Max.ShouldBeApproximately(maxPoint.InHostUnits());
 
-            boundingBoxXYZ.Transform.Origin.ShouldBeApproximately(csOrigin);
+            boundingBoxXYZ.Transform.Origin.ShouldBeApproximately(csOrigin.InHostUnits());
 
             boundingBoxXYZ.Transform.BasisX.ShouldBeApproximately(csX);
             boundingBoxXYZ.Transform.BasisY.ShouldBeApproximately(csY);
