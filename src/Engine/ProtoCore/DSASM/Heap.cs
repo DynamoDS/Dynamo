@@ -210,13 +210,11 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        private List<int> freeList;
-        private List<HeapElement> Heaplist { get; set; }
+        private List<int> freeList = new List<int>();
+        private List<HeapElement> Heaplist = new List<HeapElement>();
 
         public Heap()
         {
-            Heaplist = new List<HeapElement>();
-            freeList = new List<int>();
         }
 
         public StackValue AllocateString(string str)
@@ -254,7 +252,7 @@ namespace ProtoCore.DSASM
         public void Free()
         {
             Heaplist.Clear();
-            freeList = new List<int>();
+            freeList.Clear();
         }
 
         private int AllocateInternal(int size)
@@ -267,9 +265,11 @@ namespace ProtoCore.DSASM
         {
             int size = values.Count();
             int index = AllocateInternal(size);
-            for (int i = 0; i < values.Count(); ++i)
+            var heapElement = Heaplist[index];
+
+            for (int i = 0; i < size; ++i)
             {
-                Heaplist[index].Stack[i] = values[i];
+                heapElement.Stack[i] = values[i];
             }
             return index;
         }

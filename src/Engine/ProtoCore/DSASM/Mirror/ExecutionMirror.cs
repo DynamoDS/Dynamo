@@ -967,11 +967,16 @@ namespace ProtoCore.DSASM.Mirror
                 StackValue val = svs[index];
 
                 // check if the members are primitive type
-                if (val.IsPointer &&
-                    core.Heap.GetHeapElement(val).Stack.Length == 1 &&
-                    !core.Heap.GetHeapElement(val).Stack[0].IsPointer &&
-                    !core.Heap.GetHeapElement(val).Stack[0].IsArray)
-                    val = core.Heap.GetHeapElement(val).Stack[0];
+                if (val.IsPointer)
+                {
+                    var heapElement = core.Heap.GetHeapElement(val);
+                    if (heapElement.Stack.Length == 1 &&
+                        !heapElement.Stack[0].IsPointer &&
+                        !heapElement.Stack[0].IsArray)
+                    {
+                        val = heapElement.Stack[0];
+                    }
+                }
 
                 ret[name] = Unpack(val);
                 index++;
