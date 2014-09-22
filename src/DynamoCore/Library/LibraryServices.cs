@@ -25,15 +25,8 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    internal class LibraryServices
+    public class LibraryServices
     {
-        /// <summary>
-        ///     lock object to prevent races on establishing the singleton
-        /// </summary>
-        private static readonly Object singletonMutex = new object();
-
-        private static LibraryServices _libraryServices; // new LibraryServices();
-
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
 
@@ -44,9 +37,9 @@ namespace Dynamo.DSEngine
 
         private ProtoCore.Core libraryManagementCore;
 
-        private LibraryServices()
+        public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
-            CreateLibraryManagementCore();
+            this.libraryManagementCore = libraryManagementCore;
 
             PreloadLibraries();
             PopulateBuiltIns();
@@ -83,45 +76,12 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        public static LibraryServices GetInstance()
-        {
-            lock (singletonMutex)
-            {
-                return _libraryServices ?? (_libraryServices = new LibraryServices());
-            }
-        }
-
-        public static void DestroyInstance()
-        {
-            lock (singletonMutex)
-            {
-                _libraryServices = null;
-            }
-        }
-
-        /// <summary>
-        ///     Reset the whole library services. Note it should only be used in
-        ///     testing.
-        /// </summary>
-        public void Reset()
-        {
-            importedFunctionGroups.Clear();
-            builtinFunctionGroups.Clear();
-
-            CreateLibraryManagementCore();
-            PreloadLibraries();
-
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreloadLibraries();
-        }
-
         private void PreloadLibraries()
         {
-            libraries = DynamoPathManager.Instance.PreloadLibraries;
+            libraries = DynamoPathManager.Instance.PreloadLibraries.ToList();
             foreach (var library in libraries)
             {
-                ProtoCore.Utils.CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
+                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
             }
         }
 
@@ -586,21 +546,6 @@ namespace Dynamo.DSEngine
                 if (!procNode.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) && !procNode.name.Equals("Break"))
                     yield return procNode;
             }
-        }
-
-        private void CreateLibraryManagementCore()
-        {
-            if (libraryManagementCore != null)
-            {
-                libraryManagementCore.Cleanup();
-            }
-
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-
-            libraryManagementCore = new ProtoCore.Core(options);
-            libraryManagementCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(libraryManagementCore));
-            libraryManagementCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(libraryManagementCore));
         }
 
         public static class Categories

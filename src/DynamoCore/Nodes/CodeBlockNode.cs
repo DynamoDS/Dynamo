@@ -410,8 +410,7 @@ namespace Dynamo.Nodes
             try
             {
                 ParseParam parseParam = new ParseParam(this.GUID, code);
-                //TODO-KEYU
-                if (ProtoCore.Utils.CompilerUtils.PreCompileCodeBlock(null, parseParam))
+                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

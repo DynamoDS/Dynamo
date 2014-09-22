@@ -191,10 +191,8 @@ namespace ProtoCore.Utils
         /// <param name="core"></param>
         /// <param name="blockId"></param>
         /// <returns></returns>
-        public static ProtoCore.BuildStatus PreCompile(string code, ProtoCore.Core core, CodeBlockNode codeBlock, out int blockId)
+        public static ProtoCore.BuildStatus PreCompile(string code, Core core, CodeBlockNode codeBlock, out int blockId)
         {
-            bool buildSucceeded = false;
-
             core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -216,7 +214,6 @@ namespace ProtoCore.Utils
 
                 core.BuildStatus.ReportBuildResult();
 
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
@@ -230,7 +227,7 @@ namespace ProtoCore.Utils
             return core.BuildStatus;
         }
 
-        public static bool TryLoadAssemblyInCore(ProtoCore.Core core, string assemblyPath)
+        public static bool TryLoadAssemblyInCore(Core core, string assemblyPath)
         {
             core.ResetForPrecompilation();
             core.IsParsingPreloadedAssembly = true;
@@ -238,8 +235,8 @@ namespace ProtoCore.Utils
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
 
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            string importStatement = "import (" + '"'.ToString() + assemblyPath + '"'.ToString() + ");";
-            var status = CompilerUtils.PreCompile(importStatement, core, null, out blockId);
+            string importStatement = @"import (""" + assemblyPath + @""");";
+            var status = PreCompile(importStatement, core, null, out blockId);
             return status == null || status.ErrorCount == 0;
         }
 
@@ -251,7 +248,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="parseParams"></param>
         /// <returns></returns>
-        public static bool PreCompileCodeBlock(ProtoCore.Core core, ParseParam parseParams)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -273,16 +270,16 @@ namespace ProtoCore.Utils
             return CompileCodeBlockAST(core, parseParams);
         }
 
-        private static bool CompileCodeBlockAST(ProtoCore.Core core, ParseParam parseParams)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
         {
             Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings = null;
+            IEnumerable<BuildData.WarningEntry> warnings = null;
 
             ProtoCore.BuildStatus buildStatus = null;
             try
             {
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                CodeBlockNode codeblock = new CodeBlockNode();
                 List<AssociativeNode> nodes = new List<AssociativeNode>();
                 foreach (var i in parseParams.ParsedNodes)
                 {
@@ -293,7 +290,7 @@ namespace ProtoCore.Utils
                 }
                 codeblock.Body.AddRange(nodes);
 
-                buildStatus = ProtoCore.Utils.CompilerUtils.PreCompile(string.Empty, core, codeblock, out blockId);
+                buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 
                 parseParams.AppendErrors(buildStatus.Errors);
                 parseParams.AppendWarnings(buildStatus.Warnings);
@@ -349,7 +346,7 @@ namespace ProtoCore.Utils
             }
         }
 
-        private static IEnumerable<ProtoCore.AST.Node> ParseUserCodeCore(ProtoCore.Core core, string expression, string postfixGuid, ref bool parseSuccess)
+        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression, string postfixGuid, ref bool parseSuccess)
         {
             List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
@@ -417,7 +414,7 @@ namespace ProtoCore.Utils
             return astNodes;
         }
 
-        private static IEnumerable<ProtoCore.AST.Node> ParseNonAssignments(ProtoCore.Core core, string expression, string postfixGuid)
+        private static IEnumerable<AST.Node> ParseNonAssignments(Core core, string expression, string postfixGuid)
         {
             List<string> compiled = new List<string>();
 

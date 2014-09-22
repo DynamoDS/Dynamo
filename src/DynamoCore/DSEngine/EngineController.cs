@@ -5,13 +5,13 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
+
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.DSEngine
 {
@@ -32,6 +32,7 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
+        private ProtoCore.Core parsingCore;
 
         private Object MacroMutex = new Object();
 
@@ -39,7 +40,9 @@ namespace Dynamo.DSEngine
         {
             this.dynamoModel = dynamoModel;
 
-            libraryServices = LibraryServices.GetInstance();
+            CreateParsingCore();
+
+            libraryServices = new LibraryServices(parsingCore);
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
@@ -95,6 +98,11 @@ namespace Dynamo.DSEngine
             {
                 return liveRunnerServices.Core;
             }
+        }
+
+        public LibraryServices LibraryServices
+        {
+            get { return libraryServices; }
         }
 
         #region Value queries
@@ -614,9 +622,7 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            //TODO-KEYU
-            ProtoCore.Core core = null;
-            var cbs = core.CodeBlockList;
+            var cbs = parsingCore.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
                 return false;
@@ -626,8 +632,20 @@ namespace Dynamo.DSEngine
             return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
-
         #endregion
 
+        private void CreateParsingCore()
+        {
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            parsingCore = new ProtoCore.Core(options);
+            parsingCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(parsingCore));
+            parsingCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(parsingCore));
+        }
+
+        public bool TryParseCode(ref ParseParam parseParam)
+        {
+            return CompilerUtils.PreCompileCodeBlock(parsingCore, ref parseParam);
+        }
     }
 }
