@@ -555,13 +555,10 @@ namespace ProtoCore.Utils
                 return StackValue.Null;
             }
 
-            lock (core.Heap.cslock)
-            {
-                HeapElement arrayHeap = GetHeapElement(array, core);
-                index = arrayHeap.ExpandByAcessingAt(index);
-                StackValue oldValue = arrayHeap.SetValue(index, value);
-                return oldValue;
-            }
+            HeapElement arrayHeap = GetHeapElement(array, core);
+            index = arrayHeap.ExpandByAcessingAt(index);
+            StackValue oldValue = arrayHeap.SetValue(index, value);
+            return oldValue;
         }
 
         /// <summary>

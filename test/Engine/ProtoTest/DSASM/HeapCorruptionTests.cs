@@ -29,7 +29,7 @@ namespace ProtoTest.DSASM
             string code = @"a = {10, 20, 30};";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsFalse(core.Heap.IsHeapCyclic());
         }
 
 
@@ -51,7 +51,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
 ";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsFalse(core.Heap.IsHeapCyclic());
         }
 
         [Test]
@@ -66,7 +66,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
             core.Rmem.Heap.GetHeapElement(ptr).Stack[0] = ptr;
 
             // Verify the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
         }
 
         [Test]
@@ -87,7 +87,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
             core.Rmem.Heap.GetHeapElement(ptr2).Stack[0] = ptr1;
 
             // Verify the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
         }
 
         [Test]
@@ -117,7 +117,7 @@ m = p.x;
             vms = fsr.StepOver();
 
             // Test the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
 
         }
     }

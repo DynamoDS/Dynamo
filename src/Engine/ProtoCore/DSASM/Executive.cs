@@ -5644,58 +5644,42 @@ namespace ProtoCore.DSASM
                 if (svData.IsPointer || svData.IsArray)
                 {
                     // Assign the src pointer directily to this property
-                    lock (core.Heap.cslock)
-                    {
-                        // TODO Jun: Implement gcUpdate here
-                        GCRelease(svProperty);
-                        core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
-                    }
+                    GCRelease(svProperty);
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
                 }
                 else
                 {
                     GCRelease(svProperty);
 
-                    lock (core.Heap.cslock)
-                    {
-                        StackValue svNewProperty = core.Heap.AllocatePointer(Constants.kPointerSize);
-                        core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
+                    StackValue svNewProperty = core.Heap.AllocatePointer(Constants.kPointerSize);
+                    core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
 
-                        core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
-                        GCRetain(svNewProperty);
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    GCRetain(svNewProperty);
 
-                        exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
-                    }
+                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
             else if (svProperty.IsArray && (dimensions > 0))
             {
-                lock (core.Heap.cslock)
-                {
-                    EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
-                    GCRelease(EX);
-                }
+                EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
+                GCRelease(EX);
             }
             else // This property has NOT been allocated
             {
                 if (svData.IsPointer || svData.IsArray)
                 {
-                    lock (core.Heap.cslock)
-                    {
-                        core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
-                    }
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
                 }
                 else
                 {
-                    lock (core.Heap.cslock)
-                    {
-                        StackValue svNewProperty = core.Heap.AllocatePointer(DSASM.Constants.kPointerSize);
-                        core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
+                    StackValue svNewProperty = core.Heap.AllocatePointer(DSASM.Constants.kPointerSize);
+                    core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
 
-                        core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
-                        GCRetain(svNewProperty);
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    GCRetain(svNewProperty);
 
-                        exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
-                    }
+                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
 
@@ -5849,13 +5833,9 @@ namespace ProtoCore.DSASM
                 // TODO Jun:
                 // Spawn GC here
 
-                lock (core.Heap.cslock)
-                {
-                    // Setting a primitive
-                    DX = core.Heap.GetHeapElement(tryPointer).Stack[0];
-                    core.Heap.GetHeapElement(tryPointer).Stack[0] = data;
-                    // GCPointer(DX); No need to spawn GC here, the data been replaced is not a pointer or array
-                }
+                // Setting a primitive
+                DX = core.Heap.GetHeapElement(tryPointer).Stack[0];
+                core.Heap.GetHeapElement(tryPointer).Stack[0] = data;
             }
             else if (finalPointer.IsPointer || data.IsNull)
             {
@@ -5865,27 +5845,23 @@ namespace ProtoCore.DSASM
                     core.Heap.GetHeapElement(ptr).Stack[0] = data;
                     GCRetain(data);
                 }
-                lock (core.Heap.cslock)
-                {
-                    // Setting a pointer
-                    int idx = (int)listInfo[0].Sv.opdata;
-                    DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, core);
-                    GCRelease(DX);
-                    core.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata] = data;
-                }
+
+                // Setting a pointer
+                int idx = (int)listInfo[0].Sv.opdata;
+                DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, core);
+                GCRelease(DX);
+                core.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata] = data;
             }
             else
             {
                 // TODO Jun:
                 // Spawn GC here
                 runtimeVerify(finalPointer.IsArray);
-                lock (core.Heap.cslock)
-                {
-                    // Setting an array
-                    DX = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
-                    GCRelease(DX);
-                    core.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
-                }
+
+                // Setting an array
+                DX = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
+                GCRelease(DX);
+                core.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
             }
 
             ++pc;
