@@ -150,8 +150,7 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         public static string TypedParametersToString(FunctionDescriptor descriptor)
         {
-            string iconName = descriptor.QualifiedName + ".";
-            int counter = 0;
+            var builder = new StringBuilder();
 
             foreach (TypedParameter tp in descriptor.Parameters)
             {
@@ -166,8 +165,7 @@ namespace Dynamo.Nodes
                     if (typeOfParameter.Contains("[]..[]"))
                     {
                         // Remove square brackets.
-                        typeOfParameter =
-                            typeOfParameter.Replace("[]..[]", "");
+                        typeOfParameter = typeOfParameter.Replace("[]..[]", "");
                         // Add number of them.
                         typeOfParameter = String.Concat(typeOfParameter, "N");
                     }
@@ -175,20 +173,19 @@ namespace Dynamo.Nodes
                     {
                         // Remove square brackets.
                         typeOfParameter =
-                            typeOfParameter.Remove(typeOfParameter.Length - squareBrackets*2);
+                            typeOfParameter.Remove(typeOfParameter.Length - squareBrackets * 2);
                         // Add number of them.
                         typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
                     }
                 }
-                if (counter != 0)
-                    iconName += "-" + typeOfParameter;
-                else
-                    iconName += typeOfParameter;
 
-                counter++;
+                if (builder.Length > 0)
+                    builder.Append("-");
+
+                builder.Append(typeOfParameter);
             }
 
-            return iconName;
+            return descriptor.QualifiedName + "." + builder.ToString();
         }
 
         /// <summary>
