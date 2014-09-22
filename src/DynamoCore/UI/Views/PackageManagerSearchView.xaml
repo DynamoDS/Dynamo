@@ -178,16 +178,16 @@
                                                         </Border>
 
                                                         <VirtualizingStackPanel Orientation="Horizontal" >
-                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource SBadgeButton}" />
+                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource SBadgeButton}" />
                                                         </VirtualizingStackPanel>
                                                         
                                                     </VirtualizingStackPanel>
 
                                                     <VirtualizingStackPanel Orientation="Vertical" Margin="5,0,5,5">
                                                         <VirtualizingStackPanel Orientation="Horizontal" Margin="0">
-                                                            <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{StaticResource SBadgeButton}" />
+                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{StaticResource SBadgeButton}" />
                                                         </VirtualizingStackPanel>
                                                     </VirtualizingStackPanel>
 
@@ -221,7 +221,7 @@
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{StaticResource SBadgeButton}" />
                                                                 <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
                                                             </StackPanel>
                                                         </DataTemplate>
@@ -265,7 +265,7 @@
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="Clear"
-                      Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
+                      Style="{StaticResource SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>
 
