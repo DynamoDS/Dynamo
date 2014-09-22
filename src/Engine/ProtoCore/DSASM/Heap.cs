@@ -219,29 +219,6 @@ namespace ProtoCore.DSASM
             freeList = new List<int>();
         }
 
-        public int Allocate(StackValue[] elements)
-        {
-            HeapElement hpe = new HeapElement(elements);
-            return AddHeapElement(hpe);
-        }
-
-        private int AllocateInternal(int size)
-        {
-            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
-            return AddHeapElement(hpe);
-        }
-
-        private int AllocateInternal(StackValue[] values)
-        {
-            int size = values.Count();
-            int index = AllocateInternal(size);
-            for (int i = 0; i < values.Count(); ++i)
-            {
-                Heaplist[index].Stack[i] = values[i];
-            }
-            return index;
-        }
-
         public StackValue AllocateString(string str)
         {
             var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
@@ -268,6 +245,35 @@ namespace ProtoCore.DSASM
             return StackValue.BuildPointer(index, metadata);
         }
 
+        public HeapElement GetHeapElement(StackValue pointer)
+        {
+            int index = (int)pointer.opdata;
+            return Heaplist[index];
+        }
+
+        public void Free()
+        {
+            Heaplist.Clear();
+            freeList = new List<int>();
+        }
+
+        private int AllocateInternal(int size)
+        {
+            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
+            return AddHeapElement(hpe);
+        }
+
+        private int AllocateInternal(StackValue[] values)
+        {
+            int size = values.Count();
+            int index = AllocateInternal(size);
+            for (int i = 0; i < values.Count(); ++i)
+            {
+                Heaplist[index].Stack[i] = values[i];
+            }
+            return index;
+        }
+
         private int AddHeapElement(HeapElement hpe)
         {
             int index = Constants.kInvalidIndex;
@@ -285,12 +291,6 @@ namespace ProtoCore.DSASM
             return index;
         }
 
-        public HeapElement GetHeapElement(StackValue pointer)
-        {
-            int index = (int)pointer.opdata; 
-            return Heaplist[index];
-        }
-
         private bool TryFindFreeIndex(out int index)
         {
             int freeItemCount = freeList.Count;
@@ -305,12 +305,6 @@ namespace ProtoCore.DSASM
                 index = Constants.kInvalidIndex;
                 return false;
             }
-        }
-
-        public void Free()
-        {
-            Heaplist.Clear();
-            freeList = new List<int>();
         }
 
         private void GCDisposeObject(ref StackValue svPtr, Executive exe)
@@ -357,22 +351,6 @@ namespace ProtoCore.DSASM
                 --exe.Core.FunctionCallDepth;
             }
         }
-
-        public void Sweep(int first, int last)
-        {
-            for (int i = 0; i < Heaplist.Count; ++i)  
-            {
-                for (int symbol = first; symbol < last; ++symbol) 
-                {
-                    // Any stack allocated symbols are left out since they are not in the heaplist
-                    if (symbol == Heaplist[i].Symbol)
-                    {
-                        Heaplist[i].Active = false;
-                    }
-                }
-            }
-        }
-
 
         public void GCMarkSweep()
         {
