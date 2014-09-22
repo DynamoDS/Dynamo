@@ -1172,6 +1172,7 @@ namespace ProtoCore.Utils
                 if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
                 {
                     hasValue = true;
+                    GCUtils.GCRetain(valueInElement, core);
                     values.Add(valueInElement);
                 }
             }
