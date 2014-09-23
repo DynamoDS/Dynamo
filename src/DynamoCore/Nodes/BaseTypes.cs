@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -199,7 +201,6 @@ namespace Dynamo.Nodes
         /// <para>2. Search among the available .NET runtime types</para>
         /// <para>3. Search among built-in types, taking their "also-known-as" 
         /// attributes into consideration when matching the type name</para>
-        /// <papa>4. Read any Migrations xml files for previous names</papa>
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <returns></returns>
@@ -237,9 +238,6 @@ namespace Dynamo.Nodes
                     return builtInType.Value.Type; // Found a matching type.
                 }
             }
-
-            // TODO: when a library is loaded, it should add its types to some database
-            //       this database should also contain any prior names
 
             dynamoModel.Logger.Log(string.Format(
                 "Could not load node of type: {0}", fullyQualifiedName));
