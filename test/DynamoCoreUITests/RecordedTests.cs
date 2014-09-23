@@ -12,6 +12,7 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using Dynamo.UI;
 
 namespace DynamoCoreUITests
 {
@@ -22,7 +23,6 @@ namespace DynamoCoreUITests
     {
         #region Generic Set-up Routines and Data Members
 
-        private double codeBlockPortHeight = 17.563333333333336;
         private System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded = null;
         private CommandCallback commandCallback = null;
@@ -31,6 +31,8 @@ namespace DynamoCoreUITests
         protected DynamoView dynamoView = null;
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
+        protected double tolerance = 1e-6;
+        protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
         public override void Init()
         {
@@ -754,7 +756,6 @@ namespace DynamoCoreUITests
             var nodes = workspaceViewModel.Nodes;
             Assert.NotNull(nodes);
             Assert.AreEqual(2, nodes.Count);
-
             //Check the CBN
             var cbn = GetNode("107e30e9-e97c-402c-b206-d27162d1fafd") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -765,16 +766,16 @@ namespace DynamoCoreUITests
             //    > ToolTipContent stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(60, cbn.OutPorts[2].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - 3*codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("d", cbn.OutPorts[3].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             //CBN Input Ports
             //   >PortName stores name of variable
@@ -807,7 +808,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(100, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 5*codeBlockPortHeight) <= tolerance);
         }
 
         /// <summary>
