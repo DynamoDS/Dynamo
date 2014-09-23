@@ -123,6 +123,7 @@ namespace Dynamo.Search
             this.AddRootCategory("Units");
             this.AddRootCategory("Office");
             this.AddRootCategory("Migration");
+            this.AddRootCategory("Add-ons");
         }
 
         #endregion
@@ -217,7 +218,7 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyCategories()
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
+            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result" || x.Name == "Add-ons"));
         }
 
         internal void SortCategoryChildren()
