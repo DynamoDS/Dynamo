@@ -71,7 +71,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// 
+        /// The root elements for custom nodes tree.
         /// </summary>
         private ObservableCollection<BrowserRootElement> _addonRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> AddonRootCategories
