@@ -45,7 +45,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Name="buttonGrid"
@@ -108,7 +109,7 @@
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
                   MouseLeave="OnSearchTextBoxGridMouseLeave"
                   Background="#444444">
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -203,8 +204,19 @@
             </Grid>
         </Border>
 
-        <!-- The code is commented for now.
-     It will be used for another purposes in near future
+        <!-- LIBRARY VIEW -->
+        <views:LibraryView x:Name="libraryView"
+                           Grid.Row="2"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"
+                           DataContext="{Binding}">
+            <views:LibraryView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibraryView" />
+            </views:LibraryView.Visibility>
+        </views:LibraryView>
+
         <ScrollViewer HorizontalAlignment="Stretch"
                       Margin="0"
                       Name="BrowserScrollView"
@@ -212,10 +224,10 @@
                       Focusable="False"
                       Background="Transparent"
                       BorderThickness="0"
-                      Width="{Binding Path=ActualWidth,ElementName=SearchControl}"
+                      Width="{Binding Path=ActualWidth, ElementName=SearchControl}"
                       Grid.Column="0"
                       Grid.ColumnSpan="1"
-                      Grid.Row="2"
+                      Grid.Row="3"
                       MouseWheel="OnTreeViewScrollViewerPreviewMouseWheel"
                       Style="{DynamicResource ScrollViewer}">
             <ScrollViewer.Visibility>
@@ -736,7 +748,7 @@
 
             <TreeView Name="SearchTreeView"
                       Background="Blue"
-                      ItemsSource="{Binding Path=Model.BrowserRootCategories}"
+                      ItemsSource="{Binding Path=Model.AddonRootCategories}"
                       Style="{StaticResource SearchTreeView}"
                       BorderThickness="0"
                       Grid.Column="0"
@@ -834,19 +846,6 @@
             </TreeView>
 
         </ScrollViewer>
--->
-        <!-- LIBRARY VIEW -->
-        <views:LibraryView x:Name="libraryView"
-                           Grid.Row="2"
-                           VerticalAlignment="Stretch"
-                           HorizontalAlignment="Stretch"
-                           DataContext="{Binding}">
-            <views:LibraryView.Visibility>
-                <Binding Path="CurrentMode"
-                         Converter="{StaticResource ViewModeToVisibilityConverter}"
-                         ConverterParameter="LibraryView" />
-            </views:LibraryView.Visibility>
-        </views:LibraryView>
 
         <!-- LIBRARYSEARCH VIEW -->
         <views:LibrarySearchView Grid.Row="2">
