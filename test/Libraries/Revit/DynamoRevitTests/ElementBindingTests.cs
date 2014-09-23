@@ -203,7 +203,7 @@ namespace Dynamo.Tests
 
             var elId = new ElementId(184273);
             var el = DocumentManager.Instance.CurrentDBDocument.GetElement(elId);
-            selNode.Selection.Add(el);
+            //selNode.SelectionResults.Add(el);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -250,7 +250,7 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
             var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
-            selNode.Selection.Add(rp);
+            //selNode.SelectionResults.Add(rp);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -289,14 +289,14 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
             var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
-            selNode.Selection.Add(rp1);
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp1 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id1 = selNode.Selection.First();
+            var id1 = selNode.SelectionResults.First();
 
             //Select the second reference point in Dynamo
-            selNode.Selection.Add(rp2);
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp2 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id2 = selNode.Selection.First();
+            var id2 = selNode.SelectionResults.First();
 
             //Ensure the element binding is not the same
             Assert.IsTrue(!id1.Equals(id2));
