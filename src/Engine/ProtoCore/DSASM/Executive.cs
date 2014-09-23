@@ -1670,35 +1670,39 @@ namespace ProtoCore.DSASM
             return propertyChanged;
         }
 
-        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        /// <summary>
+        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
+        /// 
+        /// Given:
+        ///     [1] a = b + c
+        ///     [2] a = d
+        /// Statement [1] has been redefined by statment [2]    
+        /// Deactivate and remove the dependencies of statement [1]
+        /// 
+        /// </summary>
+        /// <param name="executingGraphNode"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        private void HandleGraphNodeRedefinitionInScope(AssociativeGraph.GraphNode executingGraphNode, int classScope, int functionScope)
         {
-            if (null != Properties.executingGraphNode)
-            {
-                if (!Properties.executingGraphNode.IsSSANode())
-                {
-                    UpdatePropertyChangedGraphNode();
-                }
-            }
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
-
-            if (Properties.executingGraphNode != null)
+            if (executingGraphNode != null)
             {
                 // Remove this condition when full SSA is enabled
-                bool isssa = (!Properties.executingGraphNode.IsSSANode() && Properties.executingGraphNode.DependsOnTempSSA());
+                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
 
                 if (core.Options.ExecuteSSA)
                 {
-                    isssa = Properties.executingGraphNode.IsSSANode();
+                    isssa = executingGraphNode.IsSSANode();
                 }
                 if (!isssa)
                 {
-                    for (int n = 0; n < istream.dependencyGraph.GraphList.Count; ++n)
+                    // Get the graphnodes in the current scope
+                    var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+                    foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
                     {
-                        ProtoCore.AssociativeGraph.GraphNode graphNode = istream.dependencyGraph.GraphList[n];
-
                         bool allowRedefine = true;
 
-                        SymbolNode symbol = Properties.executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
+                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
                         bool isMember = symbol.classScope != Constants.kInvalidIndex
                             && symbol.functionIndex == Constants.kInvalidIndex;
 
@@ -1714,11 +1718,30 @@ namespace ProtoCore.DSASM
                         if (allowRedefine)
                         {
                             // Update redefinition that this graphnode may have cauased
-                            UpdateGraphNodeDependency(graphNode, Properties.executingGraphNode);
+                            UpdateGraphNodeDependency(graphNode, executingGraphNode);
                         }
                     }
                 }
             }
+        }
+
+        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        {
+            if (null != Properties.executingGraphNode)
+            {
+                if (!Properties.executingGraphNode.IsSSANode())
+                {
+                    UpdatePropertyChangedGraphNode();
+                }
+            }
+
+            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
+
+            int classScope = Constants.kInvalidIndex;
+            int functionScope = Constants.kInvalidIndex;
+            GetCallerInformation(out classScope, out functionScope);
+            HandleGraphNodeRedefinitionInScope(Properties.executingGraphNode, classScope, functionScope);
+           
         }
 
         /// <summary>
@@ -2158,7 +2181,6 @@ namespace ProtoCore.DSASM
                 }
 
                 if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                //if (gnode.exprUID == executingNode.exprUID)
                 {
                     // These nodes are within the same expression, no redifinition can occur
                     return;
@@ -2199,6 +2221,7 @@ namespace ProtoCore.DSASM
                     //
                     GCAnonymousSymbols(gnode.symbolListWithinExpression);
                     gnode.symbolListWithinExpression.Clear();
+                    gnode.isActive = false;
                 }
             }
         }
