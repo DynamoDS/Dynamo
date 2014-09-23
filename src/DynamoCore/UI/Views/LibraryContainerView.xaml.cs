@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -315,6 +316,15 @@ namespace Dynamo.Search
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
+        }
+
+        private void Edit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var pathOfCustomNode = ((CustomNodeSearchElement)((MenuItem)sender).DataContext).Path;
+            if (dynamoViewModel.OpenCommand.CanExecute(pathOfCustomNode))
+            {
+                dynamoViewModel.OpenCommand.Execute(pathOfCustomNode);
+            }
         }
 
     }

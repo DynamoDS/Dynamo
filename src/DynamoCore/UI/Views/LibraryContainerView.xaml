@@ -817,7 +817,7 @@
 
                                 <ContextMenu>
                                     <MenuItem Header="Edit..."
-                                              Command="{Binding EditCommand}"></MenuItem>
+                                              Click="Edit_OnClick"></MenuItem>
                                 </ContextMenu>
 
                             </StackPanel.ContextMenu>
