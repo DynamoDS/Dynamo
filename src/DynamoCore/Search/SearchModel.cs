@@ -523,7 +523,6 @@ namespace Dynamo.Search
                     return cat;
                 cat = TryGetSubCategory(cat, splitName);
             }
-
             return cat;
         }
 
