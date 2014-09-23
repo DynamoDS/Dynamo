@@ -453,7 +453,7 @@ namespace Dynamo.UI.Controls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
 
                 if (files != null && (files.Length > 0))
                 {
