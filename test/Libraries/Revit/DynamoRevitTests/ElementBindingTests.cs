@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using RTF.Framework;
 using Autodesk.Revit.DB;
-using Dynamo.Utilities;
+
 using Dynamo.Nodes;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
+
 using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
@@ -200,9 +198,12 @@ namespace Dynamo.Tests
 
             //Select one of the walls
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
-            var selNode = selNodes.First() as DSElementSelection;
-            selNode.SelectedElement = new ElementId(184273);
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
+
+            var elId = new ElementId(184273);
+            var el = DocumentManager.Instance.CurrentDBDocument.GetElement(elId);
+            //selNode.SelectionResults.Add(el);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -228,13 +229,14 @@ namespace Dynamo.Tests
         public void CreateInRevitSelectInDynamoUndoInRevit()
         {
             //Create a reference point in Revit
-            ElementId rpID;
+            string rpID;
+            ReferencePoint rp;
             using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateInRevit"))
             {
                 trans.Start();
 
-                ReferencePoint rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
-                rpID = rp.Id;
+                rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                rpID = rp.UniqueId;
 
                 trans.Commit();
             }
@@ -246,9 +248,9 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
-            var selNode = selNodes.First() as DSElementSelection;
-            selNode.SelectedElement = rpID;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
+            //selNode.SelectionResults.Add(rp);
 
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
@@ -264,15 +266,16 @@ namespace Dynamo.Tests
             //has actually changed.
 
             //Create two reference points in Revit
-            ElementId rpID1, rpID2;
+            string rpID1, rpID2;
+            ReferencePoint rp1, rp2;
             using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateInRevit"))
             {
                 trans.Start();
 
-                ReferencePoint rp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
-                rpID1 = rp1.Id;
-                ReferencePoint rp2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(10, 0, 0));
-                rpID2 = rp2.Id;
+                rp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                rpID1 = rp1.UniqueId;
+                rp2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(10, 0, 0));
+                rpID2 = rp2.UniqueId;
 
                 trans.Commit();
             }
@@ -284,16 +287,16 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testPath);
 
             var model = ViewModel.Model;
-            var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
-            var selNode = selNodes.First() as DSElementSelection;
-            selNode.SelectedElement = rpID1;
+            var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
+            var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp1 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id1 = selNode.SelectedElement;
+            var id1 = selNode.SelectionResults.First();
 
             //Select the second reference point in Dynamo
-            selNode.SelectedElement = rpID2;
+            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp2 }));
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-            var id2 = selNode.SelectedElement;
+            var id2 = selNode.SelectionResults.First();
 
             //Ensure the element binding is not the same
             Assert.IsTrue(!id1.Equals(id2));
