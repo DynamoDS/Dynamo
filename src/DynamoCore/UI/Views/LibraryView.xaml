@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <!--Converter to Make class details not focusable-->
-            <controls:DataContextToBool x:Key="DataContextToBool" />
+            <controls:DataContextToBoolConverter x:Key="DataContextToBool" />
             
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
