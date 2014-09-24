@@ -1490,6 +1490,77 @@ c = f(a<1L>,b<2>);";
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
         }
+
+
+        [Test]
+        public void NestedBlocks002()
+        {
+            String code =
+        @"
+
+class MyObj {}
+class Obj {}
+
+def foo(i : var[]..[])
+{
+    return = [Imperative]
+    {
+        j = 10;
+        for(x in i)
+        {
+            j = 11;
+        }
+        return = j;
+    };
+}
+
+a = Obj.Obj();
+b = foo(null);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 10);
+        }
+
+
+        [Test]
+        public void NestedBlocks003()
+        {
+            String code =
+        @"
+
+class MyObj {}
+class Obj {}
+
+def goo(g : var[]..[])
+{
+    return = [Imperative]
+    {
+        if (g == null)
+        {
+        }
+        return = 11;
+    }
+}
+
+def foo(i : var[]..[])
+{
+    return = [Imperative]
+    {
+        j = 10;
+        for(x in i)
+        {
+            j = goo(null);
+        }
+        return = j;
+    };
+}
+
+a = Obj.Obj();
+b = foo(null);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 10);
+        }
+
+
         [Ignore]
         public void BitwiseOp001()
         {

@@ -5237,9 +5237,17 @@ namespace ProtoCore.DSASM
 
             StackValue array = rmem.GetAtRelative(snode);
 
-            if (!array.IsArray && snode.datatype.IsIndexable)
+            // Check for the validity of the array
+            if (!array.IsArray && !array.IsNull && snode.datatype.IsIndexable)
             {
-                array = core.Heap.GetHeapElement(array).Stack[0];
+                HeapElement heapElem = core.Heap.GetHeapElement(array);
+
+                // A heap element can be an array that has no contents
+                // Check this before retrieving
+                if (heapElem.GetAllocatedSize() > 0)
+                {
+                    array = heapElem.Stack[0];
+                }
             }
 
             StackValue key = StackValue.Null;
