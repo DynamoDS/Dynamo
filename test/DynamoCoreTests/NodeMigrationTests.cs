@@ -35,7 +35,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestMigration_Core_Functions()
         {
             TestMigration("TestMigration_Core_Functions.dyn");
@@ -48,7 +47,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestMigration_Core_List()
         {
             TestMigration("TestMigration_Core_List.dyn");
@@ -67,7 +65,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestMigration_Core_Time()
         {
             TestMigration("TestMigration_Core_Time.dyn");
@@ -1533,7 +1530,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSort()
         {
             OpenModel(GetDynPath("TestSort.dyn"));
@@ -1743,7 +1739,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestNumberInput()
         {
             OpenModel(GetDynPath("TestNumberInput.dyn"));
@@ -1994,6 +1989,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForUnresolvedNodes()
         {
             var model = ViewModel.Model;
@@ -2033,6 +2029,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForDeprecatedNodes()
         {
             var model = ViewModel.Model;

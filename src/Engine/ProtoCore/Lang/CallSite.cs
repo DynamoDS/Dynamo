@@ -1387,6 +1387,8 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
                 }
 
+
+                bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
                 {
 
@@ -1401,6 +1403,9 @@ namespace ProtoCore
                     }
                     parameters.Add(subParameters);
 
+                    if (subParameters.Length == 0)
+                        hasEmptyArg = true;
+
                     switch (algorithm)
                     {
                         case ZipAlgorithm.Shortest:
@@ -1412,6 +1417,12 @@ namespace ProtoCore
                     }
 
                 }
+
+                // If we're being asked to replicate across an empty list
+                // then it's always going to be zero, as there will never be any
+                // data to pass to that parameter.
+                if (hasEmptyArg)
+                    retSize = 0;
 
                 StackValue[] retSVs = new StackValue[retSize];
                 SingleRunTraceData retTrace = newTraceData;

@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
 
-
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel

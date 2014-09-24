@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-using System.Windows.Input;
+using System.Runtime.Serialization;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
-using Dynamo.Utilities;
-using System.Runtime.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {

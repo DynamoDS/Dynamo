@@ -4,15 +4,12 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+
 using Autodesk.DesignScript.Interfaces;
 using DSNodeServices;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
@@ -562,7 +559,7 @@ namespace Dynamo
             renderManager.RequestRenderAsync(new RenderTask());
         }
 
-        private void Clear(object sender, EventArgs e)
+        private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
             QueueRenderTask();

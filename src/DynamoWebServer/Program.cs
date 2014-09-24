@@ -19,7 +19,7 @@ namespace DynamoWebServer
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.Instance.PreloadASMLibraries();
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
@@ -42,6 +42,7 @@ namespace DynamoWebServer
             webSocketServer.Start();
 
             var app = new Application();
+            app.Exit += webSocketServer.ProcessExit;
             app.Run(view);
         }
     }

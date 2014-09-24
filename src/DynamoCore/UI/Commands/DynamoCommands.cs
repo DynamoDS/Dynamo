@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
