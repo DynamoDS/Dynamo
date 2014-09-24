@@ -126,15 +126,15 @@ namespace Dynamo.Search
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            this.AddRootCategory(BuiltinNodeCategories.CORE, SearchModel.ElementType.Regular);
-            this.AddRootCategory(LibraryServices.Categories.BuiltIns, SearchModel.ElementType.Regular);
-            this.AddRootCategory(LibraryServices.Categories.Operators, SearchModel.ElementType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY, SearchModel.ElementType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT, SearchModel.ElementType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE, SearchModel.ElementType.Regular);
-            this.AddRootCategory("Units", SearchModel.ElementType.Regular);
-            this.AddRootCategory("Office", SearchModel.ElementType.Regular);
-            this.AddRootCategory("Migration", SearchModel.ElementType.Regular);
+            this.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
+            this.AddRootCategory(LibraryServices.Categories.Operators);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.AddRootCategory("Units");
+            this.AddRootCategory("Office");
+            this.AddRootCategory("Migration");
         }
 
         #endregion
@@ -373,7 +373,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, ElementType nodeType, string resourceAssembly = "")
+        internal BrowserItem AddCategory(string categoryName, ElementType nodeType = ElementType.Regular, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -457,7 +457,7 @@ namespace Dynamo.Search
         ///     
         /// </summary>
         /// <returns>The newly added category or the existing one.</returns>
-        internal BrowserItem TryAddRootCategory(string categoryName, ElementType nodeType)
+        internal BrowserItem TryAddRootCategory(string categoryName, ElementType nodeType = ElementType.Regular)
         {
             return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName, nodeType);
         }
@@ -467,7 +467,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal BrowserRootElement AddRootCategory(string name, ElementType nodeType)
+        internal BrowserRootElement AddRootCategory(string name, ElementType nodeType = ElementType.Regular)
         {
             BrowserRootElement ele = null;
             if (nodeType == ElementType.Regular)
