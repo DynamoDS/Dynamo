@@ -229,25 +229,6 @@ namespace Dynamo.Applications
             return viewModel;
         }
 
-        private static void DeleteKeeperElement()
-        {
-            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
-            if (null == dbDoc || (dynamoViewModel == null))
-                return;
-
-            var vizManager = dynamoViewModel.VisualizationManager as RevitVisualizationManager;
-            if (vizManager != null)
-            {
-                var keeperId = vizManager.KeeperId;
-                if (keeperId != ElementId.InvalidElementId)
-                {
-                    TransactionManager.Instance.EnsureInTransaction(dbDoc);
-                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                    TransactionManager.Instance.ForceCloseTransaction();
-                }
-            }
-        }
-
         private static DynamoView InitializeCoreView()
         {
             IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -452,6 +433,25 @@ namespace Dynamo.Applications
             revitDynamoModel.Logger.Dispose();
 
             DynamoRevitApp.DynamoButton.Enabled = true;
+        }
+
+        private static void DeleteKeeperElement()
+        {
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+            if (null == dbDoc || (dynamoViewModel == null))
+                return;
+
+            var vizManager = dynamoViewModel.VisualizationManager as RevitVisualizationManager;
+            if (vizManager != null)
+            {
+                var keeperId = vizManager.KeeperId;
+                if (keeperId != ElementId.InvalidElementId)
+                {
+                    TransactionManager.Instance.EnsureInTransaction(dbDoc);
+                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                    TransactionManager.Instance.ForceCloseTransaction();
+                }
+            }
         }
 
         #endregion
