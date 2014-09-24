@@ -91,6 +91,29 @@ foo;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
         }
+
+        [Test]
+        public void TestNullInForLoop01()
+        {
+            String code =
+                @"a = [Imperative]
+                {
+                    def foo(i : var[]..[])
+                    {
+                        j = 10;
+                        for(x in i)
+                        {
+                            j = 11;
+                        }
+                        return = j;
+                    }
+                    return = foo(null);
+                }";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 10);
+        }
+
+
         public void Fibonacci_recusion()
         {
             Setup();
