@@ -140,14 +140,17 @@ namespace Dynamo.UI.Controls
             // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
             //*******************************************************************************
 
-            // number with optional floating point
-            string number = @"(-?\d+(\.[0-9]+)?)";
-            // optional exponent
-            string exponent = @"([eE][+-]?[0-9]+)?";
+            string digit = @"(-?\b\d+)";
+            string floatingPoint = @"(\.[0-9]+)";
+            string numberWithOptionalDecimal = digit + floatingPoint + "?";
+            
+            string exponent = @"([eE][+-]?[0-9]+)";
+            string numberWithExponent = digit + floatingPoint + exponent;
 
-            highlightingRule.Regex = new Regex(number + exponent);
+            highlightingRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
 
             rules.Add(highlightingRule);
+            
         }
 
         private void OnRequestReturnFocusToSearch()
