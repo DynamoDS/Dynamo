@@ -450,12 +450,6 @@ namespace ProtoCore.DSASM
                 {
                     hs.Refcount--;
                 }
-                else
-                {
-#if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release dead memory (2EA84D71-9101-40A1-8C01-0F32DF96AFC6).");
-#endif
-                }
 
                 // TODO Jun: If its a pointer to a primitive then dont decrease its refcount, just free it
                 if (hs.Refcount == 0)
