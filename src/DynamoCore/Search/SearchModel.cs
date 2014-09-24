@@ -58,7 +58,7 @@ namespace Dynamo.Search
         /// </value>
         private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
-        internal enum NodeType { Regular, Addon };
+        internal enum ElementType { Regular, Addon };
         
         /// <summary>
         /// The root elements for the browser
@@ -126,15 +126,15 @@ namespace Dynamo.Search
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            this.AddRootCategory(BuiltinNodeCategories.CORE, SearchModel.NodeType.Regular);
-            this.AddRootCategory(LibraryServices.Categories.BuiltIns, SearchModel.NodeType.Regular);
-            this.AddRootCategory(LibraryServices.Categories.Operators, SearchModel.NodeType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY, SearchModel.NodeType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT, SearchModel.NodeType.Regular);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE, SearchModel.NodeType.Regular);
-            this.AddRootCategory("Units", SearchModel.NodeType.Regular);
-            this.AddRootCategory("Office", SearchModel.NodeType.Regular);
-            this.AddRootCategory("Migration", SearchModel.NodeType.Regular);
+            this.AddRootCategory(BuiltinNodeCategories.CORE, SearchModel.ElementType.Regular);
+            this.AddRootCategory(LibraryServices.Categories.BuiltIns, SearchModel.ElementType.Regular);
+            this.AddRootCategory(LibraryServices.Categories.Operators, SearchModel.ElementType.Regular);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY, SearchModel.ElementType.Regular);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT, SearchModel.ElementType.Regular);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE, SearchModel.ElementType.Regular);
+            this.AddRootCategory("Units", SearchModel.ElementType.Regular);
+            this.AddRootCategory("Office", SearchModel.ElementType.Regular);
+            this.AddRootCategory("Migration", SearchModel.ElementType.Regular);
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace Dynamo.Search
             // When create category, give not only category name, 
             //but also assembly, where icon for category could be found.
             var cat = this.AddCategory(category,
-                item is CustomNodeSearchElement ? NodeType.Addon : NodeType.Regular,
+                item is CustomNodeSearchElement ? ElementType.Addon : ElementType.Regular,
                 (item as NodeSearchElement).Assembly);
             cat.AddChild(item);
 
@@ -373,7 +373,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, NodeType nodeType, string resourceAssembly = "")
+        internal BrowserItem AddCategory(string categoryName, ElementType nodeType, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -457,7 +457,7 @@ namespace Dynamo.Search
         ///     
         /// </summary>
         /// <returns>The newly added category or the existing one.</returns>
-        internal BrowserItem TryAddRootCategory(string categoryName, NodeType nodeType)
+        internal BrowserItem TryAddRootCategory(string categoryName, ElementType nodeType)
         {
             return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName, nodeType);
         }
@@ -467,16 +467,16 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal BrowserRootElement AddRootCategory(string name, NodeType nodeType)
+        internal BrowserRootElement AddRootCategory(string name, ElementType nodeType)
         {
             BrowserRootElement ele = null;
-            if (nodeType == NodeType.Regular)
+            if (nodeType == ElementType.Regular)
             {
                 ele = new BrowserRootElement(name, BrowserRootCategories);
                 BrowserRootCategories.Add(ele);
             }
 
-            if (nodeType == NodeType.Addon)
+            if (nodeType == ElementType.Addon)
             {
                 ele = new BrowserRootElement(name, AddonRootCategories);
                 AddonRootCategories.Add(ele);
