@@ -96,7 +96,7 @@ foo;
         public void TestNullInForLoop01()
         {
             String code =
-                @"[Imperative]
+                @"a = [Imperative]
                 {
                     def foo(i : var[]..[])
                     {
