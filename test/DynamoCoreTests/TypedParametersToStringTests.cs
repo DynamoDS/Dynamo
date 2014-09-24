@@ -5,7 +5,9 @@ using NUnit.Framework;
 using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.Library;
+using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
+using Utils = Dynamo.Nodes.Utilities;
 
 
 namespace Dynamo
@@ -32,7 +34,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.double-double",
-                DSFunctionNodeSearchElement.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor));
 
             //2 case
             List<TypedParameter> parameters2 = new List<TypedParameter>();
@@ -44,7 +46,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.Point",
-                DSFunctionNodeSearchElement.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor));
 
             //3 case
             List<TypedParameter> parameters3 = new List<TypedParameter>();
@@ -58,7 +60,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.bool2-var1-double2",
-                DSFunctionNodeSearchElement.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor));
 
             //4 case
             List<TypedParameter> parameters4 = new List<TypedParameter>();
@@ -70,8 +72,8 @@ namespace Dynamo
                 new DSFunctionNodeSearchElement("", functionItem4, SearchElementGroup.Create);
 
             Assert.AreEqual(
-                "Foo.1-int",
-                DSFunctionNodeSearchElement.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor));
+                "Foo.varN-int",
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor));
 
         }
     }
