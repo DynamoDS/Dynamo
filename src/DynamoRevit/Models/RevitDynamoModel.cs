@@ -193,6 +193,24 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void PreShutdownCore(bool shutdownHost)
+        {
+            if (shutdownHost)
+                DynamoRevit.RevitUIApplication.Idling += ShutdownRevitHostOnce;
+
+            base.PreShutdownCore(shutdownHost);
+        }
+
+        private static void ShutdownRevitHostOnce(object sender, IdlingEventArgs idlingEventArgs)
+        {
+            DynamoRevit.RevitUIApplication.Idling -= ShutdownRevitHostOnce;
+            RevitDynamoModel.ShutdownRevitHost();
+        }
+
+#else
+
         protected override void PreShutdownCore(bool shutdownHost)
         {
             if (shutdownHost)
@@ -200,6 +218,8 @@ namespace Dynamo.Applications.Models
 
             base.PreShutdownCore(shutdownHost);
         }
+
+#endif
 
         protected override void ShutDownCore(bool shutDownHost)
         {

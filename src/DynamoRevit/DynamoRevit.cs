@@ -149,6 +149,11 @@ namespace Dynamo.Applications
             get { return revitDynamoModel; }
         }
 
+        internal static UIApplication RevitUIApplication
+        {
+            get { return ((extCommandData == null) ? null : extCommandData.Application); }
+        }
+
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
         /// during the creation of Dynamo Revit plug-in. It is in this call both 
