@@ -85,7 +85,6 @@ namespace Dynamo.Nodes.Search
         public void CollapseToLeaves()
         {
             this.IsExpanded = false;
-            if (Items == null) return;
             foreach (var ele in Items)
             {
                 if (ele is ClassInformation) continue;
