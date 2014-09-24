@@ -224,24 +224,7 @@ namespace Dynamo.Applications
                  SingleSignOnManager.RegisterSingleSignOn;
 
             revitDynamoModel.ShutdownStarted += (drm) =>
-                IdlePromise.ExecuteOnShutdown(
-                    delegate
-                    {
-                        var dbDoc = DocumentManager.Instance.CurrentDBDocument;
-                        if (null != dbDoc)
-                        {
-                            TransactionManager.Instance.EnsureInTransaction(dbDoc);
-
-                            var keeperId = vizManager.KeeperId;
-
-                            if (keeperId != ElementId.InvalidElementId)
-                            {
-                                DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                            }
-
-                            TransactionManager.Instance.ForceCloseTransaction();
-                        }
-                    });
+                IdlePromise.ExecuteOnShutdown(DeleteKeeperElement);
 
             return viewModel;
         }
@@ -450,6 +433,25 @@ namespace Dynamo.Applications
             revitDynamoModel.Logger.Dispose();
 
             DynamoRevitApp.DynamoButton.Enabled = true;
+        }
+
+        private static void DeleteKeeperElement()
+        {
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+            if (null == dbDoc || (dynamoViewModel == null))
+                return;
+
+            var vizManager = dynamoViewModel.VisualizationManager as RevitVisualizationManager;
+            if (vizManager != null)
+            {
+                var keeperId = vizManager.KeeperId;
+                if (keeperId != ElementId.InvalidElementId)
+                {
+                    TransactionManager.Instance.EnsureInTransaction(dbDoc);
+                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                    TransactionManager.Instance.ForceCloseTransaction();
+                }
+            }
         }
 
         #endregion
