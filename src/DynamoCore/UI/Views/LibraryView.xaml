@@ -317,7 +317,7 @@
             </ControlTemplate>
 
             <!-- This data template is used to show Add-ons category. -->
-            <DataTemplate x:Key="AddonsDataTemplate">
+            <DataTemplate x:Key="AddonsItemTemplate">
                 <Grid Background="#353535" Height="27">
                     <Grid.Width>
                         <Binding Path="ActualWidth"
@@ -351,7 +351,7 @@
 
             <controls:CategoryTemplateSelector x:Key="CategoryTemplateSelector"
                                                  CategoryTemplate="{StaticResource CategoryItemTemplate}"
-                                                 AddonsTemplate="{StaticResource AddonsDataTemplate}" />            
+                                                 AddonsTemplate="{StaticResource AddonsItemTemplate}" />            
 
             <Style x:Key="VerticalThumb"
                    TargetType="{x:Type Thumb}">
