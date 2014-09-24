@@ -10,6 +10,8 @@ using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
+using Dynamo.UI.Controls;
 
 namespace DynamoCoreUITests
 {
@@ -184,6 +186,35 @@ namespace DynamoCoreUITests
                 }
             });
         }
+
+        [Test, RequiresSTA]
+        [Category("UnitTests")]
+        public void TestSyntaxHighlightRuleForDigits()
+        {
+            // Create the initial code block node to initialize its syntax highlighter
+            // The following is the same text that has been typed inside the code block node
+            string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
+
+            RunCommandsFromFile("TestSyntaxHighlightRuleForDigits.xml");
+
+            var rule = CodeBlockEditor.DigitRule.Regex;
+            var matches = rule.Matches(text);
+
+            // Expected results (8):
+            // -2468.2342E+04
+            // 34534.345345
+            // 23423
+            // -98.7
+            // 0
+            // 10
+            // 2
+            // -555
+            Assert.AreEqual(8, matches.Count);
+            var actual = matches.Cast<Match>().Select(m => m.Value).ToArray();
+            string[] expected = new string[] { "-2468.2342E+04", "34534.345345", "23423", "-98.7", "0", "10", "2", "-555" };
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
 
         #region Private Helper Methods
 
