@@ -196,23 +196,7 @@ namespace Dynamo.Applications.Models
         protected override void PreShutdownCore(bool shutdownHost)
         {
             if (shutdownHost)
-            {
-                // this method cannot be called without Revit 2014
-                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
-
-                IdlePromise.ExecuteOnShutdown(
-                    () =>
-                    {
-                        if (uiApplication.CanPostCommand(exitCommand))
-                            uiApplication.PostCommand(exitCommand);
-                        else
-                        {
-                            MessageBox.Show("A command in progress prevented Dynamo from " +
-                                "closing revit. Dynamo update will be cancelled.");
-                        }
-                    });
-            }
+                IdlePromise.ExecuteOnShutdown(ShutdownRevitHost);
 
             base.PreShutdownCore(shutdownHost);
         }
@@ -388,6 +372,22 @@ namespace Dynamo.Applications.Models
             }
 
             OnRevitDocumentChanged();
+        }
+
+        private static void ShutdownRevitHost()
+        {
+            // this method cannot be called without Revit 2014
+            var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+
+            if ((uiApplication != null) && uiApplication.CanPostCommand(exitCommand))
+                uiApplication.PostCommand(exitCommand);
+            else
+            {
+                MessageBox.Show(
+                    "A command in progress prevented Dynamo from " +
+                        "closing revit. Dynamo update will be cancelled.");
+            }
         }
 
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
