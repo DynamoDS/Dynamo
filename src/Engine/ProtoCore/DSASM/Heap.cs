@@ -211,7 +211,7 @@ namespace ProtoCore.DSASM
     public class Heap
     {
         private List<int> freeList = new List<int>();
-        private List<HeapElement> Heaplist = new List<HeapElement>();
+        private List<HeapElement> heapElements = new List<HeapElement>();
 
         public Heap()
         {
@@ -227,7 +227,7 @@ namespace ProtoCore.DSASM
         public StackValue AllocateArray(IEnumerable<StackValue> values, Dictionary<StackValue, StackValue> dict = null)
         {
             int index = AllocateInternal(values);
-            Heaplist[index].Dict = dict;
+            heapElements[index].Dict = dict;
             return StackValue.BuildArrayPointer(index);
         }
 
@@ -246,12 +246,12 @@ namespace ProtoCore.DSASM
         public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
-            return Heaplist[index];
+            return heapElements[index];
         }
 
         public void Free()
         {
-            Heaplist.Clear();
+            heapElements.Clear();
             freeList.Clear();
         }
 
@@ -265,7 +265,7 @@ namespace ProtoCore.DSASM
         {
             int size = values.Count();
             int index = AllocateInternal(size);
-            var heapElement = Heaplist[index];
+            var heapElement = heapElements[index];
 
             int i = 0;
             foreach (var item in values)
@@ -281,13 +281,13 @@ namespace ProtoCore.DSASM
             int index = Constants.kInvalidIndex;
             if (TryFindFreeIndex(out index))
             {
-                Heaplist[index].Active = true;
-                Heaplist[index] = hpe;
+                heapElements[index].Active = true;
+                heapElements[index] = hpe;
             }
             else
             {
-                Heaplist.Add(hpe);
-                index = Heaplist.Count - 1;
+                heapElements.Add(hpe);
+                index = heapElements.Count - 1;
             }
  
             return index;
@@ -367,7 +367,7 @@ namespace ProtoCore.DSASM
             }
 
             int ptr = (int)sv.opdata;
-            HeapElement he = this.Heaplist[ptr];
+            HeapElement he = this.heapElements[ptr];
             return he.Active && he.Refcount == 0; 
         }
 
@@ -380,10 +380,10 @@ namespace ProtoCore.DSASM
 
             int ptr = (int)sv.opdata;
 
-            this.Heaplist[ptr].Refcount++;
-            if (this.Heaplist[ptr].Refcount > 0)
+            this.heapElements[ptr].Refcount++;
+            if (this.heapElements[ptr].Refcount > 0)
             {
-                this.Heaplist[ptr].Active = true;
+                this.heapElements[ptr].Active = true;
             }
         }
 
@@ -395,9 +395,9 @@ namespace ProtoCore.DSASM
             }
 
             int ptr = (int)sv.opdata;
-            if (this.Heaplist[ptr].Refcount > 0)
+            if (this.heapElements[ptr].Refcount > 0)
             {
-                this.Heaplist[ptr].Refcount--;
+                this.heapElements[ptr].Refcount--;
             }
             else
             {
@@ -415,11 +415,11 @@ namespace ProtoCore.DSASM
                 }
 
                 int ptr = (int)svPtr.opdata;
-                if (ptr < 0 || ptr >= Heaplist.Count)
+                if (ptr < 0 || ptr >= heapElements.Count)
                 {
                     continue;
                 }
-                HeapElement hs = Heaplist[ptr];
+                HeapElement hs = heapElements[ptr];
 
                 if (!hs.Active)
                 {
@@ -465,9 +465,9 @@ namespace ProtoCore.DSASM
         /// <returns> Returns true if the heap contains at least one cycle</returns>
         public bool IsHeapCyclic()
         {
-            for (int n = 0; n < Heaplist.Count; ++n)
+            for (int n = 0; n < heapElements.Count; ++n)
             {
-                HeapElement heapElem = Heaplist[n];
+                HeapElement heapElem = heapElements[n];
                 if (IsHeapCyclic(heapElem, n))
                 {
                     return true;
