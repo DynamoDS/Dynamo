@@ -228,9 +228,19 @@ namespace Dynamo.Applications
             viewModel.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+            revitDynamoModel.ShutdownStarted += (drm) =>
+            {
+                DynamoRevit.RevitUIApplication.Idling += DeleteKeeperElementOnce;
+            };
+
+#else
+
             revitDynamoModel.ShutdownStarted += (drm) =>
                 IdlePromise.ExecuteOnShutdown(DeleteKeeperElement);
 
+#endif
             return viewModel;
         }
 
@@ -439,6 +449,16 @@ namespace Dynamo.Applications
 
             DynamoRevitApp.DynamoButton.Enabled = true;
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        private static void DeleteKeeperElementOnce(object sender, IdlingEventArgs idlingEventArgs)
+        {
+            DynamoRevit.RevitUIApplication.Idling -= DeleteKeeperElementOnce;
+            DynamoRevit.DeleteKeeperElement();
+        }
+
+#endif
 
         private static void DeleteKeeperElement()
         {
