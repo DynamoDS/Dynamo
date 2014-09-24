@@ -14,7 +14,7 @@ namespace Dynamo.Search
 {
     public class SearchModel
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -58,14 +58,26 @@ namespace Dynamo.Search
         /// </value>
         private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
+        internal enum ElementType { Regular, Addon };
+        
         /// <summary>
         /// The root elements for the browser
         /// </summary>
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
+            get { return _browserRootCategories; }
             set { _browserRootCategories = value; }
+        }
+
+        /// <summary>
+        /// The root elements for custom nodes tree.
+        /// </summary>
+        private ObservableCollection<BrowserRootElement> _addonRootCategories = new ObservableCollection<BrowserRootElement>();
+        public ObservableCollection<BrowserRootElement> AddonRootCategories
+        {
+            get { return _addonRootCategories; }
+            set { _addonRootCategories = value; }
         }
 
         /// <summary>
@@ -204,7 +216,9 @@ namespace Dynamo.Search
         {
             // When create category, give not only category name, 
             //but also assembly, where icon for category could be found.
-            var cat = this.AddCategory(category, (item as NodeSearchElement).Assembly);
+            var cat = this.AddCategory(category,
+                item is CustomNodeSearchElement ? ElementType.Addon : ElementType.Regular,
+                (item as NodeSearchElement).Assembly);
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -359,11 +373,11 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "")
+        internal BrowserItem AddCategory(string categoryName, ElementType nodeType = ElementType.Regular, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
-                return this.TryAddRootCategory("Uncategorized");
+                return this.TryAddRootCategory("Uncategorized", nodeType);
             }
 
             if (ContainsCategory(categoryName))
@@ -385,7 +399,7 @@ namespace Dynamo.Search
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                return this.TryAddRootCategory(categoryName);
+                return this.TryAddRootCategory(categoryName, nodeType);
             }
 
             if (splitCat.Count == 0)
@@ -394,7 +408,7 @@ namespace Dynamo.Search
             }
 
             // attempt to add root category
-            var currentCat = TryAddRootCategory(splitCat[0]);
+            var currentCat = TryAddRootCategory(splitCat[0], nodeType);
 
             for (var i = 1; i < splitCat.Count; i++)
             {
@@ -402,7 +416,6 @@ namespace Dynamo.Search
             }
 
             return currentCat;
-
         }
 
         /// <summary>
@@ -444,9 +457,9 @@ namespace Dynamo.Search
         ///     
         /// </summary>
         /// <returns>The newly added category or the existing one.</returns>
-        internal BrowserItem TryAddRootCategory(string categoryName)
+        internal BrowserItem TryAddRootCategory(string categoryName, ElementType nodeType = ElementType.Regular)
         {
-            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName);
+            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName, nodeType);
         }
 
         /// <summary>
@@ -454,10 +467,21 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal BrowserRootElement AddRootCategory(string name)
+        internal BrowserRootElement AddRootCategory(string name, ElementType nodeType = ElementType.Regular)
         {
-            var ele = new BrowserRootElement(name, BrowserRootCategories);
-            BrowserRootCategories.Add(ele);
+            BrowserRootElement ele = null;
+            if (nodeType == ElementType.Regular)
+            {
+                ele = new BrowserRootElement(name, BrowserRootCategories);
+                BrowserRootCategories.Add(ele);
+            }
+
+            if (nodeType == ElementType.Addon)
+            {
+                ele = new BrowserRootElement(name, AddonRootCategories);
+                AddonRootCategories.Add(ele);
+            }
+
             return ele;
         }
 
@@ -490,6 +514,8 @@ namespace Dynamo.Search
                 return null;
 
             var cat = (BrowserItem)BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
+            if (cat == null)
+                cat = (BrowserItem)AddonRootCategories.FirstOrDefault(x => x.Name == split[0]);
 
             foreach (var splitName in split.GetRange(1, split.Count - 1))
             {
@@ -574,7 +600,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    
+
                 }
             }
 
