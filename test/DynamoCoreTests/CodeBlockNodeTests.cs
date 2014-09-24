@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
