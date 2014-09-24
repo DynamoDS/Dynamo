@@ -54,16 +54,15 @@
                                     <DockPanel>
                                         
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,5,7">
-                                            <TextBlock Text="{Binding Path=Model.Name}" FontSize="12" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Model.Name}" FontSize="15" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
                                             <TextBlock Text="{Binding Path=Model.VersionName}" MinWidth="50" FontSize="11" Foreground="#CCC"></TextBlock>
                                             <TextBlock Text="Pending uninstall" Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
                                                        FontSize="11" FontStyle="Italic" Foreground="Red"></TextBlock>
                                         </StackPanel>
 
-                                        <Button Name="MoreButton" HorizontalAlignment="Right" Content="+" FontWeight="Bold" Width="40" IsEnabled="True" Style="{DynamicResource ResourceKey=SBadgeButton}" Click="MoreButton_OnClick">
+                                        <Button Name="MoreButton" HorizontalAlignment="Right" Content="⋮" FontWeight="Bold" Foreground="WhiteSmoke" Width="40" FontSize="17" IsEnabled="True" Style="{DynamicResource ResourceKey=SCustomizableBadgeButton}" Click="MoreButton_OnClick">
 
                                             <Button.ContextMenu>
-
                                                 <ContextMenu>
 
                                                     <MenuItem Name="ContentsButton"  Command="{Binding Path=ToggleTypesVisibleInManagerCommand}" Margin="3" ToolTip="See the types loaded by this package" Header="Show Contents" /> 
