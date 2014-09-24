@@ -1657,11 +1657,11 @@ namespace ProtoCore.DSASM
                     bool isSSAAssign = node.IsSSANode();
                     if (core.Options.ExecuteSSA)
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, true);
+                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
                     }
                     else
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, true);
+                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, istream.dependencyGraph, executingBlock, true);
                     }
                     node.propertyChanged = false;
                 }
@@ -1734,7 +1734,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
+            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
 
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
@@ -1940,6 +1940,8 @@ namespace ProtoCore.DSASM
             int modBlkId,
             bool isSSAAssign,
             AssociativeGraph.GraphNode executingGraphNode,
+            AssociativeGraph.DependencyGraph dependencyGraph,
+            int languageBlockID,
             bool propertyChanged = false)
         {
             int nodesMarkedDirty = 0;
@@ -1951,7 +1953,7 @@ namespace ProtoCore.DSASM
             int classIndex = executingGraphNode.classIndex;
             int procIndex = executingGraphNode.procIndex;
 
-            var graph = istream.dependencyGraph;
+            var graph = dependencyGraph; // istream.dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes == null)
             {
@@ -1968,6 +1970,7 @@ namespace ProtoCore.DSASM
                 {
                     continue;
                 }
+
                 //
                 // Comment Jun: 
                 //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
@@ -1998,6 +2001,18 @@ namespace ProtoCore.DSASM
 
                 foreach (var noderef in executingGraphNode.updateNodeRefList)
                 {
+                    // If this dirty graphnode is an associative lang block, 
+                    // then find all that nodes in that lang block and mark them dirty
+                    if (graphNode.isLanguageBlock)
+                    {
+                        ProtoCore.AssociativeGraph.DependencyGraph depGraph = exe.instrStreamList[graphNode.languageBlockId].dependencyGraph;
+                        int dirtyNodes = UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, executingGraphNode, exe.instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                        if (dirtyNodes > 0)
+                        {
+                            graphNode.isDirty = true;
+                        }
+                    }
+
                     ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
@@ -2082,11 +2097,11 @@ namespace ProtoCore.DSASM
                         UpdateModifierBlockDependencyGraph(graphNode);
                     }
                     else if (allowSSADownstream
-                              || isSSAAssign
+                                || isSSAAssign
                                 || isLastSSAAssignment
-                              || (exprUID != graphNode.exprUID
-                                 && modBlkId == Constants.kInvalidIndex
-                                 && graphNode.modBlkUID == Constants.kInvalidIndex)
+                                || (exprUID != graphNode.exprUID
+                                    && modBlkId == Constants.kInvalidIndex
+                                    && graphNode.modBlkUID == Constants.kInvalidIndex)
                         )
                     {
                         if (graphNode.isCyclic)
@@ -2353,6 +2368,12 @@ namespace ProtoCore.DSASM
                     // For every graphnode in the dependency list
                     foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
                     {
+                        // Do not check for xlang dependencies from within the same block
+                        if (graphNode.languageBlockId == executingBlock)
+                        {
+                            continue;
+                        }
+
                         if (graphNode.classIndex != classScope || graphNode.procIndex != functionScope)
                         {
                             continue;
@@ -2448,7 +2469,6 @@ namespace ProtoCore.DSASM
                                     runtimeVerify(DSASM.Constants.kInvalidIndex != firstSymbolInUpdatedRef.runtimeTableIndex);
                                     StackValue svGraphNode = GetOperandData(firstSymbolInUpdatedRef.runtimeTableIndex, svSym, svClass);
                                     StackValue svPropagateNode = modifiedRef.symbolData;
-
                                     if (IsNodeModified(svGraphNode, svPropagateNode))
                                     {
                                         graphNode.isDirty = true;
