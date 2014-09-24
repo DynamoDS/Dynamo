@@ -929,7 +929,7 @@ namespace ProtoScript.Runners
         #endregion
 
         string GetCoreDump();
-        void ResetVMAndResyncGraph(List<string> libraries);
+        void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
@@ -1652,8 +1652,13 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="libraries"></param>
         /// <param name="syncData"></param>
-        public void ResetVMAndResyncGraph(List<string> libraries)
+        public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
+            if (!libraries.Any())
+            {
+                return;
+            }
+
             // Reset VM
             ReInitializeLiveRunner();
 

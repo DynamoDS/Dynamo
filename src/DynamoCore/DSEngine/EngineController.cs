@@ -44,7 +44,14 @@ namespace Dynamo.DSEngine
         {
             this.dynamoModel = dynamoModel;
 
-            CreateParsingCore();
+            // Create a core which is used for parsing code and loading libraries
+            parsingCore = new ProtoCore.Core(new Options()
+            {
+                RootCustomPropertyFilterPathName = string.Empty
+            });
+            parsingCore.Executives.Add(Language.kAssociative,new ProtoAssociative.Executive(parsingCore));
+            parsingCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(parsingCore));
+            parsingCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             libraryServices = new LibraryServices(parsingCore);
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -52,7 +59,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
@@ -497,7 +504,7 @@ namespace Dynamo.DSEngine
             dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
@@ -640,14 +647,6 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
-
-        private void CreateParsingCore()
-        {
-            parsingCore = new ProtoCore.Core(new Options() {RootCustomPropertyFilterPathName = string.Empty});
-            parsingCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(parsingCore));
-            parsingCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(parsingCore));
-            parsingCore.ParsingMode = ParseMode.AllowNonAssignment;
-        }
 
         public bool TryParseCode(ref ParseParam parseParam)
         {
