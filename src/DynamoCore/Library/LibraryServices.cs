@@ -5,16 +5,12 @@ using System.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
-
 using DynamoUtilities;
-
-using GraphToDSCompiler;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
-
 using ProtoFFI;
 
 using Operator = ProtoCore.DSASM.Operator;
@@ -304,7 +300,14 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GetBuiltInMethods(libraryManagementCore)
+            var builtins = libraryManagementCore.CodeBlockList[0]
+                                                .procedureTable
+                                                .procList
+                                                .Where(p =>
+                    !p.name.StartsWith(Constants.kInternalNamePrefix) &&
+                    !p.name.Equals("Break"));
+
+            IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -533,19 +536,6 @@ namespace Dynamo.DSEngine
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
                 handler(this, e);
-        }
-
-        private IEnumerable<ProcedureNode> GetBuiltInMethods(ProtoCore.Core core)
-        {
-            Validity.Assert(core != null);
-            Validity.Assert(core.CodeBlockList.Count > 0);
-
-            var procNodes = core.CodeBlockList[0].procedureTable.procList;
-            foreach (ProcedureNode procNode in procNodes)
-            {
-                if (!procNode.name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) && !procNode.name.Equals("Break"))
-                    yield return procNode;
-            }
         }
 
         public static class Categories
