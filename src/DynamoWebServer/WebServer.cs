@@ -124,6 +124,8 @@ namespace DynamoWebServer
                 return;
             }
 
+            messageHandler.Id = session.SessionID;
+
             ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID);
             LogInfo("Web socket: connected");
         }
@@ -187,6 +189,8 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
             webSocket.NewDataReceived += socketServer_NewDataReceived;
+
+            dynamoViewModel.VisualizationManager.RenderComplete += messageHandler.NodesDataModified;
         }
 
         void UnBindEvents()
@@ -195,6 +199,8 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
             webSocket.NewDataReceived -= socketServer_NewDataReceived;
+
+            dynamoViewModel.VisualizationManager.RenderComplete -= messageHandler.NodesDataModified;
         }
 
         void ExecuteMessageFromSocket(Message message, string sessionId)

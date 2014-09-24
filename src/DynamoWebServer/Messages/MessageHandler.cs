@@ -18,6 +18,7 @@ namespace DynamoWebServer.Messages
     public class MessageHandler
     {
         public event ResultReadyEventHandler ResultReady;
+        public string Id { get; set; }
 
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoViewModel dynamoViewModel;
@@ -96,6 +97,21 @@ namespace DynamoWebServer.Messages
             {
                 ClearWorkspace();
             }
+        }
+
+        /// <summary>
+        /// This method sends ComputationResponse on render complete
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event args</param>
+        internal void NodesDataModified(object sender, RenderCompletionEventArgs e)
+        {
+            var nodes = GetExecutedNodes();
+
+            OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
+            {
+                Nodes = nodes
+            }, Id));
         }
 
         /// <summary>
@@ -208,17 +224,10 @@ namespace DynamoWebServer.Messages
         {
             var recordableCommandMsg = (RunCommandsMessage)message;
 
-            var manager = dynamo.VisualizationManager;
             SelectTabByGuid(dynamo, recordableCommandMsg.WorkspaceGuid);
 
             foreach (var command in recordableCommandMsg.Commands)
             {
-                if (command is DynamoViewModel.RunCancelCommand)
-                {
-                    RenderCompleteHandler = (sender, e) => NodesDataModified(sender, e, sessionId);
-                    manager.RenderComplete += RenderCompleteHandler;
-                }
-
                 dynamo.ExecuteCommand(command);
             }
         }
@@ -246,18 +255,6 @@ namespace DynamoWebServer.Messages
                     }
                 }
             }
-        }
-
-        private void NodesDataModified(object sender, RenderCompletionEventArgs e, string sessionId)
-        {
-            var nodes = GetExecutedNodes();
-
-            OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
-            {
-                Nodes = nodes
-            }, sessionId));
-
-            dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
         }
 
         private void NodesDataCreated(object sender, RenderCompletionEventArgs e, string sessionId)
