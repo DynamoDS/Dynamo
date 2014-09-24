@@ -88,6 +88,7 @@ namespace Dynamo.Nodes.Search
             if (Items == null) return;
             foreach (var ele in Items)
             {
+                if (ele is ClassInformation) continue;
                 ele.CollapseToLeaves();
             }
         }
@@ -98,9 +99,9 @@ namespace Dynamo.Nodes.Search
         public void SetVisibilityToLeaves(bool visibility)
         {
             this.Visibility = visibility;
-            if (Items == null) return;
             foreach (var ele in Items)
             {
+                if (ele is ClassInformation) continue;
                 ele.SetVisibilityToLeaves(visibility);
             }
         }

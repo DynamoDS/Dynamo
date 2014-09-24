@@ -238,8 +238,7 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                //throw new System.NotImplementedException();
-                return null;
+                throw new System.NotImplementedException();
             }
             set
             {
