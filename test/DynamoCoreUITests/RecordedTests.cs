@@ -1274,7 +1274,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
@@ -1307,7 +1307,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(24, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1333,16 +1333,18 @@ namespace DynamoCoreUITests
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual("a[0]", cbn.OutPorts[0].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
+            Assert.AreEqual("a", cbn.OutPorts[2].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
         }
 
         [Test, RequiresSTA, Category("Failure")]
@@ -1368,10 +1370,10 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
             Assert.AreEqual(2, connector.End.Index);
@@ -1401,13 +1403,13 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1434,10 +1436,10 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2*codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1464,19 +1466,19 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("d", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("h", cbn.OutPorts[4].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[4].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[4].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1502,8 +1504,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
         [Test, RequiresSTA, Category("Failure")]
@@ -1519,12 +1521,12 @@ namespace DynamoCoreUITests
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(4, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
@@ -1545,11 +1547,11 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("t_4", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 7 * codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1571,7 +1573,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             //Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             //Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
@@ -1596,7 +1598,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
@@ -1671,10 +1673,10 @@ namespace DynamoCoreUITests
 
             //Check the position of ports and their names
             Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1696,10 +1698,10 @@ namespace DynamoCoreUITests
 
             //Check the position of ports and their names
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(44, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
         }
 
