@@ -53,32 +53,12 @@ namespace RevitServices.Threading
             set { idle = value; }
         }
 
-        public static void ClearPromises()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void RegisterIdle(UIApplication uIApplication)
-        {
-            // SCHEDULER: No-op, method to be removed eventually.
-        }
-
         public static void ExecuteOnIdleAsync(Action p)
         {
             var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler);
             task.Initialize(p);
             scheduler.ScheduleForExecution(task);
-        }
-
-        public static void ExecuteOnShutdown(Action p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void Shutdown()
-        {
-            throw new NotImplementedException();
         }
     }
 }
@@ -265,7 +245,10 @@ namespace Dynamo.Applications
         {
             if (initializedCore) return;
 
+#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.RegisterIdle(commandData.Application);
+#endif
+
             InitializeAssemblies();
             InitializeUnits();
             InitializeDocumentManager(commandData);

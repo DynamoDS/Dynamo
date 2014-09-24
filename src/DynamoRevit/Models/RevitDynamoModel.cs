@@ -237,8 +237,10 @@ namespace Dynamo.Applications.Models
 
         protected override void PostShutdownCore(bool shutdownHost)
         {
+#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.ClearPromises();
             IdlePromise.Shutdown();
+#endif
             base.PostShutdownCore(shutdownHost);
         }
 
