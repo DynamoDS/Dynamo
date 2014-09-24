@@ -246,7 +246,16 @@ namespace ProtoCore.DSASM
         public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
-            return heapElements[index];
+            var heapElement = heapElements[index];
+
+            if (!heapElement.Active)
+            {
+#if HEAP_VERIFICATION
+                throw new Exception("Memory corrupted: Access dead memory (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
+#endif
+            }
+
+            return heapElement;
         }
 
         public void Free()
@@ -401,6 +410,9 @@ namespace ProtoCore.DSASM
             }
             else
             {
+#if HEAP_VERIFICATION
+                throw new Exception("Memory corrupted: Decrease reference count to negative (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
+#endif
             }
         }
 
@@ -417,18 +429,32 @@ namespace ProtoCore.DSASM
                 int ptr = (int)svPtr.opdata;
                 if (ptr < 0 || ptr >= heapElements.Count)
                 {
+#if HEAP_VERIFICATION
+                    throw new Exception("Memory corrupted: Release invalid pointer (7364B8C2-FF34-4C67-8DFE-5DFA678BF50D).");
+#else
                     continue;
+#endif
                 }
                 HeapElement hs = heapElements[ptr];
 
                 if (!hs.Active)
                 {
+#if HEAP_VERIFICATION
+                    throw new Exception("Memory corrupted: Release dead memory (7F70A6A1-FE99-476E-BE8B-CA7615EE1A3B).");
+#else
                     continue;
+#endif
                 }
-
+                
                 if (hs.Refcount > 0)
                 {
                     hs.Refcount--;
+                }
+                else
+                {
+#if HEAP_VERIFICATION
+                    throw new Exception("Memory corrupted: Release dead memory (2EA84D71-9101-40A1-8C01-0F32DF96AFC6).");
+#endif
                 }
 
                 // TODO Jun: If its a pointer to a primitive then dont decrease its refcount, just free it
@@ -451,7 +477,9 @@ namespace ProtoCore.DSASM
                     hs.Active = false;
 
                     GCRelease(hs.Stack, exe);
+#if !HEAP_VERIFICATION
                     freeList.Add(ptr);
+#endif
                 }
             }
         }
