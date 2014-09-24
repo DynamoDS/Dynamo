@@ -150,17 +150,32 @@ namespace Dynamo.Nodes
             List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode node;
+            Func<string, bool, Revit.Elements.Element> func = ElementSelector.ByUniqueId;
 
-            if (SelectionResults == null)
+            var results = SelectionResults.ToList();
+
+            if (SelectionResults == null || !results.Any())
             {
                 node = AstFactory.BuildNullNode();
             }
+            else if (results.Count == 1)
+            {
+                var el = results.First();
+
+                // If there is only one object in the list,
+                // return a single item.
+                node = AstFactory.BuildFunctionCall(
+                    func,
+                    new List<AssociativeNode>
+                    {
+                        AstFactory.BuildStringNode(el.UniqueId),
+                        AstFactory.BuildBooleanNode(true)
+                    });
+            }
             else
             {
-                Func<string, bool, Revit.Elements.Element> func = ElementSelector.ByUniqueId;
-
                 var newInputs =
-                    SelectionResults.Select(
+                    results.Select(
                         el =>
                             AstFactory.BuildFunctionCall(
                                 func,
@@ -248,16 +263,25 @@ namespace Dynamo.Nodes
             List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode node;
+            Func<string, object> func = GeometryObjectSelector.ByReferenceStableRepresentation;
 
-            if (SelectionResults == null || !SelectionResults.Any())
+            var results = SelectionResults.ToList();
+
+            if (SelectionResults == null || !results.Any())
             {
                 node = AstFactory.BuildNullNode();
             }
+            else if (results.Count == 1)
+            {
+                var stableRef = GetIdentifierFromModelObject(results.First());
+
+                node = AstFactory.BuildFunctionCall(
+                    func,
+                    new List<AssociativeNode> { AstFactory.BuildStringNode(stableRef), });
+            }
             else
             {
-                var stableRefs = SelectionResults.Select(GetIdentifierFromModelObject);
-
-                Func<string, object> func = GeometryObjectSelector.ByReferenceStableRepresentation;
+                var stableRefs = results.Select(GetIdentifierFromModelObject);
 
                 var newInputs =
                     stableRefs.Select(
