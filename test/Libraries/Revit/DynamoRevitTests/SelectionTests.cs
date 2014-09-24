@@ -24,7 +24,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void FamilyTypeSelectorNode()
         {
-            string samplePath = Path.Combine(_testPath, @".\SelectionResults\SelectFamily.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
@@ -56,28 +56,28 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectModelElement()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath,@".\SelectionResults\SelectModelElement.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath,@".\Selection\SelectModelElement.dyn"));
             TestSelection<Element, Element>(SelectionType.One);
         }
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectModelElements()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectModelElements.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectModelElements.dyn"));
             TestSelection<Element, Element>(SelectionType.Many);
         }
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectFace()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectFace.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFace.dyn"));
 
             RunCurrentModel();
 
@@ -100,35 +100,35 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectEdge()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectEdge.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
             TestSelection<Reference,Reference>(SelectionType.One);
         }
 
         //[Test]
-        //[TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        //[TestModel(@".\Selection\Selection.rfa")]
         //public void SelectPointOnFace()
         //{
-        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectPointOnFace.dyn"));
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectPointOnFace.dyn"));
         //    TestSelection<Reference,Reference>(SelectionType.One);
         //}
 
         //[Test]
-        //[TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        //[TestModel(@".\Selection\Selection.rfa")]
         //public void SelectUVOnFace()
         //{
-        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectUVOnFace.dyn"));
+        //    OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectUVOnFace.dyn"));
         //    TestSelection<Reference,Reference>(SelectionType.One);
         //}
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectDividedSurfaceFamilies()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectDividedSurfaceFamilies.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectDividedSurfaceFamilies.dyn"));
 
             // Get the selection node
             var selectNode = (ElementSelection<DividedSurface>)(ViewModel.Model.Nodes.FirstOrDefault(x => x is ElementSelection<DividedSurface>));
@@ -180,10 +180,10 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("SmokeTests")]
-        [TestModel(@".\SelectionResults\SelectionResults.rfa")]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void SelectFaces()
         {
-            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\SelectionResults\SelectFaces.dyn"));
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectFaces.dyn"));
 
             RunCurrentModel();
 
@@ -233,23 +233,39 @@ namespace Dynamo.Tests
             }
         }
 
+        /// <summary>
+        /// Test running the node, then clearing the 
+        /// selection and running again.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="selectNode"></param>
         private void TestSingleSelection<T1, T2>(SelectionBase<T1, T2> selectNode)
         {
             var element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
             Assert.NotNull(element);
+            selectNode.ClearSelections();
             RunCurrentModel();
-            element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
+            element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.Null(element);
         }
 
+        /// <summary>
+        /// Test running the node, then clearing the 
+        /// selection and running again.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="selectNode"></param>
         private void TestMultipleSelection<T1, T2>(SelectionBase<T1, T2> selectNode)
         {
             var elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.NotNull(elements);
             Assert.Greater(elements.Count(), 0);
+            selectNode.ClearSelections();
             RunCurrentModel();
             elements = GetPreviewCollection(selectNode.GUID.ToString());
-            Assert.Null(elements);
+            Assert.True(!elements.Any());
         }
 
         private void OpenAndAssertNoDummyNodes(string samplePath)

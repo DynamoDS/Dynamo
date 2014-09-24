@@ -1619,7 +1619,7 @@ namespace ProtoScript.Runners
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
 #if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
-            ProtoCore.Utils.HeapUtils.VerifyHeap(runnerCore);
+            runnerCore.Heap.Verify();
 #endif
         }
 
