@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using Dynamo.Models;
 using DynamoUnits;
 
@@ -24,6 +25,7 @@ namespace Dynamo.Interfaces
         string LastUpdateDownloadPath { get; set; }
         int MaxNumRecentFiles { get; set; }
         List<string> RecentFiles { get; set; }
+        List<string> PackageDirectoriesToUninstall { get; set; }
 
         /// <summary>
         /// Save PreferenceSettings in XML File Path if possible,
