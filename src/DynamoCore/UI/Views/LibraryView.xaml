@@ -11,6 +11,9 @@
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
+            <!--Converter to Make class details not focusable-->
+            <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+            
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
                  exception. -->
@@ -122,8 +125,14 @@
                                 </Setter.Value>
                             </Setter>
 
-                            <Setter Property="Focusable"
-                                    Value="{Binding Path=Focusable}" />
+                            <!--Make class details not focusable-->
+                            <Setter Property="Focusable">
+                                <Setter.Value>
+                                    <Binding RelativeSource="{RelativeSource Self}"
+                                             Path="DataContext"
+                                             Converter="{StaticResource DataContextToBoolConverter}" />
+                                </Setter.Value>
+                            </Setter>
 
                             <Style.Triggers>
                                 <Trigger Property="IsSelected"
@@ -430,7 +439,8 @@
                       Background="Transparent"
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
-                      Style="{StaticResource ScrollLibraryViewerStyle}">
+                      Style="{StaticResource ScrollLibraryViewerStyle}"
+                      HorizontalScrollBarVisibility="Disabled">
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"

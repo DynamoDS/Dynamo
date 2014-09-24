@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void Init()
         {
-           search = new SearchModel();
+            search = new SearchModel();
         }
 
         #region Refactoring
@@ -99,12 +99,12 @@ namespace Dynamo.Tests
             var results1 = search.Search(nodeName).ToList();
 
             // description is updated
-            Assert.AreEqual(1,results1.Count());
+            Assert.AreEqual(1, results1.Count());
             var res2 = results1[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
             var node2 = res2 as CustomNodeSearchElement;
-            Assert.AreEqual( guid1, node2.Guid );
-            Assert.AreEqual( newDescription, node2.Description);
+            Assert.AreEqual(guid1, node2.Guid);
+            Assert.AreEqual(newDescription, node2.Description);
 
         }
 
@@ -208,7 +208,7 @@ namespace Dynamo.Tests
         {
             const string catName = "Category";
             var cat = search.AddCategory(catName);
-            cat.Items.Add(new BrowserInternalElement("Child",cat));
+            cat.Items.Add(new BrowserInternalElement("Child", cat));
             Assert.IsNotNull(search.TryGetSubCategory(cat, "Child"));
         }
 
@@ -376,11 +376,11 @@ namespace Dynamo.Tests
         {
             var split = SearchModel.SplitCategoryName("this is a root category");
             Assert.AreEqual(1, split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and");
             Assert.AreEqual(2, split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub");
@@ -397,8 +397,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(" with noodles", split[3]);
 
             split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1,split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual(1, split.Count());
+            Assert.AreEqual("this is a root category", split[0]);
         }
 
         [Test]
@@ -586,7 +586,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
             Assert.AreEqual(SearchElementGroup.Create, group);
         }
-		
+
         #endregion
 
         #region Add Categories
@@ -630,9 +630,9 @@ namespace Dynamo.Tests
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
-            Assert.Contains( leafCat, root.Items );
+            Assert.Contains(leafCat, root.Items);
             Assert.Contains(root, search.BrowserRootCategories);
-            
+
         }
 
 
@@ -656,7 +656,7 @@ namespace Dynamo.Tests
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
-            Assert.Contains( leafCat, root.Items );
+            Assert.Contains(leafCat, root.Items);
             Assert.Contains(root, search.BrowserRootCategories);
 
             search.RemoveCategory("Peter");
