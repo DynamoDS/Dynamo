@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <!--Converter to Make class details not focusable-->
-            <controls:DataContextToBoolConverter x:Key="DataContextToBool" />
+            <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
             
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
@@ -129,7 +129,7 @@
                                 <Setter.Value>
                                     <Binding RelativeSource="{RelativeSource Self}"
                                              Path="DataContext"
-                                             Converter="{StaticResource DataContextToBool}" />
+                                             Converter="{StaticResource DataContextToBoolConverter}" />
                                 </Setter.Value>
                             </Setter>
 
