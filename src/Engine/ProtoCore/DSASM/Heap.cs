@@ -446,6 +446,11 @@ namespace ProtoCore.DSASM
 #endif
                 }
                 
+                // The reference count could be 0 if this heap object
+                // is a temporary heap object that hasn't been assigned
+                // to any variable yet, for example, Type.Coerce() may 
+                // allocate a new array and when this one is type converted
+                // again, it will be released. 
                 if (hs.Refcount > 0)
                 {
                     hs.Refcount--;
