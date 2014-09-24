@@ -11,7 +11,7 @@ namespace Dynamo.DSEngine
             var astBuilder = new AstBuilder(dynamoModel, null);
             var astNodes = astBuilder.CompileToAstNodes(nodeList, false);
 
-            ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(astNodes);
+            var codeGen = new ProtoCore.CodeGenDS(astNodes);
             return codeGen.GenerateCode();
         }
     }

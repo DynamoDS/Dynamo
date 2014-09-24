@@ -76,6 +76,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
 
+            // TODO: Find a better way to save loaded libraries. 
             if (!DynamoModel.IsTestMode)
             {
                 foreach (var library in libraryServices.Libraries)
