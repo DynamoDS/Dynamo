@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
@@ -364,7 +364,7 @@ namespace Dynamo.ViewModels
                 // before the command execution starts. After the command is done,
                 // the timer is then resumed for the next command in queue.
                 // 
-                nextCommand.Execute(this.owningViewModel);
+                nextCommand.Execute(this.owningViewModel.Model);
             }
             catch (Exception exception)
             {

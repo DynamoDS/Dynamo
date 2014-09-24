@@ -20,7 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {

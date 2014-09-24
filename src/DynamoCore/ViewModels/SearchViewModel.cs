@@ -8,7 +8,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-
+using DM = Dynamo.Models.DynamoModel;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -438,7 +438,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             this.dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+                new DM.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -456,7 +456,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DM.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -472,7 +472,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DM.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

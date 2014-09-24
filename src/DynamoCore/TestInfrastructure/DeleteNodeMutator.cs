@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using DM = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -45,8 +46,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.RunCancelCommand runCancel =
-                    new DynamoViewModel.RunCancelCommand(false, false);
+                DM.RunCancelCommand runCancel =
+                    new DM.RunCancelCommand(false, false);
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
@@ -65,9 +66,9 @@ namespace Dynamo.TestInfrastructure
                 {
                     DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        DynamoViewModel.UndoRedoCommand undoCommand =
-                            new DynamoViewModel.UndoRedoCommand(
-                                DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                        DM.UndoRedoCommand undoCommand =
+                            new DM.UndoRedoCommand(
+                                DM.UndoRedoCommand.Operation.Undo);
 
                         DynamoViewModel.ExecuteCommand(undoCommand);
                     }));
@@ -80,8 +81,8 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.RunCancelCommand runCancel =
-                        new DynamoViewModel.RunCancelCommand(false, false);
+                    DM.RunCancelCommand runCancel =
+                        new DM.RunCancelCommand(false, false);
 
                     DynamoViewModel.ExecuteCommand(runCancel);
                 }));
@@ -116,8 +117,8 @@ namespace Dynamo.TestInfrastructure
         {
             this.DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.DeleteModelCommand delCommand =
-                        new DynamoViewModel.DeleteModelCommand(node.GUID);
+                    DM.DeleteModelCommand delCommand =
+                        new DM.DeleteModelCommand(node.GUID);
                 
                     DynamoViewModel.ExecuteCommand(delCommand);
                 }));

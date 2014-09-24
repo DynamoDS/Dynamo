@@ -5,6 +5,7 @@ using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
+using DM = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -54,8 +55,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.RunCancelCommand runCancel =
-                    new DynamoViewModel.RunCancelCommand(false, false);
+                DM.RunCancelCommand runCancel =
+                    new DM.RunCancelCommand(false, false);
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
@@ -70,9 +71,9 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.UndoRedoCommand undoCommand =
-                        new DynamoViewModel.UndoRedoCommand(
-                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                    DM.UndoRedoCommand undoCommand =
+                        new DM.UndoRedoCommand(
+                            DM.UndoRedoCommand.Operation.Undo);
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
@@ -86,8 +87,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.RunCancelCommand runCancel =
-                    new DynamoViewModel.RunCancelCommand(false, false);
+                DM.RunCancelCommand runCancel =
+                    new DM.RunCancelCommand(false, false);
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
@@ -167,7 +168,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    var cmd = new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Code", replacement);
+                    var cmd = new DM.UpdateModelValueCommand(node.GUID, "Code", replacement);
 
                     this.DynamoViewModel.ExecuteCommand(cmd);
                 }));

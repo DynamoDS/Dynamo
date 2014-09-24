@@ -139,7 +139,7 @@ namespace Dynamo.ViewModels
             set
             {
                 if (model.Workspaces.IndexOf(model.CurrentWorkspace) != value)
-                    this.ExecuteCommand(new SwitchTabCommand(value));
+                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
             }
         }
 
@@ -431,6 +431,8 @@ namespace Dynamo.ViewModels
         {
             // initialize core data structures
             this.model = dynamoModel;
+            this.model.CommandStarting += model_CommandStarting;
+            this.model.CommandCompleted += model_CommandCompleted;
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
@@ -593,7 +595,7 @@ namespace Dynamo.ViewModels
 
         public void CancelRunCmd(object parameter)
         {
-            var command = new DynamoViewModel.RunCancelCommand(false, true);
+            var command = new DynamoModel.RunCancelCommand(false, true);
             this.ExecuteCommand(command);
         }
 
@@ -610,7 +612,7 @@ namespace Dynamo.ViewModels
         internal void RunExprCmd(object parameters)
         {
             bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoViewModel.RunCancelCommand(displayErrors, false);
+            var command = new DynamoModel.RunCancelCommand(displayErrors, false);
             this.ExecuteCommand(command);
         }
 
@@ -622,13 +624,13 @@ namespace Dynamo.ViewModels
         internal void ForceRunExprCmd(object parameters)
         {
             bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoViewModel.ForceRunCancelCommand(displayErrors, false);
+            var command = new DynamoModel.ForceRunCancelCommand(displayErrors, false);
             this.ExecuteCommand(command);
         }
 
         internal void MutateTestCmd(object parameters)
         {
-            var command = new DynamoViewModel.MutateTestCommand();
+            var command = new DynamoModel.MutateTestCommand();
             this.ExecuteCommand(command);
         }
 
@@ -791,7 +793,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynCmd.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
+            var command = new DynamoModel.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
             this.ExecuteCommand(command);
         }
 
@@ -878,7 +880,7 @@ namespace Dynamo.ViewModels
             try
             {
                 string xmlFilePath = parameters as string;
-                ExecuteCommand(new OpenFileCommand(xmlFilePath));
+                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
             }
             catch (Exception e)
             {
@@ -1175,7 +1177,7 @@ namespace Dynamo.ViewModels
 
             if (args.Success)
             {
-                this.ExecuteCommand(new CreateCustomNodeCommand(Guid.NewGuid(),
+                this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
             }
         }
@@ -1486,7 +1488,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynCmd.DeleteModelCommand(Guid.Empty);
+            var command = new DynamoModel.DeleteModelCommand(Guid.Empty);
             this.ExecuteCommand(command);
         }
 
@@ -1544,7 +1546,7 @@ namespace Dynamo.ViewModels
 
         private void Undo(object parameter)
         {
-            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
+            var command = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             this.ExecuteCommand(command);
         }
 
@@ -1556,7 +1558,7 @@ namespace Dynamo.ViewModels
 
         private void Redo(object parameter)
         {
-            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
+            var command = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo);
             this.ExecuteCommand(command);
         }
 

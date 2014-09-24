@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using Dynamo.Models;
+using DM = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Dynamo.ViewModels
 {
@@ -66,7 +68,7 @@ namespace Dynamo.ViewModels
 
         #region Workspace Command Entry Point
 
-        public void ExecuteCommand(RecordableCommand command)
+        public void ExecuteCommand(DM.RecordableCommand command)
         {
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
@@ -74,207 +76,134 @@ namespace Dynamo.ViewModels
             if (Model.DebugSettings.VerboseLogging)
                 model.Logger.Log("Command: " + command);
 
-            command.Execute(this);
+            this.model.ExecuteCommand(command);
         }
 
         #endregion
 
         #region The Actual Command Handlers (Private)
 
-        private void OpenFileImpl(OpenFileCommand command)
+        void model_CommandCompleted(DM.RecordableCommand command)
+        {
+            try
+            {
+                CommandCompletedImpl(command as dynamic);
+            }
+            // No method was found for this command that means
+            // there is no need to do anything after execution
+            catch (RuntimeBinderException) { }
+        }
+
+        void model_CommandStarting(DM.RecordableCommand command)
+        {
+            try
+            {
+                CommandStartingImpl(command as dynamic);
+            }
+            // No method was found for this command that means
+            // there is no need to do anything before execution
+            catch (RuntimeBinderException) { }
+        }
+
+        private void CommandStartingImpl(DM.OpenFileCommand command)
         {
             this.VisualizationManager.Pause();
+        }
 
-            string xmlFilePath = command.XmlFilePath;
-            model.OpenInternal(xmlFilePath);
-
-            this.AddToRecentFiles(xmlFilePath);
-
-            //clear the clipboard to avoid copying between dyns
-            model.ClipBoard.Clear();
+        private void CommandCompletedImpl(DM.OpenFileCommand command)
+        {
+            this.AddToRecentFiles(command.XmlFilePath);
             this.VisualizationManager.UnPause();
         }
 
-        private void RunCancelImpl(RunCancelCommand command)
-        {
-            model.RunCancelInternal(
-                command.ShowErrors, command.CancelRun);
-        }
-
-        private void ForceRunCancelImpl(RunCancelCommand command)
-        {
-            model.ForceRunCancelInternal(
-                command.ShowErrors, command.CancelRun);
-        }
-
-        private void MutateTestImpl()
+        private void CommandCompletedImpl(DM.MutateTestCommand command)
         {
             var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
             mutatorDriver.RunMutationTests();
         }
 
-        private void CreateNodeImpl(CreateNodeCommand command)
+        private void CommandCompletedImpl(DM.CreateNodeCommand command)
         {
-            NodeModel nodeModel = CurrentSpace.AddNode(
-                command.NodeId,
-                command.NodeName,
-                command.X,
-                command.Y,
-                command.DefaultPosition,
-                command.TransformCoordinates);
-
-            CurrentSpace.RecordCreatedModel(nodeModel);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
+            UndoRedoRaise();
         }
 
-        private void CreateNoteImpl(CreateNoteCommand command)
+        private void CommandCompletedImpl(DM.CreateNoteCommand command)
         {
-            NoteModel noteModel = Model.CurrentWorkspace.AddNote(
-                command.DefaultPosition,
-                command.X,
-                command.Y,
-                command.NoteText,
-                command.NodeId);
-            CurrentSpace.RecordCreatedModel(noteModel);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
+            UndoRedoRaise();
         }
 
-        private void SelectModelImpl(SelectModelCommand command)
-        {
-            // Empty ModelGuid means clear selection.
-            if (command.ModelGuid == Guid.Empty)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                return;
-            }
-
-            ModelBase model = CurrentSpace.GetModelInternal(command.ModelGuid);
-
-            if (false == model.IsSelected)
-            {
-                if (!command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.ClearSelection();
-
-                if (!DynamoSelection.Instance.Selection.Contains(model))
-                    DynamoSelection.Instance.Selection.Add(model);
-            }
-            else
-            {
-                if (command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.Selection.Remove(model);
-            }
-        }
-
-        private void SelectInRegionImpl(SelectInRegionCommand command)
+        private void CommandCompletedImpl(DM.SelectInRegionCommand command)
         {
             CurrentSpaceViewModel.SelectInRegion(command.Region, command.IsCrossSelection);
         }
 
-        private void DragSelectionImpl(DragSelectionCommand command)
+        private void CommandCompletedImpl(DM.DragSelectionCommand command)
         {
-            if (DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
+            if (DM.DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
+            {
                 CurrentSpaceViewModel.BeginDragSelection(command.MouseCursor);
+            }
             else
+            {
                 CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
+            }
         }
 
-        private void MakeConnectionImpl(MakeConnectionCommand command)
+        private void CommandStartingImpl(DM.MakeConnectionCommand command)
         {
             System.Guid nodeId = command.NodeId;
 
             switch (command.ConnectionMode)
             {
-                case MakeConnectionCommand.Mode.Begin:
+                case DM.MakeConnectionCommand.Mode.Begin:
                     CurrentSpaceViewModel.BeginConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.End:
+                case DM.MakeConnectionCommand.Mode.End:
                     CurrentSpaceViewModel.EndConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.Cancel:
+                case DM.MakeConnectionCommand.Mode.Cancel:
                     CurrentSpaceViewModel.CancelConnection();
                     break;
             }
         }
 
-        private void DeleteModelImpl(DeleteModelCommand command)
+        private void CommandCompletedImpl(DM.DeleteModelCommand command)
         {
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
-            if (command.ModelGuid != Guid.Empty)
-            {
-                modelsToDelete.Add(CurrentSpace.GetModelInternal(command.ModelGuid));
-            }
-            else
-            {
-                // When nothing is specified then it means all selected models.
-                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
-                {
-                    if (selectable is ModelBase)
-                        modelsToDelete.Add(selectable as ModelBase);
-                }
-            }
+            UndoRedoRaise();
+        }
 
-            model.DeleteModelInternal(modelsToDelete);
-
+        private void UndoRedoRaise()
+        {
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
         }
 
-        private void UndoRedoImpl(UndoRedoCommand command)
+        private void CommandCompletedImpl(DM.UndoRedoCommand command)
         {
-            if (command.CmdOperation == UndoRedoCommand.Operation.Undo)
-                CurrentSpace.Undo();
-            else if (command.CmdOperation == UndoRedoCommand.Operation.Redo)
-                CurrentSpace.Redo();
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
+            UndoRedoRaise();
         }
 
-        private void SendModelEventImpl(ModelEventCommand command)
+        private void CommandCompletedImpl(DM.ModelEventCommand command)
         {
-            CurrentSpace.SendModelEvent(command.ModelGuid, command.EventName);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
+            UndoRedoRaise();
         }
 
-        private void UpdateModelValueImpl(UpdateModelValueCommand command)
+        private void CommandCompletedImpl(DM.UpdateModelValueCommand command)
         {
-            CurrentSpace.UpdateModelValue(command.ModelGuid,
-                command.Name, command.Value);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
+            UndoRedoRaise();
         }
 
-        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
+        private void CommandCompletedImpl(DM.ConvertNodesToCodeCommand command)
         {
-            CurrentSpace.ConvertNodesToCodeInternal(command.NodeId);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-            CurrentSpace.HasUnsavedChanges = true;
+            UndoRedoRaise();
         }
 
-        private void CreateCustomNodeImpl(CreateCustomNodeCommand command)
+        private void CommandCompletedImpl(DM.SwitchTabCommand command)
         {
-            this.model.NewCustomNodeWorkspace(command.NodeId,
-                command.Name, command.Category, command.Description, true);
-        }
-
-        private void SwitchTabImpl(SwitchTabCommand command)
-        {
-            // We don't attempt to null-check here, we need it to fail fast.
-            model.CurrentWorkspace = model.Workspaces[command.TabIndex];
-
             if (command.IsInPlaybackMode)
                 RaisePropertyChanged("CurrentWorkspaceIndex");
         }

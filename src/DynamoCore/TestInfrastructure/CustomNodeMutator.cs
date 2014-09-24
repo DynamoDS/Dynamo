@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using DM = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -54,8 +55,8 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.OpenFileCommand openFile =
-                        new DynamoViewModel.OpenFileCommand(customNodeFilePath);
+                    DM.OpenFileCommand openFile =
+                        new DM.OpenFileCommand(customNodeFilePath);
 
                     DynamoViewModel.ExecuteCommand(openFile);
                 }));
@@ -77,8 +78,8 @@ namespace Dynamo.TestInfrastructure
                 {
                     DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        DynamoViewModel.UndoRedoCommand undoCommand =
-                            new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                        DM.UndoRedoCommand undoCommand =
+                            new DM.UndoRedoCommand(DM.UndoRedoCommand.Operation.Undo);
 
                         DynamoViewModel.ExecuteCommand(undoCommand);
                     }));
@@ -89,8 +90,8 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.RunCancelCommand runCancel =
-                        new DynamoViewModel.RunCancelCommand(false, false);
+                    DM.RunCancelCommand runCancel =
+                        new DM.RunCancelCommand(false, false);
 
                     DynamoViewModel.ExecuteCommand(runCancel);
                 }));
@@ -101,8 +102,8 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.SwitchTabCommand switchCmd =
-                        new DynamoViewModel.SwitchTabCommand(workspaceIndex);
+                    DM.SwitchTabCommand switchCmd =
+                        new DM.SwitchTabCommand(workspaceIndex);
 
                     DynamoViewModel.ExecuteCommand(switchCmd);
                 }));
@@ -194,8 +195,8 @@ namespace Dynamo.TestInfrastructure
                     {
                         DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
-                            DynamoViewModel.SwitchTabCommand swithCommand =
-                                new DynamoViewModel.SwitchTabCommand(workspaceIndex);
+                            DM.SwitchTabCommand swithCommand =
+                                new DM.SwitchTabCommand(workspaceIndex);
 
                             DynamoViewModel.ExecuteCommand(swithCommand);
 
@@ -217,8 +218,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.SwitchTabCommand switchCmd =
-                    new DynamoViewModel.SwitchTabCommand(workspaceIndex);
+                DM.SwitchTabCommand switchCmd =
+                    new DM.SwitchTabCommand(workspaceIndex);
 
                 DynamoViewModel.ExecuteCommand(switchCmd);
                 Thread.Sleep(100);
@@ -226,8 +227,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.SwitchTabCommand switchCmd =
-                    new DynamoViewModel.SwitchTabCommand(workspaceIndex);
+                DM.SwitchTabCommand switchCmd =
+                    new DM.SwitchTabCommand(workspaceIndex);
 
                 DynamoViewModel.ExecuteCommand(switchCmd);
                 Thread.Sleep(100);
@@ -245,8 +246,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.CreateNodeCommand createCommand =
-                    new DynamoViewModel.CreateNodeCommand(numberGuid, "Number", 
+                DM.CreateNodeCommand createCommand =
+                    new DM.CreateNodeCommand(numberGuid, "Number", 
                         coordinatesX, coordinatesY, false, false);
                 DynamoViewModel.ExecuteCommand(createCommand);
             }));
@@ -255,12 +256,12 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.MakeConnectionCommand connToAnother1 =
-                        new DynamoViewModel.MakeConnectionCommand(numberGuid, 0, PortType.OUTPUT, 
-                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                    DynamoViewModel.MakeConnectionCommand connToAnother2 =
-                        new DynamoViewModel.MakeConnectionCommand(output.GUID, 0, PortType.INPUT, 
-                            DynamoViewModel.MakeConnectionCommand.Mode.End);
+                    DM.MakeConnectionCommand connToAnother1 =
+                        new DM.MakeConnectionCommand(numberGuid, 0, PortType.OUTPUT, 
+                            DM.MakeConnectionCommand.Mode.Begin);
+                    DM.MakeConnectionCommand connToAnother2 =
+                        new DM.MakeConnectionCommand(output.GUID, 0, PortType.INPUT, 
+                            DM.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connToAnother1);
                     DynamoViewModel.ExecuteCommand(connToAnother2);
