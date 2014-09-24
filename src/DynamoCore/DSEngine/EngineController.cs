@@ -3,6 +3,8 @@
 using Dynamo.Models;
 using Dynamo.Nodes;
 
+using DynamoUtilities;
+
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
@@ -66,6 +68,14 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
+
+            if (!DynamoModel.IsTestMode)
+            {
+                foreach (var library in libraryServices.Libraries)
+                {
+                    DynamoPathManager.Instance.AddPreloadLibrary(library);
+                }
+            }
         }
 
         #region Function Groups
