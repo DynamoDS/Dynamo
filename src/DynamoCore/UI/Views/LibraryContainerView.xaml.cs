@@ -320,10 +320,12 @@ namespace Dynamo.Search
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
-            var pathOfCustomNode = ((CustomNodeSearchElement)((MenuItem)sender).DataContext).Path;
-            if (dynamoViewModel.OpenCommand.CanExecute(pathOfCustomNode))
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
             {
-                dynamoViewModel.OpenCommand.Execute(pathOfCustomNode);
+                var element = menuItem.DataContext as CustomNodeSearchElement;
+                if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
+                    dynamoViewModel.OpenCommand.Execute(element.Path);
             }
         }
 
