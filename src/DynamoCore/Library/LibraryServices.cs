@@ -216,8 +216,12 @@ namespace Dynamo.DSEngine
             {
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
-                int globalFunctionNumber = libraryManagementCore.CodeBlockList[0].procedureTable.procList.Count();
-                int currentClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
+                var functionTable = libraryManagementCore.CodeBlockList[0].procedureTable;
+                var classTable = libraryManagementCore.ClassTable;
+
+                int functionNumber = functionTable.procList.Count;
+                int classNumber = classTable.ClassNodes.Count;
+
                 CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library);
 
                 if (libraryManagementCore.BuildStatus.ErrorCount > 0)
@@ -234,16 +238,16 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                int postClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
-                for (int i = currentClassNumber; i < postClassNumber; ++i)
+                var loadedClasses = classTable.ClassNodes.Skip(classNumber);
+                foreach (var classNode in loadedClasses)
                 {
-                    ImportClass(library, libraryManagementCore.ClassTable.ClassNodes[i]);
+                    ImportClass(library, classNode);
                 }
 
-                var globalFunctions = libraryManagementCore.CodeBlockList[0].procedureTable.procList;
-                for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
+                var loadedFunctions = functionTable.procList.Skip(functionNumber);
+                foreach (var globalFunction in loadedFunctions)
                 {
-                    ImportProcedure(library, globalFunctions[i]);
+                    ImportProcedure(library, globalFunction);
                 }
             }
             catch (Exception e)
