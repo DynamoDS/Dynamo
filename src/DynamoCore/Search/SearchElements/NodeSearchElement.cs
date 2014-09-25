@@ -51,6 +51,11 @@ namespace Dynamo.Search.SearchElements
         private SearchElementGroup _group;
         public SearchElementGroup Group { get { return _group; } }
 
+        /// <summary>
+        /// Property specifies how Node was created.
+        /// </summary>
+        public SearchModel.ElementType ElementType { get; set; }
+
         private List<Tuple<string, string>> _inputParameters;
         public IEnumerable<Tuple<string, string>> InputParameters
         {

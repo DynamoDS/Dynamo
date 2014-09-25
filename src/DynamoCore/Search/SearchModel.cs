@@ -58,7 +58,20 @@ namespace Dynamo.Search
         /// </value>
         private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
-        internal enum ElementType { Regular, Addon };
+        /// <summary>
+        /// Enum represents loading type of element.
+        /// </summary>
+        public enum ElementType
+        {
+            // Element is part of core libraries.
+            Regular,
+            // Element is part of package.
+            Package,
+            // Element is custom node created by user but not part of package.
+            CustomNode,
+            // Element is part of custom DLL. 
+            DLL
+        };
         
         /// <summary>
         /// The root elements for the browser
@@ -215,9 +228,8 @@ namespace Dynamo.Search
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
             // When create category, give not only category name, 
-            //but also assembly, where icon for category could be found.
-            var cat = this.AddCategory(category,
-                item is CustomNodeSearchElement ? ElementType.Addon : ElementType.Regular,
+            // but also assembly, where icon for category could be found.
+            var cat = this.AddCategory(category, GetElementType(item),
                 (item as NodeSearchElement).Assembly);
             cat.AddChild(item);
 
@@ -227,6 +239,18 @@ namespace Dynamo.Search
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
 
+        }
+
+        internal ElementType GetElementType(BrowserInternalElement item)
+        {
+            //TODO: Add check if item is loaded as part of package
+            if (item is CustomNodeSearchElement)
+                return ElementType.CustomNode;
+
+            if (item is DSFunctionNodeSearchElement)
+                return (item as DSFunctionNodeSearchElement).ElementType;
+
+            return ElementType.Regular;
         }
 
         internal void RemoveEmptyCategories()
@@ -475,8 +499,7 @@ namespace Dynamo.Search
                 ele = new BrowserRootElement(name, BrowserRootCategories);
                 BrowserRootCategories.Add(ele);
             }
-
-            if (nodeType == ElementType.Addon)
+            else
             {
                 ele = new BrowserRootElement(name, AddonRootCategories);
                 AddonRootCategories.Add(ele);
@@ -589,6 +612,7 @@ namespace Dynamo.Search
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
                     searchElement.Executed += this.OnExecuted;
+                    searchElement.ElementType = functionGroup.ElementType;
 
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
