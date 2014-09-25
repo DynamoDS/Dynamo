@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -135,12 +136,21 @@ namespace Dynamo.PackageManager.UI
                 {
                     return Definition.WorkspaceModel.Name;
                 }
-                return Assembly.FullName;
+                else if (DependencyType == DependencyType.Assembly)
+                {
+                    return Assembly.GetName().Name + ".dll";
+                }
+                else
+                {
+                    return FileInfo.Name;
+                }
+               
             }
         }
 
         /// <summary>
-        /// Enumerate the dependencies of this item as its children.  The 
+        /// Enumerate the dependencies of this item as its children.  Currently does not discover assembly 
+        /// dependencies.
         /// </summary>
         public void BuildDependencies( HashSet<object> discoveredDeps )
         {
@@ -157,25 +167,7 @@ namespace Dynamo.PackageManager.UI
                         };
                     if (!discovered)
                     {
-                        discoveredDeps.Add(this);
-                        packDep.BuildDependencies(discoveredDeps);
-                    }
-                    this.Items.Add(packDep);
-                }
-            }
-            else if (DependencyType == DependencyType.Assembly)
-            {
-                foreach (var dep in Assembly.GetReferencedAssemblies())
-                {
-                    var depAss = Assembly.Load(dep);
-                    var discovered = discoveredDeps.Contains(dep);
-                    var packDep = new PackageItemInternalViewModel(depAss, this)
-                    {
-                        AlreadyDiscovered = discovered
-                    };
-                    if (!discovered)
-                    {
-                        discoveredDeps.Add(this);
+                        discoveredDeps.Add(dep);
                         packDep.BuildDependencies(discoveredDeps);
                     }
                     this.Items.Add(packDep);
@@ -186,6 +178,7 @@ namespace Dynamo.PackageManager.UI
         public bool AlreadyDiscovered { get; set; }
         public DependencyType DependencyType { get; protected set; }
         public Assembly Assembly { get; protected set; }
+        public FileInfo FileInfo { get; protected set; }
         public CustomNodeDefinition Definition { get; protected set; }
 
     }

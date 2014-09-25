@@ -3,6 +3,7 @@ using ProtoCore.Utils;
 using System;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
+using System.Linq;
 
 namespace ProtoCore.AssociativeEngine
 {
