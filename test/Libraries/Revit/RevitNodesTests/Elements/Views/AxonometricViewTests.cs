@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 using RTF.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     class AxonometricViewTests : GeometricRevitNodeTest
