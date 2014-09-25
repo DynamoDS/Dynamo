@@ -133,9 +133,9 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\RevitNodeTestBase\RevitNodeTestBase.csproj">
+    <ProjectReference Include="..\RevitNodeTestBase\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
-      <Name>RevitNodeTestBase</Name>
+      <Name>RevitTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

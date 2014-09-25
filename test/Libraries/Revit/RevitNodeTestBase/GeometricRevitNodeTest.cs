@@ -9,7 +9,7 @@ using DynamoUtilities;
 
 using NUnit.Framework;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     /// <summary>
     /// This is a temporary session class which is only used for nodes that are using Geometries.

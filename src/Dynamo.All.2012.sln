@@ -125,7 +125,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitUtility", "Tools\NUnitUtility\NUnitUtility.csproj", "{D0DC5724-DE00-4201-A659-A9A6CF81290D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitNodeTestBase", "..\test\Libraries\Revit\RevitNodeTestBase\RevitNodeTestBase.csproj", "{589F14D7-2937-479C-834A-D44197CB1930}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitTestServices", "..\test\Libraries\Revit\RevitNodeTestBase\RevitTestServices.csproj", "{589F14D7-2937-479C-834A-D44197CB1930}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

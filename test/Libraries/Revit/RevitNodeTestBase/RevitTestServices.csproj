@@ -10,8 +10,8 @@
     <ProjectGuid>{589F14D7-2937-479C-834A-D44197CB1930}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RevitNodeTestBase</RootNamespace>
-    <AssemblyName>RevitNodeTestBase</AssemblyName>
+    <RootNamespace>RevitTestServices</RootNamespace>
+    <AssemblyName>RevitTestServices</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
