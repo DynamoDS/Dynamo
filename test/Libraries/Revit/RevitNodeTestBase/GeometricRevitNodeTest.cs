@@ -54,7 +54,7 @@ namespace DSRevitNodesTests
 
         public object GetConfigValue(string config)
         {
-            if (string.Compare(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, config) == 0)
+            if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
                 return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
 
             if (configValues.ContainsKey(config))
