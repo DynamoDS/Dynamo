@@ -62,6 +62,8 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
+
+            dynamoModel.NodeDeleted -= NodeDeleted;
         }
 
         #region Function Groups
