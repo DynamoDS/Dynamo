@@ -1,7 +1,7 @@
 ﻿using Revit.Application;
 using NUnit.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class DocumentTests : RevitNodeTestBase

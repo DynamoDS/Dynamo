@@ -11,7 +11,7 @@ using FamilyInstance = Revit.Elements.FamilyInstance;
 using FamilySymbol = Revit.Elements.FamilySymbol;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests.Conversion
+namespace RevitTestServices.Conversion
 {
     [TestFixture]
     public class BoundingBoxTests : GeometricRevitNodeTest
