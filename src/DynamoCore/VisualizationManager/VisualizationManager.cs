@@ -563,6 +563,7 @@ namespace Dynamo
         {
             Pause(this, EventArgs.Empty);
             QueueRenderTask();
+            Cleanup();
         }
 
         /// <summary>
@@ -627,6 +628,14 @@ namespace Dynamo
 
         public void Cleanup()
         {
+            dynamoModel.WorkspaceClearing -= Pause;
+            dynamoModel.WorkspaceCleared -= UnPauseAndUpdate;
+            dynamoModel.NodeAdded -= NodeAdded;
+            dynamoModel.NodeDeleted -= NodeDeleted;
+            dynamoModel.DeletionStarted -= Pause;
+            dynamoModel.DeletionComplete -= UnPauseAndUpdate;
+            dynamoModel.CleaningUp -= Clear;
+
             UnregisterEventListeners();
         }
 
