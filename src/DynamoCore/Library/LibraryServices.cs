@@ -5,16 +5,12 @@ using System.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
-
 using DynamoUtilities;
-
-using GraphToDSCompiler;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
-
 using ProtoFFI;
 
 using Operator = ProtoCore.DSASM.Operator;
@@ -25,15 +21,8 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    internal class LibraryServices
+    public class LibraryServices
     {
-        /// <summary>
-        ///     lock object to prevent races on establishing the singleton
-        /// </summary>
-        private static readonly Object singletonMutex = new object();
-
-        private static LibraryServices _libraryServices; // new LibraryServices();
-
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
 
@@ -42,10 +31,13 @@ namespace Dynamo.DSEngine
 
         private List<string> libraries;
 
-        private LibraryServices()
-        {
-            PreloadLibraries();
+        private readonly ProtoCore.Core libraryManagementCore;
 
+        public LibraryServices(ProtoCore.Core libraryManagementCore)
+        {
+            this.libraryManagementCore = libraryManagementCore;
+
+            PreloadLibraries();
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -80,43 +72,13 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        public static LibraryServices GetInstance()
-        {
-            lock (singletonMutex)
-            {
-                return _libraryServices ?? (_libraryServices = new LibraryServices());
-            }
-        }
-
-        public static void DestroyInstance()
-        {
-            lock (singletonMutex)
-            {
-                _libraryServices = null;
-            }
-        }
-
-        /// <summary>
-        ///     Reset the whole library services. Note it should only be used in
-        ///     testing.
-        /// </summary>
-        public void Reset()
-        {
-            importedFunctionGroups.Clear();
-            builtinFunctionGroups.Clear();
-
-            PreloadLibraries();
-
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreloadLibraries();
-        }
-
         private void PreloadLibraries()
         {
-            GraphUtilities.Reset();
-            libraries = DynamoPathManager.Instance.PreloadLibraries;
-            GraphUtilities.PreloadAssembly(libraries);
+            libraries = DynamoPathManager.Instance.PreloadLibraries.ToList();
+            foreach (var library in libraries)
+            {
+                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
+            }
         }
 
         /// <summary>
@@ -245,16 +207,17 @@ namespace Dynamo.DSEngine
 
             try
             {
-                int globalFunctionNumber = GraphUtilities.GetGlobalMethods(string.Empty).Count;
-
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-                IList<ClassNode> importedClasses = GraphUtilities.GetClassesForAssembly(library);
 
-                if (GraphUtilities.BuildStatus.ErrorCount > 0)
+                int globalFunctionNumber = libraryManagementCore.CodeBlockList[0].procedureTable.procList.Count();
+                int currentClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
+                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library);
+
+                if (libraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
                     logger.LogWarning(errorMessage, WarningLevel.Moderate);
-                    foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
+                    foreach (ErrorEntry error in libraryManagementCore.BuildStatus.Errors)
                     {
                         logger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
@@ -264,15 +227,17 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                foreach (ClassNode classNode in importedClasses)
-                    ImportClass(library, classNode);
+                int postClassNumber = libraryManagementCore.ClassTable.ClassNodes.Count;
+                for (int i = currentClassNumber; i < postClassNumber; ++i)
+                {
+                    ImportClass(library, libraryManagementCore.ClassTable.ClassNodes[i]);
+                }
 
-                // GraphUtilities.GetGlobalMethods() ignores input and just 
-                // return all global functions. The workaround is to get 
-                // new global functions after importing this assembly.
-                List<ProcedureNode> globalFunctions = GraphUtilities.GetGlobalMethods(string.Empty);
+                var globalFunctions = libraryManagementCore.CodeBlockList[0].procedureTable.procList;
                 for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
+                {
                     ImportProcedure(library, globalFunctions[i]);
+                }
             }
             catch (Exception e)
             {
@@ -335,7 +300,14 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GraphUtilities.BuiltInMethods
+            var builtins = libraryManagementCore.CodeBlockList[0]
+                                                .procedureTable
+                                                .procList
+                                                .Where(p =>
+                    !p.name.StartsWith(Constants.kInternalNamePrefix) &&
+                    !p.name.Equals("Break"));
+
+            IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -418,7 +390,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
-            foreach (ClassNode classNode in GraphUtilities.ClassTable.ClassNodes)
+            foreach (ClassNode classNode in libraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
@@ -446,7 +418,7 @@ namespace Dynamo.DSEngine
 
             if (classScope != ProtoCore.DSASM.Constants.kGlobalScope)
             {
-                var classNode = GraphUtilities.GetCore().ClassTable.ClassNodes[classScope];
+                var classNode = libraryManagementCore.ClassTable.ClassNodes[classScope];
 
                 classAttribute = classNode.ClassAttributes;
                 className = classNode.name;

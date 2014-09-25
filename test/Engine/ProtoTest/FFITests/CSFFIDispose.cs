@@ -1552,8 +1552,7 @@ s1 = AbstractDerivedDisposeTracer2.DisposeCount;
         //Migrate this code into the test framework
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }

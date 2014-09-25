@@ -11,17 +11,39 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSLibraryTest : DSEvaluationViewModelUnitTest
     {
+        private LibraryServices libraryServices = null;
+        private ProtoCore.Core libraryServicesCore = null;
+
         [SetUp]
         public override void Init()
         {
             base.Init();
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative, 
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative, 
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            libraryServices = new LibraryServices(libraryServicesCore);
+        }
+
+        [TearDown]
+        public override void Cleanup()
+        {
+            libraryServicesCore.Cleanup();
+            libraryServicesCore = null;
+            libraryServices = null;
+
+            base.Cleanup();
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestPreLoadedLibrary()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
             var loadedLibs = libraryServices.Libraries;
             Assert.IsTrue(loadedLibs.Any());
         }
@@ -30,7 +52,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLoadDSFile()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
             bool libraryLoaded = false;
 
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -49,8 +70,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLibraryAcrossSessions()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -84,6 +103,37 @@ namespace Dynamo.Tests
             RunModel(@"core\library\IEnumerableOfDifferentObjectType.dyn");
             AssertPreviewValue("0c9c34fa-236c-43c0-a5b1-44139c83cbb6", 3);
             AssertPreviewValue("3cb6f401-2811-4b66-9d46-83f2deb1dacb", 4);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadNoNamespaceClass()
+        {
+            bool libraryLoaded = false;
+
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
+
+            string libraryPath = "FFITarget.dll";
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+            Assert.IsTrue(libraryLoaded);
+
+            // Get function groups for global classes with no namespace
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .Where(x => x.Functions
+                                            .Where(y => string.IsNullOrEmpty(y.Namespace)).Any());
+
+            if (functions.Any())
+            {
+                var ctorfg = functions.Where(x => x.Functions.Where(y => y.Type == FunctionType.Constructor).Any());
+                Assert.IsTrue(ctorfg.Any());
+                foreach (var fg in ctorfg)
+                {
+                    foreach (var ctor in fg.Functions)
+                        Assert.IsTrue(ctor.ClassName == ctor.UnqualifedClassName);
+                }
+
+            }
         }
     }
 }

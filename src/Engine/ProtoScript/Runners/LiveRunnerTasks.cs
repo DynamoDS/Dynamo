@@ -78,7 +78,7 @@ namespace ProtoScript.Runners
                 {
                     try
                     {
-                        string code = GraphUtilities.ASTListToCode(astList);
+                        string code = new ProtoCore.CodeGenDS(astList).GenerateCode();
                         args = new NodesToCodeCompletedEventArgs(code, EventStatus.OK, "Node to code task complete.");
                     }
                     catch (Exception exception)

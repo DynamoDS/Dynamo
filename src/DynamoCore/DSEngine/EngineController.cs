@@ -3,16 +3,20 @@
 using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
+
+using DynamoUtilities;
+
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
+
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.DSEngine
 {
@@ -33,6 +37,7 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
+        private ProtoCore.Core parsingCore;
 
         private Object MacroMutex = new Object();
 
@@ -40,13 +45,22 @@ namespace Dynamo.DSEngine
         {
             this.dynamoModel = dynamoModel;
 
-            libraryServices = LibraryServices.GetInstance();
+            // Create a core which is used for parsing code and loading libraries
+            parsingCore = new ProtoCore.Core(new Options()
+            {
+                RootCustomPropertyFilterPathName = string.Empty
+            });
+            parsingCore.Executives.Add(Language.kAssociative,new ProtoAssociative.Executive(parsingCore));
+            parsingCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(parsingCore));
+            parsingCore.ParsingMode = ParseMode.AllowNonAssignment;
+
+            libraryServices = new LibraryServices(parsingCore);
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
@@ -62,6 +76,15 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
+
+            // TODO: Find a better way to save loaded libraries. 
+            if (!DynamoModel.IsTestMode)
+            {
+                foreach (var library in libraryServices.Libraries)
+                {
+                    DynamoPathManager.Instance.AddPreloadLibrary(library);
+                }
+            }
         }
 
         #region Function Groups
@@ -483,7 +506,7 @@ namespace Dynamo.DSEngine
             dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
@@ -615,8 +638,7 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
-            var cbs = core.CodeBlockList;
+            var cbs = parsingCore.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
                 return false;
@@ -626,8 +648,11 @@ namespace Dynamo.DSEngine
             return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
-
         #endregion
 
+        public bool TryParseCode(ref ParseParam parseParam)
+        {
+            return CompilerUtils.PreCompileCodeBlock(parsingCore, ref parseParam);
+        }
     }
 }
