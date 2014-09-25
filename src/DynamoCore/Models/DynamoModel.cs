@@ -311,6 +311,7 @@ namespace Dynamo.Models
             Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
+
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
 
@@ -337,8 +338,8 @@ namespace Dynamo.Models
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
-            this.Loader.PackageLoader.DoCachedPackageUninstalls();
-            this.Loader.PackageLoader.LoadPackages();
+            this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
 
             DisposeLogic.IsShuttingDown = false;
 
