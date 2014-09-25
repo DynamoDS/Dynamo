@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSRevitNodesUI;
 
@@ -54,6 +56,68 @@ namespace Dynamo.Tests
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
         }
 
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
+        public void EmptySingleSelectionReturnsNull()
+        {
+            // Verify that an empty single-selection returns null
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectAndMultiSelect.dyn"));
+
+            var guid = "938e1543-c1d5-4c92-83a7-3abcae2b8264";
+            var selectionNode = ViewModel.Model.Nodes.FirstOrDefault(n => n.GUID.ToString() == guid) as ElementSelection<Element>;
+            Assert.NotNull(selectionNode, "The requested node could not be found");
+            
+            selectionNode.ClearSelections();
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            var element = GetPreviewCollection(guid);
+            Assert.Null(element);
+        }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
+        public void EmptyMultiSelectionReturnsNull()
+        {
+            // Verify that an empty multi-selection returns null
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectAndMultiSelect.dyn"));
+
+            var guid = "34f4f2cc-63c3-41ec-91fa-68db7820cee5";
+            var selectionNode = ViewModel.Model.Nodes.FirstOrDefault(n => n.GUID.ToString() == guid) as ElementSelection<Element>;
+            Assert.NotNull(selectionNode, "The requested node could not be found");
+
+            selectionNode.ClearSelections();
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            var element = GetPreviewCollection(guid);
+            Assert.Null(element);
+        }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
+        public void SingleSelectionReturnsSingleObject()
+        {
+            // Verify that the selection of a single element
+            // returns only one object NOT a list of objects
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectAndMultiSelect.dyn"));
+
+            Assert.DoesNotThrow(()=>ViewModel.Model.RunExpression());
+
+            var guid = "938e1543-c1d5-4c92-83a7-3abcae2b8264";
+            var element = GetPreviewValue(guid);
+            Assert.IsInstanceOf<Revit.Elements.ReferencePoint>(element);
+        }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
+        public void MultiSelectionReturnsMultipleObjects()
+        {
+            // Verify that the selection of many elements
+            // returns a list of objects
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectAndMultiSelect.dyn"));
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            var guid = "34f4f2cc-63c3-41ec-91fa-68db7820cee5";
+            var element = GetPreviewCollection(guid);
+            Assert.IsInstanceOf<List<object>>(element);
+        }
+
         [Test]
         [Category("SmokeTests")]
         [TestModel(@".\Selection\Selection.rfa")]
@@ -104,7 +168,17 @@ namespace Dynamo.Tests
         public void SelectEdge()
         {
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
-            TestSelection<Reference,Reference>(SelectionType.One);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            var selectionNode = ViewModel.model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
+            Assert.NotNull(selectionNode);
+            var element = GetPreviewValue(selectionNode.GUID.ToString());
+            Assert.IsInstanceOf<NurbsCurve>(element);
+
+            selectionNode.ClearSelections();
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            element = GetPreviewValue(selectionNode.GUID.ToString());
+            Assert.Null(element);
         }
 
         //[Test]
@@ -246,7 +320,7 @@ namespace Dynamo.Tests
             Assert.NotNull(element);
             selectNode.ClearSelections();
             RunCurrentModel();
-            element = GetPreviewValue(selectNode.GUID.ToString());
+            element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
             Assert.Null(element);
         }
 
@@ -265,7 +339,7 @@ namespace Dynamo.Tests
             selectNode.ClearSelections();
             RunCurrentModel();
             elements = GetPreviewCollection(selectNode.GUID.ToString());
-            Assert.True(!elements.Any());
+            Assert.Null(elements);
         }
 
         private void OpenAndAssertNoDummyNodes(string samplePath)
