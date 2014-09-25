@@ -448,6 +448,25 @@ namespace Dynamo.UI.Controls
                 + startPageViewModel.SampleFolderPath);
         }
 
+        private void StartPage_OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+                if (files != null && (files.Length > 0))
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
+                    {
+                        dynamoViewModel.OpenCommand.Execute(files[0]);
+                        e.Handled = true;
+                    }
+                }
+
+            }
+        }
+
     }
 
     public class SampleFileEntry
