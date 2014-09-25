@@ -21,7 +21,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    public class LibraryServices
+    public class LibraryServices: IDisposable
     {
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
@@ -29,7 +29,7 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private List<string> libraries;
+        private List<string> libraries = new List<string>();
 
         private readonly ProtoCore.Core libraryManagementCore;
 
@@ -41,6 +41,13 @@ namespace Dynamo.DSEngine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
+        }
+
+        public void Dispose()
+        {
+            builtinFunctionGroups.Clear();
+            importedFunctionGroups.Clear();
+            libraries.Clear();
         }
 
         /// <summary>

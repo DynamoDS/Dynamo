@@ -1,16 +1,12 @@
 ﻿using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Models;
 using Dynamo.Nodes;
-
 using DynamoUtilities;
-
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
@@ -29,16 +25,15 @@ namespace Dynamo.DSEngine
     {
         public event AstBuiltEventHandler AstBuilt;
 
-        private LiveRunnerServices liveRunnerServices;
-        private LibraryServices libraryServices;
-        private AstBuilder astBuilder;
-        private SyncDataManager syncDataManager;
-        private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
+        private readonly LiveRunnerServices liveRunnerServices;
+        private readonly LibraryServices libraryServices;
+        private readonly AstBuilder astBuilder;
+        private readonly SyncDataManager syncDataManager;
+        private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
-        private ProtoCore.Core parsingCore;
-
-        private Object MacroMutex = new Object();
+        private readonly ProtoCore.Core parsingCore;
+        private readonly Object macroMutex = new Object();
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
@@ -75,6 +70,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
+            libraryServices.Dispose();
 
             // TODO: Find a better way to save loaded libraries. 
             if (!DynamoModel.IsTestMode)
@@ -84,6 +80,10 @@ namespace Dynamo.DSEngine
                     DynamoPathManager.Instance.AddPreloadLibrary(library);
                 }
             }
+
+            libraryServices.Dispose();
+
+            parsingCore.Cleanup();
         }
 
         #region Function Groups
@@ -129,7 +129,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public RuntimeMirror GetMirror(string variableName)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
                 RuntimeMirror mirror = null;
                 try
@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public string GetStringValue(string variableName)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
                 RuntimeMirror mirror = GetMirror(variableName);
                 return null == mirror ? "null" : mirror.GetStringData();
@@ -172,7 +172,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public List<IGraphicItem> GetGraphicItems(string variableName)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
                 RuntimeMirror mirror = GetMirror(variableName);
                 return null == mirror ? null : mirror.GetData().GetGraphicsItems();
@@ -190,7 +190,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
                 var activeNodes = nodes.Where(n => n.State != ElementState.Error);
 
@@ -252,7 +252,7 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                lock (MacroMutex)
+                lock (macroMutex)
                 {
 
                     lock (graphSyncDataQueue)
@@ -278,7 +278,7 @@ namespace Dynamo.DSEngine
             IEnumerable<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
                 astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
                 return VerifyGraphSyncData();
@@ -364,7 +364,7 @@ namespace Dynamo.DSEngine
         /// 
         public bool UpdateGraph(ref Exception fatalException)
         {
-            lock (MacroMutex)
+            lock (macroMutex)
             {
 
                 bool updated = false;
