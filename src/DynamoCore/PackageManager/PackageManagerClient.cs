@@ -47,6 +47,9 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
+        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+
         private readonly DynamoModel dynamoModel;
 
         /// <summary>
@@ -101,10 +104,12 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        private static readonly string serverUrl = "https://www.dynamopackages.com";
+
         public PackageManagerClient(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
-            Client = new Client(null, "http://www.dynamopackages.com"); 
+            Client = new Client(null, serverUrl); 
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
