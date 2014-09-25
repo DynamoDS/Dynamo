@@ -58,7 +58,7 @@ namespace RevitTestServices
         private static bool OpenAndReadDynamoBasePath(ref string basePath)
         {
             var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configPath = Path.Combine(assDir, "RevitTestServices.dll.config");
+            var configPath = Path.Combine(assDir, "RevitTestServices.dll");
             if (!File.Exists(configPath))
             {
                 return false;
