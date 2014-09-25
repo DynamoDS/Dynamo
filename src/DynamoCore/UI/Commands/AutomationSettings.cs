@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Threading;
 using System.Xml;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -70,7 +71,7 @@ namespace Dynamo.ViewModels
         private const string IntervalAttribName = "CommandIntervalInMs";
 
         private System.Windows.Window mainWindow = null;
-        private DynamoViewModel owningViewModel = null;
+        private DynamoModel owningDynamoModel = null;
         private DispatcherTimer playbackTimer = null;
         private List<DynCmd.RecordableCommand> loadedCommands = null;
         private List<DynCmd.RecordableCommand> recordedCommands = null;
@@ -115,7 +116,7 @@ namespace Dynamo.ViewModels
 
         #region Class Operational Methods
 
-        internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
+        internal AutomationSettings(DynamoModel dynamoModel, string commandFilePath)
         {
             this.CommandInterval = 20; // 20ms between two consecutive commands.
             this.PauseAfterPlayback = 10; // 10ms after playback is done.
@@ -137,9 +138,9 @@ namespace Dynamo.ViewModels
                 recordedCommands = new List<DynCmd.RecordableCommand>();
             }
 
-            this.owningViewModel = vm;
-            if (null == this.owningViewModel)
-                throw new ArgumentNullException("vm");
+            this.owningDynamoModel = dynamoModel;
+            if (null == this.owningDynamoModel)
+                throw new ArgumentNullException("dynamoModel");
         }
 
         internal void BeginCommandPlayback(System.Windows.Window mainWindow)
@@ -364,7 +365,7 @@ namespace Dynamo.ViewModels
                 // before the command execution starts. After the command is done,
                 // the timer is then resumed for the next command in queue.
                 // 
-                nextCommand.Execute(this.owningViewModel.Model);
+                this.owningDynamoModel.ExecuteCommand(nextCommand);
             }
             catch (Exception exception)
             {

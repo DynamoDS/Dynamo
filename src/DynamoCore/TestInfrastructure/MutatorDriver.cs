@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using DM = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -98,8 +97,8 @@ namespace Dynamo.TestInfrastructure
 
                     dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        DM.RunCancelCommand runCancel =
-                            new DM.RunCancelCommand(false, false);
+                        DynamoModel.RunCancelCommand runCancel =
+                            new DynamoModel.RunCancelCommand(false, false);
 
                         dynamoViewModel.ExecuteCommand(runCancel);
                     }));

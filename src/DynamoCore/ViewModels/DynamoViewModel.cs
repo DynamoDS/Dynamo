@@ -542,7 +542,7 @@ namespace Dynamo.ViewModels
                 commandFilePath = null;
 
             // Instantiate an AutomationSettings to handle record/playback.
-            automationSettings = new AutomationSettings(this, commandFilePath);
+            automationSettings = new AutomationSettings(this.Model, commandFilePath);
         }
 
         private void TryDispatcherBeginInvoke(Action action)

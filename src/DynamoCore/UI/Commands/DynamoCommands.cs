@@ -85,73 +85,79 @@ namespace Dynamo.ViewModels
 
         void model_CommandCompleted(DM.RecordableCommand command)
         {
-            try
+            var name = command.GetType().Name;
+            switch (name)
             {
-                CommandCompletedImpl(command as dynamic);
+                case "OpenFileCommand":
+                    this.AddToRecentFiles((command as DM.OpenFileCommand).XmlFilePath);
+                    this.VisualizationManager.UnPause();
+                    break;
+
+                case "MutateTestCommand":
+                    var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
+                    mutatorDriver.RunMutationTests();
+                    break;
+
+                case "SelectInRegionCommand":
+                    var selectC = command as DM.SelectInRegionCommand;
+                    CurrentSpaceViewModel.SelectInRegion(selectC.Region, selectC.IsCrossSelection);
+                    break;
+
+                case "DragSelectionCommand":
+                    var dragC = command as DM.DragSelectionCommand;
+
+                    if (DM.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
+                        CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                    else
+                        CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
+                    break;
+
+                case "DeleteModelCommand":
+                case "CreateNodeCommand":
+                case "CreateNoteCommand":
+                case "UndoRedoCommand":
+                case "ModelEventCommand":
+                case "UpdateModelValueCommand":
+                case "ConvertNodesToCodeCommand":
+                    UndoCommand.RaiseCanExecuteChanged();
+                    RedoCommand.RaiseCanExecuteChanged();
+                    break;
+
+                case "SwitchTabCommand":
+                    if (command.IsInPlaybackMode)
+                        RaisePropertyChanged("CurrentWorkspaceIndex");
+                    break;
+
+                default:
+                    // for the other commands
+                    // there is no need to do anything after execution
+                    break;
             }
-            // No method was found for this command that means
-            // there is no need to do anything after execution
-            catch (RuntimeBinderException) { }
         }
 
         void model_CommandStarting(DM.RecordableCommand command)
         {
-            try
+            var name = command.GetType().Name;
+            switch (name)
             {
-                CommandStartingImpl(command as dynamic);
-            }
-            // No method was found for this command that means
-            // there is no need to do anything before execution
-            catch (RuntimeBinderException) { }
-        }
+                case "OpenFileCommand":
+                    this.VisualizationManager.Pause();
+                    break;
 
-        private void CommandStartingImpl(DM.OpenFileCommand command)
-        {
-            this.VisualizationManager.Pause();
-        }
+                case "MakeConnectionCommand":
+                    MakeConnectionImpl(command as DM.MakeConnectionCommand);
+                    break;
 
-        private void CommandCompletedImpl(DM.OpenFileCommand command)
-        {
-            this.AddToRecentFiles(command.XmlFilePath);
-            this.VisualizationManager.UnPause();
-        }
-
-        private void CommandCompletedImpl(DM.MutateTestCommand command)
-        {
-            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
-            mutatorDriver.RunMutationTests();
-        }
-
-        private void CommandCompletedImpl(DM.CreateNodeCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.CreateNoteCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.SelectInRegionCommand command)
-        {
-            CurrentSpaceViewModel.SelectInRegion(command.Region, command.IsCrossSelection);
-        }
-
-        private void CommandCompletedImpl(DM.DragSelectionCommand command)
-        {
-            if (DM.DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
-            {
-                CurrentSpaceViewModel.BeginDragSelection(command.MouseCursor);
-            }
-            else
-            {
-                CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
+                default:
+                    // for the other commands
+                    // there is no need to do anything before execution
+                    break;
             }
         }
 
-        private void CommandStartingImpl(DM.MakeConnectionCommand command)
+        private void MakeConnectionImpl(DM.MakeConnectionCommand command)
         {
-            System.Guid nodeId = command.NodeId;
+            Guid nodeId = command.NodeId;
 
             switch (command.ConnectionMode)
             {
@@ -169,43 +175,6 @@ namespace Dynamo.ViewModels
                     CurrentSpaceViewModel.CancelConnection();
                     break;
             }
-        }
-
-        private void CommandCompletedImpl(DM.DeleteModelCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void UndoRedoRaise()
-        {
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void CommandCompletedImpl(DM.UndoRedoCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.ModelEventCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.UpdateModelValueCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.ConvertNodesToCodeCommand command)
-        {
-            UndoRedoRaise();
-        }
-
-        private void CommandCompletedImpl(DM.SwitchTabCommand command)
-        {
-            if (command.IsInPlaybackMode)
-                RaisePropertyChanged("CurrentWorkspaceIndex");
         }
 
         #endregion
