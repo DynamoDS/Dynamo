@@ -32,8 +32,6 @@ namespace Dynamo.UI.Controls
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
 
-        public static HighlightingRule DigitRule { get; private set; }
-
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -53,6 +51,35 @@ namespace Dynamo.UI.Controls
             this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
 
             InitializeSyntaxHighlighter();
+        }
+
+        public static HighlightingRule CreateDigitRule()
+        {
+            var digitRule = new HighlightingRule();
+
+            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            digitRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            // These Regex's must match with the grammars in the DS ATG for digits
+            // Refer to the 'number' and 'float' tokens in Start.atg
+            //*******************************************************************************
+            // number = digit {digit} .
+            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+            //*******************************************************************************
+
+            string digit = @"(-?\b\d+)";
+            string floatingPoint = @"(\.[0-9]+)";
+            string numberWithOptionalDecimal = digit + floatingPoint + "?";
+
+            string exponent = @"([eE][+-]?[0-9]+)";
+            string numberWithExponent = digit + floatingPoint + exponent;
+
+            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
+
+            return digitRule;
         }
 
         #region Generic Properties
@@ -127,35 +154,7 @@ namespace Dynamo.UI.Controls
 
             // Highlighting Digits
             var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            if (DigitRule == null)
-            {
-                DigitRule = new HighlightingRule();
-                Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-                DigitRule.Color = new HighlightingColor()
-                {
-                    Foreground = new CustomizedBrush(color)
-                };
-
-                // These Regex's must match with the grammars in the DS ATG for digits
-                // Refer to the 'number' and 'float' tokens in Start.atg
-                //*******************************************************************************
-                // number = digit {digit} .
-                // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-                //*******************************************************************************
-
-                string digit = @"(-?\b\d+)";
-                string floatingPoint = @"(\.[0-9]+)";
-                string numberWithOptionalDecimal = digit + floatingPoint + "?";
-
-                string exponent = @"([eE][+-]?[0-9]+)";
-                string numberWithExponent = digit + floatingPoint + exponent;
-
-                DigitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
-            }
-
-            rules.Add(DigitRule);
-
+            rules.Add(CreateDigitRule());
         }
 
         private void OnRequestReturnFocusToSearch()
