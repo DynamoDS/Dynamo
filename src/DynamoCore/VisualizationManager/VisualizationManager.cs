@@ -564,6 +564,8 @@ namespace Dynamo
             Pause(this, EventArgs.Empty);
             QueueRenderTask();
             Cleanup();
+
+            renderManager.CleanUp();
         }
 
         /// <summary>

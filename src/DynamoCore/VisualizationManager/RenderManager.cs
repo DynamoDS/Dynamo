@@ -196,5 +196,9 @@ namespace Dynamo
             node.UpdateRenderPackage(maxTesselationDivs);
         }
 
+        public void CleanUp()
+        {
+            controllerThread.Abort();
+        }
     }
 }
