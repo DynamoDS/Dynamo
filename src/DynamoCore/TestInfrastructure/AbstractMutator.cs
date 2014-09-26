@@ -12,7 +12,7 @@ namespace Dynamo.TestInfrastructure
 {
     public abstract class AbstractMutator : INotifyPropertyChanged
     {
-        //Convienence state, the presence of this state cache means that
+        //Convenience state, the presence of this state cache means that
         //usage of this mutator should be short lived
         protected DynamoViewModel DynamoViewModel;
         protected DynamoModel DynamoModel;
@@ -102,7 +102,7 @@ namespace Dynamo.TestInfrastructure
         private void CheckChange()
         {
             List<RunAllTests> runAllTestObj = new List<RunAllTests>();
-            foreach (CollectionContainer container in MutatorDriver.Instance.Collection)
+            foreach (CollectionContainer container in DynamoViewModel.MutatorDriver.Collection)
             {
                 var objs = container.Collection.OfType<RunAllTests>();
                 if (objs != null)

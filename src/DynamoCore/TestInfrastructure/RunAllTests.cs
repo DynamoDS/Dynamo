@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +11,8 @@ namespace Dynamo.TestInfrastructure
 {
     public class RunAllTests : INotifyPropertyChanged
     {
+        private DynamoViewModel dynamoViewModel;        
+
         private string name = "Run all tests";
 
         public string Name
@@ -19,7 +22,7 @@ namespace Dynamo.TestInfrastructure
 
         private bool isSelected = true;
 
-        public virtual bool IsSelected
+        public bool IsSelected
         {
             get { return isSelected; }
             set
@@ -46,6 +49,10 @@ namespace Dynamo.TestInfrastructure
             }
         }
 
+        public RunAllTests(DynamoViewModel dynamoViewModel)
+        {
+            this.dynamoViewModel = dynamoViewModel;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -58,7 +65,7 @@ namespace Dynamo.TestInfrastructure
         private void CheckChange(bool selected)
         {
             List<AbstractMutator> mutators = new List<AbstractMutator>();
-            foreach (CollectionContainer container in MutatorDriver.Instance.Collection)
+            foreach (CollectionContainer container in dynamoViewModel.MutatorDriver.Collection)
             {
                 var objs = container.Collection.OfType<AbstractMutator>();
                 if (objs != null)

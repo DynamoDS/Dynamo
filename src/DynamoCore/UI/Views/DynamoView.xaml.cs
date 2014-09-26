@@ -63,8 +63,6 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            MutatorDriver.Instance.Init(dynamoViewModel);
-
             InitializeComponent();
 
             this.Loaded += DynamoView_Loaded;

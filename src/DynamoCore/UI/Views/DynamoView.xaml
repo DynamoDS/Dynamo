@@ -12,7 +12,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
-        xmlns:ti="clr-namespace:Dynamo.TestInfrastructure"
         d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         xmlns:ui="clr-namespace:Dynamo.UI"
@@ -395,7 +394,7 @@
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
                         <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" StaysOpenOnClick="True">
-                            <MenuItem Focusable="False" Name="SelectTests" Header="Select tests" StaysOpenOnClick="True" ItemsSource="{Binding Collection}" DataContext="{Binding Source={x:Static ti:MutatorDriver.Instance}}" CommandParameter="{Binding Path=RunInDebug}">
+                            <MenuItem Focusable="False" Name="SelectTests" Header="Select tests" StaysOpenOnClick="True" ItemsSource="{Binding Collection}" DataContext="{Binding MutatorDriver}" CommandParameter="{Binding Path=RunInDebug}">
                                 <MenuItem.ItemContainerStyle>
                                     <Style TargetType="MenuItem">
                                         <Setter Property="Header" Value="{Binding Name}"/>
