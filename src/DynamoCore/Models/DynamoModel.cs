@@ -390,7 +390,6 @@ namespace Dynamo.Models
             EngineController = null;
 
             PreferenceSettings.Save();
-            PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
             OnCleanup();
 
