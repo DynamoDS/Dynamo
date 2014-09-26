@@ -30,14 +30,14 @@ namespace Dynamo.TestInfrastructure
                 isSelected = value;
                 NotifyPropertyChanged("IsSelected");
 
-                if (IsUpdateNeeded)
+                if (IsMutatorsUpdateNeeded)
                     CheckChange(value);
             }
         }
 
         private bool isUpdateNeeded = true;
 
-        public bool IsUpdateNeeded
+        public bool IsMutatorsUpdateNeeded
         {
             get
             {
@@ -74,9 +74,9 @@ namespace Dynamo.TestInfrastructure
 
             foreach (var mutator in mutators)
             {
-                mutator.IsUpdateNeeded = false;
+                mutator.IsRunAllUpdateNeeded = false;
                 mutator.IsSelected = selected;
-                mutator.IsUpdateNeeded = true;
+                mutator.IsRunAllUpdateNeeded = true;
             }
         }
     }

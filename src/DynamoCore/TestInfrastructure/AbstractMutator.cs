@@ -61,7 +61,7 @@ namespace Dynamo.TestInfrastructure
 
         private bool isUpdateNeeded = true;
 
-        public bool IsUpdateNeeded
+        public bool IsRunAllUpdateNeeded
         {
             get
             {
@@ -86,7 +86,7 @@ namespace Dynamo.TestInfrastructure
                 isSelected = value;
                 NotifyPropertyChanged("IsSelected");
 
-                if (IsUpdateNeeded && !isSelected)
+                if (IsRunAllUpdateNeeded && !isSelected)
                     CheckChange();
             }
         }
@@ -111,9 +111,9 @@ namespace Dynamo.TestInfrastructure
 
             foreach (var item in runAllTestObj)
             {
-                item.IsUpdateNeeded = false;
+                item.IsMutatorsUpdateNeeded = false;
                 item.IsSelected = isSelected;
-                item.IsUpdateNeeded = true;
+                item.IsMutatorsUpdateNeeded = true;
             }
         }
     }
