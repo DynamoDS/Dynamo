@@ -14,10 +14,23 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
-        <Style x:Key="ListBoxItemStyle"
-               TargetType="{x:Type ListBoxItem}">
+
+        <Style x:Key="StandardPanelBackground"
+               TargetType="{x:Type Border}">
             <Setter Property="Background"
                     Value="#272727" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsRootCategoryDetails}"
+                             Value="True">
+                    <Setter Property="Background"
+                            Value="#333333" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ListBoxItemStyle"
+               TargetType="{x:Type ListBoxItem}">
+
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="BorderThickness"
@@ -43,6 +56,11 @@
                                 <Setter Property="Background"
                                         Value="#444444" />
                             </MultiTrigger>
+                            <DataTrigger Binding="{Binding IsRootCategoryDetails}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="#333333" />
+                            </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -101,7 +119,7 @@
     <Border Padding="0,10,0,10"
             Visibility="{Binding Path=ClassDetailsVisibility,
                                Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
-            Background="#272727">
+            Style="{StaticResource StandardPanelBackground}">
         <Grid DataContextChanged="GridDataContextChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

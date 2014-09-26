@@ -12,6 +12,7 @@
         <ResourceDictionary>
             <!--Converter to Make class details not focusable-->
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+            <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
@@ -286,8 +287,6 @@
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
-            <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
-
             <ControlTemplate x:Key="ScrollViewerControlTemplate"
                              TargetType="{x:Type ScrollViewer}">
                 <Grid x:Name="Grid"
@@ -428,7 +427,6 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
