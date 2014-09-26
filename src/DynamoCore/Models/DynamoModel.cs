@@ -397,6 +397,7 @@ namespace Dynamo.Models
             Logger.Dispose();
 
             DynamoSelection.DestroyInstance();
+            UsageReportingManager.DestroyInstance();
 
             InstrumentationLogger.End();
 
