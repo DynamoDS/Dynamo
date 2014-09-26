@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Geometry;
 
-using DSRevitNodesTests;
+using RevitTestServices;
 
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;

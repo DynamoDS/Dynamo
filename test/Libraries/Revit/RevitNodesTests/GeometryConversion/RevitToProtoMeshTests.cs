@@ -5,16 +5,16 @@ using System.Text;
 
 using Autodesk.DesignScript.Geometry;
 
-using DSRevitNodesTests.Conversion;
-
 using NUnit.Framework;
 
 using Revit.Elements;
 using Revit.GeometryConversion;
 
+using RevitTestServices.Conversion;
+
 using RTF.Framework;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     public class RevitToProtoMeshTests : GeometricRevitNodeTest

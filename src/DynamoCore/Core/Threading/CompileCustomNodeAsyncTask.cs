@@ -1,7 +1,17 @@
-﻿namespace Dynamo.Core.Threading
-{
-#if ENABLE_DYNAMO_SCHEDULER
+﻿#if ENABLE_DYNAMO_SCHEDULER
 
+using System;
+using System.Collections.Generic;
+
+using Dynamo.DSEngine;
+using Dynamo.Models;
+
+using ProtoCore.AST.AssociativeAST;
+
+using ProtoScript.Runners;
+
+namespace Dynamo.Core.Threading
+{
     class CompileCustomNodeParams
     {
         internal EngineController EngineController { get; set; }
@@ -70,6 +80,6 @@
 
         #endregion
     }
+}
 
 #endif
-}

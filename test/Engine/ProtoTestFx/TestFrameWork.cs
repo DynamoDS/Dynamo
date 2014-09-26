@@ -519,8 +519,7 @@ namespace ProtoTestFx.TD
                 }
                 else
                 {
-                    int ptr = (int)sv.opdata;
-                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.Heaplist[ptr];
+                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
 
                     if (he.Refcount != referencCount)
                     {

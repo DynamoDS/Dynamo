@@ -20,6 +20,7 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MenuItem = System.Windows.Controls.MenuItem;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Nodes
 {
@@ -440,34 +441,24 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(Code)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                AcceptsReturn = true,
-                MaxWidth = Configurations.CBNMaxTextBoxWidth,
-                TextWrapping = TextWrapping.Wrap
-            };
+            var cbe = new CodeBlockEditor(nodeUI.ViewModel);
 
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = nodeUI.ViewModel;
-            tb.BindToProperty(
+            nodeUI.inputGrid.Children.Add(cbe);
+            Grid.SetColumn(cbe, 0);
+            Grid.SetRow(cbe, 0);
+            
+            cbe.SetBinding(CodeBlockEditor.CodeProperty,
                 new Binding("Code")
                 {
-                    Mode = BindingMode.TwoWay,
+                    Mode = BindingMode.OneWay,
                     NotifyOnValidationError = false,
                     Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
+
 
             if (shouldFocus)
             {
-                tb.Focus();
+                cbe.Focus();
                 shouldFocus = false;
             }
         }
