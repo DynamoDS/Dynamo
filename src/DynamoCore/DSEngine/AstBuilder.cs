@@ -3,12 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
+
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
 
@@ -241,7 +240,9 @@ namespace Dynamo.DSEngine
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
         public void CompileCustomNodeDefinition(
-            CustomNodeDefinition def, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
+            CustomNodeDefinition def,
+            IEnumerable<NodeModel> funcBody,
+            IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<string> parameters)
         {
             OnAstNodeBuilding(def.FunctionId);
@@ -249,6 +250,7 @@ namespace Dynamo.DSEngine
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
+            var outputs = outputNodes.ToList();
             if (outputs.Count > 1)
             {
                 /* rtn_array = {};

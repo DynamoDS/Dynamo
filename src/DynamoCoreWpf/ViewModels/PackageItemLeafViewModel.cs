@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo.Nodes;
+﻿using System.Reflection;
 
 namespace Dynamo.PackageManager.UI
 {
     public class PackageItemLeafViewModel : PackageItemInternalViewModel
     {
 
-        public PackageItemLeafViewModel(Assembly assembly, PackageItemViewModel parent) : base(assembly, parent)
+        public PackageItemLeafViewModel(Assembly assembly, PackageItemViewModel parent)
+            : base(assembly, parent)
         {
         }
 
-        public PackageItemLeafViewModel(CustomNodeDefinition def, PackageItemViewModel parent) : base(def, parent)
+        public PackageItemLeafViewModel(CustomNodeDefinition def, PackageItemViewModel parent)
+            : base(def, parent)
         {
         }
 

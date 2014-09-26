@@ -28,9 +28,10 @@ namespace IntegrationTests
             WrappersTest.Reset();
         }
 
-        
+
         [Test]
-        [Category("Trace")]
+        [Category("Failure")]
+        //[Category("Trace")] // Uncomment this after removing Failure category.
         public void ExecTraceVMClassVerifyTLSCleared()
         {
             var mirror = thisTest.RunScriptSource(

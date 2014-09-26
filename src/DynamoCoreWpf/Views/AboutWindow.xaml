@@ -15,8 +15,7 @@
     mc:Ignorable="d" 
     Height="350" 
     Width="500" 
-    Style="{DynamicResource DynamoWindowStyle}"
-    Closed="AboutWindow_OnClosed">
+    Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -29,7 +28,7 @@
         </ResourceDictionary>
     </Window.Resources>
     
-    <Grid x:Name="LayoutRoot" Loaded="OnLoaded">
+    <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160"/>
             <ColumnDefinition Width="*"/>

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Dynamo.UpdateManager
+﻿namespace Dynamo.UpdateManager
 {
     public class BinaryVersion
     {

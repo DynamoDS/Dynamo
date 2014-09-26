@@ -62,7 +62,7 @@ namespace Dynamo.Tests
             TestMigration(@".\Migration\TestMigration_Analyze_Measure.dyn");
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Analyze_Render()
         {
@@ -76,18 +76,11 @@ namespace Dynamo.Tests
             TestMigration(@".\Migration\TestMigration_Analyze_Solar.dyn");
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Geometry_Curve()
         {
             TestMigration(@".\Migration\TestMigration_Geometry_Curve.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Geometry_Experimental()
-        {
-            TestMigration(@".\Migration\TestMigration_Geometry_Experimental.dyn");
         }
 
         [Test]
@@ -111,14 +104,14 @@ namespace Dynamo.Tests
             TestMigration(@".\Migration\TestMigration_Geometry_Solid.dyn");
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Geometry_Surface()
         {
             TestMigration(@".\Migration\TestMigration_Geometry_Surface.dyn");
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Geometry_Transform()
         {
@@ -132,7 +125,7 @@ namespace Dynamo.Tests
             TestMigration(@".\Migration\TestMigration_Revit_API.dyn");
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Revit_Bake()
         {

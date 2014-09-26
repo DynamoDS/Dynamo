@@ -13,6 +13,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="dynamoFilePath">The path of the dynamo workspace.</param>
         [Test, TestCaseSource("SetupMigrationTests")]
+        [Category("Failure")]
         public void Regressions(string dynamoFilePath)
         {
             //ensure that the incoming arguments are not empty or null
@@ -29,7 +30,6 @@ namespace Dynamo.Tests
             //throw an error
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            GetPreviewValues();
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace Dynamo.Wpf
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var editWindow = new EditWindow(this.dynamoViewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")

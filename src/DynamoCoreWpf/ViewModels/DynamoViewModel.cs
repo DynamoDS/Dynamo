@@ -5,27 +5,20 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 using Dynamo.Controls;
 using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.PackageManager;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 using Dynamo.Services;
-using DynamoUnits;
+using Dynamo.UpdateManager;
 
-using DynamoUtilities;
+using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
@@ -353,7 +346,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var um = model.UpdateManager;
+                var um = UpdateManager.UpdateManager.Instance;
                 if (um.ForceUpdate)
                 {
                     return true;
@@ -508,14 +501,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeUpdateManagerHandlers()
         {
-            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
+            UpdateManager.UpdateManager.Instance.ShutdownRequested += updateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
-            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested -= updateManager_ShutdownRequested;
+            UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
+            UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
         }
 
         private void SubscribeModelChangedHandlers()
@@ -689,10 +682,13 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
-            Exit(true, true);
-            Model.UpdateManager.HostApplicationBeginQuit();
+            if (SetAllowCancelAndRequestUIClose(true))
+                return;
+
+            model.ShutDown(true);
+            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
         }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1089,6 +1085,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void PublishNewPackage(object parameters)
+        {
+            PackageManagerClientViewModel.PublishNewPackage();
+        }
+
+        private bool CanPublishNewPackage(object parameters)
+        {
+            return PackageManagerClientViewModel.CanPublishNewPackage(parameters);
+        }
+
         private void ShowInstalledPackages(object parameters)
         {
             OnRequestManagePackagesDialog(this, EventArgs.Empty);
@@ -1403,16 +1409,6 @@ namespace Dynamo.ViewModels
             }
 
             model.ShutDown(false);
-        }
-
-        internal void Exit(bool allowCancel, bool shutDownHost)
-        {
-            if (SetAllowCancelAndRequestUIClose(allowCancel))
-            {
-                return;
-            }
-
-            model.ShutDown(true);
         }
 
         private bool SetAllowCancelAndRequestUIClose(object allowCancel)
@@ -1986,32 +1982,6 @@ namespace Dynamo.ViewModels
         private void ShowAboutWindow(object obj)
         {
             OnRequestAboutWindow(this);
-        }
-
-        private bool CanCheckForUpdate(object obj)
-        {
-            //check internet connectivity
-            //http://stackoverflow.com/questions/2031824/what-is-the-best-way-to-check-for-internet-connectivity-using-net
-            try
-            {
-                using (var client = new WebClient())
-                using (var stream = client.OpenRead("http://www.google.com"))
-                {
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private void CheckForUpdate(object obj)
-        {
-            //Disable the update check for 0.6.3. Just send he user to the downloads page.
-            //dynamoModel.UpdateManager.CheckForProductUpdate();
-
-            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
         }
 
         private void SetNumberFormat(object parameter)

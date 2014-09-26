@@ -67,7 +67,7 @@
     <Compile Include="RevitDropDown.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelectionHelper.cs" />
+    <Compile Include="RevitSelectionHelper.cs" />
     <Compile Include="SunPath.cs" />
   </ItemGroup>
   <ItemGroup>

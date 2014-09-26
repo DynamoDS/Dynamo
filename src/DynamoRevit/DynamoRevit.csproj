@@ -111,7 +111,6 @@
     <Compile Include="Models\RevitDynamoModel.cs" />
     <Compile Include="Models\RevitDynamoRunner.cs" />
     <Compile Include="Models\RevitNodeModel.cs" />
-    <Compile Include="Models\RevitWarningSwallower.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -124,6 +123,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
+    <Compile Include="UIPartials.cs" />
     <Compile Include="ViewModel\RevitWatchHandler.cs" />
     <Compile Include="Models\SingleSignOnManager.cs" />
     <Compile Include="ViewModel\RevitVisualizationManager.cs" />

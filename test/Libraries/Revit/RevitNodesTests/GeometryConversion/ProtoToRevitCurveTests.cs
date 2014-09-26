@@ -7,7 +7,7 @@ using NUnit.Framework;
 using RTF.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     internal class ProtoToRevitCurveTests : GeometricRevitNodeTest
@@ -51,7 +51,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bsplineScaled.GetClosestPoint(pt);
+                var closestPt = bsplineScaled.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
         }
@@ -86,7 +86,7 @@ namespace DSRevitNodesTests.GeometryConversion
              //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bspline.GetClosestPoint(pt);
+                var closestPt = bspline.ClosestPointTo(pt);
                 Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
             }
 
@@ -112,7 +112,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = nurbsCurve.GetClosestPoint(pt);
+                var closestPt = nurbsCurve.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
 
@@ -141,7 +141,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = nurbsCurve.GetClosestPoint(pt);
+                var closestPt = nurbsCurve.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
 
@@ -173,7 +173,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = bspline.GetClosestPoint(pt);
+                var closestPt = bspline.ClosestPointTo(pt);
                 Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
             }
 
@@ -211,7 +211,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = ellipseArc.GetClosestPoint(pt);
+                var closestPt = ellipseArc.ClosestPointTo(pt);
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
         } 
@@ -237,7 +237,7 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately(revitArc.Radius);
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -258,7 +258,7 @@ namespace DSRevitNodesTests.GeometryConversion
             circ.Radius.ShouldBeApproximately( revitArc.Radius );
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
-        } 
+        }
 
         [Test]
         [TestModel(@".\empty.rfa")]

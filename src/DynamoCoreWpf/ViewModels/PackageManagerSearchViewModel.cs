@@ -11,6 +11,7 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+
 using Dynamo.ViewModels;
 
 using Greg.Responses;
@@ -487,7 +488,7 @@ namespace Dynamo.PackageManager
                     string msg;
 
                     // if the package is in use, we will not be able to uninstall it.  
-                    if (!localPkg.InUse())
+                    if (!localPkg.InUse(this.PackageManagerClientViewModel.DynamoViewModel.Model))
                     {
                         msg = "Dynamo needs to uninstall " + element.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
                         MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,

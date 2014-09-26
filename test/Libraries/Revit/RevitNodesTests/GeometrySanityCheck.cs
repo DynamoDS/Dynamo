@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Geometry;
 
-using DSRevitNodesTests;
+using RevitTestServices;
 
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -40,7 +40,7 @@ namespace DSCoreNodesTests
             Assert.AreEqual(0, expectedPoint0.DistanceTo(eval0), 1e-6);
             Assert.AreEqual(0, expectedPoint1.DistanceTo(eval1), 1e-6);
 
-            var closestPoint0 = spline.GetClosestPoint(expectedPoint0);
+            var closestPoint0 = spline.ClosestPointTo(expectedPoint0);
             Assert.AreEqual(0, expectedPoint0.DistanceTo(closestPoint0), 1e-6);
         }
 

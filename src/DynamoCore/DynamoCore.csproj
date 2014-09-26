@@ -76,6 +76,15 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.1.0.7916, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
@@ -114,10 +123,14 @@ limitations under the License.
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
+    <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\SetTraceDataAsyncTask.cs" />
     <Compile Include="Core\Threading\TimeStampGenerator.cs" />
+    <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />

@@ -228,10 +228,10 @@ namespace Dynamo.Models
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
         public event CleanupHandler CleaningUp;
-        public virtual void OnCleanup(EventArgs e)
+        public virtual void OnCleanup()
         {
             if (CleaningUp != null)
-                CleaningUp(this, e);
+                CleaningUp(this);
         }
 
         /// <summary>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -19,7 +18,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public class Function : FunctionCallBase
+    public partial class Function : FunctionCallBase
     {
         public Function(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
@@ -316,7 +315,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
-    public class Symbol : NodeModel
+    public partial class Symbol : NodeModel
     {
         private string inputSymbol = "";
 

@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using DynamoUtilities;
 
-using Greg.Requests;
 using Greg.Responses;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -96,7 +89,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(dynamoModel, installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName);
 
             return true;
         }

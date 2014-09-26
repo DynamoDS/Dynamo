@@ -29,7 +29,7 @@ namespace ProtoTest.DSASM
             string code = @"a = {10, 20, 30};";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsFalse(core.Heap.IsHeapCyclic());
         }
 
 
@@ -51,53 +51,43 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
 ";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsFalse(core.Heap.IsHeapCyclic());
         }
 
         [Test]
         [Category("HeapCorruptionTests")]
         public void TestBuildManualCyclicPointer01()
         {
-            int allocationSize = 1;
-
             // Allocate a pointer
-            int ptr = core.Rmem.Heap.Allocate(allocationSize);
-
-            // Pointer data that points to its own heap element
-            int pointerData = ptr;
+            StackValue ptr = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
 
             // Build a pointer whose data points to its own heap element
-            StackValue sv = StackValue.BuildPointer(pointerData);
-            core.Rmem.Heap.IncRefCount(sv);
-            core.Rmem.Heap.Heaplist[ptr].Stack[0] = sv;
+            core.Rmem.Heap.IncRefCount(ptr);
+            core.Rmem.Heap.GetHeapElement(ptr).Stack[0] = ptr;
 
             // Verify the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
         }
 
         [Test]
         [Category("HeapCorruptionTests")]
         public void TestBuildManualCyclicPointer02()
         {
-            int allocationSize = 1;
-
             // Allocate 2 pointers
-            int ptr1 = core.Rmem.Heap.Allocate(allocationSize);
-            int ptr2 = core.Rmem.Heap.Allocate(allocationSize);
+            StackValue ptr1 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
+            StackValue ptr2 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
 
             // Build a pointer whose data points to its own heap element
-            StackValue svPtr1 = StackValue.BuildPointer(ptr2);
-            core.Rmem.Heap.IncRefCount(svPtr1);
-            core.Rmem.Heap.Heaplist[ptr1].Stack[0] = svPtr1;
+            core.Rmem.Heap.IncRefCount(ptr1);
+            core.Rmem.Heap.GetHeapElement(ptr1).Stack[0] = ptr1;
 
 
             // Build a 2nd pointer that points to the first pointer
-            StackValue svPtr2 = StackValue.BuildPointer(ptr1);
-            core.Rmem.Heap.IncRefCount(svPtr2);
-            core.Rmem.Heap.Heaplist[ptr2].Stack[0] = svPtr2;
+            core.Rmem.Heap.IncRefCount(ptr1);
+            core.Rmem.Heap.GetHeapElement(ptr2).Stack[0] = ptr1;
 
             // Verify the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
         }
 
         [Test]
@@ -127,7 +117,7 @@ m = p.x;
             vms = fsr.StepOver();
 
             // Test the heap contains a cycle
-            Assert.IsTrue(ProtoCore.Utils.HeapUtils.IsHeapCyclic(core));
+            Assert.IsTrue(core.Heap.IsHeapCyclic());
 
         }
     }

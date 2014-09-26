@@ -11,6 +11,7 @@ namespace DSIronPythonTests
     public class IronPythonTests
     {
         [Test]
+        [Category("UnitTests")]
         public void EvaluatorWorks()
         {
             var empty = new ArrayList();
@@ -19,6 +20,7 @@ namespace DSIronPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void BindingsWork()
         {
             const string expected = "Hi!";
@@ -35,6 +37,7 @@ namespace DSIronPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void FirstClassFunctions()
         {
             Func<string, string> func = s => s + " rule!";
@@ -52,6 +55,7 @@ namespace DSIronPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DataMarshaling_Output()
         {
             var marshaler = DSIronPython.IronPythonEvaluator.OutputMarshaler;
@@ -68,6 +72,7 @@ namespace DSIronPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DataMarshaling_Input()
         {
             var marshaler = DSIronPython.IronPythonEvaluator.InputMarshaler;

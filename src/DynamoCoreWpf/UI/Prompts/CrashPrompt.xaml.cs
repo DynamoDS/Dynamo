@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Dynamo.Core;
 using Dynamo.Services;
-using Dynamo.Utilities;
+
 using System.Windows.Controls;
 using System.IO;
 using System.Xml;
@@ -37,6 +37,7 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
+            InstrumentationLogger.LogAnonymousEvent("CrashPrompt", "Stability");
             StabilityTracking.GetInstance().NotifyCrash();
 
             if (args.HasDetails())

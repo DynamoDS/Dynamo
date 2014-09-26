@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignWidth="640"
@@ -17,7 +18,9 @@
     </UserControl.Resources>
 
     <Grid Name="startPageGrid"
-          Background="White">
+          Background="White"
+          AllowDrop="True"
+          Drop="StartPage_OnDrop">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="21"></RowDefinition>
@@ -139,11 +142,29 @@
                                    HorizontalAlignment="Right" />
                     </Border>
 
-                    <ListBox Name="samplesListBox"
-                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                             Style="{StaticResource StartPageListBox}"
-                             SelectionChanged="OnItemSelectionChanged">
-                    </ListBox>
+                    <TreeView x:Name="sampleFileTreeView"
+                              Background="#FFFFFF"
+                              Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              BorderThickness="0"
+                              FontSize="15"
+                              ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
+                              Style="{StaticResource StartPageTreeView}">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileEntry}"
+                                                      ItemsSource="{Binding Path=Children}">
+                                <TextBlock Text="{Binding Path=FileName}"
+                                           MouseLeftButtonUp="OnSampleFileSelected"
+                                           Cursor="Hand" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,12,0"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource StartPageLabel}"
+                           MouseLeftButtonUp="ShowSamplesInFolder" />
 
                 </StackPanel>
 

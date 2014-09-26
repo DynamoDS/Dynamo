@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
-using Dynamo.Utilities;
+
 using String = System.String;
 
 namespace Dynamo.Search.SearchElements
