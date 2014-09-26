@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using Dynamo.Models;
-using DM = Dynamo.Models.DynamoModel;
+
 using Dynamo.Selection;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
 
         #region Workspace Command Entry Point
 
-        public void ExecuteCommand(DM.RecordableCommand command)
+        public void ExecuteCommand(DynamoModel.RecordableCommand command)
         {
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
@@ -83,13 +83,13 @@ namespace Dynamo.ViewModels
 
         #region The Actual Command Handlers (Private)
 
-        void model_CommandCompleted(DM.RecordableCommand command)
+        void OnModelCommandCompleted(DynamoModel.RecordableCommand command)
         {
             var name = command.GetType().Name;
             switch (name)
             {
                 case "OpenFileCommand":
-                    this.AddToRecentFiles((command as DM.OpenFileCommand).XmlFilePath);
+                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
                     this.VisualizationManager.UnPause();
                     break;
 
@@ -99,14 +99,14 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "SelectInRegionCommand":
-                    var selectC = command as DM.SelectInRegionCommand;
+                    var selectC = command as DynamoModel.SelectInRegionCommand;
                     CurrentSpaceViewModel.SelectInRegion(selectC.Region, selectC.IsCrossSelection);
                     break;
 
                 case "DragSelectionCommand":
-                    var dragC = command as DM.DragSelectionCommand;
+                    var dragC = command as DynamoModel.DragSelectionCommand;
 
-                    if (DM.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
+                    if (DynamoModel.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
                         CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
                     else
                         CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
@@ -128,14 +128,21 @@ namespace Dynamo.ViewModels
                         RaisePropertyChanged("CurrentWorkspaceIndex");
                     break;
 
-                default:
-                    // for the other commands
-                    // there is no need to do anything after execution
+                case "RunCancelCommand":
+                case "ForceRunCancelCommand":
+                case "SelectModelCommand":
+                case "MakeConnectionCommand":
+                case "CreateCustomNodeCommand":
+                    // for this commands there is no need
+                    // to do anything after execution
                     break;
+
+                default:
+                    throw new InvalidOperationException("Unhandled command name");
             }
         }
 
-        void model_CommandStarting(DM.RecordableCommand command)
+        void OnModelCommandStarting(DynamoModel.RecordableCommand command)
         {
             var name = command.GetType().Name;
             switch (name)
@@ -145,33 +152,50 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "MakeConnectionCommand":
-                    MakeConnectionImpl(command as DM.MakeConnectionCommand);
+                    MakeConnectionImpl(command as DynamoModel.MakeConnectionCommand);
+                    break;
+
+                case "RunCancelCommand":
+                case "ForceRunCancelCommand":
+                case "CreateNodeCommand":
+                case "CreateNoteCommand":
+                case "SelectModelCommand":
+                case "SelectInRegionCommand":
+                case "DragSelectionCommand":
+                case "DeleteModelCommand":
+                case "UndoRedoCommand":
+                case "ModelEventCommand":
+                case "UpdateModelValueCommand":
+                case "ConvertNodesToCodeCommand":
+                case "CreateCustomNodeCommand":
+                case "SwitchTabCommand":
+                case "MutateTestCommand":
+                    // for this commands there is no need
+                    // to do anything before execution
                     break;
 
                 default:
-                    // for the other commands
-                    // there is no need to do anything before execution
-                    break;
+                    throw new InvalidOperationException("Unhandled command name");
             }
         }
 
-        private void MakeConnectionImpl(DM.MakeConnectionCommand command)
+        private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
             Guid nodeId = command.NodeId;
 
             switch (command.ConnectionMode)
             {
-                case DM.MakeConnectionCommand.Mode.Begin:
+                case DynamoModel.MakeConnectionCommand.Mode.Begin:
                     CurrentSpaceViewModel.BeginConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case DM.MakeConnectionCommand.Mode.End:
+                case DynamoModel.MakeConnectionCommand.Mode.End:
                     CurrentSpaceViewModel.EndConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case DM.MakeConnectionCommand.Mode.Cancel:
+                case DynamoModel.MakeConnectionCommand.Mode.Cancel:
                     CurrentSpaceViewModel.CancelConnection();
                     break;
             }

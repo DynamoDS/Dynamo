@@ -431,8 +431,8 @@ namespace Dynamo.ViewModels
         {
             // initialize core data structures
             this.model = dynamoModel;
-            this.model.CommandStarting += model_CommandStarting;
-            this.model.CommandCompleted += model_CommandCompleted;
+            this.model.CommandStarting += OnModelCommandStarting;
+            this.model.CommandCompleted += OnModelCommandCompleted;
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
