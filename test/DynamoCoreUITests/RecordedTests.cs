@@ -962,9 +962,9 @@ namespace DynamoCoreUITests
             // flag indicating that if the node exists or deleted.
             Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
             {
-                { "341b431d-34b9-45a3-9468-51e297e9626f", true },
-                { "20385f1f-080a-4941-93f4-787a3d955329", true },
-                { "ec5a01b5-60e1-411d-af79-df93b5c1deec", true },
+                { "2605ed9d-1cce-41a2-8b36-dcd02d1396a6", true },
+                { "9beac565-3238-4396-8c78-9d9645ec5185", true },
+                { "a40978be-1877-478d-8935-fa6b01334055", true },
             };
 
             VerifyModelExistence(nodeExistenceMap);
