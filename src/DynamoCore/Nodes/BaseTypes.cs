@@ -147,8 +147,9 @@ namespace Dynamo.Nodes
         /// This method returns a name for the icon based on type of this icon.
         /// </summary>
         /// <param name="descriptor"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static string TypedParametersToString(FunctionDescriptor descriptor)
+        public static string TypedParametersToString(FunctionDescriptor descriptor, string name)
         {
             var builder = new StringBuilder();
 
@@ -185,7 +186,7 @@ namespace Dynamo.Nodes
                 builder.Append(typeOfParameter);
             }
 
-            return descriptor.QualifiedName + "." + builder.ToString();
+            return name + "." + builder.ToString();
         }
 
         /// <summary>
@@ -552,7 +553,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="fileVersion">Version of the input file.</param>
         /// <param name="currVersion">Current version of the Dynamo.</param>
-        internal static void DisplayObsoleteFileMessage( DynamoModel dynamoModel,
+        internal static void DisplayObsoleteFileMessage(DynamoModel dynamoModel,
             string fullFilePath, Version fileVersion, Version currVersion)
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
@@ -655,11 +656,11 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
-            
+
             args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, "Cancel");
             args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
             args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
-            
+
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
@@ -834,7 +835,8 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInputAndOutput : NodeModel
     {
-        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
+        protected VariableInputAndOutput(WorkspaceModel ws)
+            : base(ws)
         {
         }
 
@@ -988,7 +990,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
-        public Sublists(WorkspaceModel ws): base(ws)
+        public Sublists(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists."));
             InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
@@ -1209,7 +1212,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
-            newNode.SetAttribute("lacing","shortest");
+            newNode.SetAttribute("lacing", "shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1256,8 +1259,9 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeModel
-    { 
-        public ComposeFunctions(WorkspaceModel ws) : base(ws)
+    {
+        public ComposeFunctions(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("f", "A Function"));
             InPortData.Add(new PortData("g", "A Function"));
@@ -1280,8 +1284,8 @@ namespace Dynamo.Nodes
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode, 
-                "DSCoreNodesUI.HigherOrder.ComposeFunctions","Compose Function");
+            XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode,
+                "DSCoreNodesUI.HigherOrder.ComposeFunctions", "Compose Function");
             composeNode.SetAttribute("inputcount", "2");
             migratedData.AppendNode(composeNode);
 
@@ -1297,8 +1301,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Applies a function to arguments.")]
     public class Apply1 : VariableInput
     {
-        public Apply1(WorkspaceModel ws) : base(ws)
-        { 
+        public Apply1(WorkspaceModel ws)
+            : base(ws)
+        {
             InPortData.Add(new PortData("func", "Function"));
             OutPortData.Add(new PortData("result", "Result of function application."));
 
@@ -1375,7 +1380,7 @@ namespace Dynamo.Nodes
             return migratedData;
         }
     }
-    
+
     public abstract partial class BasicInteractive<T> : NodeModel
     {
         private T _value;
@@ -1558,7 +1563,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public StringInput(WorkspaceModel ws): base(ws)
+        public StringInput(WorkspaceModel ws)
+            : base(ws)
         {
             RegisterAllPorts();
             Value = "";
@@ -1788,7 +1794,7 @@ namespace Dynamo.Nodes
         }
 
         */
-        
+
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
@@ -1855,10 +1861,10 @@ namespace Dynamo.Nodes
                             //both of the value can be parsed as double
                             if (canBeParsed0 && canBeParsed1)
                             {
-                                if (identifierValue0 < identifierValue1) 
+                                if (identifierValue0 < identifierValue1)
                                     return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                                 else
-                                    return new Range(startToken, new DoubleToken(-1), endToken, convertToken) as IDoubleSequence;                              
+                                    return new Range(startToken, new DoubleToken(-1), endToken, convertToken) as IDoubleSequence;
                             }
 
                             //the input cannot be parsed as double, return a default function and let it handle the error
@@ -2258,7 +2264,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>
-    public class DynamoDropDownItem:IComparable
+    public class DynamoDropDownItem : IComparable
     {
         public string Name { get; set; }
         public object Item { get; set; }
@@ -2319,7 +2325,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected DropDrownBase(WorkspaceModel ws) : base(ws)
+        protected DropDrownBase(WorkspaceModel ws)
+            : base(ws)
         {
             Items.CollectionChanged += Items_CollectionChanged;
         }
