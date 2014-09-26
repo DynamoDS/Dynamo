@@ -82,7 +82,7 @@ namespace DynamoWebServer
 
         public void SendResponse(Response response, string sessionId)
         {
-            var session = webSocket.GetAppSessionByID(sessionId);
+            var session = webSocket.GetAppSessionById(sessionId);
             if (session != null)
             {
                 session.Send(JsonConvert.SerializeObject(response, jsonSettings));
@@ -124,7 +124,7 @@ namespace DynamoWebServer
                 return;
             }
 
-            messageHandler.Id = session.SessionID;
+            messageHandler.SessionId = session.SessionID;
 
             ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID);
             LogInfo("Web socket: connected");
