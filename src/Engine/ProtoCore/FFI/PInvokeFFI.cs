@@ -103,8 +103,7 @@ namespace ProtoFFI
                                 out int size)
         {
             size = 0;
-            int ptr = (int)o.opdata;
-            HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
+            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(o);
 
             if (!hs.VisibleItems.Any())
                 return null;
@@ -186,18 +185,8 @@ namespace ProtoFFI
             var core = dsi.runtime.Core;
             object retVal = null;
 
-            lock (core.Heap.cslock)
-            {
-                var numElems = csArray.Length;
-                int ptr = core.Heap.Allocate(numElems);
-                for (int n = numElems - 1; n >= 0; --n)
-                {
-                    core.Heap.Heaplist[ptr].Stack[n] = StackValue.BuildDouble(csArray[n]);
-                }
-                retVal = StackValue.BuildArrayPointer(ptr);
-                //dsi.runtime.rmem.Push(StackValue.BuildArrayPointer(ptr));
-            }
-
+            var values = csArray.Select(x => StackValue.BuildDouble(x)).ToArray();
+            retVal = core.Heap.AllocateArray(values);
             return retVal;
         }
 

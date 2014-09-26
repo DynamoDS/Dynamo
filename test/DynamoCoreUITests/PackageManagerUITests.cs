@@ -56,7 +56,7 @@ namespace DynamoCoreUITests
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
+            AssertWindowOwnedByDynamoView<PublishPackageView>();
         }
 
         [Test,Ignore]
@@ -68,7 +68,7 @@ namespace DynamoCoreUITests
                 ViewModel.OnRequestPackagePublishDialog(l);
             }
 
-            AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
+            AssertWindowOwnedByDynamoView<PublishPackageView>();
         }
 
         [Test]
@@ -77,8 +77,8 @@ namespace DynamoCoreUITests
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
-            AssertWindowClosedWithDynamoView<PackageManagerPublishView>();
+            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowClosedWithDynamoView<PublishPackageView>();
 
         }
 
