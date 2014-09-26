@@ -3,12 +3,12 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     class GridTests : GeometricRevitNodeTest
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByLine_ValidArgs()
         {
@@ -28,7 +28,7 @@ namespace DSRevitNodesTests.Elements
             Assert.Throws(typeof(System.ArgumentNullException), () => Grid.ByLine(null));
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByStartPointEndPoint_ValidArgs()
         {

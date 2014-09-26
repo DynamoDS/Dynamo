@@ -92,13 +92,13 @@ namespace Dynamo.Search.SearchElements
         /// Unique name that is used during node creation
         /// </summary>
         [DataMember]
-        public string CreatingName { get; private set; }
+        public string CreationName { get; private set; }
 
         /// <summary>
         /// The name that will be displayed on node itself 
         /// </summary>
         [DataMember]
-        public string DisplayedName { get; private set; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         /// A string describing what the node does
@@ -132,8 +132,8 @@ namespace Dynamo.Search.SearchElements
         {
             Category = node.FullCategoryName;
             Type = node.Type;
-            DisplayedName = Name = node.Name;
-            CreatingName = node.CreatingName;
+            DisplayName = Name = node.Name;
+            CreationName = node.CreatingName;
             Description = node.Description;
             Searchable = node.Searchable;
             Weight = node.Weight;
@@ -145,11 +145,11 @@ namespace Dynamo.Search.SearchElements
         private void PopulateKeysAndParameters(DynamoModel dynamoModel)
         {
             var controller = dynamoModel.EngineController;
-            var functionItem = (controller.GetFunctionDescriptor(CreatingName));
+            var functionItem = (controller.GetFunctionDescriptor(CreationName));
             NodeModel newElement = null;
             if (functionItem != null)
             {
-                DisplayedName = functionItem.DisplayName;
+                DisplayName = functionItem.DisplayName;
                 if (functionItem.IsVarArg)
                     newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
                 else
@@ -159,13 +159,13 @@ namespace Dynamo.Search.SearchElements
             {
                 TypeLoadData tld = null;
 
-                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreatingName))
+                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByName[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByName[CreationName];
                 }
-                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreatingName))
+                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByNickname[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByNickname[CreationName];
                 }
 
                 if (tld != null)

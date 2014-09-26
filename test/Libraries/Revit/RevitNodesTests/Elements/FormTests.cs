@@ -9,7 +9,7 @@ using RTF.Framework;
 using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class FormTests : GeometricRevitNodeTest

@@ -3,12 +3,12 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class MaterialTests : RevitNodeTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.Elements
             Assert.AreEqual(name, material.Name);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]
         public void ByName_NullArgument()
         {
