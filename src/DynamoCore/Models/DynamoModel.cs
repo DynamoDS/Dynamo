@@ -396,6 +396,8 @@ namespace Dynamo.Models
 
             Logger.Dispose();
 
+            DynamoSelection.DestroyInstance();
+
             InstrumentationLogger.End();
 
 #if ENABLE_DYNAMO_SCHEDULER
