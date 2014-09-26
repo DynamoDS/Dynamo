@@ -50,8 +50,6 @@ namespace Dynamo.DSEngine
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
-
-            dynamoModel.NodeDeleted += NodeDeleted;
         }
 
         public void Dispose()
