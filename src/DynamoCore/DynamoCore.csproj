@@ -660,8 +660,7 @@ limitations under the License.
     <Page Include="UI\Views\LibraryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\PackageManagerPublishView.xaml">
+    </Page>    
     <Page Include="UI\Views\PublishPackageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
