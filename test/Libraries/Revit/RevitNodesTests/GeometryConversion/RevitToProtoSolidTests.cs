@@ -10,7 +10,7 @@ using Revit.GeometryConversion;
 
 using RTF.Framework;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     internal class RevitToProtoSolidTests : GeometricRevitNodeTest

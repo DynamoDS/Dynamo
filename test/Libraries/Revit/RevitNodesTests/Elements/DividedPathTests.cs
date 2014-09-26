@@ -10,7 +10,7 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     class DividedPathTests : GeometricRevitNodeTest
