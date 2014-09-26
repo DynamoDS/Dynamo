@@ -637,7 +637,7 @@ namespace Dynamo
             dynamoModel.CleaningUp -= Clear;
 
             UnregisterEventListeners();
-            renderManager.Dispose();
+            renderManager.CleanUp();
         }
 
         #endregion
