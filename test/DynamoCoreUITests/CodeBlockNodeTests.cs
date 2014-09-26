@@ -191,13 +191,9 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestSyntaxHighlightRuleForDigits()
         {
-            // Create the initial code block node to initialize its syntax highlighter
-            // The following is the same text that has been typed inside the code block node
             string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
 
-            RunCommandsFromFile("TestSyntaxHighlightRuleForDigits.xml");
-
-            var rule = CodeBlockEditor.DigitRule.Regex;
+            var rule = CodeBlockEditor.CreateDigitRule().Regex;
             var matches = rule.Matches(text);
 
             // Expected results (8):
