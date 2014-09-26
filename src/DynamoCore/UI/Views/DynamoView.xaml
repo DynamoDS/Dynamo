@@ -394,14 +394,30 @@
                                     Command="{Binding ForceRunExpressionCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" 
-                                    Command="{Binding MutateTestDelegateCommand}"
-                                    CommandParameter="{Binding Path=RunInDebug}"
-                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
-                                  IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
-                                      IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
+                        <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" StaysOpenOnClick="True">
+                            <MenuItem Focusable="False" Name="SelectTests" Header="Select tests" StaysOpenOnClick="True" ItemsSource="{Binding Collection}" DataContext="{Binding MutatorDriver}" CommandParameter="{Binding Path=RunInDebug}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Name}"/>
+                                        <Setter Property="IsCheckable" Value="True"/>
+                                        <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Setter Property="Focusable" Value="False"/>
+                                        <Setter Property="StaysOpenOnClick" Value="True"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+                            <MenuItem Focusable="False" Name="RunHere" Header="Run here"
+                                      Command="{Binding MutateTestDelegateCommand}"
+                                      CommandParameter="{Binding Path=RunInDebug}"                                      
+                                      IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"/>
+                            <MenuItem Focusable="False" Name="RunOnSelectedFolder" Header="Run on selected folder"
+                                      Command="{Binding SelectTestFolderDelegateCommand}"
+                                      CommandParameter="{Binding Path=RunInDebug}"/>
+                        </MenuItem>
+                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Path=Model}"
+                                  IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Path=Model}"
+                                      IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 

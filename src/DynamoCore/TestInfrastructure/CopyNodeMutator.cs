@@ -8,7 +8,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("CopyNodeMutator")]
+    [MutationTest("Copy node test")]
     class CopyNodeMutator : AbstractMutator
     {
         public CopyNodeMutator(DynamoViewModel viewModel)

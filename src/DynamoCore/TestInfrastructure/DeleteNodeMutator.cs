@@ -11,7 +11,7 @@ namespace Dynamo.TestInfrastructure
     /// Mutator that deletes a random node
     /// </summary>
 
-    [MutationTest("DeleteNodeMutator")]
+    [MutationTest("Delete node test")]
     class DeleteNodeMutator : AbstractMutator
     {
         public DeleteNodeMutator(DynamoViewModel viewModel)

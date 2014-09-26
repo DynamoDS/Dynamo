@@ -31,6 +31,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.TestInfrastructure;
 
 namespace Dynamo.Controls
 {

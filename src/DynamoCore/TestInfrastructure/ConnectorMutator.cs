@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("ConnectorMutator")]
+    [MutationTest("Connector test")]
     class ConnectorMutator : AbstractMutator
     {
         public ConnectorMutator(DynamoViewModel viewModel)

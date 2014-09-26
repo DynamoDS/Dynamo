@@ -20,6 +20,7 @@ using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
+using Dynamo.TestInfrastructure;
 
 namespace Dynamo.ViewModels
 {
@@ -28,6 +29,8 @@ namespace Dynamo.ViewModels
         #region properties
 
         public readonly DynamoModel model;
+
+        private MutatorDriver mutatorDriver;
 
         private Point transformOrigin;
         private bool runEnabled = true;
@@ -54,6 +57,11 @@ namespace Dynamo.ViewModels
         public DynamoModel Model
         {
             get { return model; }
+        }
+
+        public MutatorDriver MutatorDriver
+        {
+            get { return mutatorDriver; }
         }
 
         public Point TransformOrigin
@@ -436,6 +444,8 @@ namespace Dynamo.ViewModels
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
 
+            this.mutatorDriver = new MutatorDriver(this);
+
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
@@ -630,6 +640,17 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoViewModel.MutateTestCommand();
             this.ExecuteCommand(command);
+        }
+
+        internal void SelectTestFolderCmd(object parameters)
+        {
+            var command = new DynamoViewModel.SelectTestFolderCommand();
+            this.ExecuteCommand(command);
+        }
+
+        internal bool CanSelectFolderCmd(object parameters)
+        {
+            return true;
         }
 
         public void DisplayFunction(object parameters)

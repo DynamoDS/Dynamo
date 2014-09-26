@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("Number Input Mutator")]
+    [MutationTest("Number input test")]
     class NumberInputMutator : AbstractMutator
     {
         public NumberInputMutator(DynamoViewModel viewModel)

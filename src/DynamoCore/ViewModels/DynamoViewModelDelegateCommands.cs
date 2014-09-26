@@ -44,6 +44,7 @@ namespace Dynamo.ViewModels
             RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, CanRunExprCmd);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
+            SelectTestFolderDelegateCommand = new DelegateCommand(SelectTestFolderCmd, CanSelectFolderCmd);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
@@ -117,6 +118,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
+        public DelegateCommand SelectTestFolderDelegateCommand { get; set; }
         public DelegateCommand DisplayFunctionCommand { get; set; }
         public DelegateCommand SetConnectorTypeCommand { get; set; }
         public DelegateCommand ReportABugCommand { get; set; }

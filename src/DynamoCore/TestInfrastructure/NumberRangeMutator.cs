@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("NumberRangeMutator")]
+    [MutationTest("Number range test")]
     class NumberRangeMutator : AbstractMutator
     {
         public NumberRangeMutator(DynamoViewModel viewModel)

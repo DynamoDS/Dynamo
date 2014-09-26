@@ -1,12 +1,13 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Reflection;
-using System.Collections.Generic;
-
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Windows.Data;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -15,11 +16,60 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     public class MutatorDriver
     {
-        private readonly DynamoViewModel dynamoViewModel;
+        private DynamoViewModel dynamoViewModel;
 
         public MutatorDriver(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
+        }
+
+        private static CompositeCollection collection = null;
+
+        public CompositeCollection Collection
+        {
+            get
+            {
+                if (collection == null)
+                    collection = GetCompositeCollection();
+
+                return collection;
+            }
+        }
+
+        internal CompositeCollection GetCompositeCollection()
+        {
+            var _oc = new CompositeCollection();
+
+            var runAllTests = new RunAllTests(dynamoViewModel);
+            var cc = new CollectionContainer();
+            cc.Collection = new ObservableCollection<RunAllTests>() { runAllTests };
+            _oc.Add(cc);
+
+            var mutators = new CollectionContainer();
+            mutators.Collection = ObtainMutationTests();
+            _oc.Add(mutators);
+
+            return _oc;
+        }
+
+        private ObservableCollection<AbstractMutator> ObtainMutationTests()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            var mutators = new ObservableCollection<AbstractMutator>();
+
+            foreach (Type type in assembly.GetTypes())
+            {
+                var attribs = Attribute.GetCustomAttribute(type, typeof(MutationTestAttribute));
+                var attribute = attribs as MutationTestAttribute;
+                if (attribute != null)
+                {
+                    object[] args = new object[] { dynamoViewModel };
+                    var classInstance = Activator.CreateInstance(type, args);
+                    mutators.Add((AbstractMutator)classInstance);
+                }
+            }
+            return mutators;
         }
 
         internal void RunMutationTests()
@@ -32,27 +82,23 @@ namespace Dynamo.TestInfrastructure
 
             System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
 
+            var mutators = new List<AbstractMutator>();
+            foreach (CollectionContainer container in collection)
+            {
+                var objs = container.Collection.OfType<AbstractMutator>();
+                if (objs != null)
+                    mutators.AddRange(objs);
+            }
+
             new Thread(() =>
             {
                 try
                 {
-                    Assembly assembly = Assembly.GetExecutingAssembly();
-
-                    var mutators = new List<AbstractMutator>();
-
-                    foreach (Type type in assembly.GetTypes())
-                    {
-                        var attribute = Attribute.GetCustomAttribute(type, typeof(MutationTestAttribute));
-                        if (attribute != null)
-                        {
-                            object[] args = new object[] { dynamoViewModel };
-                            var classInstance = Activator.CreateInstance(type, args);
-                            mutators.Add((AbstractMutator)classInstance);
-                        }
-                    }
-
                     foreach (var mutator in mutators)
-                        InvokeTest(mutator, writer);
+                    {
+                        if (mutator.IsSelected)
+                            InvokeTest(mutator, writer);
+                    }
                 }
                 finally
                 {
@@ -63,7 +109,48 @@ namespace Dynamo.TestInfrastructure
                     writer.Dispose();
                 }
 
-            }).Start();
+            }).
+                Start();
+        }
+
+        private object locker = new object();
+
+        internal void RunOnSelectedFolder()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            String logTarget = dynamoViewModel.Model.Logger.LogPath + "MutationLog.log";
+            StreamWriter writer = new StreamWriter(logTarget);
+
+            string[] filePaths = Directory.GetFiles(dialog.SelectedPath, "*.xml");
+
+            IEnumerable<AbstractMutator> mutators = null;
+            foreach (CollectionContainer container in Collection)
+            {
+                mutators = container.Collection.OfType<AbstractMutator>();
+            }
+
+            foreach (string path in filePaths)
+            {
+                new Thread(() =>
+                {
+                    lock (locker)
+                    {
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            dynamoViewModel.ExecuteCommand(new DynamoViewModel.OpenFileCommand(path));
+
+                            foreach (AbstractMutator mutator in mutators)
+                            {
+                                if (mutator.IsSelected)
+                                    InvokeTest(mutator, writer);
+                            }
+                        }));
+                    }
+                }).Start();
+            }
         }
 
         private void InvokeTest(AbstractMutator mutator, StreamWriter writer)

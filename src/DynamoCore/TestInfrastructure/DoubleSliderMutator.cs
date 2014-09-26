@@ -8,7 +8,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("DoubleSliderMutator")]
+    [MutationTest("Double slider test")]
     class DoubleSliderMutator : AbstractMutator
     {
         public DoubleSliderMutator(DynamoViewModel viewModel)
