@@ -100,9 +100,9 @@
     </UserControl.Resources>
     <Border Padding="0,10,0,10"
             Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
-        <Grid DataContextChanged="GridDataContextChanged"
-              Background="#272727">
+                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
+            Background="#272727">
+        <Grid DataContextChanged="GridDataContextChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
