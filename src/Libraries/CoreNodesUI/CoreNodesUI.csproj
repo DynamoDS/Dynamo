@@ -42,6 +42,9 @@
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\..\Dynamo\extern\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface">
@@ -129,9 +132,6 @@
   <Target Name="BeforeBuild">
   </Target>  
   <Target Name="AfterBuild">    
-  </Target>
-  -->  
-  <Target Name="AfterBuild">
   </Target>
   -->
 </Project>
