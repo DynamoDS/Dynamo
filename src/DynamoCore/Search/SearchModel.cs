@@ -70,7 +70,7 @@ namespace Dynamo.Search
             // Element is custom node created by user but not part of package.
             CustomNode,
             // Element is part of custom DLL. 
-            DLL
+            CustomDll
         };
         
         /// <summary>

@@ -480,7 +480,7 @@ namespace Dynamo.DSEngine
             string newLibrary = e.LibraryPath;
 
             var functionGroups = libraryServices.GetFunctionGroups(newLibrary).ToList();
-            functionGroups.ForEach(fg => fg.ElementType = SearchModel.ElementType.DLL);
+            functionGroups.ForEach(fg => fg.ElementType = SearchModel.ElementType.CustomDll);
 
             // Load all functions defined in that library.
             dynamoModel.SearchModel.Add(functionGroups);
