@@ -9,8 +9,6 @@ namespace Dynamo.Search.SearchElements
 {
     public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
     {
-        public DelegateCommand EditCommand { get; set; }
-
         public Guid Guid { get; internal set; }
 
         private string _path;
