@@ -10,7 +10,8 @@ using RTF.Framework;
 
 namespace Dynamo.Tests
 {
-    class RenderingAsAServiceTests : DynamoRevitUnitTestBase
+    [TestFixture]
+    public class RenderingAsAServiceTests : DynamoRevitUnitTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -48,7 +49,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
             ViewModel.OpenCommand.Execute(testPath);
 
-            Assert.AreEqual(52, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(53, model.CurrentWorkspace.Nodes.Count);
             AssertNoDummyNodes();
         }
 
