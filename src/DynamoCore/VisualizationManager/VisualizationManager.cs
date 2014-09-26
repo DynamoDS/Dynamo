@@ -564,8 +564,6 @@ namespace Dynamo
             Pause(this, EventArgs.Empty);
             QueueRenderTask();
             Cleanup();
-
-            renderManager.CleanUp();
         }
 
         /// <summary>
@@ -639,6 +637,7 @@ namespace Dynamo
             dynamoModel.CleaningUp -= Clear;
 
             UnregisterEventListeners();
+            renderManager.Dispose();
         }
 
         #endregion
