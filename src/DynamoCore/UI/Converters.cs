@@ -1751,4 +1751,36 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    // If image presented, text will take 2 colums; otherwise - the whole place.
+    // It's used in tooltip.
+    public class ImagePresenceToColumnSpanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return 3;
+            return 2;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullValueToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

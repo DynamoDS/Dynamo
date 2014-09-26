@@ -14,6 +14,8 @@
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+            <controls:ImagePresenceToColumnSpanConverter x:Key="ImagePresenceToColumnSpanConverter" />
+            <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -37,7 +39,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Path=Description}"
                            Grid.Row="0"
-                           Grid.ColumnSpan="2"
+                           Grid.ColumnSpan="{Binding Path=LargeIcon, Converter={StaticResource ImagePresenceToColumnSpanConverter}}"
                            FontSize="13"
                            Foreground="#cccccc"
                            Margin="0,0,10,0"
@@ -102,7 +104,8 @@
                        Grid.ColumnSpan="2"
                        Height="96"
                        Width="96"
-                       Source="{Binding Path=LargeIcon}"/>
+                       Source="{Binding Path=LargeIcon}"
+                       Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}"/>
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">
                     <Grid.RowDefinitions>

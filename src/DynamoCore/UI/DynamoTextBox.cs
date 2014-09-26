@@ -491,7 +491,7 @@ namespace Dynamo.UI.Controls
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
         }
@@ -555,7 +555,7 @@ namespace Dynamo.UI.Controls
 
                 case Side.Right:
                     x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                        + 2.5 * gap;
+                        + gap;
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)
