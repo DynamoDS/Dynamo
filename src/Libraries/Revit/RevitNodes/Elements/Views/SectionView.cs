@@ -124,6 +124,14 @@ namespace Revit.Elements.Views
             return new SectionView(box.ToRevitType());
         }
 
+        public static SectionView ByCoordinateSystemMinPointMaxPoint(
+            Autodesk.DesignScript.Geometry.CoordinateSystem cs,
+            Autodesk.DesignScript.Geometry.Point minPoint,
+            Autodesk.DesignScript.Geometry.Point maxPoint)
+        {
+            return new SectionView(GeometryPrimitiveConverter.ToRevitBoundingBox(cs, minPoint, maxPoint));
+        }
+
         #endregion
 
         #region Internal static constructors

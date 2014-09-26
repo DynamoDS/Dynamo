@@ -3,7 +3,7 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class FamilyTests : RevitNodeTestBase
@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.Elements
             Assert.AreEqual(1, fam.Symbols.Length);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_NonexistentName()
         {

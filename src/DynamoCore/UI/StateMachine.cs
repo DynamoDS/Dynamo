@@ -610,6 +610,7 @@ namespace Dynamo.ViewModels
                             // avoid it being dismissed (with empty content).
                             // 
                             CreateCodeBlockNode(mouseDownPos);
+
                             returnFocusToSearch = false;
                             curClick = null;
                         }

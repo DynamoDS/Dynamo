@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+
+using DSCoreNodesUI.Logic;
+
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
 using Dynamo.Utilities;
@@ -255,14 +259,76 @@ namespace Dynamo.Tests
             return mirror.GetData().Data;
         }
 
+        /// <summary>
+        /// Get a collection from a node's mirror data.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns>A list of objects if the data is a collection, else null.</returns>
+        public List<object> GetPreviewCollection(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null)
+            {
+                Assert.Fail("The mirror has no data.");
+            }
+
+            var dataColl = mirror.GetData().GetElements();
+            if (dataColl == null)
+            {
+                return null;
+            }
+
+            var elements = dataColl.Select(x => x.Data).ToList();
+
+            return elements;
+        }
+
         public object GetPreviewValueAtIndex(string guid, int index)
         {
             string varname = GetVarName(guid);
             var mirror = GetRuntimeMirror(varname);
             Assert.IsNotNull(mirror);
-
-            return mirror.GetData().GetElements()[index].Data;
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection) return null;
+            var elements = data.GetElements();
+            return elements[index].Data;
         }
+
+        public List<object> GetFlattenedPreviewValues(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection) return null;
+            var elements = data.GetElements();
+
+            var objects = GetSublistItems(elements);
+
+            return objects;
+        }
+
+        private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
+        {
+            var objects = new List<object>();
+            foreach (var data in datas)
+            {
+                if (!data.IsCollection)
+                {
+                    objects.Add(data.Data);
+                }
+                else
+                {
+                    objects.AddRange(GetSublistItems(data.GetElements()));
+                }
+            }
+            return objects;
+        } 
 
         public void AssertClassName(string guid, string className)
         {
