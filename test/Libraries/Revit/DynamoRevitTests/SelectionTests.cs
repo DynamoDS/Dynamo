@@ -316,11 +316,11 @@ namespace Dynamo.Tests
         /// <param name="selectNode"></param>
         private void TestSingleSelection<T1, T2>(SelectionBase<T1, T2> selectNode)
         {
-            var element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
+            var element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.NotNull(element);
             selectNode.ClearSelections();
             RunCurrentModel();
-            element = GetPreviewValueAtIndex(selectNode.GUID.ToString(), 0);
+            element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.Null(element);
         }
 
