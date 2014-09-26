@@ -316,43 +316,6 @@
                 </Grid>
             </ControlTemplate>
 
-            <!-- This data template is used to show Add-ons category. -->
-            <DataTemplate x:Key="AddonsItemTemplate">
-                <Grid Background="#353535" Height="27">
-                    <Grid.Width>
-                        <Binding Path="ActualWidth"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-                    </Grid.Width>
-                    <ContentControl Content="{Binding Path=Name}" 
-                                    VerticalAlignment="Center" 
-                                    TextBlock.FontSize="13" 
-                                    TextBlock.Foreground="#989898" 
-                                    Margin="8,0,0,0"/>
-                </Grid>                
-            </DataTemplate>
-
-            <DataTemplate x:Key="CategoryItemTemplate">
-                <Expander Header="{Binding Path=Name}"
-                                  OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}"
-                                  Collapsed="OnExpanderCollapsed">
-                    <!--Select not more than one category-->
-                    <Expander.IsExpanded>
-                        <Binding Path="IsSelected"
-                                         RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
-                    </Expander.IsExpanded>
-                    <ContentControl ContentTemplateSelector="{StaticResource SubclassesTemplateSelector}">
-                        <ContentControl.Content>
-                            <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
-                        </ContentControl.Content>
-                    </ContentControl>
-                </Expander>
-            </DataTemplate>
-
-            <controls:CategoryTemplateSelector x:Key="CategoryTemplateSelector"
-                                                 CategoryTemplate="{StaticResource CategoryItemTemplate}"
-                                                 AddonsTemplate="{StaticResource AddonsItemTemplate}" />            
-
             <Style x:Key="VerticalThumb"
                    TargetType="{x:Type Thumb}">
                 <Setter Property="Template">
@@ -468,6 +431,7 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
+            <StackPanel>
             <!-- This is the outer list (showing categories) -->
             <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
@@ -475,9 +439,27 @@
                       BorderThickness="0"
                       ItemsSource="{Binding Model.BrowserRootCategories}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectionMode="Single"
-                      ItemTemplateSelector="{StaticResource CategoryTemplateSelector}">
-                                
+                      SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Header="{Binding Path=Name}"
+                                  OverridesDefaultStyle="True"
+                                  Template="{StaticResource CategoryExpanderTemplate}"
+                                  Collapsed="OnExpanderCollapsed">
+                            <!--Select not more than one category-->
+                            <Expander.IsExpanded>
+                                <Binding Path="IsSelected"
+                                         RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
+                            </Expander.IsExpanded>
+                            <ContentControl ContentTemplateSelector="{StaticResource SubclassesTemplateSelector}">
+                                <ContentControl.Content>
+                                    <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
+                                </ContentControl.Content>
+                            </ContentControl>                           
+                        </Expander>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Background"
@@ -493,8 +475,18 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ListView.ItemContainerStyle>
+                </ListView.ItemContainerStyle>                
             </ListView>
+
+                <Border Background="#353535" Height="27">
+                    <TextBlock Text="Add-ons"
+                               VerticalAlignment="Center"
+                               FontSize="13"
+                               Foreground="#989898"
+                               Margin="8,0,0,0"/>
+                </Border>
+                
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </UserControl>
