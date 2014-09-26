@@ -808,7 +808,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 5*codeBlockPortHeight) <= tolerance);
+            //Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 6*codeBlockPortHeight) <= tolerance);
         }
 
         /// <summary>
