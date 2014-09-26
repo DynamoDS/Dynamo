@@ -34,11 +34,12 @@ namespace Dynamo
         }
     }
 
-    internal class RenderManager
+    internal class RenderManager: IDisposable
     {
         private readonly DynamoModel dynamoModel;
         private readonly VisualizationManager visualizationManager;
         private readonly Thread controllerThread;
+        private bool isDisposing = false;
 
         public RenderManager(VisualizationManager vizManager, DynamoModel dynamoModel)
         {
@@ -100,7 +101,7 @@ namespace Dynamo
 
         private void RenderLoopController()
         {
-            while (true)
+            while (!this.isDisposing)
             {
                 RenderTask task = new RenderTask();
                 bool hasTask = false;
@@ -125,10 +126,7 @@ namespace Dynamo
                     //a polling model
                     Thread.Sleep(10);
                 }
-
-
             }
-
         }
 
         /// <summary>
@@ -196,9 +194,15 @@ namespace Dynamo
             node.UpdateRenderPackage(maxTesselationDivs);
         }
 
-        public void CleanUp()
+        public void Dispose()
         {
-            controllerThread.Abort();
+            if (isDisposing)
+            {
+                return;
+            }
+
+            isDisposing = true;
+            controllerThread.Join(); 
         }
     }
 }
