@@ -324,8 +324,11 @@ namespace Dynamo.Search
             if (menuItem != null)
             {
                 var element = menuItem.DataContext as CustomNodeSearchElement;
-                if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
-                    dynamoViewModel.OpenCommand.Execute(element.Path);
+                if (element != null)
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
+                        dynamoViewModel.OpenCommand.Execute(element.Path);
+                }
             }
         }
 
