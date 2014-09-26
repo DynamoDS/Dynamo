@@ -847,6 +847,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA, Category("Failure")]
         public void TestConvertAllNodesToCode()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
             RunCommandsFromFile("TestConvertAllNodesToCode.xml");
 
             //Check the nodes
@@ -907,6 +908,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA, Category("Failure")]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
+            Assert.Inconclusive("Node to Code has been removed");
             RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
 
             //Check the nodes
@@ -960,9 +962,9 @@ namespace DynamoCoreUITests
             // flag indicating that if the node exists or deleted.
             Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
             {
-                { "2605ed9d-1cce-41a2-8b36-dcd02d1396a6", true },
-                { "9beac565-3238-4396-8c78-9d9645ec5185", true },
-                { "a40978be-1877-478d-8935-fa6b01334055", true },
+                { "341b431d-34b9-45a3-9468-51e297e9626f", true },
+                { "20385f1f-080a-4941-93f4-787a3d955329", true },
+                { "ec5a01b5-60e1-411d-af79-df93b5c1deec", true },
             };
 
             VerifyModelExistence(nodeExistenceMap);
@@ -1612,6 +1614,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void TestCBNWithNodeToCode()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
@@ -1637,6 +1640,8 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_902()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
             RunCommandsFromFile("Defect_MAGN_902.xml");
 

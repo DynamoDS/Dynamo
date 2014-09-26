@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="500">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="d480bc8e-4a77-44ea-ab07-52070ec6a5b6" NodeName="Code Block" X="322" Y="235" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
