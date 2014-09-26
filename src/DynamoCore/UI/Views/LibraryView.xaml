@@ -431,62 +431,70 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
-            <StackPanel>
-            <!-- This is the outer list (showing categories) -->
-            <ListView Name="CategoryListView"
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition  Height="Auto"/>
+                    <RowDefinition  Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-- This is the outer list (showing categories) -->
+                <ListView Name="CategoryListView"
                       ScrollViewer.CanContentScroll="False"
                       Background="#343434"
                       BorderThickness="0"
                       ItemsSource="{Binding Model.BrowserRootCategories}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectionMode="Single">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Expander Header="{Binding Path=Name}"
+                      SelectionMode="Single"
+                      Grid.Row="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Expander Header="{Binding Path=Name}"
                                   OverridesDefaultStyle="True"
                                   Template="{StaticResource CategoryExpanderTemplate}"
                                   Collapsed="OnExpanderCollapsed">
-                            <!--Select not more than one category-->
-                            <Expander.IsExpanded>
-                                <Binding Path="IsSelected"
+                                <!--Select not more than one category-->
+                                <Expander.IsExpanded>
+                                    <Binding Path="IsSelected"
                                          RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
-                            </Expander.IsExpanded>
-                            <ContentControl ContentTemplateSelector="{StaticResource SubclassesTemplateSelector}">
-                                <ContentControl.Content>
-                                    <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
-                                </ContentControl.Content>
-                            </ContentControl>                           
-                        </Expander>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                                </Expander.IsExpanded>
+                                <ContentControl ContentTemplateSelector="{StaticResource SubclassesTemplateSelector}">
+                                    <ContentControl.Content>
+                                        <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
+                                    </ContentControl.Content>
+                                </ContentControl>
+                            </Expander>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Background"
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background"
                                 Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderThickness="0,0,0,1"
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border BorderThickness="0,0,0,1"
                                             BorderBrush="#2F2F2F">
-                                        <ContentPresenter />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>                
-            </ListView>
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
 
-                <Border Background="#353535" Height="27">
+                <Border Background="#353535" Height="27" Grid.Row="1">
                     <TextBlock Text="Add-ons"
                                VerticalAlignment="Center"
                                FontSize="13"
                                Foreground="#989898"
-                               Margin="8,0,0,0"/>
+                               Margin="16,0,0,0"/>
                 </Border>
-                
-            </StackPanel>
+            </Grid>            
         </ScrollViewer>
     </Grid>
 </UserControl>
