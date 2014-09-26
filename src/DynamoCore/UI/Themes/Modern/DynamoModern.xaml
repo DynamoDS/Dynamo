@@ -400,6 +400,51 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SCustomizableBadgeButton"
+           TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+
+                    <Border x:Name="container"
+                            Background="Transparent">
+                        <Border x:Name="inner"
+                                Background="#55000000"
+                                CornerRadius="2"
+                                Margin="3">
+                            <TextBlock x:Name="text"
+                                       HorizontalAlignment="Center"
+                                       Margin="3"
+                                       FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
+                                       Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}"
+                                       FontWeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontWeight}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                        </Border>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="Button.IsMouseOver"
+                                 Value="true">
+                            <Setter TargetName="inner"
+                                    Property="Background"
+                                    Value="#88000000" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter TargetName="text"
+                                    Property="Foreground"
+                                    Value="#666" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style x:Key="SBadgeButton"
            TargetType="{x:Type Button}">
         <Setter Property="Template">

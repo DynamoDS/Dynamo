@@ -12,7 +12,7 @@ using RTF.Framework;
 
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class ImportInstanceTests : GeometricRevitNodeTest

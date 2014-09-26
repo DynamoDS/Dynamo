@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using Autodesk.Revit.DB;
 
 using Dynamo.Core;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using ProtoCore.Mirror;
@@ -173,7 +175,17 @@ namespace Dynamo
                     var geom = data.Data as PolyCurve;
                     if (geom != null)
                     {
-                        geoms.AddRange(geom.ToRevitType());
+                        // We extract the curves explicitly rather than using PolyCurve's ToRevitType
+                        // extension method.  There is a potential issue with CurveLoop which causes
+                        // this method to introduce corrupt GNodes.  
+                        foreach (var c in geom.Curves())
+                        {
+                            // Tesselate the curve.  This greatly improves performance when
+                            // we're dealing with NurbsCurve's with high knot count, commonly
+                            // results of surf-surf intersections.
+                            Tesselate(c, ref geoms);
+                        }
+                        
                         return;
                     }
 
@@ -187,7 +199,10 @@ namespace Dynamo
                     var curve = data.Data as Curve;
                     if (curve != null)
                     {
-                        geoms.Add(curve.ToRevitType());
+                        // Tesselate the curve.  This greatly improves performance when
+                        // we're dealing with NurbsCurve's with high knot count, commonly
+                        // results of surf-surf intersections.
+                        Tesselate(curve, ref geoms);
                         return;
                     }
                 }
@@ -197,5 +212,29 @@ namespace Dynamo
                 }
             }
         }
+
+        private void Tesselate(Autodesk.DesignScript.Geometry.Curve curve, ref List<GeometryObject> geoms)
+        {
+            // use the ASM tesselation of the curve
+            var pkg = new RenderPackage();
+            curve.Tessellate(pkg, 0.1);
+
+            // get necessary info to enumerate and convert the lines
+            var lineCount = pkg.LineStripVertices.Count - 3;
+            var verts = pkg.LineStripVertices;
+
+            // we scale the tesselation rather than the curve
+            var conv = UnitConverter.DynamoToHostFactor;
+
+            // add the revit Lines to geometry collection
+            for (var i = 0; i < lineCount; i += 3)
+            {
+                var xyz0 = new XYZ(verts[i] * conv, verts[i + 1] * conv, verts[i + 2] * conv);
+                var xyz1 = new XYZ(verts[i + 3] * conv, verts[i + 4] * conv, verts[i + 5] * conv);
+
+                geoms.Add(Autodesk.Revit.DB.Line.CreateBound(xyz0, xyz1));
+            }
+        }
+
     }
 }

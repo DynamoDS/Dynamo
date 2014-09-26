@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class FloorTests : GeometricRevitNodeTest

@@ -4,10 +4,10 @@ using Revit.Application;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.AnalysisDisplay
+namespace RevitTestServices.AnalysisDisplay
 {
     [TestFixture]
-    public class PointAnalysisDisplayTests : RevitNodeTestBase
+    public class PointAnalysisDisplayTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

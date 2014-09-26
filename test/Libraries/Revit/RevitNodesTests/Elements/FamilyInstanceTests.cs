@@ -10,10 +10,10 @@ using FamilyInstance = Revit.Elements.FamilyInstance;
 using FamilySymbol = Revit.Elements.FamilySymbol;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
-    public class FamilyInstanceTests : RevitNodeTestBase
+    public class FamilyInstanceTests : GeometricRevitNodeTest
     {
         public Autodesk.Revit.DB.XYZ InternalLocation(Autodesk.Revit.DB.FamilyInstance instance)
         {
