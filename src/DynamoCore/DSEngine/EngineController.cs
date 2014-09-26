@@ -50,6 +50,8 @@ namespace Dynamo.DSEngine
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
+
+            dynamoModel.NodeDeleted += NodeDeleted;
         }
 
         public void Dispose()
@@ -60,8 +62,6 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
-
-            dynamoModel.NodeDeleted -= NodeDeleted;
         }
 
         #region Function Groups
