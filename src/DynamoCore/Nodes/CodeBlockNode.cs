@@ -129,10 +129,13 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Returns a map of defined variables and their indexes.
+        /// Returns a list of defined variables, along with the line number on which 
+        /// they are defined last. A variable can be defined multiple times in a single 
+        /// code block node, but the output port is only shown on the last definition.
         /// </summary>
-        /// <returns>Map of defined variables and their indexes.</returns>
-        public IOrderedEnumerable<KeyValuePair<string, int>> GetAllDeffs()
+        /// <returns>Returns a map between defined variables and the line index on 
+        /// which they are defined last.</returns>
+        public IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap()
         {
             // Get all defined variables and their locations
             var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
@@ -573,7 +576,7 @@ namespace Dynamo.Nodes
 
         private void SetOutputPorts()
         {
-            var allDefs = GetAllDeffs();
+            var allDefs = GetDefinitionLineIndexMap();
 
             if (allDefs.Any() == false)
                 return;

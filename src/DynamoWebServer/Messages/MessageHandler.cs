@@ -412,21 +412,21 @@ namespace DynamoWebServer.Messages
             {
                 var codeBlock = node as CodeBlockNodeModel;
                 var map = CodeBlockUtils.MapLogicalToVisualLineIndices(codeBlock.Code);
-                var allDefs = codeBlock.GetAllDeffs();
-                var indexes = new List<int>();
+                var allDefs = codeBlock.GetDefinitionLineIndexMap();
+                var lineIndices = new List<int>();
 
                 foreach (var def in allDefs)
                 {
                     var logicalIndex = def.Value - 1;
                     var visualIndex = map.ElementAt(logicalIndex);
-                    indexes.Add(visualIndex);
+                    lineIndices.Add(visualIndex);
                 }
 
                 stringBuilder.Append("\"Code\":\"");
                 stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
                 stringBuilder.Append("\", ");
-                stringBuilder.Append("\"PortIndexes\": [");
-                stringBuilder.Append(string.Join(", ", indexes.Select(x => x.ToString()).ToArray()));
+                stringBuilder.Append("\"LineIndices\": [");
+                stringBuilder.Append(string.Join(", ", lineIndices.Select(x => x.ToString()).ToArray()));
                 stringBuilder.Append("],");
             }
 
