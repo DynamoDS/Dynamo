@@ -289,12 +289,14 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is ElementSelection<Autodesk.Revit.DB.Element>);
             var selNode = selNodes.First() as ElementSelection<Autodesk.Revit.DB.Element>;
-            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp1 }));
+            IEnumerable<Element> selection1 = new[] { rp1 };
+            selNode.UpdateSelection(selection1);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id1 = selNode.SelectionResults.First();
 
             //Select the second reference point in Dynamo
-            selNode.UpdateSelection(selNode.Selection.Concat(new[] { rp2 }));
+            IEnumerable<Element> selection2 = new[] { rp2 };
+            selNode.UpdateSelection(selection2);
             Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id2 = selNode.SelectionResults.First();
 
