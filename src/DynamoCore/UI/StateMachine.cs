@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Core;
 using Dynamo.UI;
 
@@ -129,11 +129,12 @@ namespace Dynamo.ViewModels
 
         internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            int index = portIndex;
             bool isInPort = portType == PortType.INPUT;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
+            if (node == null)
+                return;
+            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
             // Test if port already has a connection, if so grab it and begin connecting 
             // to somewhere else (we don't allow the grabbing of the start connector).
@@ -142,18 +143,6 @@ namespace Dynamo.ViewModels
                 // Define the new active connector
                 var c = new ConnectorViewModel(this, portModel.Connectors[0].Start);
                 this.SetActiveConnector(c);
-
-                // Disconnect the connector model from its start and end ports
-                // and remove it from the connectors collection. This will also
-                // remove the view model.
-                ConnectorModel connector = portModel.Connectors[0];
-                if (Model.Connectors.Contains(connector))
-                {
-                    List<ModelBase> models = new List<ModelBase>();
-                    models.Add(connector);
-                    Model.RecordAndDeleteModels(models);
-                    connector.NotifyConnectedPortsOfDeletion();
-                }
             }
             else
             {
@@ -172,45 +161,6 @@ namespace Dynamo.ViewModels
 
         internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            int index = portIndex;
-            bool isInPort = portType == PortType.INPUT;
-
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
-            ConnectorModel connectorToRemove = null;
-
-            // Remove connector if one already exists
-            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
-            {
-                connectorToRemove = portModel.Connectors[0];
-                Model.Connectors.Remove(connectorToRemove);
-                portModel.Disconnect(connectorToRemove);
-                var startPort = connectorToRemove.Start;
-                startPort.Disconnect(connectorToRemove);
-            }
-
-            // Create the new connector model
-            var start = this.activeConnector.ActiveStartPort;
-            var end = portModel;
-
-            // We could either connect from an input port to an output port, or 
-            // another way around (in which case we swap first and second ports).
-            PortModel firstPort = start, second = end;
-            if (portModel.PortType != PortType.INPUT)
-            {
-                firstPort = end;
-                second = start;
-            }
-
-            ConnectorModel newConnectorModel = this.Model.AddConnection( firstPort.Owner,
-                second.Owner, firstPort.Index, second.Index, PortType.INPUT);
-
-            // Record the creation of connector in the undo recorder.
-            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-            if (connectorToRemove != null)
-                models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
-            models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            Model.RecordModelsForUndo(models);
             this.SetActiveConnector(null);
         }
 
@@ -754,9 +704,9 @@ namespace Dynamo.ViewModels
                 if (currentState != State.None && (currentState != State.Connection))
                     return false;
 
-                PortModel portModel = portViewModel.PortModel;
+                var portModel = portViewModel.PortModel;
 
-                WorkspaceViewModel workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
+                var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
@@ -764,8 +714,9 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                    owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
+                    var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
+                    var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portType, mode);
+                    owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                     if (null != owningWorkspace.activeConnector)
                     {
@@ -783,8 +734,10 @@ namespace Dynamo.ViewModels
                         Guid nodeId = portModel.Owner.GUID;
                         int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                        owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                            nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
+                        var mode = DynamoModel.MakeConnectionCommand.Mode.End;
+                        var command = new DynamoModel.MakeConnectionCommand(nodeId, 
+                            portIndex, portType, mode);
+                        owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                         owningWorkspace.CurrentCursor = null;
                         owningWorkspace.IsCursorForced = false;
