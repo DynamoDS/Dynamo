@@ -818,7 +818,7 @@ namespace ProtoCore
         private FunctionEndPoint SelectFEPFromMultiple(StackFrame stackFrame, Core core,
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
         {
-            StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue svThisPtr = stackFrame.ThisPtr;
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
@@ -996,8 +996,8 @@ namespace ProtoCore
                 //    && !fep.procedureNode.isConstructor
                 //    && !fep.procedureNode.isStatic)
 
-                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsPointer &&
-                     stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
+                if ((stackFrame.ThisPtr.IsPointer &&
+                     stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                     && (fep.procedureNode.classScope != -1))
                 {
@@ -1706,7 +1706,7 @@ namespace ProtoCore
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, core);
 
             // Correct block id where the function is defined. 
-            StackValue funcBlock = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+            StackValue funcBlock = StackValue.BuildBlockIndex(stackFrame.FunctionBlock);
             funcBlock.opdata = finalFep.BlockScope;
             stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock, funcBlock);
 

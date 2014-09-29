@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
@@ -130,6 +132,12 @@ namespace ProtoCore.DSASM
             Init(svThisPtr, classIndex, funcIndex, pc, functionBlockDecl, functionBlockCaller, callerType, type, depth, framePointer, stack, execStates);
         }
 
+        public StackFrame(StackValue[] frame)
+        {
+            Validity.Assert(frame.Count() == kStackFrameSize);
+            Frame = frame;
+        }
+
         public StackFrame(int globalOffset)
         {
             StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
@@ -139,48 +147,67 @@ namespace ProtoCore.DSASM
             int blockDecl = Constants.kInvalidIndex;
             int blockCaller = 0;
 
-            StackFrameType callerType = StackFrameType.kTypeLanguage;
-            StackFrameType type = StackFrameType.kTypeLanguage;
+            StackFrameType callerType = DSASM.StackFrameType.kTypeLanguage;
+            StackFrameType type = DSASM.StackFrameType.kTypeLanguage;
             int depth = -1;
             int framePointer = globalOffset;
 
             Init(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, StackValue.BuildInvalidRegisters(), new List<bool>());
         }
 
-        public StackValue GetAt(AbsoluteIndex index)
+        private StackValue GetAt(AbsoluteIndex index)
         {
-            Validity.Assert(null != Frame);
             return Frame[(int)index];
         }
 
-        public int GetReturnAddress()
+        public StackValue ThisPtr
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress);
-            return (int)stackValue.opdata;
+            get { return GetAt(AbsoluteIndex.kThisPtr); }
         }
 
-        public int GetFunctionBlock()
+        public int ReturnPC
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
-            return (int)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kReturnAddress).opdata; }
         }
 
-        public int GetFunctionCallerBlock()
+        public int FunctionBlock
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock);
-            return (int)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kFunctionBlock).opdata; } 
         }
 
-        public StackFrameType GetStackFrameType()
+        public int FunctionCallerBlock
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType);
-            return (StackFrameType)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kFunctionCallerBlock).opdata; }
         }
 
-        public int GetCallerClassIndex()
+        public int FunctionScope
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
-            return (int)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kFunction).opdata; }
+        }
+
+        public StackFrameType CallerStackFrameType
+        {
+            get { return (StackFrameType)GetAt(AbsoluteIndex.kCallerStackFrameType).opdata; }
+        }
+
+        public int Depth
+        {
+            get { return (int)GetAt(AbsoluteIndex.kStackFrameDepth).opdata; }
+        }
+
+        public int FramePointer
+        {
+            get { return (int)GetAt(AbsoluteIndex.kFramePointer).opdata; }
+        }
+
+        public StackFrameType StackFrameType
+        {
+            get { return (StackFrameType)GetAt(AbsoluteIndex.kStackFrameType).opdata; }
+        }
+
+        public int ClassScope
+        {
+            get { return (int)GetAt(AbsoluteIndex.kClass).opdata; }
         }
 
         public List<StackValue> GetRegisters()
