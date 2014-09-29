@@ -109,7 +109,7 @@ namespace Dynamo.UI.Controls
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
         {
             if (WatermarkLabel.Visibility == Visibility.Visible)
-                WatermarkLabel.Visibility = System.Windows.Visibility.Collapsed;
+                WatermarkLabel.Visibility = Visibility.Collapsed;
 
         }
         #endregion
@@ -127,7 +127,36 @@ namespace Dynamo.UI.Controls
 
             // Highlighting Digits
             var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-            rules.Add(CodeBlockUtils.CreateDigitRule());
+            rules.Add(CreateDigitRule());
+        }
+
+        public static HighlightingRule CreateDigitRule()
+        {
+            var digitRule = new HighlightingRule();
+
+            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            digitRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            // These Regex's must match with the grammars in the DS ATG for digits
+            // Refer to the 'number' and 'float' tokens in Start.atg
+            //*******************************************************************************
+            // number = digit {digit} .
+            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+            //*******************************************************************************
+
+            string digit = @"(-?\b\d+)";
+            string floatingPoint = @"(\.[0-9]+)";
+            string numberWithOptionalDecimal = digit + floatingPoint + "?";
+
+            string exponent = @"([eE][+-]?[0-9]+)";
+            string numberWithExponent = digit + floatingPoint + exponent;
+
+            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
+
+            return digitRule;
         }
 
         private void OnRequestReturnFocusToSearch()
@@ -152,7 +181,7 @@ namespace Dynamo.UI.Controls
         /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
         /// and sets them when pressed/released
         /// </summary>        
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
 
             if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
