@@ -38,6 +38,7 @@ namespace Dynamo.Nodes
         public const string CORE_TIME = "Core.Time";
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_FILE_ACTIONS = "Core.File.Actions";
 
         public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";

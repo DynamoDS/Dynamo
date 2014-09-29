@@ -22,25 +22,25 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Open Excel Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class ReadExcelFile : FileReaderBase
-    {
+    //[NodeName("Open Excel Workbook")]
+    //[NodeCategory("Input/Output.Office.Excel")]
+    //[NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed.")]
+    //public class ReadExcelFile : FileReaderBase
+    //{
 
-        public ReadExcelFile(WorkspaceModel workspace) : base(workspace)
-        {
-            OutPortData.Add(new PortData("workbook", "The workbook opened from the file"));
-            RegisterAllPorts();
-        }
+    //    public ReadExcelFile(WorkspaceModel workspace) : base(workspace)
+    //    {
+    //        OutPortData.Add(new PortData("workbook", "The workbook opened from the file"));
+    //        RegisterAllPorts();
+    //    }
 
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.ReadExcelFile",
-                "Excel.ReadExcelFile@string");
-        }
-    }
+    //    [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+    //    public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+    //    {
+    //        return MigrateToDsFunction(data, "DSOffice.dll", "Excel.ReadExcelFile",
+    //            "Excel.ReadExcelFile@string");
+    //    }
+    //}
 
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
