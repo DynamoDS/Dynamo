@@ -258,11 +258,7 @@ namespace Dynamo.Controls
 
         void inputGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            //SEPARATECORE - need to get this from a single place
-            var cn = new NodeViewCustomizationLibrary();
-            cn.Add(new CoreNodeViewCustomizations());
 
-            cn.Apply(this);
         }
 
         private Dictionary<UIElement, bool> enabledDict

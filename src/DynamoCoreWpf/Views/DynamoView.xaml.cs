@@ -51,10 +51,15 @@ namespace Dynamo.Controls
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
+        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoViewModel.UIDispatcher = this.Dispatcher;
+
+            this.nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary();
+            this.SetupNodeViewCustomizations();
 
             this.DataContext = dynamoViewModel;
 
@@ -89,6 +94,23 @@ namespace Dynamo.Controls
             }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+        }
+
+        private void SetupNodeViewCustomizations()
+        {
+            this.nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
+
+            foreach (var assem in DynamoLoader.LoadedAssemblies)
+            {
+                this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
+            }
+
+            this.dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
+        }
+
+        private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
+        {
+            this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }
 
         bool CheckVirtualScreenSize()
@@ -263,8 +285,11 @@ namespace Dynamo.Controls
             }
         }
 
+        
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
+           
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this);
 

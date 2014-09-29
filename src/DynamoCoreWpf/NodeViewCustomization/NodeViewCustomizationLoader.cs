@@ -20,7 +20,32 @@ namespace Dynamo.Wpf
         }
     }
 
-    public static class NodeViewCustomizationLoader
+    public class AssemblyNodeViewCustomizations : INodeViewCustomizations
+    {
+        private readonly Assembly assembly;
+
+        public AssemblyNodeViewCustomizations(Assembly assem)
+        {
+            if (assem == null) throw new ArgumentNullException("assem");
+            this.assembly = assem;
+        }
+
+        public IDictionary<Type, IEnumerable<Type>> GetCustomizations()
+        {
+            return NodeViewCustomizationLoader
+                .LoadCustomizations(this.assembly)
+                .GetCustomizations();
+        }
+    }
+
+    public class CoreNodeViewCustomizations : AssemblyNodeViewCustomizations
+    {
+        public CoreNodeViewCustomizations() : base(Assembly.GetExecutingAssembly())
+        {
+        }
+    }
+
+    internal static class NodeViewCustomizationLoader
     {
         private static Dictionary<Assembly, INodeViewCustomizations> cache = 
             new Dictionary<Assembly, INodeViewCustomizations>();
