@@ -259,7 +259,7 @@ namespace Dynamo.Controls
         void inputGrid_Loaded(object sender, RoutedEventArgs e)
         {
             //SEPARATECORE - need to get this from a single place
-            var cn = new NodeCustomizationLibrary();
+            var cn = new NodeViewCustomizationLibrary();
             cn.Add(new CoreNodeViewCustomizations());
 
             cn.Apply(this);

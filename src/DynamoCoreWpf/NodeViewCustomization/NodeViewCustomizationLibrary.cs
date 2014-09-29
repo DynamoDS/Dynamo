@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using Dynamo.Controls;
 using Dynamo.Models;
 
-
 namespace Dynamo.Wpf
 {
-    internal class NodeCustomizationLibrary
+    internal class NodeViewCustomizationLibrary
     {
         private Dictionary<Type, List<InternalNodeViewCustomization>> lookupDict =
             new Dictionary<Type, List<InternalNodeViewCustomization>>();

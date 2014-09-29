@@ -7,9 +7,6 @@ using Dynamo.UI;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -312,34 +309,6 @@ namespace Dynamo.Utilities
             }
 
             return inputCode;
-        }
-    }
-
-    // Refer to link: 
-    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
-    internal sealed class CustomizedBrush : HighlightingBrush
-    {
-        private readonly SolidColorBrush brush;
-        public CustomizedBrush(Color color)
-        {
-            brush = CreateFrozenBrush(color);
-        }
-
-        public override Brush GetBrush(ITextRunConstructionContext context)
-        {
-            return brush;
-        }
-
-        public override string ToString()
-        {
-            return brush.ToString();
-        }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
         }
     }
 

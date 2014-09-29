@@ -20,6 +20,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+
+using ICSharpCode.AvalonEdit.Rendering;
+
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
@@ -157,6 +160,34 @@ namespace Dynamo.UI.Controls
             digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
 
             return digitRule;
+        }
+
+        // Refer to link: 
+        // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
+        internal sealed class CustomizedBrush : HighlightingBrush
+        {
+            private readonly SolidColorBrush brush;
+            public CustomizedBrush(Color color)
+            {
+                brush = CreateFrozenBrush(color);
+            }
+
+            public override Brush GetBrush(ITextRunConstructionContext context)
+            {
+                return brush;
+            }
+
+            public override string ToString()
+            {
+                return brush.ToString();
+            }
+
+            private static SolidColorBrush CreateFrozenBrush(Color color)
+            {
+                SolidColorBrush brush = new SolidColorBrush(color);
+                brush.Freeze();
+                return brush;
+            }
         }
 
         private void OnRequestReturnFocusToSearch()

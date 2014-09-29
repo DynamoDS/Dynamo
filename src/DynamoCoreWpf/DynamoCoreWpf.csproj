@@ -84,7 +84,7 @@
     <Compile Include="NodeViewCustomization\InternalNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\DSVarArgFunctionNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\WatchImageNodeViewCustomization.cs" />
-    <Compile Include="NodeViewCustomization\NodeCustomizer.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizationLibrary.cs" />
     <Compile Include="Nodes\Watch.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
