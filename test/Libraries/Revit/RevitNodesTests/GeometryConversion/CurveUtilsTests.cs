@@ -16,7 +16,7 @@ using Arc = Autodesk.DesignScript.Geometry.Arc;
 using Line = Autodesk.DesignScript.Geometry.Line;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     class CurveUtilsTests : GeometricRevitNodeTest

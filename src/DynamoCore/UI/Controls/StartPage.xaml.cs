@@ -6,16 +6,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace Dynamo.UI.Controls
 {
@@ -451,6 +446,25 @@ namespace Dynamo.UI.Controls
             var startPageViewModel = this.DataContext as StartPageViewModel;
             Process.Start("explorer.exe", "/select," 
                 + startPageViewModel.SampleFolderPath);
+        }
+
+        private void StartPage_OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+                if (files != null && (files.Length > 0))
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
+                    {
+                        dynamoViewModel.OpenCommand.Execute(files[0]);
+                        e.Handled = true;
+                    }
+                }
+
+            }
         }
 
     }

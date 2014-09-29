@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if ENABLE_DYNAMO_SCHEDULER
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,8 +9,6 @@ using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
-#if ENABLE_DYNAMO_SCHEDULER
-
     class SetTraceDataAsyncTask : AsyncTask
     {
         private EngineController engineController;
@@ -64,6 +64,6 @@ namespace Dynamo.Core.Threading
 
         #endregion
     }
+}
 
 #endif
-}

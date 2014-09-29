@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+
 using Dynamo.Controls;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -318,6 +316,20 @@ namespace Dynamo.Search
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
+        }
+
+        private void Edit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                var element = menuItem.DataContext as CustomNodeSearchElement;
+                if (element != null)
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
+                        dynamoViewModel.OpenCommand.Execute(element.Path);
+                }
+            }
         }
 
     }

@@ -10,7 +10,7 @@ using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using SketchPlane = Revit.Elements.SketchPlane;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     public class ModelTextTests : GeometricRevitNodeTest

@@ -460,7 +460,7 @@ namespace ProtoCore
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
                     GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = HeapUtils.StoreArray(new StackValue[] { coercedValue }, null, core);
+                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
                 else
@@ -475,7 +475,7 @@ namespace ProtoCore
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
                     GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = HeapUtils.StoreArray(new StackValue[] { coercedValue }, null, core);
+                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
             }

@@ -1,7 +1,11 @@
-﻿using System;
+﻿#if ENABLE_DYNAMO_SCHEDULER
+
+using System;
 using System.Collections.Generic;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
+
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
@@ -9,8 +13,6 @@ using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.Core.Threading
 {
-#if ENABLE_DYNAMO_SCHEDULER
-
     class UpdateGraphAsyncTask : AsyncTask
     {
         private GraphSyncData graphSyncData;
@@ -98,6 +100,6 @@ namespace Dynamo.Core.Threading
 
         #endregion
     }
+}
 
 #endif
-}

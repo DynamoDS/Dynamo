@@ -1387,6 +1387,8 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
                 }
 
+
+                bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
                 {
 
@@ -1401,6 +1403,9 @@ namespace ProtoCore
                     }
                     parameters.Add(subParameters);
 
+                    if (subParameters.Length == 0)
+                        hasEmptyArg = true;
+
                     switch (algorithm)
                     {
                         case ZipAlgorithm.Shortest:
@@ -1412,6 +1417,12 @@ namespace ProtoCore
                     }
 
                 }
+
+                // If we're being asked to replicate across an empty list
+                // then it's always going to be zero, as there will never be any
+                // data to pass to that parameter.
+                if (hasEmptyArg)
+                    retSize = 0;
 
                 StackValue[] retSVs = new StackValue[retSize];
                 SingleRunTraceData retTrace = newTraceData;
@@ -1488,7 +1499,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
             }
@@ -1654,7 +1665,7 @@ namespace ProtoCore
 #endif
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
 
@@ -1831,12 +1842,7 @@ namespace ProtoCore
                 for (int p = 0; p < promotionsRequired; p++)
                 {
 
-                    StackValue newSV = HeapUtils.StoreArray(
-                        new StackValue[1]
-                            {
-                                oldSv
-                            }
-                        , null, core);
+                    StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
 
                     GCUtils.GCRetain(newSV, core);
                     // GCUtils.GCRelease(oldSv, core);

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
+
 using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
 {
     /// <summary>
-    /// Interaction logic for PackageManagerPublishView.xaml
+    /// Interaction logic for PublishPackageView.xaml
     /// </summary>
-    public partial class PackageManagerPublishView : Window
+    public partial class PublishPackageView : Window
     {
-        public PackageManagerPublishView(PublishPackageViewModel packageViewModel)
+        public PublishPackageView(PublishPackageViewModel packageViewModel)
         {
 
             this.DataContext = packageViewModel;

@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -341,12 +340,12 @@ namespace Dynamo.Controls
             _aboutWindow.Focus();
         }
 
-        private PackageManagerPublishView _pubPkgView;
+        private PublishPackageView _pubPkgView;
         void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
-                _pubPkgView = new PackageManagerPublishView(model);
+                _pubPkgView = new PublishPackageView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
 
