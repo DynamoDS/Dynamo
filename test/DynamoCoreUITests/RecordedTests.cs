@@ -792,7 +792,7 @@ namespace DynamoCoreUITests
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
         /// </summary>
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestCommentsInCodeBlockNode()
         {
             RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
@@ -816,7 +816,7 @@ namespace DynamoCoreUITests
         /// Create a code block node with some ports connected and others unconnected. Change all variable names
         /// and ensure that connectors remain to the port index.
         /// </summary>
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestCodeBlockNodeConnectionOnCodeChange()
         {
             RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
@@ -845,7 +845,7 @@ namespace DynamoCoreUITests
         /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
         /// nodes to the + node. Then converts all the nodes to Code.
         /// </summary>
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestConvertAllNodesToCode()
         {
             Assert.Inconclusive("Node To Code feature has been removed");
@@ -906,7 +906,7 @@ namespace DynamoCoreUITests
         /// Ensures that redo works for NodeToCode by converting a set of nodes to
         /// code and then undoing and redoing it again.
         /// </summary>
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
             Assert.Inconclusive("Node to Code has been removed");
@@ -971,7 +971,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestUpdateNodeCaptions_DS()
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
@@ -1034,7 +1034,7 @@ namespace DynamoCoreUITests
             //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_164_DS()
         {
@@ -1056,7 +1056,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_190_DS()
         {
@@ -1078,7 +1078,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_225_DS()
         {
@@ -1091,7 +1091,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_397_DS()
         {
@@ -1102,7 +1102,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_411()
         {
@@ -1119,7 +1119,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_429_DS()
         {
@@ -1131,7 +1131,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_478_DS()
         {
@@ -1143,7 +1143,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_491_DS()
         {
@@ -1170,7 +1170,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
@@ -1181,7 +1181,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection_DS()
         {
@@ -1194,7 +1194,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_581_DS()
         {
@@ -1205,7 +1205,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
@@ -1232,7 +1232,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_585()
         {
@@ -1254,7 +1254,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, cbn.InPorts.Count);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_605()
         {
@@ -1287,7 +1287,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_624()
         {
@@ -1314,7 +1314,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_624_1()
         {
@@ -1350,7 +1350,7 @@ namespace DynamoCoreUITests
             Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_590_1()
         {
@@ -1383,7 +1383,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_589_1()
         {
@@ -1416,7 +1416,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_589_2()
         {
@@ -1446,7 +1446,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_589_3()
         {
@@ -1485,7 +1485,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_828()
         {
@@ -1511,7 +1511,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_613()
         {
@@ -1533,7 +1533,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_904()
         {
@@ -1558,7 +1558,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_830()
         {
@@ -1583,7 +1583,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_803()
         {
@@ -1611,7 +1611,7 @@ namespace DynamoCoreUITests
         /// Eventually the evaluation will be done at record playback side thus remove the need
         /// of having multiple files.
         /// </summary>
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void TestCBNWithNodeToCode()
         {
@@ -1637,7 +1637,7 @@ namespace DynamoCoreUITests
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_902()
         {
@@ -1661,7 +1661,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_422()
         {
@@ -1686,7 +1686,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_422_1()
         {
@@ -2900,7 +2900,7 @@ namespace DynamoCoreUITests
 
         #region Tests moved from FScheme
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_159_AnotherScenario()
         {
@@ -2929,7 +2929,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_164()
         {
@@ -2943,7 +2943,7 @@ namespace DynamoCoreUITests
             AssertPreviewValue("56e07af9-6a16-4f61-a673-54e33a8556d8", 0);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_190()
         {
@@ -2955,7 +2955,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_225()
         {
@@ -2969,7 +2969,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(3, nodes.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_397()
         {
@@ -2980,7 +2980,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_429()
         {
@@ -2992,7 +2992,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_478()
         {
@@ -3028,7 +3028,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_520()
         {
@@ -3039,7 +3039,7 @@ namespace DynamoCoreUITests
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection()
         {
@@ -3064,7 +3064,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_581()
         {
@@ -3075,7 +3075,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
@@ -3084,14 +3084,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestCreateNodesAndRunExpression()
         {
             RunCommandsFromFile("CreateNodesAndRunExpression.xml");
@@ -3099,7 +3099,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
@@ -3128,7 +3128,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestUndoRedoNodesAndConnections()
         {
             RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
@@ -3195,7 +3195,7 @@ namespace DynamoCoreUITests
             //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);
