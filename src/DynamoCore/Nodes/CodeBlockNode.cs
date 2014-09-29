@@ -128,6 +128,34 @@ namespace Dynamo.Nodes
             return -1;
         }
 
+        /// <summary>
+        /// Returns a list of defined variables, along with the line number on which 
+        /// they are defined last. A variable can be defined multiple times in a single 
+        /// code block node, but the output port is only shown on the last definition.
+        /// </summary>
+        /// <returns>Returns a map between defined variables and the line index on 
+        /// which they are defined last.</returns>
+        public IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap()
+        {
+            // Get all defined variables and their locations
+            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
+                                            .Where(pair => pair.Key != null)
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
+                                            .OrderBy(pair => pair.Key)
+                                            .GroupBy(pair => pair.Key);
+
+            // Calc each variable's last location of definition
+            var locationMap = new Dictionary<string, int>();
+            foreach (var defs in definedVars)
+            {
+                var name = defs.FirstOrDefault().Key;
+                var loc = defs.Select(p => p.Value).Max<int>();
+                locationMap[name] = loc;
+            }
+
+            return locationMap.OrderBy(p => p.Value);
+        }
+
         #endregion
 
         #region Properties
@@ -548,24 +576,8 @@ namespace Dynamo.Nodes
 
         private void SetOutputPorts()
         {
-            // Get all defined variables and their locations
-            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
-                                            .Where(pair => pair.Key != null)
-                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
-                                            .OrderBy(pair => pair.Key)
-                                            .GroupBy(pair => pair.Key);
+            var allDefs = GetDefinitionLineIndexMap();
 
-            // Calc each variable's last location of definition
-            var locationMap = new Dictionary<string, int>();
-            foreach (var defs in definedVars)
-            {
-                var name = defs.FirstOrDefault().Key;
-                var loc = defs.Select(p => p.Value).Max<int>();
-                locationMap[name] = loc;
-            }
-
-            // Create output ports
-            var allDefs = locationMap.OrderBy(p => p.Value);
             if (allDefs.Any() == false)
                 return;
 
@@ -800,7 +812,7 @@ namespace Dynamo.Nodes
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
                     && !tempVariables.Contains(ident)
                     && !identNode.Equals(this.identifier))
                 {

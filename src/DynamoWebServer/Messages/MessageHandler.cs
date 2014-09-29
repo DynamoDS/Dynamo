@@ -21,7 +21,7 @@ namespace DynamoWebServer.Messages
 
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoViewModel dynamoViewModel;
-		private FileUploader uploader;
+        private FileUploader uploader;
         private RenderCompleteEventHandler RenderCompleteHandler;
 
         public MessageHandler(DynamoViewModel dynamoViewModel)
@@ -410,8 +410,24 @@ namespace DynamoWebServer.Messages
             stringBuilder.Append("{");
             if (node is CodeBlockNodeModel)
             {
+                var codeBlock = node as CodeBlockNodeModel;
+                var map = CodeBlockUtils.MapLogicalToVisualLineIndices(codeBlock.Code);
+                var allDefs = codeBlock.GetDefinitionLineIndexMap();
+                var lineIndices = new List<int>();
+
+                foreach (var def in allDefs)
+                {
+                    var logicalIndex = def.Value - 1;
+                    var visualIndex = map.ElementAt(logicalIndex);
+                    lineIndices.Add(visualIndex);
+                }
+
                 stringBuilder.Append("\"Code\":\"");
-                stringBuilder.Append((node as CodeBlockNodeModel).Code.Replace("\n", "\\n") + "\", ");
+                stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
+                stringBuilder.Append("\", ");
+                stringBuilder.Append("\"LineIndices\": [");
+                stringBuilder.Append(string.Join(", ", lineIndices.Select(x => x.ToString()).ToArray()));
+                stringBuilder.Append("],");
             }
 
             stringBuilder.Append("\"InPorts\": [");
