@@ -58,7 +58,9 @@ namespace DynamoCoreUITests
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
-                    this.ViewModel.Model.ShutDown(false);
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(
+                        shutdownHost: false, allowCancellation: false);
+                    ViewModel.PerformShutdownSequence(shutdownParams);
                 }
                 this.ViewModel = null;
             }

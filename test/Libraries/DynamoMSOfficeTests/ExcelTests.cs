@@ -7,6 +7,8 @@ using System.Linq;
 using DSOffice;
 
 using Dynamo.Nodes;
+using Dynamo.ViewModels;
+
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
@@ -35,9 +37,13 @@ namespace Dynamo.Tests
         {
             try
             {
-                EventArgs args = new ExcelCloseEventArgs(false);
-                ViewModel.Model.ShutDown(false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
                 this.ViewModel = null;
+
+                EventArgs args = new ExcelCloseEventArgs(false);
                 ExcelInterop.OnProcessExit(this, args);
             }
             catch (Exception ex)
