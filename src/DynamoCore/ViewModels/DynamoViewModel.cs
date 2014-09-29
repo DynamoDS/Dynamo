@@ -444,6 +444,7 @@ namespace Dynamo.ViewModels
             workspaces.Add(new WorkspaceViewModel(model.HomeSpace, this));
             model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
+            SubscribeModelCleaningUpEvent();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
        
@@ -472,6 +473,11 @@ namespace Dynamo.ViewModels
             UnsubscribeModelChangedEvents();
             UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
+            UnsubscribeModelCleaningUpEvent();
+
+            model.Workspaces.CollectionChanged -= Workspaces_CollectionChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -503,6 +509,16 @@ namespace Dynamo.ViewModels
         {
             UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
             UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+        }
+
+        private void SubscribeModelCleaningUpEvent()
+        {
+            model.CleaningUp += CleanUp;
+        }
+
+        private void UnsubscribeModelCleaningUpEvent()
+        {
+            model.CleaningUp -= CleanUp;
         }
 
         private void SubscribeModelChangedHandlers()
@@ -739,6 +755,11 @@ namespace Dynamo.ViewModels
             }
             else if (e.PropertyName == "RunEnabled")
                 RaisePropertyChanged("RunEnabled");
+        }
+
+        private void CleanUp(DynamoModel dynamoModel)
+        {
+            UnsubscibeAllEvents();
         }
 
         internal bool CanWriteToLog(object parameters)
