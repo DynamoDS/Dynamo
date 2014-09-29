@@ -49,7 +49,10 @@ namespace DynamoCoreUITests
         {
             if (this.ViewModel != null)
             {
-                this.ViewModel.Model.ShutDown(false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                this.ViewModel.PerformShutdownSequence(shutdownParams);
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
