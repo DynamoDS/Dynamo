@@ -22,10 +22,13 @@ namespace Dynamo.Wpf
 
     public static class NodeViewCustomizationLoader
     {
-        private static Dictionary<Assembly, INodeViewCustomizations> cache;
+        private static Dictionary<Assembly, INodeViewCustomizations> cache = 
+            new Dictionary<Assembly, INodeViewCustomizations>();
 
         public static INodeViewCustomizations LoadCustomizations(Assembly assem)
         {
+            if (cache.ContainsKey(assem)) return cache[assem];
+
             var types = new Dictionary<Type, IEnumerable<Type>>();
 
             var customizerType = typeof(INodeViewCustomization<>);
