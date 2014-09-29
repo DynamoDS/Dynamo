@@ -54,7 +54,7 @@ namespace ProtoCore.Lang
             // as this mechanism is used to keep track of maintining execution states of recursive calls
             // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
             int execStateSize = procedureNode.GraphNodeList.Count;
-            stackFrame.SetAt(StackFrame.AbsoluteIndex.kExecutionStates, StackValue.BuildInt(execStateSize));
+            stackFrame.ExecutionStateSize = execStateSize;
             for (int n = execStateSize - 1; n >= 0; --n)
             {
                 AssociativeGraph.GraphNode gnode = procedureNode.GraphNodeList[n];
@@ -110,11 +110,11 @@ namespace ProtoCore.Lang
                 svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
             }
 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+            stackFrame.TX = svCallConvention;
             interpreter.runtime.TX = svCallConvention;
 
             // Set SX register 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterSX, svBlockDecl);
+            stackFrame.SX = svBlockDecl;
             interpreter.runtime.SX = svBlockDecl;
 
             // TODO Jun:

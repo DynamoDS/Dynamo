@@ -1706,10 +1706,7 @@ namespace ProtoCore
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, core);
 
             // Correct block id where the function is defined. 
-            StackValue funcBlock = StackValue.BuildBlockIndex(stackFrame.FunctionBlock);
-            funcBlock.opdata = finalFep.BlockScope;
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock, funcBlock);
-
+            stackFrame.FunctionBlock = finalFep.BlockScope;
 
             //TraceCache -> TLS
             //Extract left most high-D pack

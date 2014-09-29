@@ -845,7 +845,7 @@ namespace ProtoCore.DSASM
                 }
 
                 SX = svBlockDeclaration;
-                stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, svBlockDeclaration);
+                stackFrame.SX = svBlockDeclaration;
 
                 //Dispatch without recursion tracking 
                 explicitCall = false;
@@ -1043,7 +1043,7 @@ namespace ProtoCore.DSASM
             }
 
             SX = StackValue.BuildBlockIndex(0);
-            stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, SX);
+            stackFrame.SX = SX;
 
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
@@ -7311,6 +7311,8 @@ namespace ProtoCore.DSASM
 
             // Get the next graph to be executed
             SetupNextExecutableGraph(fi, ci);
+
+            var ss = rmem.GetStackFrames();
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
