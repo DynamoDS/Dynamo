@@ -87,7 +87,7 @@
                     </ControlTemplate>
                 </Button.Resources>
                 <Button.Content>
-                    <Image Source="/UI/Images/expand_normal.png"
+                    <Image Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
                            Width="20"
                            Height="20"
                            RenderTransformOrigin="0.5, 0.5">
@@ -116,7 +116,7 @@
 
                 <Image x:Name="SearchIcon"
                        Grid.Column="0"
-                       Source="/UI/Images/search_normal.png"
+                       Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
                        Width="25"
                        Height="25"
                        Margin="10,0,0,0"
@@ -167,7 +167,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
                                         <Image Name="SearchCancelImage"
-                                               Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
+                                               Source="/DynamoCoreWpf;component/UI/Images/searchcancel_normal.png"
                                                Width="20"
                                                Height="20" />
                                         <ControlTemplate.Triggers>
@@ -175,13 +175,13 @@
                                                      Value="True">
                                                 <Setter TargetName="SearchCancelImage"
                                                         Property="Source"
-                                                        Value="/DynamoCore;component/UI/Images/searchcancel_hover.png" />
+                                                        Value="/DynamoCoreWpf;component/UI/Images/searchcancel_hover.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
                                                 <Setter TargetName="SearchCancelImage"
                                                         Property="Source"
-                                                        Value="/DynamoCore;component/UI/Images/searchcancel_normal.png" />
+                                                        Value="/DynamoCoreWpf;component/UI/Images/searchcancel_normal.png" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -471,7 +471,7 @@
                             <ControlTemplate TargetType="{x:Type ToggleButton}">
 
                                 <Image x:Name="ExpandCollapseStateIcon"
-                                       Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                                       Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
                                        Width="16"
                                        Height="16"
                                        VerticalAlignment="Center"
@@ -490,7 +490,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
                                     </MultiDataTrigger>
 
                                     <MultiDataTrigger>
@@ -504,7 +504,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
                                     </MultiDataTrigger>
 
                                     <MultiDataTrigger>
@@ -518,7 +518,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/UI/Images/collapsestate_hover.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
                                     </MultiDataTrigger>
 
                                     <MultiDataTrigger>
@@ -532,7 +532,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/UI/Images/collapsestate_normal.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png" />
                                     </MultiDataTrigger>
 
                                 </ControlTemplate.Triggers>
