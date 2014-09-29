@@ -52,8 +52,8 @@ namespace Dynamo.TestInfrastructure
                     {
                         Guid guidNumber = Guid.NewGuid();
 
-                        DynamoViewModel.CreateNodeCommand createCommand =
-                            new DynamoViewModel.CreateNodeCommand(guidNumber, nodeName,
+                        DynamoModel.CreateNodeCommand createCommand =
+                            new DynamoModel.CreateNodeCommand(guidNumber, nodeName,
                                 coordinatesX, coordinatesY, false, false);
 
                         DynamoViewModel.ExecuteCommand(createCommand);
@@ -78,8 +78,8 @@ namespace Dynamo.TestInfrastructure
                     {
                         DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
-                            DynamoViewModel.UndoRedoCommand undoCommand =
-                                new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            DynamoModel.UndoRedoCommand undoCommand =
+                                new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
 
                             DynamoViewModel.ExecuteCommand(undoCommand);
                         }));
@@ -91,8 +91,8 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        DynamoViewModel.RunCancelCommand runCancel =
-                            new DynamoViewModel.RunCancelCommand(false, false);
+                        DynamoModel.RunCancelCommand runCancel =
+                            new DynamoModel.RunCancelCommand(false, false);
 
                         DynamoViewModel.ExecuteCommand(runCancel);
                     }));
@@ -155,12 +155,12 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT,
-                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                    DynamoViewModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
-                            DynamoViewModel.MakeConnectionCommand.Mode.End);
+                    DynamoModel.MakeConnectionCommand connectCmd1 =
+                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT,
+                            DynamoModel.MakeConnectionCommand.Mode.Begin);
+                    DynamoModel.MakeConnectionCommand connectCmd2 =
+                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
+                            DynamoModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
                     DynamoViewModel.ExecuteCommand(connectCmd2);
@@ -170,12 +170,12 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT,
-                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                    DynamoViewModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.INPUT,
-                            DynamoViewModel.MakeConnectionCommand.Mode.End);
+                    DynamoModel.MakeConnectionCommand connectCmd1 =
+                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT,
+                            DynamoModel.MakeConnectionCommand.Mode.Begin);
+                    DynamoModel.MakeConnectionCommand connectCmd2 =
+                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.INPUT,
+                            DynamoModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
                     DynamoViewModel.ExecuteCommand(connectCmd2);

@@ -3,9 +3,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
-
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
@@ -125,7 +125,7 @@ namespace DSIronPythonNode
         {
             if (this.DialogResult.HasValue && (this.DialogResult.Value))
             {
-                var command = new DynamoViewModel.UpdateModelValueCommand(
+                var command = new DynamoModel.UpdateModelValueCommand(
                     this.boundNodeId, this.propertyName, this.editText.Text);
 
                 this.dynamoViewModel.ExecuteCommand(command);

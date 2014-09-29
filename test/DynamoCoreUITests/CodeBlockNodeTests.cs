@@ -292,7 +292,7 @@ namespace DynamoCoreUITests
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoViewModel.RecordableCommand
+            where CmdType : DynamoModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -302,7 +302,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
