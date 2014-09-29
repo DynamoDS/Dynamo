@@ -71,9 +71,9 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.UndoRedoCommand undoCommand =
-                        new DynamoViewModel.UndoRedoCommand(
-                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                    DynamoModel.UndoRedoCommand undoCommand =
+                        new DynamoModel.UndoRedoCommand(
+                            DynamoModel.UndoRedoCommand.Operation.Undo);
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
@@ -128,8 +128,8 @@ namespace Dynamo.TestInfrastructure
         {
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.DeleteModelCommand delCommand =
-                    new DynamoViewModel.DeleteModelCommand(node.GUID);
+                DynamoModel.DeleteModelCommand delCommand =
+                    new DynamoModel.DeleteModelCommand(node.GUID);
 
                 DynamoViewModel.ExecuteCommand(delCommand);
 

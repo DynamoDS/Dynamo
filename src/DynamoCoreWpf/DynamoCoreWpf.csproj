@@ -125,7 +125,6 @@
     <Compile Include="Commands\NodeSearchElementCommands.cs" />
     <Compile Include="Commands\NoteCommands.cs" />
     <Compile Include="Commands\PortCommands.cs" />
-    <Compile Include="Commands\RecordableCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />
     <Compile Include="Commands\WorkspaceCommands.cs" />
     <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">

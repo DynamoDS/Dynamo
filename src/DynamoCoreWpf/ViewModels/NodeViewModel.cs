@@ -561,7 +561,7 @@ namespace Dynamo.ViewModels
 
         private void DeleteNodeAndItsConnectors(object parameter)
         {
-            var command = new DynamoViewModel.DeleteModelCommand(nodeLogic.GUID);
+            var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
         }
 
