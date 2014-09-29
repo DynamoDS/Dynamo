@@ -15,6 +15,7 @@ namespace Dynamo.PackageManager
     class PackageUtilitiesTests
     {
         [Test]
+        [Category("UnitTests")]
         public void FilterFuturePackages_IEnumerableTuplePackageHeaderPackageVersion_ReturnsCorrectResults()
         {
             var pkgVersion063 = new PackageVersion()

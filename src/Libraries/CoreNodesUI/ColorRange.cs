@@ -94,22 +94,38 @@ namespace DSCoreNodesUI
                     object start = null;
                     object end = null;
 
-                    if (startMirror.GetData().IsCollection)
+                    if (startMirror == null)
                     {
-                        start = startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        start = Color.ByARGB(255, 192, 192, 192);
                     }
                     else
                     {
-                        start = startMirror.GetData().Data;
+                        if (startMirror.GetData().IsCollection)
+                        {
+                            start = startMirror.GetData().GetElements().
+                                Select(x => x.Data).FirstOrDefault();
+                        }
+                        else
+                        {
+                            start = startMirror.GetData().Data;
+                        }
                     }
 
-                    if (endMirror.GetData().IsCollection)
+                    if (endMirror == null)
                     {
-                        end = endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        end = Color.ByARGB(255, 64, 64, 64);
                     }
                     else
                     {
-                        end = endMirror.GetData().Data;
+                        if (endMirror.GetData().IsCollection)
+                        {
+                            end = endMirror.GetData().GetElements().
+                                Select(x => x.Data).FirstOrDefault();
+                        }
+                        else
+                        {
+                            end = endMirror.GetData().Data;
+                        }
                     }
 
                     Color startColor = start as Color;

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
+
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.GeometryReferences;
@@ -18,7 +19,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit Adaptive Component
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class AdaptiveComponent : AbstractFamilyInstance
     {
         #region Private constructors
@@ -264,16 +265,141 @@ namespace Revit.Elements
             {
                 TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                 DocumentManager.Regenerate();
-                var pts = new List<Point>();
-                var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
                 TransactionManager.Instance.TransactionTaskDone();
-                foreach (var id in ids)
+
+                var pts = new List<Point>();
+                if (AdaptiveComponentInstanceUtils.IsAdaptiveComponentInstance(InternalFamilyInstance))
                 {
-                    var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
-                    pts.Add(p.Position.ToPoint());
+                    var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
+                    foreach (var id in ids)
+                    {
+                        var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                        pts.Add(p.Position.ToPoint());
+                    }
+                }
+                else
+                {
+                    var ptRefs = InternalFamilyInstance.GetFamilyPointPlacementReferences();
+                    pts.AddRange(ptRefs.Select(x =>
+                    {
+                        var xyz = x.Location.Origin;
+                        return Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
+                    }));
                 }
                 return pts;
             }
+        }
+
+        #endregion
+
+        #region Hidden public static constructors
+
+        // These constructors are hidden, but allow this constructor to be more tolerant
+        // without breaking replication guides
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, ElementFaceReference faceReference, FamilySymbol familySymbol)
+        {
+            if (uvs == null)
+            {
+                throw new ArgumentNullException("uvs");
+            }
+
+            if (faceReference == null)
+            {
+                throw new ArgumentNullException("faceReference");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(faceReference), familySymbol);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static AdaptiveComponent ByParametersOnFace(Autodesk.DesignScript.Geometry.UV[] uvs, ElementFaceReference surface, FamilySymbol familySymbol)
+        {
+            if (uvs == null)
+            {
+                throw new ArgumentNullException("uvs");
+            }
+
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new AdaptiveComponent(uvs.Select(x => new[] { x.U, x.V }).ToArray(), ElementFaceReference.TryGetFaceReference(surface), familySymbol);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, Surface surface, FamilySymbol familySymbol)
+        {
+            if (uvs == null)
+            {
+                throw new ArgumentNullException("uvs");
+            }
+
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(surface), familySymbol);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, Revit.Elements.Element revitCurve, FamilySymbol familySymbol)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
+            if (revitCurve == null)
+            {
+                throw new ArgumentNullException("revitCurve");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(revitCurve).InternalReference, familySymbol);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, ElementCurveReference revitCurve, FamilySymbol familySymbol)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
+            if (revitCurve == null)
+            {
+                throw new ArgumentNullException("revitCurve");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(revitCurve).InternalReference, familySymbol);
         }
 
         #endregion
@@ -305,19 +431,19 @@ namespace Revit.Elements
         /// Create an adaptive component by uv points on a face.
         /// </summary>
         /// <param name="uvs">An array of UV pairs</param>
-        /// <param name="revitFace">The surface on which to place the AdaptiveComponent</param>
+        /// <param name="surface">The surface on which to place the AdaptiveComponent</param>
         /// <param name="familySymbol"></param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, object revitFace, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnFace( Autodesk.DesignScript.Geometry.UV[] uvs, Surface surface, FamilySymbol familySymbol)
         {
             if (uvs == null)
             {
                 throw new ArgumentNullException("uvs");
             }
 
-            if (revitFace == null)
+            if (surface == null)
             {
-                throw new ArgumentNullException("revitFace");
+                throw new ArgumentNullException("surface");
             }
 
             if (familySymbol == null)
@@ -325,26 +451,26 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(revitFace), familySymbol);
+            return new AdaptiveComponent(uvs.Select(x => new []{x.U,x.V}).ToArray(), ElementFaceReference.TryGetFaceReference(surface), familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component referencing the parameters on a Curve reference
         /// </summary>
         /// <param name="parameters">The parameters on the curve</param>
-        /// <param name="revitCurve">The curve to reference</param>
+        /// <param name="curve">The curve to reference</param>
         /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, object revitCurve, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnCurveReference( double[] parameters, Autodesk.DesignScript.Geometry.Curve curve, FamilySymbol familySymbol)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException("parameters");
             }
 
-            if (revitCurve == null)
+            if (curve == null)
             {
-                throw new ArgumentNullException("revitCurve");
+                throw new ArgumentNullException("curve");
             }
 
             if (familySymbol == null)
@@ -352,7 +478,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(revitCurve).InternalReference, familySymbol);
+            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(curve).InternalReference, familySymbol);
         }
 
         #endregion

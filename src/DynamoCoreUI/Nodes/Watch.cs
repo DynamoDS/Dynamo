@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
@@ -32,6 +30,9 @@ namespace Dynamo.Nodes
         private DynamoViewModel dynamoViewModel;
         private WatchTree watchTree;
         private WatchViewModel root;
+
+        private IdentifierNode astBeingWatched;
+
 
         #endregion
 
@@ -82,8 +83,26 @@ namespace Dynamo.Nodes
 
             foreach (PortModel p in InPorts)
             {
-                p.PortDisconnected += p_PortDisconnected;
+                p.PortConnected += InputPortConnected;
             }
+        }
+
+        private void EvaluationCompleted(object o)
+        {
+            CachedValue = o;
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+                    Root.Children.Add(GetWatchNode());
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
         }
 
         public override void Destroy()
@@ -93,15 +112,24 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Callback for port disconnection. Handles clearing the watch.
+        ///     Callback for port connection. Handles clearing the watch.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void p_PortDisconnected(object sender, EventArgs e)
+        private void InputPortConnected(object sender, EventArgs e)
         {
-            CachedValue = null;
-            if (Root != null)
-                Root.Children.Clear();
+            Tuple<int, NodeModel> input;
+            if (TryGetInput(InPorts.IndexOf(sender as PortModel), out input))
+            {
+                var oldId = astBeingWatched;
+                astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
+                if (oldId != null && astBeingWatched.Value != oldId.Value)
+                {
+                    CachedValue = null;
+                    if (Root != null)
+                        Root.Children.Clear();
+                }
+            }
         }
         
         protected virtual void OnRequestBindingUnhook(EventArgs e)
@@ -121,6 +149,12 @@ namespace Dynamo.Nodes
             return outputIndex == 0
                 ? AstIdentifierForPreview
                 : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
@@ -177,8 +211,8 @@ namespace Dynamo.Nodes
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
             
             return Root != null
-                ? dynamoViewModel.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
-                : dynamoViewModel.WatchHandler.Process(CachedValue, inputVar);
+                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar, Root.ShowRawData)
+                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar);
         }
 
         public override void UpdateRenderPackage(int maxTessDivs, object engineController)

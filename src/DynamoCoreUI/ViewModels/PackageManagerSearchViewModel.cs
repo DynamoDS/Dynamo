@@ -7,10 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Nodes.Search;
+
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using Greg.Responses;

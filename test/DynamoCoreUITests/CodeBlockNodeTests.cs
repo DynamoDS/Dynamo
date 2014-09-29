@@ -46,7 +46,7 @@ namespace DynamoCoreUITests
         {
             if (this.ViewModel != null)
             {
-                this.ViewModel.Model.ShutDown(true);
+                this.ViewModel.Model.ShutDown(false);
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
@@ -119,7 +119,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         // Create a cyclic chain of three code block nodes, and verify that a
         // warning is shown on one of the cyclic nodes.
         // Reconnect a valid value to one of the chain items, and verify that the

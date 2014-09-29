@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
-
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -14,7 +13,6 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
@@ -1224,7 +1222,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data.NickName)
+                    p = new PortModel(portType, this, data)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1253,7 +1251,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data.NickName)
+                    p = new PortModel(portType, this, data)
                     {
                         UsingDefaultValue = false,
                         MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)

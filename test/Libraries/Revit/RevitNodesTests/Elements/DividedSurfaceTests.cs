@@ -2,11 +2,14 @@
 using System.Linq;
 using Revit.Elements;
 using NUnit.Framework;
+
+using Revit.GeometryReferences;
+
 using RTF.Framework;
 using DividedSurface = Revit.Elements.DividedSurface;
 using Form = Revit.Elements.Form;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     public class DividedSurfaceTests : RevitNodeTestBase
@@ -81,14 +84,22 @@ namespace DSRevitNodesTests
         [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisions_NullArgument()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(null, 5, 5));
+            ElementFaceReference faceRef = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(faceRef, 5, 5));
+
+            Autodesk.DesignScript.Geometry.Surface srf = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(srf, 5, 5));
         }
 
         [Test]
         [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisionsRotation_NullArgument()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(null, 5, 5));
+            ElementFaceReference faceRef = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceUVDivisionsAndRotation(faceRef, 5, 5, 30));
+
+            Autodesk.DesignScript.Geometry.Surface srf = null;
+            Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceUVDivisionsAndRotation(srf, 5, 5, 30));
         }
 
     }

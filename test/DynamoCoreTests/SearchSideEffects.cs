@@ -11,6 +11,7 @@ namespace Dynamo.Tests
     public class SearchSideEffects : DynamoViewModelUnitTest
     {
         [Test]
+        [Category("UnitTests")]
         public void WhenStartingDynamoInputAndOutputNodesAreMissingFromSearch()
         {
             Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace );
@@ -48,6 +49,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void WhenCustomNodeWorkspaceIsFocusedInputAndOutputNodesArePresentInSearch()
         {
             // goto custom node workspace

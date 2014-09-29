@@ -75,6 +75,7 @@ namespace Dynamo.Core
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
                     workspaceModel.PreloadedTraceData;
                 workspaceModel.PreloadedTraceData = null; // Reset.
+
                 engineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
                 //We are now considered running

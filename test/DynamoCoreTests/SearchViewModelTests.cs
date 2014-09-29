@@ -24,6 +24,8 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
+        [Category("Failure")]
         public void PopulateSearchTextWithSelectedResultReturnsExpectedResult()
         {
             var catName = "Animals";

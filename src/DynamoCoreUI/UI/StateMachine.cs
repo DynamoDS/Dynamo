@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -608,6 +607,7 @@ namespace Dynamo.ViewModels
                             // avoid it being dismissed (with empty content).
                             // 
                             CreateCodeBlockNode(mouseDownPos);
+
                             returnFocusToSearch = false;
                             curClick = null;
                         }

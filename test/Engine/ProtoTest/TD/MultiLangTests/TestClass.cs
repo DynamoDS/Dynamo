@@ -1834,7 +1834,7 @@ t1 = a.x1;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T43_Defect_1461479_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3949
@@ -3175,7 +3175,7 @@ x3 = a3.x;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV55_Defect_1460616_1()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3952
@@ -4335,7 +4335,7 @@ val = v[0];";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
@@ -4358,7 +4358,7 @@ v = A.execute(arr);
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_4()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
@@ -4593,7 +4593,7 @@ t = a.x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T83_Defect_1463232_3()
         {
             String code =
@@ -4739,7 +4739,7 @@ a.y = 5;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T85_Defect_1467247_3()
         {
             string code = @"
@@ -5061,7 +5061,7 @@ r = x.foo();
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T92_default_argument_1467384()
         {
             String code =
@@ -5977,7 +5977,7 @@ r = a.x;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T99_1467469
             ()
         {
@@ -6075,7 +6075,7 @@ r2 = b1.count;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T95_1467421_4()
         {
             String code =
@@ -6490,7 +6490,7 @@ test2 = wall[0].func(wall[1]);  // 3; expected test1=test2
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T98_Class_Static_Property_Using_Global_Variable()
         {
             String code =

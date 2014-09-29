@@ -83,6 +83,7 @@ namespace Dynamo.Tests
         
         
         [Test]
+        [Category("Failure")]
         public void WatchLiterals()
         {
             var model = ViewModel.Model;
@@ -113,6 +114,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Watch1DCollections()
         {
             var model = ViewModel.Model;

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 
+using Dynamo.Core;
+
 using DynamoUtilities;
 
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {

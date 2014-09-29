@@ -142,6 +142,7 @@ namespace Dynamo.Nodes
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
+            nodeElement.SetAttribute("nickname", NickName);
         }
 
         public override void LoadNode(XmlNode nodeElement)

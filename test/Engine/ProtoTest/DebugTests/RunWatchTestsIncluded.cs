@@ -1759,7 +1759,7 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch87_TestStringOperations()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
@@ -19279,7 +19279,7 @@ a2 = foo2(3);
 
         [Test, Ignore]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch686_T018_Inline_Using_Recursion()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
@@ -22296,7 +22296,7 @@ result = Count(a);";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch815_T047_Sum_ForLoop()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
@@ -22326,7 +22326,7 @@ result =
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch816_T048_Sum_WhileLoop()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
@@ -28157,7 +28157,7 @@ b = CreateArray ( b, count );
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1006_T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -30260,7 +30260,7 @@ z=5;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1085_T64_Modify_itemInAnArray_1467093()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30406,7 +30406,7 @@ b[0]=false;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1093_T66_Array_CannotBeUsedToIndex1467069()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -33459,7 +33459,7 @@ t = a.foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1212_TV101_Indexing_Into_classCall_1463234_7()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -37701,8 +37701,10 @@ y = foo ( -2 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failure")]
         public void DebugWatch1358_TV94_Method_Resolution_Nested_Language_Blocks_2()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4290
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(  )
 {
@@ -42176,47 +42178,6 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(importpath, src, map);
         }
 
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1551_T00016_Geometry_012_centroid_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""GeometryLibForLanguageTesting.ds"");
-// [1] create functions to calculate the centroid of a collection of points 
-def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
-def sumCollectionInternal(arr : double[], i : int ) 
-{
-    return = [Imperative]
-    {
-        if( i > -1) 
-        {
-            return = arr[i] + sumCollectionInternal(arr, i-1);
-        }
-        else
-        {
-            return = 0;
-        }
-    }
-}
-def average(arr : double[]) = sumCollection(arr) / count(arr);
-def centroid(points : Point[]) = Point.ByCartesianCoordinates( average(points.X), average(points.Y),  average(points.Z) );
-// [2] create some points
-point_1 = Point.ByCartesianCoordinates( 30.0, 80.0, 0.0 );
-point_2 = Point.ByCartesianCoordinates( 10.0, 50.0, 0.0 );
-point_3 = Point.ByCartesianCoordinates( 50.0, 50.0, 0.0 );
-// [3] create centrePoint
-centrePoint = centroid( {point_1, point_2, point_3} );
-// [4] test with lines
-lineTest  = Line.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
-// [5] move a point
-point_1 = Point.ByCartesianCoordinates( 40.0, 80.0, 0.0 );
-x1 = lineTest[2].EndPoint.X;
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
         [Test]
         [Category("WatchFx Tests")]
         public void DebugWatch1553_GeometryLibForLanguageTesting()
@@ -42593,7 +42554,7 @@ b = [ Imperative ]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1561_T08_Update_Array_Variable()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -42636,7 +42597,7 @@ e = b;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DebugWatch1562_T09_Update_Across_Multiple_Imperative_Blocks()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";

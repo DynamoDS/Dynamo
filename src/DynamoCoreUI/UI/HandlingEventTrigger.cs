@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Interactivity;
 
 namespace Dynamo.UI.Views
 {

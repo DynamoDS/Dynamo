@@ -10,6 +10,7 @@ namespace DSCoreNodesTests
     static class LogicTests
     {
         [Test]
+        [Category("UnitTests")]
         public static void Xor()
         {
             Assert.AreEqual(false, Logic.Xor(true, true));
