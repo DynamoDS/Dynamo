@@ -139,7 +139,7 @@ namespace Dynamo.ViewModels
             set
             {
                 if (model.Workspaces.IndexOf(model.CurrentWorkspace) != value)
-                    this.ExecuteCommand(new SwitchTabCommand(value));
+                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
             }
         }
 
@@ -431,6 +431,8 @@ namespace Dynamo.ViewModels
         {
             // initialize core data structures
             this.model = dynamoModel;
+            this.model.CommandStarting += OnModelCommandStarting;
+            this.model.CommandCompleted += OnModelCommandCompleted;
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
@@ -444,6 +446,7 @@ namespace Dynamo.ViewModels
             workspaces.Add(new WorkspaceViewModel(model.HomeSpace, this));
             model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
+            SubscribeModelCleaningUpEvent();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
        
@@ -472,6 +475,11 @@ namespace Dynamo.ViewModels
             UnsubscribeModelChangedEvents();
             UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
+            UnsubscribeModelCleaningUpEvent();
+
+            model.Workspaces.CollectionChanged -= Workspaces_CollectionChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -503,6 +511,16 @@ namespace Dynamo.ViewModels
         {
             UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
             UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+        }
+
+        private void SubscribeModelCleaningUpEvent()
+        {
+            model.CleaningUp += CleanUp;
+        }
+
+        private void UnsubscribeModelCleaningUpEvent()
+        {
+            model.CleaningUp -= CleanUp;
         }
 
         private void SubscribeModelChangedHandlers()
@@ -540,7 +558,7 @@ namespace Dynamo.ViewModels
                 commandFilePath = null;
 
             // Instantiate an AutomationSettings to handle record/playback.
-            automationSettings = new AutomationSettings(this, commandFilePath);
+            automationSettings = new AutomationSettings(this.Model, commandFilePath);
         }
 
         private void TryDispatcherBeginInvoke(Action action)
@@ -593,7 +611,7 @@ namespace Dynamo.ViewModels
 
         public void CancelRunCmd(object parameter)
         {
-            var command = new DynamoViewModel.RunCancelCommand(false, true);
+            var command = new DynamoModel.RunCancelCommand(false, true);
             this.ExecuteCommand(command);
         }
 
@@ -610,7 +628,7 @@ namespace Dynamo.ViewModels
         internal void RunExprCmd(object parameters)
         {
             bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoViewModel.RunCancelCommand(displayErrors, false);
+            var command = new DynamoModel.RunCancelCommand(displayErrors, false);
             this.ExecuteCommand(command);
         }
 
@@ -622,13 +640,13 @@ namespace Dynamo.ViewModels
         internal void ForceRunExprCmd(object parameters)
         {
             bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoViewModel.ForceRunCancelCommand(displayErrors, false);
+            var command = new DynamoModel.ForceRunCancelCommand(displayErrors, false);
             this.ExecuteCommand(command);
         }
 
         internal void MutateTestCmd(object parameters)
         {
-            var command = new DynamoViewModel.MutateTestCommand();
+            var command = new DynamoModel.MutateTestCommand();
             this.ExecuteCommand(command);
         }
 
@@ -678,11 +696,8 @@ namespace Dynamo.ViewModels
 
         void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
-            if (SetAllowCancelAndRequestUIClose(true))
-                return;
-
-            model.ShutDown(true);
-            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+            PerformShutdownSequence(new ShutdownParams(
+                shutdownHost: true, allowCancellation: true));
         }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -745,6 +760,11 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("RunEnabled");
         }
 
+        private void CleanUp(DynamoModel dynamoModel)
+        {
+            UnsubscibeAllEvents();
+        }
+
         internal bool CanWriteToLog(object parameters)
         {
             if (model.Logger != null)
@@ -791,7 +811,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynCmd.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
+            var command = new DynamoModel.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
             this.ExecuteCommand(command);
         }
 
@@ -878,7 +898,7 @@ namespace Dynamo.ViewModels
             try
             {
                 string xmlFilePath = parameters as string;
-                ExecuteCommand(new OpenFileCommand(xmlFilePath));
+                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
             }
             catch (Exception e)
             {
@@ -1037,8 +1057,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool exitInvoked = false;
-
         internal bool CanVisibilityBeToggled(object parameters)
         {
             return true;
@@ -1077,6 +1095,16 @@ namespace Dynamo.ViewModels
         private bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
+        }
+
+        private void PublishNewPackage(object parameters)
+        {
+            PackageManagerClientViewModel.PublishNewPackage();
+        }
+
+        private bool CanPublishNewPackage(object parameters)
+        {
+            return PackageManagerClientViewModel.CanPublishNewPackage(parameters);
         }
 
         private void ShowInstalledPackages(object parameters)
@@ -1175,7 +1203,7 @@ namespace Dynamo.ViewModels
 
             if (args.Success)
             {
-                this.ExecuteCommand(new CreateCustomNodeCommand(Guid.NewGuid(),
+                this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
             }
         }
@@ -1387,34 +1415,17 @@ namespace Dynamo.ViewModels
 
         public void Exit(object allowCancel)
         {
-            if (SetAllowCancelAndRequestUIClose(allowCancel))
-            {
-                return;
-            }
-
-            model.ShutDown(false);
-        }
-
-        private bool SetAllowCancelAndRequestUIClose(object allowCancel)
-        {
-            bool allowCancelBool = true;
+            var allowCancellation = true;
             if (allowCancel != null)
-            {
-                allowCancelBool = (bool)allowCancel;
-            }
-            if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
-                return true;
+                allowCancellation = ((bool)allowCancel);
 
-            exitInvoked = true;
-
-            //request the UI to close its window
-            OnRequestClose(this, EventArgs.Empty);
-            return false;
+            PerformShutdownSequence(new ShutdownParams(
+                shutdownHost: false, allowCancellation: allowCancellation));
         }
 
         internal bool CanExit(object allowCancel)
         {
-            return !exitInvoked;
+            return !model.ShutdownRequested;
         }
 
         /// <summary>
@@ -1428,37 +1439,6 @@ namespace Dynamo.ViewModels
             OnRequestUserSaveWorkflow(this, args);
             if (!args.Success)
                 return false;
-            return true;
-        }
-
-        /// <summary>
-        ///     Ask the user if they want to save any unsaved changes, return false if the user cancels.
-        /// </summary>
-        /// <param name="allowCancel">Whether to show cancel button to user. </param>
-        /// <returns>Whether the cleanup was completed or cancelled.</returns>
-        public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
-        {
-            if (null != automationSettings)
-            {
-                // In an automation run, Dynamo should not be asking user to save 
-                // the modified file. Instead it should be shutting down, leaving 
-                // behind unsaved changes (if saving is desired, then the save command 
-                // should have been recorded for the test case to it can be replayed).
-                // 
-                if (automationSettings.IsInPlaybackMode)
-                    return true; // In playback mode, just exit without saving.
-            }
-
-            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
-            {
-                //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
-                //    return false;
-
-                var args = new WorkspaceSaveEventArgs(wvm.Model, allowCancel);
-                OnRequestUserSaveWorkflow(this, args);
-                if (!args.Success)
-                    return false;
-            }
             return true;
         }
 
@@ -1486,7 +1466,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynCmd.DeleteModelCommand(Guid.Empty);
+            var command = new DynamoModel.DeleteModelCommand(Guid.Empty);
             this.ExecuteCommand(command);
         }
 
@@ -1544,7 +1524,7 @@ namespace Dynamo.ViewModels
 
         private void Undo(object parameter)
         {
-            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
+            var command = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             this.ExecuteCommand(command);
         }
 
@@ -1556,7 +1536,7 @@ namespace Dynamo.ViewModels
 
         private void Redo(object parameter)
         {
-            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
+            var command = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo);
             this.ExecuteCommand(command);
         }
 
@@ -1979,6 +1959,134 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        #region Shutdown related methods
+
+        /// <summary>
+        /// This struct represents parameters for PerformShutdownSequence call.
+        /// It exposes several properties to control the way shutdown process goes.
+        /// </summary>
+        /// 
+        internal struct ShutdownParams
+        {
+            internal ShutdownParams(
+                bool shutdownHost,
+                bool allowCancellation)
+                : this(shutdownHost, allowCancellation, true) { }
+
+            internal ShutdownParams(
+                bool shutdownHost,
+                bool allowCancellation,
+                bool closeDynamoView) : this()
+            {
+                ShutdownHost = shutdownHost;
+                AllowCancellation = allowCancellation;
+                CloseDynamoView = closeDynamoView;
+            }
+
+            /// <summary>
+            /// The call to PerformShutdownSequence results in the host 
+            /// application being shutdown if this property is set to true.
+            /// </summary>
+            internal bool ShutdownHost { get; private set; }
+
+            /// <summary>
+            /// If this property is set to true, the user is given
+            /// an option to cancel the shutdown process.
+            /// </summary>
+            internal bool AllowCancellation { get; private set; }
+
+            /// <summary>
+            /// Set this to true to close down DynamoView as part of shutdown 
+            /// process. This is typically desirable for calls originated from 
+            /// within the DynamoViewModel layer to shutdown Dynamo. If the 
+            /// shutdown is initiated by DynamoView when it is being closed, 
+            /// then this should be set to false since DynamoView is already 
+            /// being closed.
+            /// </summary>
+            internal bool CloseDynamoView { get; private set; }
+        }
+
+        private bool shutdownSequenceInitiated = false;
+
+        /// <summary>
+        /// Call this method to initiate DynamoModel shutdown sequence.
+        /// See the definition of ShutdownParams structure for more details.
+        /// </summary>
+        /// <param name="shutdownParams">A set of parameters that control the 
+        /// way in which shutdown sequence is to be performed. See ShutdownParams
+        /// for more details.</param>
+        /// <returns>Returns true if the shutdown sequence is started, or false 
+        /// otherwise (i.e. when user chooses not to proceed with shutting down 
+        /// Dynamo).</returns>
+        /// 
+        internal bool PerformShutdownSequence(ShutdownParams shutdownParams)
+        {
+            if (shutdownSequenceInitiated)
+            {
+                // There was a prior call to shutdown. This could happen for example
+                // when user presses 'ALT + F4' to close the DynamoView, the 'Exit' 
+                // handler calls this method to close Dynamo, which in turn closes 
+                // the DynamoView ('OnRequestClose' below). When DynamoView closes,
+                // its "Window.Closing" event fires and "DynamoView.WindowClosing" 
+                // gets called before 'PerformShutdownSequence' is called again.
+                // 
+                return true;
+            }
+
+            if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
+                return false;
+
+            // 'shutdownSequenceInitiated' is marked as true here indicating 
+            // that the shutdown may not be stopped.
+            shutdownSequenceInitiated = true;
+
+            // Request the View layer to close its window (see 
+            // ShutdownParams.CloseDynamoView member for details).
+            if (shutdownParams.CloseDynamoView)
+                OnRequestClose(this, EventArgs.Empty);
+
+            model.ShutDown(shutdownParams.ShutdownHost);
+            if (shutdownParams.ShutdownHost)
+                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Ask the user if they want to save any unsaved changes.
+        /// </summary>
+        /// <param name="allowCancel">Whether to show cancel button to user. </param>
+        /// <returns>Returns true if the cleanup is completed and that the shutdown 
+        /// can proceed, or false if the user chooses to cancel the operation.</returns>
+        /// 
+        private bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
+        {
+            if (automationSettings != null)
+            {
+                // In an automation run, Dynamo should not be asking user to save 
+                // the modified file. Instead it should be shutting down, leaving 
+                // behind unsaved changes (if saving is desired, then the save command 
+                // should have been recorded for the test case to it can be replayed).
+                // 
+                if (automationSettings.IsInPlaybackMode)
+                    return true; // In playback mode, just exit without saving.
+            }
+
+            foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
+            {
+                //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
+                //    return false;
+
+                var args = new WorkspaceSaveEventArgs(wvm.Model, allowCancel);
+                OnRequestUserSaveWorkflow(this, args);
+                if (!args.Success)
+                    return false;
+            }
+            return true;
+        }
+
+        #endregion
+
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
@@ -2008,5 +2116,4 @@ namespace Dynamo.ViewModels
 
         #endregion
     }
-
 }

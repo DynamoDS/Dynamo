@@ -412,7 +412,7 @@ namespace Dynamo.Tests
             const string category = "Custom Node Category";
 
             ViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateCustomNodeCommand(
+                new DynamoModel.CreateCustomNodeCommand(
                     Guid.NewGuid(),
                     name,
                     category,
@@ -429,7 +429,7 @@ namespace Dynamo.Tests
             ViewModel.HomeCommand.Execute(null);
 
             ViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(
+                new DynamoModel.CreateNodeCommand(
                     Guid.NewGuid(),
                     customNodeDef.FunctionId.ToString(),
                     0,
@@ -482,7 +482,7 @@ namespace Dynamo.Tests
                 var guid = Guid.NewGuid();
 
                 ViewModel.ExecuteCommand(
-                    new DynamoViewModel.CreateNodeCommand(
+                    new DynamoModel.CreateNodeCommand(
                         guid,
                         inputName,
                         0,
@@ -504,7 +504,7 @@ namespace Dynamo.Tests
                 var guid = Guid.NewGuid();
 
                 ViewModel.ExecuteCommand(
-                    new DynamoViewModel.CreateNodeCommand(
+                    new DynamoModel.CreateNodeCommand(
                         guid,
                         outputName,
                         0,

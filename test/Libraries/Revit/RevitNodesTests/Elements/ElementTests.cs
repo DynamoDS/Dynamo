@@ -13,7 +13,7 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
     class ElementTests : RevitNodeTestBase

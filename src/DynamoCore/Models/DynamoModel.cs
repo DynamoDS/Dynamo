@@ -64,6 +64,37 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This event is raised right before the shutdown of DynamoModel started.
+        /// When this event is raised, the shutdown is guaranteed to take place
+        /// (i.e. user has had a chance to save the work and decided to proceed 
+        /// with shutting down Dynamo). Handlers of this event can still safely 
+        /// access the DynamoModel, the WorkspaceModel (along with its contents), 
+        /// and the DynamoScheduler.
+        /// </summary>
+        /// 
+        public event DynamoModelHandler ShutdownStarted;
+
+        private void OnShutdownStarted()
+        {
+            if (ShutdownStarted != null)
+                ShutdownStarted(this);
+        }
+
+        /// <summary>
+        /// This event is raised after DynamoModel has been shut down. At this 
+        /// point the DynamoModel is no longer valid and access to it should be 
+        /// avoided.
+        /// </summary>
+        /// 
+        public event DynamoModelHandler ShutdownCompleted;
+
+        private void OnShutdownCompleted()
+        {
+            if (ShutdownCompleted != null)
+                ShutdownCompleted(this);
+        }
+
         #endregion
 
         #region internal members
@@ -297,6 +328,7 @@ namespace Dynamo.Models
             Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
+
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
 
@@ -323,8 +355,8 @@ namespace Dynamo.Models
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
-            this.Loader.PackageLoader.DoCachedPackageUninstalls();
-            this.Loader.PackageLoader.LoadPackages();
+            this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -379,10 +411,40 @@ namespace Dynamo.Models
             get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
-        public virtual void ShutDown(bool shutDownHost)
+        /// <summary>
+        /// External components call this method to shutdown DynamoModel. This 
+        /// method marks 'ShutdownRequested' property to 'true'. This method is 
+        /// used rather than a public virtual method to ensure that the value of
+        /// ShutdownRequested is set to true.
+        /// </summary>
+        /// <param name="shutdownHost">Set this parameter to true to shutdown 
+        /// the host application.</param>
+        /// 
+        public void ShutDown(bool shutdownHost)
         {
+            if (ShutdownRequested)
+            {
+                const string message = "'DynamoModel.ShutDown' called twice";
+                throw new InvalidOperationException(message);
+            }
+
             ShutdownRequested = true;
 
+            OnShutdownStarted(); // Notify possible event handlers.
+
+            PreShutdownCore(shutdownHost);
+            ShutDownCore(shutdownHost);
+            PostShutdownCore(shutdownHost);
+
+            OnShutdownCompleted(); // Notify possible event handlers.
+        }
+
+        protected virtual void PreShutdownCore(bool shutdownHost)
+        {
+        }
+
+        protected virtual void ShutDownCore(bool shutdownHost)
+        {
             CleanWorkbench();
 
             EngineController.Dispose();
@@ -394,6 +456,9 @@ namespace Dynamo.Models
 
             Logger.Dispose();
 
+            DynamoSelection.DestroyInstance();
+            UsageReportingManager.DestroyInstance();
+
             InstrumentationLogger.End();
 
 #if ENABLE_DYNAMO_SCHEDULER
@@ -403,6 +468,10 @@ namespace Dynamo.Models
                 scheduler = null;
             }
 #endif
+        }
+
+        protected virtual void PostShutdownCore(bool shutdownHost)
+        {
         }
 
         /// <summary>
