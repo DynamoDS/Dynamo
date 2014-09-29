@@ -85,6 +85,7 @@
     <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\InternalUtilities\ElementQueries.cs" />
     <Compile Include="Elements\Mullion.cs" />
+    <Compile Include="Elements\SunSettings.cs" />
     <Compile Include="Elements\UnknownElement.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ImportInstance.cs" />
