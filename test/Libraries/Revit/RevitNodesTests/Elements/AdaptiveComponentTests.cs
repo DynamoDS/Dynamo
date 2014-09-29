@@ -21,7 +21,7 @@ using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     class AdaptiveComponentTests : GeometricRevitNodeTest

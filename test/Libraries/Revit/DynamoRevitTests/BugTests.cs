@@ -6,7 +6,7 @@ using RTF.Framework;
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Dynamo.Nodes;
-using DSRevitNodesTests;
+using RevitTestServices;
 
 namespace Dynamo.Tests
 {

@@ -2,7 +2,7 @@
 using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     public static class ApproximateAssertExtensions
     {

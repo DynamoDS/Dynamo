@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -10,7 +9,7 @@ using DynamoUtilities;
 
 using NUnit.Framework;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     /// <summary>
     /// This is a temporary session class which is only used for nodes that are using Geometries.
@@ -55,7 +54,7 @@ namespace DSRevitNodesTests
 
         public object GetConfigValue(string config)
         {
-            if (string.Compare(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, config) == 0)
+            if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
                 return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
 
             if (configValues.ContainsKey(config))
