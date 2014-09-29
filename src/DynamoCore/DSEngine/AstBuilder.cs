@@ -134,20 +134,15 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(!inputAstNodes.Any((n) => n == null), 
+            Validity.Assert(inputAstNodes.All(n => n != null), 
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = null;
             var scopedNode = node as ScopedNodeModel;
-            if (scopedNode != null)
-            {
-                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
-            }
-            else
-            {
-                astNodes = node.BuildAst(inputAstNodes);
-            }
+            IEnumerable<AssociativeNode> astNodes = 
+                scopedNode != null
+                    ? scopedNode.BuildAstInScope(inputAstNodes)
+                    : node.BuildAst(inputAstNodes);
             
             if (dynamoModel.DebugSettings.VerboseLogging)
             {
