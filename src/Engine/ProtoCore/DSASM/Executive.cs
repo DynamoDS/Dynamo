@@ -1,25 +1,18 @@
-﻿
-
-using System;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
-using ProtoCore.Lang;
 using ProtoCore.RuntimeData;
-
 
 namespace ProtoCore.DSASM
 {
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;
-        private readonly ProtoCore.Core core;
-        public ProtoCore.Core Core
+        private readonly Core core;
+        public Core Core
         {
             get
             {
@@ -45,7 +38,7 @@ namespace ProtoCore.DSASM
         bool terminate;
 
         private InstructionStream istream;
-        public ProtoCore.Runtime.RuntimeMemory rmem { get; set; }
+        public Runtime.RuntimeMemory rmem { get; set; }
 
         private StackValue AX;
         private StackValue BX;
@@ -54,7 +47,6 @@ namespace ProtoCore.DSASM
         protected StackValue EX;
         protected StackValue FX;
         private StackValue LX;
-
         public StackValue RX { get; set; }
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
@@ -78,9 +70,9 @@ namespace ProtoCore.DSASM
 
         public int executingBlock = Constants.kInvalidIndex;
 
-        ProtoCore.DSASM.CallingConvention.BounceType bounceType;
+        CallingConvention.BounceType bounceType;
 
-        public bool isExplicitCall { get; set; }
+        public bool IsExplicitCall { get; set; }
 
         private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
         
@@ -95,7 +87,7 @@ namespace ProtoCore.DSASM
 
         public Executive(Core core, bool isFep = false)
         {
-            isExplicitCall = false;
+            IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
             enableLogging = core.Options.Verbose;
@@ -879,7 +871,7 @@ namespace ProtoCore.DSASM
 
                 //Dispatch without recursion tracking 
                 explicitCall = false;
-                isExplicitCall = explicitCall;
+                IsExplicitCall = explicitCall;
 
 #if __DEBUG_REPLICATE
                 // TODO: This if block is currently executed only for a replicating function call in Debug Mode (including each of its continuations) 
@@ -951,7 +943,7 @@ namespace ProtoCore.DSASM
                     Properties.functionCallDotCallDimensions = dotCallDimensions;
 
                     explicitCall = true;
-                    isExplicitCall = explicitCall;
+                    IsExplicitCall = explicitCall;
                     int entryPC = (int)sv.opdata;
 
                     CallExplicit(entryPC);
@@ -3149,7 +3141,7 @@ namespace ProtoCore.DSASM
                     executeInstruction.opCode == OpCode.CALLR ||
                     executeInstruction.opCode == OpCode.RETURN
                     || executeInstruction.opCode == OpCode.RETC;
-                if (restoreInstructionStream && isExplicitCall)
+                if (restoreInstructionStream && IsExplicitCall)
                 {
                     // The instruction stream list is updated on callr
                     instructions = istream.instrList;
@@ -3161,7 +3153,7 @@ namespace ProtoCore.DSASM
                 // Check if the current instruction is a return from a function call or constructor
 
                 DebugFrame tempFrame = null;
-                if (!isExplicitCall && (instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETURN || instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETC))
+                if (!IsExplicitCall && (instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETURN || instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETC))
                 {
                     int ci, fi;
                     bool isReplicating;
@@ -6890,7 +6882,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(sv.IsCallingConvention);
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
-            isExplicitCall = explicitCall;
+            IsExplicitCall = explicitCall;
 
             List<bool> execStateRestore = new List<bool>();
             if (!core.Options.IDEDebugMode || core.ExecMode == InterpreterMode.kExpressionInterpreter)
@@ -7167,7 +7159,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(sv.IsCallingConvention);
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType;
-            isExplicitCall = explicitCall;
+            IsExplicitCall = explicitCall;
 
 
             List<bool> execStateRestore = new List<bool>();
