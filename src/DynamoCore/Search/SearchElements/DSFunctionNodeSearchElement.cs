@@ -72,19 +72,16 @@ namespace Dynamo.Search.SearchElements
                 }
                 case ResourceType.LargeIcon:
                 {
-                    string name = String.Empty;
+                    string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                    // Case for nodes which have in name forbidden symbols.
+                    // Should be used FunctionDescriptor.Name property instead.
+                    if (name != FunctionDescriptor.QualifiedName)
+                        name += Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
 
                     // Usual case.
                     if (!disambiguate)
-                    {
-                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                        // Case for operators. Operators should use FunctionDescriptor.Name property.
-                        if (string.IsNullOrEmpty(name))
-                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-
                         return name;
-                    }
 
                     // Case for overloaded methods.
                     return Utils.TypedParametersToString(this.FunctionDescriptor, name);
