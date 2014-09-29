@@ -10,7 +10,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class SublistsCustomization : INodeCustomization<Dynamo.Nodes.Sublists>
+    public class SublistsViewCustomization : INodeViewCustomization<Dynamo.Nodes.Sublists>
     {
         private Dynamo.Nodes.Sublists sublistsNodeModel;
         private DynamoTextBox tb;

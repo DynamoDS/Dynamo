@@ -10,7 +10,7 @@ using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf
 {
-    public class CodeBlockNodeCustomization : INodeCustomization<CodeBlockNodeModel>
+    public class CodeBlockNodeViewCustomization : INodeViewCustomization<CodeBlockNodeModel>
     {
         public void CustomizeView(CodeBlockNodeModel model, dynNodeView nodeUI)
         {

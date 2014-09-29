@@ -10,7 +10,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class BasicInteractiveCustomization<T> : INodeCustomization<BasicInteractive<T>>
+    public abstract class BasicInteractiveViewCustomization<T> : INodeViewCustomization<BasicInteractive<T>>
     {
         protected DynamoViewModel dynamoViewModel;
 

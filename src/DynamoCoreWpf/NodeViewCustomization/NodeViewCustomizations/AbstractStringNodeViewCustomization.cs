@@ -8,7 +8,7 @@ using Dynamo.UI.Prompts;
 
 namespace Dynamo.Wpf
 {
-    public abstract class AbstractStringNodeCustomization : BasicInteractiveCustomization<string>
+    public abstract class AbstractStringNodeViewCustomization : BasicInteractiveViewCustomization<string>
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {

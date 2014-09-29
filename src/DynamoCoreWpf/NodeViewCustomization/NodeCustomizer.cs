@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Wpf
 {
-    internal class NodeViewCustomizer
+    internal class NodeCustomizationLibrary
     {
-        private Dictionary<Type, List<InternalNodeCustomization>> lookupDict =
-            new Dictionary<Type, List<InternalNodeCustomization>>();
+        private Dictionary<Type, List<InternalNodeViewCustomization>> lookupDict =
+            new Dictionary<Type, List<InternalNodeViewCustomization>>();
 
         internal void Apply(dynNodeView view)
         {
@@ -25,12 +18,13 @@ namespace Dynamo.Wpf
             Type t = model.GetType();
             do
             {
-                List<InternalNodeCustomization> custs;
+                List<InternalNodeViewCustomization> custs;
                 if (lookupDict.TryGetValue(t, out custs))
                 {
                     foreach (var customization in custs)
                     {
                         var disposable = customization.CustomizeView(model, view);
+                        // TODO CORESPLIT
                         //view.Destroyed += disposable.Dispose;
                     }
                 }
@@ -38,7 +32,7 @@ namespace Dynamo.Wpf
             } while (t != typeof(NodeModel));
         }
 
-        internal void Add(INodeCustomizations cs)
+        internal void Add(INodeViewCustomizations cs)
         {
             var custs = cs.GetCustomizations();
 
@@ -49,20 +43,20 @@ namespace Dynamo.Wpf
 
                 foreach (var custType in custTypes)
                 {
-                    this.Add(nodeModelType, InternalNodeCustomization.Create(custType));
+                    this.Add(nodeModelType, InternalNodeViewCustomization.Create(custType));
                 }
             }
         }
 
-        internal void Add(Type modelType, InternalNodeCustomization internalNodeCustomization)
+        internal void Add(Type modelType, InternalNodeViewCustomization internalNodeViewCustomization)
         {
-            List<InternalNodeCustomization> entries;
+            List<InternalNodeViewCustomization> entries;
             if (!lookupDict.TryGetValue(modelType, out entries))
             {
-                entries = new List<InternalNodeCustomization>();
+                entries = new List<InternalNodeViewCustomization>();
                 lookupDict[modelType] = entries;
             }
-            entries.Add(internalNodeCustomization);
+            entries.Add(internalNodeViewCustomization);
         }
 
     }

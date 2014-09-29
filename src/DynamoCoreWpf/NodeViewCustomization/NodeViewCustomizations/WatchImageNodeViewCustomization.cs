@@ -16,7 +16,7 @@ using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Wpf
 {
-    internal class WatchImageNodeCustomization : INodeCustomization<Dynamo.Nodes.WatchImageCore>
+    internal class WatchImageNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.WatchImageCore>
     {
         private Image image;
         private NodeModel nodeModel;

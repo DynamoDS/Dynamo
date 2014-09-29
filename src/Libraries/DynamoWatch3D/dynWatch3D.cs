@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel, IWatchViewModel, INodeCustomization<>
+    public class Watch3D : NodeModel, IWatchViewModel, INodeViewCustomization<>
     {
         private bool _canNavigateBackground = true;
         private double _watchWidth = 200;

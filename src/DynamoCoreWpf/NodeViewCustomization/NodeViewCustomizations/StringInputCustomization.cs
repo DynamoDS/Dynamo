@@ -15,7 +15,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Wpf
 {
-    public class StringInputNodeCustomization : AbstractStringNodeCustomization
+    public class StringInputNodeViewCustomization : AbstractStringNodeViewCustomization
     {
         public void CustomizeView(StringInput stringInput, dynNodeView ui)
         {

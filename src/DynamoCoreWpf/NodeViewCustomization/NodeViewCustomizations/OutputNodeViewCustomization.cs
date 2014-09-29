@@ -8,7 +8,7 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class OutputNodeCustomization : INodeCustomization<Dynamo.Nodes.Output>
+    public class OutputNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Output>
     {
         private Dynamo.Nodes.Output outputNodeModel;
 

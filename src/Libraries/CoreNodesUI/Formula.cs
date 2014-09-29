@@ -25,7 +25,7 @@ namespace DSCoreNodesUI
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
-    public class Formula : NodeModel, INodeCustomization<>
+    public class Formula : NodeModel, INodeViewCustomization<>
     {
         private string formulaString = "";
         public string FormulaString

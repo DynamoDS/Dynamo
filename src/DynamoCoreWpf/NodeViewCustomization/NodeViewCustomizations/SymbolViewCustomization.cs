@@ -8,7 +8,7 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class SymbolCustomization : INodeCustomization<Dynamo.Nodes.Symbol>
+    public class SymbolViewCustomization : INodeViewCustomization<Dynamo.Nodes.Symbol>
     {
         public void CustomizeView(Dynamo.Nodes.Symbol symbol, dynNodeView nodeView)
         {

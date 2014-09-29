@@ -16,7 +16,7 @@ namespace DSCoreNodesUI
     /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
-    public abstract class DSDropDownBase : NodeModel, INodeCustomization<>
+    public abstract class DSDropDownBase : NodeModel, INodeViewCustomization<>
     {
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items

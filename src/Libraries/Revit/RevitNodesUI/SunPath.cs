@@ -24,7 +24,7 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Returns the current Sun Path direction.")]
     [IsDesignScriptCompatible]
-    public class SunPathDirection : NodeModel, INodeCustomization<>
+    public class SunPathDirection : NodeModel, INodeViewCustomization<>
     {
         TextBox _tb;
         Button _sunPathButt;

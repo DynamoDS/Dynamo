@@ -10,7 +10,7 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class VariableInputAndOutputCustomization : INodeCustomization<Dynamo.Nodes.VariableInputAndOutput>
+    public class VariableInputAndOutputViewCustomization : INodeViewCustomization<Dynamo.Nodes.VariableInputAndOutput>
     {
         public void CustomizeView(Dynamo.Nodes.VariableInputAndOutput model, dynNodeView nodeView)
         {

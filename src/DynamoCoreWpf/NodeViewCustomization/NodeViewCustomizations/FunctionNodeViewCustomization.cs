@@ -7,7 +7,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class FunctionNodeCustomization : INodeCustomization<Dynamo.Nodes.Function>
+    public class FunctionNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Function>
     {
         private Dynamo.Nodes.Function functionNodeModel;
 

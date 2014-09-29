@@ -13,7 +13,7 @@ using VMDataBridge;
 
 namespace Dynamo.Wpf
 {
-    public class WatchNodeCustomization : INodeCustomization<Dynamo.Nodes.Watch>
+    public class WatchNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Watch>
     {
         private DynamoViewModel dynamoViewModel;
         private Nodes.Watch watchNodeModel;

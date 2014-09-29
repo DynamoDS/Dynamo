@@ -10,7 +10,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class DropDrownBaseNodeCustomization : INodeCustomization<Dynamo.Nodes.DropDrownBase>
+    public class DropDrownBaseNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.DropDrownBase>
     {
         private Nodes.DropDrownBase dropDownNodeModel;
 

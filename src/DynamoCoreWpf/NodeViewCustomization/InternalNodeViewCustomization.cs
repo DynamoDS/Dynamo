@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf
 {
@@ -29,12 +24,12 @@ namespace Dynamo.Wpf
         }
     }
 
-    internal class InternalNodeCustomization
+    internal class InternalNodeViewCustomization
     {
         private readonly Type customizerType;
         private readonly Delegate constructor;
 
-        internal InternalNodeCustomization(Type customizerType)
+        internal InternalNodeViewCustomization(Type customizerType)
         {
             this.customizerType = customizerType;
         }
@@ -47,7 +42,7 @@ namespace Dynamo.Wpf
             return CustomizeViewInternal((dynamic)customizer, model, view);
         }
 
-        private static IDisposable CustomizeViewInternal<T>(INodeCustomization<T> t, NodeModel model, dynNodeView view) 
+        private static IDisposable CustomizeViewInternal<T>(INodeViewCustomization<T> t, NodeModel model, dynNodeView view) 
             where T : NodeModel
         {
             t.CustomizeView(model as T, view);
@@ -65,10 +60,11 @@ namespace Dynamo.Wpf
             return newCust.Compile();
         }
 
-        internal static InternalNodeCustomization Create(Type custType)
+        internal static InternalNodeViewCustomization Create(Type custType)
         {
+            // TODO CORESPLIT
             // fail early
-            return new InternalNodeCustomization(custType);
+            return new InternalNodeViewCustomization(custType);
         }
     }
 }

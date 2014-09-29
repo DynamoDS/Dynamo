@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Dynamo.Wpf
 {
-    internal class CoreNodeCustomizations : INodeCustomizations
+    internal class CoreNodeViewCustomizations : INodeViewCustomizations
     {
         private static Dictionary<Type, IEnumerable<Type>> cache;
 
@@ -15,7 +15,7 @@ namespace Dynamo.Wpf
 
             cache = new Dictionary<Type, IEnumerable<Type>>();
 
-            var customizerType = typeof(INodeCustomization<>);
+            var customizerType = typeof(INodeViewCustomization<>);
 
             var customizerImps = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
@@ -44,7 +44,7 @@ namespace Dynamo.Wpf
                 var genInterf = toCheck.GetInterfaces().FirstOrDefault(
                     x =>
                         x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == typeof(INodeCustomization<>));
+                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>));
 
                 if (genInterf != null)
                 {

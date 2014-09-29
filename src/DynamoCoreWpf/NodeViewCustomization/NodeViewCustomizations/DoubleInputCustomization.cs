@@ -11,7 +11,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class DoubleInputNodeCustomization : INodeCustomization<DoubleInput>
+    public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
         private DoubleInput doubleInput;
 
