@@ -39,6 +39,7 @@ namespace Dynamo
         private readonly DynamoModel dynamoModel;
         private readonly VisualizationManager visualizationManager;
         private readonly Thread controllerThread;
+        private bool isShuttingDown = false;
 
         public RenderManager(VisualizationManager vizManager, DynamoModel dynamoModel)
         {
@@ -100,7 +101,7 @@ namespace Dynamo
 
         private void RenderLoopController()
         {
-            while (true)
+            while (!this.isShuttingDown)
             {
                 RenderTask task = new RenderTask();
                 bool hasTask = false;
@@ -125,10 +126,7 @@ namespace Dynamo
                     //a polling model
                     Thread.Sleep(10);
                 }
-
-
             }
-
         }
 
         /// <summary>
@@ -196,5 +194,10 @@ namespace Dynamo
             node.UpdateRenderPackage(maxTesselationDivs);
         }
 
+        public void CleanUp()
+        {
+            isShuttingDown = true;
+            controllerThread.Join(); 
+        }
     }
 }
