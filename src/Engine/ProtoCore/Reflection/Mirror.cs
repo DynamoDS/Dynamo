@@ -163,8 +163,7 @@ namespace ProtoCore
 
                 Validity.Assert(svData.IsArray);
 
-                int ptr = (int)svData.opdata;
-                HeapElement hs = core.Heap.Heaplist[ptr];
+                HeapElement hs = core.Heap.GetHeapElement(svData);
                 foreach (var sv in hs.VisibleItems)
                 {
                     if (sv.IsArray)

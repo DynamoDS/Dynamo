@@ -563,6 +563,7 @@ namespace Dynamo
         {
             Pause(this, EventArgs.Empty);
             QueueRenderTask();
+            Cleanup();
         }
 
         /// <summary>
@@ -628,6 +629,7 @@ namespace Dynamo
         public void Cleanup()
         {
             UnregisterEventListeners();
+            renderManager.CleanUp();
         }
 
         #endregion

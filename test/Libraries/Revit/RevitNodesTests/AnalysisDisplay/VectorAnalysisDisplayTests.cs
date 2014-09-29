@@ -4,7 +4,7 @@ using Revit.Application;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.AnalysisDisplay
+namespace RevitTestServices.AnalysisDisplay
 {
     [TestFixture]
     public class VectorAnalysisDisplayTests : GeometricRevitNodeTest

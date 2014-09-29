@@ -340,12 +340,12 @@ namespace Dynamo.Controls
             _aboutWindow.Focus();
         }
 
-        private PackageManagerPublishView _pubPkgView;
+        private PublishPackageView _pubPkgView;
         void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
-                _pubPkgView = new PackageManagerPublishView(model);
+                _pubPkgView = new PublishPackageView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
 
@@ -598,24 +598,16 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            if (dynamoViewModel.exitInvoked)
-                return;
+            var sp = new DynamoViewModel.ShutdownParams(
+                shutdownHost: false,
+                allowCancellation: true,
+                closeDynamoView: false);
 
-            var res = dynamoViewModel.AskUserToSaveWorkspacesOrCancel();
-            if (!res)
+            if (dynamoViewModel.PerformShutdownSequence(sp))
             {
-                e.Cancel = true;
-                return;
+                SizeChanged -= DynamoView_SizeChanged;
+                LocationChanged -= DynamoView_LocationChanged;
             }
-
-            SizeChanged -= DynamoView_SizeChanged;
-            LocationChanged -= DynamoView_LocationChanged;
-
-            if (!DynamoModel.IsTestMode)
-            {
-                dynamoViewModel.Model.ShutDown(false);
-            }
-
         }
 
         private void WindowClosed(object sender, EventArgs e)
