@@ -12,6 +12,7 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using Dynamo.UI.Controls;
+using Dynamo.Utilities;
 
 namespace DynamoCoreUITests
 {
@@ -193,7 +194,7 @@ namespace DynamoCoreUITests
         {
             string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
 
-            var rule = CodeBlockEditor.CreateDigitRule().Regex;
+            var rule = CodeBlockUtils.CreateDigitRule().Regex;
             var matches = rule.Matches(text);
 
             // Expected results (8):
@@ -292,7 +293,7 @@ namespace DynamoCoreUITests
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoViewModel.RecordableCommand
+            where CmdType : DynamoModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -302,7 +303,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;

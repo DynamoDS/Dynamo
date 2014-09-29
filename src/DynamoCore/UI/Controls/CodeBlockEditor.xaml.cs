@@ -5,8 +5,8 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.AvalonEdit.Rendering;
 using ProtoCore.Mirror;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -92,37 +92,6 @@ namespace Dynamo.UI.Controls
         {
             return "";
         }
-
-
-        public static HighlightingRule CreateDigitRule()
-        {
-            var digitRule = new HighlightingRule();
-
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-            digitRule.Color = new HighlightingColor()
-            {
-                Foreground = new CustomizedBrush(color)
-            };
-
-            // These Regex's must match with the grammars in the DS ATG for digits
-            // Refer to the 'number' and 'float' tokens in Start.atg
-            //*******************************************************************************
-            // number = digit {digit} .
-            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-            //*******************************************************************************
-
-            string digit = @"(-?\b\d+)";
-            string floatingPoint = @"(\.[0-9]+)";
-            string numberWithOptionalDecimal = digit + floatingPoint + "?";
-
-            string exponent = @"([eE][+-]?[0-9]+)";
-            string numberWithExponent = digit + floatingPoint + exponent;
-
-            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
-
-            return digitRule;
-        }
-
 
         #region Generic Properties
         internal TextEditor InternalEditor
@@ -254,7 +223,7 @@ namespace Dynamo.UI.Controls
 
             // Highlighting Digits
             var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-            rules.Add(CreateDigitRule());
+            rules.Add(CodeBlockUtils.CreateDigitRule());
         }
 
         private void OnRequestReturnFocusToSearch()
@@ -298,31 +267,5 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
-    // Refer to link: 
-    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
-    internal sealed class CustomizedBrush : HighlightingBrush
-    {
-        private readonly SolidColorBrush brush;
-        public CustomizedBrush(Color color)
-        {
-            brush = CreateFrozenBrush(color);
-        }
-
-        public override Brush GetBrush(ITextRunConstructionContext context)
-        {
-            return brush;
-        }
-
-        public override string ToString()
-        {
-            return brush.ToString();
-        }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
-    }
+    
 }
