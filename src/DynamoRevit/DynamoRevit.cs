@@ -435,8 +435,22 @@ namespace Dynamo.Applications
             DynamoRevitApp.DynamoButton.Enabled = true;
         }
 
+        /// <summary>
+        /// This method access Revit API, therefore it needs to be called only 
+        /// by idle thread (i.e. in an 'UIApplication.Idling' event handler).
+        /// </summary>
         private static void DeleteKeeperElement()
         {
+#if !ENABLE_DYNAMO_SCHEDULER
+
+            if (!IdlePromise.InIdleThread)
+            {
+                throw new AccessViolationException(
+                    "'DeleteKeeperElement' must be called in idle thread");
+            }
+
+#endif
+
             var dbDoc = DocumentManager.Instance.CurrentDBDocument;
             if (null == dbDoc || (dynamoViewModel == null))
                 return;

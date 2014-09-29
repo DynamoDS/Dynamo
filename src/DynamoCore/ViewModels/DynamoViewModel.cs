@@ -694,7 +694,8 @@ namespace Dynamo.ViewModels
 
         void updateManager_ShutdownRequested(IUpdateManager updateManager)
         {
-            PerformShutdownSequence(new ShutdownParams(true, true));
+            PerformShutdownSequence(new ShutdownParams(
+                shutdownHost: true, allowCancellation: true));
         }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1416,7 +1417,8 @@ namespace Dynamo.ViewModels
             if (allowCancel != null)
                 allowCancellation = ((bool)allowCancel);
 
-            PerformShutdownSequence(new ShutdownParams(false, allowCancellation));
+            PerformShutdownSequence(new ShutdownParams(
+                shutdownHost: false, allowCancellation: allowCancellation));
         }
 
         internal bool CanExit(object allowCancel)
@@ -1959,8 +1961,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// This struct represents parameters for PerformShutdownSequence call.
-        /// It exposes several properties to control the way shutdown process 
-        /// goes, details of which can be found alongside each property below.
+        /// It exposes several properties to control the way shutdown process goes.
         /// </summary>
         /// 
         internal struct ShutdownParams
@@ -1981,13 +1982,13 @@ namespace Dynamo.ViewModels
             }
 
             /// <summary>
-            /// The call to PerformShutdownSequence results in host 
+            /// The call to PerformShutdownSequence results in the host 
             /// application being shutdown if this property is set to true.
             /// </summary>
             internal bool ShutdownHost { get; private set; }
 
             /// <summary>
-            /// If this property is set to true, user is given
+            /// If this property is set to true, the user is given
             /// an option to cancel the shutdown process.
             /// </summary>
             internal bool AllowCancellation { get; private set; }
@@ -2005,24 +2006,36 @@ namespace Dynamo.ViewModels
 
         private bool shutdownSequenceInitiated = false;
 
+        /// <summary>
+        /// Call this method to initiate DynamoModel shutdown sequence.
+        /// See the definition of ShutdownParams structure for more details.
+        /// </summary>
+        /// <param name="shutdownParams">A set of parameters that control the 
+        /// way in which shutdown sequence is to be performed. See ShutdownParams
+        /// for more details.</param>
+        /// <returns>Returns true if the shutdown sequence is started, or false 
+        /// otherwise (i.e. when user chooses not to proceed with shutting down 
+        /// Dynamo).</returns>
+        /// 
         internal bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
-            // There was a prior call to shutdown. This could happen for example
-            // when user presses 'ALT + F4' to close the DynamoView, the 'Exit' 
-            // handler calls this method to close Dynamo, which in turn closes 
-            // the DynamoView ('OnRequestClose' below). When DynamoView closes,
-            // its "Window.Closing" event fires and "DynamoView.WindowClosing" 
-            // gets called before 'PerformShutdownSequence' is called again.
-            // 
             if (shutdownSequenceInitiated)
+            {
+                // There was a prior call to shutdown. This could happen for example
+                // when user presses 'ALT + F4' to close the DynamoView, the 'Exit' 
+                // handler calls this method to close Dynamo, which in turn closes 
+                // the DynamoView ('OnRequestClose' below). When DynamoView closes,
+                // its "Window.Closing" event fires and "DynamoView.WindowClosing" 
+                // gets called before 'PerformShutdownSequence' is called again.
+                // 
                 return true;
+            }
 
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
 
-            // Note that 'shutdownSequenceInitiated' is only marked as 'true'
-            // here when it goes past the point-of-no-return, in which case 
-            // there is no stopping of shutdown sequence.
+            // 'shutdownSequenceInitiated' is marked as true here indicating 
+            // that the shutdown may not be stopped.
             shutdownSequenceInitiated = true;
 
             // Request the View layer to close its window (see 
@@ -2046,7 +2059,7 @@ namespace Dynamo.ViewModels
         /// 
         private bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
-            if (null != automationSettings)
+            if (automationSettings != null)
             {
                 // In an automation run, Dynamo should not be asking user to save 
                 // the modified file. Instead it should be shutting down, leaving 

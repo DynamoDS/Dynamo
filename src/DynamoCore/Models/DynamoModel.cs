@@ -64,14 +64,31 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This event is raised right before the shutdown of DynamoModel started.
+        /// When this event is raised, the shutdown is guaranteed to take place
+        /// (i.e. user has had a chance to save the work and decided to proceed 
+        /// with shutting down Dynamo). Handlers of this event can still safely 
+        /// access the DynamoModel, the WorkspaceModel (along with its contents), 
+        /// and the DynamoScheduler.
+        /// </summary>
+        /// 
         public event DynamoModelHandler ShutdownStarted;
+
         private void OnShutdownStarted()
         {
             if (ShutdownStarted != null)
                 ShutdownStarted(this);
         }
 
+        /// <summary>
+        /// This event is raised after DynamoModel has been shut down. At this 
+        /// point the DynamoModel is no longer valid and access to it should be 
+        /// avoided.
+        /// </summary>
+        /// 
         public event DynamoModelHandler ShutdownCompleted;
+
         private void OnShutdownCompleted()
         {
             if (ShutdownCompleted != null)
@@ -396,14 +413,12 @@ namespace Dynamo.Models
 
         /// <summary>
         /// External components call this method to shutdown DynamoModel. This 
-        /// method marks 'ShutdownRequested' property to 'true'. This illustrates 
-        /// the main reason why public virtual methods are not desirable -- making 
-        /// 'ShutDownCore' public virtual will not give us a reliable way to set 
-        /// 'ShutdownRequested' to 'true' since the overridden method may not 
-        /// even call 'base.ShutDownCore'.
+        /// method marks 'ShutdownRequested' property to 'true'. This method is 
+        /// used rather than a public virtual method to ensure that the value of
+        /// ShutdownRequested is set to true.
         /// </summary>
-        /// <param name="shutdownHost">Set this to true if shutting down the 
-        /// DynamoModel should also shutdown the host application.</param>
+        /// <param name="shutdownHost">Set this parameter to true to shutdown 
+        /// the host application.</param>
         /// 
         public void ShutDown(bool shutdownHost)
         {
@@ -416,11 +431,11 @@ namespace Dynamo.Models
             ShutdownRequested = true;
 
             OnShutdownStarted(); // Notify possible event handlers.
-            {
-                PreShutdownCore(shutdownHost);
-                ShutDownCore(shutdownHost);
-                PostShutdownCore(shutdownHost);
-            }
+
+            PreShutdownCore(shutdownHost);
+            ShutDownCore(shutdownHost);
+            PostShutdownCore(shutdownHost);
+
             OnShutdownCompleted(); // Notify possible event handlers.
         }
 
