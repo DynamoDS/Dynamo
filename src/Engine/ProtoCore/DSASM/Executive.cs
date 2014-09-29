@@ -121,7 +121,7 @@ namespace ProtoCore.DSASM
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage("Start JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
 
@@ -136,16 +136,9 @@ namespace ProtoCore.DSASM
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage("Start JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
-
-        /*private void CallExplicit(int exeblock, int entry, int locals, StackFrame frame)
-        {
-            fepRun = true;
-            rmem.PushStackFrame(frame, locals);
-            SetupExecutiveForCall(exeblock, entry);
-        }*/
 
         private void CallExplicit(int entry)
         {
@@ -238,7 +231,7 @@ namespace ProtoCore.DSASM
             RestoreExecutive(executingBlock);
 
 
-            logVMMessage("End JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(currentLang));
+            logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(currentLang));
         }
 
 
@@ -270,12 +263,12 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
         }
 
-        private void PushInterpreterProps(ProtoCore.InterpreterProperties properties)
+        private void PushInterpreterProps(InterpreterProperties properties)
         {
-            core.InterpreterProps.Push(new ProtoCore.InterpreterProperties(properties));
+            core.InterpreterProps.Push(new InterpreterProperties(properties));
         }
 
-        private ProtoCore.InterpreterProperties PopInterpreterProps()
+        private InterpreterProperties PopInterpreterProps()
         {
             return core.InterpreterProps.Pop();
         }
@@ -716,7 +709,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     // Global
-                    svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
+                    svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
                 }
             }
 
@@ -747,7 +740,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
+            CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -801,8 +794,7 @@ namespace ProtoCore.DSASM
 
                     if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
                     {
-                        bool isBaseCall = false;
-                        core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, isBaseCall, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
+                        core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
                     sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
@@ -822,14 +814,13 @@ namespace ProtoCore.DSASM
             {
                 if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    bool isBaseCall = false;
                     if (core.ContinuationStruct.IsFirstCall)
                     {
                         core.DebugProps.SetUpCallrForDebug(core, 
                                                            this, 
                                                            fNode, 
                                                            pc, 
-                                                           isBaseCall, 
+                                                           false, 
                                                            callsite, 
                                                            arguments, 
                                                            replicationGuides, 
@@ -843,7 +834,7 @@ namespace ProtoCore.DSASM
                                                            this, 
                                                            fNode, 
                                                            pc, 
-                                                           isBaseCall, 
+                                                           false, 
                                                            callsite, 
                                                            core.ContinuationStruct.InitialArguments, 
                                                            replicationGuides, 
@@ -1209,7 +1200,7 @@ namespace ProtoCore.DSASM
                 else if (snode.IsChar)
                 {
                     Int64 data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(data);
+                    Char character = EncodingUtils.ConvertInt64ToCharacter(data);
                     rhs = "'" + character + "'";
                 }
                 else if (snode.IsString)
@@ -1261,7 +1252,7 @@ namespace ProtoCore.DSASM
             else if (snode.IsChar)
             {
                 Int64 data = snode.opdata;
-                Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(data);
+                Char character = EncodingUtils.ConvertInt64ToCharacter(data);
                 rhs = "'" + character + "'";
             }
             else if (snode.IsString)
@@ -1286,7 +1277,7 @@ namespace ProtoCore.DSASM
             {
                 if (!item.IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
+                str += EncodingUtils.ConvertInt64ToCharacter(item.opdata);
             }
 
             if (str == "")
@@ -1350,7 +1341,7 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
             if (graphNodes != null)
             {
-                foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
                     if (!graphNode.isDirty || !graphNode.isActive)
                     {
@@ -1428,7 +1419,7 @@ namespace ProtoCore.DSASM
         {
             // Find the graph where the entry point matches the graph pc
             // Set that graph node as not dirty   
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
             {
                 if (core.Options.IsDeltaExecution)
                 {
@@ -1472,7 +1463,7 @@ namespace ProtoCore.DSASM
             }
 
             string message = String.Format(WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kCyclicDependency, message);
+            core.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
@@ -1494,29 +1485,21 @@ namespace ProtoCore.DSASM
             return false;
         }
 
-        private bool IsExecutedTooManyTimes(ProtoCore.AssociativeGraph.GraphNode node, int limit)
+        private bool IsExecutedTooManyTimes(AssociativeGraph.GraphNode node, int limit)
         {
             Validity.Assert(null != node);
-            if (node.counter > limit)
-            {
-
-                return true;
-            }
-            else
-                return false;
-
+            return (node.counter > limit);
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<ProtoCore.AssociativeGraph.GraphNode> nodesExecutedSameTime)
+        private AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<AssociativeGraph.GraphNode> nodesExecutedSameTime)
         {
-
-            ProtoCore.AssociativeGraph.GraphNode cyclicSymbolStart = null;
-            ProtoCore.AssociativeGraph.GraphNode cyclicSymbolEnd = null;
+            AssociativeGraph.GraphNode cyclicSymbolStart = null;
+            AssociativeGraph.GraphNode cyclicSymbolEnd = null;
 
             cyclicSymbolStart = nodesExecutedSameTime[0];
             cyclicSymbolEnd = nodesExecutedSameTime.Last();
 
-            ProtoCore.AssociativeGraph.GraphNode[] StartAndEnd = new ProtoCore.AssociativeGraph.GraphNode[] { cyclicSymbolStart, cyclicSymbolEnd };
+            var StartAndEnd = new AssociativeGraph.GraphNode[] { cyclicSymbolStart, cyclicSymbolEnd };
             //reset counter
             foreach (ProtoCore.AssociativeGraph.GraphNode node in nodesExecutedSameTime)
             {
@@ -5888,7 +5871,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void MUL_Handler(Instruction instruction)
