@@ -231,19 +231,6 @@ namespace ProtoCore
                 }
             }
 
-            public IEnumerable<StackFrame> GetStackFrames()
-            {
-                var framePointer = FramePointer;
-                while (framePointer >= StackFrame.kStackFrameSize)
-                {
-                    var frame = new StackValue[StackFrame.kStackFrameSize];
-                    Stack.CopyTo(StackFrame.kFrameIndexFramePointer + framePointer, frame, 0, StackFrame.kStackFrameSize);
-                    var stackFrame = new StackFrame(frame.Reverse().ToArray());
-                    framePointer = stackFrame.FramePointer;
-                    yield return stackFrame;
-                }
-            }
-
             public void Push(StackValue data)
             {
                 Stack.Add(data);
