@@ -5058,36 +5058,40 @@ namespace ProtoCore.DSASM
             SymbolNode snode = GetSymbolNode(blockId, classIndex, symbolIndex);
             runtimeVerify(null != snode);
 
-            StackValue array = rmem.GetAtRelative(snode);
+            StackValue svArrayToIterate = rmem.GetAtRelative(snode);
 
-            // Check for the validity of the array
-            if (!array.IsArray && !array.IsNull && snode.datatype.IsIndexable)
-            {
-                HeapElement heapElem = core.Heap.GetHeapElement(array);
-
-                // A heap element can be an array that has no contents
-                // Check this before retrieving
-                if (heapElem.GetAllocatedSize() > 0)
-                {
-                    array = heapElem.Stack[0];
-                }
-            }
-
+            // Check if the array to iterate is a valid array
             StackValue key = StackValue.Null;
-            HeapElement he = ArrayUtils.GetHeapElement(array, core);
-            if (he != null)
+            if (svArrayToIterate.IsArray)
             {
-                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
+                HeapElement he = ArrayUtils.GetHeapElement(svArrayToIterate, core);
+                Validity.Assert(he != null);
+                bool arrayHasElement = he.VisibleItems.Any();
+                bool dictionaryHasElement = he.Dict != null && he.Dict.Count > 0;
+                if (arrayHasElement || dictionaryHasElement)
                 {
-                    key = StackValue.BuildArrayKey(array, 0);
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                }
+                else
+                {
+                    // svArrayToIterate has no elements 
+                    key = StackValue.Null;
                 }
             }
-            else if (!array.IsNull)
+            else
             {
-                key = StackValue.BuildArrayKey(Constants.kInvalidIndex, Constants.kInvalidIndex);
+                // Handle the case if svArrayToIterate is not an array
+                if (svArrayToIterate.IsNull)
+                {
+                    key = StackValue.Null;
+                }
+                else
+                {
+                    // svArrayToIterate is not an array and is non-null, build the default key
+                    key = StackValue.BuildArrayKey(Constants.kInvalidIndex, Constants.kInvalidIndex);
+                }
             }
-            rmem.Push(key);
-
+            rmem.Push(key); 
             ++pc;
         }
 
