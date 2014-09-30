@@ -411,26 +411,48 @@ namespace Dynamo.Applications.Models
             if (!deleted.Any())
                 return;
 
-            var workspace = this.CurrentWorkspace;
+            var nodes = GetNodesFromElementIds(deleted);
+            foreach(var node in nodes)
+            {
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
+            }
+        }
+
+        #endregion
+
+        #region Utilities
+        /// <summary>
+        /// This function gets the node which has created the element with the
+        /// given element ID
+        /// </summary>
+        /// <param name="id">The given element ID</param>
+        /// <returns>the related node, if not found, will be null</returns>
+        private NodeModel GetNodeFromElementId(ElementId id)
+        {
+            if (id == null)
+                return null;
+
+            var workspace = CurrentWorkspace;
 
             ProtoCore.Core core = null;
-            var engine = this.EngineController;
+            var engine = EngineController;
             if (engine != null && (engine.LiveRunnerCore != null))
                 core = engine.LiveRunnerCore;
 
-            if (core == null) // No execution yet as of this point.
-                return;
+            if (core == null)
+                return null;
 
             // Selecting all nodes that are either a DSFunction,
             // a DSVarArgFunction or a CodeBlockNodeModel into a list.
             var nodeGuids = workspace.Nodes.Where((n) =>
             {
                 return (n is DSFunction
-                    || (n is DSVarArgFunction)
-                    || (n is CodeBlockNodeModel));
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
             }).Select((n) => n.GUID);
 
-            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
 
             foreach (Guid guid in nodeTraceDataList.Keys)
             {
@@ -444,31 +466,111 @@ namespace Dynamo.Applications.Models
                         {
                             SerializableId sid = thingy as SerializableId;
 
-                            foreach (ElementId eid in deleted)
+                            if ((sid != null) && (sid.IntID == id.IntegerValue))
                             {
+                                NodeModel inm =
+                                    workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
 
-                                if (sid != null)
-                                {
-                                    if (sid.IntID == eid.IntegerValue)
-                                    {
-                                        NodeModel inm =
-                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-
-                                        Validity.Assert(inm != null, "The bound node has disappeared");
-
-                                        inm.RequiresRecalc = true;
-                                        inm.ForceReExecuteOfNode = true;
-
-                                        //FOUND IT!
-                                    }
-                                }
+                                //FOUND IT!
+                                return inm;
                             }
                         }
                     }
                 }
             }
+            return null;
         }
 
+        /// <summary>
+        /// This function gets the nodes which have created the elements with the
+        /// given element IDs
+        /// </summary>
+        /// <param name="ids">The given element IDs</param>
+        /// <returns>the related nodes</returns>
+        private IEnumerable<NodeModel> GetNodesFromElementIds(IEnumerable<ElementId> ids)
+        {
+            List<NodeModel> nodes = new List<NodeModel>();
+            if (!ids.Any())
+                return nodes.AsEnumerable();
+
+            var workspace = CurrentWorkspace;
+
+            ProtoCore.Core core = null;
+            var engine = EngineController;
+            if (engine != null && (engine.LiveRunnerCore != null))
+                core = engine.LiveRunnerCore;
+
+            if (core == null)
+                return null;
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids = workspace.Nodes.Where((n) =>
+            {
+                return (n is DSFunction
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+            }).Select((n) => n.GUID);
+
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
+
+            List<ElementId> copiedIds = new List<ElementId>(ids);
+            bool areElementsFoundForThisNode;
+            foreach (Guid guid in nodeTraceDataList.Keys)
+            {
+                areElementsFoundForThisNode = false;
+                List<ElementId> idsToRemove = new List<ElementId>();
+                foreach (CallSite cs in nodeTraceDataList[guid])
+                {
+                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
+                    {
+                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                        foreach (ISerializable thingy in traceData)
+                        {
+                            SerializableId sid = thingy as SerializableId;
+
+                            if (sid != null)
+                            {
+                                ElementId tempId = null;
+                                foreach (var id in copiedIds)
+                                {
+                                    if (sid.IntID == id.IntegerValue)
+                                    {
+                                        //FOUND ONE
+                                        tempId = id;
+                                        areElementsFoundForThisNode = true;
+                                    }
+                                }
+
+                                if (tempId != null)
+                                    copiedIds.Remove(tempId);
+
+                                if (!copiedIds.Any())
+                                {
+                                    if (areElementsFoundForThisNode)
+                                    {
+                                        NodeModel inm =
+                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                                        nodes.Add(inm);
+                                    }
+                                    return nodes.AsEnumerable();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (areElementsFoundForThisNode)
+                {
+                    NodeModel inm =
+                        workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                    nodes.Add(inm);
+                }
+            }
+
+            return nodes.AsEnumerable();
+        }
         #endregion
 
     }

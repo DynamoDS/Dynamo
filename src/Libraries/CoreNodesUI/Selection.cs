@@ -118,6 +118,11 @@ namespace Dynamo.Nodes
 
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);
             Prefix = prefix;
+
+            workspaceModel.DynamoModel.EvaluationCompleted += (sender, args) =>
+                    {
+                        ForceReExecuteOfNode = false;
+                    };
         }
 
         #endregion

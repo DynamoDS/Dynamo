@@ -236,6 +236,9 @@ namespace Dynamo.Nodes
                 return;
 
             UpdateSelection(Selection);
+
+            RequiresRecalc = true;
+            ForceReExecuteOfNode = true;
         }
 
         protected override IEnumerable<Element> ExtractSelectionResults(TSelection selection)
@@ -367,6 +370,7 @@ namespace Dynamo.Nodes
                 return;
 
             RequiresRecalc = true;
+            ForceReExecuteOfNode = true;
         }
 
         protected override IEnumerable<Reference> ExtractSelectionResults(Reference selection)
