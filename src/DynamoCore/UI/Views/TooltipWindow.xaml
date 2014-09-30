@@ -14,7 +14,6 @@
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
-            <controls:ImagePresenceToColumnSpanConverter x:Key="ImagePresenceToColumnSpanConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -37,13 +36,28 @@
                     <ColumnDefinition Width="65*"></ColumnDefinition>
                     <ColumnDefinition Width="133*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Path=Description}"
-                           Grid.Row="0"
-                           Grid.ColumnSpan="{Binding Path=LargeIcon, Converter={StaticResource ImagePresenceToColumnSpanConverter}}"
-                           FontSize="13"
-                           Foreground="#cccccc"
-                           Margin="0,0,10,0"
-                           TextWrapping="WrapWithOverflow" />
+
+                <!-- Use this to hold the description and the icon -->
+                <Grid Grid.Row="0" 
+                      Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Path=Description}"
+                               Grid.Column="0"
+                               FontSize="13"
+                               Foreground="#cccccc"
+                               Margin="0,0,10,0"
+                               TextWrapping="WrapWithOverflow" />
+                    <Image Grid.Row="0"
+                           Grid.Column="1"
+                           Grid.ColumnSpan="2"
+                           Height="96"
+                           Width="96"
+                           Source="{Binding Path=LargeIcon}"
+                           Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}" />
+                </Grid>
                 <TextBlock Text="INPUT"
                            Grid.Row="1"
                            FontSize="10"
@@ -99,13 +113,6 @@
                     </TextBlock.Text>
                 </TextBlock>
 
-                <Image Grid.Row="0"
-                       Grid.Column="2"
-                       Grid.ColumnSpan="2"
-                       Height="96"
-                       Width="96"
-                       Source="{Binding Path=LargeIcon}"
-                       Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}"/>
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">
                     <Grid.RowDefinitions>
