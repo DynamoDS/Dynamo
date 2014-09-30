@@ -40,11 +40,11 @@ namespace DynamoWebServer.Messages
         [DataMember]
         public int EndPortIndex { get; private set; }
 
-        public ConnectorToCreate(string sNodeID, int sIndex, string eNodeID, int eIndex)
+        public ConnectorToCreate(string sNodeId, int sIndex, string eNodeId, int eIndex)
         {
-            StartNodeId = sNodeID;
+            StartNodeId = sNodeId;
             StartPortIndex = sIndex;
-            EndNodeId = eNodeID;
+            EndNodeId = eNodeId;
             EndPortIndex = eIndex;
         }
 
@@ -55,13 +55,13 @@ namespace DynamoWebServer.Messages
             {
                 foreach (var connector in outPort.Connectors)
                 {
-                    string startID = connector.Start.Owner.GUID.ToString();
+                    string startId = connector.Start.Owner.GUID.ToString();
                     int startIndex = connector.Start.Index;
 
-                    string endID = connector.End.Owner.GUID.ToString();
+                    string endId = connector.End.Owner.GUID.ToString();
                     int endIndex = connector.End.Index;
 
-                    result.Add(new ConnectorToCreate(startID, startIndex, endID, endIndex));
+                    result.Add(new ConnectorToCreate(startId, startIndex, endId, endIndex));
                 }
             }
 

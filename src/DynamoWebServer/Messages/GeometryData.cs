@@ -14,7 +14,7 @@ namespace DynamoWebServer.Messages
         /// Guid of the specified node
         /// </summary>
         [DataMember]
-        public string NodeID { get; private set; }
+        public string NodeId { get; private set; }
 
         /// <summary>
         /// List of the graphic primitives that result object consist of.
@@ -25,7 +25,7 @@ namespace DynamoWebServer.Messages
 
         public GeometryData(string id, List<IRenderPackage> packages)
         {
-            this.NodeID = id;
+            this.NodeId = id;
             GeneratePrimitives(packages);
         }
 
