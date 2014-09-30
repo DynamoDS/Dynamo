@@ -96,5 +96,28 @@ namespace Dynamo.Search.SearchElements
 
             throw new InvalidOperationException("Unhandled resourceType");
         }
+
+        protected override bool IsConstructor(out string className)
+        {
+            className = FunctionDescriptor.UnqualifedClassName;
+            return FunctionDescriptor.Type == FunctionType.Constructor;
+        }
+
+        protected override List<Tuple<string, string>> GenerateInputParameters()
+        {
+            string vartype = string.Empty;
+            string varname = string.Empty;
+
+            var className = FunctionDescriptor.ClassName;
+
+            vartype = className.Split('.').Last();
+            vartype = char.ToLowerInvariant(vartype[0]) + vartype.Substring(1);
+            varname = vartype[0].ToString().ToLowerInvariant();
+
+            List<Tuple<string, string>>  inputParameters = new List<Tuple<string, string>>();
+            inputParameters.Add(Tuple.Create(varname, vartype));
+
+            return inputParameters;
+        }
     }
 }

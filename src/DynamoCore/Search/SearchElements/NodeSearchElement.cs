@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using String = System.String;
 
@@ -60,25 +58,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (_inputParameters == null)
                 {
-                    var dSFunctionNodeSearchElement = this as DSFunctionNodeSearchElement;
-
-                    string vartype = string.Empty;
-                    string varname = string.Empty;
-                    if (dSFunctionNodeSearchElement == null)
-                    {
-                        vartype = "none";
-                    }
-                    else
-                    {
-                        var className = dSFunctionNodeSearchElement.FunctionDescriptor.ClassName;
-
-                        vartype = className.Split('.').Last();
-                        vartype = char.ToLowerInvariant(vartype[0]) + vartype.Substring(1);
-                        varname = vartype[0].ToString().ToLowerInvariant();
-                    }
-
-                    _inputParameters = new List<Tuple<string, string>>();
-                    _inputParameters.Add(Tuple.Create<string, string>(varname, vartype));
+                    _inputParameters = GenerateInputParameters();
                 }
                 return _inputParameters;
             }
@@ -219,16 +199,18 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        public bool IsConstructor(out string className)
+        protected virtual bool IsConstructor(out string className)
         {
-            var dSFunctionNodeSearchElement = this as DSFunctionNodeSearchElement;
-            if (dSFunctionNodeSearchElement == null)
-            {
-                className = "";
-                return false;
-            }
-            className = dSFunctionNodeSearchElement.FunctionDescriptor.UnqualifedClassName;
-            return dSFunctionNodeSearchElement.FunctionDescriptor.Type == FunctionType.Constructor;
+            className = "";
+            return false;
+        }
+
+
+        protected virtual List<Tuple<string, string>> GenerateInputParameters()
+        {
+            List<Tuple<string, string>> inputPar = new List<Tuple<string, string>>();
+            inputPar.Add(Tuple.Create("", "none"));
+            return inputPar;
         }
     }
 }
