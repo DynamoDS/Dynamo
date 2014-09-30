@@ -11,6 +11,7 @@ using Autodesk.DesignScript.Runtime;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
+using System.IO;
 
 namespace DSCore.File
 {
@@ -26,9 +27,57 @@ namespace DSCore.File
             Value = "";
         }
 
+        private FileSystemWatcher watcher = null;
+        private const string defaultValue = "No file selected.";
+
+        protected bool? isFileWatcherAttached;
+
+        protected void CreateFileWatcher()
+        {
+            // Do not attach file watcher if no file is selected
+            if (string.IsNullOrEmpty(Value) || Value.Equals(defaultValue))
+            {
+                watcher = null;
+                return;
+            }
+
+            if (watcher != null)
+            {
+                watcher.Changed += watcher_Changed;
+                return;
+            }
+
+            // Create new file watcher and register its "file changed" event
+            var dir = Path.GetDirectoryName(Value);
+
+            if (string.IsNullOrEmpty(dir))
+                dir = ".";
+
+            var name = Path.GetFileName(Value);
+
+            watcher = new FileSystemWatcher(dir, name)
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
+
+            watcher.Changed += watcher_Changed;
+        }
+
+        protected void RemoveFileWatcher()
+        {
+            ForceReExecuteOfNode = false;
+            if (watcher != null)
+                watcher.Changed -= watcher_Changed;
+        }
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            ForceReExecuteOfNode = true;
+        }
+
         public override void SetupCustomUIElements(dynNodeView view)
         {
-
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
@@ -44,7 +93,7 @@ namespace DSCore.File
 
             var tb = new TextBox();
             if (string.IsNullOrEmpty(Value))
-                Value = "No file selected.";
+                Value = defaultValue;
 
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Center;
@@ -53,15 +102,26 @@ namespace DSCore.File
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { 
-                tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
-                view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
+            tb.TextChanged += delegate
+            {
+                tb.ScrollToHorizontalOffset(double.PositiveInfinity);
+                view.ViewModel.DynamoViewModel.ReturnFocusToSearch();
             };
-            tb.Margin = new Thickness(0,5,0,5);
+            tb.Margin = new Thickness(0, 5, 0, 5);
+
+            // Attach FileWatcher Checkbox
+            var checkBox = new System.Windows.Controls.CheckBox
+            {
+                Content = "Attach FileWatcher",
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+            checkBox.Checked += (obj, args) => { CreateFileWatcher(); isFileWatcherAttached = true; };
+            checkBox.Unchecked += (obj, args) => { RemoveFileWatcher(); isFileWatcherAttached = false; };
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
             sp.Children.Add(tb);
+            sp.Children.Add(checkBox);
             view.inputGrid.Children.Add(sp);
 
             tb.DataContext = this;
@@ -74,6 +134,11 @@ namespace DSCore.File
         }
 
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
+
+        public void Dispose()
+        {
+            RemoveFileWatcher();
+        }
     }
 
     [NodeName("File Path")]
@@ -95,6 +160,8 @@ namespace DSCore.File
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 Value = openDialog.FileName;
+                if (isFileWatcherAttached == true)
+                    CreateFileWatcher();
             }
         }
 
@@ -125,6 +192,8 @@ namespace DSCore.File
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 Value = openDialog.SelectedPath;
+                if (isFileWatcherAttached == true)
+                    CreateFileWatcher();
             }
         }
     }

@@ -7,51 +7,108 @@ using System.Collections.Generic;
 
 namespace Dynamo.Nodes
 {
-    //public abstract class FileReaderBase : NodeModel
-    //{
-    //    readonly FileSystemEventHandler handler;
+    public abstract class FileReaderBase : NodeModel
+    {
+        readonly FileSystemEventHandler handler;
 
-    //    string path;
-    //    protected string storedPath
-    //    {
-    //        get { return path; }
-    //        set
-    //        {
-    //            if (value != null && !value.Equals(path))
-    //            {
-    //                if (watch != null)
-    //                    watch.FileChanged -= handler;
+        string path;
+        protected string storedPath
+        {
+            get { return path; }
+            set
+            {
+                if (value != null && !value.Equals(path))
+                {
+                    if (watch != null)
+                        watch.FileChanged -= handler;
 
-    //                path = value;
-    //                watch = new FileWatch(path);
-    //                watch.FileChanged += handler;
-    //            }
-    //        }
-    //    }
+                    path = value;
+                    watch = new FileWatch(path);
+                    watch.FileChanged += handler;
+                }
+            }
+        }
 
-    //    FileWatch watch;
+        FileWatch watch;
 
-    //    protected FileReaderBase(WorkspaceModel ws) : base(ws)
-    //    {
-    //        handler = watcher_FileChanged;
-    //        InPortData.Add(new PortData("path", "Path to the file"));
-    //    }
+        protected FileReaderBase(WorkspaceModel ws)
+            : base(ws)
+        {
+            handler = watcher_FileChanged;
+            InPortData.Add(new PortData("path", "Path to the file"));
+        }
 
-    //    void watcher_FileChanged(object sender, FileSystemEventArgs e)
-    //    {
-    //        if (!this.Workspace.DynamoModel.Runner.Running)
-    //            RequiresRecalc = true;
-    //        else
-    //        {
-    //            //TODO: Refactor
-    //            DisableReporting();
-    //            RequiresRecalc = true;
-    //            EnableReporting();
-    //        }
-    //    }
-    //}
+        void watcher_FileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (!this.Workspace.DynamoModel.Runner.Running)
+                RequiresRecalc = true;
+            else
+            {
+                //TODO: Refactor
+                DisableReporting();
+                RequiresRecalc = true;
+                EnableReporting();
+            }
+        }
+    }
 
-    
+    [IsVisibleInDynamoLibrary(false)]
+    public class FileWatch : IDisposable
+    {
+        public bool Changed { get; private set; }
+
+        private readonly FileSystemWatcher watcher;
+        private readonly FileSystemEventHandler handler;
+
+        public event FileSystemEventHandler FileChanged;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public FileWatch(string filePath)
+        {
+            Changed = false;
+
+            var dir = Path.GetDirectoryName(filePath);
+
+            if (string.IsNullOrEmpty(dir))
+                dir = ".";
+
+            var name = Path.GetFileName(filePath);
+
+            watcher = new FileSystemWatcher(dir, name)
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
+
+            handler = watcher_Changed;
+            watcher.Changed += handler;
+        }
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            Changed = true;
+            if (FileChanged != null)
+                FileChanged(this, e);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Reset()
+        {
+            Changed = false;
+        }
+
+        #region IDisposable Members
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Dispose()
+        {
+            watcher.Changed -= handler;
+            watcher.Dispose();
+        }
+
+        #endregion
+    }
+
 
     
 }
