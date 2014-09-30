@@ -114,32 +114,21 @@ namespace Dynamo.DSEngine
     {
         private XDocument XmlDocument;
 
-        // resourcesReader is a storage of our icons.
-        private ResourceReader resourcesReader;
-        private Dictionary<string, BitmapSource> cachedIcons;
+        private Dictionary<string, BitmapSource> cachedIcons = 
+            new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
+        private string assemblyName;
+        private Assembly resourceAssembly;
+
+        private const string imagesSuffix = "Images";
 
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
             this.XmlDocument = document;
             if (assembly != null)
-                this.LoadResourceStream(assembly);
-        }
-
-        private void LoadResourceStream(Assembly assembly)
-        {
-            cachedIcons = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
-
-            var rsrcNames = assembly.GetManifestResourceNames();
-            if (rsrcNames == null || (rsrcNames.Length <= 0))
-                return; // Ensure we won't crash.
-
-            Stream stream =
-                assembly.GetManifestResourceStream(rsrcNames[0]);
-
-            if (stream == null)
-                return;
-
-            resourcesReader = new ResourceReader(stream);
+            {
+                resourceAssembly = assembly;
+                assemblyName = assembly.GetName().Name.Split('.').First();
+            }
         }
 
         public string GetNamespaceCategory(string namespaceName)
@@ -156,33 +145,26 @@ namespace Dynamo.DSEngine
 
         internal BitmapSource LoadIconInternal(string iconKey)
         {
-            //If there is no icons, there is no need to go further.
-            if (cachedIcons == null) return null;
-
             if (cachedIcons.ContainsKey(iconKey))
                 return cachedIcons[iconKey];
 
-            if (resourcesReader == null)
+            if (resourceAssembly == null)
             {
                 cachedIcons.Add(iconKey, null);
                 return null;
             }
 
-            // Gets all images from resReader where they are saved as DictionaryEntries and
-            // choose one of them with correct key.
-            DictionaryEntry iconData = resourcesReader
-                .OfType<DictionaryEntry>()
-                .Where(i => i.Key.ToString() == iconKey).FirstOrDefault();
 
-            if (iconData.Key == null || iconData.Value == null)
-            {
-                cachedIcons.Add(iconKey, null);
-                return null;
-            }
+            ResourceManager rm = new ResourceManager(assemblyName + imagesSuffix, resourceAssembly);
 
             BitmapSource bitmapSource = null;
 
-            var source = iconData.Value as Bitmap;
+            var source = (Bitmap)rm.GetObject(iconKey);
+            if (source == null)
+            {
+                cachedIcons.Add(iconKey, null);
+                return null;
+            }
             var hBitmap = source.GetHbitmap();
 
             try
