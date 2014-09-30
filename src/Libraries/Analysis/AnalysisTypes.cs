@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 
@@ -16,6 +18,27 @@ namespace Analysis
             Locations = locations;
             Values = values;
         }
+
+        public SurfaceAnalysisData(IEnumerable<UV> locations, IEnumerable<string> valueDescriptions, IList<IList<double>> values)
+        {
+            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
+
+            if (descriptions.Count() != values.Count)
+            {
+                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
+            }
+
+            var valueDict = new Dictionary<string, IList<double>>();
+            var count = 0;
+            foreach (var descrip in descriptions)
+            {
+                valueDict.Add(descrip, values[count]);
+                count++;
+            }
+
+            Locations = locations;
+            Values = valueDict;
+        }
     }
 
     public class VectorAnalysisData : IVectorAnalysisData
@@ -28,6 +51,27 @@ namespace Analysis
             Locations = locations;
             Values = values;
         }
+
+        public VectorAnalysisData(IEnumerable<Point> locations, IEnumerable<string> valueDescriptions, IList<IList<Vector>> values)
+        {
+            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
+
+            if (descriptions.Count() != values.Count)
+            {
+                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
+            }
+
+            var valueDict = new Dictionary<string, IList<Vector>>();
+            var count = 0;
+            foreach (var descrip in descriptions)
+            {
+                valueDict.Add(descrip, values[count]);
+                count++;
+            }
+
+            Locations = locations;
+            Values = valueDict;
+        }
     }
 
     public class PointAnalysisData : IPointAnalysisData
@@ -39,6 +83,27 @@ namespace Analysis
         {
             Locations = locations;
             Values = values;
+        }
+
+        public PointAnalysisData(IEnumerable<Point> locations, IEnumerable<string> valueDescriptions, IList<IList<double>> values)
+        {
+            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
+
+            if (descriptions.Count() != values.Count)
+            {
+                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
+            }
+
+            var valueDict = new Dictionary<string, IList<double>>();
+            var count = 0;
+            foreach (var descrip in descriptions)
+            {
+                valueDict.Add(descrip, values[count]);
+                count++;
+            }
+
+            Locations = locations;
+            Values = valueDict;
         }
     }
 }
