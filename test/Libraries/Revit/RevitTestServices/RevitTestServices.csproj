@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\..\..\..\Dynamo\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="ProtoGeometry">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
