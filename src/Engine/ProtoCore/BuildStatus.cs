@@ -464,7 +464,12 @@ namespace ProtoCore
         {
             warnings.Clear();
         }
-        
+
+        public void ClearWarningsForGraph(Guid guid)
+        {
+            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+        }
+
         public void ClearErrors()
         {
             errors.Clear();

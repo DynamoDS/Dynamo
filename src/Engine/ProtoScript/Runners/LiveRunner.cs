@@ -295,6 +295,7 @@ namespace ProtoScript.Runners
                     }
 
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -437,6 +438,7 @@ namespace ProtoScript.Runners
                     // DeactivateGraphnodes(). 
                     // Right now just simply remove all related warnings.
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
                 }
 
                 // Cache the modifed functions
