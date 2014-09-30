@@ -528,7 +528,10 @@ namespace DynamoCoreUITests
 
             if (ViewModel != null)
             {
-                ViewModel.Model.ShutDown(false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel = null;
             }
 

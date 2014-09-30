@@ -126,7 +126,7 @@ namespace ProtoCore
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
             
             //Now test the reduced Params over all of the available end points
-            StackValue thisptr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue thisptr = stackFrame.ThisPtr;
             bool isInstance = thisptr.IsPointer && thisptr.opdata != Constants.kInvalidIndex;
             bool isGlobal = thisptr.IsPointer && thisptr.opdata == Constants.kInvalidIndex;
                                   

@@ -58,7 +58,9 @@ namespace DynamoCoreUITests
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
-                    this.ViewModel.Model.ShutDown(false);
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(
+                        shutdownHost: false, allowCancellation: false);
+                    ViewModel.PerformShutdownSequence(shutdownParams);
                 }
                 this.ViewModel = null;
             }
@@ -89,7 +91,7 @@ namespace DynamoCoreUITests
         {
             int pauseDurationInMs = randomizer.Next(2000);
 
-            var cmdOne = new DynamoViewModel.PausePlaybackCommand(pauseDurationInMs);
+            var cmdOne = new DynamoModel.PausePlaybackCommand(pauseDurationInMs);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.PauseDurationInMs, cmdTwo.PauseDurationInMs);
         }
@@ -100,7 +102,7 @@ namespace DynamoCoreUITests
             bool showErrors = randomizer.Next(2) == 0;
             bool cancelRun = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.RunCancelCommand(showErrors, cancelRun);
+            var cmdOne = new DynamoModel.RunCancelCommand(showErrors, cancelRun);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ShowErrors, cmdTwo.ShowErrors);
             Assert.AreEqual(cmdOne.CancelRun, cmdTwo.CancelRun);
@@ -120,7 +122,7 @@ namespace DynamoCoreUITests
             bool defaultPos = randomizer.Next(2) == 0;
             bool transfPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateNodeCommand(
+            var cmdOne = new DynamoModel.CreateNodeCommand(
                 nodeId, name, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -150,7 +152,7 @@ namespace DynamoCoreUITests
             double y = randomizer.NextDouble() * 1000;
             bool defaultPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
+            var cmdOne = new DynamoModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
@@ -167,7 +169,7 @@ namespace DynamoCoreUITests
             ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
                 ModifierKeys.Control : ModifierKeys.Alt);
 
-            var cmdOne = new DynamoViewModel.SelectModelCommand(modelGuid, modifiers);
+            var cmdOne = new DynamoModel.SelectModelCommand(modelGuid, modifiers);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -185,7 +187,7 @@ namespace DynamoCoreUITests
 
             bool isCrossSelection = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.SelectInRegionCommand(region, isCrossSelection);
+            var cmdOne = new DynamoModel.SelectInRegionCommand(region, isCrossSelection);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.Region.X, cmdTwo.Region.X, 0.000001);
@@ -203,10 +205,10 @@ namespace DynamoCoreUITests
                 randomizer.NextDouble() * 100);
 
             var operation = ((randomizer.Next(2) == 0) ?
-                DynamoViewModel.DragSelectionCommand.Operation.BeginDrag :
-                DynamoViewModel.DragSelectionCommand.Operation.EndDrag);
+                DynamoModel.DragSelectionCommand.Operation.BeginDrag :
+                DynamoModel.DragSelectionCommand.Operation.EndDrag);
 
-            var cmdOne = new DynamoViewModel.DragSelectionCommand(point, operation);
+            var cmdOne = new DynamoModel.DragSelectionCommand(point, operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.MouseCursor.X, cmdTwo.MouseCursor.X, 0.000001);
@@ -220,9 +222,9 @@ namespace DynamoCoreUITests
             Guid nodeId = Guid.NewGuid();
             int portIndex = randomizer.Next();
             var portType = ((PortType)randomizer.Next(2));
-            var mode = ((DynamoViewModel.MakeConnectionCommand.Mode)randomizer.Next(3));
+            var mode = ((DynamoModel.MakeConnectionCommand.Mode)randomizer.Next(3));
 
-            var cmdOne = new DynamoViewModel.MakeConnectionCommand(
+            var cmdOne = new DynamoModel.MakeConnectionCommand(
                 nodeId, portIndex, portType, mode);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -237,7 +239,7 @@ namespace DynamoCoreUITests
         public void TestDeleteModelCommand()
         {
             Guid modelGuid = Guid.NewGuid();
-            var cmdOne = new DynamoViewModel.DeleteModelCommand(modelGuid);
+            var cmdOne = new DynamoModel.DeleteModelCommand(modelGuid);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
         }
@@ -245,8 +247,8 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestUndoRedoCommand()
         {
-            var operation = ((DynamoViewModel.UndoRedoCommand.Operation)randomizer.Next(2));
-            var cmdOne = new DynamoViewModel.UndoRedoCommand(operation);
+            var operation = ((DynamoModel.UndoRedoCommand.Operation)randomizer.Next(2));
+            var cmdOne = new DynamoModel.UndoRedoCommand(operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.CmdOperation, cmdTwo.CmdOperation);
         }
@@ -258,7 +260,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoViewModel.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -275,7 +277,7 @@ namespace DynamoCoreUITests
             string description = randomizer.Next().ToString();
             bool makeCurrent = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateCustomNodeCommand(
+            var cmdOne = new DynamoModel.CreateCustomNodeCommand(
                 modelGuid, name, category, description, makeCurrent);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
@@ -488,7 +490,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestSwitchTabCommand()
         {
-            var cmdOne = new DynamoViewModel.SwitchTabCommand(randomizer.Next());
+            var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
         }
@@ -720,7 +722,7 @@ namespace DynamoCoreUITests
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoViewModel.RecordableCommand
+            where CmdType : DynamoModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -730,7 +732,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
