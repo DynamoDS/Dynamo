@@ -989,7 +989,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
-        public Sublists(WorkspaceModel ws) : base(ws)
+        public Sublists(WorkspaceModel ws): base(ws)
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists."));
             InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
@@ -1559,7 +1559,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public StringInput(WorkspaceModel ws) : base(ws)
+        public StringInput(WorkspaceModel ws): base(ws)
         {
             RegisterAllPorts();
             Value = "";
