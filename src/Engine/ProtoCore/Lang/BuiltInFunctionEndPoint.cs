@@ -307,19 +307,14 @@ namespace ProtoCore.Lang
                         int oldRunningBlockId = core.RunningBlock;
                         core.RunningBlock = blockId;
 
-                        int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
+                        int returnAddr = stackFrame.ReturnPC;
 
                         int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
                         int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
                         if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
                         {
-                            StackValue sci = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
-                            StackValue sfi = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunction);
-                            if (sci.IsInteger && sfi.IsInteger)
-                            {
-                                ci = (int)sci.opdata;
-                                fi = (int)sfi.opdata;
-                            }
+                            ci = stackFrame.ClassScope;
+                            fi = stackFrame.FunctionScope;
                         }
                         StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
                         // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
@@ -339,7 +334,7 @@ namespace ProtoCore.Lang
                         interpreter.runtime.SaveRegisters(registers);
 
                         // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
+                        StackFrameType callerType = stackFrame.StackFrameType;
 
                         if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
                         {
@@ -640,12 +635,12 @@ namespace ProtoCore.Lang
 
             // Build the stackframe
             var newStackFrame = new StackFrame(thisObject, 
-                                               stackFrame.GetCallerClassIndex(), 
+                                               stackFrame.ClassScope, 
                                                procIndex, 
-                                               stackFrame.GetReturnAddress(), 
-                                               stackFrame.GetFunctionBlock(), 
-                                               stackFrame.GetFunctionCallerBlock(), 
-                                               stackFrame.GetStackFrameType(),
+                                               stackFrame.ReturnPC, 
+                                               stackFrame.FunctionBlock, 
+                                               stackFrame.FunctionCallerBlock, 
+                                               stackFrame.StackFrameType,
                                                StackFrameType.kTypeFunction, 
                                                0,
                                                core.Rmem.FramePointer, 
@@ -663,7 +658,7 @@ namespace ProtoCore.Lang
                 core.DebugProps.SetUpCallrForDebug(core,
                                                    core.CurrentExecutive.CurrentDSASMExec,
                                                    procNode,
-                                                   stackFrame.GetReturnAddress() - 1,
+                                                   stackFrame.ReturnPC - 1,
                                                    false, callsite,
                                                    arguments,
                                                    replicationGuides,
@@ -767,8 +762,8 @@ namespace ProtoCore.Lang
 
             // Search for next breakable instruction in list of instructions and add to RegisteredBreakPoints
 
-            int pc = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int blockId = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+            int pc = stackFrame.ReturnPC;
+            int blockId = stackFrame.FunctionCallerBlock;
             List<Instruction> instructions = core.DSExecutable.instrStreamList[blockId].instrList;
 
             // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
