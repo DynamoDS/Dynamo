@@ -918,8 +918,7 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                        stackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit); 
 
                         core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
                     }
