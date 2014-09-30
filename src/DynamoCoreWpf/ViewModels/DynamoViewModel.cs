@@ -470,6 +470,15 @@ namespace Dynamo.ViewModels
             SubscribeDispatcherHandlers();
         }
 
+        internal event EventHandler NodeViewReady;
+        internal void OnNodeViewReady(object dynNodeView)
+        {
+            if (NodeViewReady != null)
+            {
+                this.NodeViewReady(dynNodeView, new EventArgs());
+            }
+        }
+
         #region Event handler destroy/create
 
         internal void UnsubscibeAllEvents()
@@ -2121,5 +2130,8 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
+
+
+
     }
 }

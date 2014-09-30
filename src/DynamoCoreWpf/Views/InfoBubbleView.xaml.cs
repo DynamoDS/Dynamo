@@ -11,7 +11,6 @@ using Dynamo.UI;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
-using Dynamo.UI;
 
 namespace Dynamo.Controls
 {

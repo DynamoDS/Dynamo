@@ -58,23 +58,43 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Input\Bool.cs" />
+    <Compile Include="Input\DirectoryNodeViewCustomization.cs" />
+    <Compile Include="Input\Double.cs" />
+    <Compile Include="Input\DoubleSlider.cs" />
+    <Compile Include="Input\DoubleSliderNodeViewCustomization.cs" />
+    <Compile Include="Input\Filename.cs" />
+    <Compile Include="Input\FilenameNodeViewCustomization.cs" />
+    <Compile Include="Input\FileSystemBrowser.cs" />
+    <Compile Include="Input\FileSystemBrowserNodeViewCustomization.cs" />
+    <Compile Include="Input\Integer.cs" />
+    <Compile Include="Input\IntegerSliderNodeViewCustomization.cs" />
+    <Compile Include="Input\String.cs" />
+    <Compile Include="Input\StringInputCustomization.cs" />
+    <Compile Include="Input\StringNodeViewCustomization.cs" />
+    <Compile Include="Input\BasicInteractiveNodeViewCustomization.cs" />
     <Compile Include="ColorRange.cs" />
+    <Compile Include="ColorRangeNodeViewCustomization.cs" />
     <Compile Include="CreateList.cs" />
     <Compile Include="DropDown.cs" />
+    <Compile Include="DropDownNodeViewCustomization.cs" />
     <Compile Include="DummyNode.cs" />
+    <Compile Include="DummyNodeNodeViewCustomization.cs" />
     <Compile Include="ElementSelectionControl.xaml.cs">
       <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enum.cs" />
     <Compile Include="Formula.cs" />
+    <Compile Include="FormulaNodeViewCustomization.cs" />
     <Compile Include="HigherOrder\Apply.cs" />
     <Compile Include="HigherOrder\MapCombineLacing.cs" />
     <Compile Include="IModelSelectionHelper.cs" />
     <Compile Include="Input\BasicInteractive.cs" />
     <Compile Include="Input\BoolSelector.cs" />
-    <Compile Include="Input\File.cs" />
+    <Compile Include="Input\BoolSelectorNodeViewCustomization.cs" />
+    <Compile Include="Input\Directory.cs" />
     <Compile Include="Logic\AndOr.cs" />
-    <Compile Include="Input\Sliders.cs" />
+    <Compile Include="Input\IntegerSlider.cs" />
     <Compile Include="Logic\If.cs" />
     <Compile Include="Logic\ScopedIf.cs" />
     <Compile Include="NumberRange.cs" />
@@ -86,6 +106,7 @@
       <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selection.cs" />
+    <Compile Include="SelectionBaseNodeViewCustomization.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>

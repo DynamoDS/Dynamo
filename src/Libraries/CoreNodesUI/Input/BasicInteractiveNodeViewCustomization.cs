@@ -10,18 +10,21 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class BasicInteractiveViewCustomization<T> : INodeViewCustomization<BasicInteractive<T>>
+    public abstract class BasicInteractiveNodeViewCustomization<T> : INodeViewCustomization<BasicInteractive<T>>
     {
         protected DynamoViewModel dynamoViewModel;
+        protected BasicInteractive<T> nodeModel;
 
         public void CustomizeView(BasicInteractive<T> nodeModel, dynNodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            this.nodeModel = nodeModel;
 
             //add an edit window option to the 
             //main context window
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
+
             editWindowItem.Click += editWindowItem_Click;
         }
 

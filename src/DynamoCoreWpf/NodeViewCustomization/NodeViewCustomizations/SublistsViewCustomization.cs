@@ -35,12 +35,12 @@ namespace Dynamo.Wpf
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = element;
             tb.BindToProperty(
                 new Binding("Value")
                 {
                     Mode = BindingMode.TwoWay,
-                    Source = this,
+                    Source = this.sublistsNodeModel,
                     UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
         }

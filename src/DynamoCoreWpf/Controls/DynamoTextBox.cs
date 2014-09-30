@@ -13,12 +13,6 @@ using Dynamo.ViewModels;
 
 using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using System.Xml;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-using ICSharpCode.AvalonEdit.Editing;
 
 namespace Dynamo.Nodes
 {

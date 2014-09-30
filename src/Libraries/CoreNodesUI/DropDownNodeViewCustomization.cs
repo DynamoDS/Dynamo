@@ -8,15 +8,15 @@ using Dynamo.Controls;
 using Dynamo.UI;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf
+namespace DSCoreNodesUI
 {
-    public class DropDrownBaseNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.DropDrownBase>
+    public class DropDownNodeViewCustomization : INodeViewCustomization<DSDropDownBase>
     {
-        private Nodes.DropDrownBase dropDownNodeModel;
+        private DSDropDownBase model;
 
-        public void CustomizeView(Nodes.DropDrownBase nodeModel, dynNodeView nodeView)
+        public void CustomizeView(DSDropDownBase model, dynNodeView nodeUI)
         {
-            dropDownNodeModel = nodeModel;
+            this.model = model;
 
             //add a drop down list to the window
             var combo = new ComboBox
@@ -27,15 +27,15 @@ namespace Dynamo.Wpf
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            nodeView.inputGrid.Children.Add(combo);
-            Grid.SetColumn(combo, 0);
-            Grid.SetRow(combo, 0);
+            nodeUI.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
 
             combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    dropDownNodeModel.RequiresRecalc = true;
+                    model.RequiresRecalc = true;
             };
 
             combo.DropDownClosed += delegate
@@ -43,23 +43,27 @@ namespace Dynamo.Wpf
                 //disallow selection of nothing
                 if (combo.SelectedIndex == -1)
                 {
-                    dropDownNodeModel.SelectedIndex = 0;
+                    model.SelectedIndex = 0;
                 }
             };
 
-            combo.DataContext = nodeModel;
+            combo.DataContext = model;
             //bind this combo box to the selected item hash
 
-            var bindingVal = new Binding("Items") { Mode = BindingMode.TwoWay, Source = nodeModel };
+            var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = model };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
             //bind the selected index to the 
             var indexBinding = new Binding("SelectedIndex")
             {
                 Mode = BindingMode.TwoWay,
-                Source = nodeModel
+                Source = model
             };
             combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+        }
+
+        public void Dispose()
+        {
         }
 
         /// <summary>
@@ -67,13 +71,9 @@ namespace Dynamo.Wpf
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void combo_DropDownOpened(object sender, EventArgs e)
+        void combo_DropDownOpened(object sender, EventArgs e)
         {
-            dropDownNodeModel.PopulateItems();
-        }
-
-        public void Dispose()
-        {
+            this.model.PopulateItems();
         }
 
     }

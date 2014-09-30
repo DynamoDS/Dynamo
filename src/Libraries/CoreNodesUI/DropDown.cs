@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Xml;
-using Dynamo.Controls;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
-using Dynamo.Wpf;
 
 namespace DSCoreNodesUI
 {
     /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
-    public abstract class DSDropDownBase : NodeModel, INodeViewCustomization<>
+    public abstract class DSDropDownBase : NodeModel
     {
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
@@ -68,63 +62,7 @@ namespace DSCoreNodesUI
             catch { }
         }
 
-        protected abstract void PopulateItems();
-
-        /// <summary>
-        /// When the dropdown is opened, the node's implementation of PopulateItems is called
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void combo_DropDownOpened(object sender, EventArgs e)
-        {
-            PopulateItems();
-        }
-
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            //add a drop down list to the window
-            var combo = new ComboBox
-            {
-                Width = System.Double.NaN,
-                MinWidth = 100,
-                Height = Configurations.PortHeightInPixels,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            nodeUI.inputGrid.Children.Add(combo);
-            System.Windows.Controls.Grid.SetColumn(combo, 0);
-            System.Windows.Controls.Grid.SetRow(combo, 0);
-
-            combo.DropDownOpened += combo_DropDownOpened;
-            combo.SelectionChanged += delegate
-            {
-                if (combo.SelectedIndex != -1)
-                    RequiresRecalc = true;
-            };
-
-            combo.DropDownClosed += delegate
-            {
-                //disallow selection of nothing
-                if (combo.SelectedIndex == -1)
-                {
-                    SelectedIndex = 0;
-                }
-            };
-
-            combo.DataContext = this;
-            //bind this combo box to the selected item hash
-
-            var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = this };
-            combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
-
-            //bind the selected index to the 
-            var indexBinding = new Binding("SelectedIndex")
-            {
-                Mode = BindingMode.TwoWay,
-                Source = this
-            };
-            combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
-        }
+        public abstract void PopulateItems();
 
         protected override bool ShouldDisplayPreviewCore()
         {

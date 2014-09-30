@@ -73,7 +73,7 @@ namespace Dynamo.Controls
 
             Loaded += new RoutedEventHandler(OnNodeViewLoaded);
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
-            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
+            inputGrid.Loaded += NodeViewReady;
 
             this.nodeBorder.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
@@ -256,9 +256,13 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(e.ActionToDispatch);
         }
 
-        void inputGrid_Loaded(object sender, RoutedEventArgs e)
+        private bool nodeViewReadyCalledOnce = false;
+        private void NodeViewReady(object sender, RoutedEventArgs e)
         {
+            if (nodeViewReadyCalledOnce) return;
 
+            nodeViewReadyCalledOnce = true;
+            this.ViewModel.DynamoViewModel.OnNodeViewReady(this);
         }
 
         private Dictionary<UIElement, bool> enabledDict

@@ -105,8 +105,6 @@
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
     <Compile Include="TestInfrastructure\StringInputMutator.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\AbstractStringNodeViewCustomization.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\BasicInteractiveViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\CodeBlockNodeViewCustomization.cs" />
     <Compile Include="Commands\AutomationSettings.cs" />
     <Compile Include="Commands\ConnectorCommands.cs" />
@@ -128,7 +126,6 @@
     <Compile Include="Controls\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIPartials.cs" />
     <Compile Include="UI\Converters.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\DoubleInputCustomization.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
@@ -161,7 +158,6 @@
     <Compile Include="ViewModels\StateMachine.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\StringInputCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputAndOutputViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">

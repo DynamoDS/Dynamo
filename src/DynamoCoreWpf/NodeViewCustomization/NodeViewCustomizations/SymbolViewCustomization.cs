@@ -25,7 +25,7 @@ namespace Dynamo.Wpf
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = symbol;
             tb.BindToProperty(
                 new Binding("InputSymbol")
                 {

@@ -123,7 +123,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
-    <Compile Include="UIPartials.cs" />
     <Compile Include="ViewModel\RevitWatchHandler.cs" />
     <Compile Include="Models\SingleSignOnManager.cs" />
     <Compile Include="ViewModel\RevitVisualizationManager.cs" />

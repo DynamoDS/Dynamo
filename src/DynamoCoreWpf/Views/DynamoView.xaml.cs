@@ -43,6 +43,8 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
 
+        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+
         internal DynamoViewModel dynamoViewModel = null;
         private Stopwatch _timer = null;
         private StartPageViewModel startPage = null;
@@ -50,8 +52,6 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
-
-        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
@@ -96,6 +96,8 @@ namespace Dynamo.Controls
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
         }
 
+        #region NodeViewCustomization
+
         private void SetupNodeViewCustomizations()
         {
             this.nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
@@ -105,13 +107,38 @@ namespace Dynamo.Controls
                 this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
             }
 
+            SubscribeNodeViewCustomizationEvents();
+        }
+
+        private void SubscribeNodeViewCustomizationEvents()
+        {
             this.dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
+            this.dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
+        }
+
+        private void UnsubscribeNodeViewCustomizationEvents()
+        {
+            if (dynamoViewModel == null) return;
+
+            this.dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
+            this.dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
+        }
+
+        private void ApplyNodeViewCustomization(object nodeView, EventArgs args)
+        {
+            var nodeViewImp = nodeView as dynNodeView;
+            if (nodeViewImp != null)
+            {
+                this.nodeViewCustomizationLibrary.Apply(nodeViewImp);
+            }
         }
 
         private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
         {
             this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }
+
+        #endregion
 
         bool CheckVirtualScreenSize()
         {
@@ -285,8 +312,6 @@ namespace Dynamo.Controls
             }
         }
 
-        
-
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
            
@@ -359,7 +384,7 @@ namespace Dynamo.Controls
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
-            
+            UnsubscribeNodeViewCustomizationEvents();
         }
 
         private UI.Views.AboutWindow _aboutWindow;

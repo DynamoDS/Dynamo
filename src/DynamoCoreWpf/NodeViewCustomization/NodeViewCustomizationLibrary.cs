@@ -17,7 +17,7 @@ namespace Dynamo.Wpf
             Type t = model.GetType();
             do
             {
-                List<InternalNodeViewCustomization> custs;
+                List<InternalNodeViewCustomization> custs; 
                 if (lookupDict.TryGetValue(t, out custs))
                 {
                     foreach (var customization in custs)

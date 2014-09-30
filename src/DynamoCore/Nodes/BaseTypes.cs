@@ -1456,7 +1456,7 @@ namespace Dynamo.Nodes
         public Bool(WorkspaceModel ws) : base(ws) { }
     }
 
-    public abstract partial class AbstractString : BasicInteractive<string>
+    public abstract class AbstractString : BasicInteractive<string>
     {
         public AbstractString(WorkspaceModel ws) : base(ws) { }
 

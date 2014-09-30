@@ -78,7 +78,7 @@ namespace Dynamo.UI.Controls
         }
         #endregion
 
-        internal bool Focus()
+        internal bool FocusEditor()
         {
             return InternalEditor.Focus();
         }
@@ -122,8 +122,6 @@ namespace Dynamo.UI.Controls
         {
             var stream = GetType().Assembly.GetManifestResourceStream(
                 "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
-
-            string[] names = GetType().Assembly.GetManifestResourceNames();
 
             this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);

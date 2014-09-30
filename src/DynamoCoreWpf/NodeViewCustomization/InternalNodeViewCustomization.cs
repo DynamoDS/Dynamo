@@ -42,7 +42,8 @@ namespace Dynamo.Wpf
             return CustomizeViewInternal((dynamic)customizer, model, view);
         }
 
-        private static IDisposable CustomizeViewInternal<T>(INodeViewCustomization<T> t, NodeModel model, dynNodeView view) 
+        private static IDisposable CustomizeViewInternal<T>(INodeViewCustomization<T> t, 
+            NodeModel model, dynNodeView view) 
             where T : NodeModel
         {
             t.CustomizeView(model as T, view);

@@ -72,7 +72,7 @@ namespace Dynamo.Wpf
                 CanEditName = false
             };
 
-            functionNodeModel.Workspace.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+            functionNodeModel.Workspace.DynamoModel.OnRequestsFunctionNamePrompt(this.functionNodeModel, args);
 
             if (args.Success)
             {

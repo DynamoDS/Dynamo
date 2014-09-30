@@ -1,26 +1,19 @@
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
 using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
-        private DoubleInput doubleInput;
-
         public void CustomizeView(DoubleInput nodeModel, dynNodeView nodeView)
         {
-            doubleInput = nodeView.ViewModel.NodeModel as Dynamo.Nodes.DoubleInput;
-
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(doubleInput.Value ?? "0.0")
+            var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -32,14 +25,14 @@ namespace Dynamo.Wpf
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = nodeModel;
 
             tb.BindToProperty(new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
-                Source = this,
+                Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
         }

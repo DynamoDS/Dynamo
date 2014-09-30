@@ -25,13 +25,13 @@ namespace Dynamo.Wpf
                 {
                     Mode = BindingMode.OneWay,
                     NotifyOnValidationError = false,
-                    Source = this,
+                    Source = model,
                 });
             
 
             if (model.ShouldFocus)
             {
-                cbe.Focus();
+                cbe.FocusEditor();
                 model.ShouldFocus = false;
             }
         }

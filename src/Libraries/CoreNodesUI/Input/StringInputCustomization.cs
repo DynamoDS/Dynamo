@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Wpf;
 
 using Binding = System.Windows.Data.Binding;
 using VerticalAlignment = System.Windows.VerticalAlignment;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Wpf
 {
-    public class StringInputNodeViewCustomization : AbstractStringNodeViewCustomization
+    public class StringInputNodeViewCustomization : StringNodeViewCustomization
     {
-        public void CustomizeView(StringInput stringInput, dynNodeView ui)
+        public void CustomizeView(StringInput stringInput, dynNodeView nodeUI)
         {
-            var nodeUI = ui;
-
             base.CustomizeView(stringInput, nodeUI);
 
             //add a text box to the input grid of the control
@@ -37,12 +30,12 @@ namespace Dynamo.Wpf
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = stringInput;
             tb.BindToProperty(new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new StringDisplay(),
-                Source = this,
+                Source = stringInput,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
         }
