@@ -14,10 +14,18 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
+        <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                          TrueBrush="#333333"
+                                          FalseBrush="#272727" />
+
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
-            <Setter Property="Background"
-                    Value="#272727" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <Binding Path="IsRootCategoryDetails"
+                             Converter="{StaticResource BooleanToBrushConverter}" />
+                </Setter.Value>
+            </Setter>
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="BorderThickness"
@@ -98,11 +106,16 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Border Padding="0,10,0,10"
-            Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
-        <Grid DataContextChanged="GridDataContextChanged"
-              Background="#272727">
+    <Border Padding="0,10,0,10">
+        <Border.Visibility>
+            <Binding Path="ClassDetailsVisibility"
+                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+        </Border.Visibility>
+        <Border.Background>
+            <Binding Path="IsRootCategoryDetails"
+                     Converter="{StaticResource BooleanToBrushConverter}" />
+        </Border.Background>
+        <Grid DataContextChanged="GridDataContextChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

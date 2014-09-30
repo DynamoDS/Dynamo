@@ -51,6 +51,7 @@ namespace Dynamo.Nodes.Search
                 if (classDetails == null && IsPlaceholder)
                 {
                     classDetails = new ClassInformation();
+                    classDetails.IsRootCategoryDetails = true;
                     classDetails.PopulateMemberCollections(this);
                 }
 
@@ -252,6 +253,11 @@ namespace Dynamo.Nodes.Search
         #endregion
 
         private bool hideClassDetails = false;
+
+        /// <summary>
+        /// Specifies whether or not parent is root category (BrowserRootElement).
+        /// </summary>
+        public bool IsRootCategoryDetails { get; set; }
 
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
