@@ -200,7 +200,7 @@ namespace Dynamo.UI.Controls
             scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
             scv.UpdateLayout();
 
-            libraryToolTipPopup.HorizontalOffset = scv.HorizontalOffset;
+            libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
         }
     }
 }
