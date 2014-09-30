@@ -240,6 +240,26 @@ namespace ProtoScript.Runners
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
+        /// <summary>
+        /// Get the list of guids
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public List<Guid> GetReachableNodeGuids(List<AssociativeNode> astList)
+        {
+            List<GraphNode> dirtyNodes = ProtoCore.AssociativeEngine.Utils.GetReachableGraphNodes(core, astList);
+
+            // Get the list of guid's of the ASTs
+            List<Guid> cbnGuidList = new List<Guid>();
+            foreach (GraphNode graphnode in dirtyNodes)
+            {
+                if (!cbnGuidList.Contains(graphnode.guid))
+                {
+                    cbnGuidList.Add(graphnode.guid);
+                }
+            }
+            return cbnGuidList;
+        }
 
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
@@ -1332,6 +1352,26 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// This API needs to be called for every delta AST preview
+        /// </summary>
+        /// <param name="syncData"></param>
+        public void PreviewGraph(GraphSyncData syncData)
+        {
+            while (true)
+            {
+                lock (taskQueue)
+                {
+                    if (taskQueue.Count == 0)
+                    {
+                        PreviewInternal(syncData);
+                        return;
+                    }
+                }
+                Thread.Sleep(0);
+            }
+        }
+
+        /// <summary>
         /// Called for delta execution of AST node input
         /// </summary>
         /// <param name="astNode"></param>
@@ -1621,6 +1661,21 @@ namespace ProtoScript.Runners
 #if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
             runnerCore.Heap.Verify();
 #endif
+        }
+
+        private void PreviewInternal(GraphSyncData syncData)
+        {
+            if (syncData == null)
+            {
+                ResetForDeltaExecution();
+                return;
+            }
+
+            // Get the list of ASTs that will be affected by syncData
+            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+
+            // Get the list of guid's affected by the astlist
+            List<Guid> cbnGuidList = changeSetComputer.GetReachableNodeGuids(previewAstList);
         }
 
 

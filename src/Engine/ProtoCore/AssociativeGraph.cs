@@ -16,6 +16,19 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Retrieves the list of VM graphnodes affected by the list of ast nodes to be executed
+        /// This performs static analysis and does not assume astList to be executed
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public static List<ProtoCore.AssociativeGraph.GraphNode> GetReachableGraphNodes(Core core, List<AST.AssociativeAST.AssociativeNode> astList)
+        {
+            List<ProtoCore.AssociativeGraph.GraphNode> dirtyNodes = new List<AssociativeGraph.GraphNode>();
+            return dirtyNodes;
+        }
+
+        /// <summary>
         /// Find the first dirty node of the graphnode residing at indexOfDirtyNode
         /// </summary>
         /// <param name="indexOfDirtyNode"></param>
