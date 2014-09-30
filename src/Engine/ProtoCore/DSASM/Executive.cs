@@ -3201,20 +3201,6 @@ namespace ProtoCore.DSASM
 #endif
         }
 
-        public SymbolNode GetGlobalSymbolNode(string variable)
-        {
-            IEnumerable<SymbolNode> symbols = exe.runtimeSymbols[0].GetNodeForName(variable);
-            foreach (var symbol in symbols)
-            {
-                if (symbol.functionIndex == Constants.kGlobalScope &&
-                    symbol.classScope == Constants.kGlobalScope)
-                {
-                    return symbol;
-                }
-            }
-            return null;
-        }
-
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
         {
             if (Constants.kGlobalScope == classIndex)
@@ -8079,6 +8065,44 @@ namespace ProtoCore.DSASM
                 default: //Unknown OpCode
                     throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
             }
+        }
+
+        private IEnumerable<SymbolNode> GetGCRoots()
+        {
+            var frames = rmem.GetStackFrames();
+            var blockId = executingBlock;
+            var gcRoots = new List<SymbolNode>();
+
+            foreach (var stackFrame in frames)
+            {
+                Validity.Assert(blockId != Constants.kInvalidIndex);
+                var functionScope = stackFrame.FunctionScope;
+                var classScope = stackFrame.ClassScope;
+
+                IEnumerable<SymbolNode> symbols;
+                if (blockId == 0)
+                {
+                    if (classScope == Constants.kGlobalScope)
+                    {
+                        symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                    }
+                    else
+                    {
+                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values.Where( s => s.functionIndex == functionScope);
+                    }
+                }
+                else
+                {
+                    // Call some language block
+                    symbols = exe.runtimeSymbols[blockId].symbolList.Values;
+                }
+
+                gcRoots.AddRange(symbols);
+
+                blockId = stackFrame.FunctionCallerBlock;
+            }
+
+            return gcRoots;
         }
     }
 }
