@@ -20,19 +20,18 @@
 
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
-
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-            <Setter Property="BorderThickness"
-                    Value="1" />
-            <Setter Property="Height"
-                    Value="40" />
             <Setter Property="Background">
                 <Setter.Value>
                     <Binding Path="IsRootCategoryDetails"
                              Converter="{StaticResource BooleanToBrushConverter}" />
                 </Setter.Value>
             </Setter>
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Height"
+                    Value="40" />
 
             <Setter Property="Template">
                 <Setter.Value>
