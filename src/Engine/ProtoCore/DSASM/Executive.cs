@@ -114,7 +114,7 @@ namespace ProtoCore.DSASM
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
         {
             fepRun = false;
-            rmem.PushStackFrame(frame, 0, 0);
+            rmem.PushStackFrame(frame);
 
             SetupExecutive(exeblock, entry, language, breakpoints);
 
@@ -129,7 +129,7 @@ namespace ProtoCore.DSASM
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame)
         {
             fepRun = false;
-            rmem.PushStackFrame(frame, 0, 0);
+            rmem.PushStackFrame(frame);
 
             SetupExecutive(exeblock, entry);
 

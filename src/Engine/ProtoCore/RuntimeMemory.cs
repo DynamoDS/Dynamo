@@ -112,35 +112,6 @@ namespace ProtoCore
                 }
             }
 
-            private void PushFrame(List<StackValue> stackData)
-            {
-                if (null != stackData && stackData.Count > 0)
-                {
-                    Stack.AddRange(stackData);
-                }
-            }
-
-            public void PushStackFrame(int ptr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int fp, List<StackValue> registers, int locsize, int executionStates)
-            {
-                // TODO Jun: Performance
-                // Push frame should only require adjusting the frame index instead of pushing dummy elements
-                PushFrame(locsize);
-                Push(StackValue.BuildInt(fp));
-                PushRegisters(registers);
-                Push(StackValue.BuildInt(executionStates));
-                Push(StackValue.BuildInt(0));
-                Push(StackValue.BuildInt(depth));
-                Push(StackValue.BuildFrameType((int)type));
-                Push(StackValue.BuildFrameType((int)callerType));
-                Push(StackValue.BuildBlockIndex(functionBlockCaller));
-                Push(StackValue.BuildBlockIndex(functionBlockDecl));
-                Push(StackValue.BuildInt(pc));
-                Push(StackValue.BuildInt(funcIndex));
-                Push(StackValue.BuildInt(classIndex));
-                Push(StackValue.BuildPointer(ptr));
-                FramePointer = Stack.Count;
-            }
-
             public void PushStackFrame(StackValue svThisPtr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int fp, List<StackValue> registers, int locsize, int executionStates)
             {
                 // TODO Jun: Performance
@@ -162,14 +133,12 @@ namespace ProtoCore
                 FramePointer = Stack.Count;
             }
 
-
-            public void PushStackFrame(StackFrame stackFrame, int localSize, int executionStates)
+            public void PushStackFrame(StackFrame stackFrame)
             {
                 // TODO Jun: Performance
                 // Push frame should only require adjusting the frame index instead of pushing dummy elements
                 Validity.Assert(StackFrame.kStackFrameSize == stackFrame.Frame.Length);
 
-                PushFrame(localSize);
                 Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kFramePointer]);
 
                 Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterTX]);
@@ -491,6 +460,8 @@ namespace ProtoCore
                         return DSASM.Constants.kInvalidIndex;
                 }
             }
+
+
         }
     }
 }
