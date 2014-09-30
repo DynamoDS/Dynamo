@@ -181,6 +181,7 @@ namespace Dynamo.Nodes
 
                 if (builder.Length > 0)
                     builder.Append("-");
+
                 builder.Append(typeOfParameter);
             }
 
