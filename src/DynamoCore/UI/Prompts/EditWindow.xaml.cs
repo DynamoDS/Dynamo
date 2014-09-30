@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Prompts
 {

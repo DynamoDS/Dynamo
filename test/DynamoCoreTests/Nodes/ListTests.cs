@@ -1451,16 +1451,16 @@ namespace Dynamo.Tests
 		}
         
         [Test]
-        [Category("Failure")]
         public void AddToList_EmptyList()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
             RunModel(openPath);
 
-            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new[] { 0 } });
+            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new object[] { string.Empty, 0 } });
         }
 
         [Test]
+        [Category("Failure")]
         public void AddToList_Complex()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");

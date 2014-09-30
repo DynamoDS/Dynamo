@@ -598,7 +598,11 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            var sp = new DynamoViewModel.ShutdownParams(false, true, false);
+            var sp = new DynamoViewModel.ShutdownParams(
+                shutdownHost: false,
+                allowCancellation: true,
+                closeDynamoView: false);
+
             if (dynamoViewModel.PerformShutdownSequence(sp))
             {
                 SizeChanged -= DynamoView_SizeChanged;

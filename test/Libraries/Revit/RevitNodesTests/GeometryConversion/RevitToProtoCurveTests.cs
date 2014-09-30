@@ -8,7 +8,7 @@ using Revit.GeometryConversion;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     public class RevitToProtoCurveTests : GeometricRevitNodeTest

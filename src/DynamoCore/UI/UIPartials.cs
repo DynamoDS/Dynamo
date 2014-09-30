@@ -766,7 +766,7 @@ namespace Dynamo.Nodes
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
-                var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
+                var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
             }
         }

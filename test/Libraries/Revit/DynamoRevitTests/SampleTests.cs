@@ -194,11 +194,11 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            var modelCurve = "6b38f5da-3373-4226-bdd6-4ff60f275b23";
-            AssertPreviewCount(modelCurve, 32);
+            var modelCurve = "08e6e6f9-274f-430f-9e8a-89ba7ee02f4c";
+            AssertPreviewCount(modelCurve, 31);
 
             // get all Model Curves.
-            for (int i = 0; i <= 31; i++)
+            for (int i = 0; i <= 30; i++)
             {
                 var curves = GetPreviewValueAtIndex(modelCurve, i) as ModelCurve;
                 Assert.IsNotNull(curves);
@@ -217,7 +217,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             AssertNoDummyNodes();
 
@@ -241,7 +241,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             AssertNoDummyNodes();
 
@@ -499,7 +499,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
 
