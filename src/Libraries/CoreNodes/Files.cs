@@ -153,4 +153,137 @@ namespace DSCore
             return true;
         }
     }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public class FileWatch : IDisposable
+    {
+        public bool Changed { get; private set; }
+
+        private readonly FileSystemWatcher watcher;
+        private readonly FileSystemEventHandler handler;
+
+        public event FileSystemEventHandler FileChanged;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public FileWatch(string filePath)
+        {
+            Changed = false;
+
+            var dir = Path.GetDirectoryName(filePath);
+
+            if (string.IsNullOrEmpty(dir))
+                dir = ".";
+
+            var name = Path.GetFileName(filePath);
+
+            watcher = new FileSystemWatcher(dir, name)
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
+
+            handler = watcher_Changed;
+            watcher.Changed += handler;
+        }
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            Changed = true;
+            if (FileChanged != null)
+                FileChanged(this, e);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Reset()
+        {
+            Changed = false;
+        }
+
+        #region IDisposable Members
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Dispose()
+        {
+            watcher.Changed -= handler;
+            watcher.Dispose();
+        }
+
+        #endregion
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public static class FileWatcherCore
+    {
+        /// <summary>
+        /// Creates a FileWatcher for watching changes to a file.
+        /// </summary>
+        /// <param name="fileName">Path to the file to create a watcher for</param>
+        /// <returns>Instance of a FileWatcher</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static FileWatch FileWatcher(string fileName)
+        {
+            FileWatch fw = new FileWatch(fileName);
+            fw.FileChanged += fileWatcherChanged;
+            return fw;
+        }
+
+        private static void fileWatcherChanged(object sender, FileSystemEventArgs e)
+        {
+            // Need to re-execute "FileWatcherChanged" node in LiveRunner ??
+            FileWatcherChanged((FileWatch)sender);
+        }
+
+        /// <summary>
+        /// Checks if the file watched by the given FileWatcher has changed.
+        /// </summary>
+        /// <param name="fileWatcher">File Watcher to check for a change</param>
+        /// <returns>Whether or not the file has been changed</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool FileWatcherChanged(FileWatch fileWatcher)
+        {
+            //dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes.Select(n => n is FileWatcherChanged);
+            return fileWatcher.Changed;
+        }
+
+        /// <summary>
+        /// Waits for the specified watched file to change
+        /// </summary>
+        /// <param name="fileWatcher">File Watcher to check for a change</param>
+        /// <param name="limit">Amount of time (in milliseconds) to wait for an update before failing.</param>
+        /// <returns>True: File was changed. False: Timed out.</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool FileWatcherWait(FileWatch fileWatcher, int limit)
+        {
+            double timeout = limit == 0 ? double.PositiveInfinity : limit;
+
+            int tick = 0;
+            while (!fileWatcher.Changed)
+            {
+                //if (dynSettings.Controller.RunCancelled)
+                //    throw new Exception("Run Cancelled");
+
+                System.Threading.Thread.Sleep(10);
+                tick += 10;
+
+                if (tick >= timeout)
+                {
+                    throw new Exception("File watcher timeout!");
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Resets state of FileWatcher so that it watches again.
+        /// </summary>
+        /// <param name="fileWatcher">File Watcher to check for a change</param>
+        /// <returns>Updated watcher.</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static FileWatch FileWatcherReset(FileWatch fileWatcher)
+        {
+            fileWatcher.Reset();
+            return fileWatcher;
+        }
+    }
 }
