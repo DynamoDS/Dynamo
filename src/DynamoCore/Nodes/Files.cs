@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
 using Dynamo.Models;
-using Autodesk.DesignScript.Runtime;
-using ProtoCore.AST.AssociativeAST;
-using System.Collections.Generic;
 
 namespace Dynamo.Nodes
 {
@@ -52,8 +49,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
-    public class FileWatch : IDisposable
+    internal class FileWatch : IDisposable
     {
         public bool Changed { get; private set; }
 
@@ -62,7 +58,6 @@ namespace Dynamo.Nodes
 
         public event FileSystemEventHandler FileChanged;
 
-        [IsVisibleInDynamoLibrary(false)]
         public FileWatch(string filePath)
         {
             Changed = false;
@@ -91,7 +86,6 @@ namespace Dynamo.Nodes
                 FileChanged(this, e);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public void Reset()
         {
             Changed = false;
@@ -99,7 +93,6 @@ namespace Dynamo.Nodes
 
         #region IDisposable Members
 
-        [IsVisibleInDynamoLibrary(false)]
         public void Dispose()
         {
             watcher.Changed -= handler;

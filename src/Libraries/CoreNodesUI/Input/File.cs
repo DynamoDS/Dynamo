@@ -138,6 +138,7 @@ namespace DSCore.File
         public void Dispose()
         {
             RemoveFileWatcher();
+            watcher.Dispose();
         }
     }
 
