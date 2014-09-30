@@ -354,7 +354,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void GCMarkSweep()
+        public void GCMarkSweep(List<StackValue> rootPointers)
         {
             throw new NotImplementedException("{3CDF5599-97DB-4EC2-9E25-EC11DBA7280E}");
         }

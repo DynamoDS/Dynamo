@@ -477,6 +477,26 @@ namespace ProtoCore
                     yield return stackFrame;
                 }
             }
+
+            public void GC(IEnumerable<SymbolNode> gcRoots)
+            {
+                if (gcRoots == null)
+                {
+                    return;
+                }
+
+                var pointers = new List<StackValue>();
+                foreach (var rootObject in gcRoots)
+                {
+                    StackValue value = GetAtRelative(rootObject);
+                    if (value.IsReferenceType)
+                    {
+                        pointers.Add(value);
+                    }
+                }
+
+                Heap.GCMarkSweep(pointers);
+            }
         }
     }
 }
