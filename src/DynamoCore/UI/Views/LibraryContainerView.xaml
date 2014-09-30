@@ -45,7 +45,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -226,6 +226,7 @@
                       BorderThickness="0"
                       Width="{Binding Path=ActualWidth, ElementName=SearchControl}"
                       Grid.Column="0"
+                      Grid.ColumnSpan="1"
                       Grid.Row="3"
                       MouseWheel="OnTreeViewScrollViewerPreviewMouseWheel"
                       Style="{DynamicResource ScrollViewer}">
@@ -237,6 +238,10 @@
                 <Binding Path="SearchScrollBarVisibility"
                          Converter="{StaticResource BoolToScrollBarVisibilityConverter}" />
             </ScrollViewer.VerticalScrollBarVisibility>
+            <ScrollViewer.HorizontalScrollBarVisibility>
+                <Binding Path="SearchScrollBarVisibility"
+                         Converter="{StaticResource BoolToScrollBarVisibilityConverter}" />
+            </ScrollViewer.HorizontalScrollBarVisibility>
             <ScrollViewer.Resources>
 
                 <Style x:Key="ScrollViewer"
