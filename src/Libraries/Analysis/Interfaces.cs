@@ -7,13 +7,19 @@ namespace Analysis
     public interface ISurfaceAnalysisData
     {
         Surface Surface { get; set; }
-        List<UV> Locations { get; set; }
-        Dictionary<string, List<double>> Values { get; set; }
+        IEnumerable<UV> Locations { get; set; }
+        Dictionary<string, IList<double>> Values { get; set; }
     }
 
     public interface IPointAnalysisData
     {
-        List<Point> Locations { get; set; }
-        Dictionary<string, List<double>> Values { get; set; }
+        IEnumerable<Point> Locations { get; set; }
+        Dictionary<string, IList<double>> Values { get; set; }
+    }
+
+    public interface IVectorAnalysisData
+    {
+        IEnumerable<Point> Locations { get; set; }
+        Dictionary<string, IList<Vector>> Values { get; set; }
     }
 }

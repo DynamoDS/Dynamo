@@ -4,13 +4,17 @@ using System.Linq;
 
 using Analysis;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 
+using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryReferences;
+
+using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Reference = Autodesk.Revit.DB.Reference;
+
+using UV = Autodesk.Revit.DB.UV;
 using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay
@@ -26,70 +30,61 @@ namespace Revit.AnalysisDisplay
         #region Private constructors
 
         /// <summary>
-        /// Create a Point Analysis Display in the current view
+        /// 
         /// </summary>
         /// <param name="view"></param>
-        /// <param name="faceReference"></param>
-        /// <param name="sampleLocations"></param>
-        /// <param name="samples"></param>
-        private FaceAnalysisDisplay(Autodesk.Revit.DB.View view, Reference faceReference, IEnumerable<UV> sampleLocations,
-            IEnumerable<double> samples)
-        {
-            // We wrap the incoming sample collection in another list.
-            // We don't want to break original functionality, but
-            // we now want to support multiple values at a location.
-
-            var samplesSets = samples.Select(sample => new List<double>() { sample }).ToList();
-
-            ConstructCore(view, faceReference, sampleLocations, samplesSets);
-        }
-
+        /// <param name="data"></param>
         private FaceAnalysisDisplay(
-            Autodesk.Revit.DB.View view, ISurfaceAnalysisData data)
+            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData> data)
         {
-            var faceReference = data.Surface.Tags.LookupTag(DefaultTag) as Reference;
+            var surfaceAnalysisDatas = data as ISurfaceAnalysisData[] ?? data.ToArray();
+            var sfm = GetSpatialFieldManagerFromView(view, (uint)surfaceAnalysisDatas.First().Values.Count());
 
-            ConstructCore(view, faceReference, data.Locations.Select(l=>new UV(l.U, l.V)), data.Values.Values);
-        }
-
-        private void ConstructCore(
-            Autodesk.Revit.DB.View view, Reference faceReference, IEnumerable<UV> sampleLocations, IEnumerable<IEnumerable<double>> samplesSets)
-        {
-            var samples = samplesSets.ToArray();
-
-            var sfm = GetSpatialFieldManagerFromView(view, (uint)samples.Count());
-
-            var sfmAndId = GetElementAndPrimitiveIdFromTrace();
-
+            //var sfmAndId = GetElementAndPrimitiveIdFromTrace();
+            
             // we can rebind as we're dealing with the same view
-            if (sfmAndId != null && sfmAndId.Item1.Id == sfm.Id)
-            {
-                InternalSetSpatialFieldManager(sfmAndId.Item1);
-                InternalSetPrimitiveId(sfmAndId.Item2);
-                InternalSetSpatialFieldValues(sampleLocations, samples);
-                return;
-            }
+            //if (sfmAndId != null && sfmAndId.Item1.Id == sfm.Id)
+            //{
+            //    InternalSetSpatialFieldManager(sfmAndId.Item1);
+            //    InternalSetSpatialPrimitiveIds(sfmAndId.Item2);
+            //    InternalSetSpatialFieldValues(sampleLocations, samples);
+            //    return;
+            //}
 
-            // the input view has changed, remove the old primitive from the old view
-            if (sfmAndId != null)
-            {
-                var oldSfm = sfmAndId.Item1;
-                var oldId = sfmAndId.Item2;
+            //// the input view has changed, remove the old primitive from the old view
+            //if (sfmAndId != null)
+            //{
+            //    var oldSfm = sfmAndId.Item1;
+            //    var oldId = sfmAndId.Item2;
 
-                oldSfm.RemoveSpatialFieldPrimitive(oldId);
-            }
+            //    oldSfm.RemoveSpatialFieldPrimitive(oldId);
+            //}
 
             // create a new spatial field primitive
             TransactionManager.Instance.EnsureInTransaction(Document);
 
+            // TEMPORARY UNTIL WE RESOLVE TRACE
+            sfm.Clear();
+
+            sfm.SetMeasurementNames(surfaceAnalysisDatas.SelectMany(d => d.Values.Keys).Distinct().ToList());
+
             InternalSetSpatialFieldManager(sfm);
+            var primitiveIds = new List<int>();
 
-            var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive(faceReference);
+            foreach (var d in surfaceAnalysisDatas)
+            {
+                var reference = d.Surface.Tags.LookupTag(DefaultTag) as Reference;
+                if (reference == null)
+                {
+                    continue;
+                }
+                
+                var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive(reference);
+                primitiveIds.Add(primitiveId);
+                InternalSetSpatialFieldValues(primitiveId, d);
+            }
 
-            InternalSetPrimitiveId(primitiveId);
-            InternalSetSpatialFieldValues(sampleLocations, samples);
-
-            SetElementAndPrimitiveIdForTrace(SpatialFieldManager, primitiveId);
+            //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -102,10 +97,13 @@ namespace Revit.AnalysisDisplay
         /// Set the spatial field values for the current spatial field primitive.  The two 
         /// input sequences should be of the same length.
         /// </summary>
-        /// <param name="pointLocations"></param>
-        /// <param name="values"></param>
-        private void InternalSetSpatialFieldValues(IEnumerable<UV> pointLocations, IEnumerable<IEnumerable<double>> values)
+        /// <param name="primitiveId"></param>
+        /// <param name="data"></param>
+        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData data)
         {
+            var pointLocations = data.Locations.Select(l => new UV(l.U, l.V));
+            var values = data.Values.Values.ToList();
+
             // Data will come in as:
             // A B C D
             // E F G H
@@ -117,9 +115,8 @@ namespace Revit.AnalysisDisplay
             // C G K
             // D H L
 
-            var enumerable = values as IEnumerable<double>[] ?? values.ToArray();
-            var height = enumerable.First().Count();
-            var width = enumerable.Count();
+            var height = values.First().Count();
+            var width = values.Count();
 
             var valList = new List<ValueAtPoint>();
             for (int i = 0; i < height; i++)
@@ -128,7 +125,7 @@ namespace Revit.AnalysisDisplay
 
                 for (int j = 0; j < width; j++)
                 {
-                    lst.Add(enumerable.ElementAt(j).ElementAt(i));
+                    lst.Add(values.ElementAt(j).ElementAt(i));
                 }
                 valList.Add(new ValueAtPoint(lst));
             }
@@ -146,7 +143,7 @@ namespace Revit.AnalysisDisplay
             var schemaIndex = GetAnalysisResultSchemaIndex();
 
             // Update the values
-            SpatialFieldManager.UpdateSpatialFieldPrimitive(SpatialFieldPrimitiveId, samplePts, sampleValues, schemaIndex);
+            SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -158,23 +155,22 @@ namespace Revit.AnalysisDisplay
         /// <summary>
         /// Show a colored Face Analysis Display in the Revit View
         /// </summary>
-        /// <param name="view"></param>
-        /// <param name="elementFaceReference"></param>
+        /// <param name="view">The view into which you want to draw the analysis data.</param>
+        /// <param name="surface">The surface onto which the analysis data will be displayed</param>
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, object elementFaceReference,
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, Surface surface,
                         double[][] sampleUvPoints, double[] samples)
         {
-
             if (view == null)
             {
                 throw new ArgumentNullException("view");
             }
 
-            if (elementFaceReference == null)
+            if (surface == null)
             {
-                throw new ArgumentNullException("elementFaceReference");
+                throw new ArgumentNullException("surface");
             }
 
             if (sampleUvPoints == null)
@@ -192,18 +188,31 @@ namespace Revit.AnalysisDisplay
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            return new FaceAnalysisDisplay(view.InternalView, ElementFaceReference.TryGetFaceReference(elementFaceReference).InternalReference, sampleUvPoints.ToUvs(), samples);
+            var valueDict = new Dictionary<string, IList<double>>
+            {
+                { "Dynamo Data", samples }
+            };
+
+            var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
+
+            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData[]{data});
         }
 
+        /// <summary>
+        /// Show a colored Face Analysis Display in the Revit View
+        /// </summary>
+        /// <param name="view">The view into which you want to draw the analysis data.</param>
+        /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
+        /// <returns></returns>
         public static FaceAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData data)
+            View view, SurfaceAnalysisData[] data)
         {
             if (view == null)
             {
                 throw new ArgumentNullException("view");
             }
 
-            if (data.Locations == null || !data.Locations.Any())
+            if (data == null || !data.Any())
             {
                 throw new ArgumentException("The input data does not have any locations.");
             }

@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using Revit.Elements;
-using Revit.GeometryConversion;
+
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Autodesk.DesignScript.Runtime;
-
-using UV = Autodesk.DesignScript.Geometry.UV;
 
 namespace Revit.AnalysisDisplay
 {
@@ -26,25 +21,26 @@ namespace Revit.AnalysisDisplay
     public class SpmPrimitiveIdPair : ISerializable
     {
         public int SpatialFieldManagerID { get; set; }
-        public int PrimitiveID { get; set; }
-
+        public List<int> PrimitiveIds { get; set; }
+ 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("SpatialFieldManagerID", SpatialFieldManagerID, typeof(int));
-            info.AddValue("PrimitiveID", PrimitiveID, typeof(int));
+            info.AddValue("PrimitiveIds", PrimitiveIds, typeof(List<int>));
         }
 
         public SpmPrimitiveIdPair()
         {
             SpatialFieldManagerID = int.MinValue;
-            PrimitiveID = int.MinValue;
+            PrimitiveIds = new List<int>();
         }
 
         public SpmPrimitiveIdPair(SerializationInfo info, StreamingContext context)
         {
             SpatialFieldManagerID = (int) info.GetValue("SpatialFieldManagerID", typeof (int));
-            PrimitiveID = (int)info.GetValue("PrimitiveID", typeof(int));
-
+            PrimitiveIds =
+                (List<int>)
+                    info.GetValue("PrimitiveIds", typeof(List<int>));
         }
     }
 
@@ -84,27 +80,11 @@ namespace Revit.AnalysisDisplay
             set;
         }
 
-        /// <summary>
-        /// The Id for this SpatialFieldPrimitive
-        /// </summary>
-        protected int SpatialFieldPrimitiveId
-        {
-            get;
-            set;
-        }
+        protected List<int> PrimitiveIds { get; set; }
 
         #endregion
 
         #region Protected mutators
-
-        /// <summary>
-        /// Set the SpatialFieldPrimitiveId
-        /// </summary>
-        /// <param name="primitiveId"></param>
-        protected void InternalSetPrimitiveId(int primitiveId)
-        {
-            this.SpatialFieldPrimitiveId = primitiveId;
-        }
 
         /// <summary>
         /// Set the SpatialFieldManager
@@ -112,7 +92,12 @@ namespace Revit.AnalysisDisplay
         /// <param name="manager"></param>
         protected void InternalSetSpatialFieldManager(SpatialFieldManager manager)
         {
-            this.SpatialFieldManager = manager;
+            SpatialFieldManager = manager;
+        }
+
+        protected void InternalSetSpatialPrimitiveIds(List<int> primitiveIds)
+        {
+            PrimitiveIds = primitiveIds;
         }
 
         #endregion
@@ -200,7 +185,7 @@ namespace Revit.AnalysisDisplay
         /// Set the SpatialFieldManager PrimitiveId from Thread Local Storage
         /// </summary>
         /// <returns></returns>
-        protected Tuple<SpatialFieldManager, int> GetElementAndPrimitiveIdFromTrace()
+        protected Tuple<SpatialFieldManager, List<int>> GetElementAndPrimitiveIdFromTrace()
         {
             // This is a provisional implementation until we can store both items in trace
             var id = ElementBinder.GetRawDataFromTrace();
@@ -211,41 +196,44 @@ namespace Revit.AnalysisDisplay
             if (idPair == null)
                 return null;
 
-            var primitiveId = idPair.PrimitiveID;
+            var primitiveIds = idPair.PrimitiveIds;
             var sfmId = idPair.SpatialFieldManagerID;
 
             SpatialFieldManager sfm = null;
 
             // if we can't get the sfm, return null
-            if (!Document.TryGetElement<SpatialFieldManager>(new ElementId(sfmId), out sfm)) return null;
+            if (!Document.TryGetElement(new ElementId(sfmId), out sfm)) 
+                return null;
 
-            return new Tuple<SpatialFieldManager, int>(sfm, primitiveId);
+            return new Tuple<SpatialFieldManager, List<int>>(sfm, primitiveIds);
         }
 
         /// <summary>
         /// Set the SpatialFieldManager and PrimitiveId in Thread Local Storage
         /// </summary>
         /// <param name="manager"></param>
-        /// <param name="primitiveId"></param>
-        protected void SetElementAndPrimitiveIdForTrace(SpatialFieldManager manager, int primitiveId)
+        /// <param name="map"></param>
+        protected void SetElementAndPrimitiveIdsForTrace(SpatialFieldManager manager, List<int> primitiveIds)
         {
             if (manager == null)
             {
                 throw new Exception();
             }
 
-            SpmPrimitiveIdPair idPair = new SpmPrimitiveIdPair();
-            idPair.SpatialFieldManagerID = manager.Id.IntegerValue;
-            idPair.PrimitiveID = primitiveId;
+            var idPair = new SpmPrimitiveIdPair
+            {
+                SpatialFieldManagerID = manager.Id.IntegerValue,
+                PrimitiveIds = primitiveIds
+            };
             ElementBinder.SetRawDataForTrace(idPair);
         }
 
         /// <summary>
         /// Set the current SpatialFieldManager and PrimitiveId in Thread Local Storage
         /// </summary>
-        protected void SetElementAndPrimitiveIdForTrace()
+        protected void SetElementAndPrimitiveIdsForTrace()
         {
-            SetElementAndPrimitiveIdForTrace(this.SpatialFieldManager, this.SpatialFieldPrimitiveId);
+            SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, PrimitiveIds);
         }
 
         #endregion

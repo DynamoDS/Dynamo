@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using Analysis;
+
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
@@ -59,9 +62,6 @@ namespace Revit.AnalysisDisplay
     [DSNodeServices.RegisterForTrace]
     public class PointAnalysisDisplay : AbstractAnalysisDisplay
     {
-
-        private List<int> primitiveIds = new List<int>();
-
         #region Private constructors
 
         /// <summary>
@@ -70,30 +70,42 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<Autodesk.Revit.DB.XYZ> sampleLocations,
-            IEnumerable<double> samples)
+        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data)
         {
             var sfm = GetSpatialFieldManagerFromView(view);
-            var sfmAndIds = GetElementAndPrimitiveIdListFromTrace();
 
-            // the input view has changed, remove the old primitive from the old view
-            if (sfmAndIds != null)
-            {
-                var oldSfm = sfmAndIds.Item1;
-                var oldIds = sfmAndIds.Item2;
+            //var sfmAndIds = GetElementAndPrimitiveIdListFromTrace();
 
-                foreach (var oldId in oldIds)
-                {
-                    oldSfm.RemoveSpatialFieldPrimitive(oldId); 
-                }
-            }
+            //// the input view has changed, remove the old primitive from the old view
+            //if (sfmAndIds != null)
+            //{
+            //    var oldSfm = sfmAndIds.Item1;
+            //    var oldIds = sfmAndIds.Item2;
+
+            //    foreach (var oldId in oldIds)
+            //    {
+            //        oldSfm.RemoveSpatialFieldPrimitive(oldId); 
+            //    }
+            //}
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            InternalSetSpatialFieldManager(sfm);
-            InternalSetSpatialFieldValues(sampleLocations, samples);
+            // TEMPORARY UNTIL WE RESOLVE TRACE
+            sfm.Clear();
 
-            SetElementAndPrimitiveIdListTrace(SpatialFieldManager, primitiveIds);
+            var pointAnalysisData = data as PointAnalysisData[] ?? data.ToArray();
+            sfm.SetMeasurementNames(pointAnalysisData.SelectMany(d => d.Values.Keys).Distinct().ToList());
+
+            var primitiveIds = new List<int>();
+
+            InternalSetSpatialFieldManager(sfm);
+
+            foreach (var d in pointAnalysisData)
+            {
+                InternalSetSpatialFieldValues(d, ref primitiveIds);
+            }
+
+            //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -109,17 +121,40 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="pointLocations"></param>
         /// <param name="values"></param>
-        private void InternalSetSpatialFieldValues(IEnumerable<XYZ> pointLocations, IEnumerable<double> values)
+        private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds)
         {
+            var values = data.Values.Values;
+
+            var height = values.First().Count();
+            var width = values.Count();
+
+            // Transpose and convert the analysis values to a special Revit type
+            var transposedVals = new List<List<double>>();
+            for (int i = 0; i < height; i++)
+            {
+                var lst = new List<double>() { };
+
+                for (int j = 0; j < width; j++)
+                {
+                    lst.Add(values.ElementAt(j).ElementAt(i));
+                }
+                transposedVals.Add(lst);
+            }
+
             TransactionManager.Instance.EnsureInTransaction(Document);
 
+            // We chunk here because the API has a limitation for the 
+            // number of points that can be sent in one run.
+
             var chunkSize = 1000;
+            var pointLocations = data.Locations.Select(l=>l.ToXyz());
+
             while (pointLocations.Any()) 
             {
                 // Convert the analysis values to a special Revit type
                 var pointLocationChunk = pointLocations.Take(chunkSize).ToList<XYZ>();
-                var valuesChunk = values.Take(chunkSize).ToList();
-                var valList = valuesChunk.Select(n => new ValueAtPoint(new List<double> { n })).ToList();
+                var valuesChunk = transposedVals.Take(chunkSize).ToList();
+                var valList = valuesChunk.Select(n => new ValueAtPoint(n)).ToList();
 
                 // Convert the sample points to a special Revit Type
                 var samplePts = new FieldDomainPointsByXYZ(pointLocationChunk.ToList<XYZ>());
@@ -134,7 +169,7 @@ namespace Revit.AnalysisDisplay
                 SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
 
                 pointLocations = pointLocations.Skip(chunkSize);
-                values = values.Skip(chunkSize);
+                transposedVals = transposedVals.Skip(chunkSize).ToList();
             }
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -155,7 +190,6 @@ namespace Revit.AnalysisDisplay
                         Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples) 
                         
         {
-
             if (view == null)
             {
                 throw new ArgumentNullException("view");
@@ -176,7 +210,11 @@ namespace Revit.AnalysisDisplay
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            return new PointAnalysisDisplay(view.InternalView, samplePoints.ToXyzs(), samples);
+            var valueDict = new Dictionary<string, IList<double>>();
+            valueDict.Add("Dynamo Data", samples);
+
+            var data = new PointAnalysisData(samplePoints, valueDict);
+            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData>{data});
         }
 
         #endregion
@@ -198,7 +236,7 @@ namespace Revit.AnalysisDisplay
             SpatialFieldManager sfm = null;
 
             // if we can't get the sfm, return null
-            if (!Document.TryGetElement<SpatialFieldManager>(new ElementId(sfmId), out sfm)) return null;
+            if (!Document.TryGetElement(new ElementId(sfmId), out sfm)) return null;
 
             return new Tuple<SpatialFieldManager, List<int>>(sfm, primitiveIds);
         }
@@ -210,9 +248,11 @@ namespace Revit.AnalysisDisplay
                 throw new Exception();
             }
 
-            SpmPrimitiveIdListPair idPair = new SpmPrimitiveIdListPair();
-            idPair.SpatialFieldManagerID = manager.Id.IntegerValue;
-            idPair.PrimitiveIDs= primitiveIds;
+            var idPair = new SpmPrimitiveIdListPair
+            {
+                SpatialFieldManagerID = manager.Id.IntegerValue,
+                PrimitiveIDs = primitiveIds
+            };
             ElementBinder.SetRawDataForTrace(idPair);
         }
     }
