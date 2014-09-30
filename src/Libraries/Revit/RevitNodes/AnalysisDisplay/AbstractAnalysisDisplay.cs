@@ -13,6 +13,8 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Autodesk.DesignScript.Runtime;
 
+using UV = Autodesk.DesignScript.Geometry.UV;
+
 namespace Revit.AnalysisDisplay
 {
     /// <summary>
