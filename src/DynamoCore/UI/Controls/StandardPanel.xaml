@@ -14,19 +14,9 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
-
-        <Style x:Key="StandardPanelBackground"
-               TargetType="{x:Type Border}">
-            <Setter Property="Background"
-                    Value="#272727" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsRootCategoryDetails}"
-                             Value="True">
-                    <Setter Property="Background"
-                            Value="#333333" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                          TrueBrush="#333333"
+                                          FalseBrush="#272727" />
 
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
@@ -37,6 +27,12 @@
                     Value="1" />
             <Setter Property="Height"
                     Value="40" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <Binding Path="IsRootCategoryDetails"
+                             Converter="{StaticResource BooleanToBrushConverter}" />
+                </Setter.Value>
+            </Setter>
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -56,11 +52,6 @@
                                 <Setter Property="Background"
                                         Value="#444444" />
                             </MultiTrigger>
-                            <DataTrigger Binding="{Binding IsRootCategoryDetails}"
-                                         Value="True">
-                                <Setter Property="Background"
-                                        Value="#333333" />
-                            </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -116,10 +107,15 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Border Padding="0,10,0,10"
-            Visibility="{Binding Path=ClassDetailsVisibility,
-                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
-            Style="{StaticResource StandardPanelBackground}">
+    <Border Padding="0,10,0,10">
+        <Border.Visibility>
+            <Binding Path="ClassDetailsVisibility"
+                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+        </Border.Visibility>
+        <Border.Background>
+            <Binding Path="IsRootCategoryDetails"
+                     Converter="{StaticResource BooleanToBrushConverter}" />
+        </Border.Background>
         <Grid DataContextChanged="GridDataContextChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
