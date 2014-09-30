@@ -835,8 +835,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInputAndOutput : NodeModel
     {
-        protected VariableInputAndOutput(WorkspaceModel ws)
-            : base(ws)
+        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
         {
         }
 
@@ -990,8 +989,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
-        public Sublists(WorkspaceModel ws)
-            : base(ws)
+        public Sublists(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists."));
             InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
@@ -1260,8 +1258,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeModel
     {
-        public ComposeFunctions(WorkspaceModel ws)
-            : base(ws)
+        public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("f", "A Function"));
             InPortData.Add(new PortData("g", "A Function"));
@@ -1301,8 +1298,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Applies a function to arguments.")]
     public class Apply1 : VariableInput
     {
-        public Apply1(WorkspaceModel ws)
-            : base(ws)
+        public Apply1(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("func", "Function"));
             OutPortData.Add(new PortData("result", "Result of function application."));
@@ -1563,8 +1559,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public StringInput(WorkspaceModel ws)
-            : base(ws)
+        public StringInput(WorkspaceModel ws) : base(ws)
         {
             RegisterAllPorts();
             Value = "";
@@ -2325,8 +2320,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected DropDrownBase(WorkspaceModel ws)
-            : base(ws)
+        protected DropDrownBase(WorkspaceModel ws) : base(ws)
         {
             Items.CollectionChanged += Items_CollectionChanged;
         }
