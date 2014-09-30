@@ -193,5 +193,14 @@ namespace Dynamo.UI.Controls
 
             castedDataContext.IsMoreButtonVisible = collection.Count() > TruncatedMembersCount;
         }
+
+        private void OnShiftMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
+            scv.UpdateLayout();
+
+            libraryToolTipPopup.HorizontalOffset = scv.HorizontalOffset;
+        }
     }
 }

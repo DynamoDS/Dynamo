@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Views
 {
@@ -13,14 +14,20 @@ namespace Dynamo.UI.Views
             InitializeComponent();
         }
 
-        private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                e.Handled = false;
+                return;
+            }
+
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
-        private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
             if ((classButton == null) || !classButton.IsSelected) return;

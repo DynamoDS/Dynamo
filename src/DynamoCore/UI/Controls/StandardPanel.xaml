@@ -18,6 +18,13 @@
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
 
+        <Style TargetType="{x:Type ScrollViewer}">
+            <Setter Property="HorizontalScrollBarVisibility"
+                    Value="Hidden" />
+            <EventSetter Event="PreviewMouseWheel"
+                         Handler="OnShiftMouseWheel" />
+        </Style>
+
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background">
@@ -32,6 +39,8 @@
                     Value="1" />
             <Setter Property="Height"
                     Value="40" />
+            <Setter Property="ScrollViewer.CanContentScroll"
+                    Value="True" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -145,8 +154,7 @@
                      Grid.Row="1"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
