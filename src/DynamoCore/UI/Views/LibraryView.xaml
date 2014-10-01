@@ -12,7 +12,8 @@
         <ResourceDictionary>
             <!--Converter to Make class details not focusable-->
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
-            
+            <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
+
             <!-- The order of DataTemplates and TemplateSelectors is correct.
                  If you try to change it, you will have a bug or XamlParseException
                  exception. -->
@@ -66,13 +67,12 @@
             <!-- This data template is used to show StandardPanel
                  for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <Grid Background="#272727">
-                    <Grid.Width>
+                <uicontrols:StandardPanel>
+                    <uicontrols:StandardPanel.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-                    </Grid.Width>
-                    <uicontrols:StandardPanel Name="standardPanel" />
-                </Grid>
+                    </uicontrols:StandardPanel.Width>
+                </uicontrols:StandardPanel>
             </DataTemplate>
 
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
@@ -190,7 +190,7 @@
                                           VerticalAlignment="Center"
                                           TextBlock.FontSize="13"
                                           TextBlock.Foreground="#989898"
-                                          Margin="8,0,0,0"/>
+                                          Margin="8,0,0,0" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
@@ -286,8 +286,6 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-
-            <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
             <ControlTemplate x:Key="ScrollViewerControlTemplate"
                              TargetType="{x:Type ScrollViewer}">
@@ -429,7 +427,6 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">

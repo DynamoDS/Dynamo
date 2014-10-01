@@ -183,6 +183,7 @@ namespace Dynamo.Nodes
                 if (builder.Length > 0)
                     builder.Append("-");
 
+                typeOfParameter = typeOfParameter.Split('.').Last();
                 builder.Append(typeOfParameter);
             }
 
