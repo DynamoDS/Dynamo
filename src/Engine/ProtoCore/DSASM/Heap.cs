@@ -282,7 +282,7 @@ namespace ProtoCore.DSASM
 
         private int AddHeapElement(HeapElement hpe)
         {
-            int index = Constants.kInvalidIndex;
+            int index;
             if (TryFindFreeIndex(out index))
             {
                 heapElements[index].Active = true;
@@ -313,21 +313,19 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void GCDisposeObject(ref StackValue svPtr, Executive exe)
+        private void GCDisposeObject(StackValue svPtr, Executive exe)
         {
             int classIndex = svPtr.metaData.type;
             ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
-            ProcedureNode pn = null;
 
+            ProcedureNode pn = cn.GetDisposeMethod();
             while (pn == null)
             {
-                pn = cn.GetDisposeMethod();
-                if (pn == null && cn.baseList != null && cn.baseList.Count != 0) // search the base class
+                if (cn.baseList != null && cn.baseList.Count != 0) 
                 {
-                    // assume multiple inheritance is not allowed
-                    // it will only has a single base class 
                     classIndex = cn.baseList[0];
-                    cn = exe.exe.classTable.ClassNodes[cn.baseList[0]];
+                    cn = exe.exe.classTable.ClassNodes[classIndex];
+                    pn = cn.GetDisposeMethod();
                 }
                 else
                 {
@@ -342,7 +340,7 @@ namespace ProtoCore.DSASM
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildBlockIndex(pn.runtimeIndex));
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildStaticType((int)ProtoCore.PrimitiveType.kTypeVar));
+                exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 
                 ++exe.Core.FunctionCallDepth;
 
@@ -415,7 +413,7 @@ namespace ProtoCore.DSASM
                     var pointer = pointers[i];
                     if (pointer.IsPointer)
                     {
-                        GCDisposeObject(ref pointer, exe);
+                        GCDisposeObject(pointer, exe);
                     }
                     heapElements[i] = null;
                     freeList.Add((int)pointer.RawIntValue);
@@ -427,18 +425,9 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public bool IsTemporaryPointer(StackValue sv)
-        {
-            if (!sv.IsReferenceType)
-            {
-                return false;
-            }
 
-            int ptr = (int)sv.opdata;
-            HeapElement he = this.heapElements[ptr];
-            return he.Active && he.Refcount == 0; 
-        }
-
+        #region Reference counting APIs
+        //[Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -455,6 +444,7 @@ namespace ProtoCore.DSASM
             }
         }
 
+        //[Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -471,7 +461,8 @@ namespace ProtoCore.DSASM
             {
             }
         }
-
+    
+        //[Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
@@ -504,7 +495,7 @@ namespace ProtoCore.DSASM
                 {
                     // if it is of class type, first call its destructor before clean its members
                     if(svPtr.IsPointer)
-                        GCDisposeObject(ref svPtr, exe);
+                        GCDisposeObject(svPtr, exe);
 
                     if (svPtr.IsArray && hs.Dict != null)
                     {
@@ -523,8 +514,6 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-
-        #region Heap Verification Utils
 
         /// <summary>
         /// Checks if the heap contains at least 1 pointer element that points to itself

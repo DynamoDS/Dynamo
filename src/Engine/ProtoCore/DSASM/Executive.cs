@@ -5245,9 +5245,13 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (!isSSANode && rmem.Heap.IsTemporaryPointer(svData))
+            if (!isSSANode && svData.IsReferenceType)
             {
-                GCRelease(svData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svData);
+                }
             }
 
             ++pc;
@@ -5324,10 +5328,12 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (rmem.Heap.IsTemporaryPointer(svData))
+            var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+            if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
             {
                 GCRelease(svData);
             }
+            
             ++pc;
         }
 
@@ -5412,7 +5418,8 @@ namespace ProtoCore.DSASM
                     GCRelease(EX);
                 }
 
-                if (rmem.Heap.IsTemporaryPointer(svData))
+                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
                 {
                     GCRelease(svData);
                 }
@@ -5524,9 +5531,13 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (!isSSANode && rmem.Heap.IsTemporaryPointer(svOldData))
+            if (!isSSANode && svOldData.IsReferenceType)
             {
-                GCRelease(svOldData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svOldData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svOldData);
+                }
             }
 
             ++pc;
