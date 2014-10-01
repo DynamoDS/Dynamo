@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !ENABLE_DYNAMO_SCHEDULER
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -201,3 +203,5 @@ namespace Dynamo
         }
     }
 }
+
+#endif
