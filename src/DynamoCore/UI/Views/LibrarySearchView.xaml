@@ -36,69 +36,6 @@
                                       Margin="8,0,0,0" />
                 </Grid>
             </Border>
-            <ControlTemplate.Triggers>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="True" />
-                        <Condition Property="IsChecked"
-                                   Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
-                        <Setter Property="Background"
-                                TargetName="ExpanderButtonBorder"
-                                Value="#222222" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="True" />
-                        <Condition Property="IsChecked"
-                                   Value="True" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
-                        <Setter Property="TextBlock.FontWeight"
-                                TargetName="HeaderContent"
-                                Value="Semibold" />
-                        <Setter Property="TextBlock.Foreground"
-                                TargetName="HeaderContent"
-                                Value="#bbbbbb" />
-                        <Setter Property="Background"
-                                TargetName="ExpanderButtonBorder"
-                                Value="#222222" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="False" />
-                        <Condition Property="IsChecked"
-                                   Value="True" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
-                        <Setter Property="TextBlock.FontWeight"
-                                TargetName="HeaderContent"
-                                Value="Semibold" />
-                        <Setter Property="TextBlock.Foreground"
-                                TargetName="HeaderContent"
-                                Value="#bbbbbb" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-            </ControlTemplate.Triggers>
         </ControlTemplate>
 
         <ControlTemplate x:Key="CategoryExpanderTemplate"
