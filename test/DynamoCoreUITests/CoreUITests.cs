@@ -57,9 +57,9 @@ namespace DynamoCoreUITests
 
         [Test]
         [Category("DynamoUI")]
-        public void ConsoleIsHiddenOnOpen()
+        public void ConsoleIsShownOnOpen()
         {
-            Assert.False(ViewModel.ConsoleHeight > 0);
+            Assert.True(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
