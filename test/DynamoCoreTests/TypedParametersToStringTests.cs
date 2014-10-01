@@ -35,7 +35,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.double-double",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor,""));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor));
 
             //2 case
             List<TypedParameter> parameters2 = new List<TypedParameter>();
@@ -47,7 +47,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.Point",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor,""));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor));
 
             //3 case
             List<TypedParameter> parameters3 = new List<TypedParameter>();
@@ -61,7 +61,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.bool2-var1-double2",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor,""));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor));
 
             //4 case
             List<TypedParameter> parameters4 = new List<TypedParameter>();
@@ -74,7 +74,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.varN-int",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor,""));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor));
 
             //5 case
             List<TypedParameter> parameters5 = new List<TypedParameter>();
