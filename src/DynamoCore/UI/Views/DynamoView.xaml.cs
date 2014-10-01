@@ -341,12 +341,12 @@ namespace Dynamo.Controls
             _aboutWindow.Focus();
         }
 
-        private PackageManagerPublishView _pubPkgView;
+        private PublishPackageView _pubPkgView;
         void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
-                _pubPkgView = new PackageManagerPublishView(model);
+                _pubPkgView = new PublishPackageView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
 

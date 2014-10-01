@@ -144,11 +144,6 @@ namespace Dynamo.ViewModels
         public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
 
         /// <summary>
-        /// A category representing the "Top Result"
-        /// </summary>
-        private BrowserRootElement topResult;
-
-        /// <summary>
         ///     An ordered list representing all of the visible items in the browser.
         ///     This is used to manage up-down navigation through the menu.
         /// </summary>
@@ -183,8 +178,6 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
-
-            topResult = this.Model.AddRootCategoryToStart("Top Result");
 
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
@@ -236,13 +229,6 @@ namespace Dynamo.ViewModels
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
-            // Remove old execute handler from old top result
-            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
-            {
-                var oldTopResult = topResult.Items.First() as NodeSearchElement;
-                oldTopResult.Executed -= this.ExecuteElement;
-            }
-
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
             {
@@ -261,8 +247,6 @@ namespace Dynamo.ViewModels
                     ele.SetVisibilityToLeaves(true);
                 }
 
-                // hide the top result
-                topResult.Visibility = false;
                 return;
             }
 
@@ -271,26 +255,6 @@ namespace Dynamo.ViewModels
             {
                 root.CollapseToLeaves();
                 root.SetVisibilityToLeaves(false);
-            }
-
-            // if there are any results, add the top result 
-            if (result.Any() && result.ElementAt(0) is NodeSearchElement)
-            {
-                topResult.Items.Clear();
-
-                var firstRes = (result.ElementAt(0) as NodeSearchElement);
-
-                var copy = firstRes.Copy();
-                copy.Executed += this.ExecuteElement;
-
-                var catName = MakeShortCategoryString(firstRes.FullCategoryName);
-
-                var breadCrumb = new BrowserInternalElement(catName, topResult);
-                breadCrumb.AddChild(copy);
-                topResult.AddChild(breadCrumb);
-
-                topResult.SetVisibilityToLeaves(true);
-                copy.ExpandToRoot();
             }
 
             // for all of the other results, show them in their category

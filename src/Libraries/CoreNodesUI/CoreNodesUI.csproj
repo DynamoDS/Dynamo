@@ -62,10 +62,14 @@
     <Compile Include="CreateList.cs" />
     <Compile Include="DropDown.cs" />
     <Compile Include="DummyNode.cs" />
+    <Compile Include="ElementSelectionControl.xaml.cs">
+      <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Enum.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="HigherOrder\Apply.cs" />
     <Compile Include="HigherOrder\MapCombineLacing.cs" />
+    <Compile Include="IModelSelectionHelper.cs" />
     <Compile Include="Input\BasicInteractive.cs" />
     <Compile Include="Input\BoolSelector.cs" />
     <Compile Include="Input\File.cs" />
@@ -81,6 +85,7 @@
     <Compile Include="IntegerSliderSettingsControl.xaml.cs">
       <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Selection.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +114,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ElementSelectionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="IntegerSliderSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -121,5 +130,5 @@
   </Target>  
   <Target Name="AfterBuild">    
   </Target>
-  -->  
+  -->
 </Project>
