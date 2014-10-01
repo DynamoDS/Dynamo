@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Returns the index of the port corresponding to the variable name given
         /// </summary>
-        /// <param name="variableName"> Name of the variable corresponding to an input port </param>
+        /// <param name="variableNamePattern"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
         public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
@@ -110,7 +110,7 @@ namespace Dynamo.Nodes
         /// <summary>
         ///  Returns the corresponding output port index for a given defined variable 
         /// </summary>
-        /// <param name="variableName"></param>
+        /// <param name="variableNamePattern"></param>
         /// <returns></returns>
         public int GetOutportIndex(string variableName)
         {

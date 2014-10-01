@@ -19,11 +19,11 @@ namespace Dynamo.Nodes
 
         public enum CompletionType
         {
-            NAMESPACE,
-            METHOD,
-            CONSTRUCTOR,
-            CLASS,
-            PROPERTY,
+            Namespace,
+            Method,
+            Constructor,
+            Class,
+            Property,
         };
 
         public CodeBlockCompletionData(string text, string stub, bool isInstance, CompletionType type, CodeBlockEditor codeEditor)
@@ -38,10 +38,10 @@ namespace Dynamo.Nodes
                 var assembly = Assembly.GetExecutingAssembly();
 
                 TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.CONSTRUCTOR, GetBitmapImage(assembly, "constructor.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
+                TypeToIcon.Add(CompletionType.Method, GetBitmapImage(assembly, "method.png"));
+                TypeToIcon.Add(CompletionType.Constructor, GetBitmapImage(assembly, "constructor.png"));
+                TypeToIcon.Add(CompletionType.Class, GetBitmapImage(assembly, @"class.png"));
+                TypeToIcon.Add(CompletionType.Property, GetBitmapImage(assembly, @"property.png"));
             }
 
             this.image = TypeToIcon[type];
@@ -72,6 +72,7 @@ namespace Dynamo.Nodes
         // description
         private string description;
         
+        // TODO: Implement this
         public object Description
         {
             get {
@@ -99,7 +100,7 @@ namespace Dynamo.Nodes
             {
                 string methodName = method.MethodName;
                 string signature = "";
-                CompletionType type = method.IsConstructor ? CompletionType.CONSTRUCTOR : CompletionType.METHOD;
+                CompletionType type = method.IsConstructor ? CompletionType.Constructor : CompletionType.Method;
                 return new CodeBlockCompletionData(methodName, signature, !method.IsStatic, type, codeEditor);
             }
             PropertyMirror property = mirror as PropertyMirror;
@@ -107,14 +108,14 @@ namespace Dynamo.Nodes
             {
                 string propertyName = property.PropertyName;
                 string stub = "";
-                return new CodeBlockCompletionData(propertyName, stub, !property.IsStatic, CompletionType.PROPERTY, codeEditor);
+                return new CodeBlockCompletionData(propertyName, stub, !property.IsStatic, CompletionType.Property, codeEditor);
             }
             return null;
         }
 
         private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
-            var name = string.Format(@"Dynamo.UI.Resources.{0}", resourceFileName);
+            var name = string.Format(@"Dynamo.UI.Images.CodeBlock.{0}", resourceFileName);
 
             var bitmapImage = new BitmapImage();
 

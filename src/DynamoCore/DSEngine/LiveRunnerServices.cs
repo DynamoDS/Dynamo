@@ -98,9 +98,9 @@ namespace Dynamo.DSEngine
             }
         }
 
-        internal ClassMirror GetStaticType(string className)
+        internal ClassMirror GetClassType(string className)
         {
-            return liveRunner.GetStaticType(className);
+            return liveRunner.GetClassType(className);
         }
 
         /// <summary>

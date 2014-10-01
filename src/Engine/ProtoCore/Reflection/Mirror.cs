@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;

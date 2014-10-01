@@ -232,7 +232,7 @@ namespace Dynamo.Utilities
         ///    is to preserve the indentation for lines other than the first.
         /// 
         /// 4. If the resulting codes do not end with a closing curly bracket '}',
-        ///    then a semi-colon is appended to the code. This ensures codes like 
+        ///    then a semi-colonPattern is appended to the code. This ensures codes like 
         ///    "a" will result in codes becoming "a;"
         /// 
         /// </summary>
@@ -263,7 +263,7 @@ namespace Dynamo.Utilities
             {
                 if (line.IndexOf(';') == -1)
                 {
-                    // The line does not have any semi-colon originally. We know 
+                    // The line does not have any semi-colonPattern originally. We know 
                     // this is a line by itself, but may or may not represent a 
                     // statement. But since this line (potentially an empty one)
                     // exists in the original user string, it needs to go into 
@@ -297,9 +297,9 @@ namespace Dynamo.Utilities
             inputCode = inputCode.TrimEnd(charsToTrim);
 
             // If after all the processing we do not end up with an empty code,
-            // then we may need a semi-colon at the end. This is provided if the 
+            // then we may need a semi-colonPattern at the end. This is provided if the 
             // code does not end with a closing curly bracket (in which case a 
-            // trailing semi-colon is not required).
+            // trailing semi-colonPattern is not required).
             // 
             if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
             {
@@ -340,12 +340,27 @@ namespace Dynamo.Utilities
         }
     }
 
+    /// <summary>
+    /// This class exposes utility methods to:
+    /// 1. extract variable types from variable declarations such as 'Point' from a : Point;
+    /// 2. extract the string to autocomplete on from a block of code
+    /// </summary>
     internal class CodeCompletionParser
     {
-        public static string variableName = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
-        public static string spacesOrNone = @"(\s*)";
-        public static string colon = ":";
+        private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+        private static string spacesOrNonePattern = @"(\s*)";
+        private static string colonPattern = ":";
         
+        // Maintains a stack of symbols in a nested expression being typed
+        // where the symbols are nested based on brackets, braces or parentheses
+        // An expression like: x[y[z.foo(). will be stacked up as follows:
+        // z.foo().
+        // y[
+        // x[
+        // The stack is then popped upon closing the brackets, and the popped value is transferred to the top:
+        // y[z.foo()].
+        // x[
+        // So at any given time the top of the stack will contain the string to be completed
         Stack<string> expressionStack = new Stack<string>();
         
         string strPrefix = String.Empty;
@@ -369,8 +384,11 @@ namespace Dynamo.Utilities
 
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
+            // Contains pairs of variable names and their types
             Dictionary<string, string> variableTypes = new Dictionary<string, string>();
-            string pattern = variableName + spacesOrNone + colon + spacesOrNone + variableName;
+
+            // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
+            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + variableNamePattern;
 
             var varDeclarations = Regex.Matches(code, pattern);
             for (int i = 0; i < varDeclarations.Count; i++)

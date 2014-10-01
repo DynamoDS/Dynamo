@@ -854,11 +854,11 @@ limitations under the License.
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Resources\class.png" />
-    <EmbeddedResource Include="UI\Resources\constructor.png" />
-    <EmbeddedResource Include="UI\Resources\method.png" />
-    <EmbeddedResource Include="UI\Resources\property.png" />
-    <EmbeddedResource Include="UI\Resources\variable.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

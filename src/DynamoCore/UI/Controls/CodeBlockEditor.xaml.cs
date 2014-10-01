@@ -65,27 +65,27 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        private ICompletionData[] GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
+        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
         {
-            var completions = new List<CodeBlockCompletionData>();
+            IEnumerable<CodeBlockCompletionData> completions = null;
             var engineController = this.dynamoViewModel.Model.EngineController;
 
             // Determine if the string to be completed is a class
-            var type = engineController.GetStaticType(stringToComplete);
+            var type = engineController.GetClassType(stringToComplete);
             if (type == null)
             {
                 // Check if the string to be completed is a declared variable
                 string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
                 if (typeName != null)
-                    type = engineController.GetStaticType(typeName);
+                    type = engineController.GetClassType(typeName);
             }
             if (type != null)
             {
                 var members = type.GetMembers();
                 completions = members.Select<StaticMirror, CodeBlockCompletionData>(
-                    x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)).ToList();
+                    x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
             }
-            return completions.ToArray();
+            return completions;
         }
 
         internal string GetDescription()
@@ -163,9 +163,14 @@ namespace Dynamo.UI.Controls
                     
                     var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
 
-                    if (completions.Length == 0)
+                    if (completions.Count() == 0)
                         return;
 
+                    // TODO: Need to make this more efficient by instantiating 'completionWindow'
+                    // just once and updating its contents each time
+
+                    // This implementation has been taken from
+                    // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
                     completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;
 
