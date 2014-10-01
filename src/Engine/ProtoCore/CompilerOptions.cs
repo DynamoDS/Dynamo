@@ -3,18 +3,6 @@ namespace ProtoCore
 {
     namespace Compiler
     {
-        public static class Options
-        {
-            public enum OptImperative
-            {
-                kAutoAllocate = 1 << 0,
-                kInferTypes = 1 << 1
-            }
-
-            public static int optSet { get; set; }
-        }
-
-
         public enum AccessSpecifier
         {
             kPublic,

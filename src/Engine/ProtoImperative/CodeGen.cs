@@ -42,8 +42,6 @@ namespace ProtoImperative
             //
             astNodes = new List<ImperativeNode>();
 
-            SetCompileOptions();
-
             // Create a new symboltable for this block
             // Set the new symbol table's parent
             // Set the new table as a child of the parent table
@@ -129,17 +127,6 @@ namespace ProtoImperative
             ++core.RuntimeTableIndex;
 
             return cb;
-        }
-
-        private void SetCompileOptions()
-        {
-            // Manually set options
-            // This is normally done from a makefile
-            //ProtoCore.CompilerOptions.optSet = 0;
-            //ProtoCore.CompilerOptions.optSet |= (int)ProtoCore.CompilerOptions.OptImperative.kAutoAllocate;
-
-            ProtoCore.Compiler.Options.optSet = 0;
-            ProtoCore.Compiler.Options.optSet |= (int)ProtoCore.Compiler.Options.OptImperative.kAutoAllocate;
         }
 
         protected override void SetEntry()
