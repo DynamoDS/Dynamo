@@ -232,7 +232,7 @@ namespace Dynamo.Utilities
         ///    is to preserve the indentation for lines other than the first.
         /// 
         /// 4. If the resulting codes do not end with a closing curly bracket '}',
-        ///    then a semi-colonPattern is appended to the code. This ensures codes like 
+        ///    then a semi-colon is appended to the code. This ensures codes like 
         ///    "a" will result in codes becoming "a;"
         /// 
         /// </summary>
@@ -263,7 +263,7 @@ namespace Dynamo.Utilities
             {
                 if (line.IndexOf(';') == -1)
                 {
-                    // The line does not have any semi-colonPattern originally. We know 
+                    // The line does not have any semi-colon originally. We know 
                     // this is a line by itself, but may or may not represent a 
                     // statement. But since this line (potentially an empty one)
                     // exists in the original user string, it needs to go into 
@@ -299,7 +299,7 @@ namespace Dynamo.Utilities
             // If after all the processing we do not end up with an empty code,
             // then we may need a semi-colonPattern at the end. This is provided if the 
             // code does not end with a closing curly bracket (in which case a 
-            // trailing semi-colonPattern is not required).
+            // trailing semi-colon is not required).
             // 
             if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
             {

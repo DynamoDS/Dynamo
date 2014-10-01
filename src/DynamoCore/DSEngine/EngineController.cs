@@ -103,7 +103,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Get runtime mirror for variable.
         /// </summary>
-        /// <param name="variableNamePattern"></param>
+        /// <param name="variableName"></param>
         /// <returns></returns>
         public RuntimeMirror GetMirror(string variableName)
         {
@@ -131,7 +131,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Get string representation of the value of variable.
         /// </summary>
-        /// <param name="variableNamePattern"></param>
+        /// <param name="variableName"></param>
         /// <returns></returns>
         public string GetStringValue(string variableName)
         {
@@ -146,7 +146,7 @@ namespace Dynamo.DSEngine
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
-        /// <param name="variableNamePattern"></param>
+        /// <param name="variableName"></param>
         /// <returns></returns>
         public List<IGraphicItem> GetGraphicItems(string variableName)
         {
