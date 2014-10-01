@@ -478,7 +478,7 @@ namespace ProtoCore
                 }
             }
 
-            public void GC(IEnumerable<SymbolNode> gcRoots)
+            public void GC(IEnumerable<SymbolNode> gcRoots, DSASM.Executive exe)
             {
                 if (gcRoots == null)
                 {
@@ -495,7 +495,7 @@ namespace ProtoCore
                     }
                 }
 
-                Heap.GCMarkSweep(pointers);
+                Heap.GCMarkAndSweep(pointers, exe);
             }
         }
     }

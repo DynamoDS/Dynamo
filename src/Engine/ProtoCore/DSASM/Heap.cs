@@ -215,6 +215,7 @@ namespace ProtoCore.DSASM
     {
         private List<int> freeList = new List<int>();
         private List<HeapElement> heapElements = new List<HeapElement>();
+        private bool isGarbageCollecting = false;
 
         public Heap()
         {
@@ -357,44 +358,73 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void GCMarkSweep(List<StackValue> rootPointers)
+        public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
-            var markBits = new BitArray(heapElements.Count);
+            if (isGarbageCollecting)
+                return;
 
-            var workingStack = new Stack<int>();
-            foreach (var pointer in rootPointers)
+            try
             {
-                Validity.Assert(pointer.IsReferenceType);
-                workingStack.Push((int)pointer.opdata);
-            }
+                isGarbageCollecting = true;
 
-            while (workingStack.Any())
-            {
-                var ptr = workingStack.Pop();
-                markBits.Set(ptr, true);
+                // Mark
+                var markBits = new BitArray(heapElements.Count);
+                // Annoying. But we have to keep all pointers so that we could 
+                // dispose them. 
+                var pointers = new StackValue[heapElements.Count];
 
-                var heapElement = heapElements[ptr];
-                var subElements = heapElement.VisibleItems;
-                if (heapElement.Dict != null)
+                var workingStack = new Stack<StackValue>(rootPointers);
+                while (workingStack.Any())
                 {
-                    subElements = subElements.Concat(heapElement.Dict.Keys)
-                                             .Concat(heapElement.Dict.Values);
-                }
-
-                foreach (var subElement in subElements)
-                {
-                    if (!subElement.IsReferenceType)
-                        continue;
-
-                    ptr = (int)subElement.RawIntValue; 
-                    if (!markBits.Get(ptr))
+                    var pointer = workingStack.Pop();
+                    var ptr = (int)pointer.RawIntValue;
+                    if (markBits.Get(ptr))
                     {
-                        workingStack.Push(ptr);
+                        continue;
+                    }
+
+                    markBits.Set(ptr, true);
+                    pointers[ptr] = pointer;
+
+                    var heapElement = heapElements[ptr];
+                    var subElements = heapElement.VisibleItems;
+                    if (heapElement.Dict != null)
+                    {
+                        subElements = subElements.Concat(heapElement.Dict.Keys)
+                            .Concat(heapElement.Dict.Values);
+                    }
+
+                    foreach (var subElement in subElements)
+                    {
+                        if (subElement.IsReferenceType &&
+                            !markBits.Get((int)subElement.RawIntValue))
+                        {
+                            workingStack.Push(subElement);
+                        }
                     }
                 }
-            }
 
-            throw new NotImplementedException("{3CDF5599-97DB-4EC2-9E25-EC11DBA7280E}");
+                // Sweep
+                for (int i = 0; i < heapElements.Count; ++i)
+                {
+                    if (!markBits.Get(i))
+                    {
+                        continue;
+                    }
+
+                    var pointer = pointers[i];
+                    if (pointer.IsPointer)
+                    {
+                        GCDisposeObject(ref pointer, exe);
+                    }
+                    heapElements[i] = null;
+                    freeList.Add((int)pointer.RawIntValue);
+                }
+            }
+            finally
+            {
+                isGarbageCollecting = false;
+            }
         }
 
         public bool IsTemporaryPointer(StackValue sv)
