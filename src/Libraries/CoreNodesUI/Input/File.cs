@@ -25,12 +25,29 @@ namespace DSCore.File
             RegisterAllPorts();
 
             Value = "";
+
+            workspace.DynamoModel.EvaluationCompleted += (sender, args) =>
+            {
+                ForceReExecuteOfNode = false;
+            };
+
+            this.PropertyChanged += valuePropertyChanged;
+        }
+
+        void valuePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Value"))
+            {
+                // This check is necessary since the property change event happens by default
+                // when a new/existing file is opened and the checkbox is unchecked by default
+                if (checkBox != null && checkBox.IsChecked == true)
+                    CreateFileWatcher();
+            }
         }
 
         private FileSystemWatcher watcher = null;
         private const string defaultValue = "No file selected.";
-
-        protected bool? isFileWatcherAttached;
+        private System.Windows.Controls.CheckBox checkBox = null;
 
         protected void CreateFileWatcher()
         {
@@ -43,8 +60,7 @@ namespace DSCore.File
 
             if (watcher != null)
             {
-                watcher.Changed += watcher_Changed;
-                return;
+                RemoveFileWatcher();
             }
 
             // Create new file watcher and register its "file changed" event
@@ -66,13 +82,12 @@ namespace DSCore.File
 
         protected void RemoveFileWatcher()
         {
-            ForceReExecuteOfNode = false;
-            if (watcher != null)
-                watcher.Changed -= watcher_Changed;
+            watcher.Dispose();
         }
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
         {
+            RequiresRecalc = true;
             ForceReExecuteOfNode = true;
         }
 
@@ -110,13 +125,20 @@ namespace DSCore.File
             tb.Margin = new Thickness(0, 5, 0, 5);
 
             // Attach FileWatcher Checkbox
-            var checkBox = new System.Windows.Controls.CheckBox
+            checkBox = new System.Windows.Controls.CheckBox
             {
                 Content = "Attach FileWatcher",
                 Margin = new Thickness(5, 0, 0, 0)
             };
-            checkBox.Checked += (obj, args) => { CreateFileWatcher(); isFileWatcherAttached = true; };
-            checkBox.Unchecked += (obj, args) => { RemoveFileWatcher(); isFileWatcherAttached = false; };
+            checkBox.Checked += (obj, args) => 
+            { 
+                CreateFileWatcher();
+
+                // If a file has changed before turning on the filewatcher
+                // it is necessary to force execute it once turned on to update the node
+                watcher_Changed(null, null);
+            };
+            checkBox.Unchecked += (obj, args) => { RemoveFileWatcher(); };
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
@@ -135,11 +157,6 @@ namespace DSCore.File
 
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
 
-        public void Dispose()
-        {
-            RemoveFileWatcher();
-            watcher.Dispose();
-        }
     }
 
     [NodeName("File Path")]
@@ -161,8 +178,6 @@ namespace DSCore.File
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 Value = openDialog.FileName;
-                if (isFileWatcherAttached == true)
-                    CreateFileWatcher();
             }
         }
 
@@ -193,8 +208,6 @@ namespace DSCore.File
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 Value = openDialog.SelectedPath;
-                if (isFileWatcherAttached == true)
-                    CreateFileWatcher();
             }
         }
     }
