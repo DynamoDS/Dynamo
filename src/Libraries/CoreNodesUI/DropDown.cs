@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
+using System.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -55,16 +58,52 @@ namespace DSCoreNodesUI
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", SelectedIndex.ToString());
+            var item = Items[SelectedIndex];
+            nodeElement.SetAttribute("index", string.Format("{0}:{1}", SelectedIndex, XmlEscape(item.Name)));
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            try
+            // Drop downs previsouly saved their selected index as an int.
+            // Between versions of host applications where the number or order of items
+            // in a list would vary, this made loading of drop downs un-reliable.
+            // We have upgraded drop downs to save their selected index as 
+            // something like "9:Reference Point".
+
+            var attrib = nodeElement.Attributes["index"];
+            if (attrib == null)
+                return;
+
+            var index = attrib.Value;
+            var splits = index.Split(':');
+            if (splits.Count() > 1)
             {
-                SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
+                var name = XmlUnescape(splits[1]);
+                var item = Items.FirstOrDefault(i => i.Name == name);
+                SelectedIndex = item != null ? 
+                    Items.IndexOf(item) : 
+                    Convert.ToInt32(nodeElement.Attributes["index"].Value);
             }
-            catch { }
+            else
+            {
+                SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);  
+            }
+        }
+
+        private static string XmlEscape(string unescaped)
+        {
+            var doc = new XmlDocument();
+            XmlNode node = doc.CreateElement("root");
+            node.InnerText = unescaped;
+            return node.InnerXml;
+        }
+
+        private static string XmlUnescape(string escaped)
+        {
+            var doc = new XmlDocument();
+            XmlNode node = doc.CreateElement("root");
+            node.InnerXml = escaped;
+            return node.InnerText;
         }
 
         protected abstract void PopulateItems();
