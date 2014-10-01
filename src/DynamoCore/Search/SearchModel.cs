@@ -72,7 +72,7 @@ namespace Dynamo.Search
             // Element is part of custom DLL. 
             CustomDll
         };
-        
+
         /// <summary>
         /// The root elements for the browser
         /// </summary>
@@ -91,6 +91,13 @@ namespace Dynamo.Search
         {
             get { return _addonRootCategories; }
             set { _addonRootCategories = value; }
+        }
+
+        private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return _searchRootCategories; }
+            set { _searchRootCategories = value; }
         }
 
         /// <summary>
@@ -204,15 +211,42 @@ namespace Dynamo.Search
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal IEnumerable<SearchElementBase> Search(string search)
+        internal void Search(string search)
         {
             if (string.IsNullOrEmpty(search))
             {
-                return _searchElements;
+                return;
             }
 
-            return SearchDictionary.Search(search, MaxNumSearchResults);
+            var foundNodes = SearchDictionary.Search(search, MaxNumSearchResults).ToList();
+
+            ClearSearchCategories();
+            PopulateSearchCategories(foundNodes);            
         }
+
+        internal void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                List<string> splitCat = SplitCategoryName(node.FullCategoryName);
+
+                var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == splitCat[0]);
+                if (category == null)
+                {
+                    _searchRootCategories.Add(new SearchCategory(splitCat[0], node));
+                }
+                else
+                {
+                    category.AddMemberToCorrectGroup(node);
+                }
+            }
+        }
+
+        internal void ClearSearchCategories()
+        {
+            _searchRootCategories.Clear();
+        }
+
 
         #endregion
 

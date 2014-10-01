@@ -237,9 +237,7 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            // Do not search.
-            // Search functionality isn't ready for now.
-            //this.viewModel.SearchCommand.Execute(null);
+            this.viewModel.SearchCommand.Execute(null);
         }
 
         // Not used anywhere.
