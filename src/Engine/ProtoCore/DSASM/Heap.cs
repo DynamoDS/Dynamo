@@ -367,10 +367,6 @@ namespace ProtoCore.DSASM
 
                 // Mark
                 var markBits = new BitArray(heapElements.Count);
-                // Annoying. But we have to keep all pointers so that we could 
-                // dispose them. 
-                var pointers = new StackValue[heapElements.Count];
-
                 var workingStack = new Stack<StackValue>(rootPointers);
                 while (workingStack.Any())
                 {
@@ -382,7 +378,6 @@ namespace ProtoCore.DSASM
                     }
 
                     markBits.Set(ptr, true);
-                    pointers[ptr] = pointer;
 
                     var heapElement = heapElements[ptr];
                     var subElements = heapElement.VisibleItems;
@@ -410,13 +405,9 @@ namespace ProtoCore.DSASM
                         continue;
                     }
 
-                    var pointer = pointers[i];
-                    if (pointer.IsPointer)
-                    {
-                        GCDisposeObject(pointer, exe);
-                    }
                     heapElements[i] = null;
-                    freeList.Add((int)pointer.RawIntValue);
+                    // Call Dispose()?
+                    freeList.Add(i);
                 }
             }
             finally
@@ -427,7 +418,7 @@ namespace ProtoCore.DSASM
 
 
         #region Reference counting APIs
-        //[Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -444,7 +435,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        //[Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -462,7 +453,7 @@ namespace ProtoCore.DSASM
             }
         }
     
-        //[Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
