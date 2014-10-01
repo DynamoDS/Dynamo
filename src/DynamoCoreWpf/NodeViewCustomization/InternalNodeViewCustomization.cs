@@ -3,27 +3,10 @@ using System.Linq.Expressions;
 
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo.Wpf
 {
-    internal class OnceDisposable : IDisposable
-    {
-        private bool called;
-        private IDisposable disposable;
-
-        internal OnceDisposable(IDisposable disposable)
-        {
-            this.disposable = disposable;
-        }
-
-        public void Dispose()
-        {
-            if (called) return;
-            called = true;
-            if (disposable != null) disposable.Dispose();
-        }
-    }
-
     internal class InternalNodeViewCustomization
     {
         private readonly Type customizerType;

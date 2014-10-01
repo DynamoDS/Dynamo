@@ -23,8 +23,7 @@ namespace Dynamo.Wpf
                     foreach (var customization in custs)
                     {
                         var disposable = customization.CustomizeView(model, view);
-                        // TODO CORESPLIT
-                        //view.Destroyed += disposable.Dispose;
+                        view.Unloaded += (s, a) => disposable.Dispose();
                     }
                 }
                 t = t.BaseType;

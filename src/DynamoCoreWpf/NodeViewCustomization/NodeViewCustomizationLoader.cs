@@ -5,46 +5,6 @@ using System.Reflection;
 
 namespace Dynamo.Wpf
 {
-    public class NodeViewCustomizations : INodeViewCustomizations
-    {
-        private readonly IDictionary<Type, IEnumerable<Type>> customizations;
-
-        public NodeViewCustomizations(IDictionary<Type, IEnumerable<Type>> customizationMap)
-        {
-            customizations = customizationMap ?? new Dictionary<Type, IEnumerable<Type>>();
-        }
-
-        public IDictionary<Type, IEnumerable<Type>> GetCustomizations()
-        {
-            return customizations;
-        }
-    }
-
-    public class AssemblyNodeViewCustomizations : INodeViewCustomizations
-    {
-        private readonly Assembly assembly;
-
-        public AssemblyNodeViewCustomizations(Assembly assem)
-        {
-            if (assem == null) throw new ArgumentNullException("assem");
-            this.assembly = assem;
-        }
-
-        public IDictionary<Type, IEnumerable<Type>> GetCustomizations()
-        {
-            return NodeViewCustomizationLoader
-                .LoadCustomizations(this.assembly)
-                .GetCustomizations();
-        }
-    }
-
-    public class CoreNodeViewCustomizations : AssemblyNodeViewCustomizations
-    {
-        public CoreNodeViewCustomizations() : base(Assembly.GetExecutingAssembly())
-        {
-        }
-    }
-
     internal static class NodeViewCustomizationLoader
     {
         private static Dictionary<Assembly, INodeViewCustomizations> cache = 

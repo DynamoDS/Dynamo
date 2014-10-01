@@ -71,7 +71,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
+    <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="Commands.cs" />
