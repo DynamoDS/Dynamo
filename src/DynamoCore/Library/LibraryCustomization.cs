@@ -116,18 +116,19 @@ namespace Dynamo.DSEngine
 
         private Dictionary<string, BitmapSource> cachedIcons = 
             new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
+
         private string assemblyName;
         private Assembly resourceAssembly;
 
         private const string imagesSuffix = "Images";
 
-        internal LibraryCustomization(Assembly assembly, XDocument document)
+        internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {
             this.XmlDocument = document;
-            if (assembly != null)
+            if (resAssembly != null)
             {
-                resourceAssembly = assembly;
-                assemblyName = assembly.GetName().Name.Split('.').First();
+                resourceAssembly = resAssembly;
+                assemblyName = resAssembly.GetName().Name.Split('.').First();
             }
         }
 
