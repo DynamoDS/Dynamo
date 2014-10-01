@@ -43,7 +43,7 @@ namespace RevitTestServices.GeometryConversion
         {
             var formSolids = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
                 .Cast<Revit.Elements.Form>()
-                .SelectMany(x => x.InternalGeometry())
+                .SelectMany(x => x.InternalRevitGeometry())
                 .OfType<Autodesk.Revit.DB.Solid>();
 
             AssertAllSolidsAreConvertedProperly(formSolids);
@@ -55,7 +55,7 @@ namespace RevitTestServices.GeometryConversion
         {
             var formSolids = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
                 .Cast<Revit.Elements.Form>()
-                .SelectMany(x => x.InternalGeometry())
+                .SelectMany(x => x.InternalRevitGeometry())
                 .OfType<Autodesk.Revit.DB.Solid>();
 
             AssertAllSolidsAreConvertedProperly(formSolids);
@@ -67,7 +67,7 @@ namespace RevitTestServices.GeometryConversion
         {
             var allSolidsInDoc = ElementSelector.ByType<Autodesk.Revit.DB.Wall>(true)
                 .Cast<Revit.Elements.Wall>()
-                .SelectMany(x => x.InternalGeometry())
+                .SelectMany(x => x.InternalRevitGeometry())
                 .OfType<Autodesk.Revit.DB.Solid>()
                 .ToList();
 

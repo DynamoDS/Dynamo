@@ -343,18 +343,30 @@ namespace Revit.Elements
         /// <summary>
         /// Get all of the Geometry associated with this object
         /// </summary>
-        public object[] Geometry()
+        [SupressImportIntoVM]
+        public List<Geometry> InternalGeometry()
         {
-            var converted = new List<object>();
+            var converted = new List<Geometry>();
 
-            foreach (var geometryObject in InternalGeometry())
+            foreach (var geometryObject in InternalRevitGeometry())
             {
                 try
                 {
                     var convert = geometryObject.Convert();
                     if (convert != null)
                     {
-                        converted.Add(convert);
+                        // faces may be converted to a collection of surfaces
+                        var convertEnum = convert as IEnumerable<Geometry>;
+                        if (convertEnum != null)
+                        {
+                            converted.AddRange(convertEnum);
+                        }
+
+                        var convertGeom = convert as Geometry;
+                        if (convertGeom != null)
+                        {
+                            converted.Add(convertGeom);
+                        }
                     }
                 }
                 catch (Exception)
@@ -363,13 +375,30 @@ namespace Revit.Elements
                 }
             }
 
-            return converted.ToArray();
+            // in cases where only one element is returned, just return that
+            return converted;
+        }
+
+        /// <summary>
+        /// Get all of the Geometry associated with this object
+        /// </summary>
+        public object Geometry()
+        {
+            var converted = InternalGeometry();
+
+            // in cases where only one element is returned, just return that
+            if (converted.Count == 1)
+            {
+                return converted[0];
+            }
+
+            return converted;
         }
 
         #region Geometry extraction
 
         [SupressImportIntoVM]
-        public IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
+        public IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalRevitGeometry()
         {
             var thisElement = InternalElement;
 
@@ -391,10 +420,10 @@ namespace Revit.Elements
                 }
             }
 
-            return CollectConcreteGeometry(geomElement);
+            return CollectConcreteRevitGeometry(geomElement);
         }
 
-        private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement)
+        private static IEnumerable<GeometryObject> CollectConcreteRevitGeometry(GeometryElement geometryElement)
         {
             var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
 
@@ -408,11 +437,11 @@ namespace Revit.Elements
                 if (geomInstance != null)
                 {
                     var instanceGeom = geomInstance.GetInstanceGeometry();
-                    instanceGeometryObjects.AddRange(CollectConcreteGeometry(instanceGeom));
+                    instanceGeometryObjects.AddRange(CollectConcreteRevitGeometry(instanceGeom));
                 }
                 else if (geomElement != null)
                 {
-                    instanceGeometryObjects.AddRange( CollectConcreteGeometry(geometryElement) );
+                    instanceGeometryObjects.AddRange( CollectConcreteRevitGeometry(geometryElement) );
                 }
                 else
                 {
@@ -429,7 +458,7 @@ namespace Revit.Elements
 
         public Autodesk.DesignScript.Geometry.Solid[] Solids
         {
-            get { return Geometry().OfType<Autodesk.DesignScript.Geometry.Solid>().ToArray(); }
+            get { return InternalGeometry().OfType<Autodesk.DesignScript.Geometry.Solid>().ToArray(); }
         }
 
         public Curve[] Curves

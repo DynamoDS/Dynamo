@@ -17,7 +17,7 @@ namespace Revit.GeometryConversion
     {
         public static IEnumerable<Autodesk.Revit.DB.Solid> GetRevitSolids(Element ele)
         {
-            return ele.InternalGeometry().OfType<Autodesk.Revit.DB.Solid>().ToArray();
+            return ele.InternalRevitGeometry().OfType<Autodesk.Revit.DB.Solid>().ToArray();
         }
 
         public static IEnumerable<Surface> GetTrimmedSurfacesFromSolid(Autodesk.Revit.DB.Solid geom)

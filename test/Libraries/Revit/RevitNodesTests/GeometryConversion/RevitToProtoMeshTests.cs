@@ -26,7 +26,7 @@ namespace RevitTestServices.GeometryConversion
             var allMeshesInDoc =
                 ElementSelector.ByType<Autodesk.Revit.DB.Architecture.TopographySurface>(true)
                     .Cast<Revit.Elements.Topography>()
-                    .SelectMany(x => x.InternalGeometry())
+                    .SelectMany(x => x.InternalRevitGeometry())
                     .OfType<Autodesk.Revit.DB.Mesh>()
                     .ToList();
 
