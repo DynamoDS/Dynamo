@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
+
 using ProtoCore.Utils;
 
 
@@ -356,6 +359,41 @@ namespace ProtoCore.DSASM
 
         public void GCMarkSweep(List<StackValue> rootPointers)
         {
+            var markBits = new BitArray(heapElements.Count);
+
+            var workingStack = new Stack<int>();
+            foreach (var pointer in rootPointers)
+            {
+                Validity.Assert(pointer.IsReferenceType);
+                workingStack.Push((int)pointer.opdata);
+            }
+
+            while (workingStack.Any())
+            {
+                var ptr = workingStack.Pop();
+                markBits.Set(ptr, true);
+
+                var heapElement = heapElements[ptr];
+                var subElements = heapElement.VisibleItems;
+                if (heapElement.Dict != null)
+                {
+                    subElements = subElements.Concat(heapElement.Dict.Keys)
+                                             .Concat(heapElement.Dict.Values);
+                }
+
+                foreach (var subElement in subElements)
+                {
+                    if (!subElement.IsReferenceType)
+                        continue;
+
+                    ptr = (int)subElement.RawIntValue; 
+                    if (!markBits.Get(ptr))
+                    {
+                        workingStack.Push(ptr);
+                    }
+                }
+            }
+
             throw new NotImplementedException("{3CDF5599-97DB-4EC2-9E25-EC11DBA7280E}");
         }
 
