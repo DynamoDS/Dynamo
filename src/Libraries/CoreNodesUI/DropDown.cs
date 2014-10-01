@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -58,8 +59,7 @@ namespace DSCoreNodesUI
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            var item = Items[SelectedIndex];
-            nodeElement.SetAttribute("index", string.Format("{0}:{1}", SelectedIndex, XmlEscape(item.Name)));
+            nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -74,20 +74,48 @@ namespace DSCoreNodesUI
             if (attrib == null)
                 return;
 
-            var index = attrib.Value;
+            SelectedIndex = ParseSelectedIndex(attrib.Value, Items);
+        }
+
+        public static int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
+        {
+            int selectedIndex = -1;
+
             var splits = index.Split(':');
             if (splits.Count() > 1)
             {
                 var name = XmlUnescape(index.Substring(index.IndexOf(':') + 1));
-                var item = Items.FirstOrDefault(i => i.Name == name);
-                SelectedIndex = item != null ? 
-                    Items.IndexOf(item) : 
-                    Convert.ToInt32(nodeElement.Attributes["index"].Value);
+                var item = items.FirstOrDefault(i => i.Name == name);
+                selectedIndex = item != null ?
+                    items.IndexOf(item) :
+                    -1;
             }
             else
             {
-                SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);  
+                var tempIndex = Convert.ToInt32(index);
+                selectedIndex = tempIndex > (items.Count - 1)? 
+                    -1:
+                    tempIndex ;
             }
+
+            return selectedIndex;
+        }
+
+        public static string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
+        {
+            var result = "-1";
+
+            if (index == -1)
+            {
+                result = index.ToString();
+            }
+            else
+            {
+                var item = items[index];
+                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
+            }
+
+            return result;
         }
 
         private static string XmlEscape(string unescaped)

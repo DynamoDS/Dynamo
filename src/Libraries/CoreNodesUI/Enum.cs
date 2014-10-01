@@ -141,27 +141,4 @@ namespace DSCoreNodesUI
             Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
     }
-
-    public abstract class DropDownFromDictionary : DSDropDownBase
-    {
-        private Dictionary<string, object> dictionary;
-
-        protected DropDownFromDictionary(WorkspaceModel workspaceModel, string outputName, Dictionary<string,object> dictionary)
-            : base(workspaceModel, outputName)
-        {
-            this.dictionary = dictionary;
-        }
-
-        protected override void PopulateItems()
-        {
-            Items.Clear();
-
-            foreach (var kvp in dictionary)
-            {
-                Items.Add(new DynamoDropDownItem(kvp.Key, kvp.Value));
-            }
-
-            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
-        }
-    }
 }
