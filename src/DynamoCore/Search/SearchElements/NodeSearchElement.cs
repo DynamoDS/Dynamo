@@ -75,8 +75,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                string className = string.Empty;
-                return IsConstructor(out className) ? className : _outputParameters;
+                return GenerateOutputParameters();
             }
         }
 
@@ -204,10 +203,9 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected virtual bool IsConstructor(out string className)
+        protected virtual string GenerateOutputParameters()
         {
-            className = "";
-            return false;
+            return _outputParameters;
         }
 
 
