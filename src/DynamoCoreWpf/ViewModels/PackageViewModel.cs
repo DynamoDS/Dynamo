@@ -102,7 +102,7 @@ namespace Dynamo.ViewModels
                 var dynModel = this.dynamoViewModel.Model;
                 Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
             }

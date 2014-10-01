@@ -27,7 +27,7 @@ namespace Dynamo.Wpf
     internal class InternalNodeViewCustomization
     {
         private readonly Type customizerType;
-        private readonly Delegate constructor;
+        private Delegate constructor;
 
         internal InternalNodeViewCustomization(Type customizerType)
         {
@@ -58,7 +58,7 @@ namespace Dynamo.Wpf
             var custConst = Expression.New(customizerType);
             var newCust = Expression.Lambda(custConst);
             
-            return newCust.Compile();
+            return constructor = newCust.Compile();
         }
 
         internal static InternalNodeViewCustomization Create(Type custType)
