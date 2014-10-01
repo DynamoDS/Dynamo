@@ -31,7 +31,8 @@ namespace Dynamo.UI.Controls
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
-
+        private CodeBlockNodeModel nodeModel = null;
+        
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -44,11 +45,17 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
             // Register text editing events
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-            this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+
+            // the code block should not be in focus upon undo/redo actions on node
+            if (this.nodeModel.ShouldFocus)
+            {
+                this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+            }
 
             InitializeSyntaxHighlighter();
         }
@@ -89,6 +96,7 @@ namespace Dynamo.UI.Controls
             })
         );
         #endregion
+
 
         #region Generic Event Handlers
         /// <summary>
@@ -169,5 +177,5 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
-    
+
 }

@@ -1,19 +1,6 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="1000" CommandIntervalInMs="20">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="200">
+  <CreateNodeCommand NodeId="56e07af9-6a16-4f61-a673-54e33a8556d8" NodeName="Dynamo.Nodes.DoubleInput" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <CreateNodeCommand NodeId="428fc0eb-aacf-41ca-b4d9-d4152e945ad8" NodeName="Code Block" X="218" Y="183" DefaultPosition="false" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="428fc0eb-aacf-41ca-b4d9-d4152e945ad8" Name="Code" Value="10" />
-  <CreateNodeCommand NodeId="6c0b7466-c163-4963-b3b1-aa3a8a261aeb" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="6c0b7466-c163-4963-b3b1-aa3a8a261aeb" Name="Value" Value="20" />
+  <UpdateModelValueCommand ModelGuid="56e07af9-6a16-4f61-a673-54e33a8556d8" Name="Value" Value="1" />
   <UndoRedoCommand CmdOperation="0" />
-  <UndoRedoCommand CmdOperation="0" />
-  <UndoRedoCommand CmdOperation="0" />
-  <UndoRedoCommand CmdOperation="1" />
-  <UndoRedoCommand CmdOperation="1" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="6c0b7466-c163-4963-b3b1-aa3a8a261aeb" Name="Value" Value="50" />
-  <CreateNodeCommand NodeId="635bd033-03f6-4b98-b03d-a5c3c2969607" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="635bd033-03f6-4b98-b03d-a5c3c2969607" Name="Value" Value="10" />
 </Commands>
