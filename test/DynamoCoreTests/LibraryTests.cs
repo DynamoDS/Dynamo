@@ -54,5 +54,42 @@ namespace Dynamo.Tests
                 
             }
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationNoFileFound() 
+        {
+
+
+
+            Assert.Fail();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationFileBadlyFormatted()
+        {
+
+
+            Assert.Fail();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationCannotFindNewMethodName()
+        {
+
+
+            Assert.Fail();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationCannotFindOldMethodName()
+        {
+
+
+            Assert.Fail();
+        }
     }
 }

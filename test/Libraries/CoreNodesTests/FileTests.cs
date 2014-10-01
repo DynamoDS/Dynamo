@@ -56,4 +56,14 @@ namespace Dynamo.Tests
             AssertPreviewValue("48c04164-6435-4124-9fe6-b3319ef177da", true);
         }
     }
+
+    [TestFixture]
+    public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
+    {
+        [Test]
+        public void TestZeroTouchMigrationFile()
+        {
+            Assert.Fail();
+        }
+    }
 }
