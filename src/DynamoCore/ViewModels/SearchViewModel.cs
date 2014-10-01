@@ -308,9 +308,7 @@ namespace Dynamo.ViewModels
 
             return catName;
         }
-
-
-
+        
         #endregion
 
         #region Selection

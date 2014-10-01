@@ -24,7 +24,7 @@ namespace Dynamo.Search
         {
             Name = name;
 
-            // Add class to Classes. Subject for discussion with EB.
+            // Add class to Classes.
 
             memberGroups = new List<SearchMemberGroup>();
             memberGroups.Add(new SearchMemberGroup(node));
@@ -32,7 +32,7 @@ namespace Dynamo.Search
 
         public void AddMemberToCorrectGroup(BrowserInternalElement node)
         {
-            
+
         }
     }
 }
