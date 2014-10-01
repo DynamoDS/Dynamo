@@ -297,7 +297,7 @@ namespace Dynamo.Utilities
             inputCode = inputCode.TrimEnd(charsToTrim);
 
             // If after all the processing we do not end up with an empty code,
-            // then we may need a semi-colonPattern at the end. This is provided if the 
+            // then we may need a semi-colon at the end. This is provided if the 
             // code does not end with a closing curly bracket (in which case a 
             // trailing semi-colon is not required).
             // 
