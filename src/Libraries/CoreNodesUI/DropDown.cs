@@ -78,7 +78,7 @@ namespace DSCoreNodesUI
             var splits = index.Split(':');
             if (splits.Count() > 1)
             {
-                var name = XmlUnescape(splits[1]);
+                var name = XmlUnescape(index.Substring(index.IndexOf(':') + 1));
                 var item = Items.FirstOrDefault(i => i.Name == name);
                 SelectedIndex = item != null ? 
                     Items.IndexOf(item) : 
