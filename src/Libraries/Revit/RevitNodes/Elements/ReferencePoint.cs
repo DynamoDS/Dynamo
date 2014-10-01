@@ -423,9 +423,9 @@ namespace Revit.Elements
             {
                 return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", X, Y, Z);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return e.ToString();
+                return "Could not obtain ReferencePoint for preview!";
             }
         }
 
@@ -436,9 +436,9 @@ namespace Revit.Elements
                 return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", X.ToString(format),
                                     Y.ToString(format), Z.ToString(format));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return e.ToString();
+                return "Could not obtain ReferencePoint for preview!";
             }
         }
 
