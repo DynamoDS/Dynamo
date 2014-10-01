@@ -5328,12 +5328,15 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            var dataHeapElement = rmem.Heap.GetHeapElement(svData);
-            if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+            if (svData.IsReferenceType)
             {
-                GCRelease(svData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svData);
+                }
             }
-            
+
             ++pc;
         }
 
@@ -5418,10 +5421,13 @@ namespace ProtoCore.DSASM
                     GCRelease(EX);
                 }
 
-                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
-                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                if (svData.IsReferenceType)
                 {
-                    GCRelease(svData);
+                    var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                    if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                    {
+                        GCRelease(svData);
+                    }
                 }
 
                 ++pc;
