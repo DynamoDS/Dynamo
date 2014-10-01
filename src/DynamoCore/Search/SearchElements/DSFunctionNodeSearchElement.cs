@@ -56,41 +56,35 @@ namespace Dynamo.Search.SearchElements
             {
                 case ResourceType.SmallIcon:
                 {
-                    string name = String.Empty;
+                    string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
 
+                    // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+                    // Should be used FunctionDescriptor.Name property instead.
+                    // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+                    if (name != FunctionDescriptor.QualifiedName)
+                        name += Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
                     // Usual case.
                     if (!disambiguate)
-                    {
-                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                        // Case for operators. Operators should use FunctionDescriptor.Name property.
-                        if (string.IsNullOrEmpty(name))
-                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-
                         return name;
-                    }
 
                     // Case for overloaded methods.
-                    return Utils.TypedParametersToString(this.FunctionDescriptor);
+                    return Utils.TypedParametersToString(this.FunctionDescriptor, name);
                 }
                 case ResourceType.LargeIcon:
                 {
-                    string name = String.Empty;
+                    string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
 
+                    // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+                    // Should be used FunctionDescriptor.Name property instead.
+                    // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+                    if (name != FunctionDescriptor.QualifiedName)
+                        name += Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
                     // Usual case.
                     if (!disambiguate)
-                    {
-                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                        // Case for operators. Operators should use FunctionDescriptor.Name property.
-                        if (string.IsNullOrEmpty(name))
-                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-
                         return name;
-                    }
 
                     // Case for overloaded methods.
-                    return Utils.TypedParametersToString(this.FunctionDescriptor);
+                    return Utils.TypedParametersToString(this.FunctionDescriptor, name);
                 }
             }
 
