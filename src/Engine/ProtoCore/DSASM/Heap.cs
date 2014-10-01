@@ -378,7 +378,7 @@ namespace ProtoCore.DSASM
                 {
                     var pointer = workingStack.Pop();
                     var ptr = (int)pointer.RawIntValue;
-                    if (markBits.Get(ptr))
+                    if (!pointer.IsReferenceType || markBits.Get(ptr))
                     {
                         continue;
                     }
