@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using NUnit.Framework;
 using ProtoCore;
@@ -51,7 +52,7 @@ namespace ProtoTest.DSASM
             var array = heap.AllocateArray(values);
             var str = heap.AllocateString("hello world");
 
-            heap.GCMarkAndSweep(new List<StackValue>() { array, str }, testExecutive);
+            heap.GCMarkAndSweep(new List<StackValue>(), testExecutive);
 
             var arrayHeapElement = heap.GetHeapElement(array);
             Assert.IsNull(arrayHeapElement);
@@ -65,7 +66,48 @@ namespace ProtoTest.DSASM
         /// should skip other types.  
         /// </summary>
         [Test]
-        public void TestNonPointers()
+        public void TestNonPointers01()
+        {
+            var heap = new Heap();
+            var values = new StackValue[]
+            {
+                StackValue.BuildInt(0),
+                StackValue.BuildInt(1),
+                StackValue.BuildInt(2)
+            };
+
+            var array1 = heap.AllocateArray(values);
+
+            var allTypes = new List<StackValue>();
+            var rawPointer = (int)array1.RawIntValue;
+            for (int i = 0; i < (int)AddressType.ArrayKey; ++i)
+            {
+                var val = new StackValue()
+                {
+                    optype = (AddressType)i, 
+                    opdata = rawPointer
+                };
+
+                if (!val.IsReferenceType)
+                {
+                    allTypes.Add(val);
+                }
+            }
+            var array2 = heap.AllocateArray(allTypes.ToArray());
+
+            heap.GCMarkAndSweep(new List<StackValue>() { array1}, testExecutive);
+
+            var arrayHeapElement = heap.GetHeapElement(array1);
+            Assert.IsNotNull(arrayHeapElement);
+
+            heap.Free();
+        }
+
+        /// <summary>
+        /// Test that only non-pointer gc root won't retain any memory.
+        /// </summary>
+        [Test]
+        public void TestNonPointers02()
         {
             var heap = new Heap();
             var values = new StackValue[]
@@ -83,7 +125,7 @@ namespace ProtoTest.DSASM
             {
                 var val = new StackValue()
                 {
-                    optype = (AddressType)i, 
+                    optype = (AddressType)i,
                     opdata = rawPointer
                 };
 
@@ -93,10 +135,13 @@ namespace ProtoTest.DSASM
                 }
             }
 
+            // non pointer gc root won't retain memory
             heap.GCMarkAndSweep(allTypes, testExecutive);
 
             var arrayHeapElement = heap.GetHeapElement(array);
-            Assert.IsNotNull(arrayHeapElement);
+            Assert.IsNull(arrayHeapElement);
+
+            heap.Free();
         }
 
         /// <summary>
@@ -110,8 +155,8 @@ namespace ProtoTest.DSASM
             var array1 = heap.AllocateArray(new StackValue[] { StackValue.BuildInt(0) });
             var array2 = heap.AllocateArray(new StackValue[] { array1 });
             var array3 = heap.AllocateArray(new StackValue[] { array2 });
-            // Order doesn't matter
-            heap.GCMarkAndSweep(new List<StackValue>() { array3 }, testExecutive);
+
+            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
             var array1HeapElement = heap.GetHeapElement(array1);
             Assert.IsNull(array1HeapElement);
@@ -138,7 +183,7 @@ namespace ProtoTest.DSASM
 
             var array = heap.AllocateArray(new StackValue[] { }, dict);
 
-            heap.GCMarkAndSweep(new List<StackValue>() { array }, testExecutive);
+            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
             var valHeapElement = heap.GetHeapElement(val);
             Assert.IsNull(valHeapElement);
@@ -159,7 +204,7 @@ namespace ProtoTest.DSASM
             // self reference
             arrayHeapElement.Stack[0] = array;
 
-            heap.GCMarkAndSweep(new List<StackValue>() { array }, testExecutive);
+            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
             var releasedHeapElement = heap.GetHeapElement(array);
             Assert.IsNull(releasedHeapElement);
         }
@@ -177,7 +222,7 @@ namespace ProtoTest.DSASM
             // self reference
             array1HeapElement.Stack[0] = array2;
 
-            heap.GCMarkAndSweep(new List<StackValue>() { array1 }, testExecutive);
+            heap.GCMarkAndSweep(new List<StackValue>() { }, testExecutive);
 
             var array1Hpe = heap.GetHeapElement(array1);
             Assert.IsNull(array1Hpe);

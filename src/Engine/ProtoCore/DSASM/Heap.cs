@@ -407,7 +407,7 @@ namespace ProtoCore.DSASM
                 // Sweep
                 for (int i = 0; i < heapElements.Count; ++i)
                 {
-                    if (!markBits.Get(i))
+                    if (markBits.Get(i))
                     {
                         continue;
                     }
