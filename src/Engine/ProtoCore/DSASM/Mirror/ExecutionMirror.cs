@@ -868,8 +868,8 @@ namespace ProtoCore.DSASM.Mirror
             // 4. Get all graphnpodes dependent on the symbol and mark them dirty
             const int outerBlock = 0;
             ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
-            nodesMarkedDirty = MirrorTarget.UpdateDependencyGraph(
-                graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, graphNode, exe.instrStreamList[outerBlock].dependencyGraph, outerBlock);
+            nodesMarkedDirty = AssociativeEngine.Utils.UpdateDependencyGraph(core, MirrorTarget.Properties,
+                graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, null, exe.instrStreamList, graphNode, exe.instrStreamList[outerBlock].dependencyGraph, outerBlock);
 
 
             // 5. Re-execute the script - re-execution occurs after this call 

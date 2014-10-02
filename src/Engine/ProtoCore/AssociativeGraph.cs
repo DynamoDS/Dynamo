@@ -20,7 +20,7 @@ namespace ProtoCore.AssociativeEngine
         /// Find all graph nodes whos dependents contain this symbol;
         /// Mark those nodes as dirty
         /// </summary>
-        public static int UpdateDependencyGraph2(
+        public static int UpdateDependencyGraph(
             Core core,
             InterpreterProperties Properties,
             int exprUID,
@@ -94,7 +94,7 @@ namespace ProtoCore.AssociativeEngine
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        int dirtyNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph2(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, instrStreamList, executingGraphNode, instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                        int dirtyNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, instrStreamList, executingGraphNode, instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
                         if (dirtyNodes > 0)
                         {
                             graphNode.isDirty = true;
@@ -116,6 +116,7 @@ namespace ProtoCore.AssociativeEngine
                             if (graphNode.exprUID != Properties.executingGraphNode.exprUID)
                             {
                                 // Defer this update until the final non-ssa node
+                                Validity.Assert(deferedGraphNodes != null);
                                 deferedGraphNodes.Add(graphNode);
                                 continue;
                             }
@@ -274,7 +275,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="gnode"></param>
         /// <param name="executingNode"></param>
         /// <returns></returns>
-        private static bool UpdateGraphNodeDependency2(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
+        public static bool UpdateGraphNodeDependency(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
         {
             bool wasGraphNodeDependencyUpdated = false;
             if (gnode.UID >= executingNode.UID // for previous graphnodes
@@ -334,10 +335,9 @@ namespace ProtoCore.AssociativeEngine
                     //      a = 10      // Redefinition of 'a' will GC t0 and t1
                     //
 
-                    // GCAnonymousSymbols(gnode.symbolListWithinExpression); Do this in the executive
-
-                    gnode.symbolListWithinExpression.Clear();
-                    gnode.isActive = false;
+                    // GCAnonymousSymbols(gnode.symbolListWithinExpression); Do this in the executive after this call
+                    //gnode.symbolListWithinExpression.Clear();
+                    //gnode.isActive = false;
                     wasGraphNodeDependencyUpdated = true;
                 }
             }
