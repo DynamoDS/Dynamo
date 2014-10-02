@@ -1152,7 +1152,7 @@
                     Click="RunButton_OnClick"
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
-                    ToolTip="Run Workflow (F5)"
+                    ToolTip="Run (F5)"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
                     <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
