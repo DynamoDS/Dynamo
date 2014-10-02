@@ -16,28 +16,39 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
-        /// Check if an update is triggered;
-        /// Find all graph nodes whos dependents contain this symbol;
-        /// Mark those nodes as dirty
+        /// Find and return all graphnodes that can be reached by executingGraphNode
         /// </summary>
-        public static int UpdateDependencyGraph(
+        /// <param name="core"></param>
+        /// <param name="Properties"></param>
+        /// <param name="exprUID"></param>
+        /// <param name="modBlkId"></param>
+        /// <param name="isSSAAssign"></param>
+        /// <param name="instrStreamList"></param>
+        /// <param name="deferedGraphNodes"></param>
+        /// <param name="executingGraphNode"></param>
+        /// <param name="dependencyGraph"></param>
+        /// <param name="languageBlockID"></param>
+        /// <param name="propertyChanged"></param>
+        /// <returns></returns>
+        public static List<AssociativeGraph.GraphNode> UpdateDependencyGraph(
             Core core,
             InterpreterProperties Properties,
             int exprUID,
             int modBlkId,
             bool isSSAAssign,
-            List<AssociativeGraph.GraphNode> deferedGraphNodes,
             InstructionStream[] instrStreamList,
+            List<AssociativeGraph.GraphNode> deferedGraphNodes,
             AssociativeGraph.GraphNode executingGraphNode,
             AssociativeGraph.DependencyGraph dependencyGraph,
             int languageBlockID,
             bool propertyChanged = false)
         {
 
-            int nodesMarkedDirty = 0;
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
+
             if (executingGraphNode == null)
             {
-                return nodesMarkedDirty;
+                return reachableGraphNodes;
             }
 
             int classIndex = executingGraphNode.classIndex;
@@ -47,7 +58,7 @@ namespace ProtoCore.AssociativeEngine
             var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes == null)
             {
-                return nodesMarkedDirty;
+                return reachableGraphNodes;
             }
 
             //foreach (var graphNode in graphNodes)
@@ -95,12 +106,12 @@ namespace ProtoCore.AssociativeEngine
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        int dirtyNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, instrStreamList,
-                            executingGraphNode, instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
-                        if (dirtyNodes > 0)
+                        List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, instrStreamList, deferedGraphNodes, executingGraphNode, 
+                            instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                        if (subGraphNodes.Count > 0)
                         {
-                            graphNode.isDirty = true;
+                            reachableGraphNodes.Add(graphNode);
                         }
                     }
 
@@ -214,9 +225,8 @@ namespace ProtoCore.AssociativeEngine
                             //{
                             //    UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
                             //}
-                            graphNode.isDirty = true;
                             graphNode.forPropertyChanged = propertyChanged;
-                            nodesMarkedDirty++;
+                            reachableGraphNodes.Add(graphNode);
 
                             // On debug mode:
                             //      we want to mark all ssa statements dirty for an if the lhs pointer is a new instance.
@@ -242,14 +252,14 @@ namespace ProtoCore.AssociativeEngine
                                 {
                                     // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
                                     var firstGraphNode = AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
-                                    firstGraphNode.isDirty = true;
+                                    reachableGraphNodes.Add(firstGraphNode);
                                 }
                             }
                         }
                     }
                 }
             }
-            return nodesMarkedDirty;
+            return reachableGraphNodes;
         }
 
 

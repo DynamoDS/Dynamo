@@ -1543,17 +1543,25 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
+                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null; 
                     if (core.Options.ExecuteSSA)
                     {
-                        AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes,
-                            exe.instrStreamList, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, 
+                            deferedGraphNodes, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
                     }
                     else
                     {
-                        AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, node,
-                            istream.dependencyGraph, executingBlock, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, deferedGraphNodes, 
+                            node, istream.dependencyGraph, executingBlock, true);
+                    }
+
+                    // Mark reachable nodes as dirty
+                    Validity.Assert(reachableGraphNodes != null);
+                    foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+                    {
+                        gnode.isDirty = true;
                     }
 
                     node.propertyChanged = false;
@@ -1573,11 +1581,19 @@ namespace ProtoCore.DSASM
                 }
             }
 
-
-            AssociativeEngine.Utils.UpdateDependencyGraph(
-                core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList,
+            // Find reachable graphnodes
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, deferedGraphNodes,
                 Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
+
+            // Mark reachable nodes as dirty
+            Validity.Assert(reachableGraphNodes != null);
+            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+            {
+                gnode.isDirty = true;
+            }
              
+
             // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
