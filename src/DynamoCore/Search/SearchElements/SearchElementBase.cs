@@ -147,7 +147,6 @@ namespace Dynamo.Search.SearchElements
             var controller = dynamoModel.EngineController;
             var functionItem = (controller.GetFunctionDescriptor(CreationName));
             NodeModel newElement = null;
-            NodeModel newElement = null;
             if (functionItem != null)
             {
                 DisplayName = functionItem.DisplayName;

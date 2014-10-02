@@ -47,19 +47,6 @@ namespace Dynamo.Models
             return node;
         }
 
-        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
-        {
-            Guid guid;
-            if (!Guid.TryParse(name, out guid))
-            {
-                return null;
-            }
-
-            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
-            result.LoadNode(guid, inputs, outputs);
-            return result;
-        }
-
         /// <summary>
         ///     Create a NodeModel with a given type as the method generic parameter
         /// </summary>

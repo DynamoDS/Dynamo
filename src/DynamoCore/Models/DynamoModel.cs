@@ -1179,11 +1179,6 @@ namespace Dynamo.Models
                                                             double workspaceOffsetX = 0,
                                                             double workspaceOffsetY = 0)
         {
-            var loadedCustomNodes = this.CustomNodeManager.LoadedCustomNodes;
-
-            CustomNodeWorkspaceModel oldWorkspace = null;
-            if (loadedCustomNodes.ContainsKey(id))
-                oldWorkspace = loadedCustomNodes[id].WorkspaceModel;
 
             var workSpace = new CustomNodeWorkspaceModel(this,
                 name, category, description, workspaceOffsetX, workspaceOffsetY)
@@ -1204,9 +1199,6 @@ namespace Dynamo.Models
             {
                 CurrentWorkspace = workSpace;
             }
-
-            if (oldWorkspace != null)
-                Workspaces.Remove(oldWorkspace);
 
             return functionDefinition;
         }
