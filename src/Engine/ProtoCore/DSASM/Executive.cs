@@ -5,6 +5,7 @@ using System.Text;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
 using ProtoCore.RuntimeData;
+using System.Diagnostics;
 
 namespace ProtoCore.DSASM
 {
@@ -7427,6 +7428,8 @@ namespace ProtoCore.DSASM
 
             // Get the next graph to be executed
             SetupNextExecutableGraph(fi, ci);
+
+            GC();
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
@@ -8062,6 +8065,7 @@ namespace ProtoCore.DSASM
             }
         }
 
+        [Conditional("GC_MARK_AND_SWEEP")]
         private void GC()
         {
             var gcRootPointers = GetGCRootPointers();

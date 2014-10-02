@@ -449,7 +449,7 @@ namespace ProtoCore.DSASM
 
 
         #region Reference counting APIs
-        // [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -466,7 +466,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        // [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -484,7 +484,7 @@ namespace ProtoCore.DSASM
             }
         }
     
-        // [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
