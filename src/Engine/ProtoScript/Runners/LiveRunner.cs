@@ -1341,26 +1341,6 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// This API needs to be called for every delta AST preview
-        /// </summary>
-        /// <param name="syncData"></param>
-        public void PreviewGraph(GraphSyncData syncData)
-        {
-            while (true)
-            {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        PreviewInternal(syncData);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
-            }
-        }
-
-        /// <summary>
         /// Called for delta execution of AST node input
         /// </summary>
         /// <param name="astNode"></param>
@@ -1651,22 +1631,6 @@ namespace ProtoScript.Runners
             runnerCore.Heap.Verify();
 #endif
         }
-
-        private void PreviewInternal(GraphSyncData syncData)
-        {
-            if (syncData == null)
-            {
-                ResetForDeltaExecution();
-                return;
-            }
-
-            // Get the list of ASTs that will be affected by syncData
-            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
-
-            // Get the list of guid's affected by the astlist
-            List<Guid> cbnGuidList = changeSetComputer.GetReachableNodeGuids(previewAstList);
-        }
-
 
         private void SynchronizeInternal(string code)
         {

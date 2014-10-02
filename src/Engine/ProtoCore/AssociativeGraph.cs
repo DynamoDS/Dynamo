@@ -243,12 +243,10 @@ namespace ProtoCore.AssociativeEngine
                             if (null != executingGraphNode.lastGraphNode && executingGraphNode.lastGraphNode.reExecuteExpression)
                             {
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
-                                //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
-                                {
-                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
-                                    var firstGraphNode = AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
-                                    reachableGraphNodes.Add(firstGraphNode);
-                                }
+                                // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
+                                var firstGraphNode = AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
+                                reachableGraphNodes.Add(firstGraphNode);
+                                
                             }
                         }
                     }
