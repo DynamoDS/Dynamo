@@ -261,7 +261,7 @@ namespace Revit.Elements
             return string.Format("Level(Name={0}, Elevation={1})", Name, Elevation);
         }
 
-        private static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
+        public static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
         {
             var collector = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             var elements = collector.OfClass(typeof(Autodesk.Revit.DB.Level)).ToElements();
