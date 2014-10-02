@@ -229,59 +229,64 @@ namespace Dynamo.ViewModels
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
+            // Next code do not need for now. 
+            // But logic should be saved to restore original behavior for new design.
+            // Code will be removed as soon as Search functionality fully implemented. 
+#if false
             // deselect the last selected item
-            //if (visibleSearchResults.Count > SelectedIndex)
-            //{
-            //    visibleSearchResults[SelectedIndex].IsSelected = false;
-            //}
+            if (visibleSearchResults.Count > SelectedIndex)
+            {
+                visibleSearchResults[SelectedIndex].IsSelected = false;
+            }
 
             // clear visible results list
-            //visibleSearchResults.Clear();
+            visibleSearchResults.Clear();
 
             // if the search query is empty, go back to the default treeview
-            //if (string.IsNullOrEmpty(query))
-            //{
-            //    foreach (var ele in this.Model.BrowserRootCategories)
-            //    {
-            //        ele.CollapseToLeaves();
-            //        ele.SetVisibilityToLeaves(true);
-            //    }
+            if (string.IsNullOrEmpty(query))
+            {
+                foreach (var ele in this.Model.BrowserRootCategories)
+                {
+                    ele.CollapseToLeaves();
+                    ele.SetVisibilityToLeaves(true);
+                }
 
-            //    return;
-            //}
+                return;
+            }
 
             // otherwise, first collapse all
-            //foreach (var root in this.Model.BrowserRootCategories)
-            //{
-            //    root.CollapseToLeaves();
-            //    root.SetVisibilityToLeaves(false);
-            //}
+            foreach (var root in this.Model.BrowserRootCategories)
+            {
+                root.CollapseToLeaves();
+                root.SetVisibilityToLeaves(false);
+            }
 
             // for all of the other results, show them in their category
-            //foreach (var ele in result)
-            //{
-            //    ele.Visibility = true;
-            //    ele.ExpandToRoot();
-            //}
+            foreach (var ele in result)
+            {
+                ele.Visibility = true;
+                ele.ExpandToRoot();
+            }
 
-            //// create an ordered list of visible search results
-            //var baseBrowserItem = new BrowserRootElement("root");
-            //foreach (var root in Model.BrowserRootCategories)
-            //{
-            //    baseBrowserItem.Items.Add(root);
-            //}
+            // create an ordered list of visible search results
+            var baseBrowserItem = new BrowserRootElement("root");
+            foreach (var root in Model.BrowserRootCategories)
+            {
+                baseBrowserItem.Items.Add(root);
+            }
 
-            //baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
+            baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
 
-            //if (visibleSearchResults.Any())
-            //{
-            //    this.SelectedIndex = 0;
-            //    visibleSearchResults[0].IsSelected = true;
-            //}
+            if (visibleSearchResults.Any())
+            {
+                this.SelectedIndex = 0;
+                visibleSearchResults[0].IsSelected = true;
+            }
 
-            //SearchResults.Clear();
-            //visibleSearchResults.ToList()
-            //    .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+            SearchResults.Clear();
+            visibleSearchResults.ToList()
+                .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+#endif
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
