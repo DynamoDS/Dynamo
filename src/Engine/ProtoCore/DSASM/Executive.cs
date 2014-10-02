@@ -1556,67 +1556,7 @@ namespace ProtoCore.DSASM
             }
             return propertyChanged;
         }
-
-        /// <summary>
-        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
-        /// 
-        /// Given:
-        ///     [1] a = b + c
-        ///     [2] a = d
-        /// Statement [1] has been redefined by statment [2]    
-        /// Deactivate and remove the dependencies of statement [1]
-        /// 
-        /// </summary>
-        /// <param name="executingGraphNode"></param>
-        /// <param name="classScope"></param>
-        /// <param name="functionScope"></param>
-        private void HandleGraphNodeRedefinitionInScope(AssociativeGraph.GraphNode executingGraphNode, int classScope, int functionScope)
-        {
-            if (executingGraphNode != null)
-            {
-                // Remove this condition when full SSA is enabled
-                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
-
-                if (core.Options.ExecuteSSA)
-                {
-                    isssa = executingGraphNode.IsSSANode();
-                }
-                if (!isssa)
-                {
-                    // Get the graphnodes in the current scope
-                    var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
-                    foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
-                    {
-                        bool allowRedefine = true;
-
-                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != Constants.kInvalidIndex
-                            && symbol.functionIndex == Constants.kInvalidIndex;
-
-                        if (isMember)
-                        {
-                            // For member vars, do not allow if not in the same scope
-                            if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
-                            {
-                                allowRedefine = false;
-                            }
-                        }
-
-                        if (allowRedefine)
-                        {
-                            // Update redefinition that this graphnode may have cauased
-                            bool wasGraphNodeDependencyUpdated = AssociativeEngine.Utils.UpdateGraphNodeDependency(graphNode, executingGraphNode);
-                            if (wasGraphNodeDependencyUpdated)
-                            {
-                                GCAnonymousSymbols(graphNode.symbolListWithinExpression);
-                                graphNode.symbolListWithinExpression.Clear(); 
-                                graphNode.isActive = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+       
 
         private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
@@ -1629,12 +1569,19 @@ namespace ProtoCore.DSASM
             }
 
             AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
-
+             
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
-            HandleGraphNodeRedefinitionInScope(Properties.executingGraphNode, classScope, functionScope);
-           
+
+            var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+            bool wasGraphNodeDependencyUpdated = AssociativeEngine.Utils.HandleGraphNodeRedefinitionInScope(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            if (wasGraphNodeDependencyUpdated)
+            {
+                GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression);
+                Properties.executingGraphNode.symbolListWithinExpression.Clear();
+                Properties.executingGraphNode.isActive = false;
+            }
         }
 
         /// <summary>

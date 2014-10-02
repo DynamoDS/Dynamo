@@ -380,6 +380,61 @@ namespace ProtoCore.AssociativeEngine
             }
         }
 
+        /// <summary>
+        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
+        /// 
+        /// Given:
+        ///     [1] a = b + c
+        ///     [2] a = d
+        /// Statement [1] has been redefined by statment [2]    
+        /// Return true if this has occured
+        /// 
+        /// </summary>
+        /// <param name="executingGraphNode"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        public static bool HandleGraphNodeRedefinitionInScope(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
+        {
+            bool wasGraphNodeDependencyUpdated = false;
+            if (executingGraphNode != null)
+            {
+                // Remove this condition when full SSA is enabled
+                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
+
+                if (core.Options.ExecuteSSA)
+                {
+                    isssa = executingGraphNode.IsSSANode();
+                }
+                if (!isssa)
+                {
+                    foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
+                    {
+                        bool allowRedefine = true;
+
+                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
+                        bool isMember = symbol.classScope != Constants.kInvalidIndex
+                            && symbol.functionIndex == Constants.kInvalidIndex;
+
+                        if (isMember)
+                        {
+                            // For member vars, do not allow if not in the same scope
+                            if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
+                            {
+                                allowRedefine = false;
+                            }
+                        }
+
+                        if (allowRedefine)
+                        {
+                            // Update redefinition that this graphnode may have cauased
+                            wasGraphNodeDependencyUpdated = AssociativeEngine.Utils.UpdateGraphNodeDependency(graphNode, executingGraphNode);
+                        }
+                    }
+                }
+            }
+            return wasGraphNodeDependencyUpdated;
+        }
+
 
         /// <summary>
         /// Retrieves the list of VM graphnodes affected by the list of ast nodes to be executed
