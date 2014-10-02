@@ -1545,12 +1545,17 @@ namespace ProtoCore.DSASM
                     bool isSSAAssign = node.IsSSANode();
                     if (core.Options.ExecuteSSA)
                     {
-                        AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
+                        AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes,
+                            exe.instrStreamList, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
                     }
                     else
                     {
-                        AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, node, istream.dependencyGraph, executingBlock, true);
+                        AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, node,
+                            istream.dependencyGraph, executingBlock, true);
                     }
+
                     node.propertyChanged = false;
                 }
             }
@@ -1568,19 +1573,24 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
+
+            AssociativeEngine.Utils.UpdateDependencyGraph(
+                core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, exe.instrStreamList,
+                Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
              
+            // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
-
             var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
-            bool wasGraphNodeDependencyUpdated = AssociativeEngine.Utils.HandleGraphNodeRedefinitionInScope(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
-            if (wasGraphNodeDependencyUpdated)
+            List<AssociativeGraph.GraphNode> redefinedNodes = AssociativeEngine.Utils.GetRedefinedGraphNodes(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            Validity.Assert(redefinedNodes != null);
+            foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
-                GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression);
-                Properties.executingGraphNode.symbolListWithinExpression.Clear();
-                Properties.executingGraphNode.isActive = false;
+                // Handle deactivated graphnodes
+                GCAnonymousSymbols(gnode.symbolListWithinExpression);
+                gnode.symbolListWithinExpression.Clear();
+                gnode.isActive = false;
             }
         }
 

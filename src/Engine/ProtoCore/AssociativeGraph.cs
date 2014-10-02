@@ -33,6 +33,7 @@ namespace ProtoCore.AssociativeEngine
             int languageBlockID,
             bool propertyChanged = false)
         {
+
             int nodesMarkedDirty = 0;
             if (executingGraphNode == null)
             {
@@ -94,7 +95,9 @@ namespace ProtoCore.AssociativeEngine
                     // then find all that nodes in that lang block and mark them dirty
                     if (graphNode.isLanguageBlock)
                     {
-                        int dirtyNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, instrStreamList, executingGraphNode, instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                        int dirtyNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                            core, Properties, exprUID, modBlkId, isSSAAssign, deferedGraphNodes, instrStreamList,
+                            executingGraphNode, instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
                         if (dirtyNodes > 0)
                         {
                             graphNode.isDirty = true;
@@ -334,10 +337,6 @@ namespace ProtoCore.AssociativeEngine
                     //      a = t1
                     //      a = 10      // Redefinition of 'a' will GC t0 and t1
                     //
-
-                    // GCAnonymousSymbols(gnode.symbolListWithinExpression); Do this in the executive after this call
-                    //gnode.symbolListWithinExpression.Clear();
-                    //gnode.isActive = false;
                     wasGraphNodeDependencyUpdated = true;
                 }
             }
@@ -381,7 +380,7 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
+        /// GetRedefinedGraphNodes will return a list of graphnodes that have been redefined by executingGraphNode
         /// 
         /// Given:
         ///     [1] a = b + c
@@ -393,9 +392,9 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="executingGraphNode"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        public static bool HandleGraphNodeRedefinitionInScope(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
+        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
         {
-            bool wasGraphNodeDependencyUpdated = false;
+            List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
             {
                 // Remove this condition when full SSA is enabled
@@ -426,13 +425,16 @@ namespace ProtoCore.AssociativeEngine
 
                         if (allowRedefine)
                         {
-                            // Update redefinition that this graphnode may have cauased
-                            wasGraphNodeDependencyUpdated = AssociativeEngine.Utils.UpdateGraphNodeDependency(graphNode, executingGraphNode);
+                            // Check if graphnode was redefined by executingGraphNode
+                            if (AssociativeEngine.Utils.UpdateGraphNodeDependency(graphNode, executingGraphNode))
+                            {
+                                redefinedNodes.Add(graphNode);
+                            }
                         }
                     }
                 }
             }
-            return wasGraphNodeDependencyUpdated;
+            return redefinedNodes;
         }
 
 
