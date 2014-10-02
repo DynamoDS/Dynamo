@@ -247,18 +247,7 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public List<Guid> GetReachableNodeGuids(List<AssociativeNode> astList)
         {
-            List<GraphNode> dirtyNodes = ProtoCore.AssociativeEngine.Utils.GetDependentGraphNodes(core, astList);
-
-            // Get the list of guid's of the ASTs
-            List<Guid> cbnGuidList = new List<Guid>();
-            foreach (GraphNode graphnode in dirtyNodes)
-            {
-                if (!cbnGuidList.Contains(graphnode.guid))
-                {
-                    cbnGuidList.Add(graphnode.guid);
-                }
-            }
-            return cbnGuidList;
+            return null;
         }
 
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)

@@ -449,47 +449,6 @@ namespace ProtoCore.AssociativeEngine
 
 
         /// <summary>
-        /// Retrieves the list of VM graphnodes affected by the list of ast nodes to be executed
-        /// This performs static analysis and does not assume astList to be executed
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="astList"></param>
-        /// <returns></returns>
-        public static List<ProtoCore.AssociativeGraph.GraphNode> GetDependentGraphNodes(Core core, List<AST.AssociativeAST.AssociativeNode> astList, int scope = 0)
-        {
-            List<ProtoCore.AssociativeGraph.GraphNode> dirtyNodes = new List<AssociativeGraph.GraphNode>();
-            
-            ProtoCore.AssociativeGraph.DependencyGraph dependencyGraph = core.DSExecutable.instrStreamList[scope].dependencyGraph;
-            Validity.Assert(dependencyGraph != null);
-
-            List<AssociativeGraph.GraphNode> graphNodeList = dependencyGraph.GraphList;
-            Validity.Assert(graphNodeList != null);
-
-            // Iterate through all the active graphnodes 
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
-            {
-                if (!graphNode.isActive) 
-                {
-                    continue;
-                }
-
-                // Iterate through the astList to verify if the current graphnode depends on any of it
-                foreach (AST.AssociativeAST.AssociativeNode astNode in astList)
-                {
-                    AST.AssociativeAST.BinaryExpressionNode bNode = astNode as AST.AssociativeAST.BinaryExpressionNode;
-
-                    // The ast node should be a binary expression
-                    Validity.Assert(bNode != null);
-
-                    // Get the symbol on the LHS of the binary expression
-
-                    // Does the graphnode depend on the symbol
-                }
-            }
-            return dirtyNodes;
-        }
-
-        /// <summary>
         /// Find the first dirty node of the graphnode residing at indexOfDirtyNode
         /// </summary>
         /// <param name="indexOfDirtyNode"></param>
