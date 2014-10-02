@@ -987,7 +987,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         public void ReExecuteASTTest()
         {
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
@@ -2034,7 +2034,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_2378_AnotherScenario()
         {
@@ -2146,7 +2146,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_2272()
         {
@@ -2608,7 +2608,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
