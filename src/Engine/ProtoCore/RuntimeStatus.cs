@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
+
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
@@ -65,6 +67,7 @@ namespace ProtoCore
             public const string kPropertyOfClassNotFound = "Class '{0}' does not have a property '{1}'.";
             public const string kPropertyInaccessible = "Property '{0}' is inaccessible.";
             public const string kMethodResolutionFailure = "Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.";
+            public const string kMethodResolutionFailureWithTypes = "Couldn't find a version of {0} that takes arguments of type {1}";
             public const string kMethodResolutionFailureForOperator = "Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.";
             public const string kConsoleWarningMessage = "> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>";
         }
@@ -233,7 +236,19 @@ namespace ProtoCore
             }
             else
             {
-                message = string.Format(WarningMessage.kMethodResolutionFailure, methodName);
+                StringBuilder sb = new StringBuilder();
+                sb.Append("(");
+                foreach (StackValue sv in arguments)
+                {
+                    sb.Append(core.TypeSystem.GetType(sv.metaData.type));
+                    sb.Append(",");
+                }
+                String outString = sb.ToString();
+                String typesList = outString.Substring(0, outString.Length - 1); //Drop trailing ','
+                typesList = typesList + ")";
+
+
+                message = string.Format(WarningMessage.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
             LogWarning(WarningID.kMethodResolutionFailure, message);

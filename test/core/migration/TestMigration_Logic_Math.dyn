@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.7993" X="434" Y="-81" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.7993" X="379.372093881743" Y="-153.259520968531" zoom="0.847618571998227" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.Addition type="Dynamo.Nodes.Addition" guid="e743ec52-ccbe-4266-bc00-adc13613c94b" nickname="Add" x="434" y="596.9" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="f53573e2-0b0e-4401-ba4e-35e55e4e9431" nickname="Divide" x="108" y="356.1" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
@@ -13,12 +13,6 @@
     <Dynamo.Nodes.PiTimes2 type="Dynamo.Nodes.PiTimes2" guid="dc6fbd5f-160f-42d0-9a45-b99458b0027c" nickname="2*Pi" x="434" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.EConstant type="Dynamo.Nodes.EConstant" guid="ab3dc3b0-40a9-4afb-aa17-8eed00ee6216" nickname="e" x="108" y="617.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Pi type="Dynamo.Nodes.Pi" guid="c5ded7c4-4441-42e1-b631-c1a533d85b9e" nickname="Pi" x="108" y="747.9" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.NewtonRootFind1DNoDeriv type="Dynamo.Nodes.NewtonRootFind1DNoDeriv" guid="5af5c2f9-bb5c-4214-b117-08f139e6bf6a" nickname="Find Root" x="-224" y="481.1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.NewtonRootFind1DNoDeriv>
-    <Dynamo.Nodes.NewtonRootFind1DWithDeriv type="Dynamo.Nodes.NewtonRootFind1DWithDeriv" guid="eca5499f-6e34-40af-8df7-bc659447464c" nickname="Find Root With Derivative" x="-224" y="353.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="3" default="True" />
-    </Dynamo.Nodes.NewtonRootFind1DWithDeriv>
     <Dynamo.Nodes.Random type="Dynamo.Nodes.Random" guid="7f00939c-80f0-416c-b8b5-5f3cf1a68f42" nickname="Random Number" x="108" y="878.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.RandomSeed type="Dynamo.Nodes.RandomSeed" guid="7dc07ee4-c010-4808-9418-806a07efbfb3" nickname="Random Number By Seed" x="108" y="486.7" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.RandomList type="Dynamo.Nodes.RandomList" guid="56581c97-183c-418b-8f04-2c74030abf0e" nickname="Random Number List" x="108" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
