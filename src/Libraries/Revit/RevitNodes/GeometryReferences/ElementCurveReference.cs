@@ -86,7 +86,7 @@ namespace Revit.GeometryReferences
 
         private static ElementCurveReference TryGetCurveReference(Revit.Elements.Element curveObject, string nodeTypeString = "This node")
         {
-            var cs = curveObject.InternalGeometry().OfType<Autodesk.Revit.DB.Curve>();
+            var cs = curveObject.InternalRevitGeometry().OfType<Autodesk.Revit.DB.Curve>();
             if (cs.Any()) return new ElementCurveReference(cs.First());
 
             throw new ArgumentException(nodeTypeString + " requires a ElementCurveReference extracted from a Revit Element! " +

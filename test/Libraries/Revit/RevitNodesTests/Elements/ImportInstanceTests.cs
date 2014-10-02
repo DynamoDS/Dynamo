@@ -30,7 +30,7 @@ namespace RevitTestServices.Elements
             var import = Revit.Elements.ImportInstance.ByGeometry(cuboid);
 
             // extract geometry
-            var importGeometry = import.Geometry().First();
+            var importGeometry = import.InternalGeometry().First();
 
             Assert.IsAssignableFrom(typeof(Autodesk.DesignScript.Geometry.Solid), importGeometry);
 

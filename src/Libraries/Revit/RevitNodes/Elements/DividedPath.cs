@@ -5,10 +5,14 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
+using DSCore;
+
 using Revit.GeometryConversion;
 using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+
+using String = System.String;
 
 namespace Revit.Elements
 {   
@@ -56,7 +60,7 @@ namespace Revit.Elements
             get
             {
                 DocumentManager.Regenerate();
-                return Geometry().Cast<Autodesk.DesignScript.Geometry.Point>();
+                return InternalGeometry().Cast<Autodesk.DesignScript.Geometry.Point>();
             }
         }
 

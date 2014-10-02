@@ -17,7 +17,7 @@ namespace RevitTestServices.GeometryConversion
             // extract revolved solid from doc
             var revolvedEllipse = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
                 .Cast<Revit.Elements.Form>()
-                .SelectMany(x => x.InternalGeometry())
+                .SelectMany(x => x.InternalRevitGeometry())
                 .OfType<Autodesk.Revit.DB.Solid>()
                 .First();
 

@@ -68,10 +68,10 @@ namespace Revit.GeometryReferences
 
         private static ElementFaceReference TryGetFaceReference(Revit.Elements.Element curveObject, string nodeTypeString = "This node")
         {
-            var cs = curveObject.InternalGeometry().OfType<Autodesk.Revit.DB.Face>();
+            var cs = curveObject.InternalRevitGeometry().OfType<Autodesk.Revit.DB.Face>();
             if (cs.Any()) return new ElementFaceReference(cs.First());
 
-            var ss = curveObject.InternalGeometry().OfType<Autodesk.Revit.DB.Solid>();
+            var ss = curveObject.InternalRevitGeometry().OfType<Autodesk.Revit.DB.Solid>();
             if (ss.Any()) return new ElementFaceReference(ss.First().Faces.Cast<Autodesk.Revit.DB.Face>().First());
 
             throw new ArgumentException(nodeTypeString + " requires a ElementFaceReference extracted from a Revit Element! " +

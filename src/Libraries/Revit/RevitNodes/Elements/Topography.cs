@@ -52,7 +52,7 @@ namespace Revit.Elements
         /// </summary>
         public Autodesk.DesignScript.Geometry.Mesh Mesh
         {
-            get { return Geometry().OfType<Autodesk.DesignScript.Geometry.Mesh>().First(); }
+            get { return InternalGeometry().OfType<Autodesk.DesignScript.Geometry.Mesh>().First(); }
         }
 
         #endregion
