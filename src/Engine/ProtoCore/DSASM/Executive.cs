@@ -8064,15 +8064,15 @@ namespace ProtoCore.DSASM
 
         private void GC()
         {
-            var gcRoots = GetGCRoots();
-            rmem.GC(gcRoots, this);
+            var gcRootPointers = GetGCRootPointers();
+            rmem.GC(gcRootPointers, this);
         }
 
-        private IEnumerable<SymbolNode> GetGCRoots()
+        private List<StackValue> GetGCRootPointers()
         {
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
-            var gcRoots = new List<SymbolNode>();
+            var gcRoots = new List<StackValue>();
 
             foreach (var stackFrame in frames)
             {
@@ -8098,8 +8098,16 @@ namespace ProtoCore.DSASM
                     symbols = exe.runtimeSymbols[blockId].symbolList.Values;
                 }
 
-                gcRoots.AddRange(symbols);
+                foreach (var symbol in symbols)
+                {
+                    StackValue value = rmem.GetAtRelative(symbol);
+                    if (value.IsReferenceType)
+                    {
+                        gcRoots.Add(value);
+                    }
+                }
 
+                gcRoots.Add(stackFrame.ThisPtr);
                 blockId = stackFrame.FunctionCallerBlock;
             }
 

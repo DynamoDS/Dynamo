@@ -478,24 +478,9 @@ namespace ProtoCore
                 }
             }
 
-            public void GC(IEnumerable<SymbolNode> gcRoots, DSASM.Executive exe)
+            public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
             {
-                if (gcRoots == null)
-                {
-                    return;
-                }
-
-                var pointers = new List<StackValue>();
-                foreach (var rootObject in gcRoots)
-                {
-                    StackValue value = GetAtRelative(rootObject);
-                    if (value.IsReferenceType)
-                    {
-                        pointers.Add(value);
-                    }
-                }
-
-                Heap.GCMarkAndSweep(pointers, exe);
+                Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);
             }
         }
     }
