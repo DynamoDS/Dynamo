@@ -236,7 +236,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467135_DotOp_Replication_1()
         {
             String code =
@@ -266,7 +266,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467135_DotOp_Replication_3()
         {
             String code =
@@ -579,7 +579,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T021_DotOp_Nested_03()
         {
             String code =
@@ -620,7 +620,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T023_DotOp_FuncCall_02()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4048
@@ -1158,7 +1158,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467063_Function_Overriding()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4054
@@ -1285,7 +1285,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV1467167()
         {
             String code =
@@ -1342,7 +1342,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("ToFixJun")]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("Class")]
         public void T051_TransitiveInheritance_Constructor()
         {
@@ -1382,7 +1382,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T052_Defect_ReplicationMethodOverloading_2()
         {
             String code =
@@ -1395,7 +1395,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_01()
         {
             String code =
@@ -1419,7 +1419,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_03()
         {
             String code =
@@ -1433,7 +1433,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV052_Defect_ReplicationMethodOverloading_InUserDefinedClass()
         {
             String code =
@@ -1450,7 +1450,7 @@ namespace ProtoTest.Associative
 [Test]                public void T050_Inheritance_Multi_Construc()                {                    String code =        @"        class A        {            fx : int;            constructor A()            {                fx = 0;            }                    constructor A(x:var)            {                fx = x+1;            }            constructor A(x:int)            {                fx = x+2;            }                 constructor A2(x:var)            {                fx = x+3;            }            }        class B extends A        {            constructor B() : base.A() { }            constructor B(x : var) : base.A(x) { }            constructor B(x : int) : base.A(x) { }            constructor B2(x : var) : base.A2(x) { }            constructor B2(x : int) : base.A2(x) { }        }        b1 = B.B();        r1 = b1.fx;        b2 = B.B(0);        r2 = b2.fx;        b3 = B.B2(0.0);        r3 = b3.fx;        b4 = B.B2(A.A()); //null        r4 = b4.fx;        b5 = B.B2(0);        r5 = b5.fx;            ";                    thisTest.RunScriptSource(code);                    Assert.Fail("1467179 - Sprint25 : rev 3152 : multiple inheritance base constructor causes method resolution");                    Object v1 = null;                    thisTest.Verify("r1", 0);                    thisTest.Verify("r2", 1);                    thisTest.Verify("r3", 1);                    thisTest.Verify("r4", v1);                }                */
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T053_ReplicationWithDiffTypesInArr()
         {
             String code =
@@ -1466,7 +1466,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T054_ReplicationWithInvalidTypesInArr()
         {
             String code =

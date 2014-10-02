@@ -19,6 +19,9 @@ namespace Dynamo.Nodes
             Controller.SyncNodeWithDefinition(this);
         }
 
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
         public override string CreatingName
         {
             get

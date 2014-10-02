@@ -77,6 +77,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
         {
             var matchNumVar = "a = 5.0";
@@ -87,6 +88,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicArrayVarSingleLine()
         {
             var matchArray = "a = []";
@@ -97,6 +99,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicDictVarSingleLine()
         {
             var matchDict = "a = {}";
@@ -107,6 +110,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchIntSingleLine()
         {
             var matchDict = "a = 2";
@@ -117,6 +121,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchComplexDictVarSingleLine()
         {
             var matchDict2 = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
@@ -127,6 +132,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchComplexDictVarMultiLine()
         {
             var matchDict2 = "\n\na = { 'Alice': 7, 'Toby': 'Nuts' }\nb = 5.0";
@@ -137,6 +143,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DoesntMatchBadVariable()
         {
             var matchDict2 = "a! = { 'Alice': 7, 'Toby': 'Nuts' }";
@@ -145,6 +152,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchAllVariablesSingleLine()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
@@ -157,6 +165,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchAllVariableTypes()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }\nb = {}\nc = 5.0\nd = 'pete'\ne = []";
@@ -173,6 +182,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicImportStatement()
         {
             var str = "import System";
@@ -183,6 +193,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchBasicImportStatementMultiLine()
         {
             var str = "\nimport System\n";
@@ -193,6 +204,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportLibrary()
         {
             var str = "\nimport System\n";
@@ -204,6 +216,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DuplicateCallsToImportShouldBeFine()
         {
             var str = "\nimport System\nimport System";
@@ -215,6 +228,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportSystemLibraryAndGetCompletionData()
         {
             var str = "\nimport System\nSystem.";
@@ -229,6 +243,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
@@ -240,6 +255,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchImportSystemLibraryWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
@@ -249,6 +265,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanMatchImportSystemAndLoadLibraryAndWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
@@ -260,6 +277,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanIdentifyVariableTypeAndGetCompletionData()
         {
             var str = "a = 5.0\na.";
@@ -272,6 +290,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificImportsMultipleTypesSingleLine()
         {
             var str = "from math import sin, cos\n";
@@ -285,6 +304,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificImportsSingleTypeSingleLine()
         {
             var str = "from math import sin\n";
@@ -296,6 +316,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindTypeSpecificAutodeskImportsSingleTypeSingleLine()
         {
             var str = "from Autodesk.Revit.DB import Events\n";
@@ -307,6 +328,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindAllTypeImports()
         {
             var str = "from Autodesk.Revit.DB import *\n";
@@ -318,6 +340,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindDifferentTypesOfImportsAndLoad()
         {
             var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
@@ -333,6 +356,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanFindSystemCollectionsAssignmentAndType()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\n";
@@ -345,6 +369,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanGetCompletionDataForArrayListVariable()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\na.";

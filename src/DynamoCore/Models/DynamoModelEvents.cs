@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Dynamo.Core;
-using Dynamo.Interfaces;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 
@@ -100,10 +96,10 @@ namespace Dynamo.Models
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
         public event CleanupHandler CleaningUp;
-        public virtual void OnCleanup(EventArgs e)
+        public virtual void OnCleanup()
         {
             if (CleaningUp != null)
-                CleaningUp(this, e);
+                CleaningUp(this);
         }
 
         /// <summary>
@@ -196,7 +192,7 @@ namespace Dynamo.Models
                 RequestNodeSelect(sender, e);
         }
 
-        public delegate void RunCompletedHandler(object controller, bool success);
+        public delegate void RunCompletedHandler(object sender, bool success);
         public event RunCompletedHandler RunCompleted;
         public virtual void OnRunCompleted(object sender, bool success)
         {

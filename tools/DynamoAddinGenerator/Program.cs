@@ -32,6 +32,7 @@ namespace DynamoAddinGenerator
             if (!dynamoColl.Installs.Any())
             {
                 Console.WriteLine("There were no Dynamo installations found.");
+                DeleteExistingAddins(prodColl);
                 return;
             }
 
@@ -136,7 +137,7 @@ namespace DynamoAddinGenerator
                     "<Assembly>\"{0}\"</Assembly>\n" +
                     "<AddInId>{1}</AddInId>\n" +
                     "<FullClassName>{2}</FullClassName>\n" +
-                    "<VendorId>Dynamo</VendorId>\n" +
+                    "<VendorId>ADSK</VendorId>\n" +
                     "<VendorDescription>Dynamo</VendorDescription>\n" +
                     "</AddIn>\n" +
                     "</RevitAddIns>",

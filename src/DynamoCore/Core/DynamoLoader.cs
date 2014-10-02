@@ -13,7 +13,6 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
-using String = System.String;
 
 namespace Dynamo.Utilities
 {
@@ -41,7 +40,7 @@ namespace Dynamo.Utilities
         public DynamoLoader(DynamoModel model)
         {
             this.dynamoModel = model;
-            this.PackageLoader = new PackageLoader(dynamoModel);
+            this.PackageLoader = new PackageLoader(this, dynamoModel.Logger);
         }
 
         #region Methods
@@ -64,7 +63,7 @@ namespace Dynamo.Utilities
 
                 try
                 {
-                     allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
                     allLoadedAssemblies[assembly.FullName] = assembly;
                 }
                 catch { }
@@ -139,6 +138,11 @@ namespace Dynamo.Utilities
                    t.IsSubclassOf(typeof(NodeModel));
         }
 
+        internal bool ContainsNodeModelSubType(Assembly assem)
+        {
+            return assem.GetTypes().Any(IsNodeSubType);
+        }
+
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
@@ -147,7 +151,7 @@ namespace Dynamo.Utilities
         /// <Returns>The list of node types loaded from this assembly</Returns>
         public List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
-            if (assembly == null) 
+            if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
             var searchViewModel = dynamoModel.SearchModel;
@@ -157,15 +161,15 @@ namespace Dynamo.Utilities
             try
             {
                 var loadedTypes = assembly.GetTypes();
- 
+
                 foreach (var t in loadedTypes)
                 {
                     try
                     {
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
-                        var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
-                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                        var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
@@ -193,33 +197,12 @@ namespace Dynamo.Utilities
                             {
                                 string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
 
-                                //if the attribute's values contain the context stored on the controller
+                                //if the attribute's values contain the context stored on the Model
                                 //then skip loading this type.
-
                                 if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
                                     continue;
-
-                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
-                                if (t.Name.Equals("dynSkinCurveLoops"))
-                                {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                    const string nameOfMethodCreate = "noSkinSolidMethod";
-                                    bool exclude = true;
-                                    foreach (MethodInfo m in specialTypeStaticMethods)
-                                    {
-                                        if (m.Name == nameOfMethodCreate)
-                                        {
-                                            var argsM = new object[0];
-                                            exclude = (bool)m.Invoke(null, argsM);
-                                            break;
-                                        }
-                                    }
-                                    if (exclude)
-                                        continue;
-                                }
                             }
                         }
-
                         string typeName;
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
@@ -285,8 +268,8 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x) );
-            
+            loadedNodes.ForEach(x => searchModel.Add(x));
+
             // update search view
             searchModel.OnRequestSync();
 
@@ -308,7 +291,7 @@ namespace Dynamo.Utilities
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            loadedNodes.ForEach( x => searchModel.Add(x) );
+            loadedNodes.ForEach(x => searchModel.Add(x));
 
             // update search view
             searchModel.OnRequestSync();
@@ -323,5 +306,6 @@ namespace Dynamo.Utilities
         }
 
         #endregion
+
     }
 }

@@ -6,8 +6,10 @@ using System.Text;
 namespace DynamoWebServer.Responses
 {
     /// <summary>
-    /// Represents a data about proxy nodes in specified workspace
-    /// that were updated by uploading their definition
+    /// This response is being sent from Dynamo Server to the connecting client when
+    /// a custom node definition has been uploaded to the server. Responding to this 
+    /// response, the client will then update proxy nodes that are found in workspace,
+    /// turning them into actual custom node instances.
     /// </summary>
     public class UpdateProxyNodesResponse: Response
     {
@@ -15,16 +17,16 @@ namespace DynamoWebServer.Responses
         /// Guid of the workspace that custom nodes belong to.
         /// If it's home workspace the value is empty
         /// </summary>
-        public string WorkspaceID { get; set; }
+        public string WorkspaceId { get; set; }
         
         /// <summary>
         /// Guid of the custom node workspace that was loaded
         /// </summary>
-        public string CustomNodeID { get; set; }
+        public string CustomNodeId { get; set; }
         
         /// <summary>
         /// Guids of nodes that are not proxy anymore
         /// </summary>
-        public IEnumerable<string> NodesIDs { get; set; }
+        public IEnumerable<string> NodesIds { get; set; }
     }
 }

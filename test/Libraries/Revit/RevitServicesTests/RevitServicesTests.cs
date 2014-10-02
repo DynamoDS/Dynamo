@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 using Autodesk.Revit.DB;
 using NUnit.Framework;
 using System;
@@ -19,6 +19,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakePoint()
         {
             TransactionManager.SetupManager();
@@ -35,6 +36,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void MakePointThenCancel()
         {
             TransactionManager.SetupManager();
@@ -50,6 +52,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionStartedEventFires()
         {
             bool eventWasFired = false;
@@ -66,6 +69,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionCommittedEventFires()
         {
             bool eventWasFired = false;
@@ -84,6 +88,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionCancelledEventFires()
         {
             bool eventWasFired = false;
@@ -102,6 +107,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionActive()
         {
             TransactionManager.SetupManager();
@@ -122,6 +128,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TransactionHandleStatus()
         {
             TransactionManager.SetupManager();
@@ -142,6 +149,7 @@ namespace RevitServicesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void FailuresRaisedEvent()
         {
             //TODO
@@ -150,13 +158,10 @@ namespace RevitServicesTests
 
 
         [Test]
+        [Category("UnitTests")]
         public void TestRoundTripElementSerialisation()
         {
-
-            // Use a BinaryFormatter or SoapFormatter.
-            IFormatter formatter = new BinaryFormatter();
-            //IFormatter formatter = new SoapFormatter();
-
+            IFormatter formatter = new SoapFormatter();
 
             // Create an instance of the type and serialize it.
             var elementId = new SerializableId
@@ -165,25 +170,23 @@ namespace RevitServicesTests
                 StringID = "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"
             };
 
-
             //Serialise to a test memory stream
             var m = new MemoryStream();
             formatter.Serialize(m, elementId);
             m.Flush();
-
 
             //Reset the stream
             m.Seek(0, SeekOrigin.Begin);
 
             //Readback
             var readback = (SerializableId)formatter.Deserialize(m);
-            
+
             Assert.IsTrue(readback.IntID == 42);
             Assert.IsTrue(readback.StringID.Equals("{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"));
-
         }
 
         [Test]
+        [Category("UnitTests")]
         public void RawTraceInteractionTest()
         {
             var elementId = new SerializableId
@@ -200,13 +203,67 @@ namespace RevitServicesTests
             elementId = (SerializableId)ElementBinder.GetRawDataFromTrace();
             Assert.IsTrue(elementId.IntID == 42);
             Assert.IsTrue(elementId.StringID == "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}");
-
-
-
-
-
         }
 
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestRoundTripElementSerialisationForMultipleIDs()
+        {
+            IFormatter formatter = new SoapFormatter();
+
+            // Create an instance of the type and serialize it.
+            var elementIDs = new MultipleSerializableId
+            {
+                IntIDs = { 42, 20 },
+                StringIDs = { "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}", "{A79294BF-6D27-4B86-BEE9-D6921C11D495}" }
+            };
+
+            //Serialise to a test memory stream
+            var m = new MemoryStream();
+            formatter.Serialize(m, elementIDs);
+            m.Flush();
+
+            //Reset the stream
+            m.Seek(0, SeekOrigin.Begin);
+
+            //Readback
+            var readback = (MultipleSerializableId)formatter.Deserialize(m);
+
+            //Verify that the data is correct
+            Assert.IsTrue(readback.IntIDs.Count == 2);
+            Assert.IsTrue(readback.IntIDs[0] == 42);
+            Assert.IsTrue(readback.IntIDs[1] == 20);
+            Assert.IsTrue(readback.StringIDs.Count == 2);
+            Assert.IsTrue(readback.StringIDs[0].Equals("{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"));
+            Assert.IsTrue(readback.StringIDs[1].Equals("{A79294BF-6D27-4B86-BEE9-D6921C11D495}"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RawTraceInteractionTestWithMultipleIDs()
+        {
+            var elementIDs = new MultipleSerializableId
+            {
+                IntIDs = { 42, 20 },
+                StringIDs = { "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}", "{A79294BF-6D27-4B86-BEE9-D6921C11D495}" }
+            };
+
+            //Raw write
+            ElementBinder.SetRawDataForTrace(elementIDs);
+            elementIDs = null;
+
+            //Readback
+            var readback = (MultipleSerializableId)ElementBinder.GetRawDataFromTrace();
+
+            //Verify that the data is correct
+            Assert.IsTrue(readback.IntIDs.Count == 2);
+            Assert.IsTrue(readback.IntIDs[0] == 42);
+            Assert.IsTrue(readback.IntIDs[1] == 20);
+            Assert.IsTrue(readback.StringIDs.Count == 2);
+            Assert.IsTrue(readback.StringIDs[0].Equals("{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"));
+            Assert.IsTrue(readback.StringIDs[1].Equals("{A79294BF-6D27-4B86-BEE9-D6921C11D495}"));
+        }
 
 
     }

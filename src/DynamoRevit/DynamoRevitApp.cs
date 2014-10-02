@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -128,7 +127,7 @@ namespace Dynamo.Applications
             // The executing assembly will be in Revit_20xx, so 
             // we have to walk up one level. Unfortunately, we
             // can't use DynamoPathManager here because those are not
-            // initialized until the controller is constructed.
+            // initialized until the DynamoModel is constructed.
             string assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Add the Revit_20xx folder for assembly resolution
@@ -149,8 +148,11 @@ namespace Dynamo.Applications
             var versionInt = int.Parse(application.ControlledApplication.VersionNumber);
             if (versionInt > 2014)
             {
-                DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
-                DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
+                DynamoPathManager.Instance.SetLibGPath("220");
+            }
+            else
+            {
+                DynamoPathManager.Instance.SetLibGPath("219");
             }
         }
 

@@ -187,7 +187,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_15()
         {
             String code =
@@ -201,7 +201,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] //post R1
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_16()
         {
             String code =
@@ -239,7 +239,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_19()
         {
             String code =
@@ -279,7 +279,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] // post R1
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0002_Replication_Guide_Function_With_3_Arg_3()
         {
             String code =
@@ -358,7 +358,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] //post R1
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
         {
             String code =
@@ -398,7 +398,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
         {
             String code =
@@ -603,12 +603,13 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
+        [Category("Failure")]
         public void T034_Replication_Guides_Not_On_All_Arguments_9()
         {
             String code =
 @"import(""DSCoreNodes.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            String errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 1.000, 9.500, 16.000 }, new Object[] { 11.000, 19.500, 26.000 } });
@@ -940,7 +941,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T039_1467423_replication_guide_on_array_11()
         {
             string code =
@@ -1008,7 +1009,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_6()
         {
             string code =
@@ -1033,7 +1034,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_8()
         {
             string code =
@@ -1054,17 +1055,18 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
             string code =
 @"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>,y<3>,z).a; // expect this to be treated as :  A.A(x<1>,y<2>,z<1>).a;";
-            string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } });
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_03()
         {
             string code =
@@ -1076,11 +1078,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
             string code =
 @"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>, y, z<3>).a; // expect this to be treated as :  A.A(x<1>,y<1>,z<2>).a;";
-            string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } });
         }
@@ -1191,7 +1194,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
             string code =
@@ -1217,7 +1220,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0101_FuncCall_Double_SomeGuides()
         {
             string code =
@@ -1232,7 +1235,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0102_FuncCall_Double_SomeGuides()
         {
             string code =
@@ -1274,7 +1277,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0105_FuncCall_Int_NotAllGuides_NotInSeq()
         {
             string code =
@@ -1288,7 +1291,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0106_FuncCall_Int_MultipleGuides()
         {
             string code =
@@ -1302,7 +1305,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0107_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1331,17 +1334,18 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         public void T0109_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
 @"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<2><4>, y<3><1>) ;            ";
-            string errmsg = "DNL-1467581 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
+            string errmsg = "MAGN-1708 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0110_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1352,7 +1356,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0111_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1376,7 +1380,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0113_FuncCall_Int_SingleAndMultipleGuides_NotInSeq()
         {
             string code =
@@ -1431,7 +1435,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0118_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -1442,7 +1446,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0119_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -1474,7 +1478,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
             string code =
@@ -1491,7 +1495,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0123_Replication_BuiltinMethods()
         {
             string code =
@@ -1558,7 +1562,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0127_ReplicationGudes_ModifierBlock()
         {
             string code =
@@ -1575,7 +1579,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0128_ReplicationGudes_InlineCondition()
         {
             string code =
@@ -1677,7 +1681,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0136_ReplicationGudes_ArraySlicingScope()
         {
             string code =
@@ -1764,7 +1768,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T0143_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
             string code =

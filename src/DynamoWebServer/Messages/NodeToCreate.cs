@@ -8,6 +8,11 @@ using Dynamo.Nodes;
 
 namespace DynamoWebServer.Messages
 {
+    /// <summary>
+    /// This class represents the data that is required to recreate nodes on the 
+    /// client. When a file is uploaded and opened on Dynamo Server, this 
+    /// information is delivered to the client to generate nodes found in the file.
+    /// </summary>
     public class NodeToCreate
     {
         /// <summary>

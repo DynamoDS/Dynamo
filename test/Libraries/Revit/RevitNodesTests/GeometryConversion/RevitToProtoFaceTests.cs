@@ -5,7 +5,7 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     internal class RevitToProtoFaceTests : GeometricRevitNodeTest
@@ -32,7 +32,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Assert.AreEqual(1, r.Count());
 
-            r.First().Area.ShouldBeApproximately(face.Area);
+            r.First().Area.ShouldBeApproximately(face.Area, 1e-1);
          
         }
     }

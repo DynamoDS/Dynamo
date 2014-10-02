@@ -13,7 +13,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class DividedSurfaceTests:DynamoRevitUnitTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\DividedSurface\DividedSurface.rfa")]
         public void DividedSurface()
         {

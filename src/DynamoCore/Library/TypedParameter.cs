@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Dynamo.DSEngine;
 
@@ -65,7 +63,14 @@ namespace Dynamo.Library
                 str = Name + ": " + Type.Split('.').Last();
 
             if (DefaultValue != null)
-                str = str + " = " + DefaultValue;
+            {
+                string strDefaultValue = DefaultValue.ToString();
+                if (DefaultValue is bool)
+                {
+                    strDefaultValue = strDefaultValue.ToLower();
+                }
+                str = str + " = " + strDefaultValue;
+            }
 
             return str;
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -105,12 +104,21 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
+        /// <summary>
+        /// Create a definition for custom node and add inputs and outputs
+        /// </summary>
+        /// <param name="funcID">ID of the definition</param>
+        /// <param name="inputs">Number of inputs</param>
+        /// <param name="outputs">Number of outputs</param>
         internal void LoadNode(Guid funcID, int inputs, int outputs)
         {
+            // create a definition fo custom node
             Controller.LoadNode(funcID, this.NickName);
             
             PortData data;
             if (outputs > -1)
+            {
+                // create outputs for the node
                 for (int i = 0; i < outputs; i++)
                 {
                     data = new PortData("", "Output #" + (i + 1));
@@ -119,8 +127,11 @@ namespace Dynamo.Nodes
                     else
                         OutPortData.Add(data);
                 }
-            
+            }
+
             if (inputs > -1)
+            {
+                // create inputs for the node
                 for (int i = 0; i < inputs; i++)
                 {
                     data = new PortData("", "Input #" + (i + 1));
@@ -129,7 +140,10 @@ namespace Dynamo.Nodes
                     else
                         InPortData.Add(data);
                 }
+            }
 
+            // make the custom node instance be in sync 
+            // with its definition if it's needed
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);

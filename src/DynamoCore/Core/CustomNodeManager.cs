@@ -7,7 +7,6 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
-using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
@@ -80,7 +79,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Class Constructor
         /// </summary>
-        /// <param name="controller"></param>
+        /// <param name="dynamoModel"></param>
         /// <param name="searchPath">The path to search for definitions</param>
         public CustomNodeManager(DynamoModel dynamoModel, string searchPath)
         {
@@ -589,7 +588,6 @@ namespace Dynamo.Utilities
         ///     the node is added to the dictionary of loadedNodes.  
         /// </summary>
         /// <param name="funcDefGuid">The function guid we're currently loading</param>
-        /// <param name="controller">Reference to the calling controller</param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
         private bool GetDefinitionFromPath(Guid funcDefGuid, out CustomNodeDefinition def)
@@ -711,11 +709,6 @@ namespace Dynamo.Utilities
                     WorkspaceModel = ws,
                     IsBeingLoaded = true
                 };
-
-                // load a dummy version, so any nodes depending on this node
-                // will find an (empty) identifier on compilation
-                //FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
-                //controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
                 LoadedCustomNodes.Remove(def.FunctionId);

@@ -1186,7 +1186,7 @@ b1 = b1.create();
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T023_Defect_1459789_7()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1506
@@ -1432,7 +1432,7 @@ c1 = x.c;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T024_Defect_1459470_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4020
@@ -2042,7 +2042,7 @@ b1.a2[0] = b1.a2[1];
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T033_Defect_1467187_Update_In_class_collection_property_3()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4021
@@ -2086,7 +2086,7 @@ p1.X[0..1] = -1;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T034_UpdaetStaticProperty()
         {
             string code = @"
@@ -2131,7 +2131,7 @@ q = a;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T036_Defect_1467491()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4033
@@ -2184,6 +2184,26 @@ a1;
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a1", n1);
+        }
+
+        [Test]
+        public void TestStringIndexing()
+        {
+
+            string code = @"
+a = {};
+x = 1;
+y = 2;
+a[""x""] = x;
+a[""y""] = y;
+x = 3;
+y = 4;
+r1 = a[""x""];
+r2 = a[""y""];
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", 3);
+            thisTest.Verify("r2", 4);
         }
     }
 }

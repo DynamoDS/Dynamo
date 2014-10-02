@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -18,7 +16,7 @@ namespace Dynamo.ViewModels
         #region Automation Related Methods
 
         /// <summary>
-        /// DynamoController calls this method at the end of its initialization
+        /// DynamoView calls this method at the end of its initialization
         /// sequence so that loaded commands, if any, begin to playback.
         /// </summary>
         internal void BeginCommandPlayback(System.Windows.Window mainWindow)
@@ -120,6 +118,8 @@ namespace Dynamo.ViewModels
         private void CreateNodeImpl(CreateNodeCommand command)
         {
            NodeModel nodeModel;
+            // if we need to create a proxy custom node
+            // specify needed information for it from CreateProxyNodeCommand
             if (command is CreateProxyNodeCommand)
             {
                 var proxyCommand = command as CreateProxyNodeCommand;

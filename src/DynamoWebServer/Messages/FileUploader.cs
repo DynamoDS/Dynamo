@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -12,35 +13,35 @@ namespace DynamoWebServer.Messages
 {
     class FileUploader
     {
-        public bool IsCustomNode { get; private set; }
+        List<NodeToCreate> nodesToCreate;
+        List<ConnectorToCreate> connectorsToCreate;
 
-        public List<NodeToCreate> NodesToCreate { get; private set; }
-        public List<ConnectorToCreate> ConnectorsToCreate { get; private set; }
+        public bool IsCustomNode { get; private set; }
+        public IEnumerable<NodeToCreate> NodesToCreate { get { return nodesToCreate; } }
+        public IEnumerable<ConnectorToCreate> ConnectorsToCreate { get { return connectorsToCreate; } }
 
         public FileUploader()
         {
-            NodesToCreate = new List<NodeToCreate>();
-            ConnectorsToCreate = new List<ConnectorToCreate>();
+            nodesToCreate = new List<NodeToCreate>();
+            connectorsToCreate = new List<ConnectorToCreate>();
         }
+
         internal bool ProcessFileData(UploadFileMessage uploadFileMessage, DynamoViewModel dynamoViewModel)
         {
             try
             {
-                var path = Directory.GetCurrentDirectory() + "\\Uploaded";
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                var fileName = path + "\\MyWorkspace.dyn";
+                var content = uploadFileMessage.FileContent;
+                var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
+                IsCustomNode = uploadFileMessage.IsCustomNode;
+                
+                File.WriteAllBytes(filePath, content);
 
+                dynamoViewModel.ExecuteCommand(new DynamoViewModel.OpenFileCommand(filePath));
+                
+                File.Delete(filePath);
 
-                File.WriteAllBytes(fileName, uploadFileMessage.FileContent);
-
-                dynamoViewModel.ExecuteCommand(new DynamoViewModel.OpenFileCommand(fileName));
-                IsCustomNode = dynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
-
-                NodesToCreate.Clear();
-                ConnectorsToCreate.Clear();
+                nodesToCreate.Clear();
+                connectorsToCreate.Clear();
 
                 return true;
             }
@@ -53,8 +54,8 @@ namespace DynamoWebServer.Messages
         internal void AddCreationData(Dynamo.Models.NodeModel node, string data)
         {
             var nodeToCreate = new NodeToCreate(node, data);
-            NodesToCreate.Add(nodeToCreate);
-            ConnectorsToCreate.AddRange(ConnectorToCreate.GetComingOutConnectors(node));
+            nodesToCreate.Add(nodeToCreate);
+            connectorsToCreate.AddRange(ConnectorToCreate.GetOutgoingConnectors(node));
         }
     }
 }

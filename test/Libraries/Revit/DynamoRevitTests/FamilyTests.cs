@@ -13,39 +13,6 @@ namespace Dynamo.Tests
     class FamilyTests:DynamoRevitUnitTestBase
     {   
         [Test]
-        [TestModel(@".\Family\GetCurvesFromFamilyInstance.rfa")]
-        public void GetCurvesFromFamilyInstance()
-        {
-            //var model = ViewModel.Model;
-
-            //string samplePath = Path.Combine(_testPath, @".\Family\GetCurvesFromFamilyInstance.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
-
-            //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
-
-            //var node = (CurvesFromFamilyInstance)ViewModel.Model.Nodes.First(x => x is CurvesFromFamilyInstance);
-            //Assert.IsTrue(node.OldValue.IsCollection);
-
-            //// check that we get the correct number of curves back from the instance
-            //var list = node.OldValue.GetElements();
-            //Assert.AreEqual(4, list.Count());
-
-            //// get the filter node from dynamo and  make sure it has an empty list as output
-            ////we've filtered the list of distances by 0 to make sure distances between orginal points
-            //// and end points of new curves are 0.
-            //var filterNode = (FilterOut)ViewModel.Model.Nodes.First(x => x is FilterOut);
-            //Assert.IsTrue(filterNode.OldValue.IsCollection);
-            
-            //// ensure it is empty
-            //var filterList = filterNode.OldValue.GetElements();
-            //Assert.AreEqual(0.0,filterList.Count);
-
-            Assert.Inconclusive("Porting : FilterOut");
-
-        }
-        
-        [Test]
         [TestModel(@".\Family\GetFamilyInstancesByType.rvt")]
         public void GetFamilyInstancesByType()
         {

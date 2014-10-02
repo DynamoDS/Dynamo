@@ -3,10 +3,10 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class ReferencePlaneTests : RevitNodeTestBase
+    public class ReferencePlaneTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

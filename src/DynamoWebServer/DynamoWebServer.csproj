@@ -82,6 +82,9 @@
     <Compile Include="Interfaces\IWebSocket.cs" />
     <Compile Include="Messages\FileUploader.cs" />
     <Compile Include="Messages\ConnectorToCreate.cs" />
+    <Compile Include="Messages\ClearWorkspaceMessage.cs" />
+    <Compile Include="Messages\GeometryData.cs" />
+    <Compile Include="Messages\GetNodeGeometryMessage.cs" />
     <Compile Include="Messages\ExecutedNode.cs" />
     <Compile Include="Messages\SaveFileMessage.cs" />
     <Compile Include="Messages\Message.cs" />
@@ -91,6 +94,10 @@
     <Compile Include="Messages\GeometryData.cs" />
     <Compile Include="Messages\GetNodeGeometryMessage.cs" />
     <Compile Include="Messages\GetLibraryItemsMessage.cs" />
+    <Compile Include="Messages\FileUploader.cs" />
+    <Compile Include="Messages\ConnectorToCreate.cs" />
+    <Compile Include="Messages\SocketMessageQueue.cs" />
+    <Compile Include="Messages\SaveFileMessage.cs" />
     <Compile Include="Messages\RunCommandsMessage.cs" />
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
@@ -104,6 +111,8 @@
     <Compile Include="Responses\NodeCreationDataResponse.cs" />
     <Compile Include="Responses\SavedFileResponse.cs" />
     <Compile Include="Responses\UploadFileResponse.cs" />
+    <Compile Include="Responses\UploadFileResponse.cs" />
+    <Compile Include="Responses\SavedFileResponse.cs" />
     <Compile Include="Interfaces\IWebServer.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>

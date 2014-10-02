@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml;
 
 using Dynamo.Models;
@@ -119,6 +118,7 @@ namespace Dynamo.Nodes
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
+            nodeElement.SetAttribute("nickname", NickName);
         }
 
         public override void LoadNode(XmlNode nodeElement)
@@ -217,6 +217,11 @@ namespace Dynamo.Nodes
             this.dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
 
+        /// <summary>
+        /// load the definition for the custom node
+        /// </summary>
+        /// <param name="funcID">ID of the definition</param>
+        /// <param name="nickName">The name that will be displayed on the node itself</param>
         internal void LoadNode(Guid funcID, string nickName)
         {
             if (!VerifyFuncId(ref funcID, nickName))

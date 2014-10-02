@@ -1,6 +1,4 @@
 ﻿using Dynamo.UI.Commands;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.ViewModels
 {

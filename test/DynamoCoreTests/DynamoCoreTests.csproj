@@ -74,7 +74,6 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
-    <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="DynamoDefects.cs" />
     <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="LibraryCustomizationTests.cs" />
+    <Compile Include="LibraryTests.cs" />
     <Compile Include="MigrationManagerTests.cs" />
     <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />

@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-using System.Windows.Input;
+using System.Runtime.Serialization;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
-using Dynamo.Utilities;
-using System.Runtime.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -74,27 +70,52 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public class LibraryItem
     {
+        /// <summary>
+        /// Full category name
+        /// </summary>
         [DataMember]
         public string Category { get; private set; }
 
+        /// <summary>
+        /// A string describing the type of object
+        /// </summary>
         [DataMember]
         public string Type { get; private set; }
 
+        /// <summary>
+        /// Model name in the list of all node models
+        /// </summary>
         [DataMember]
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Unique name that is used during node creation
+        /// </summary>
         [DataMember]
-        public string CreatingName { get; private set; }
+        public string CreationName { get; private set; }
 
+        /// <summary>
+        /// The name that will be displayed on node itself 
+        /// </summary>
         [DataMember]
-        public string DisplayedName { get; private set; }
+        public string DisplayName { get; private set; }
 
+        /// <summary>
+        /// A string describing what the node does
+        /// </summary>
         [DataMember]
         public string Description { get; private set; }
 
+        /// <summary>
+        /// A bool indicating if the object will appear in searches
+        /// </summary>
         [DataMember]
         public bool Searchable { get; private set; }
 
+        /// <summary>
+        /// Number defining the relative importance of the element in search. 
+        /// Higher = closer to the top of search results
+        /// </summary>
         [DataMember]
         public double Weight { get; private set; }
 
@@ -111,8 +132,8 @@ namespace Dynamo.Search.SearchElements
         {
             Category = node.FullCategoryName;
             Type = node.Type;
-            DisplayedName = Name = node.Name;
-            CreatingName = node.CreatingName;
+            DisplayName = Name = node.Name;
+            CreationName = node.CreatingName;
             Description = node.Description;
             Searchable = node.Searchable;
             Weight = node.Weight;
@@ -124,11 +145,12 @@ namespace Dynamo.Search.SearchElements
         private void PopulateKeysAndParameters(DynamoModel dynamoModel)
         {
             var controller = dynamoModel.EngineController;
-            var functionItem = (controller.GetFunctionDescriptor(CreatingName));
+            var functionItem = (controller.GetFunctionDescriptor(CreationName));
+            NodeModel newElement = null;
             NodeModel newElement = null;
             if (functionItem != null)
             {
-                DisplayedName = functionItem.DisplayName;
+                DisplayName = functionItem.DisplayName;
                 if (functionItem.IsVarArg)
                     newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
                 else
@@ -138,13 +160,13 @@ namespace Dynamo.Search.SearchElements
             {
                 TypeLoadData tld = null;
 
-                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreatingName))
+                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByName[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByName[CreationName];
                 }
-                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreatingName))
+                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByNickname[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByNickname[CreationName];
                 }
 
                 if (tld != null)

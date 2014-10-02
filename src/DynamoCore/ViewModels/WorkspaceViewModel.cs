@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.Controls;
-using System.Windows.Threading;
+
 using System.Windows.Input;
 using Dynamo.Core;
 
@@ -949,15 +947,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
-        ///     first in order to obtain the name and category for the new node, 
-        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
-        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
+        ///     Collapse a set of nodes in this workspace
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(DynamoViewModel, selectedNodes, this.Model);
+            NodeCollapser.Collapse(DynamoViewModel.Model, selectedNodes, this.Model);
         }
 
         internal void Loaded()

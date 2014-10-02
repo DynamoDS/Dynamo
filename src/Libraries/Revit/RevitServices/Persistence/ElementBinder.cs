@@ -37,7 +37,6 @@ namespace RevitServices.Persistence
         {
             StringID = (string) info.GetValue("stringID", typeof (string));
             IntID = (int)info.GetValue("intID", typeof(int));
-
         }
     }
 
@@ -46,14 +45,12 @@ namespace RevitServices.Persistence
     [Serializable]
     public class MultipleSerializableId : ISerializable
     {
-
-
         public List<String> StringIDs { get; set; }
-        public List<int> IDs { get; set; }
+        public List<int> IntIDs { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            Validity.Assert(StringIDs.Count == IDs.Count);
+            Validity.Assert(StringIDs.Count == IntIDs.Count);
 
             int numberOfElements = StringIDs.Count;
 
@@ -62,28 +59,25 @@ namespace RevitServices.Persistence
             for (int i = 0; i < numberOfElements; i++)
             {
                 info.AddValue("stringID-" + i, StringIDs[i], typeof(string));
-                info.AddValue("intID-" + i, IDs[i], typeof(int));
+                info.AddValue("intID-" + i, IntIDs[i], typeof(int));
             }
-
         }
 
         public MultipleSerializableId()
         {
-            StringIDs = new List<string>();
-            IDs = new List<int>();
-
+            InitializeDataMembers();
         }
 
         public MultipleSerializableId(IEnumerable<Element> elements)
         {
+            InitializeDataMembers();
+
             foreach (Element element in elements)
             {
                 StringIDs.Add(element.UniqueId);
-                IDs.Add(element.Id.IntegerValue);
-            }
-            
+                IntIDs.Add(element.Id.IntegerValue);
+            }            
         }
-
 
         /// <summary>
         /// Ctor used by the serialisation engine
@@ -92,6 +86,8 @@ namespace RevitServices.Persistence
         /// <param name="context"></param>
         public MultipleSerializableId(SerializationInfo info, StreamingContext context)
         {
+            InitializeDataMembers();
+
             int numberOfElements = info.GetInt32("numberOfElements");
 
             for (int i = 0; i < numberOfElements; i++)
@@ -100,11 +96,16 @@ namespace RevitServices.Persistence
                 int intID = (int) info.GetValue("intID-" + i, typeof (int));
 
                 StringIDs.Add(stringID);
-                IDs.Add(intID);
+                IntIDs.Add(intID);
             }
 
         }
         
+        private void InitializeDataMembers()
+        {
+            StringIDs = new List<String>();
+            IntIDs = new List<int>();
+        }
     }
 
 

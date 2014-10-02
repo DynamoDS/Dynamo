@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -54,6 +53,9 @@ namespace Dynamo.PackageManager
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
             var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+
+            var info = new FileInfo(zipPath);
+            if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
 
             return zipPath;
         }
@@ -162,7 +164,7 @@ namespace Dynamo.PackageManager
                 {
                     destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
                 }
-                else if (file.EndsWith("dll") || file.EndsWith("exe"))
+                else if (file.EndsWith("dll") || file.EndsWith("exe") || file.EndsWith("xml"))
                 {
                     destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
                 }
