@@ -20,14 +20,13 @@ namespace Dynamo.Search
             get { return memberGroups; }
         }
 
-        public SearchCategory(string name, SearchElementBase node)
+        public SearchCategory(string name)
         {
             Name = name;
 
             // Add class to Classes.
 
             memberGroups = new List<SearchMemberGroup>();
-            memberGroups.Add(new SearchMemberGroup(node));
         }
 
         public void AddMemberToGroup(BrowserInternalElement node)

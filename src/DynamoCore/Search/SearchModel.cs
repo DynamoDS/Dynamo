@@ -233,12 +233,11 @@ namespace Dynamo.Search
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
                 if (category == null)
                 {
-                    _searchRootCategories.Add(new SearchCategory(rootCategoryName, node));
+                    category = new SearchCategory(rootCategoryName);
+                    _searchRootCategories.Add(category);
                 }
-                else
-                {
-                    category.AddMemberToGroup(node);
-                }
+
+                category.AddMemberToGroup(node);
             }
         }
 
