@@ -11,6 +11,7 @@ using Autodesk.Revit.DB.Analysis;
 using Revit.Elements;
 using Revit.GeometryConversion;
 
+using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -35,10 +36,9 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="data"></param>
         private FaceAnalysisDisplay(
-            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData> data)
+            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data)
         {
-            var surfaceAnalysisDatas = data as ISurfaceAnalysisData[] ?? data.ToArray();
-            var sfm = GetSpatialFieldManagerFromView(view, (uint)surfaceAnalysisDatas.First().Values.Count());
+            var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
 
             //var sfmAndId = GetElementAndPrimitiveIdFromTrace();
             
@@ -66,12 +66,12 @@ namespace Revit.AnalysisDisplay
             // TEMPORARY UNTIL WE RESOLVE TRACE
             sfm.Clear();
 
-            sfm.SetMeasurementNames(surfaceAnalysisDatas.SelectMany(d => d.Values.Keys).Distinct().ToList());
+            sfm.SetMeasurementNames(data.SelectMany(d => d.Results.Keys).Distinct().ToList());
 
             InternalSetSpatialFieldManager(sfm);
             var primitiveIds = new List<int>();
 
-            foreach (var d in surfaceAnalysisDatas)
+            foreach (var d in data)
             {
                 var reference = d.Surface.Tags.LookupTag(DefaultTag) as Reference;
                 if (reference == null)
@@ -99,10 +99,27 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="primitiveId"></param>
         /// <param name="data"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData data)
+        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double> data)
         {
-            var pointLocations = data.Locations.Select(l => new UV(l.U, l.V));
-            var values = data.Values.Values.ToList();
+            // Get the surface reference
+            var reference = data.Surface.Tags.LookupTag(DefaultTag) as Reference;
+
+            var el = DocumentManager.Instance.CurrentDBDocument.GetElement(reference.ElementId);
+            var pointLocations = new List<UV>();
+            if (el != null)
+            {
+                var face = el.GetGeometryObjectFromReference(reference) as Autodesk.Revit.DB.Face;
+                if (face != null)
+                {
+                    var bbox = face.GetBoundingBox();
+                    var uSpan = bbox.Max.U - bbox.Min.U;
+                    var vSpan = bbox.Max.V - bbox.Min.V;
+
+                    pointLocations.AddRange(data.CalculationLocations.Select(uv => new UV(bbox.Min.U + uv.U*uSpan, bbox.Min.V + uv.V*vSpan)));
+                }
+            }
+
+            var values = data.Results.Values.ToList();
 
             // Data will come in as:
             // A B C D
@@ -195,7 +212,7 @@ namespace Revit.AnalysisDisplay
 
             var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
 
-            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData[]{data});
+            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data });
         }
 
         /// <summary>

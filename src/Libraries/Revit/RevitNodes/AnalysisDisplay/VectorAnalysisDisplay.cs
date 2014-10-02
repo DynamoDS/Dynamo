@@ -60,7 +60,7 @@ namespace Revit.AnalysisDisplay
             sfm.Clear();
 
             var vectorAnalysisDatas = data as VectorAnalysisData[] ?? data.ToArray();
-            sfm.SetMeasurementNames(vectorAnalysisDatas.SelectMany(d => d.Values.Keys).Distinct().ToList());
+            sfm.SetMeasurementNames(vectorAnalysisDatas.SelectMany(d => d.Results.Keys).Distinct().ToList());
 
             var primitiveIds = new List<int>();
 
@@ -91,7 +91,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples"></param>
         private void InternalSetSpatialFieldValues(int primitiveId, VectorAnalysisData data)
         {
-            var values = data.Values.Values;
+            var values = data.Results.Values;
 
             var height = values.First().Count();
             var width = values.Count();
@@ -114,7 +114,7 @@ namespace Revit.AnalysisDisplay
             var sampleValues = new FieldValues(valList);
 
             // Convert the sample points to a special Revit Type
-            var samplePts = new FieldDomainPointsByXYZ(data.Locations.Select(p=>p.ToXyz()).ToList());
+            var samplePts = new FieldDomainPointsByXYZ(data.CalculationLocations.Select(p=>p.ToXyz()).ToList());
 
             // Get the analysis results schema
             var schemaIndex = GetAnalysisResultSchemaIndex();

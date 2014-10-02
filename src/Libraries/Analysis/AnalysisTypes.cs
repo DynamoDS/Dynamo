@@ -1,109 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
 {
-    public class SurfaceAnalysisData : ISurfaceAnalysisData
+    public class SurfaceAnalysisData : ISurfaceAnalysisData<UV, double>
     {
         public Surface Surface { get; set; }
-        public IEnumerable<UV> Locations { get; set; }
-        public Dictionary<string, IList<double>> Values { get; set; }
+        public IEnumerable<UV> CalculationLocations { get; set; }
+        public Dictionary<string, IList<double>> Results { get; set; }
 
-        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> locations, Dictionary<string, IList<double>> values)
+        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations)
         {
             Surface = surface;
-            Locations = locations;
-            Values = values;
+            CalculationLocations = calculationLocations;
+            Results = new Dictionary<string, IList<double>>();
         }
 
-        public SurfaceAnalysisData(IEnumerable<UV> locations, IEnumerable<string> valueDescriptions, IList<IList<double>> values)
+        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string, IList<double>> results)
         {
-            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
-
-            if (descriptions.Count() != values.Count)
-            {
-                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
-            }
-
-            var valueDict = new Dictionary<string, IList<double>>();
-            var count = 0;
-            foreach (var descrip in descriptions)
-            {
-                valueDict.Add(descrip, values[count]);
-                count++;
-            }
-
-            Locations = locations;
-            Values = valueDict;
+            Surface = surface;
+            CalculationLocations = calculationLocations;
+            Results = results;
         }
     }
 
-    public class VectorAnalysisData : IVectorAnalysisData
+    public class VectorAnalysisData : IFieldAnalysisData<Point, Vector>
     {
-        public IEnumerable<Point> Locations { get; set; }
-        public Dictionary<string, IList<Vector>> Values { get; set; }
+        public IEnumerable<Point> CalculationLocations { get; set; }
+        public Dictionary<string, IList<Vector>> Results { get; set; }
 
-        public VectorAnalysisData(IEnumerable<Point> locations, Dictionary<string, IList<Vector>> values)
+        public VectorAnalysisData(IEnumerable<Point> points)
         {
-            Locations = locations;
-            Values = values;
+            CalculationLocations = points;
+            Results = new Dictionary<string, IList<Vector>>();
         }
 
-        public VectorAnalysisData(IEnumerable<Point> locations, IEnumerable<string> valueDescriptions, IList<IList<Vector>> values)
+        public VectorAnalysisData(IEnumerable<Point> points, Dictionary<string, IList<Vector>> results)
         {
-            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
-
-            if (descriptions.Count() != values.Count)
-            {
-                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
-            }
-
-            var valueDict = new Dictionary<string, IList<Vector>>();
-            var count = 0;
-            foreach (var descrip in descriptions)
-            {
-                valueDict.Add(descrip, values[count]);
-                count++;
-            }
-
-            Locations = locations;
-            Values = valueDict;
+            CalculationLocations = points;
+            Results = results;
         }
     }
 
-    public class PointAnalysisData : IPointAnalysisData
+    public class PointAnalysisData : IFieldAnalysisData<Point, double>
     {
-        public IEnumerable<Point> Locations { get; set; }
-        public Dictionary<string, IList<double>> Values { get; set; }
+        public IEnumerable<Point> CalculationLocations { get; set; }
+        public Dictionary<string, IList<double>> Results { get; set; }
 
-        public PointAnalysisData(IEnumerable<Point> locations, Dictionary<string, IList<double>> values)
+        public PointAnalysisData(IEnumerable<Point> points)
         {
-            Locations = locations;
-            Values = values;
+            CalculationLocations = points;
+            Results = new Dictionary<string, IList<double>>();
         }
 
-        public PointAnalysisData(IEnumerable<Point> locations, IEnumerable<string> valueDescriptions, IList<IList<double>> values)
+        public PointAnalysisData(IEnumerable<Point> points, Dictionary<string, IList<double>> results)
         {
-            var descriptions = valueDescriptions as string[] ?? valueDescriptions.ToArray();
-
-            if (descriptions.Count() != values.Count)
-            {
-                throw new ArgumentException("There must be an equal number of value sets and value descriptions");
-            }
-
-            var valueDict = new Dictionary<string, IList<double>>();
-            var count = 0;
-            foreach (var descrip in descriptions)
-            {
-                valueDict.Add(descrip, values[count]);
-                count++;
-            }
-
-            Locations = locations;
-            Values = valueDict;
+            CalculationLocations = points;
+            Results = results;
         }
     }
 }

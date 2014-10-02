@@ -94,7 +94,7 @@ namespace Revit.AnalysisDisplay
             sfm.Clear();
 
             var pointAnalysisData = data as PointAnalysisData[] ?? data.ToArray();
-            sfm.SetMeasurementNames(pointAnalysisData.SelectMany(d => d.Values.Keys).Distinct().ToList());
+            sfm.SetMeasurementNames(pointAnalysisData.SelectMany(d => d.Results.Keys).Distinct().ToList());
 
             var primitiveIds = new List<int>();
 
@@ -123,7 +123,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="values"></param>
         private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds)
         {
-            var values = data.Values.Values;
+            var values = data.Results.Values;
 
             var height = values.First().Count();
             var width = values.Count();
@@ -147,7 +147,7 @@ namespace Revit.AnalysisDisplay
             // number of points that can be sent in one run.
 
             var chunkSize = 1000;
-            var pointLocations = data.Locations.Select(l=>l.ToXyz());
+            var pointLocations = data.CalculationLocations.Select(l=>l.ToXyz());
 
             while (pointLocations.Any()) 
             {
@@ -210,8 +210,7 @@ namespace Revit.AnalysisDisplay
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            var valueDict = new Dictionary<string, IList<double>>();
-            valueDict.Add("Dynamo Data", samples);
+            var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
 
             var data = new PointAnalysisData(samplePoints, valueDict);
             return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData>{data});
