@@ -153,7 +153,7 @@ namespace ProtoScript.Runners
             // Mark all graphnodes dirty which are associated with the force exec ASTs
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
-        
+
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -357,7 +357,7 @@ namespace ProtoScript.Runners
                 {
                     langblock = (rightNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode).CodeBlockNode;
                 }
-                else if  (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
+                else if (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
                 {
                     langblock = (rightNode as ProtoCore.AST.ImperativeAST.LanguageBlockNode).CodeBlockNode;
                 }
@@ -934,6 +934,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        ClassMirror GetClassType(string className);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1039,7 +1040,8 @@ namespace ProtoScript.Runners
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 
-        public LiveRunner(): this(new Configuration())
+        public LiveRunner()
+            : this(new Configuration())
         {
         }
 
@@ -1788,6 +1790,17 @@ namespace ProtoScript.Runners
             return ret;
         }
 
+        public ClassMirror GetClassType(string className)
+        {
+            try
+            {
+                return new ClassMirror(className, this.Core);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         #endregion
     }

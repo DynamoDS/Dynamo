@@ -186,6 +186,17 @@ namespace Dynamo.DSEngine
                     : null;
         }
 
+        /// <summary>
+        /// Checks if a given library is already loaded or not
+        /// </summary>
+        /// <param name="library"></param>
+        /// <returns></returns>
+        public bool IsLibraryLoaded(string library)
+        {
+            return importedFunctionGroups.ContainsKey(library);
+        }
+
+
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
         {
             return null != partialName && null != fullName && partialName.Count <= fullName.Count
