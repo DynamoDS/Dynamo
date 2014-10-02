@@ -224,7 +224,7 @@ namespace Dynamo.Search
             PopulateSearchCategories(foundNodes);            
         }
 
-        internal void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
+        private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
         {
             foreach (var node in nodes)
             {
@@ -242,7 +242,7 @@ namespace Dynamo.Search
             }
         }
 
-        internal void ClearSearchCategories()
+        private void ClearSearchCategories()
         {
             _searchRootCategories.Clear();
         }
