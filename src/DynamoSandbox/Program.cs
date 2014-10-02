@@ -17,7 +17,7 @@ namespace DynamoSandbox
 {
     class Program
     {
-        private static DynamoViewModel MakeStandaloneAndRun(string commandFilePath)
+        private static void MakeStandaloneAndRun(string commandFilePath, ref DynamoViewModel viewModel)
         {
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -30,7 +30,7 @@ namespace DynamoSandbox
                     Preferences = PreferenceSettings.Load()
                 });
 
-            var viewModel = DynamoViewModel.Start(
+            viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
                     CommandFilePath = commandFilePath,
@@ -41,8 +41,6 @@ namespace DynamoSandbox
 
             var app = new Application();
             app.Run(view);
-
-            return viewModel;
         }
 
         [STAThread]
@@ -71,7 +69,7 @@ namespace DynamoSandbox
                     }
                 }
 
-                viewModel = MakeStandaloneAndRun(commandFilePath);
+                MakeStandaloneAndRun(commandFilePath, ref viewModel);
             }
             catch (Exception e)
             {
@@ -79,22 +77,26 @@ namespace DynamoSandbox
                 try
                 {
 #if DEBUG
-                    // Display the recorded command XML when the crash happens, so that it maybe saved and re-run later
-                    viewModel.SaveRecordedCommand.Execute(null);
+                    // Display the recorded command XML when the crash happens, 
+                    // so that it maybe saved and re-run later
+                    if (viewModel != null)
+                        viewModel.SaveRecordedCommand.Execute(null);
 #endif
 
                     DynamoModel.IsCrashing = true;
                     InstrumentationLogger.LogException(e);
                     StabilityTracking.GetInstance().NotifyCrash();
 
-                    // Show the unhandled exception dialog so user can copy the 
-                    // crash details and report the crash if she chooses to.
-                    viewModel.Model.OnRequestsCrashPrompt(null,
-                        new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
+                    if (viewModel != null)
+                    {
+                        // Show the unhandled exception dialog so user can copy the 
+                        // crash details and report the crash if she chooses to.
+                        viewModel.Model.OnRequestsCrashPrompt(null,
+                            new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
 
-                    // Give user a chance to save (but does not allow cancellation)
-                    bool allowCancellation = false;
-                    viewModel.Exit(allowCancellation);
+                        // Give user a chance to save (but does not allow cancellation)
+                        viewModel.Exit(allowCancel: false);
+                    }
                 }
                 catch
                 {

@@ -97,8 +97,8 @@ namespace Dynamo.TestInfrastructure
 
                     dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        DynamoViewModel.RunCancelCommand runCancel =
-                            new DynamoViewModel.RunCancelCommand(false, false);
+                        DynamoModel.RunCancelCommand runCancel =
+                            new DynamoModel.RunCancelCommand(false, false);
 
                         dynamoViewModel.ExecuteCommand(runCancel);
                     }));
