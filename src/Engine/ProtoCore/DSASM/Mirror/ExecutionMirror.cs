@@ -869,8 +869,7 @@ namespace ProtoCore.DSASM.Mirror
             const int outerBlock = 0;
             ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                core, MirrorTarget.Properties, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, 
-                exe.instrStreamList, null, graphNode, exe.instrStreamList[outerBlock].dependencyGraph, outerBlock);
+                graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, core.Options.ExecuteSSA, outerBlock);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);

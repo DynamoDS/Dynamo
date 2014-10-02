@@ -18,32 +18,28 @@ namespace ProtoCore.AssociativeEngine
         /// <summary>
         /// Find and return all graphnodes that can be reached by executingGraphNode
         /// </summary>
-        /// <param name="core"></param>
-        /// <param name="Properties"></param>
+        /// <param name="executingGraphNode"></param>
+        /// <param name="executive"></param>
         /// <param name="exprUID"></param>
         /// <param name="modBlkId"></param>
         /// <param name="isSSAAssign"></param>
-        /// <param name="instrStreamList"></param>
-        /// <param name="deferedGraphNodes"></param>
-        /// <param name="executingGraphNode"></param>
-        /// <param name="dependencyGraph"></param>
+        /// <param name="executeSSA"></param>
         /// <param name="languageBlockID"></param>
         /// <param name="propertyChanged"></param>
         /// <returns></returns>
         public static List<AssociativeGraph.GraphNode> UpdateDependencyGraph(
-            Core core,
-            InterpreterProperties Properties,
+            AssociativeGraph.GraphNode executingGraphNode,
+            DSASM.Executive executive,
             int exprUID,
             int modBlkId,
             bool isSSAAssign,
-            InstructionStream[] instrStreamList,
-            List<AssociativeGraph.GraphNode> deferedGraphNodes,
-            AssociativeGraph.GraphNode executingGraphNode,
-            AssociativeGraph.DependencyGraph dependencyGraph,
+            bool executeSSA,
             int languageBlockID,
             bool propertyChanged = false)
         {
-
+            InterpreterProperties Properties = executive.Properties;
+            List<AssociativeGraph.GraphNode> deferedGraphNodes = executive.deferedGraphNodes;
+            AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
 
             if (executingGraphNode == null)
@@ -77,7 +73,7 @@ namespace ProtoCore.AssociativeEngine
                 //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
                 //
                 bool allowUpdateWithinSSA = false;
-                if (core.Options.ExecuteSSA)
+                if (executeSSA)
                 {
                     allowUpdateWithinSSA = true;
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
@@ -107,8 +103,7 @@ namespace ProtoCore.AssociativeEngine
                     if (graphNode.isLanguageBlock)
                     {
                         List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, instrStreamList, deferedGraphNodes, executingGraphNode, 
-                            instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
+                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId);
                         if (subGraphNodes.Count > 0)
                         {
                             reachableGraphNodes.Add(graphNode);
@@ -122,7 +117,7 @@ namespace ProtoCore.AssociativeEngine
                     }
 
                     // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (core.Options.ExecuteSSA && !propertyChanged)
+                    if (executeSSA && !propertyChanged)
                     {
                         if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
                         {
@@ -173,7 +168,7 @@ namespace ProtoCore.AssociativeEngine
                     // Overrride this if allowing within SSA update
                     // TODO Jun: Remove this code when SSA is completely enabled
                     bool allowSSADownstream = false;
-                    if (core.Options.ExecuteSSA)
+                    if (executeSSA)
                     {
                         // Check if we allow downstream update
                         if (exprUID == graphNode.exprUID)

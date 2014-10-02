@@ -72,7 +72,7 @@ namespace ProtoCore.DSASM
 
         public bool IsExplicitCall { get; set; }
 
-        private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
         
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
         /// <summary>
@@ -105,6 +105,8 @@ namespace ProtoCore.DSASM
             debugFlags = (int)DebugFlags.ENABLE_LOG;
 
             bounceType = CallingConvention.BounceType.kImplicit;
+
+            deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
 
             // Execute DS Debug watch
             //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
@@ -1547,14 +1549,12 @@ namespace ProtoCore.DSASM
                     if (core.Options.ExecuteSSA)
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, 
-                            deferedGraphNodes, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
+                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
                     else
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, deferedGraphNodes, 
-                            node, istream.dependencyGraph, executingBlock, true);
+                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
 
                     // Mark reachable nodes as dirty
@@ -1583,8 +1583,7 @@ namespace ProtoCore.DSASM
 
             // Find reachable graphnodes
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                core, Properties, exprUID, modBlkId, isSSAAssign, exe.instrStreamList, deferedGraphNodes,
-                Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
