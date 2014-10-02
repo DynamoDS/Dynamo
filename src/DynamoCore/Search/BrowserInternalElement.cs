@@ -229,6 +229,120 @@ namespace Dynamo.Nodes.Search
         }
     }
 
+    public class BrowserInternalElementForClasses : BrowserItem
+    {
+        /// <summary>
+        ///     The classes inside of the browser item
+        /// </summary>
+        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
+        public override ObservableCollection<BrowserItem> Items 
+        {
+            get { return _items; }
+            set { _items = value; } 
+        }
+
+        private string _name;
+        public override string Name
+        {
+            get { return _name; }
+        }
+
+        /// <summary>
+        /// Assembly, from which we can get icon for class button.
+        /// </summary>
+        private string assembly;
+        public string Assembly
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's buildin function or operator.
+                // Icons for these members are in DynamoCore project.
+                return "DynamoCore";
+            }
+
+            // Note: we need setter, when we set resource assembly in NodeSearchElement.
+            set { assembly = value; }
+        }
+
+        protected enum ResourceType
+        {
+            SmallIcon, LargeIcon
+        }
+
+        ///<summary>
+        /// Small icon for class and method buttons.
+        ///</summary>
+        public BitmapSource SmallIcon
+        {
+            get
+            {
+                var name = GetResourceName(ResourceType.SmallIcon, false);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.SmallIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                }
+                return icon;
+            }
+        }
+
+        ///<summary>
+        /// Large icon for tooltips.
+        ///</summary>
+        public BitmapSource LargeIcon
+        {
+            get
+            {
+                var name = GetResourceName(ResourceType.LargeIcon, false);
+                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+
+                if (icon == null)
+                {
+                    // Get dis-ambiguous resource name and try again.
+                    name = GetResourceName(ResourceType.LargeIcon, true);
+                    icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                }
+                return icon;
+            }
+        }
+
+        public BrowserItem Parent { get; set; }
+
+        public BrowserInternalElementForClasses(string name, BrowserItem parent, string _assembly = "")
+        {
+            this._name = name;
+            this.assembly = _assembly;
+            this.Parent = parent;
+        }
+
+        protected virtual string GetResourceName(
+            ResourceType resourceType, bool disambiguate = false)
+        {
+            if (resourceType == ResourceType.SmallIcon)
+                return disambiguate ? String.Empty : this.Name;
+
+            return string.Empty;
+        }
+
+        private BitmapSource GetIcon(string fullNameOfIcon)
+        {
+            if (string.IsNullOrEmpty(this.Assembly))
+                return null;
+
+            var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
+            BitmapSource icon = null;
+            if (cust != null)
+                icon = cust.LoadIconInternal(fullNameOfIcon);
+            return icon;
+        }
+    }
+
     public class ClassInformation : BrowserItem
     {
         #region BrowserItem abstract members implementation

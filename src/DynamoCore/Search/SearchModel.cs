@@ -434,10 +434,12 @@ namespace Dynamo.Search
             // attempt to add root category
             var currentCat = TryAddRootCategory(splitCat[0], nodeType);
 
-            for (var i = 1; i < splitCat.Count; i++)
+            for (var i = 1; i < splitCat.Count-1; i++)
             {
                 currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
+
+            currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count-1], resourceAssembly);
 
             return currentCat;
         }
@@ -474,6 +476,18 @@ namespace Dynamo.Search
             var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
             parent.AddChild(tempCat);
 
+            return tempCat;
+        }
+
+        internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
+                                                 string resourceAssembly = "")
+        {
+             var tempCat = new BrowserInternalElementForClasses(childCategoryName, parent, resourceAssembly);
+
+            if (!parent.Items.OfType<BrowserInternalElementForClasses>().Any())
+                parent.Items.Add(new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
+
+            parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(tempCat);
             return tempCat;
         }
 
