@@ -228,12 +228,12 @@ namespace Dynamo.Search
         {
             foreach (var node in nodes)
             {
-                List<string> splitCat = SplitCategoryName(node.FullCategoryName);
+                var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
-                var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == splitCat[0]);
+                var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
                 if (category == null)
                 {
-                    _searchRootCategories.Add(new SearchCategory(splitCat[0], node));
+                    _searchRootCategories.Add(new SearchCategory(rootCategoryName, node));
                 }
                 else
                 {
