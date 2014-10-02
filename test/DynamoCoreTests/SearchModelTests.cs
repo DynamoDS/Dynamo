@@ -45,7 +45,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName).ToList();
+            var results = search.SearchDictionary.Search(newNodeName, search.MaxNumSearchResults).ToList();
 
             // results are correct
             Assert.AreEqual(1, results.Count());
@@ -55,7 +55,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
-            var results1 = search.Search(nodeName);
+            var results1 = search.SearchDictionary.Search(newNodeName, search.MaxNumSearchResults);
 
             // results are correct
             Assert.AreEqual(0, results1.Count());
@@ -77,7 +77,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for name
-            var results = search.Search(nodeName).ToList();
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             // results are correct
             Assert.AreEqual(1, results.Count());
@@ -96,7 +96,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for name
-            var results1 = search.Search(nodeName).ToList();
+            var results1 = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             // description is updated
             Assert.AreEqual(1, results1.Count());
@@ -135,7 +135,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, search.SearchDictionary.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName).ToList();
+            var results = search.SearchDictionary.Search(newNodeName, search.MaxNumSearchResults).ToList();
 
             // results are correct - only one result
             Assert.AreEqual(1, results.Count());
@@ -145,7 +145,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
-            results = search.Search(nodeName).ToList();
+            results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             // results are correct - the first nodes are returned
             Assert.AreEqual(1, results.Count());
@@ -249,7 +249,7 @@ namespace Dynamo.Tests
                 search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
             }
             search.MaxNumSearchResults = 100;
-            var results = search.Search(nodeName).ToList();
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
             Assert.AreEqual(100, results.Count());
             Assert.AreEqual(nodeName, results[0].Name);
         }
@@ -321,7 +321,7 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
-            var results = search.Search("frog");
+            var results = search.SearchDictionary.Search("frog", search.MaxNumSearchResults);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -333,7 +333,7 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
-            var results = search.Search("hi");
+            var results = search.SearchDictionary.Search("hi", search.MaxNumSearchResults);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -347,7 +347,7 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName1, catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName2, catName, "des", ""));
 
-            var results = search.Search("wh").ToList();
+            var results = search.SearchDictionary.Search("wh", search.MaxNumSearchResults).ToList();
             Assert.AreEqual(2, results.Count());
             Assert.AreEqual(nodeName1, results[0].Name);
             Assert.AreEqual(nodeName2, results[1].Name);
@@ -362,7 +362,7 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "what", catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
-            var results = search.Search("Category.Child");
+            var results = search.SearchDictionary.Search("Category.Child", search.MaxNumSearchResults);
             Assert.AreEqual(3, results.Count());
         }
 
@@ -434,13 +434,13 @@ namespace Dynamo.Tests
 
             searchModel.Add(dummyInfo);
 
-            var res = searchModel.Search(nodeName).ToList();
+            var res = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
             Assert.AreNotEqual(0, res.Count());
             Assert.AreEqual(res[0].Name, nodeName);
             Assert.IsTrue(searchModel.ContainsCategory(catName));
 
             searchModel.RemoveNodeAndEmptyParentCategory(nodeName);
-            res = searchModel.Search(nodeName).ToList();
+            res = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             Assert.AreEqual(0, res.Count());
             Assert.IsFalse(searchModel.ContainsCategory(catName));
@@ -463,7 +463,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName).ToList();
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             Assert.AreEqual(1, results.Count());
 
@@ -499,7 +499,7 @@ namespace Dynamo.Tests
 
             // it's gone
             Assert.AreEqual(0, search.SearchDictionary.NumElements);
-            var results = search.Search(nodeName);
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults);
             Assert.AreEqual(0, results.Count());
 
         }
@@ -522,7 +522,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(2, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName).ToList();
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             Assert.AreEqual(2, results.Count());
 
@@ -698,7 +698,7 @@ namespace Dynamo.Tests
         {
             search.RemoveNodeAndEmptyParentCategory("NonExistentName");
 
-            var results = search.Search("NonExistentName");
+            var results = search.SearchDictionary.Search("NonExistentName", search.MaxNumSearchResults);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -724,7 +724,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName).ToList();
+            var results = search.SearchDictionary.Search(nodeName, search.MaxNumSearchResults).ToList();
 
             Assert.AreEqual(1, results.Count());
 
@@ -741,11 +741,11 @@ namespace Dynamo.Tests
 
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Turnip.Greens", "des", ""));
 
-            var results = search.Search("Peter");
+            var results = search.SearchDictionary.Search("Peter", search.MaxNumSearchResults);
             Assert.AreEqual(1, results.Count());
 
             search.RemoveNodeAndEmptyParentCategory("Peter");
-            results = search.Search("Peter");
+            results = search.SearchDictionary.Search("Peter", search.MaxNumSearchResults);
 
             Assert.AreEqual(0, results.Count());
         }
@@ -756,11 +756,11 @@ namespace Dynamo.Tests
         {
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));
 
-            var results = search.Search("Peter");
+            var results = search.SearchDictionary.Search("Peter", search.MaxNumSearchResults);
             Assert.AreEqual(1, results.Count());
 
             search.RemoveNodeAndEmptyParentCategory("Peter");
-            results = search.Search("Peter");
+            results = search.SearchDictionary.Search("Peter", search.MaxNumSearchResults);
 
             Assert.AreEqual(0, results.Count());
         }

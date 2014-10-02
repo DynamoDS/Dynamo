@@ -30,7 +30,7 @@ namespace Dynamo.Search
             memberGroups.Add(new SearchMemberGroup(node));
         }
 
-        public void AddMemberToCorrectGroup(BrowserInternalElement node)
+        public void AddMemberToGroup(BrowserInternalElement node)
         {
 
         }

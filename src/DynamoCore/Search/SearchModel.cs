@@ -237,7 +237,7 @@ namespace Dynamo.Search
                 }
                 else
                 {
-                    category.AddMemberToCorrectGroup(node);
+                    category.AddMemberToGroup(node);
                 }
             }
         }
