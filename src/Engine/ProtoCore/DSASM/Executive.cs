@@ -1876,7 +1876,7 @@ namespace ProtoCore.DSASM
             int classIndex = executingGraphNode.classIndex;
             int procIndex = executingGraphNode.procIndex;
 
-            var graph = dependencyGraph; // istream.dependencyGraph;
+            var graph = dependencyGraph; 
             var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes == null)
             {

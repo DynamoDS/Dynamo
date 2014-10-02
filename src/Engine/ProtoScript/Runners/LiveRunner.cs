@@ -247,7 +247,7 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public List<Guid> GetReachableNodeGuids(List<AssociativeNode> astList)
         {
-            List<GraphNode> dirtyNodes = ProtoCore.AssociativeEngine.Utils.GetReachableGraphNodes(core, astList);
+            List<GraphNode> dirtyNodes = ProtoCore.AssociativeEngine.Utils.GetDependentGraphNodes(core, astList);
 
             // Get the list of guid's of the ASTs
             List<Guid> cbnGuidList = new List<Guid>();
