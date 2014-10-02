@@ -4600,17 +4600,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void ALLOCM_Handler(Instruction instruction)
-        {
-            runtimeVerify(instruction.op1.IsMemberVariableIndex);
-            int offset = (int)instruction.op1.opdata;
-            StackValue ptr = rmem.Heap.AllocatePointer(Constants.kPointerSize);
-            StackValue thisptr = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
-            core.Heap.GetHeapElement(thisptr).Stack[offset] = ptr;
-
-            ++pc;
-        }
-
         private void PUSH_Handler(Instruction instruction)
         {
             int dimensions = 0;
@@ -5505,9 +5494,7 @@ namespace ProtoCore.DSASM
                 {
                     GCRelease(svProperty);
 
-                    StackValue svNewProperty = core.Heap.AllocatePointer(Constants.kPointerSize);
-                    core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
-
+                    StackValue svNewProperty = core.Heap.AllocatePointer(new [] { svData });
                     core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
                     GCRetain(svNewProperty);
 
@@ -5527,9 +5514,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue svNewProperty = core.Heap.AllocatePointer(Constants.kPointerSize);
-                    core.Heap.GetHeapElement(svNewProperty).Stack[0] = svData;
-
+                    StackValue svNewProperty = core.Heap.AllocatePointer(new [] {svData});
                     core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
                     GCRetain(svNewProperty);
 
@@ -5699,8 +5684,7 @@ namespace ProtoCore.DSASM
             {
                 if (data.IsNull)
                 {
-                    StackValue ptr = core.Heap.AllocatePointer(Constants.kPointerSize);
-                    core.Heap.GetHeapElement(ptr).Stack[0] = data;
+                    StackValue ptr = core.Heap.AllocatePointer(new [] { data });
                     GCRetain(data);
                 }
 
@@ -7721,12 +7705,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.ALLOCM:
-                    {
-                        ALLOCM_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.PUSH:
                     {
                         PUSH_Handler(instruction);
@@ -8082,6 +8060,12 @@ namespace ProtoCore.DSASM
                 default: //Unknown OpCode
                     throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
             }
+        }
+
+        private void GC()
+        {
+            var gcRoots = GetGCRoots();
+            rmem.GC(gcRoots, this);
         }
 
         private IEnumerable<SymbolNode> GetGCRoots()

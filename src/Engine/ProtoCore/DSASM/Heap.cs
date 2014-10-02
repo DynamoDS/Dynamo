@@ -22,6 +22,7 @@ namespace ProtoCore.DSASM
         public int Refcount { get; set; }
         public Dictionary<StackValue, StackValue> Dict;
         public StackValue[] Stack;
+        public MetaData MetaData { get; set; }
 
         public int GetAllocatedSize()
         {
@@ -213,8 +214,8 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        private List<int> freeList = new List<int>();
-        private List<HeapElement> heapElements = new List<HeapElement>();
+        private readonly List<int> freeList = new List<int>();
+        private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private bool isGarbageCollecting = false;
 
         public Heap()
@@ -225,26 +226,50 @@ namespace ProtoCore.DSASM
         {
             var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
             int index = AllocateInternal(chs);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
             return StackValue.BuildString(index);
         }
 
-        public StackValue AllocateArray(IEnumerable<StackValue> values, Dictionary<StackValue, StackValue> dict = null)
+        public StackValue AllocateArray(IEnumerable<StackValue> values, 
+                                        Dictionary<StackValue, StackValue> dict = null)
         {
             int index = AllocateInternal(values);
-            heapElements[index].Dict = dict;
+            var heapElement = heapElements[index];
+            heapElement.Dict = dict;
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
             return StackValue.BuildArrayPointer(index);
         }
 
-        public StackValue AllocatePointer(int size)
-        {    
-            int index = AllocateInternal(size);
-            return StackValue.BuildPointer(index);
+        public StackValue AllocatePointer(IEnumerable<StackValue> values, 
+                                          MetaData metaData)
+        {
+            int index = AllocateInternal(values);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = metaData;
+            return StackValue.BuildPointer(index, metaData);
+        }
+
+        public StackValue AllocatePointer(IEnumerable<StackValue> values)
+        {
+            return AllocatePointer(
+                    values, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
             int index = AllocateInternal(size);
+            var hpe = heapElements[index];
+            hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
+        }
+
+        public StackValue AllocatePointer(int size)
+        {
+            return AllocatePointer(
+                    size, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
         public HeapElement GetHeapElement(StackValue pointer)
@@ -405,8 +430,14 @@ namespace ProtoCore.DSASM
                         continue;
                     }
 
+                    var metaData = heapElements[i].MetaData;
+                    if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    {
+                        var objPointer = StackValue.BuildPointer(i, metaData);
+                        GCDisposeObject(objPointer, exe);
+                    }
+
                     heapElements[i] = null;
-                    // Call Dispose()?
                     freeList.Add(i);
                 }
             }
@@ -418,7 +449,7 @@ namespace ProtoCore.DSASM
 
 
         #region Reference counting APIs
-        [Conditional("GC_REFERENCE_COUNTING")]
+        // [Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -435,7 +466,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        [Conditional("GC_REFERENCE_COUNTING")]
+        // [Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -453,7 +484,7 @@ namespace ProtoCore.DSASM
             }
         }
     
-        [Conditional("GC_REFERENCE_COUNTING")]
+        // [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
