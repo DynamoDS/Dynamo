@@ -211,17 +211,24 @@ namespace Dynamo.Search
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal void Search(string search)
+        internal IEnumerable<SearchElementBase> Search(string search)
         {
             if (string.IsNullOrEmpty(search))
             {
-                return;
+                return _searchElements;
             }
 
-            var foundNodes = SearchDictionary.Search(search, MaxNumSearchResults).ToList();
+            return Search(search, MaxNumSearchResults);
+        }
+
+        private IEnumerable<SearchElementBase> Search(string search, int maxNumSearchResults)
+        {
+            var foundNodes = SearchDictionary.Search(search, maxNumSearchResults);
 
             ClearSearchCategories();
             PopulateSearchCategories(foundNodes);
+
+            return foundNodes;
         }
 
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
