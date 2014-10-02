@@ -14,11 +14,24 @@ namespace Dynamo.Search
             get { return members; }
         }
 
+        internal static SearchMemberGroup CreateInstance(BrowserInternalElement node)
+        {
+            // Some logic in which member group name is determined.
+            var name = "Mockup";
+
+            return new SearchMemberGroup(name);
+        }
+
+        private SearchMemberGroup(string name)
+        {
+            Name = name;
+            members = new List<BrowserInternalElement>();
+        }
+
         //some UI properties which control style of one MemberGroup
 
-        public SearchMemberGroup(SearchElementBase node)
+        public void AddMember(BrowserInternalElement node)
         {
-            members = new List<BrowserInternalElement>();
             members.Add(node);
         }
     }

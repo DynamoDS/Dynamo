@@ -221,7 +221,7 @@ namespace Dynamo.Search
             var foundNodes = SearchDictionary.Search(search, MaxNumSearchResults).ToList();
 
             ClearSearchCategories();
-            PopulateSearchCategories(foundNodes);            
+            PopulateSearchCategories(foundNodes);
         }
 
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
@@ -245,7 +245,6 @@ namespace Dynamo.Search
         {
             _searchRootCategories.Clear();
         }
-
 
         #endregion
 

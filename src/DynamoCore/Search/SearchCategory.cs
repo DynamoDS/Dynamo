@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -23,13 +22,15 @@ namespace Dynamo.Search
         public SearchCategory(string name)
         {
             Name = name;
-
-            // Add class to Classes.
-
             memberGroups = new List<SearchMemberGroup>();
         }
 
         public void AddMemberToGroup(BrowserInternalElement node)
+        {
+
+        }
+
+        public void AddClassToGroup(BrowserInternalElement node)
         {
 
         }
