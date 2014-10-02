@@ -18,7 +18,7 @@ namespace DynamoWebServer.Messages
     public class MessageHandler
     {
         public event ResultReadyEventHandler ResultReady;
-        public string Id { get; set; }
+        public string SessionId { get; set; }
 
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoViewModel dynamoViewModel;
@@ -91,7 +91,7 @@ namespace DynamoWebServer.Messages
             }
             else if (message is GetNodeGeometryMessage)
             {
-                RetrieveGeometry(((GetNodeGeometryMessage)message).NodeID, sessionId);
+                RetrieveGeometry(((GetNodeGeometryMessage)message).NodeId, sessionId);
             }
             else if (message is ClearWorkspaceMessage)
             {
@@ -107,11 +107,13 @@ namespace DynamoWebServer.Messages
         internal void NodesDataModified(object sender, RenderCompletionEventArgs e)
         {
             var nodes = GetExecutedNodes();
+            if (nodes == null || !nodes.Any())
+                return;
 
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
             {
                 Nodes = nodes
-            }, Id));
+            }, SessionId));
         }
 
         /// <summary>
@@ -266,7 +268,7 @@ namespace DynamoWebServer.Messages
             foreach (var node in currentWorkspace.Nodes)
             {
                 string data;
-                ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeID == node.GUID.ToString());
+                ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeId == node.GUID.ToString());
                 if (node is Function)
                 {
                     // include data about number of inputs and outputs
@@ -299,7 +301,7 @@ namespace DynamoWebServer.Messages
             if (uploader.IsCustomNode)
             {
                 var model = currentWorkspace as CustomNodeWorkspaceModel;
-                response.WorkspaceID = model.CustomNodeDefinition.FunctionId.ToString();
+                response.WorkspaceId = model.CustomNodeDefinition.FunctionId.ToString();
 
                 // after uploading custom node definition there may be proxy nodes
                 // that were updated 
@@ -307,9 +309,9 @@ namespace DynamoWebServer.Messages
                 foreach (var ws in allWorkspaces)
                 {
                     // current workspace id
-                    string wsID = ws is CustomNodeWorkspaceModel ?
+                    string wsId = ws is CustomNodeWorkspaceModel ?
                         (ws as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId.ToString() : "";
-                    var nodeIDs = new List<string>();
+                    var nodeIds = new List<string>();
 
                     // foreach custom node within current workspace
                     foreach (var node in ws.Nodes.Where(n => n is Function))
@@ -317,17 +319,17 @@ namespace DynamoWebServer.Messages
                         Function func = node as Function;
                         // if this node was updated by uploading current custom node definition
                         if (func.Definition.FunctionId == model.CustomNodeDefinition.FunctionId)
-                            nodeIDs.Add(node.GUID.ToString());
+                            nodeIds.Add(node.GUID.ToString());
                     }
 
                     // if there are updated nodes add the response data
-                    if (nodeIDs.Any())
+                    if (nodeIds.Any())
                     {
                         proxyNodesResponses.Add(new UpdateProxyNodesResponse()
                         {
-                            WorkspaceID = wsID,
-                            NodesIDs = nodeIDs,
-                            CustomNodeID = response.WorkspaceID
+                            WorkspaceId = wsId,
+                            NodesIds = nodeIds,
+                            CustomNodeId = response.WorkspaceId
                         });
                     }
                 }
