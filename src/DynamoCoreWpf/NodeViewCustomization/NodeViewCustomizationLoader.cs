@@ -25,6 +25,8 @@ namespace Dynamo.Wpf
             {
                 var nodeModelType = GetCustomizerTypeParameter(customizerImp);
 
+                if (nodeModelType == null) continue;
+
                 if (types.ContainsKey(nodeModelType))
                 {
                     types[nodeModelType] = types[nodeModelType].Concat(new[] { customizerImp });
@@ -45,7 +47,8 @@ namespace Dynamo.Wpf
                 var genInterf = toCheck.GetInterfaces().FirstOrDefault(
                     x =>
                         x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>));
+                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>) && 
+                                !x.GetGenericArguments()[0].IsAbstract);
 
                 if (genInterf != null)
                 {

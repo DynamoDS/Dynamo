@@ -9,7 +9,6 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel
     {
-
         protected VariableInputNode(WorkspaceModel workspace) : base(workspace)
         {
             VariableInputController = new BasicVariableInputNodeController(this);

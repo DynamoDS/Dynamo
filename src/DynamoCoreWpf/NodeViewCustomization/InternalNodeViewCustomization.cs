@@ -1,14 +1,28 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Navigation;
 
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Wpf
 {
     internal class InternalNodeViewCustomization
     {
+        private class NodeViewCustomizationApplier
+        {
+            private IDisposable Apply<T>(INodeViewCustomization<T> t,
+                NodeModel model, dynNodeView view)
+                where T : NodeModel
+            {
+                t.CustomizeView(model as T, view);
+                return new OnceDisposable(t);
+            }
+        }
+
         private readonly Type customizerType;
         private Delegate constructor;
 
@@ -19,29 +33,22 @@ namespace Dynamo.Wpf
 
         internal IDisposable CustomizeView(NodeModel model, dynNodeView view)
         {
-            // construct and invoke the customizer
-            var customizer = Compile().DynamicInvoke();
-
-            return CustomizeViewInternal((dynamic)customizer, model, view);
-        }
-
-        private static IDisposable CustomizeViewInternal<T>(INodeViewCustomization<T> t, 
-            NodeModel model, dynNodeView view) 
-            where T : NodeModel
-        {
-            t.CustomizeView(model as T, view);
-            return new OnceDisposable(t);
-        }
-
-        private Delegate Compile()
-        {
-            if (constructor != null) return constructor;
-
-            // compile the lambda only once
             var custConst = Expression.New(customizerType);
-            var newCust = Expression.Lambda(custConst);
-            
-            return constructor = newCust.Compile();
+            var custLam = Expression.Lambda(custConst);
+            InvocationExpression custExp = Expression.Invoke(custLam);
+
+            Expression<Func<NodeViewCustomizationApplier>> invokerLam = () => new NodeViewCustomizationApplier();
+            InvocationExpression invokerExp = Expression.Invoke(invokerLam);
+
+            Expression<Func<NodeModel>> modelLam = () => model;
+            InvocationExpression modelExp = Expression.Invoke(modelLam);
+            UnaryExpression castModelExp = Expression.Convert(modelExp, model.GetType());
+
+            Expression<Func<dynNodeView>> viewLam = () => view;
+            InvocationExpression viewExp = Expression.Invoke(viewLam);
+
+            var res = Expression.Call(invokerExp, "Apply", new[] { model.GetType() }, custExp, castModelExp, viewExp);
+            return (IDisposable) Expression.Lambda(res).Compile().DynamicInvoke();
         }
 
         internal static InternalNodeViewCustomization Create(Type custType)

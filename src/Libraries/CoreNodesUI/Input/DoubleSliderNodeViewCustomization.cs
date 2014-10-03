@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
         public void CustomizeView(DoubleSlider model, dynNodeView nodeUI)
         {
             BuildSliderUI(nodeUI, model, model.Value, model.Value.ToString(CultureInfo.InvariantCulture),
-                          new DoubleSliderSettingsControl() { DataContext = this }, new DoubleDisplay());
+                          new DoubleSliderSettingsControl() { DataContext = model }, new DoubleDisplay());
         }
 
         public void Dispose()

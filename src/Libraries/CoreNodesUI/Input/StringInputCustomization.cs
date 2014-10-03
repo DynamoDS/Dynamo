@@ -10,7 +10,7 @@ using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace Dynamo.Wpf
 {
-    public class StringInputNodeViewCustomization : StringNodeViewCustomization
+    public class StringInputNodeViewCustomization : StringNodeViewCustomization, INodeViewCustomization<StringInput>
     {
         public void CustomizeView(StringInput stringInput, dynNodeView nodeUI)
         {

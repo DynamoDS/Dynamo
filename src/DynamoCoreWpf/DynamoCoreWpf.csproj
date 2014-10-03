@@ -162,7 +162,6 @@
     <Compile Include="ViewModels\StateMachine.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputAndOutputViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
