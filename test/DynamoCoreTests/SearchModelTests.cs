@@ -607,19 +607,19 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void AddingANestedCategoryMultipleTimesDoeNotDuplicateParentCategories()
+        public void AddingCategoryWithNestedClasses()
         {
-            const string catName = "Category.Child";
+            const string class1 = "RootCategory.Namespace.Class1";
+            const string class2 = "RootCategory.Namespace.Class2";
+            search.AddCategory(class1);
+            search.AddCategory(class2);
 
-            for (var i = 0; i < 10; i++)
-            {
-                search.AddCategory(catName);
-            }
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = (BrowserInternalElement)search.GetCategoryByName("Category.Child");
-            Assert.NotNull(nestedCat);
-            Assert.AreEqual(1, nestedCat.Parent.Items.Count());
+            Assert.IsTrue(search.ContainsCategory("RootCategory.Namespace"));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "RootCategory"));
+
+            Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class1"));
+            Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class2"));
+
         }
 
         [Test]

@@ -568,6 +568,14 @@ namespace Dynamo.Search
             return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
+        internal bool ContainsClass(string categoryName, string className)
+        {
+            var category = GetCategoryByName(categoryName);
+            var classes = category.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
+            var searchedClass = classes.Items.FirstOrDefault(x => x.Name == className);
+            return searchedClass != null;
+        }
+
         #endregion
 
         #region Add
