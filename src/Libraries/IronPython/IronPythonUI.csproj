@@ -104,7 +104,9 @@
     <EmbeddedResource Include="Resources\field.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd" />
+    <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\method.png" />

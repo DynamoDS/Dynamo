@@ -38,6 +38,12 @@ namespace Dynamo.Nodes
             VarInputController.LoadNode(nodeElement);
         }
 
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            VarInputController.SerializeCore(element, context);
+        }
+
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);

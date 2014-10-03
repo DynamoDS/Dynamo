@@ -28,7 +28,9 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
+
         public bool ShouldFocus { get; set; }
+
         private readonly DynamoLogger logger;
 
         private struct Formatting
