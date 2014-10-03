@@ -164,6 +164,7 @@
     <ProjectReference Include="..\..\Analysis\Analysis.csproj">
       <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
       <Name>Analysis</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
