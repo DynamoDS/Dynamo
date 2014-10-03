@@ -33,7 +33,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="view"></param>
         /// <param name="data"></param>
-        private FaceAnalysisDisplay(
+        protected FaceAnalysisDisplay(
             Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, string resultsName, string description)
         {
             var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
@@ -306,5 +306,74 @@ namespace Revit.AnalysisDisplay
 
         #endregion
 
+    }
+
+    public class SolarInsolationAnalysisDisplay : FaceAnalysisDisplay
+    {
+        protected SolarInsolationAnalysisDisplay(Autodesk.Revit.DB.View view, 
+            IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, 
+            string resultsName, string description) : base(view, data, resultsName, description) { }
+
+        /// <summary>
+        /// Show a colored Face Analysis Display in the Revit View
+        /// </summary>
+        /// <param name="view">The view into which you want to draw the analysis data.</param>
+        /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
+        /// <returns></returns>
+        public static SolarInsolationAnalysisDisplay ByViewAndFaceAnalysisData(
+            View view, SurfaceAnalysisData[] data, string name, string description)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (data == null || !data.Any())
+            {
+                throw new ArgumentException("The input data does not have any locations.");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            return new SolarInsolationAnalysisDisplay(view.InternalView, data, name, description);
+        }
+
+        protected override int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
+        {
+            // Get the AnalysisResultSchema index - there is only one for Dynamo
+            var schemaIndex = 0;
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(resultsSchemaName, -1))
+            {
+                var arses = SpatialFieldManager.GetRegisteredResults();
+                schemaIndex =
+                    arses.First(
+                        x => SpatialFieldManager.GetResultSchema(x).Name == resultsSchemaName);
+            }
+            else
+            {
+                var ars = new AnalysisResultSchema(resultsSchemaName, resultsDescription);
+                var unitNames = new List<string> { "Wh/m²", "kWh/m²", "BTU/ft²" };
+
+                var multipliers = new List<double>
+                {
+                    1.0,
+                    DynamoUnits.SIUnit.ToKwhMeter2,
+                    DynamoUnits.SIUnit.ToBTUFoot2
+                };
+                ars.SetUnits(unitNames, multipliers);
+
+                schemaIndex = SpatialFieldManager.RegisterResult(ars);
+            }
+
+            return schemaIndex;
+        }
     }
 }

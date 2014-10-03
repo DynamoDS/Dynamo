@@ -114,7 +114,7 @@ namespace Revit.AnalysisDisplay
         /// Get the AnalysisResultsSchemaIndex for the SpatialFieldManager
         /// </summary>
         /// <returns></returns>
-        protected int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
+        protected virtual int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
         {
             // Get the AnalysisResultSchema index - there is only one for Dynamo
             var schemaIndex = 0;
