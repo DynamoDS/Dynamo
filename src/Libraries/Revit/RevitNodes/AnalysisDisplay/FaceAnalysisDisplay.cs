@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 using Analysis;
 
@@ -36,7 +37,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="data"></param>
         private FaceAnalysisDisplay(
-            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data)
+            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, string resultsName, string description)
         {
             var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
 
@@ -81,7 +82,7 @@ namespace Revit.AnalysisDisplay
                 
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive(reference);
                 primitiveIds.Add(primitiveId);
-                InternalSetSpatialFieldValues(primitiveId, d);
+                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description);
             }
 
             //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
@@ -99,7 +100,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="primitiveId"></param>
         /// <param name="data"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double> data)
+        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double> data, string schemaName, string description)
         {
             // Get the surface reference
             var reference = data.Surface.Tags.LookupTag(DefaultTag) as Reference;
@@ -157,7 +158,7 @@ namespace Revit.AnalysisDisplay
             var samplePts = new FieldDomainPointsByUV(pointLocations.ToList());
 
             // Get the analysis results schema
-            var schemaIndex = GetAnalysisResultSchemaIndex();
+            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
 
             // Update the values
             SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
@@ -170,7 +171,7 @@ namespace Revit.AnalysisDisplay
         #region Public static constructors
 
         /// <summary>
-        /// Show a colored Face Analysis Display in the Revit View
+        /// Show a colored Face Analysis Display in the Revit View.
         /// </summary>
         /// <param name="view">The view into which you want to draw the analysis data.</param>
         /// <param name="surface">The surface onto which the analysis data will be displayed</param>
@@ -212,7 +213,66 @@ namespace Revit.AnalysisDisplay
 
             var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
 
-            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data });
+            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
+        }
+
+        /// <summary>
+        /// Show a colored Face Analysis Display in the Revit View.
+        /// </summary>
+        /// <param name="view">The view into which you want to draw the analysis data.</param>
+        /// <param name="surface">The surface onto which the analysis data will be displayed</param>
+        /// <param name="sampleUvPoints"></param>
+        /// <param name="samples"></param>
+        /// <param name="name">The name of the analysis results.</param>
+        /// <param name="description">A description of the analysis results.</param>
+        /// <returns></returns>
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(
+            View view, Surface surface,
+            double[][] sampleUvPoints, double[] samples, string name, string description)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (sampleUvPoints == null)
+            {
+                throw new ArgumentNullException("sampleUvPoints");
+            }
+
+            if (samples == null)
+            {
+                throw new ArgumentNullException("samples");
+            }
+
+            if (sampleUvPoints.Length != samples.Length)
+            {
+                throw new Exception("The number of sample points and number of samples must be the same");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            var valueDict = new Dictionary<string, IList<double>>
+            {
+                { "Dynamo Data", samples }
+            };
+
+            var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
+
+            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description);
         }
 
         /// <summary>
@@ -222,7 +282,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
         /// <returns></returns>
         public static FaceAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData[] data)
+            View view, SurfaceAnalysisData[] data, string name, string description)
         {
             if (view == null)
             {
@@ -234,7 +294,17 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentException("The input data does not have any locations.");
             }
 
-            return new FaceAnalysisDisplay(view.InternalView, data);
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            return new FaceAnalysisDisplay(view.InternalView, data, name, description);
         }
 
         #endregion

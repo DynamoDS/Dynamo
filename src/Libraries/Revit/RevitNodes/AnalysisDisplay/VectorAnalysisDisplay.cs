@@ -30,7 +30,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private VectorAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<VectorAnalysisData> data)
+        private VectorAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<VectorAnalysisData> data, string resultsName, string description)
         {
             var sfm = GetSpatialFieldManagerFromView(view);
 
@@ -69,7 +69,7 @@ namespace Revit.AnalysisDisplay
             foreach (var d in vectorAnalysisDatas)
             {
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
-                InternalSetSpatialFieldValues(primitiveId, d);
+                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description);
                 primitiveIds.Add(primitiveId);
             }
 
@@ -89,7 +89,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, VectorAnalysisData data)
+        private void InternalSetSpatialFieldValues(int primitiveId, VectorAnalysisData data, string schemaName, string description)
         {
             var values = data.Results.Values;
 
@@ -117,7 +117,7 @@ namespace Revit.AnalysisDisplay
             var samplePts = new FieldDomainPointsByXYZ(data.CalculationLocations.Select(p=>p.ToXyz()).ToList());
 
             // Get the analysis results schema
-            var schemaIndex = GetAnalysisResultSchemaIndex();
+            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
 
             // Update the values
             SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
@@ -130,14 +130,14 @@ namespace Revit.AnalysisDisplay
         #region Public static constructors
 
         /// <summary>
-        /// Show a colored Vector Analysis Display in the Revit view
+        /// Show a colored Vector Analysis Display in the Revit view.
         /// </summary>
         /// <param name="view"></param>
         /// <param name="samplePoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
         public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, Autodesk.DesignScript.Geometry.Vector[] samples)
+                        Autodesk.DesignScript.Geometry.Point[] samplePoints, Vector[] samples)
         {
 
             if (view == null)
@@ -163,7 +163,57 @@ namespace Revit.AnalysisDisplay
             var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
 
             var data = new VectorAnalysisData(samplePoints, valueDict);
-            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>(){data});
+            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>(){data}, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
+        }
+
+        /// <summary>
+        /// Show a colored Vector Analysis Display in the Revit view.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="samplePoints"></param>
+        /// <param name="samples"></param>
+        /// <param name="resultsName"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
+                        Autodesk.DesignScript.Geometry.Point[] samplePoints, Vector[] samples,
+            string resultsName, string description)
+        {
+
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (samplePoints == null)
+            {
+                throw new ArgumentNullException("samplePoints");
+            }
+
+            if (samples == null)
+            {
+                throw new ArgumentNullException("samples");
+            }
+
+            if (samplePoints.Length != samples.Length)
+            {
+                throw new Exception("The number of sample points and number of samples must be the same");
+            }
+
+            if (string.IsNullOrEmpty(resultsName))
+            {
+                resultsName = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
+
+            var data = new VectorAnalysisData(samplePoints, valueDict);
+            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, resultsName, description);
         }
 
         #endregion

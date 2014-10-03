@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -70,7 +71,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data)
+        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data, string resultsName, string description)
         {
             var sfm = GetSpatialFieldManagerFromView(view);
 
@@ -102,7 +103,7 @@ namespace Revit.AnalysisDisplay
 
             foreach (var d in pointAnalysisData)
             {
-                InternalSetSpatialFieldValues(d, ref primitiveIds);
+                InternalSetSpatialFieldValues(d, ref primitiveIds, resultsName, description);
             }
 
             //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
@@ -121,7 +122,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="pointLocations"></param>
         /// <param name="values"></param>
-        private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds)
+        private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds, string schemaName, string description)
         {
             var values = data.Results.Values;
 
@@ -161,7 +162,7 @@ namespace Revit.AnalysisDisplay
                 var sampleValues = new FieldValues(valList);
 
                 // Get the analysis results schema
-                var schemaIndex = GetAnalysisResultSchemaIndex();
+                var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
 
                 // Update the values
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
@@ -180,7 +181,7 @@ namespace Revit.AnalysisDisplay
         #region Public static constructors
 
         /// <summary>
-        /// Show a colored Point Analysis Display in the Revit view
+        /// Show a colored Point Analysis Display in the Revit view.
         /// </summary>
         /// <param name="view"></param>
         /// <param name="samplePoints"></param>
@@ -213,7 +214,55 @@ namespace Revit.AnalysisDisplay
             var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
 
             var data = new PointAnalysisData(samplePoints, valueDict);
-            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData>{data});
+            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData>{data}, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
+        }
+
+        /// <summary>
+        /// Show a colored Point Analysis Display in the Revit view.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="samplePoints"></param>
+        /// <param name="samples"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public static PointAnalysisDisplay ByViewPointsAndValues(View view,
+                        Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples, string name, string description)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (samplePoints == null)
+            {
+                throw new ArgumentNullException("samplePoints");
+            }
+
+            if (samples == null)
+            {
+                throw new ArgumentNullException("samples");
+            }
+
+            if (samplePoints.Length != samples.Length)
+            {
+                throw new Exception("The number of sample points and number of samples must be the same");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
+
+            var data = new PointAnalysisData(samplePoints, valueDict);
+            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description);
         }
 
         #endregion

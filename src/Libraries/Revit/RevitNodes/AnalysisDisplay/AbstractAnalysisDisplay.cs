@@ -108,33 +108,31 @@ namespace Revit.AnalysisDisplay
         /// The unique name for Dynamo's Analysis Results.  Used to identify
         /// the results scheme.
         /// </summary>
-        protected static string ResultsSchemaName = "Dynamo Analysis Results";
+        //protected static string ResultsSchemaName = "Dynamo Analysis Results";
 
         /// <summary>
         /// Get the AnalysisResultsSchemaIndex for the SpatialFieldManager
         /// </summary>
         /// <returns></returns>
-        protected int GetAnalysisResultSchemaIndex()
+        protected int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
         {
             // Get the AnalysisResultSchema index - there is only one for Dynamo
             var schemaIndex = 0;
-            if (!SpatialFieldManager.IsResultSchemaNameUnique(AbstractAnalysisDisplay.ResultsSchemaName, -1))
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(resultsSchemaName, -1))
             {
                 var arses = SpatialFieldManager.GetRegisteredResults();
                 schemaIndex =
                     arses.First(
-                        x => SpatialFieldManager.GetResultSchema(x).Name == AbstractAnalysisDisplay.ResultsSchemaName);
+                        x => SpatialFieldManager.GetResultSchema(x).Name == resultsSchemaName);
             }
             else
             {
-                var ars = new AnalysisResultSchema(AbstractAnalysisDisplay.ResultsSchemaName, "Resulting analyses from Dynamo.");
+                var ars = new AnalysisResultSchema(resultsSchemaName, resultsDescription);
                 schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
 
             return schemaIndex;
         }
-
-
 
         /// <summary>
         /// Get the SpatialFieldManager for a particular view.  This is a singleton for every view.  Note that the 
