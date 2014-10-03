@@ -6,6 +6,7 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Revit.Elements.InternalUtilities;
 
 namespace Revit.Elements
 {
@@ -59,7 +60,7 @@ namespace Revit.Elements
 
             //Phase 2- There was no existing element, create new
             //Phase 2.1- Check to see whether there is an existing level with the same name
-            var levels = GetAllLevels();
+            var levels = ElementQueries.GetAllLevels();
             if (levels.Any(x => string.CompareOrdinal(x.Name, name) == 0))
             {
                 throw new Exception("A level with the specified name already exists");
@@ -259,22 +260,6 @@ namespace Revit.Elements
         public override string ToString()
         {
             return string.Format("Level(Name={0}, Elevation={1})", Name, Elevation);
-        }
-
-        public static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
-        {
-            var collector = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            var elements = collector.OfClass(typeof(Autodesk.Revit.DB.Level)).ToElements();
-            List<Autodesk.Revit.DB.Level> levels = new List<Autodesk.Revit.DB.Level>();
-            foreach (var e in elements)
-            {
-                Autodesk.Revit.DB.Level level = e as Autodesk.Revit.DB.Level;
-                if (null != level)
-                {
-                    levels.Add(level);
-                }
-            }
-            return levels;
         }
     }
 }

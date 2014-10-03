@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Revit.GeometryConversion;
 
 using RTF.Framework;
+using Revit.Elements.InternalUtilities;
 
 namespace RevitTestServices.Elements
 {
@@ -163,7 +164,7 @@ namespace RevitTestServices.Elements
         [TestModel(@".\empty.rfa")]
         public void GetAllLevels()
         {
-            var levels = Level.GetAllLevels();
+            var levels = ElementQueries.GetAllLevels();
             Assert.AreEqual(levels.Count(), 1.0);
         }
     }
