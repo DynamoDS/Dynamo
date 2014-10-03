@@ -13,15 +13,36 @@ namespace Analysis
         public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations)
         {
             Surface = surface;
-            CalculationLocations = calculationLocations;
+            CalculationLocations = CullCalculationLocations(surface, calculationLocations);
             Results = new Dictionary<string, IList<double>>();
         }
 
         public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string, IList<double>> results)
         {
             Surface = surface;
-            CalculationLocations = calculationLocations;
+            CalculationLocations = CullCalculationLocations(surface, calculationLocations);
             Results = results;
+        }
+
+        /// <summary>
+        /// Cull calculation locations that aren't within 1e-6 of the surface.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<UV> CullCalculationLocations(Surface surface, IEnumerable<UV> calculationLocations)
+        {
+            var pts = new List<UV>();
+
+            foreach (var uv in calculationLocations)
+            {
+                var pt = surface.PointAtParameter(uv.U, uv.V);
+                var dist = pt.DistanceTo(surface);
+                if (dist < 1e-6 && dist > -1e-6)
+                {
+                    pts.Add(uv);
+                }
+            }
+
+            return pts;
         }
     }
 
