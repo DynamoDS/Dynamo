@@ -240,16 +240,6 @@ namespace ProtoScript.Runners
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
-        /// <summary>
-        /// Get the list of guids
-        /// </summary>
-        /// <param name="astList"></param>
-        /// <returns></returns>
-        public List<Guid> GetReachableNodeGuids(List<AssociativeNode> astList)
-        {
-            return null;
-        }
-
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
