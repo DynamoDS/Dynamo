@@ -41,7 +41,7 @@ namespace Dynamo.Wpf
 
                 foreach (var custType in custTypes)
                 {
-                    this.Add(nodeModelType, InternalNodeViewCustomization.Create(custType));
+                    this.Add(nodeModelType, InternalNodeViewCustomization.Create(nodeModelType, custType));
                 }
             }
         }

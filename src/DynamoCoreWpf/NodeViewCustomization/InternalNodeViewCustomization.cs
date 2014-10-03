@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Windows.Navigation;
 
 using Dynamo.Controls;
@@ -8,54 +9,101 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 
+using ProtoCore.Exceptions;
+
 namespace Dynamo.Wpf
 {
     internal class InternalNodeViewCustomization
     {
-        private class NodeViewCustomizationApplier
-        {
-            private IDisposable Apply<T>(INodeViewCustomization<T> t,
-                NodeModel model, dynNodeView view)
-                where T : NodeModel
-            {
-                t.CustomizeView(model as T, view);
-                return new OnceDisposable(t);
-            }
-        }
-
+        private readonly Type nodeModelType;
         private readonly Type customizerType;
-        private Delegate constructor;
+        private readonly MethodInfo customizeViewMethodInfo;
+        private Func<NodeModel, dynNodeView, IDisposable> compiledCustomizationCall;
 
-        internal InternalNodeViewCustomization(Type customizerType)
+        internal static InternalNodeViewCustomization Create(Type nodeModelType, Type customizerType)
         {
+            if (nodeModelType == null) throw new ArgumentNullException("nodeModelType");
+            if (customizerType == null) throw new ArgumentNullException("customizerType");
+
+            // get the CustomizeView method appropriate to the supplied NodeModelType
+            var methodInfo = customizerType.GetMethods()
+                .Where(x => x.Name == "CustomizeView")
+                .Where(
+                    x =>
+                    {
+                        var firstParm = x.GetParameters().FirstOrDefault();
+                        return firstParm != null && firstParm.ParameterType == nodeModelType;
+                    }).FirstOrDefault();
+
+            // if it doesn't exist, fail early
+            if (methodInfo == null)
+            {
+                throw new Exception(
+                    "A CustomizeView method with type '" + nodeModelType.Name +
+                        "' does not exist on the supplied INodeViewCustomization type.");
+            }
+
+            return new InternalNodeViewCustomization(nodeModelType, customizerType, methodInfo);
+        }
+
+        internal InternalNodeViewCustomization(Type nodeModelType, Type customizerType, MethodInfo customizeViewMethod)
+        {
+            this.nodeModelType = nodeModelType;
             this.customizerType = customizerType;
+            this.customizeViewMethodInfo = customizeViewMethod;
         }
 
-        internal IDisposable CustomizeView(NodeModel model, dynNodeView view)
+        public Func<NodeModel, dynNodeView, IDisposable> CustomizeView
         {
-            var custConst = Expression.New(customizerType);
-            var custLam = Expression.Lambda(custConst);
+            get { return Compile(); }
+        }
+
+        private Func<NodeModel, dynNodeView, IDisposable> Compile()
+        {
+            // generate:
+            //
+            // (model, view) => {
+            //      var c = new NodeViewCustomizer();
+            //      c.CustomizeView( (NodeModelType) model, view );
+            //      return new OnceDisposable( c );
+            // }
+
+            // use cache
+            if (compiledCustomizationCall != null) return compiledCustomizationCall;
+            
+            // parameters for the lambda
+            var modelParam = Expression.Parameter(typeof(NodeModel), "model");
+            var viewParam = Expression.Parameter(typeof(dynNodeView), "view");
+
+            // var c = new NodeViewCustomizer();
+            var custLam = Expression.Lambda(Expression.New(customizerType));
             InvocationExpression custExp = Expression.Invoke(custLam);
+            var varExp = Expression.Variable(customizerType);
+            var assignExp = Expression.Assign(varExp, custExp);
 
-            Expression<Func<NodeViewCustomizationApplier>> invokerLam = () => new NodeViewCustomizationApplier();
-            InvocationExpression invokerExp = Expression.Invoke(invokerLam);
+            // c.CustomizeView( (NodeModelType) model, view );
+            UnaryExpression castModelExp = Expression.Convert(modelParam, nodeModelType);
+            var invokeExp = Expression.Call(varExp, customizeViewMethodInfo, castModelExp, viewParam);
 
-            Expression<Func<NodeModel>> modelLam = () => model;
-            InvocationExpression modelExp = Expression.Invoke(modelLam);
-            UnaryExpression castModelExp = Expression.Convert(modelExp, model.GetType());
+            // new OnceDisposable(c);
+            var onceDispConstInfo = typeof(OnceDisposable).GetConstructor(new[] { typeof(IDisposable) });
+            if (onceDispConstInfo == null) throw new Exception("Could not obtain OnceDisposable constructor!");
+            var onceDisp = Expression.Lambda(Expression.New(onceDispConstInfo, varExp));
+            InvocationExpression onceDispExp = Expression.Invoke(onceDisp);
 
-            Expression<Func<dynNodeView>> viewLam = () => view;
-            InvocationExpression viewExp = Expression.Invoke(viewLam);
+            // make full block
+            var block = Expression.Block(
+                new[] { varExp },
+                assignExp,
+                invokeExp,
+                onceDispExp);
 
-            var res = Expression.Call(invokerExp, "Apply", new[] { model.GetType() }, custExp, castModelExp, viewExp);
-            return (IDisposable) Expression.Lambda(res).Compile().DynamicInvoke();
+            // compile
+            return compiledCustomizationCall = Expression.Lambda<Func<NodeModel, dynNodeView, IDisposable>>(
+                block,
+                modelParam,
+                viewParam).Compile();
         }
 
-        internal static InternalNodeViewCustomization Create(Type custType)
-        {
-            // TODO CORESPLIT
-            // fail early
-            return new InternalNodeViewCustomization(custType);
-        }
     }
 }

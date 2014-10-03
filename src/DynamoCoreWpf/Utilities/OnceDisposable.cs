@@ -2,12 +2,12 @@
 
 namespace Dynamo.Utilities
 {
-    internal class OnceDisposable : IDisposable
+    public class OnceDisposable : IDisposable
     {
         private bool called;
         private IDisposable disposable;
 
-        internal OnceDisposable(IDisposable disposable)
+        public OnceDisposable(IDisposable disposable)
         {
             this.disposable = disposable;
         }
