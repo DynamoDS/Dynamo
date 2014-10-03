@@ -25,7 +25,7 @@ namespace Analysis
         }
     }
 
-    public class VectorAnalysisData : IFieldAnalysisData<Point, Vector>
+    public class VectorAnalysisData : IAnalysisData<Point, Vector>
     {
         public IEnumerable<Point> CalculationLocations { get; set; }
         public Dictionary<string, IList<Vector>> Results { get; set; }
@@ -43,7 +43,7 @@ namespace Analysis
         }
     }
 
-    public class PointAnalysisData : IFieldAnalysisData<Point, double>
+    public class PointAnalysisData : IAnalysisData<Point, double>
     {
         public IEnumerable<Point> CalculationLocations { get; set; }
         public Dictionary<string, IList<double>> Results { get; set; }

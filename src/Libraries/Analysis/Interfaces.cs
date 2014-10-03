@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
-    public interface IFieldAnalysisData<TLocation, TResult>
+    public interface IAnalysisData<TLocation, TResult>
     {
         /// <summary>
         /// A collection of calculation locations.
@@ -18,11 +17,32 @@ namespace Analysis
         Dictionary<string, IList<TResult>> Results { get; set; }
     }
 
-    public interface ISurfaceAnalysisData<TLocation, TResult> : IFieldAnalysisData<TLocation, TResult>
+    public interface ISurfaceAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
     {
         /// <summary>
-        /// The analysis geometry.
+        /// The analysis surface.
         /// </summary>
         Surface Surface { get; set; }
+    }
+
+    public interface ICurveAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
+    {
+        /// <summary>
+        /// The analysis curve.
+        /// </summary>
+        Curve Curve { get; set; }
+    }
+
+    /// <summary>
+    /// An analysis model.
+    /// </summary>
+    /// <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+    /// <typeparam name="TResult">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+    public interface IAnalysisModel<TLocation,TResult>
+    {
+        void PreAnalysis();
+        void Analyze(bool parallel);
+        void PostAnalysis();
+        IEnumerable<IAnalysisData<TLocation,TResult>> Results { get; set; }
     }
 }
