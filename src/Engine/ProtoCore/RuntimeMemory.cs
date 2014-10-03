@@ -255,7 +255,7 @@ namespace ProtoCore
             
             public StackValue GetMemberData(int symbolindex, int scope, Executable exe)
             {
-                StackValue thisptr = GetAtRelative(GetStackIndex(StackFrame.kFrameIndexThisPtr));
+                StackValue thisptr = CurrentStackFrame.ThisPtr;
 
                 // Get the heapstck offset
                 int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;

@@ -492,9 +492,9 @@ namespace ProtoCore.DSASM.Mirror
             
             if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = core.watchClassScope = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexClass)).opdata;
-                functionIndex = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunction)).opdata;
-                functionBlock = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock)).opdata;
+                ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
+                functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;
+                functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer

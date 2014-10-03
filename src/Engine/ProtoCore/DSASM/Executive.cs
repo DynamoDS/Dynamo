@@ -702,8 +702,7 @@ namespace ProtoCore.DSASM
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
-                    svThisPtr = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
-
+                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
                 }
                 else
                 {
@@ -3285,7 +3284,7 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.ThisPtr:
-                    data = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
+                    data = rmem.CurrentStackFrame.ThisPtr;
                     break;
 
                 default:
@@ -5414,7 +5413,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
+            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
             runtimeVerify(svThis.IsPointer);
             StackValue svProperty = core.Heap.GetHeapElement(svThis).Stack[stackIndex];
 
@@ -6207,7 +6206,15 @@ namespace ProtoCore.DSASM
             core.ExceptionHandlingManager.SwitchContextTo(blockId, fi, ci, pc);
 #endif
 
-            StackValue svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
+            StackValue svThisPtr;
+            if (rmem.CurrentStackFrame == null)
+            {
+                svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
+            }
+            else
+            {
+                svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+            }
             int returnAddr = pc + 1;
 
             Validity.Assert(Constants.kInvalidIndex != executingBlock);
