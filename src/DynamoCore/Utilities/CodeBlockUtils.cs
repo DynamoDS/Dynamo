@@ -350,7 +350,7 @@ namespace Dynamo.Utilities
         private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
         private static string spacesOrNonePattern = @"(\s*)";
         private static string colonPattern = ":";
-        
+
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses
         // An expression like: x[y[z.foo(). will be stacked up as follows:
@@ -362,7 +362,7 @@ namespace Dynamo.Utilities
         // x[
         // So at any given time the top of the stack will contain the string to be completed
         Stack<string> expressionStack = new Stack<string>();
-        
+
         string strPrefix = String.Empty;
         public string StringPrefix
         {
@@ -375,10 +375,10 @@ namespace Dynamo.Utilities
         public static string GetVariableType(string code, string variableName)
         {
             var symbolTable = FindVariableTypes(code);
-            
+
             string type = null;
             symbolTable.TryGetValue(variableName, out type);
-                
+
             return type;
         }
 
@@ -396,7 +396,14 @@ namespace Dynamo.Utilities
                 var match = varDeclarations[i].Value;
                 match = Regex.Replace(match, @"\s", "");
                 var groups = match.Split(':');
-                variableTypes.Add(groups[0], groups[1]);
+
+                // Overwrite variable type for a redefinition
+                if (variableTypes.ContainsKey(groups[0]))
+                {
+                    variableTypes[groups[0]] = groups[1];
+                }
+                else
+                    variableTypes.Add(groups[0], groups[1]);
             }
 
             return variableTypes;
@@ -418,7 +425,7 @@ namespace Dynamo.Utilities
             }
             return codeParser.strPrefix;
         }
-        
+
         private string ParseStringToComplete(char currentChar)
         {
             string prefix = string.Empty;
@@ -492,7 +499,7 @@ namespace Dynamo.Utilities
                             string identToComplete = GetMemberIdentifier(strPrefix);
                             // Auto-completion happens over type, search for identToComplete in type's auto-complete list
                         }
-                        
+
                     }
                     else
                     {
