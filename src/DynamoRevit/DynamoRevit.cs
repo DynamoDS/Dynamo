@@ -129,11 +129,6 @@ namespace Dynamo.Applications
             get { return revitDynamoModel; }
         }
 
-        internal static UIApplication RevitUIApplication
-        {
-            get { return ((extCommandData == null) ? null : extCommandData.Application); }
-        }
-
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
         /// during the creation of Dynamo Revit plug-in. It is in this call both 
@@ -212,7 +207,8 @@ namespace Dynamo.Applications
 
             revitDynamoModel.ShutdownStarted += (drm) =>
             {
-                DynamoRevit.RevitUIApplication.Idling += DeleteKeeperElementOnce;
+                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+                uiApplication.Idling += DeleteKeeperElementOnce;
             };
 
 #else
@@ -437,7 +433,8 @@ namespace Dynamo.Applications
 
         private static void DeleteKeeperElementOnce(object sender, IdlingEventArgs idlingEventArgs)
         {
-            DynamoRevit.RevitUIApplication.Idling -= DeleteKeeperElementOnce;
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+            uiApplication.Idling -= DeleteKeeperElementOnce;
             DynamoRevit.DeleteKeeperElement();
         }
 

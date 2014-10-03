@@ -198,14 +198,18 @@ namespace Dynamo.Applications.Models
         protected override void PreShutdownCore(bool shutdownHost)
         {
             if (shutdownHost)
-                DynamoRevit.RevitUIApplication.Idling += ShutdownRevitHostOnce;
+            {
+                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+                uiApplication.Idling += ShutdownRevitHostOnce;
+            }
 
             base.PreShutdownCore(shutdownHost);
         }
 
         private static void ShutdownRevitHostOnce(object sender, IdlingEventArgs idlingEventArgs)
         {
-            DynamoRevit.RevitUIApplication.Idling -= ShutdownRevitHostOnce;
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+            uiApplication.Idling -= ShutdownRevitHostOnce;
             RevitDynamoModel.ShutdownRevitHost();
         }
 
