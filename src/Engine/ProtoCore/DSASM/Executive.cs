@@ -3428,7 +3428,7 @@ namespace ProtoCore.DSASM
             SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbol);
             Validity.Assert(symbolnode != null);
 
-            StackValue value = rmem.GetAtRelative(symbolnode);
+            StackValue value = rmem.GetSymbolValue(symbolnode);
             if (value.IsInvalid)
             {
                 value = StackValue.Null;
@@ -3474,14 +3474,14 @@ namespace ProtoCore.DSASM
             {
                 if (symbolnode.staticType.rank == 0)
                 {
-                    rmem.SetAtSymbol(symbolnode, StackValue.Null);
+                    rmem.SetSymbolValue(symbolnode, StackValue.Null);
                     return value;
                 }
                 else
                 {
                     StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>(), null);
                     GCRetain(array);
-                    rmem.SetAtSymbol(symbolnode, array);
+                    rmem.SetSymbolValue(symbolnode, array);
                     if (!value.IsNull)
                     {
                         ArrayUtils.SetValueForIndex(array, 0, value, core);
@@ -3869,7 +3869,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    thisArray = rmem.GetAtRelative(symbolNode);
+                    thisArray = rmem.GetSymbolValue(symbolNode);
                 }
             }
 
@@ -3911,15 +3911,11 @@ namespace ProtoCore.DSASM
             StackValue thisArray;
             if (op1.IsMemberVariableIndex)
             {
-                StackValue thisptr = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
-
-                // For member variables, the stackindex is absolute and needs no offset as this is found in the heap
-                int stackindex = symbolNode.index;
-                thisArray = rmem.Heap.GetHeapElement(thisptr).Stack[stackindex];
-            }
+                thisArray = rmem.GetMemberData(symbolIndex, classIndex, exe);
+           }
             else
             {
-                thisArray = rmem.GetAtRelative(symbolNode);
+                thisArray = rmem.GetSymbolValue(symbolNode);
             }
 
             if (!thisArray.IsArray && !thisArray.IsString)
@@ -4450,7 +4446,7 @@ namespace ProtoCore.DSASM
 
                 if (allowGC)
                 {
-                    StackValue sv = rmem.GetAtRelative(symbol);
+                    StackValue sv = rmem.GetSymbolValue(symbol);
                     if (sv.IsPointer || sv.IsArray)
                     {
                         ptrList.Add(sv);
@@ -5019,7 +5015,7 @@ namespace ProtoCore.DSASM
             SymbolNode snode = GetSymbolNode(blockId, classIndex, symbolIndex);
             runtimeVerify(null != snode);
 
-            StackValue svArrayToIterate = rmem.GetAtRelative(snode);
+            StackValue svArrayToIterate = rmem.GetSymbolValue(snode);
 
             // Check if the array to iterate is a valid array
             StackValue key = StackValue.Null;
@@ -8086,7 +8082,7 @@ namespace ProtoCore.DSASM
 
                 foreach (var symbol in symbols)
                 {
-                    StackValue value = rmem.GetAtRelative(symbol);
+                    StackValue value = rmem.GetSymbolValue(symbol);
                     if (value.IsReferenceType)
                     {
                         gcRoots.Add(value);

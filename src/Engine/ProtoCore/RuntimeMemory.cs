@@ -1,8 +1,5 @@
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
@@ -160,23 +157,23 @@ namespace ProtoCore
                 int n = GetRelative(relativeOffset);
                 return Stack[n];
             }
-
-            public StackValue GetAtRelative(SymbolNode symbol)
-            {
-                return GetAtRelative(GetStackIndex(symbol));
-            }
-
+            
             public void SetAtRelative(int offset, StackValue data)
             {
                 int n = GetRelative(offset);
                 Stack[n] = data;
             }
 
-            public void SetAtSymbol(SymbolNode symbol, StackValue data)
+            public StackValue GetSymbolValue(SymbolNode symbol)
             {
+                int index = GetStackIndex(symbol);
+                return Stack[index];
+            }
 
-                int n = GetRelative(GetStackIndex(symbol));
-                Stack[n] = data;
+            public void SetSymbolValue(SymbolNode symbol, StackValue data)
+            {
+                int index = GetStackIndex(symbol);
+                Stack[index] = data;
             }
 
             public int GetStackIndex(int offset)
@@ -188,7 +185,13 @@ namespace ProtoCore
                 return offset;
             }
 
-            public int GetStackIndex(SymbolNode symbolNode)
+            /// <summary>
+            /// Return stack index of the corresponding symbol node in runtime
+            /// stack.
+            /// </summary>
+            /// <param name="symbolNode"></param>
+            /// <returns></returns>
+            private int GetStackIndex(SymbolNode symbolNode)
             {
                 int offset = symbolNode.index;
 
@@ -204,29 +207,42 @@ namespace ProtoCore
                     blockOffset = depth * StackFrame.kStackFrameSize;
                 }
                 offset -= blockOffset;
-                return offset;
+
+                int index = GetRelative(offset);
+                return index;
+            }
+
+            public StackValue GetStackData(int blockId, int symbolindex, int classScope, Executable exe)
+            {
+                SymbolNode symbolNode;
+                if (classScope == Constants.kGlobalScope)
+                {
+                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbolindex];
+                }
+                else
+                {
+                    symbolNode = exe.classTable.ClassNodes[classScope].symbols.symbolList[symbolindex];
+                }
+
+                int index = GetStackIndex(symbolNode);
+                return Stack[index];
             }
 
             public StackValue SetStackData(int blockId, int symbol, int classScope, StackValue data, Executable exe)
             {
-                int offset;
-                SymbolNode symbolNode = null;
-                if (Constants.kInvalidIndex == classScope)
+                SymbolNode symbolNode;
+                if (classScope == Constants.kGlobalScope)
                 {
                     symbolNode = exe.runtimeSymbols[blockId].symbolList[symbol];
-                    offset = GetStackIndex(symbolNode);
                 }
                 else
                 {
                     symbolNode = exe.classTable.ClassNodes[classScope].symbols.symbolList[symbol];
-                    offset = GetStackIndex(symbolNode);
                 }
 
-                Validity.Assert(null != symbolNode);
-
-                int n = GetRelative(offset);
-                StackValue opPrev = Stack[n];
-                Stack[n] = data;
+                int index = GetStackIndex(symbolNode);
+                StackValue opPrev = Stack[index];
+                Stack[index] = data;
                 return opPrev;
             }
 
@@ -236,29 +252,7 @@ namespace ProtoCore
                 Validity.Assert(Stack.Count > 0);
                 Stack[globalOffset] = svData;
             }
-
-            public StackValue GetStackData(int blockId, int symbolindex, int classscope, Executable exe)
-            {
-                SymbolNode symbolNode = null;
-                if (Constants.kInvalidIndex == classscope)
-                {
-                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbolindex];
-                }
-                else
-                {
-                    symbolNode = exe.classTable.ClassNodes[classscope].symbols.symbolList[symbolindex];
-                }
-
-                Validity.Assert(null != symbolNode);
-                int n = GetRelative(GetStackIndex(symbolNode));
-                if (n > Stack.Count - 1)
-                {
-                    return StackValue.Null;
-                }
-
-                return Stack[n];
-            }
-
+            
             public StackValue GetMemberData(int symbolindex, int scope, Executable exe)
             {
                 StackValue thisptr = GetAtRelative(GetStackIndex(StackFrame.kFrameIndexThisPtr));
