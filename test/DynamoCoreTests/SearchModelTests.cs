@@ -632,6 +632,9 @@ namespace Dynamo.Tests
             search.AddCategory(usualClass);
             Assert.IsTrue(search.ContainsClass("RootCategory", "UsualClass"));
 
+            // Ensure, that 1st element is always set of usual classes.
+            var cat = search.BrowserRootCategories.FirstOrDefault(x => x.Name == "RootCategory");
+            Assert.IsTrue(cat.Items[0] is BrowserInternalElementForClasses);
 
         }
 

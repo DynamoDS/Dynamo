@@ -486,10 +486,12 @@ namespace Dynamo.Search
         {
             var tempClass = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
 
-            // Find in this category BrowserInternalElementForClasses and add in it class.
+            // Find in this category BrowserInternalElementForClasses, if it's not presented,
+            // create it.
             if (!parent.Items.OfType<BrowserInternalElementForClasses>().Any())
-                parent.Items.Add(new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
+                parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
 
+            //  And add this class.
             parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(tempClass);
             return tempClass;
         }
