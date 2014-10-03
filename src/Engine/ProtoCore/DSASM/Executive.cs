@@ -8068,15 +8068,12 @@ namespace ProtoCore.DSASM
         [Conditional("GC_MARK_AND_SWEEP")]
         private void GC()
         {
-            var gcRootPointers = GetGCRootPointers();
-            rmem.GC(gcRootPointers, this);
-        }
-
-        private List<StackValue> GetGCRootPointers()
-        {
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
             var gcRoots = new List<StackValue>();
+#if DEBUG
+            var gcRootSymbolNames = new List<string>();
+#endif
 
             foreach (var stackFrame in frames)
             {
@@ -8108,14 +8105,19 @@ namespace ProtoCore.DSASM
                     if (value.IsReferenceType)
                     {
                         gcRoots.Add(value);
+#if DEBUG
+                        gcRootSymbolNames.Add(symbol.name);
+#endif
                     }
                 }
-
+#if DEBUG
+                gcRootSymbolNames.Add("__thisptr");
+#endif
                 gcRoots.Add(stackFrame.ThisPtr);
                 blockId = stackFrame.FunctionCallerBlock;
             }
 
-            return gcRoots;
+            rmem.GC(gcRoots, this);
         }
     }
 }
