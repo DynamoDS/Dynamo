@@ -240,6 +240,67 @@ namespace ProtoScript.Runners
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
+        /// <summary>
+        /// Get the list of guids affected by astList
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public List<Guid> GenerateReachableNodeGuids(List<AssociativeNode> astList)
+        {
+            List<Guid> cbnGuidList = new List<Guid>();
+
+            // 1. Compile(astList)
+            //  - generate graphnodes
+
+            // Build a static core used for compiling astList
+            Options coreOptions = new Options();
+            Core compileCore = new ProtoCore.Core(coreOptions);
+
+            // Compile the astList
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+            bool succeeded = runner.Compile(astList, compileCore, out blockId);
+            if (!succeeded)
+            {
+                return cbnGuidList;
+            }
+            // Generate the DS executable
+            compileCore.GenerateExecutable();
+            Executable exe = compileCore.DSExecutable;
+
+            //
+            // 2. Perform static analysis on generated graphnodes against the runnerCore VMgraphnodes
+            //  - reachable = UpdateGraphNodeDependency(graphnodes, runnerCore.VMgraphnodes)
+
+            // For every delta graphnode 
+            // Delta grapnodes are the VM graphnodes associated with the delta ASTs
+            List<GraphNode> reachableNodes = new List<GraphNode>();
+            List<GraphNode> deltaGraphNodeList = exe.instrStreamList[(int)Executable.OffsetConstants.kInstrStreamGlobalScope].dependencyGraph.GraphList;
+            foreach (GraphNode executingNode in deltaGraphNodeList)
+            {
+                reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                    executingNode, 
+                    null, 
+                    executingNode.exprUID, 
+                    executingNode.modBlkUID,
+                    executingNode.IsSSANode(),
+                    true,
+                    blockId));
+            }
+
+            // 3. Get static analysis result
+
+            // Get the list of guid's of the ASTs
+            foreach (GraphNode graphnode in reachableNodes)
+            {
+                if (!cbnGuidList.Contains(graphnode.guid))
+                {
+                    cbnGuidList.Add(graphnode.guid);
+                }
+            }
+            return cbnGuidList;
+        }
+
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
@@ -1311,6 +1372,26 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// This API needs to be called for every delta AST preview
+        /// </summary>
+        /// <param name="syncData"></param>
+        public void PreviewGraph(GraphSyncData syncData)
+        {
+            while (true)
+            {
+                lock (taskQueue)
+                {
+                    if (taskQueue.Count == 0)
+                    {
+                        PreviewInternal(syncData);
+                        return;
+                    }
+                }
+                Thread.Sleep(0);
+            }
+        }
+
+        /// <summary>
         /// This API needs to be called for every delta AST execution
         /// </summary>
         /// <param name="syncData"></param>
@@ -1471,20 +1552,20 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private bool Compile(List<AssociativeNode> astList, out int blockId)
+        private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
         {
             // The ASTs have already been transformed to SSA
             //runnerCore.Options.GenerateSSA = false;
 
-            bool succeeded = runner.Compile(astList, runnerCore, out blockId);
+            bool succeeded = runner.Compile(astList, targetCore, out blockId);
             if (succeeded)
             {
                 // Regenerate the DS executable
-                runnerCore.GenerateExecutable();
+                targetCore.GenerateExecutable();
 
                 // Update the symbol tables
                 // TODO Jun: Expand to accomoadate the list of symbols
-                staticContext.symbolTable = runnerCore.DSExecutable.runtimeSymbols[0];
+                staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
             }
             return succeeded;
         }
@@ -1544,7 +1625,7 @@ namespace ProtoScript.Runners
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(astList, out blockId);
+            bool succeeded = Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
                 runnerCore.RunningBlock = blockId;
@@ -1598,6 +1679,20 @@ namespace ProtoScript.Runners
             CompileAndExecute(dispatchASTList);
         }
 
+        private void PreviewInternal(GraphSyncData syncData)
+        {
+            if (syncData == null)
+            {
+                ResetForDeltaExecution();
+                return;
+            }
+
+            // Get the list of ASTs that will be affected by syncData
+            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+
+            // Get the list of guid's affected by the astlist
+            List<Guid> cbnGuidList = changeSetComputer.GenerateReachableNodeGuids(previewAstList);
+        }
 
         private void SynchronizeInternal(GraphSyncData syncData)
         {
