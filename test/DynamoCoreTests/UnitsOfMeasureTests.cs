@@ -519,15 +519,15 @@ namespace Dynamo.Tests
 
             var length = x.ToLength();
             SIUnit.LengthUnit = DynamoLengthUnit.Meter;
-            Assert.AreEqual("5.000m", length.ToString());
+            Assert.AreEqual("5.0000m", length.ToString());
 
             var area = x.ToArea();
             SIUnit.AreaUnit = DynamoAreaUnit.SquareMeter;
-            Assert.AreEqual("5.000m²", area.ToString());
+            Assert.AreEqual("5.0000m²", area.ToString());
 
             var volume = x.ToVolume();
             SIUnit.VolumeUnit = DynamoVolumeUnit.CubicMeter;
-            Assert.AreEqual("5.000m³", volume.ToString());
+            Assert.AreEqual("5.0000m³", volume.ToString());
 
         }
 

@@ -38,6 +38,14 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    public enum DynamoInsolationUnit
+    {
+        WattHoursPerMeterSquared,
+        KilowattHoursPerMeterSquared,
+        BTUPerFootSquared
+    }
+
+    [SupressImportIntoVM]
     public class BaseUnit
     {
         //length conversions
@@ -58,15 +66,23 @@ namespace DynamoUnits
         private const double cubic_meters_to_cubic_inches = 61023.744095;
         private const double cubic_meters_to_cubic_feet = 35.3147;
 
+        //insolation converstions
+        private const double whm2_to_kwhm2 = 0.001;
+        private const double whm2_to_BTUft2 = 0.3170;
+
         private static double epsilon = 1e-6;
         internal double _value;
 
         private static double _uiLengthConversion = 1.0;
         private static double _uiAreaConversion = 1.0;
         private static double _uiVolumeConversion = 1.0;
+        private static double _uiInsolationConversion = 1.0;
+
         private static DynamoLengthUnit _hostApplicationInternalLengthUnit = DynamoLengthUnit.Meter;
         private static DynamoAreaUnit _hostApplicationInternalAreaUnit = DynamoAreaUnit.SquareMeter;
         private static DynamoVolumeUnit _hostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicMeter;
+        private static DynamoInsolationUnit _insolationUnit = DynamoInsolationUnit.WattHoursPerMeterSquared;
+
         private static string _numberFormat = "f4";
         private static DynamoLengthUnit _lengthUnit;
         private static DynamoAreaUnit _areaUnit;
@@ -137,6 +153,16 @@ namespace DynamoUnits
             get { return cubic_meters_to_cubic_feet; }
         }
 
+        public static double ToKwhMeter2
+        {
+            get { return whm2_to_kwhm2; }
+        }
+
+        public static double ToBTUFoot2
+        {
+            get { return whm2_to_BTUft2; }
+        }
+
         public static double Epsilon
         {
             get { return epsilon; }
@@ -158,6 +184,12 @@ namespace DynamoUnits
         {
             get { return _uiVolumeConversion; }
             internal set { _uiVolumeConversion = value; }
+        }
+
+        public static double UiInsolationConverstion
+        {
+            get { return _uiInsolationConversion; }
+            internal set { _uiInsolationConversion = value; }
         }
 
         public static DynamoLengthUnit HostApplicationInternalLengthUnit
@@ -269,6 +301,28 @@ namespace DynamoUnits
                         break;
                     case DynamoVolumeUnit.CubicFoot:
                         UiVolumeConversion = SIUnit.ToCubicFoot;
+                        break;
+                }
+            }
+        }
+
+        public static DynamoInsolationUnit InsolationUnit
+        {
+            get { return _insolationUnit; }
+            set
+            {
+                _insolationUnit = value;
+
+                switch (_insolationUnit)
+                {
+                    case DynamoInsolationUnit.WattHoursPerMeterSquared:
+                        UiInsolationConverstion = 1.0;
+                        break;
+                    case DynamoInsolationUnit.KilowattHoursPerMeterSquared:
+                        UiVolumeConversion = ToKwhMeter2;
+                        break;
+                    case DynamoInsolationUnit.BTUPerFootSquared:
+                        UiVolumeConversion = ToBTUFoot2;
                         break;
                 }
             }
@@ -1179,6 +1233,136 @@ namespace DynamoUnits
             var volumeHashCode = Convert.ToInt32(_value);
 
             return volumeHashCode;
+        }
+    }
+
+    public class Insolation : SIUnit, IComparable, IEquatable<Insolation>
+    {
+        public Insolation(double value) : base(value) { }
+
+        public override void SetValueFromString(string value)
+        {
+            
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            if (x is Insolation)
+                return new Insolation(_value + x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Add(double x)
+        {
+            return new Insolation(_value + x);
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            if (x is Insolation)
+                return new Insolation(_value - x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Insolation(_value - x);
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            return new Insolation(_value * x);
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            return new Insolation(_value / x);
+        }
+
+        public override SIUnit Modulo(SIUnit x)
+        {
+            if (x is Insolation)
+                return new Insolation(_value % x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Insolation(_value % x);
+        }
+
+        public override SIUnit Round()
+        {
+            return new Insolation(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Insolation(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Insolation(Math.Floor(_value));
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return Value;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var otherInsol = obj as Insolation;
+            if (otherInsol != null)
+                return _value.CompareTo(otherInsol.Value);
+            else
+                throw new ArgumentException("Object is not an Insolation.");
+        }
+
+        public bool Equals(Insolation other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            var insol = other;
+
+            return Math.Abs(insol.Value - _value) < Epsilon;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override string ToString()
+        {
+            switch (InsolationUnit)
+            {
+                case DynamoInsolationUnit.WattHoursPerMeterSquared:
+                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + "Wh/m²";
+
+                case DynamoInsolationUnit.KilowattHoursPerMeterSquared:
+                    return (_value * ToKwhMeter2).ToString(NumberFormat, CultureInfo.InvariantCulture) + "kWh/m²";
+
+                case DynamoInsolationUnit.BTUPerFootSquared:
+                    return (_value * ToBTUFoot2).ToString(NumberFormat, CultureInfo.InvariantCulture) + "BTU/ft²";
+                default:
+                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + "Wh/m²";
+            }
         }
     }
 

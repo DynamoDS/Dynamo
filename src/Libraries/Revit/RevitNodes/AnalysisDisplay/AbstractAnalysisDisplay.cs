@@ -143,7 +143,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="numValuesPerAnalysisPoint"></param>
         /// <returns></returns>
-        protected static Autodesk.Revit.DB.Analysis.SpatialFieldManager GetSpatialFieldManagerFromView(Autodesk.Revit.DB.View view, uint numValuesPerAnalysisPoint = 1)
+        protected static SpatialFieldManager GetSpatialFieldManagerFromView(Autodesk.Revit.DB.View view, uint numValuesPerAnalysisPoint = 1)
         {
             if (view == null)
             {
@@ -152,8 +152,8 @@ namespace Revit.AnalysisDisplay
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(view) ??
-                      Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
+            var sfm = SpatialFieldManager.GetSpatialFieldManager(view) ??
+                      SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
 
             TransactionManager.Instance.TransactionTaskDone();
 
