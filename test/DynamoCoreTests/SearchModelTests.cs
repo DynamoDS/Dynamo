@@ -620,6 +620,19 @@ namespace Dynamo.Tests
             Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class1"));
             Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class2"));
 
+            // Try to mix nested class and usual class.
+            // It will be next structure:
+            // + RootCategory
+            //   + UsualClass
+            //   + Namespace
+            //     + Class1
+            //     + Class2
+
+            const string usualClass = "RootCategory.UsualClass";
+            search.AddCategory(usualClass);
+            Assert.IsTrue(search.ContainsClass("RootCategory", "UsualClass"));
+
+
         }
 
         [Test]
