@@ -484,14 +484,14 @@ namespace Dynamo.Search
         internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
                                                  string resourceAssembly = "")
         {
-            var tempCat = new BrowserInternalElementForClasses(childCategoryName, parent, resourceAssembly);
+            var tempClass = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
 
             // Find in this category BrowserInternalElementForClasses and add in it class.
             if (!parent.Items.OfType<BrowserInternalElementForClasses>().Any())
                 parent.Items.Add(new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
 
-            parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(tempCat);
-            return tempCat;
+            parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(tempClass);
+            return tempClass;
         }
 
         /// <summary>
