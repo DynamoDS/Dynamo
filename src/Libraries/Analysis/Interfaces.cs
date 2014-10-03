@@ -1,8 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
 {
+    internal enum AnalysisStatus
+    {
+        InProgress, // Analysis ongoing
+        Paused,     // Analysis paused and can continue
+        Stopped,    // Analysis stopped or has not started. There is no results to be shown
+        Completed   // Analysis completed. There is results to be shown.
+    }
+
     public interface IAnalysisData<TLocation, TResult>
     {
         /// <summary>
@@ -40,9 +49,8 @@ namespace Analysis
     /// <typeparam name="TResult">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
     public interface IAnalysisModel<TLocation,TResult>
     {
-        void PreAnalysis();
+        event EventHandler AnalysisCompleted;
         void Analyze(bool parallel);
-        void PostAnalysis();
-        IEnumerable<IAnalysisData<TLocation,TResult>> Results { get; set; }
+        IEnumerable<IAnalysisData<TLocation,TResult>> Results { get; }
     }
 }
