@@ -32,7 +32,13 @@ namespace DSCore.File
             };
 
             this.PropertyChanged += valuePropertyChanged;
+
         }
+
+        //void Workspace_OnModified()
+        //{
+        //    this.Workspace.DynamoModel.RunExpression();
+        //}
 
         void valuePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -51,16 +57,12 @@ namespace DSCore.File
 
         protected void CreateFileWatcher()
         {
+            RemoveFileWatcher();
+
             // Do not attach file watcher if no file is selected
             if (string.IsNullOrEmpty(Value) || Value.Equals(defaultValue))
             {
-                watcher = null;
                 return;
-            }
-
-            if (watcher != null)
-            {
-                RemoveFileWatcher();
             }
 
             // Create new file watcher and register its "file changed" event
@@ -82,18 +84,42 @@ namespace DSCore.File
 
         protected void RemoveFileWatcher()
         {
-            watcher.Dispose();
+            if (watcher != null)
+            {
+                watcher.Dispose();
+                watcher = null;
+            }
         }
+
+        //public override bool ForceReExecuteOfNode
+        //{
+        //    get
+        //    {
+        //        return base.ForceReExecuteOfNode;
+        //    }
+        //    set
+        //    {
+        //        if (value)
+        //        {
+        //            this.Workspace.OnModified += Workspace_OnModified;
+        //        }
+        //        else
+        //        {
+        //            this.Workspace.OnModified -= Workspace_OnModified;
+        //        }
+        //        base.ForceReExecuteOfNode = value;
+        //    }
+        //}
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            RequiresRecalc = true;
             ForceReExecuteOfNode = true;
+            RequiresRecalc = true;
         }
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
-            //add a button to the inputGrid on the dynElement
+            // add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -130,8 +156,8 @@ namespace DSCore.File
                 Content = "Attach FileWatcher",
                 Margin = new Thickness(5, 0, 0, 0)
             };
-            checkBox.Checked += (obj, args) => 
-            { 
+            checkBox.Checked += (obj, args) =>
+            {
                 CreateFileWatcher();
 
                 // If a file has changed before turning on the filewatcher
