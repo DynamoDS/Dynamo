@@ -310,7 +310,6 @@ namespace ProtoCore.DSASM
             int index;
             if (TryFindFreeIndex(out index))
             {
-                heapElements[index].Active = true;
                 heapElements[index] = hpe;
             }
             else
