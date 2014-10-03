@@ -436,9 +436,11 @@ namespace Dynamo.Search
 
             for (var i = 1; i < splitCat.Count-1; i++)
             {
+                // All next members are namespaces.
                 currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
 
+            // We sure, that the last member is class.
             currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count-1], resourceAssembly);
 
             return currentCat;
@@ -482,8 +484,9 @@ namespace Dynamo.Search
         internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
                                                  string resourceAssembly = "")
         {
-             var tempCat = new BrowserInternalElementForClasses(childCategoryName, parent, resourceAssembly);
+            var tempCat = new BrowserInternalElementForClasses(childCategoryName, parent, resourceAssembly);
 
+            // Find in this category BrowserInternalElementForClasses and add in it class.
             if (!parent.Items.OfType<BrowserInternalElementForClasses>().Any())
                 parent.Items.Add(new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
 
@@ -571,7 +574,12 @@ namespace Dynamo.Search
         internal bool ContainsClass(string categoryName, string className)
         {
             var category = GetCategoryByName(categoryName);
+            if (category == null) return false;
+
+            // Find in some category BrowserInternalElementForClasses, that is full of classes.
             var classes = category.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
+
+            // Search among all classes one, that was needed.
             var searchedClass = classes.Items.FirstOrDefault(x => x.Name == className);
             return searchedClass != null;
         }
