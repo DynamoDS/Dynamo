@@ -232,17 +232,7 @@ namespace Dynamo.Search
             var cat = this.AddCategory(category, GetElementType(item),
                 (item as NodeSearchElement).Assembly);
 
-            // Case for categories like Operators.
-            if ((cat is BrowserRootElement) && (GetElementType(item) != ElementType.CustomNode))
-            {
-                if (!cat.Items.OfType<BrowserInternalElementForClasses>().Any())
-                    cat.Items.Insert(0, new BrowserInternalElementForClasses("Methods", cat, (item as NodeSearchElement).Assembly));
-
-                cat.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(item);
-            }
-
-            else
-                cat.AddChild(item);
+            cat.AddChild(item);
 
             item.FullCategoryName = category;
 
