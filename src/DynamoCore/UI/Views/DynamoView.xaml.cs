@@ -598,6 +598,14 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            // Test cases that make use of views (e.g. recorded tests) have 
+            // their own tear down logic as part of the test set-up (mainly 
+            // because DynamoModel should stay long enough for verification
+            // code to verify data much later than the window closing).
+            // 
+            if (DynamoModel.IsTestMode)
+                return;
+
             var sp = new DynamoViewModel.ShutdownParams(
                 shutdownHost: false,
                 allowCancellation: true,
