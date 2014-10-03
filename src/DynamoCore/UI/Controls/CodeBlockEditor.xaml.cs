@@ -72,19 +72,28 @@ namespace Dynamo.UI.Controls
 
             // Determine if the string to be completed is a class
             var type = engineController.GetClassType(stringToComplete);
-            if (type == null)
-            {
-                // Check if the string to be completed is a declared variable
-                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
-                if (typeName != null)
-                    type = engineController.GetClassType(typeName);
-            }
             if (type != null)
             {
                 var members = type.GetMembers();
                 completions = members.Select<StaticMirror, CodeBlockCompletionData>(
                     x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
             }
+            // If not of class type
+            else
+            {
+                // Check if the string to be completed is a declared variable
+                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
+                if (typeName != null)
+                    type = engineController.GetClassType(typeName);
+
+                if (type != null)
+                {
+                    var members = type.GetInstanceMembers();
+                    completions = members.Select<StaticMirror, CodeBlockCompletionData>(
+                        x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
+                }
+            }
+            
             return completions;
         }
 

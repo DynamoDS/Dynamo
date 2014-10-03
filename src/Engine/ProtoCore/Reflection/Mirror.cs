@@ -811,6 +811,22 @@ namespace ProtoCore
                 return methods;
             }
 
+            public IEnumerable<StaticMirror> GetInstanceMembers()
+            {
+                List<StaticMirror> members = new List<StaticMirror>();
+
+                List<ClassMirror> baseClasses = this.GetClassHierarchy();
+                foreach (var baseClass in baseClasses)
+                {
+                    members.AddRange(baseClass.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                    members.AddRange(baseClass.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                }
+
+                members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                return members;
+            }
+
             public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
             {
                 if (classNode == null)
