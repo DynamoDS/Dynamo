@@ -158,8 +158,8 @@ namespace Dynamo.UI.Controls
                 if (e.Text == ".")
                 {
                     var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-                    codeParser = new CodeCompletionParser();
-                    string stringToComplete = codeParser.GetStringToComplete(code).Trim('.');
+                    
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
                     
                     var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
 
@@ -169,7 +169,7 @@ namespace Dynamo.UI.Controls
                     // TODO: Need to make this more efficient by instantiating 'completionWindow'
                     // just once and updating its contents each time
 
-                    // This implementation has been taken from
+                    // This implementation has been referenced from
                     // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
                     completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;

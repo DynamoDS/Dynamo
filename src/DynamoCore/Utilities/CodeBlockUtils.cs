@@ -407,15 +407,16 @@ namespace Dynamo.Utilities
         /// this function extracts the expression that needs to be code-completed
         /// </summary>
         /// <param name="code"></param>
-        public string GetStringToComplete(string code)
+        public static string GetStringToComplete(string code)
         {
+            var codeParser = new CodeCompletionParser();
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
             {
-                ParseStringToComplete(code[i]);
+                codeParser.ParseStringToComplete(code[i]);
             }
-            return strPrefix;
+            return codeParser.strPrefix;
         }
         
         private string ParseStringToComplete(char currentChar)

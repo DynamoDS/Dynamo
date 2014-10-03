@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
             return null;
         }
 
-        private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
+        private static BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
             var name = string.Format(@"Dynamo.UI.Images.CodeBlock.{0}", resourceFileName);
 
