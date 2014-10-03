@@ -12,103 +12,62 @@ namespace ProtoCore
     {
         public class RuntimeMemory
         {
-            public Executable Executable { get; set; }
-
-            // TODO Jun: Handle classes. This is part of the classes in global scope refactor
-            public ClassTable ClassTable { get; set; }
-
-            public int FramePointer { get; set; }
-            public List<StackValue> Stack { get; set; }
-
-            public List<int> ConstructBlockIds { get; private set; }
-
-            public Heap Heap { get; private set; }
-
-            // Keep track of modified symbols during an execution cycle
-            // TODO Jun: Turn this into a multi-key dictionary where the keys are: name, classindex and procindex
-            public Dictionary<string, SymbolNode> mapModifiedSymbols { get; private set; }
-
-            public RuntimeMemory()
+            public int FramePointer
             {
-                FramePointer = 0;
-                Executable = null;
-                Stack = new List<StackValue>();
-                Heap = null;
-                mapModifiedSymbols = new Dictionary<string, SymbolNode>();
+                get; set;
+            }
+
+            public List<StackValue> Stack
+            {
+                get; private set;
+            }
+
+            public List<int> ConstructBlockIds
+            {
+                get; private set;
+            }
+
+            public Heap Heap
+            {
+                get; private set;
             }
 
             public RuntimeMemory(Heap heap)
             {
                 FramePointer = 0;
-                Executable = null;
                 Stack = new List<StackValue>();
                 ConstructBlockIds = new List<int>();
                 Heap = heap;
                 StackRestorer = new StackAlignToFramePointerRestorer();
-                mapModifiedSymbols = new Dictionary<string, SymbolNode>();
             }
 
-            private void UpdateModifiedSymbols(SymbolNode symbol)
+            public void Push(StackValue data)
             {
-                Validity.Assert(null != symbol);
-                Validity.Assert(!string.IsNullOrEmpty(symbol.name));
-                Validity.Assert(null != mapModifiedSymbols);
-
-                // TODO Jun: Turn this into a multi-key dictionary where the keys are: name, classindex and procindex
-                string key = symbol.name;
-                if (!mapModifiedSymbols.ContainsKey(key))
-                {
-                    mapModifiedSymbols.Add(key, symbol);
-                }
+                Stack.Add(data);
             }
 
-            public void ResetModifedSymbols()
+            public StackValue Pop()
             {
-                Validity.Assert(null != mapModifiedSymbols);
-                mapModifiedSymbols.Clear();
+                int last = Stack.Count - 1;
+                StackValue value = Stack[last];
+                Stack.RemoveAt(last);
+                return value;
             }
 
-            public List<string> GetModifiedSymbolString()
-            {
-                List<string> nameList = new List<string>();
-                foreach (KeyValuePair<string, SymbolNode> kvp in mapModifiedSymbols)
-                {
-                    nameList.Add(kvp.Key);
-                }
-                return nameList;
-            }
-
-            public void ReAllocateMemory(int delta)
-            {
-                //
-                // Comment Jun:
-                // This modifies the current stack and heap to accomodate delta statements
-                PushGlobFrame(delta);
-            }
-
-            public int GetRelative(int index)
-            {
-                return index >= 0 ? index : FramePointer + index;
-            }
-
-            public int GetRelative(int offset, int index)
-            {
-                return index >= 0 ? index : (FramePointer - offset) + index;
-            }
-
-            public void PushGlobFrame(int globsize)
-            {
-                for (int n = 0; n < globsize; ++n)
-                {
-                    Stack.Add(StackValue.Null);
-                }
-            }
-
-            private void PushFrame(int size)
+            public void PushFrame(int size)
             {
                 for (int n = 0; n < size; ++n)
                 {
                     Stack.Add(StackValue.Null);
+                }
+            }
+
+            public void PopFrame(int size)
+            {
+                for (int n = 0; n < size; ++n)
+                {
+                    int last = Stack.Count - 1;
+                    Stack.RemoveAt(last);
                 }
             }
 
@@ -191,40 +150,24 @@ namespace ProtoCore
                 }
             }
 
-            public void PopFrame(int size)
+            public int GetRelative(int index)
             {
-                for (int n = 0; n < size; ++n)
-                {
-                    int last = Stack.Count - 1;
-                    Stack.RemoveAt(last);
-                }
+                return index >= 0 ? index : FramePointer + index;
             }
 
-            public void Push(StackValue data)
+            public StackValue GetAtRelative(int relativeOffset)
             {
-                Stack.Add(data);
+                int n = GetRelative(relativeOffset);
+                return Stack[n];
             }
 
-            public StackValue Pop()
+            public StackValue GetAtRelative(SymbolNode symbol)
             {
-                int last = Stack.Count - 1;
-                StackValue value = Stack[last];
-                Stack.RemoveAt(last);
-                return value;
-            }
-
-            public void Pop(int size)
-            {
-                for (int n = 0; n < size; ++n)
-                {
-                    int last = Stack.Count - 1;
-                    Stack.RemoveAt(last);
-                }
+                return GetAtRelative(GetStackIndex(symbol));
             }
 
             public void SetAtRelative(int offset, StackValue data)
             {
-
                 int n = GetRelative(offset);
                 Stack[n] = data;
             }
@@ -236,49 +179,9 @@ namespace ProtoCore
                 Stack[n] = data;
             }
 
-            public StackValue GetAtRelative(int relativeOffset)
-            {
-                int n = GetRelative(relativeOffset);
-                return Stack[n];
-            }
-
-            public StackValue GetAtRelative(SymbolNode symbol)
-            {
-                int n = GetRelative(GetStackIndex(symbol));
-                return Stack[n];
-            }
-
-            public StackValue GetAtRelative(int relativeOffset, int index)
-            {
-                int n = GetRelative(relativeOffset);
-                return Stack[n];
-            }
-
-            public void SetData(int blockId, int symbolindex, int scope, Object data)
-            {
-                MemoryRegion region = Executable.runtimeSymbols[blockId].symbolList[symbolindex].memregion;
-
-                if (MemoryRegion.kMemStack == region)
-                {
-                    SetStackData(blockId, symbolindex, scope, data);
-                }
-                else if (MemoryRegion.kMemHeap == region)
-                {
-                    throw new NotImplementedException("{BEC8F306-6704-4C90-A1A2-5BD871871022}");
-                }
-                else if (MemoryRegion.kMemStatic == region)
-                {
-                    Validity.Assert(false, "static region not yet supported, {17C22575-2361-4BAE-AA9E-9076CD1E52D9}");
-                }
-                else
-                {
-                    Validity.Assert(false, "unsupported memory region, {AF92A869-6F9F-421D-84F8-BC2FC56C07F4}");
-                }
-            }
-
             public int GetStackIndex(int offset)
             {
-                int depth = (int)GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameDepth).opdata;
+                int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
                 int blockOffset = depth * StackFrame.kStackFrameSize;
 
                 offset -= blockOffset;
@@ -293,40 +196,39 @@ namespace ProtoCore
                 int blockOffset = 0;
                 // TODO Jun: the property 'localFunctionIndex' must be deprecated and just use 'functionIndex'.
                 // The GC currenlty has an issue of needing to reset 'functionIndex' at codegen
-                bool isGlobal = Constants.kInvalidIndex == symbolNode.absoluteClassScope && Constants.kGlobalScope == symbolNode.absoluteFunctionIndex;
+                bool isGlobal = Constants.kInvalidIndex == symbolNode.absoluteClassScope && 
+                                Constants.kGlobalScope == symbolNode.absoluteFunctionIndex;
                 if (!isGlobal)
                 {
-                    depth = (int)GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameDepth).opdata;
+                    depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
                     blockOffset = depth * StackFrame.kStackFrameSize;
                 }
                 offset -= blockOffset;
                 return offset;
             }
 
-            public StackValue SetStackData(int blockId, int symbol, int classScope, Object data)
+            public StackValue SetStackData(int blockId, int symbol, int classScope, StackValue data, Executable exe)
             {
-                int offset = Constants.kInvalidIndex;
+                int offset;
                 SymbolNode symbolNode = null;
                 if (Constants.kInvalidIndex == classScope)
                 {
-                    symbolNode = Executable.runtimeSymbols[blockId].symbolList[symbol];
+                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbol];
                     offset = GetStackIndex(symbolNode);
                 }
                 else
                 {
-                    symbolNode = ClassTable.ClassNodes[classScope].symbols.symbolList[symbol];
+                    symbolNode = exe.classTable.ClassNodes[classScope].symbols.symbolList[symbol];
                     offset = GetStackIndex(symbolNode);
                 }
 
                 Validity.Assert(null != symbolNode);
-                UpdateModifiedSymbols(symbolNode);
 
                 int n = GetRelative(offset);
                 StackValue opPrev = Stack[n];
-                Stack[n] = (null == data) ? Pop() : (StackValue)data;
+                Stack[n] = data;
                 return opPrev;
             }
-
 
             public void SetGlobalStackData(int globalOffset, StackValue svData)
             {
@@ -335,50 +237,20 @@ namespace ProtoCore
                 Stack[globalOffset] = svData;
             }
 
-            public StackValue GetData(int blockId, int symbolindex, int scope)
-            {
-                MemoryRegion region = DSASM.MemoryRegion.kInvalidRegion;
-                if (Constants.kGlobalScope == scope)
-                {
-                    region = Executable.runtimeSymbols[blockId].symbolList[symbolindex].memregion;
-                }
-                else
-                {
-                    region = ClassTable.ClassNodes[scope].symbols.symbolList[symbolindex].memregion;
-                }
-
-                if (MemoryRegion.kMemStack == region)
-                {
-                    return GetStackData(blockId, symbolindex, scope);
-                }
-                else if (MemoryRegion.kMemHeap == region)
-                {
-                    //return GetHeapData(symbolindex);
-                    throw new NotImplementedException("{69604961-DE03-440A-97EB-0390B1B0E510}");
-                }
-                else if (MemoryRegion.kMemStatic == region)
-                {
-                    Validity.Assert(false, "static region not yet supported, {63EA5434-D2E2-40B6-A816-0046F573236F}");
-                }
-
-                Validity.Assert(false, "unsupported memory region, {DCA48F13-EEE1-4374-B301-C96870D44C6B}");
-                return StackValue.BuildInt(0);
-            }
-
-            public StackValue GetStackData(int blockId, int symbolindex, int classscope, int offset = 0)
+            public StackValue GetStackData(int blockId, int symbolindex, int classscope, Executable exe)
             {
                 SymbolNode symbolNode = null;
                 if (Constants.kInvalidIndex == classscope)
                 {
-                    symbolNode = Executable.runtimeSymbols[blockId].symbolList[symbolindex];
+                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbolindex];
                 }
                 else
                 {
-                    symbolNode = ClassTable.ClassNodes[classscope].symbols.symbolList[symbolindex];
+                    symbolNode = exe.classTable.ClassNodes[classscope].symbols.symbolList[symbolindex];
                 }
 
                 Validity.Assert(null != symbolNode);
-                int n = GetRelative(offset, GetStackIndex(symbolNode));
+                int n = GetRelative(GetStackIndex(symbolNode));
                 if (n > Stack.Count - 1)
                 {
                     return StackValue.Null;
@@ -387,12 +259,12 @@ namespace ProtoCore
                 return Stack[n];
             }
 
-            public StackValue GetMemberData(int symbolindex, int scope)
+            public StackValue GetMemberData(int symbolindex, int scope, Executable exe)
             {
-                StackValue thisptr = GetAtRelative(GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
+                StackValue thisptr = GetAtRelative(GetStackIndex(StackFrame.kFrameIndexThisPtr));
 
                 // Get the heapstck offset
-                int offset = ClassTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
+                int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
                 var heapElement = Heap.GetHeapElement(thisptr); 
                 if (null == heapElement.Stack || heapElement.Stack.Length == 0)
@@ -461,6 +333,29 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Current stack frame.
+            /// </summary>
+            public StackFrame CurrentStackFrame
+            {
+                get
+                {
+                    var stackFrames = GetStackFrames();
+                    if (stackFrames.Any())
+                    {
+                        return stackFrames.First();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Get all stack frames. 
+            /// </summary>
+            /// <returns></returns>
             public IEnumerable<StackFrame> GetStackFrames()
             {
                 var fp = FramePointer;
@@ -478,6 +373,11 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Mark and sweep garbage collection.
+            /// </summary>
+            /// <param name="gcRootPointers"></param>
+            /// <param name="exe"></param>
             public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
             {
                 Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);

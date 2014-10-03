@@ -1002,11 +1002,6 @@ namespace ProtoScript.Runners
             }
         }
 
-        private void ResetModifiedSymbols()
-        {
-            this.runnerCore.Rmem.ResetModifedSymbols();
-        }
-
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private GraphToDSCompiler.GraphCompiler graphCompiler;
@@ -1261,7 +1256,7 @@ namespace ProtoScript.Runners
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
             ProtoCore.DSASM.Mirror.ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
-            ProtoCore.DSASM.Executable exe = exec.rmem.Executable;
+            ProtoCore.DSASM.Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
             // Otherwise garbage information may be displayed.
@@ -1288,7 +1283,7 @@ namespace ProtoScript.Runners
                     }
 
                     ProtoCore.Runtime.RuntimeMemory rmem = exec.rmem;
-                    StackValue sv = rmem.GetStackData(blockId, i, ProtoCore.DSASM.Constants.kGlobalScope);
+                    StackValue sv = rmem.GetStackData(blockId, i, ProtoCore.DSASM.Constants.kGlobalScope, exec.exe);
                     formattedString = formattedString + string.Format("{0} = {1}\n", symbolNode.name, execMirror.GetStringValue(sv, rmem.Heap, blockId));
 
                     //if (null != globaltrace)
@@ -1501,7 +1496,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.ReAllocateMemory(newSymbols);
+                runnerCore.Rmem.PushFrame(newSymbols);
             }
 
             // Store the current number of global symbols
