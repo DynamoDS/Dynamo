@@ -176,6 +176,7 @@ namespace ProtoCore
                 Stack[index] = data;
             }
 
+            // TO BE DELETED
             public int GetStackIndex(int offset)
             {
                 int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
@@ -210,40 +211,6 @@ namespace ProtoCore
 
                 int index = GetRelative(offset);
                 return index;
-            }
-
-            public StackValue GetStackData(int blockId, int symbolindex, int classScope, Executable exe)
-            {
-                SymbolNode symbolNode;
-                if (classScope == Constants.kGlobalScope)
-                {
-                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbolindex];
-                }
-                else
-                {
-                    symbolNode = exe.classTable.ClassNodes[classScope].symbols.symbolList[symbolindex];
-                }
-
-                int index = GetStackIndex(symbolNode);
-                return Stack[index];
-            }
-
-            public StackValue SetStackData(int blockId, int symbol, int classScope, StackValue data, Executable exe)
-            {
-                SymbolNode symbolNode;
-                if (classScope == Constants.kGlobalScope)
-                {
-                    symbolNode = exe.runtimeSymbols[blockId].symbolList[symbol];
-                }
-                else
-                {
-                    symbolNode = exe.classTable.ClassNodes[classScope].symbols.symbolList[symbol];
-                }
-
-                int index = GetStackIndex(symbolNode);
-                StackValue opPrev = Stack[index];
-                Stack[index] = data;
-                return opPrev;
             }
 
             public void SetGlobalStackData(int globalOffset, StackValue svData)

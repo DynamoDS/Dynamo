@@ -248,7 +248,8 @@ namespace ProtoCore.DSASM.Mirror
                         string propValue = "";
                         if (symbol.isStatic)
                         {
-                            StackValue staticProp = this.core.Rmem.GetStackData(langblock, symbol.symbolTableIndex, Constants.kGlobalScope, exe);
+                            var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
+                            StackValue staticProp = core.Rmem.GetSymbolValue(staticSymbol);
                             propValue = GetStringValue(staticProp, heap, langblock, forPrint);
                         }
                         else
@@ -444,7 +445,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
 
                     RuntimeMemory rmem = MirrorTarget.rmem;
-                    StackValue sv = rmem.GetStackData(blockId, i, Constants.kGlobalScope, exe);
+                    StackValue sv = rmem.GetSymbolValue(symbolNode);
                     string formattedString = GetFormattedValue(symbolNode.name, GetStringValue(sv, rmem.Heap, blockId));
 
                     if (null != globaltrace)
@@ -645,9 +646,9 @@ namespace ProtoCore.DSASM.Mirror
 
             StackValue val;
             if (symbol.functionIndex == -1 && classcope != Constants.kInvalidIndex)
-                val = rmem.GetMemberData(index, classcope, core.DSExecutable);                
+                val = rmem.GetMemberData(index, classcope, core.DSExecutable);
             else
-                val = rmem.GetStackData(block, index, classcope, core.DSExecutable);                
+                val = rmem.GetSymbolValue(symbol);
 
             switch (val.optype)
             {
@@ -770,12 +771,13 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
+                var symbol = exe.runtimeSymbols[block].symbolList[index];
+                if (symbol.arraySizeList != null)
                 {
                     throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                 }
 
-                Obj retVal = Unpack(MirrorTarget.rmem.GetStackData(block, index, classcope, exe), MirrorTarget.rmem.Heap, core);
+                Obj retVal = Unpack(MirrorTarget.rmem.GetSymbolValue(symbol), MirrorTarget.rmem.Heap, core);
 
                 return retVal;
 
@@ -950,7 +952,7 @@ namespace ProtoCore.DSASM.Mirror
             if (symbol.functionIndex == -1 && classcope != Constants.kInvalidIndex)
                 sv = rmem.GetMemberData(index, classcope, core.DSExecutable);
             else
-                sv = rmem.GetStackData(block, index, classcope, core.DSExecutable);
+                sv = rmem.GetSymbolValue(symbol);
 
             if (sv.IsInvalid)
                 throw new UninitializedVariableException { Name = name };
@@ -1057,12 +1059,13 @@ namespace ProtoCore.DSASM.Mirror
                 if (Constants.kInvalidIndex != index)
                 {
                     //Q(Luke): This seems to imply that the LHS is an array index?
-                    if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
+                    var symbol = exe.runtimeSymbols[block].symbolList[index];
+                    if (symbol.arraySizeList != null)
                     {
                         throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
 
-                    return MirrorTarget.rmem.GetStackData(block, index, classcope, exe);
+                    return MirrorTarget.rmem.GetSymbolValue(symbol);
                 }
             }
             throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception

@@ -1144,17 +1144,19 @@ namespace ProtoCore.DSASM
             const string watchPrompt = "watch: ";
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
-                string symbol = exe.runtimeSymbols[blockId].symbolList[index].name;
-                if (symbol.StartsWith(Constants.kInternalNamePrefix))
+                SymbolNode symbol = exe.runtimeSymbols[blockId].symbolList[index];
+                string symbolName = symbol.name;
+
+                if (symbolName.StartsWith(Constants.kInternalNamePrefix))
                 {
                     return;
                 }
-                int ci = exe.runtimeSymbols[blockId].symbolList[index].classScope;
+                int ci = symbol.classScope;
                 if (ci != Constants.kInvalidIndex)
                 {
-                    symbol = core.ClassTable.ClassNodes[ci].name + "::" + symbol;
+                    symbolName = core.ClassTable.ClassNodes[ci].name + "::" + symbolName;
                 }
-                string lhs = watchPrompt + symbol;
+                string lhs = watchPrompt + symbolName;
 
                 if (null != exe.runtimeSymbols[blockId].symbolList[index].arraySizeList)
                 {
@@ -1162,51 +1164,43 @@ namespace ProtoCore.DSASM
                 }
 
                 string rhs = null;
-                StackValue snode = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe);
+                StackValue snode = rmem.GetSymbolValue(symbol);
                 if (snode.IsPointer)
                 {
                     int type = snode.metaData.type;
                     string cname = core.ClassTable.ClassNodes[type].name;
-
-                    Int64 ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).opdata;
-                    rhs = cname + ":ptr(" + ptr.ToString() + ")";
+                    rhs = cname + ":ptr(" + snode.opdata + ")";
                 }
                 else if (snode.IsArray)
                 {
-                    StackValue ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe);
-                    int rawPtr = (int)ptr.opdata;
-                    rhs = "Array:ptr(" + rawPtr + "):{" + GetArrayTrace(ptr, blockId, index, new HashSet<int> { rawPtr } ) + "}";
+                    int rawPtr = (int)snode.RawIntValue;
+                    rhs = "Array:ptr(" + rawPtr + "):{" + GetArrayTrace(snode, blockId, index, new HashSet<int> { rawPtr } ) + "}";
                 }
                 else if (snode.IsFunctionPointer)
                 {
-                    Int64 fptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).opdata;
-                    rhs = "fptr: " + fptr.ToString();
+                    rhs = "fptr: " + snode.opdata;
                 }
                 else if (snode.IsInteger)
                 {
-                    Int64 data = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).opdata;
-                    rhs = data.ToString();
+                    rhs = snode.opdata.ToString();
                 }
                 else if (snode.IsDouble)
                 {
-                    double data = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).RawDoubleValue;
+                    double data = snode.RawDoubleValue;
                     rhs = data.ToString("R").IndexOf('.') != -1 ? data.ToString("R") : data.ToString("R") + ".0";
                 }
                 else if (snode.IsBoolean)
                 {
-                    bool data = (rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).opdata == 0) ? false : true;
-                    rhs = data.ToString().ToLower();
+                    rhs = snode.RawBooleanValue.ToString().ToLower();
                 }
                 else if (snode.IsChar)
                 {
-                    Int64 data = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe).opdata;
-                    Char character = EncodingUtils.ConvertInt64ToCharacter(data);
+                    Char character = EncodingUtils.ConvertInt64ToCharacter(snode.RawIntValue);
                     rhs = "'" + character + "'";
                 }
                 else if (snode.IsString)
                 {
-                    StackValue ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope, exe);
-                    rhs = UnboxString(ptr);
+                    rhs = UnboxString(snode);
                 }
                 else if (snode.IsNull)
                 {
@@ -1522,7 +1516,7 @@ namespace ProtoCore.DSASM
             // TODO Jun: Expand me to handle complex ident lists
             SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
             Validity.Assert(null != symbol);
-            rmem.SetStackData(symbol.runtimeTableIndex, symbol.symbolTableIndex, symbol.classScope, sv, exe);
+            rmem.SetSymbolValue(symbol, sv);
         }
 
         private void SetGraphNodeStackValueNull(AssociativeGraph.GraphNode graphNode)
@@ -2902,7 +2896,8 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.VarIndex:
-                    data = rmem.GetStackData(blockId, (int)opSymbol.opdata, (int)opClass.opdata, exe);
+                    SymbolNode symbol = GetSymbolNode(blockId, (int)opClass.opdata, (int)opSymbol.opdata);
+                    data = rmem.GetSymbolValue(symbol);
                     break;
 
                 case AddressType.MemVarIndex:
@@ -2910,7 +2905,8 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.StaticMemVarIndex:
-                    data = rmem.GetStackData(blockId, (int)opSymbol.opdata, Constants.kGlobalScope, exe);
+                    SymbolNode staticMember = GetSymbolNode(blockId, Constants.kGlobalScope, (int)opSymbol.opdata);
+                    data = rmem.GetSymbolValue(staticMember);
                     break;
 
                 case AddressType.ThisPtr:
@@ -2965,7 +2961,10 @@ namespace ProtoCore.DSASM
             {
                 case AddressType.VarIndex:
                 case AddressType.MemVarIndex:
-                    opPrev = rmem.SetStackData(blockId, (int)op1.opdata, (int)op2.opdata, opVal, exe);
+
+                    SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
+                    opPrev = rmem.GetSymbolValue(symbol);
+                    rmem.SetSymbolValue(symbol, opVal);
 
                     if (IsDebugRun())
                     {
@@ -2980,12 +2979,9 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.StaticMemVarIndex:
-                    opPrev = rmem.SetStackData(
-                        blockId,
-                        (int)op1.opdata,
-                        Constants.kGlobalScope,
-                        opVal,
-                        exe);
+                    var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
+                    opPrev = rmem.GetSymbolValue(staticMember);
+                    rmem.SetSymbolValue(staticMember, opVal);
 
                     if (IsDebugRun())
                     {
@@ -3144,7 +3140,9 @@ namespace ProtoCore.DSASM
                 case AddressType.VarIndex:
                 case AddressType.MemVarIndex:
                     Validity.Assert(false);
-                    rmem.SetStackData(0, (int)opdest.opdata, -1, stackData, exe);
+
+                    SymbolNode symbol = GetSymbolNode(0, Constants.kGlobalScope, (int)opdest.opdata);
+                    rmem.SetSymbolValue(symbol, stackData);
 
                     if (IsDebugRun())
                     {
@@ -3158,7 +3156,8 @@ namespace ProtoCore.DSASM
                     }
                     break;
                 case AddressType.StaticMemVarIndex:
-                    rmem.SetStackData(blockId, (int)opdest.opdata, -1, stackData, exe);
+                    SymbolNode staticMember = GetSymbolNode(0, Constants.kGlobalScope, (int)opdest.opdata);
+                    rmem.SetSymbolValue(staticMember, stackData);
 
                     if (IsDebugRun())
                     {
