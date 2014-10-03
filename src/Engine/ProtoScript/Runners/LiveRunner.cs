@@ -241,6 +241,62 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Compiles the list of ASTs and returns the VM graphnodes
+        /// This compilation phase is self-contained and does not refer to the live core
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        private List<GraphNode> CompileAndGenerateGraphNodes(List<AssociativeNode> astList, out int blockId)
+        {
+            List<GraphNode> deltaGraphNodeList = new List<GraphNode>();
+
+            // Build a static core used for compiling astList
+            Options coreOptions = new Options();
+            coreOptions.ExecutionMode = ExecutionMode.Serial;
+            Core compileCore = new ProtoCore.Core(coreOptions);
+            compileCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(compileCore));
+            compileCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(compileCore));
+
+            // Compile the astList
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            bool succeeded = runner.Compile(astList, compileCore, out blockId);
+            if (succeeded)
+            {
+                // Generate the DS executable
+                compileCore.GenerateExecutable();
+                Executable exe = compileCore.DSExecutable;
+
+                // Get the compiled graphnodes
+                DependencyGraph depGraph = exe.instrStreamList[(int)Executable.OffsetConstants.kInstrStreamGlobalScope].dependencyGraph;
+                deltaGraphNodeList = depGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope);
+            }
+            return deltaGraphNodeList;
+        }
+
+        /// <summary>
+        /// Get reachable graphnodes from the live core
+        /// </summary>
+        /// <param name="deltaGraphNodes"></param>
+        /// <param name="blockId"></param>
+        /// <returns></returns>
+        private List<GraphNode> GetReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes, int blockId)
+        {
+            List<GraphNode> reachableNodes = new List<GraphNode>();
+            foreach (GraphNode executingNode in deltaGraphNodes)
+            {
+                reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                    executingNode,
+                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    executingNode.exprUID,
+                    executingNode.modBlkUID,
+                    executingNode.IsSSANode(),
+                    true,
+                    blockId));
+            }
+            return reachableNodes;
+        }
+
+        /// <summary>
         /// Get the list of guids affected by astList
         /// </summary>
         /// <param name="astList"></param>
@@ -249,46 +305,11 @@ namespace ProtoScript.Runners
         {
             List<Guid> cbnGuidList = new List<Guid>();
 
-            // 1. Compile(astList)
-            //  - generate graphnodes
-
-            // Build a static core used for compiling astList
-            Options coreOptions = new Options();
-            Core compileCore = new ProtoCore.Core(coreOptions);
-
-            // Compile the astList
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = runner.Compile(astList, compileCore, out blockId);
-            if (!succeeded)
-            {
-                return cbnGuidList;
-            }
-            // Generate the DS executable
-            compileCore.GenerateExecutable();
-            Executable exe = compileCore.DSExecutable;
-
-            //
-            // 2. Perform static analysis on generated graphnodes against the runnerCore VMgraphnodes
-            //  - reachable = UpdateGraphNodeDependency(graphnodes, runnerCore.VMgraphnodes)
-
             // For every delta graphnode 
             // Delta grapnodes are the VM graphnodes associated with the delta ASTs
-            List<GraphNode> reachableNodes = new List<GraphNode>();
-            List<GraphNode> deltaGraphNodeList = exe.instrStreamList[(int)Executable.OffsetConstants.kInstrStreamGlobalScope].dependencyGraph.GraphList;
-            foreach (GraphNode executingNode in deltaGraphNodeList)
-            {
-                reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                    executingNode, 
-                    null, 
-                    executingNode.exprUID, 
-                    executingNode.modBlkUID,
-                    executingNode.IsSSANode(),
-                    true,
-                    blockId));
-            }
-
-            // 3. Get static analysis result
+            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+            List<GraphNode> deltaGraphNodeList = CompileAndGenerateGraphNodes(astList, out blockId);
+            List<GraphNode> reachableNodes = GetReachableGraphNodes(core, deltaGraphNodeList, blockId);
 
             // Get the list of guid's of the ASTs
             foreach (GraphNode graphnode in reachableNodes)
@@ -974,6 +995,7 @@ namespace ProtoScript.Runners
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
+        void PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -1681,12 +1703,6 @@ namespace ProtoScript.Runners
 
         private void PreviewInternal(GraphSyncData syncData)
         {
-            if (syncData == null)
-            {
-                ResetForDeltaExecution();
-                return;
-            }
-
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
