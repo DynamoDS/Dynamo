@@ -9,7 +9,7 @@ using ProtoScript.Runners;
 namespace ProtoTest.DSASM
 {
     [TestFixture]
-    public class HeapMarkAndSweekTests
+    public class HeapMarkAndSweepTests
     {
         private class TestExecutive : ProtoCore.DSASM.Executive
         {
