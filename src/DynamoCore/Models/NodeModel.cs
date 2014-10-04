@@ -1507,7 +1507,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            List<string> drawableIds = GetDrawableIds().ToList();
+            var drawableIds = GetDrawableIds();
 
             int count = 0;
             var labelMap = new List<string>();
