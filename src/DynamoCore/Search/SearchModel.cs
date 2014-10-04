@@ -257,7 +257,7 @@ namespace Dynamo.Search
 
         #region Categories
 
-        private const char CATEGORY_DELIMITER = '.';
+        public const char CATEGORY_DELIMITER = '.';
 
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
@@ -872,9 +872,9 @@ namespace Dynamo.Search
 
         #endregion
 
-        private const string CATEGORY_GROUP_CREATE = "Create";
-        private const string CATEGORY_GROUP_ACTIONS = "Actions";
-        private const string CATEGORY_GROUP_QUERY = "Query";
+        public const string CATEGORY_GROUP_CREATE = "Create";
+        public const string CATEGORY_GROUP_ACTIONS = "Actions";
+        public const string CATEGORY_GROUP_QUERY = "Query";
 
         /// <summary>
         /// Call this method to assign a default grouping information if a given category 

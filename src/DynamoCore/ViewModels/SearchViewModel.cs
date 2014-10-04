@@ -289,7 +289,7 @@ namespace Dynamo.ViewModels
 #endif
         }
 
-        private static string MakeShortCategoryString(string fullCategoryName)
+        internal static string MakeShortCategoryString(string fullCategoryName)
         {
             var catName = fullCategoryName.Replace(".", " > ");
 

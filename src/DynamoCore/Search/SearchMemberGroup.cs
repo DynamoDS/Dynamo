@@ -14,10 +14,10 @@ namespace Dynamo.Search
             get { return members; }
         }
 
-        internal static SearchMemberGroup CreateInstance(BrowserInternalElement node)
+        internal static SearchMemberGroup CreateInstance(string name)
         {
             // Some logic in which member group name is determined.
-            var name = "Mockup";
+            //var name = "Mockup";
 
             return new SearchMemberGroup(name);
         }
