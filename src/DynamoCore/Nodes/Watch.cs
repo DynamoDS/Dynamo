@@ -221,11 +221,6 @@ namespace Dynamo.Nodes
             //a watch should not draw its outputs
         }
 
-        protected override IEnumerable<string> GetDrawableIdsCore()
-        {
-            return new List<string>(); // Nothing to render for this node.
-        }
-
         #endregion
     }
 }

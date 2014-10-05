@@ -99,11 +99,6 @@ namespace Dynamo.Nodes
             //a watch should not draw its outputs
         }
 
-        protected override IEnumerable<string> GetDrawableIdsCore()
-        {
-            return new List<string>(); // Nothing to render for this node.
-        }
-
         protected override bool ShouldDisplayPreviewCore()
         {
             return false; // Previews are not shown for this node type.

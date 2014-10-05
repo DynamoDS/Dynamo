@@ -1687,18 +1687,13 @@ namespace Dynamo.Models
             return size;
         }
 
-        internal IEnumerable<string> GetDrawableIds()
-        {
-            return GetDrawableIdsCore();
-        }
-
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
         /// </summary>
         /// <param name="node">Node</param>
         /// <returns>List of Drawable Ids</returns>
-        protected virtual IEnumerable<string> GetDrawableIdsCore()
+        private IEnumerable<string> GetDrawableIds()
         {
             var drawables = new List<String>();
             for (int i = 0; i < OutPortData.Count; ++i)
