@@ -33,12 +33,10 @@ namespace Dynamo.UI.Controls
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
-
-        private CompletionWindow completionWindow = null;
         private CodeBlockNodeModel nodeModel = null;
+        private CompletionWindow completionWindow = null;
         private CodeCompletionParser codeParser = null;
         
-
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -56,7 +54,12 @@ namespace Dynamo.UI.Controls
             // Register text editing events
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-            this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+
+            // the code block should not be in focus upon undo/redo actions on node
+            if (this.nodeModel.ShouldFocus)
+            {
+                this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+            }
 
             // Register auto-completion callbacks
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
@@ -272,5 +275,5 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
-    
+
 }
