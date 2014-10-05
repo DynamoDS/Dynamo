@@ -1486,6 +1486,30 @@ namespace Dynamo.Models
         }
         #endregion
 
+        #region Visualization Related Methods
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for 
+        /// this node. This method accesses core properties of a NodeModel and 
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="maxTesselationDivisions">The maximum number of 
+        /// tessellation divisions to use for regenerating render packages.</param>
+        /// 
+        public void RequestVisualUpdate(int maxTesselationDivisions)
+        {
+            RequestVisualUpdateCore(maxTesselationDivisions);
+        }
+
+        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            
+        }
+
+#else
+
         /// <summary>
         /// Updates the render package for this node by
         /// getting the MirrorData objects corresponding to
@@ -1562,7 +1586,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void ClearRenderPackages()
+        private void ClearRenderPackages()
         {
             lock (RenderPackagesMutex)
             {
@@ -1570,6 +1594,7 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
         }
+#endif
 
         private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, 
             double size, int maxTesselationDivisions )
@@ -1721,6 +1746,8 @@ namespace Dynamo.Models
 
             return output.ToString();
         }
+
+        #endregion
 
         #region Node Migration Helper Methods
 
