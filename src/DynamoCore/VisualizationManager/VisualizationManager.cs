@@ -493,7 +493,8 @@ namespace Dynamo
             if (updateVisualization)
                 renderManager.RequestRenderAsync(new RenderTask());
 #else
-            // SCHEDULER: Implement visualization update.
+            if (updateVisualization)
+                RequestNodeVisualUpdate(null);
 #endif
         }
 
@@ -569,8 +570,6 @@ namespace Dynamo
 #endif
         }
 
-#if !ENABLE_DYNAMO_SCHEDULER
-
         /// <summary>
         /// Handler for the RequestRedraw event.
         /// </summary>
@@ -578,16 +577,28 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
+#else
+            RequestNodeVisualUpdate(null);
+#endif
         }
 
-#else
+#if ENABLE_DYNAMO_SCHEDULER
 
-        private void Update(object sender, EventArgs e)
+        private void RequestNodeVisualUpdate(NodeModel nodeModel)
         {
-            // Get each node in workspace to update their visuals.
-            foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                node.RequestVisualUpdate(MaxTesselationDivisions);
+            if (nodeModel != null)
+            {
+                // Visualization update for a given node is desired.
+                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
+            }
+            else
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(MaxTesselationDivisions);
+            }
 
             var scheduler = dynamoModel.Scheduler;
             var task = new AggregateRenderPackageAsyncTask(scheduler);
