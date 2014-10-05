@@ -1,11 +1,12 @@
-﻿using System;
+﻿#if ENABLE_DYNAMO_SCHEDULER
+
+using System;
 using System.Collections;
 using System.Linq;
 
 using GraphLayout;
 
 using ProtoCore.Mirror;
-#if ENABLE_DYNAMO_SCHEDULER
 using System.Collections.Generic;
 
 using Dynamo.DSEngine;
