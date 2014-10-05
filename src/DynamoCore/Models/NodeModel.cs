@@ -1535,7 +1535,21 @@ namespace Dynamo.Models
             var scheduler = Workspace.DynamoModel.Scheduler;
             var task = new UpdateRenderPackageAsyncTask(scheduler);
             if (task.Initialize(initParams))
+            {
+                task.Completed += OnRenderPackageUpdateCompleted;
                 scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
+        {
+            lock (RenderPackagesMutex)
+            {
+                var task = asyncTask as UpdateRenderPackageAsyncTask;
+                _renderPackages.Clear();
+                _renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = _renderPackages.Any();
+            }
         }
 
 #else
