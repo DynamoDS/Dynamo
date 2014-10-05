@@ -10,6 +10,8 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
@@ -1500,6 +1502,12 @@ namespace Dynamo.Models
         /// 
         public void RequestVisualUpdate(int maxTesselationDivisions)
         {
+            if (Workspace.DynamoModel == null || (State == ElementState.Error))
+                return;
+
+            if (!IsVisible || CachedValue == null)
+                return;
+
             RequestVisualUpdateCore(maxTesselationDivisions);
         }
 
@@ -1515,7 +1523,19 @@ namespace Dynamo.Models
         /// 
         protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
         {
-            // SCHEDULER: Schedule an 'UpdateRenderPackageAsyncTask' here.
+            var initParams = new UpdateRenderPackageParams()
+            {
+                Node = this,
+                MaxTesselationDivisions = maxTesselationDivisions,
+                EngineController = Workspace.DynamoModel.EngineController,
+                DrawableIds = GetDrawableIds(),
+                PreviewIdentifierName = AstIdentifierForPreview.Name
+            };
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new UpdateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(initParams))
+                scheduler.ScheduleForExecution(task);
         }
 
 #else
