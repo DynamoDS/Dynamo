@@ -74,12 +74,6 @@ namespace Dynamo.Core.Threading
             maxTesselationDivisions = initParams.MaxTesselationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
-
-            // visualizationManager.MaxTesselationDivisions
-            // NodeModel.IsSelected
-            // NodeModel.DisplayLabels
-            // Clear render package
-            // Get AstIdentifierForPreview.Name
             return true;
         }
 
@@ -89,14 +83,13 @@ namespace Dynamo.Core.Threading
 
         protected override void ExecuteCore()
         {
-            var labelMap = new List<string>();
-
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
                        into mirror
                        where mirror != null
                        select mirror.GetData();
 
+            var labelMap = new List<string>();
             foreach (var mirrorData in data)
             {
                 AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
@@ -132,19 +125,10 @@ namespace Dynamo.Core.Threading
                     count++;
                 }
             }
-
-            // EngineController.GetMirror
-            // mirror.GetData
-            // AddToLabelMap
-            // EngineController.GetGraphicItems
-            // graphicItem.Tessellate
         }
 
         protected override void HandleTaskCompletionCore()
         {
-            // Dispatcher.BeginInvoke((x) => {
-            //      NodeModel.SetRenderPackage(rp);
-            // }
         }
 
         #endregion
