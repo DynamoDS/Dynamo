@@ -1502,9 +1502,17 @@ namespace Dynamo.Models
         /// 
         public void RequestVisualUpdate(int maxTesselationDivisions)
         {
-            if (Workspace.DynamoModel == null || (State == ElementState.Error))
+            if (Workspace.DynamoModel == null)
                 return;
 
+            lock (RenderPackagesMutex)
+            {
+                _renderPackages.Clear();
+                HasRenderPackages = false;
+            }
+
+            if (State == ElementState.Error)
+                return;
             if (!IsVisible || CachedValue == null)
                 return;
 
