@@ -63,10 +63,8 @@ namespace Dynamo.Search
             if (parent == null)
                 return;
 
-            if (classes.Any(cl => cl.Name == memberNode.Parent.Name))
-                return;
-
-            classes.Add(memberNode.Parent as BrowserInternalElement);
+            if (!classes.Any(cl => cl.Name == parent.Name))
+                classes.Add(parent);
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)
@@ -82,12 +80,6 @@ namespace Dynamo.Search
                 default:
                     return category;
             }
-        }
-
-        private string GetClassName(string categoryName)
-        {
-            List<string> splitCat = SearchModel.SplitCategoryName(categoryName);
-            return splitCat.Last();
         }
     }
 }
