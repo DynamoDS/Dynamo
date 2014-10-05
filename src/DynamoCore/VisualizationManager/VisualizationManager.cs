@@ -7,6 +7,8 @@ using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
 using DSNodeServices;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -567,6 +569,8 @@ namespace Dynamo
 #endif
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         /// <summary>
         /// Handler for the RequestRedraw event.
         /// </summary>
@@ -574,12 +578,38 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
-#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
-#else
-            // SCHEDULER: Implement visualization update.
-#endif
         }
+
+#else
+
+        private void Update(object sender, EventArgs e)
+        {
+            // Get each node in workspace to update their visuals.
+            foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                node.RequestVisualUpdate(MaxTesselationDivisions);
+
+            var scheduler = dynamoModel.Scheduler;
+            var task = new AggregateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(dynamoModel.CurrentWorkspace, null))
+            {
+                task.Completed += OnRenderPackageAggregationCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
+        {
+            var task = asyncTask as AggregateRenderPackageAsyncTask;
+            var rps = new List<RenderPackage>();
+            rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
+            rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
+
+            var e = new VisualizationEventArgs(rps, string.Empty, -1);
+            OnResultsReadyToVisualize(this, e);
+        }
+
+#endif
 
         private void Clear(DynamoModel dynamoModel)
         {
