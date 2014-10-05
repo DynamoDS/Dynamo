@@ -1624,7 +1624,6 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
         }
-#endif
 
         private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, 
             double size, int maxTesselationDivisions )
@@ -1741,6 +1740,8 @@ namespace Dynamo.Models
             }
             return size;
         }
+
+#endif
 
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
