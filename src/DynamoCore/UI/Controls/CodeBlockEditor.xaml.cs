@@ -75,19 +75,28 @@ namespace Dynamo.UI.Controls
 
             // Determine if the string to be completed is a class
             var type = engineController.GetClassType(stringToComplete);
-            if (type == null)
-            {
-                // Check if the string to be completed is a declared variable
-                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
-                if (typeName != null)
-                    type = engineController.GetClassType(typeName);
-            }
             if (type != null)
             {
                 var members = type.GetMembers();
                 completions = members.Select<StaticMirror, CodeBlockCompletionData>(
                     x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
             }
+            // If not of class type
+            else
+            {
+                // Check if the string to be completed is a declared variable
+                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
+                if (typeName != null)
+                    type = engineController.GetClassType(typeName);
+
+                if (type != null)
+                {
+                    var members = type.GetInstanceMembers();
+                    completions = members.Select<StaticMirror, CodeBlockCompletionData>(
+                        x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
+                }
+            }
+            
             return completions;
         }
 
@@ -161,8 +170,8 @@ namespace Dynamo.UI.Controls
                 if (e.Text == ".")
                 {
                     var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-                    codeParser = new CodeCompletionParser();
-                    string stringToComplete = codeParser.GetStringToComplete(code).Trim('.');
+                    
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
                     
                     var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
 
@@ -172,7 +181,7 @@ namespace Dynamo.UI.Controls
                     // TODO: Need to make this more efficient by instantiating 'completionWindow'
                     // just once and updating its contents each time
 
-                    // This implementation has been taken from
+                    // This implementation has been referenced from
                     // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
                     completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;

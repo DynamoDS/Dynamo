@@ -479,6 +479,12 @@ namespace ProtoCore.Utils
             return methodName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
         }
 
+        public static bool IsGetTypeMethod(string methodName)
+        {
+            Validity.Assert(null != methodName);
+            return methodName.Equals(ProtoCore.DSDefinitions.Keyword.GetType);
+        }
+
         public static bool IsPropertyTemp(string varname)
         {
             Validity.Assert(null != varname);
