@@ -871,10 +871,6 @@ namespace Dynamo.Search
 
         #endregion
 
-        public const string CATEGORY_GROUP_CREATE = "Create";
-        public const string CATEGORY_GROUP_ACTIONS = "Actions";
-        public const string CATEGORY_GROUP_QUERY = "Query";
-
         /// <summary>
         /// Call this method to assign a default grouping information if a given category 
         /// does not have any. A node category's group can either be "Create", "Query" or
@@ -897,13 +893,13 @@ namespace Dynamo.Search
             // If "index" is "-1", then the whole "category" will be used as-is.            
             switch (category.Substring(index + 1))
             {
-                case CATEGORY_GROUP_ACTIONS:
+                case Configurations.CATEGORY_GROUP_ACTION:
                     group = SearchElementGroup.Action;
                     break;
-                case CATEGORY_GROUP_CREATE:
+                case Configurations.CATEGORY_GROUP_CREATE:
                     group = SearchElementGroup.Create;
                     break;
-                case CATEGORY_GROUP_QUERY:
+                case Configurations.CATEGORY_GROUP_QUERY:
                     group = SearchElementGroup.Query;
                     break;
                 default:

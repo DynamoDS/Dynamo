@@ -53,11 +53,11 @@ namespace Dynamo.Search
             switch (group)
             {
                 case SearchElementGroup.Action:
-                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_ACTIONS;
+                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_ACTION;
                 case SearchElementGroup.Create:
-                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_CREATE;
+                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_CREATE;
                 case SearchElementGroup.Query:
-                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_QUERY;
+                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_QUERY;
                 default:
                     return category;
             }

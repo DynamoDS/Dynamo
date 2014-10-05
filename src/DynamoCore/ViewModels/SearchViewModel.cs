@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-
+using Dynamo.UI;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -291,12 +290,12 @@ namespace Dynamo.ViewModels
 
         internal static string MakeShortCategoryString(string fullCategoryName)
         {
-            var catName = fullCategoryName.Replace(".", " > ");
+            var catName = fullCategoryName.Replace(Configurations.CATEGORY_DELIMITER.ToString(), " " + Configurations.SHORTENED_CATEGORY_DELIMITER + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.SHORTENED_CATEGORY_DELIMITER).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -307,7 +306,7 @@ namespace Dynamo.ViewModels
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" > ", s);
+                    catName = String.Join(" " + Configurations.SHORTENED_CATEGORY_DELIMITER + " ", s);
                 }
             }
 
