@@ -246,6 +246,7 @@ namespace Dynamo.Search
                 }
 
                 category.AddMemberToGroup(node);
+                category.AddClassToGroup(node);
             }
         }
 

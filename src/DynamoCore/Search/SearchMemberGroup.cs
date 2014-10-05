@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -14,15 +13,7 @@ namespace Dynamo.Search
             get { return members; }
         }
 
-        internal static SearchMemberGroup CreateInstance(string name)
-        {
-            // Some logic in which member group name is determined.
-            //var name = "Mockup";
-
-            return new SearchMemberGroup(name);
-        }
-
-        private SearchMemberGroup(string name)
+        public SearchMemberGroup(string name)
         {
             Name = name;
             members = new List<BrowserInternalElement>();

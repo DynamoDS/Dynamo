@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using Dynamo.Nodes.Search;
-using Dynamo.ViewModels;
 using System.Linq;
+using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Search
 {
@@ -25,27 +26,47 @@ namespace Dynamo.Search
         public SearchCategory(string name)
         {
             Name = name;
+            classes = new List<BrowserInternalElement>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
-        public void AddMemberToGroup(BrowserInternalElement node)
+        public void AddMemberToGroup(BrowserInternalElement memberNode)
         {
-            string categoryWithGroup = AddGroupToCategory(node.FullCategoryName, ((SearchElements.NodeSearchElement)node).Group);
-            string groupName = SearchViewModel.MakeShortCategoryString(categoryWithGroup);
+            string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
+                (memberNode as NodeSearchElement).Group);
+            string shortenedCategory = SearchViewModel.MakeShortCategoryString(categoryWithGroup);
 
-            var group = memberGroups.FirstOrDefault(mg => mg.Name == groupName);
+            var group = memberGroups.FirstOrDefault(mg => mg.Name == shortenedCategory);
             if (group == null)
             {
-                group = SearchMemberGroup.CreateInstance(groupName);
+                group = new SearchMemberGroup(shortenedCategory);
                 memberGroups.Add(group);
             }
 
-            group.AddMember(node);
+            group.AddMember(memberNode);
         }
 
-        public void AddClassToGroup(BrowserInternalElement node)
+        public void AddClassToGroup(BrowserInternalElement memberNode)
         {
+            // Here is fake implementation.
+            // Added not more two different classes.
+            // Will be implemented when is clarified which classes
+            // should be presented in search results
 
+            const int maxClassesCount = 2;
+            if (classes.Count >= maxClassesCount)
+                return;
+
+            // Parent should be of 'BrowserInternalElement' type or derived.
+            // Root category can't be added to classes list.
+            var parent = memberNode.Parent as BrowserInternalElement;
+            if (parent == null)
+                return;
+
+            if (classes.Any(cl => cl.Name == memberNode.Parent.Name))
+                return;
+
+            classes.Add(memberNode.Parent as BrowserInternalElement);
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)
@@ -61,6 +82,12 @@ namespace Dynamo.Search
                 default:
                     return category;
             }
+        }
+
+        private string GetClassName(string categoryName)
+        {
+            List<string> splitCat = SearchModel.SplitCategoryName(categoryName);
+            return splitCat.Last();
         }
     }
 }
