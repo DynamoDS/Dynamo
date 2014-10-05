@@ -208,7 +208,11 @@ namespace Dynamo.UI
         #endregion
 
         #region LibraryView
+
         public const double MinWidthLibraryView = 308;
+
+        public const char CATEGORY_DELIMITER = '.';
+
         #endregion
 
 #if DEBUG

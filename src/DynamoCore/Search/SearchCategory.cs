@@ -2,6 +2,7 @@
 using Dynamo.Nodes.Search;
 using Dynamo.ViewModels;
 using System.Linq;
+using Dynamo.UI;
 
 namespace Dynamo.Search
 {
@@ -52,11 +53,11 @@ namespace Dynamo.Search
             switch (group)
             {
                 case SearchElementGroup.Action:
-                    return category + SearchModel.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_ACTIONS;
+                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_ACTIONS;
                 case SearchElementGroup.Create:
-                    return category + SearchModel.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_CREATE;
+                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_CREATE;
                 case SearchElementGroup.Query:
-                    return category + SearchModel.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_QUERY;
+                    return category + Configurations.CATEGORY_DELIMITER + SearchModel.CATEGORY_GROUP_QUERY;
                 default:
                     return category;
             }
