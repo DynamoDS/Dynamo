@@ -11,6 +11,16 @@ using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
+    /// <summary>
+    /// This task is scheduled after one or more UpdateRenderPackageAsyncTask 
+    /// objects are scheduled for execution. During execution this task gathers 
+    /// render packages for a predefined set of NodeModel objects. This 
+    /// predefined set of NodeModel objects includes all the NodeModel in the 
+    /// given WorkspaceModel, if no specific NodeModel is specified during the 
+    /// creation of this task; otherwise, the set only includes all upstream 
+    /// NodeModel objects of the specified NodeModel.
+    /// </summary>
+    /// 
     class AggregateRenderPackageAsyncTask : AsyncTask
     {
         #region Class Data Members and Properties
