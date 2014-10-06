@@ -369,6 +369,7 @@ namespace Revit.AnalysisDisplay
                     DynamoUnits.SIUnit.ToBTUFoot2
                 };
                 ars.SetUnits(unitNames, multipliers);
+                ars.CurrentUnits = 0;
 
                 schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
