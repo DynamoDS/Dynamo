@@ -72,7 +72,7 @@ namespace ProtoCore.DSASM
 
         public bool IsExplicitCall { get; set; }
 
-        private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
         
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
         /// <summary>
@@ -105,6 +105,8 @@ namespace ProtoCore.DSASM
             debugFlags = (int)DebugFlags.ENABLE_LOG;
 
             bounceType = CallingConvention.BounceType.kImplicit;
+
+            deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
 
             // Execute DS Debug watch
             //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
@@ -1516,45 +1518,6 @@ namespace ProtoCore.DSASM
         }
 
 
-        private void UpdateModifierBlockDependencyGraph(AssociativeGraph.GraphNode graphNode)
-        {
-            int modBlkUID = graphNode.modBlkUID;
-            int index = graphNode.UID;
-            bool setModifierNode = true;
-            if (graphNode.isCyclic)
-            {
-                // If the graphnode is cyclic, mark it as not first so it wont get executed 
-                // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                // The cyclepoint is the other graphNode that the current node cycles with
-                graphNode.isDirty = false;
-                if (null != graphNode.cyclePoint)
-                {
-                    graphNode.cyclePoint.isDirty = false;
-                    graphNode.cyclePoint.isCyclic = true;
-                }
-                setModifierNode = false;
-            }
-
-            if (modBlkUID != Constants.kInvalidIndex)
-            {
-                for (int i = index; i < istream.dependencyGraph.GraphList.Count; ++i)
-                {
-                    AssociativeGraph.GraphNode node = istream.dependencyGraph.GraphList[i];
-                    if (node.modBlkUID == modBlkUID)
-                    {
-                        node.isDirty = setModifierNode;
-                    }
-                }
-            }
-            else
-            {
-                graphNode.isDirty = true;
-            }
-        }
-
-
-
-
         private void SetGraphNodeStackValue(AssociativeGraph.GraphNode graphNode, StackValue sv)
         {
             Validity.Assert(!graphNode.isReturn);
@@ -1582,74 +1545,31 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
+                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null; 
                     if (core.Options.ExecuteSSA)
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, istream.dependencyGraph, executingBlock, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
                     else
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, istream.dependencyGraph, executingBlock, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
+
+                    // Mark reachable nodes as dirty
+                    Validity.Assert(reachableGraphNodes != null);
+                    foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+                    {
+                        gnode.isDirty = true;
+                    }
+
                     node.propertyChanged = false;
                 }
             }
             return propertyChanged;
         }
-
-        /// <summary>
-        /// Handle Graphnodes that will be redefined by executingGraphNode in the given scope
-        /// 
-        /// Given:
-        ///     [1] a = b + c
-        ///     [2] a = d
-        /// Statement [1] has been redefined by statment [2]    
-        /// Deactivate and remove the dependencies of statement [1]
-        /// 
-        /// </summary>
-        /// <param name="executingGraphNode"></param>
-        /// <param name="classScope"></param>
-        /// <param name="functionScope"></param>
-        private void HandleGraphNodeRedefinitionInScope(AssociativeGraph.GraphNode executingGraphNode, int classScope, int functionScope)
-        {
-            if (executingGraphNode != null)
-            {
-                // Remove this condition when full SSA is enabled
-                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
-
-                if (core.Options.ExecuteSSA)
-                {
-                    isssa = executingGraphNode.IsSSANode();
-                }
-                if (!isssa)
-                {
-                    // Get the graphnodes in the current scope
-                    var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
-                    foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
-                    {
-                        bool allowRedefine = true;
-
-                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != Constants.kInvalidIndex
-                            && symbol.functionIndex == Constants.kInvalidIndex;
-
-                        if (isMember)
-                        {
-                            // For member vars, do not allow if not in the same scope
-                            if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
-                            {
-                                allowRedefine = false;
-                            }
-                        }
-
-                        if (allowRedefine)
-                        {
-                            // Update redefinition that this graphnode may have cauased
-                            UpdateGraphNodeDependency(graphNode, executingGraphNode);
-                        }
-                    }
-                }
-            }
-        }
+       
 
         private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
@@ -1661,13 +1581,32 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode, istream.dependencyGraph, executingBlock);
+            // Find reachable graphnodes
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock);
 
+            // Mark reachable nodes as dirty
+            Validity.Assert(reachableGraphNodes != null);
+            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+            {
+                gnode.isDirty = true;
+            }
+             
+
+            // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
-            HandleGraphNodeRedefinitionInScope(Properties.executingGraphNode, classScope, functionScope);
-           
+            var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+            List<AssociativeGraph.GraphNode> redefinedNodes = AssociativeEngine.Utils.GetRedefinedGraphNodes(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            Validity.Assert(redefinedNodes != null);
+            foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
+            {
+                // Handle deactivated graphnodes
+                GCAnonymousSymbols(gnode.symbolListWithinExpression);
+                gnode.symbolListWithinExpression.Clear();
+                gnode.isActive = false;
+            }
         }
 
         /// <summary>
@@ -1852,316 +1791,7 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-
-        /// <summary>
-        /// Check if an update is triggered;
-        /// Find all graph nodes whos dependents contain this symbol;
-        /// Mark those nodes as dirty
-        /// </summary>
-        public int UpdateDependencyGraph(
-            int exprUID,
-            int modBlkId,
-            bool isSSAAssign,
-            AssociativeGraph.GraphNode executingGraphNode,
-            AssociativeGraph.DependencyGraph dependencyGraph,
-            int languageBlockID,
-            bool propertyChanged = false)
-        {
-            int nodesMarkedDirty = 0;
-            if (executingGraphNode == null)
-            {
-                return nodesMarkedDirty;
-            }
-
-            int classIndex = executingGraphNode.classIndex;
-            int procIndex = executingGraphNode.procIndex;
-
-            var graph = dependencyGraph; // istream.dependencyGraph;
-            var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
-            if (graphNodes == null)
-            {
-                return nodesMarkedDirty;
-            }
-
-            //foreach (var graphNode in graphNodes)
-            for (int i = 0; i < graphNodes.Count; ++i)
-            {
-                var graphNode = graphNodes[i];
-
-                // If the graphnode is inactive then it is no longer executed
-                if (!graphNode.isActive)
-                {
-                    continue;
-                }
-
-                //
-                // Comment Jun: 
-                //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
-                //
-                bool allowUpdateWithinSSA = false;
-                if (core.Options.ExecuteSSA)
-                {
-                    allowUpdateWithinSSA = true;
-                    isSSAAssign = false; // Remove references to this when ssa flag is removed
-
-                    // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == Properties.executingGraphNode.exprUID)
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    // TODO Jun: Remove this code immediatley after enabling SSA
-                    bool withinSSAStatement = graphNode.UID == executingGraphNode.UID;
-                    allowUpdateWithinSSA = !withinSSAStatement;
-                }
-
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == Properties.executingGraphNode))
-                {
-                    continue;
-                }
-
-                foreach (var noderef in executingGraphNode.updateNodeRefList)
-                {
-                    // If this dirty graphnode is an associative lang block, 
-                    // then find all that nodes in that lang block and mark them dirty
-                    if (graphNode.isLanguageBlock)
-                    {
-                        int dirtyNodes = UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, executingGraphNode, exe.instrStreamList[graphNode.languageBlockId].dependencyGraph, graphNode.languageBlockId);
-                        if (dirtyNodes > 0)
-                        {
-                            graphNode.isDirty = true;
-                        }
-                    }
-
-                    AssociativeGraph.GraphNode matchingNode = null;
-                    if (!graphNode.DependsOn(noderef, ref matchingNode))
-                    {
-                        continue;
-                    }
-
-                    // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (core.Options.ExecuteSSA && !propertyChanged)
-                    {
-                        if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
-                        {
-                            // This is still an SSA statement, if a node of another statement depends on it, ignore it
-                            if (graphNode.exprUID != Properties.executingGraphNode.exprUID)
-                            {
-                                // Defer this update until the final non-ssa node
-                                deferedGraphNodes.Add(graphNode);
-                                continue;
-                            }
-                        }
-                    }
-
-                    // @keyu: if we are modifying an object's property, e.g.,
-                    // 
-                    //    foo.id = 42;
-                    //
-                    // both dependent list and update list of the corresponding 
-                    // graph node contains "foo" and "id", so if property "id"
-                    // is changed, this graph node will be re-executed and the
-                    // value of "id" is incorrectly set back to old value.
-                    if (propertyChanged)
-                    {
-                        var depUpdateNodeRef = graphNode.dependentList[0].updateNodeRefList[0];
-                        if (graphNode.updateNodeRefList.Count == 1)
-                        {
-                            var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.Equals(updateNodeRef))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    //
-                    // Comment Jun: We dont want to cycle between such statements:
-                    //
-                    // a1.a = 1;
-                    // a1.a = 10;
-                    //
-
-                    Validity.Assert(null != matchingNode);
-                    bool isLHSModification = matchingNode.isLHSNode;
-                    bool isUpdateable = matchingNode.IsUpdateableBy(noderef);
-
-                    // isSSAAssign means this is the graphnode of the final SSA assignment
-                    // Overrride this if allowing within SSA update
-                    // TODO Jun: Remove this code when SSA is completely enabled
-                    bool allowSSADownstream = false;
-                    if (core.Options.ExecuteSSA)
-                    {
-                        // Check if we allow downstream update
-                        if (exprUID == graphNode.exprUID)
-                        {
-                            allowSSADownstream = graphNode.AstID > executingGraphNode.AstID;
-                        }
-                    }
-
-
-                    // Comment Jun: 
-                    //      If the triggered dependent graphnode is LHS 
-                    //          and... 
-                    //      the triggering node (executing graphnode)
-                    if (isLHSModification && !isUpdateable)
-                    {
-                        break;
-                    }
-
-                    // TODO Jun: Optimization - Reimplement update delta evaluation using registers
-                    //if (IsNodeModified(EX, FX))
-                    bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
-                    if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
-                    {
-                        UpdateModifierBlockDependencyGraph(graphNode);
-                    }
-                    else if (allowSSADownstream
-                                || isSSAAssign
-                                || isLastSSAAssignment
-                                || (exprUID != graphNode.exprUID
-                                    && modBlkId == Constants.kInvalidIndex
-                                    && graphNode.modBlkUID == Constants.kInvalidIndex)
-                        )
-                    {
-                        if (graphNode.isCyclic)
-                        {
-                            // If the graphnode is cyclic, mark it as not dirst so it wont get executed 
-                            // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                            // The cyclepoint is the other graphNode that the current node cycles with
-                            graphNode.isDirty = false;
-                            if (null != graphNode.cyclePoint)
-                            {
-                                graphNode.cyclePoint.isDirty = false;
-                                graphNode.cyclePoint.isCyclic = true;
-                            }
-                        }
-                        else if (!graphNode.isDirty)
-                        {
-                            if (core.Options.ElementBasedArrayUpdate)
-                            {
-                                UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            }
-                            graphNode.isDirty = true;
-                            graphNode.forPropertyChanged = propertyChanged;
-                            nodesMarkedDirty++;
-                            
-                            // On debug mode:
-                            //      we want to mark all ssa statements dirty for an if the lhs pointer is a new instance.
-                            //      In this case, the entire line must be re-executed
-                            //      
-                            //  Given:
-                            //      x = 1
-                            //      p = p.f(x) 
-                            //      x = 2
-                            //
-                            //  To SSA:
-                            //
-                            //      x = 1
-                            //      t0 = p -> we want to execute from here of member function 'f' returned a new instance of 'p'
-                            //      t1 = x
-                            //      t2 = t0.f(t1)
-                            //      p = t2
-                            //      x = 2
-                            if (null != executingGraphNode.lastGraphNode && executingGraphNode.lastGraphNode.reExecuteExpression)
-                            {
-                                executingGraphNode.lastGraphNode.reExecuteExpression = false;
-                                //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
-                                {
-                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
-                                    var firstGraphNode = AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
-                                    firstGraphNode.isDirty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return nodesMarkedDirty;
-        }
-
-        //
-        // Comment Jun: Revised 
-        //
-        //  proc UpdateGraphNodeDependency(execnode)
-        //      foreach node in graphnodelist 
-        //          if execnode.lhs is equal to node.lhs
-        //              if execnode.HasDependents() 
-        //                  if execnode.Dependents() is not equal to node.Dependents()
-        //                      node.RemoveDependents()
-        //                  end
-        //              end
-        //          end
-        //      end
-        //  end
-        //
-        private void UpdateGraphNodeDependency(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
-        {
-            if (gnode.UID >= executingNode.UID // for previous graphnodes
-                || gnode.updateNodeRefList.Count == 0
-                || gnode.updateNodeRefList.Count != executingNode.updateNodeRefList.Count
-                || gnode.isAutoGenerated
-                || !gnode.isActive  // If the graphnode is inactive there is no need to update it
-                )
-            {
-                return;
-            }
-
-            for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
-            {
-                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
-                {
-                    return;
-                }
-
-                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                {
-                    // These nodes are within the same expression, no redifinition can occur
-                    return;
-                }
-            }
-
-            //if (executingNode.dependentList.Count > 0)
-            {
-                // if execnode.Dependents() is not equal to node.Dependents()
-                // TODO Jun: Extend this check
-                bool areDependentsEqual = false;
-                if (!areDependentsEqual)
-                {
-                    gnode.dependentList.Clear();
-
-                    // GC all the temporaries associated with the redefined variable
-                    // Given:
-                    //      a = A.A()
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      a = t0
-                    //      a = 10      // Redefinition of 'a' will GC 't0'
-                    //
-                    // Another example
-                    // Given:
-                    //      a = {A.A()}
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      t1 = {t0}
-                    //      a = t1
-                    //      a = 10      // Redefinition of 'a' will GC t0 and t1
-                    //
-                    GCAnonymousSymbols(gnode.symbolListWithinExpression);
-                    gnode.symbolListWithinExpression.Clear();
-                    gnode.isActive = false;
-                }
-            }
-        }
-
+        
         private void UpdateLanguageBlockDependencyGraph(int entry)
         {
             int setentry = entry;

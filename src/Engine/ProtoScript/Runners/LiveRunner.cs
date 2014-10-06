@@ -240,7 +240,6 @@ namespace ProtoScript.Runners
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
-
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
@@ -1622,7 +1621,6 @@ namespace ProtoScript.Runners
             runnerCore.Heap.Verify();
 #endif
         }
-
 
         private void SynchronizeInternal(string code)
         {
