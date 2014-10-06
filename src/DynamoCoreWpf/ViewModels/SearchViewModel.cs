@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -8,6 +9,8 @@ using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -76,10 +79,10 @@ namespace Dynamo.ViewModels
                 if (selectedIndex != value)
                 {
                     if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = false;
+                        visibleSearchResults[selectedIndex].Model.IsSelected = false;
                     selectedIndex = value;
                     if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = true;
+                        visibleSearchResults[selectedIndex].Model.IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -108,18 +111,18 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     This property is observed by SearchView to see the search results
         /// </value>
-        public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
+        public ObservableCollection<SearchElementBaseViewModel> SearchResults { get; private set; }
 
         /// <summary>
         /// A category representing the "Top Result"
         /// </summary>
-        private BrowserRootElement topResult;
+        private BrowserRootElementViewModel topResult;
 
         /// <summary>
         ///     An ordered list representing all of the visible items in the browser.
         ///     This is used to manage up-down navigation through the menu.
         /// </summary>
-        private List<BrowserItem> visibleSearchResults = new List<BrowserItem>();
+        private List<BrowserItemViewModel> visibleSearchResults = new List<BrowserItemViewModel>();
 
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
@@ -127,7 +130,9 @@ namespace Dynamo.ViewModels
             get { return searchScrollBarVisibility; }
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
-
+        
+        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
+            private set; }
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
@@ -143,22 +148,59 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
-        private static BrowserItem WrapElement(BrowserItem item)
-        {
-            
-        }
-
         private void InitializeCore()
         {
             SelectedIndex = 0;
-            SearchResults = new ObservableCollection<SearchElementBase>();
+            SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
+            BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
             Visible = false;
             searchText = "";
 
-            topResult = this.Model.AddRootCategoryToStart("Top Result");
+            topResult =
+                BrowserItemViewModel.Wrap(this.Model.AddRootCategoryToStart("Top Result")) as
+                    BrowserRootElementViewModel;
             
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
+
+            this.Model.RemoveEmptyCategories();
+
+            foreach (BrowserRootElement item in this.Model.BrowserRootCategories)
+            {
+                BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
+            }
+
+            this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
+
+            this.SortCategoryChildren();
+        }
+
+        /// <summary>
+        /// Helper method for synchronization of the Model observable collections
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (BrowserRootElement item in e.NewItems.OfType<BrowserRootElement>())
+                    {
+                        BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    BrowserRootCategories.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        var vm = BrowserRootCategories.First(x => x.Model == item);
+                        BrowserRootCategories.Remove(vm);
+                    }
+                    break;
+            }
         }
 
         #endregion
@@ -173,6 +215,14 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region Search
+
+        internal void SortCategoryChildren()
+        {
+            foreach (var item in this.BrowserRootCategories)
+            {
+                item.RecursivelySort();
+            }
+        }
 
         private void ModelOnRequestSync(object sender, EventArgs eventArgs)
         {
@@ -197,27 +247,19 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            //var sw = new Stopwatch();
-
-            //sw.Start();
-
             var result = this.Model.Search(query).ToList();
 
-            //sw.Stop();
-            
-            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
-
             // Remove old execute handler from old top result
-            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
+            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElementViewModel)
             {
-                var oldTopResult = topResult.Items.First() as NodeSearchElement;
-                oldTopResult.Executed -= this.ExecuteElement;
+                var oldTopResult = topResult.Items.First() as NodeSearchElementViewModel;
+                oldTopResult.Model.Executed -= this.ExecuteElement;
             }
 
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
             {
-                visibleSearchResults[SelectedIndex].IsSelected = false;
+                visibleSearchResults[SelectedIndex].Model.IsSelected = false;
             }
 
             // clear visible results list
@@ -233,7 +275,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // hide the top result
-                topResult.Visibility = false;
+                topResult.Model.Visibility = false;
                 return;
             }
 
@@ -247,7 +289,7 @@ namespace Dynamo.ViewModels
             // if there are any results, add the top result 
             if (result.Any() && result.ElementAt(0) is NodeSearchElement)
             {
-                topResult.Items.Clear();
+                topResult.Model.Items.Clear();
 
                 var firstRes = (result.ElementAt(0) as NodeSearchElement);
 
@@ -256,11 +298,11 @@ namespace Dynamo.ViewModels
 
                 var catName = MakeShortCategoryString(firstRes.FullCategoryName);
 
-                var breadCrumb = new BrowserInternalElement(catName, topResult);
+                var breadCrumb = new BrowserInternalElement(catName, topResult.Model);
                 breadCrumb.AddChild(copy);
-                topResult.AddChild(breadCrumb);
+                topResult.Model.AddChild(breadCrumb);
 
-                topResult.SetVisibilityToLeaves(true);
+                topResult.Model.SetVisibilityToLeaves(true);
                 copy.ExpandToRoot();
             }
 
@@ -278,18 +320,23 @@ namespace Dynamo.ViewModels
                 baseBrowserItem.Items.Add(root);
             }
 
-            baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
+            var vl = new List<BrowserItem>();
+            baseBrowserItem.GetVisibleLeaves(ref vl);
+
+            this.visibleSearchResults = vl.Select(BrowserItemViewModel.Wrap).ToList();
 
             if (visibleSearchResults.Any())
             {
                 this.SelectedIndex = 0;
-                visibleSearchResults[0].IsSelected = true;
+                visibleSearchResults[0].Model.IsSelected = true;
             }
 
             SearchResults.Clear();
-            visibleSearchResults.ToList()
-                .ForEach(x => SearchResults.Add((NodeSearchElement)x));
 
+            foreach (var x in visibleSearchResults.OfType<NodeSearchElementViewModel>())
+            {
+                SearchResults.Add(x);
+            }
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
@@ -401,7 +448,7 @@ namespace Dynamo.ViewModels
             if (SelectedIndex == -1)
                 return;
 
-            SearchText = SearchResults[SelectedIndex].Name;
+            SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
         #endregion
@@ -421,12 +468,12 @@ namespace Dynamo.ViewModels
             if (visibleSearchResults.Count <= SelectedIndex)
                 return;
 
-            if (!(visibleSearchResults[SelectedIndex] is SearchElementBase)) return;
+            if (!(visibleSearchResults[SelectedIndex].Model is SearchElementBase)) return;
 
-            ExecuteElement(visibleSearchResults[SelectedIndex] as SearchElementBase);
+            ExecuteElement(visibleSearchResults[SelectedIndex].Model as SearchElementBase);
         }
 
-        private void ExecuteElement(SearchElementBase searchElement)
+        private void ExecuteElement(BrowserItem searchElement)
         {
             dynamic ele = searchElement;
             ExecuteElement(ele);

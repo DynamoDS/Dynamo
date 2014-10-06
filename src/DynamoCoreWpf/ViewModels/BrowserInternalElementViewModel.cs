@@ -11,7 +11,6 @@ namespace Dynamo.Wpf.ViewModels
     {
         public BrowserInternalElementViewModel(BrowserInternalElement model)
             : base(model)
-        {
-        }
+        {}
     }
 }

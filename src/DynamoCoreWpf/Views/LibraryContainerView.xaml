@@ -9,6 +9,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
+             xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              Visibility="Visible"
@@ -542,16 +543,16 @@
                 </Style>
 
                 <Style TargetType="{x:Type TreeViewItem}"
-                       d:DataContext="{d:DesignInstance search:BrowserItem }">
+                       d:DataContext="{d:DesignInstance viewModels:BrowserItemViewModel }">
                     <Setter Property="Focusable"
                             Value="False"></Setter>
                     <Setter Property="IsExpanded"
-                            Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
+                            Value="{Binding Model.IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected"
-                            Value="{Binding IsSelected}"></Setter>
+                            Value="{Binding Model.IsSelected}"></Setter>
                     <Setter Property="Visibility">
                         <Setter.Value>
-                            <Binding Path="Visibility"
+                            <Binding Path="Model.Visibility"
                                      Converter="{StaticResource BooleanToVisibilityConverter}"
                                      ConverterParameter="Collapse" />
                         </Setter.Value>
@@ -604,7 +605,7 @@
                                                                   IsHitTestVisible="False"
                                                                   Style="{StaticResource ExpandCollapseToggleStyle}"
                                                                   ClickMode="Press"
-                                                                  IsChecked="{Binding IsExpanded, Mode=OneWay}" />
+                                                                  IsChecked="{Binding Model.IsExpanded, Mode=OneWay}" />
 
                                                     <Border Margin="5,0,5,0"
                                                             Name="NodeName"
@@ -716,7 +717,7 @@
                                         <Grid>
                                             <TextBlock TextWrapping="Wrap"
                                                        MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
+                                                       Text="{Binding Path=Model.Description}"></TextBlock>
                                         </Grid>
                                     </dynui:DynamoToolTip>
                                 </Setter.Value>
@@ -733,7 +734,7 @@
 
             <TreeView Name="SearchTreeView"
                       Background="Blue"
-                      ItemsSource="{Binding Path=Model.BrowserRootCategories}"
+                      ItemsSource="{Binding Path=BrowserRootCategories}"
                       Style="{StaticResource SearchTreeView}"
                       BorderThickness="0"
                       Grid.Column="0"
@@ -749,7 +750,7 @@
 
                 <TreeView.Resources>
 
-                    <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:BrowserRootElementViewModel}"
                                               ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30"
@@ -757,32 +758,32 @@
                                 BorderBrush="#2F2F2F">
                             <TextBlock Foreground="#DDD"
                                        FontSize="13"
-                                       Text="{Binding Path=Name}"
+                                       Text="{Binding Path=Model.Name}"
                                        VerticalAlignment="Center" />
                         </Border>
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:BrowserInternalElementViewModel}"
                                               ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30">
                             <TextBlock Foreground="#DDD"
                                        FontSize="13"
-                                       Text="{Binding Path=Name}"
+                                       Text="{Binding Path=Model.Name}"
                                        VerticalAlignment="Center" />
                         </Border>
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:NodeSearchElementViewModel}">
 
                         <StackPanel Orientation="Horizontal">
 
                             <Border Height="30">
                                 <TextBlock Foreground="#DDD"
                                            FontSize="13"
-                                           Text="{Binding Path=Name}"
+                                           Text="{Binding Path=Model.Name}"
                                            VerticalAlignment="Center" />
                             </Border>
 
@@ -790,7 +791,7 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:CustomNodeSearchElementViewModel}">
 
                         <StackPanel Orientation="Horizontal">
 
@@ -809,7 +810,7 @@
                             <Border Height="30">
                                 <TextBlock Foreground="#DDD"
                                            FontSize="13"
-                                           Text="{Binding Path=Name}"
+                                           Text="{Binding Path=Model.Name}"
                                            VerticalAlignment="Center" />
                             </Border>
 

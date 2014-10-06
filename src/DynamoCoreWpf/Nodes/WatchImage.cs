@@ -15,7 +15,6 @@ using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]

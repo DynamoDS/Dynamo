@@ -690,9 +690,6 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-            this.SearchModel.RemoveEmptyCategories();
-            this.SearchModel.SortCategoryChildren();
-
             Logger.Log("Welcome to Dynamo!");
         }
 

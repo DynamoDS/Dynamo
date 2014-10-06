@@ -218,10 +218,6 @@ namespace Dynamo.Search
             this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
-        internal void SortCategoryChildren()
-        {
-            this.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
-        }
 
         internal void RemoveEmptyRootCategory(string categoryName)
         {

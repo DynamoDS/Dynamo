@@ -14,15 +14,6 @@ namespace Dynamo.Search
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
         /// <summary>
-        /// Sort this items children and then tell its children and recurse on children
-        /// </summary>
-        public void RecursivelySort()
-        {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-            this.Items.ToList().ForEach(x=>x.RecursivelySort());
-        }
-
-        /// <summary>
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
         /// </summary>
         /// <param name="items">The accumulator</param>
@@ -149,6 +140,16 @@ namespace Dynamo.Search
         }
 
         public abstract void Execute();
+
+        public delegate void BrowserItemHandler(BrowserItem ele);
+        public event BrowserItemHandler Executed;
+        protected void OnExecuted()
+        {
+            if (Executed != null)
+            {
+                Executed(this);
+            }
+        }
 
     }
 }
