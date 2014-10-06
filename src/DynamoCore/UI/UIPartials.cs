@@ -471,7 +471,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
             {
-                DataContext = nodeUI.ViewModel,
+                DataContext = this,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
