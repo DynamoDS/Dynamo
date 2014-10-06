@@ -59,8 +59,8 @@ namespace Dynamo.TestInfrastructure
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
-                    DynamoViewModel.UndoRedoCommand undoCommand =
-                        new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                    DynamoModel.UndoRedoCommand undoCommand =
+                        new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
@@ -71,8 +71,8 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoViewModel.RunCancelCommand runCancel =
-                    new DynamoViewModel.RunCancelCommand(false, false);
+                DynamoModel.RunCancelCommand runCancel =
+                    new DynamoModel.RunCancelCommand(false, false);
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
@@ -129,32 +129,32 @@ namespace Dynamo.TestInfrastructure
                 double coordinatesX = node.X * rand.NextDouble();
                 double coordinatesY = node.Y * rand.NextDouble();
 
-                DynamoViewModel.CreateNodeCommand createNodeNumber1 =
-                    new DynamoViewModel.CreateNodeCommand(guidNumber, "Number", coordinatesX,
+                DynamoModel.CreateNodeCommand createNodeNumber1 =
+                    new DynamoModel.CreateNodeCommand(guidNumber, "Number", coordinatesX,
                         coordinatesY, false, true);
 
                 DynamoViewModel.ExecuteCommand(createNodeNumber1);
 
-                DynamoViewModel.MakeConnectionCommand connToStart1 =
-                    new DynamoViewModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                DynamoViewModel.MakeConnectionCommand connToStart2 =
-                    new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.End);
+                DynamoModel.MakeConnectionCommand connToStart1 =
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.Begin);
+                DynamoModel.MakeConnectionCommand connToStart2 =
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.End);
 
-                DynamoViewModel.MakeConnectionCommand connToAmount1 =
-                    new DynamoViewModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                DynamoViewModel.MakeConnectionCommand connToAmount2 =
-                    new DynamoViewModel.MakeConnectionCommand(node.GUID, 1, PortType.INPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.End);
+                DynamoModel.MakeConnectionCommand connToAmount1 =
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.Begin);
+                DynamoModel.MakeConnectionCommand connToAmount2 =
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 1, PortType.INPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.End);
 
-                DynamoViewModel.MakeConnectionCommand connToStep1 =
-                    new DynamoViewModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-                DynamoViewModel.MakeConnectionCommand connToStep2 =
-                    new DynamoViewModel.MakeConnectionCommand(node.GUID, 2, PortType.INPUT,
-                        DynamoViewModel.MakeConnectionCommand.Mode.End);
+                DynamoModel.MakeConnectionCommand connToStep1 =
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.Begin);
+                DynamoModel.MakeConnectionCommand connToStep2 =
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 2, PortType.INPUT,
+                        DynamoModel.MakeConnectionCommand.Mode.End);
 
                 DynamoViewModel.ExecuteCommand(connToStart1); //"Number" with "Number Sequence" on Start
                 DynamoViewModel.ExecuteCommand(connToStart2); //"Number" with "Number Sequence" on Start

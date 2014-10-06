@@ -15,17 +15,35 @@ namespace Dynamo.Tests
         public override void Init()
         {
             base.Init();
+            libraryServices = LibraryServices.GetInstance();
+            RegisterEvents();
+        }
+
+        [TearDown]
+        public override void Cleanup()
+        {
+            UnRegisterEvents();
+            libraryServices = null;
+            base.Cleanup();
+        }
+
+        private void RegisterEvents()
+        {
+            libraryServices.LibraryLoaded += OnLibraryLoaded;
+            libraryServices.LibraryLoadFailed += OnLibraryLoadFailed;
+        }
+
+        private void UnRegisterEvents()
+        {
+            libraryServices.LibraryLoaded -= OnLibraryLoaded;
+            libraryServices.LibraryLoadFailed -= OnLibraryLoadFailed;
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestLoadNoNamespaceClass()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
+            LibraryLoaded = false;
 
             string libraryPath = "FFITarget.dll";
 
@@ -34,7 +52,7 @@ namespace Dynamo.Tests
             if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
+                Assert.IsTrue(LibraryLoaded);
             }
 
             // Get function groups for global classes with no namespace
@@ -46,14 +64,31 @@ namespace Dynamo.Tests
             {
                 var ctorfg = functions.Where(x => x.Functions.Where(y => y.Type == FunctionType.Constructor).Any());
                 Assert.IsTrue(ctorfg.Any());
-                foreach(var fg in ctorfg)
+                foreach (var fg in ctorfg)
                 {
-                    foreach(var ctor in fg.Functions)
-                        Assert.IsTrue(ctor.ClassName == ctor.UnqualifedClassName);   
+                    foreach (var ctor in fg.Functions)
+                        Assert.IsTrue(ctor.ClassName == ctor.UnqualifedClassName);
                 }
-                
+
             }
         }
+
+        public static void OnLibraryLoaded(object sender, EventArgs e)
+        {
+            LibraryLoaded = true;
+        }
+
+        public static void OnLibraryLoadFailed(object sender, EventArgs e)
+        {
+            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
+            if (null != a)
+                Assert.Fail("Failed to load library: " + a.LibraryPath);
+            else
+                Assert.Fail("Failed to load library");
+        }
+
+        private static bool LibraryLoaded { get; set; }
+        private LibraryServices libraryServices;
 
         [Test]
         [Category("UnitTests")]

@@ -13,7 +13,7 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -345,20 +345,20 @@ namespace Dynamo.Tests
             const string description = "Description";
             const string category = "Custom Node Category";
 
-            ViewModel.ExecuteCommand(new DynamoViewModel.CreateCustomNodeCommand(
+            ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(
                     Guid.NewGuid(),
                     name,
                     category,
                     description,
                     true));
 
-            ViewModel.ExecuteCommand(new DynamoViewModel.CreateNodeCommand(
+            ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 Guid.NewGuid(),
                 typeof(Symbol).ToString(),
                 0, 0,
                 true, true));
 
-            ViewModel.ExecuteCommand(new DynamoViewModel.CreateNodeCommand(
+            ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 Guid.NewGuid(),
                 typeof(Output).ToString(),
                 0, 0, true, true));

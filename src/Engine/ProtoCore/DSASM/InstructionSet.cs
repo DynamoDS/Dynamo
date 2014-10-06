@@ -594,25 +594,7 @@ namespace ProtoCore.DSASM
 
         public static StackValue BuildString(string str, Heap heap)
         {
-            var svchars = new List<StackValue>();
-
-            foreach (char ch in str)
-            {
-                svchars.Add(BuildChar(ch));
-            }
-
-            lock (heap.cslock)
-            {
-                int size = str.Length;
-                int ptr = heap.Allocate(size);
-
-                for (int i = 0; i < size; ++i)
-                {
-                    heap.Heaplist[ptr].Stack[i] = BuildChar(str[i]);
-                }
-
-                return BuildString(ptr);
-            }
+            return heap.AllocateString(str);
         }
 
         public static StackValue BuildBoolean(Boolean b)

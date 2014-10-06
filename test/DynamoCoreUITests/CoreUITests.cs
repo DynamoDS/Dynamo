@@ -52,7 +52,7 @@ namespace DynamoCoreUITests
         public void CanHideConsoleWhenShown()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            Assert.False(ViewModel.ConsoleHeight > 0);
+            Assert.True(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace DynamoCoreUITests
         public void CanShowConsoleWhenHidden()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            Assert.False(ViewModel.ConsoleHeight > 0);
+            Assert.True(ViewModel.ConsoleHeight > 0);
 
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            Assert.True(ViewModel.ConsoleHeight > 0);
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         #endregion
@@ -445,11 +445,11 @@ namespace DynamoCoreUITests
             #endregion
 
             #region ConsoleHeight
-            int expectedHeight = 0;;
+            int expectedHeight = 100; ;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
 
-            expectedHeight = 100;
+            expectedHeight = 0;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
             #endregion
@@ -465,18 +465,27 @@ namespace DynamoCoreUITests
             #endregion
 
             #region Collect Information Option
-            // First time run, check if dynamo did set it back to false after running
-            Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
+            {
+                // Backup the value of Dynamo.IsTestMode and restore it later. The 
+                // reason for this is 'IsUsageReportingApproved' only returns the 
+                // actual value when not running in test mode.
+                var isTestMode = DynamoModel.IsTestMode;
 
-            // CollectionInfoOption To TRUE
-            UsageReportingManager.Instance.SetUsageReportingAgreement(true);
-            RestartTestSetup();
-            Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // First time run, check if dynamo did set it back to false after running
+                Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
-            // CollectionInfoOption To FALSE
-            UsageReportingManager.Instance.SetUsageReportingAgreement(false);
-            RestartTestSetup();
-            Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // CollectionInfoOption To TRUE
+                UsageReportingManager.Instance.SetUsageReportingAgreement(true);
+                RestartTestSetup(startInTestMode: false);
+                Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+
+                // CollectionInfoOption To FALSE
+                UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+                RestartTestSetup(startInTestMode: false);
+                Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
+
+                DynamoModel.IsTestMode = isTestMode; // Restore the orignal value.
+            }
             #endregion
 
             #region Save And Load of PreferenceSettings
@@ -516,11 +525,11 @@ namespace DynamoCoreUITests
             #endregion
 
             #endregion
-            
+
             View.Close();
         }
 
-        private void RestartTestSetup()
+        private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it
             View.Close();
@@ -528,7 +537,10 @@ namespace DynamoCoreUITests
 
             if (ViewModel != null)
             {
-                ViewModel.Model.ShutDown(false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel = null;
             }
 
@@ -538,7 +550,7 @@ namespace DynamoCoreUITests
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = startInTestMode
                 });
 
             ViewModel = DynamoViewModel.Start(

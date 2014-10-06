@@ -1,4 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 
 using Dynamo.PackageManager;
@@ -12,6 +15,21 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         public Package Model { get; private set; }
 
+        public bool HasAdditionalFiles
+        {
+            get { return this.Model.AdditionalFiles.Any(); }
+        }
+
+        public bool HasCustomNodes
+        {
+            get { return this.Model.LoadedCustomNodes.Any();  }
+        }
+
+        public bool HasAssemblies
+        {
+            get { return this.Model.LoadedAssemblies.Any(); }
+        }
+
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
@@ -19,6 +37,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
+        public DelegateCommand UnmarkForUninstallationCommand { get; set; }
+        public DelegateCommand GoToRootDirectoryCommand { get; set; }
 
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
@@ -32,21 +52,55 @@ namespace Dynamo.ViewModels
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
+            UnmarkForUninstallationCommand = new DelegateCommand(this.UnmarkForUninstallation, this.CanUnmarkForUninstallation);
+            GoToRootDirectoryCommand = new DelegateCommand(this.GoToRootDirectory, this.CanGoToRootDirectory);
 
+            this.Model.PropertyChanged += ModelOnPropertyChanged;
             this.dynamoViewModel.Model.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
+        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "MarkedForUninstall")
+            {
+                this.UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
+                this.UninstallCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void UnmarkForUninstallation()
+        {
+            this.Model.UnmarkForUninstall( this.dynamoViewModel.Model.PreferenceSettings );
+        }
+
+        private bool CanUnmarkForUninstallation()
+        {
+            return this.Model.MarkedForUninstall;
+        }
+
         private void Uninstall()
         {
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (this.Model.LoadedAssemblies.Any())
+            {
+                var resAssem =
+                    MessageBox.Show("Dynamo and its host application must restart before uninstall takes effect.",
+                        "Uninstalling Package",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Exclamation);
+                if (resAssem == MessageBoxResult.Cancel) return;
+            }
+
+            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n"+
+                " You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
             try
             {
-                Model.UninstallCore();
+                var dynModel = this.dynamoViewModel.Model;
+                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
             }
             catch (Exception e)
             {
@@ -56,7 +110,18 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            return !Model.InUse();
+            return (!this.Model.InUse(this.dynamoViewModel.Model) || this.Model.LoadedAssemblies.Any()) 
+                && !this.Model.MarkedForUninstall;
+        }
+
+        private void GoToRootDirectory()
+        {
+            Process.Start(this.Model.RootDirectory);
+        }
+
+        private bool CanGoToRootDirectory()
+        {
+            return true;
         }
 
         private void Deprecate()
@@ -87,7 +152,7 @@ namespace Dynamo.ViewModels
 
         private void PublishNewPackageVersion()
         {
-            this.Model.RefreshCustomNodesFromDirectory();
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = true;
 
@@ -101,7 +166,7 @@ namespace Dynamo.ViewModels
 
         private void PublishNewPackage()
         {
-            this.Model.RefreshCustomNodesFromDirectory();
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = false;
 

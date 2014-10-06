@@ -9,7 +9,7 @@ using RTF.Framework;
 using DividedSurface = Revit.Elements.DividedSurface;
 using Form = Revit.Elements.Form;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     public class DividedSurfaceTests : RevitNodeTestBase
