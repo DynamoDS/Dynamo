@@ -24,6 +24,15 @@ namespace Dynamo.Core.Threading
         internal IEnumerable<string> DrawableIds { get; set; }
     }
 
+    /// <summary>
+    /// An asynchronous task to regenerate render packages for a given node. 
+    /// During execution the task retrieves the corresponding IGraphicItem from 
+    /// EngineController through a set of drawable identifiers supplied by the 
+    /// node. These IGraphicItem objects then fill the IRenderPackage objects 
+    /// with tessellated geometric data. Each of the resulting IRenderPackage 
+    /// objects is then tagged with a label.
+    /// </summary>
+    /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
         #region Class Data Members and Properties
