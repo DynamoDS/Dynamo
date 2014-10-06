@@ -599,6 +599,7 @@ namespace Dynamo.Search
 
             // Find in some category BrowserInternalElementForClasses, that is full of classes.
             var classes = category.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
+            if (classes == null) return false;
 
             // Search among all classes one, that was needed.
             var searchedClass = classes.Items.FirstOrDefault(x => x.Name == className);
