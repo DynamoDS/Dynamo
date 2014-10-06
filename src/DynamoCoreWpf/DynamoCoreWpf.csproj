@@ -87,10 +87,7 @@
     <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\InternalNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\DSVarArgFunctionNodeViewCustomization.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\WatchImageNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLibrary.cs" />
-    <Compile Include="Nodes\Watch.cs" />
-    <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\UsageReportingManager.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
@@ -209,7 +206,6 @@
     <Compile Include="Views\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\WatchNodeViewCustomization.cs" />
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />

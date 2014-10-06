@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -105,6 +106,10 @@
     </Compile>
     <Compile Include="Selection.cs" />
     <Compile Include="SelectionBaseNodeViewCustomization.cs" />
+    <Compile Include="Watch.cs" />
+    <Compile Include="WatchImage.cs" />
+    <Compile Include="WatchImageNodeViewCustomization.cs" />
+    <Compile Include="WatchNodeViewCustomization.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +132,10 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

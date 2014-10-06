@@ -44,3 +44,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
+[assembly: InternalsVisibleTo("DSCoreNodesUI")]
+

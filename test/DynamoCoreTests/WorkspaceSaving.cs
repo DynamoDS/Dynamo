@@ -9,6 +9,8 @@ using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
+
 using NUnit.Framework;
 using Dynamo.ViewModels;
 
@@ -679,11 +681,11 @@ namespace Dynamo.Tests
             var res1 = ViewModel.SearchViewModel.SearchResults[0];
             var res2 = ViewModel.SearchViewModel.SearchResults[1];
 
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
 
-            var node1 = res1 as CustomNodeSearchElement;
-            var node2 = res2 as CustomNodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElementViewModel;
+            var node2 = res2 as CustomNodeSearchElementViewModel;
 
             Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
                           (node1.Guid == newId && node2.Guid == oldId));
