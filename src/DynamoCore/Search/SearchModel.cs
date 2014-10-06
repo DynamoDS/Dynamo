@@ -499,7 +499,7 @@ namespace Dynamo.Search
             // create it.
             if (parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault() == null)
             {
-                parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
+                parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent));
             }
 
             browserInternalElementForClasses = parent.Items[0] as BrowserInternalElementForClasses;
