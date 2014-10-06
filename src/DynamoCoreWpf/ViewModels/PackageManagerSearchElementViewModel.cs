@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+
 using Greg.Responses;
 
 using Microsoft.Practices.Prism.Commands;
@@ -16,6 +19,7 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownloadLatest { get; set; }
         public ICommand UpvoteCommand { get; set; }
         public ICommand DownvoteCommand { get; set; }
+        public ICommand ToggleIsExpandedCommand { get; set; }
 
         public PackageManagerSearchElement Model { get; private set; }
 
@@ -26,6 +30,7 @@ namespace Dynamo.PackageManager.ViewModels
             this.DownloadLatest = new DelegateCommand((Action)element.Execute);
             this.UpvoteCommand = new DelegateCommand((Action)element.Upvote);
             this.DownvoteCommand = new DelegateCommand((Action)element.Downvote);
+            this.ToggleIsExpandedCommand = new DelegateCommand((Action)element.Execute);
         }
 
         public List<Tuple<PackageVersion, DelegateCommand>> Versions

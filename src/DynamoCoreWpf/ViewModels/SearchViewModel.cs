@@ -143,6 +143,11 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
+        private static BrowserItem WrapElement(BrowserItem item)
+        {
+            
+        }
+
         private void InitializeCore()
         {
             SelectedIndex = 0;

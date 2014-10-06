@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
 
 using Greg.Responses;
 
@@ -148,6 +142,10 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        public override void Execute()
+        {
+            this.IsExpanded = !this.IsExpanded;
+        }
     }
 
 }

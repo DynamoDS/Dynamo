@@ -104,18 +104,6 @@ namespace Dynamo.Search.SearchElements
             return f;
         }
 
-        private void ToggleIsVisible(object parameter)
-        {
-            if (this.DescriptionVisibility != true)
-            {
-                this.DescriptionVisibility = true;
-            }
-            else
-            {
-                this.DescriptionVisibility = false;
-            }
-        }
-
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())

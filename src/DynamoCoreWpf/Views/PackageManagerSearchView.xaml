@@ -179,7 +179,7 @@
                                                     <VirtualizingStackPanel Orientation="Vertical" Margin="5,0,5,5">
                                                         <VirtualizingStackPanel Orientation="Horizontal" Margin="0">
                                                             <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{StaticResource SBadgeButton}" />
-                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{StaticResource SBadgeButton}" />
+                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpandedCommand}" Style="{StaticResource SBadgeButton}" />
                                                         </VirtualizingStackPanel>
                                                     </VirtualizingStackPanel>
 

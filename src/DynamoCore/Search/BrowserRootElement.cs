@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Dynamo.Search
 {
-    public class BrowserInternalElement : BrowserItem
+    public class BrowserRootElement : BrowserItem
     {
         /// <summary>
         ///     The items inside of the browser item
@@ -10,32 +11,7 @@ namespace Dynamo.Search
         private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
-        public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
-
-        public BrowserItem Parent { get; set; }
-        public BrowserItem OldParent { get; set; }
-
-        public void ReturnToOldParent()
-        {
-            if (this.OldParent == null) return;
-
-            this.OldParent.AddChild(this);
-        }
-
-        public void ExpandToRoot()
-        {
-            if (this.Parent == null)
-                return;
-
-            this.Parent.IsExpanded = true;
-            this.Parent.Visibility = true;
-
-            var parent = Parent as BrowserInternalElement;
-            if (parent != null)
-            {
-                parent.ExpandToRoot();
-            }
-        }
+        public ObservableCollection<BrowserRootElement> Siblings { get; set; }
 
         /// <summary>
         /// Name property </summary>
@@ -47,22 +23,24 @@ namespace Dynamo.Search
             get { return _name; }
         }
 
-        public BrowserInternalElement()
+        public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
-            this._name = "Default";
-            this.Parent = null;
-            this.OldParent = null;
-        }
-
-        public BrowserInternalElement(string name, BrowserItem parent)
-        {
+            this.Height = 32;
+            this.Siblings = siblings;
             this._name = name;
-            this.Parent = parent;
-            this.OldParent = null;
         }
 
+        public void SortChildren()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+        }
 
-        public string FullCategoryName { get; set; }
+        public BrowserRootElement(string name)
+        {
+            this.Height = 32;
+            this.Siblings = null;
+            this._name = name;
+        }
 
         public override void Execute()
         {
@@ -84,10 +62,11 @@ namespace Dynamo.Search
                 }
 
                 subElement.IsExpanded = true;
+
             }
 
             this.IsExpanded = endState;
         }
+
     }
 }
-

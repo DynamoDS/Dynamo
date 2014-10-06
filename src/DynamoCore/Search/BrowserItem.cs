@@ -11,7 +11,6 @@ namespace Dynamo.Search
 {
     public abstract class BrowserItem : NotificationObject
     {
-
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
         /// <summary>
@@ -149,99 +148,7 @@ namespace Dynamo.Search
             }
         }
 
-        public ToggleIsExpandedCommand _toggleIsExpanded;
-        public ToggleIsExpandedCommand ToggleIsExpanded
-        {
-            get
-            {
-                if (_toggleIsExpanded == null)
-                    _toggleIsExpanded = new ToggleIsExpandedCommand(this);
-                return _toggleIsExpanded;
-            }
-        }
+        public abstract void Execute();
 
-        public class ToggleIsExpandedCommand
-        {
-            private BrowserItem item;
-
-            public ToggleIsExpandedCommand(BrowserItem i)
-            {
-                this.item = i;
-            }
-
-            public void Execute(object parameters)
-            {
-                if (item is PackageManagerSearchElement)
-                {
-                    item.IsExpanded = !item.IsExpanded;
-                    return;
-                }
-
-                if (item is SearchElementBase)
-                {
-                    ((SearchElementBase)item).Execute();
-                    return;
-                }
-                var endState = !item.IsExpanded;
-                if (item is BrowserInternalElement)
-                {
-                    BrowserInternalElement element = (BrowserInternalElement)item;
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-                    }
-                }
-
-                if (item is BrowserRootElement)
-                {
-                    BrowserRootElement element = (BrowserRootElement)item;
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-
-                    }
-
-                }
-                item.IsExpanded = endState;
-            }
-
-            //public event EventHandler CanExecuteChanged
-            //{
-            //    add { CommandManager.RequerySuggested += value; }
-            //    remove { CommandManager.RequerySuggested -= value; }
-            //}
-
-            public bool CanExecute(object parameters)
-            {
-                return true;
-            }
-        }
     }
 }

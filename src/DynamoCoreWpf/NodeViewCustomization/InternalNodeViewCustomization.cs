@@ -64,7 +64,7 @@ namespace Dynamo.Wpf
             //
             // (model, view) => {
             //      var c = new NodeViewCustomizer();
-            //      c.CustomizeView( (NodeModelType) model, view );
+            //      c.CustomizeView( model as NodeModelType, view );
             //      return new OnceDisposable( c );
             // }
 
@@ -81,8 +81,8 @@ namespace Dynamo.Wpf
             var varExp = Expression.Variable(customizerType);
             var assignExp = Expression.Assign(varExp, custExp);
 
-            // c.CustomizeView( (NodeModelType) model, view );
-            UnaryExpression castModelExp = Expression.Convert(modelParam, nodeModelType);
+            // c.CustomizeView( model as NodeModelType, view );
+            UnaryExpression castModelExp = Expression.TypeAs(modelParam, nodeModelType);
             var invokeExp = Expression.Call(varExp, customizeViewMethodInfo, castModelExp, viewParam);
 
             // new OnceDisposable(c);
