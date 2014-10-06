@@ -220,6 +220,9 @@ namespace Dynamo.Search
 
         private const char CATEGORY_DELIMITER = '.';
 
+        // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
+        private BrowserInternalElementForClasses browserInternalElementForClasses;
+
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
         /// </summary>
@@ -482,22 +485,33 @@ namespace Dynamo.Search
             return tempCat;
         }
 
+        /// <summary>
+        ///  Add in browserInternalElementForClasses new class or gets this class, if it alredy exists.
+        /// </summary>
+        /// <param name="parent">Root category or namespace(nested class)</param>
+        /// <param name="childCategoryName">Name of class</param>
+        /// <param name="resourceAssembly">Assembly, where icon for class button can be found.]</param>
+        /// <returns>Class, in which insert methods</returns>
         internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
                                                  string resourceAssembly = "")
         {
             // Find in this category BrowserInternalElementForClasses, if it's not presented,
             // create it.
-            if (!parent.Items.OfType<BrowserInternalElementForClasses>().Any())
+            if (parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault() == null)
+            {
                 parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent, resourceAssembly));
+            }
+
+            browserInternalElementForClasses = parent.Items[0] as BrowserInternalElementForClasses;
 
             // Find among all presented classes requested class.
-            var allPresentedClasses = parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items;
+            var allPresentedClasses = browserInternalElementForClasses.Items;
             var requestedClass = allPresentedClasses.FirstOrDefault(x => x.Name == childCategoryName);
             if (requestedClass != null) return requestedClass;
 
             //  Add new class, if it wasn't found.
             var tempClass = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
-            parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault().Items.Add(tempClass);
+            browserInternalElementForClasses.Items.Add(tempClass);
             return tempClass;
         }
 
