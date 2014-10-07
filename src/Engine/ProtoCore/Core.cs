@@ -1685,7 +1685,6 @@ namespace ProtoCore
         private int tempLanguageId = 0;
 
         private bool cancellationPending = false;
-        private TextWriter executionLog;
 
         public bool CancellationPending
         {
@@ -1722,15 +1721,7 @@ namespace ProtoCore
         // that language block and fucntion has non-zero function index 
         public int FunctionCallDepth { get; set; }
 
-        public System.IO.TextWriter ExecutionLog
-        {
-            get { return executionLog; }
-            set
-            {
-                executionLog = value;
-                OnPropertyChanged("ExecutionLog");
-            }
-        }
+        public TextWriter ExecutionLog { get; set; }
 
         protected void OnDispose()
         {

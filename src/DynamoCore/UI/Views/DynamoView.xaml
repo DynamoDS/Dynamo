@@ -1100,7 +1100,7 @@
 
         <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ScrollViewer Name="LogScroller" 
@@ -1126,10 +1126,19 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
             </ScrollViewer>
-            <ScrollViewer Name="ExecutionLogScroller" Grid.Column="1" Grid.Row="0">
-                <TextBlock DataContext="{Binding Path=LiveRunnerViewModel}" 
+            <ScrollViewer Name="ExecutionLogScroller" 
+                          Width="800"
+                          Grid.Column="1" 
+                          Grid.Row="0" 
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          DataContext="{Binding Path=LiveRunnerViewModel}"
+                          Visibility="{Binding IsShowingExecutionLog, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <TextBlock 
                            Text="{Binding ExecutionLogText}" 
-                           Visibility="Visible"/>
+                           Margin="10" 
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
             </ScrollViewer>
         </Grid>
         
