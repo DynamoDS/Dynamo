@@ -308,31 +308,31 @@
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\aboutback.png" />
+    <Resource Include="UI\Images\AboutWindow\aboutback.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\autodeskLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\autodeskLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\background_texture.png" />
+    <Resource Include="UI\Images\AboutWindow\background_texture.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\close_hover.png" />
+    <Resource Include="UI\Images\AboutWindow\close_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\close_inactive.png" />
+    <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+    <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+    <Resource Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\logo_about.png" />
+    <Resource Include="UI\Images\AboutWindow\logo_about.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\add.png" />
