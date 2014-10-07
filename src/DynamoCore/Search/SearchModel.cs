@@ -549,7 +549,7 @@ namespace Dynamo.Search
             BrowserInternalElementForClasses element = 
                 parent.Items[0] as BrowserInternalElementForClasses;
 
-            return element.GetChildCategory(childCategoryName, resourceAssembly);    
+            return element.TryToGetChildCategory(childCategoryName, resourceAssembly);    
         }
 
         /// <summary>

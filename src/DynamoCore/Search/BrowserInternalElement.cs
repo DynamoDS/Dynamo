@@ -261,7 +261,15 @@ namespace Dynamo.Nodes.Search
             return searchedClass != null;
         }
 
-        public BrowserItem GetChildCategory(string childCategoryName, string resourceAssembly)
+
+        /// <summary>
+        /// Tries  to get child category, in fact child class.
+        /// If class was not found, then creates it.
+        /// </summary>
+        /// <param name="childCategoryName">Name of searched class</param>
+        /// <param name="resourceAssembly">Assembly with icons</param>
+        /// <returns></returns>
+        public BrowserItem TryToGetChildCategory(string childCategoryName, string resourceAssembly)
         {
             // Find among all presented classes requested class.
             var allPresentedClasses = Items;
