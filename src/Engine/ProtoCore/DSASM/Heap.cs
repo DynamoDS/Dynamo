@@ -342,13 +342,13 @@ namespace ProtoCore.DSASM
                 
                 ++exe.Core.FunctionCallDepth;
 
-                // TODO: Need to move isExplicitCall to DebugProps and come up with a more elegant solution for this
+                // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
-                bool explicitCall = exe.isExplicitCall;
+                bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
                 exe.Callr(pn.procId, classIndex, 1, ref explicitCall);
 
-                exe.isExplicitCall = tempFlag;
+                exe.IsExplicitCall = tempFlag;
 
                 --exe.Core.FunctionCallDepth;
             }

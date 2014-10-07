@@ -868,9 +868,16 @@ namespace ProtoCore.DSASM.Mirror
             // 4. Get all graphnpodes dependent on the symbol and mark them dirty
             const int outerBlock = 0;
             ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
-            nodesMarkedDirty = MirrorTarget.UpdateDependencyGraph(
-                graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, graphNode, exe.instrStreamList[outerBlock].dependencyGraph, outerBlock);
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, core.Options.ExecuteSSA, outerBlock);
 
+            // Mark reachable nodes as dirty
+            Validity.Assert(reachableGraphNodes != null);
+            nodesMarkedDirty = reachableGraphNodes.Count;
+            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+            {
+                gnode.isDirty = true;
+            }
 
             // 5. Re-execute the script - re-execution occurs after this call 
 
@@ -918,8 +925,7 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                        stackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit); 
 
                         core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
                     }

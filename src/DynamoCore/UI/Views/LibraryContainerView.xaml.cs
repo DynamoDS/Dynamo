@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -347,6 +348,20 @@ namespace Dynamo.Search
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
                 else
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
+            }
+        }
+
+        private void Edit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                var element = menuItem.DataContext as CustomNodeSearchElement;
+                if (element != null)
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
+                        dynamoViewModel.OpenCommand.Execute(element.Path);
+                }
             }
         }
 

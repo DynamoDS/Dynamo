@@ -1,5 +1,5 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" NodeName="Create List" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" NodeName="DSCoreNodesUI.CreateList" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" Modifiers="0" />
   <DragSelectionCommand X="323" Y="240" DragOperation="0" />
   <DragSelectionCommand X="473" Y="237" DragOperation="1" />

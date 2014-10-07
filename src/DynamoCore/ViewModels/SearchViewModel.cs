@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dynamo.Models;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -438,7 +439,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             this.dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -456,7 +457,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -472,7 +473,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

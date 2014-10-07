@@ -83,13 +83,6 @@ namespace Dynamo.Tests
             TestMigration(@".\Migration\TestMigration_Geometry_Curve.dyn");
         }
 
-        [Test, Category("Failure")]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Geometry_Experimental()
-        {
-            TestMigration(@".\Migration\TestMigration_Geometry_Experimental.dyn");
-        }
-
         [Test]
         [TestModel(@".\empty.rfa")]
         public void TestMigration_Geometry_Intersect()
