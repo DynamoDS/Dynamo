@@ -11,6 +11,7 @@ using Autodesk.DesignScript.Runtime;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
+using System.IO;
 
 namespace DSCore.File
 {
@@ -24,12 +25,101 @@ namespace DSCore.File
             RegisterAllPorts();
 
             Value = "";
+
+            workspace.DynamoModel.EvaluationCompleted += (sender, args) =>
+            {
+                ForceReExecuteOfNode = false;
+            };
+
+            this.PropertyChanged += valuePropertyChanged;
+
+        }
+
+        //void Workspace_OnModified()
+        //{
+        //    this.Workspace.DynamoModel.RunExpression();
+        //}
+
+        void valuePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Value"))
+            {
+                // This check is necessary since the property change event happens by default
+                // when a new/existing file is opened and the checkbox is unchecked by default
+                if (checkBox != null && checkBox.IsChecked == true)
+                    CreateFileWatcher();
+            }
+        }
+
+        private FileSystemWatcher watcher = null;
+        private const string defaultValue = "No file selected.";
+        private System.Windows.Controls.CheckBox checkBox = null;
+
+        protected void CreateFileWatcher()
+        {
+            RemoveFileWatcher();
+
+            // Do not attach file watcher if no file is selected
+            if (string.IsNullOrEmpty(Value) || Value.Equals(defaultValue))
+            {
+                return;
+            }
+
+            // Create new file watcher and register its "file changed" event
+            var dir = Path.GetDirectoryName(Value);
+
+            if (string.IsNullOrEmpty(dir))
+                dir = ".";
+
+            var name = Path.GetFileName(Value);
+
+            watcher = new FileSystemWatcher(dir, name)
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                EnableRaisingEvents = true
+            };
+
+            watcher.Changed += watcher_Changed;
+        }
+
+        protected void RemoveFileWatcher()
+        {
+            if (watcher != null)
+            {
+                watcher.Dispose();
+                watcher = null;
+            }
+        }
+
+        //public override bool ForceReExecuteOfNode
+        //{
+        //    get
+        //    {
+        //        return base.ForceReExecuteOfNode;
+        //    }
+        //    set
+        //    {
+        //        if (value)
+        //        {
+        //            this.Workspace.OnModified += Workspace_OnModified;
+        //        }
+        //        else
+        //        {
+        //            this.Workspace.OnModified -= Workspace_OnModified;
+        //        }
+        //        base.ForceReExecuteOfNode = value;
+        //    }
+        //}
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            ForceReExecuteOfNode = true;
+            RequiresRecalc = true;
         }
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
-
-            //add a button to the inputGrid on the dynElement
+            // add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -44,7 +134,7 @@ namespace DSCore.File
 
             var tb = new TextBox();
             if (string.IsNullOrEmpty(Value))
-                Value = "No file selected.";
+                Value = defaultValue;
 
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Center;
@@ -53,15 +143,33 @@ namespace DSCore.File
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { 
-                tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
-                view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
+            tb.TextChanged += delegate
+            {
+                tb.ScrollToHorizontalOffset(double.PositiveInfinity);
+                view.ViewModel.DynamoViewModel.ReturnFocusToSearch();
             };
-            tb.Margin = new Thickness(0,5,0,5);
+            tb.Margin = new Thickness(0, 5, 0, 5);
+
+            // Attach FileWatcher Checkbox
+            checkBox = new System.Windows.Controls.CheckBox
+            {
+                Content = "Attach FileWatcher",
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+            checkBox.Checked += (obj, args) =>
+            {
+                CreateFileWatcher();
+
+                // If a file has changed before turning on the filewatcher
+                // it is necessary to force execute it once turned on to update the node
+                watcher_Changed(null, null);
+            };
+            checkBox.Unchecked += (obj, args) => { RemoveFileWatcher(); };
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
             sp.Children.Add(tb);
+            sp.Children.Add(checkBox);
             view.inputGrid.Children.Add(sp);
 
             tb.DataContext = this;
@@ -74,6 +182,7 @@ namespace DSCore.File
         }
 
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
+
     }
 
     [NodeName("File Path")]

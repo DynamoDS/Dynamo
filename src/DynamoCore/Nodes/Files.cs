@@ -28,7 +28,8 @@ namespace Dynamo.Nodes
 
         FileWatch watch;
 
-        protected FileReaderBase(WorkspaceModel ws) : base(ws)
+        protected FileReaderBase(WorkspaceModel ws)
+            : base(ws)
         {
             handler = watcher_FileChanged;
             InPortData.Add(new PortData("path", "Path to the file"));
@@ -48,7 +49,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    class FileWatch : IDisposable
+    internal class FileWatch : IDisposable
     {
         public bool Changed { get; private set; }
 
@@ -82,7 +83,7 @@ namespace Dynamo.Nodes
         {
             Changed = true;
             if (FileChanged != null)
-                FileChanged(sender, e);
+                FileChanged(this, e);
         }
 
         public void Reset()
@@ -100,4 +101,7 @@ namespace Dynamo.Nodes
 
         #endregion
     }
+
+
+    
 }

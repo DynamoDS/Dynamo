@@ -28,7 +28,8 @@ namespace Dynamo.Nodes
     public class ReadExcelFile : FileReaderBase
     {
 
-        public ReadExcelFile(WorkspaceModel workspace) : base(workspace)
+        public ReadExcelFile(WorkspaceModel workspace)
+            : base(workspace)
         {
             OutPortData.Add(new PortData("workbook", "The workbook opened from the file"));
             RegisterAllPorts();
