@@ -231,6 +231,12 @@ namespace Dynamo.Nodes.Search
 
     public class BrowserInternalElementForClasses : BrowserItem
     {
+        private string name;
+        public override string Name
+        {
+            get { return name; }
+        }
+
         /// <summary>
         ///     The classes inside of the browser item
         /// </summary>
@@ -241,17 +247,11 @@ namespace Dynamo.Nodes.Search
             set { classesItems = value; } 
         }
 
-        private string _name;
-        public override string Name
-        {
-            get { return _name; }
-        }
-
         public BrowserItem Parent { get; set; }
 
         public BrowserInternalElementForClasses(string name, BrowserItem parent)
         {
-            this._name = name;
+            this.name = name;
             this.Parent = parent;
         }
     }
