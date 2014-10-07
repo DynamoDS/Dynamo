@@ -12,7 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Search;
 
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;
@@ -485,13 +485,16 @@ namespace Dynamo.UI.Controls
             get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
             set { SetValue(AttachmentSidePopupProperty, value); }
         }
+
+        public double HorizontalScrollOffset = 0;
+
         public LibraryToolTipPopup()
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
         }
@@ -555,7 +558,8 @@ namespace Dynamo.UI.Controls
 
                 case Side.Right:
                     x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                        + 2.5 * gap;
+                        + gap + HorizontalScrollOffset;
+
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)

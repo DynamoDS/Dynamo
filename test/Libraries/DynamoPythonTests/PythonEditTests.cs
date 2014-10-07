@@ -10,7 +10,7 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {

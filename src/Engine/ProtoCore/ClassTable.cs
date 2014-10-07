@@ -220,13 +220,13 @@ namespace ProtoCore.DSASM
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != AccessSpecifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.Compiler.AccessSpecifier.kPrivate);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == AccessSpecifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.Compiler.AccessSpecifier.kPublic;
                 }
 
                 if (isAccessible)
@@ -284,7 +284,7 @@ namespace ProtoCore.DSASM
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.access == AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
                 }
                 else if (classScope == myClassIndex) 
                 {
@@ -292,11 +292,11 @@ namespace ProtoCore.DSASM
                 }
                 else if (typeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.access != AccessSpecifier.kPrivate);
+                    isAccessible = (procNode.access != Compiler.AccessSpecifier.kPrivate);
                 }
                 else
                 {
-                    isAccessible = (procNode.access == AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
                 }
 
                 return procNode;

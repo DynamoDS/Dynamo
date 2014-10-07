@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Views
 {
@@ -13,14 +14,31 @@ namespace Dynamo.UI.Views
             InitializeComponent();
         }
 
-        private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        /// <summary>
+        /// When user tries to use mouse wheel there can be several cases.
+        /// </summary>
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            // 1 case. 
+            // User presses Shift and uses mouse wheel. That means user tries to 
+            // scroll horizontally to the right side, to see the whole long name of node.
+            // So, we go further, in scrollbar, that is under this one, that's why Handled is false.
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // 2 case.
+            // User uses just mouse wheel. That means user wants to scroll down LibraryView.
+            // So, we just change VerticalOffset, and there is no need to go further and change something.
+            // Set Handled to true.
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
-        private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
             if ((classButton == null) || !classButton.IsSelected) return;
