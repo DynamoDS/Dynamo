@@ -12,12 +12,12 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <!-- Region Converters -->
-            
+
             <!--Converter to Make class details not focusable-->
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            
+
             <!--EndRegion-->
 
             <!-- Region Expander Templates -->
@@ -141,9 +141,11 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
+
             <!--EndRegion-->
 
             <!-- Region DataContext Templates -->
+
             <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <StackPanel Orientation="Vertical"
@@ -284,7 +286,7 @@
                 </ListView>
             </DataTemplate>
 
-            <!-- Used for nested classes. E.g. classesfrom Revit. -->
+            <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
                 <Border Height="30">
@@ -295,7 +297,7 @@
                 </Border>
             </HierarchicalDataTemplate>
 
-            <!-- Used for categories that is full of methods, not classes. E.g. operators.-->
+            <!-- Used for categories that is full of memebers without classes. E.g. Operators.-->
             <DataTemplate x:Key="CategoryClassDetailsTemplate">
                 <Expander Header="{Binding Path=Name}"
                           OverridesDefaultStyle="True"
@@ -311,7 +313,8 @@
 
             <!--EndRegion-->
 
-            <!-- Region ScrollBar Templates-->
+            <!-- Region ScrollBar Template-->
+
             <ControlTemplate x:Key="ScrollViewerControlTemplate"
                              TargetType="{x:Type ScrollViewer}">
                 <Grid x:Name="Grid"
@@ -346,9 +349,11 @@
                                Width="8" />
                 </Grid>
             </ControlTemplate>
+
             <!--EndRegion-->
 
             <!-- Region Styles -->
+
             <Style x:Key="ExpandCollapseToggleStyle"
                    TargetType="{x:Type ToggleButton}">
                 <Setter Property="Focusable"
@@ -480,18 +485,14 @@
                                         BorderThickness="0"
                                         BorderBrush="Transparent"
                                         Background="#282828">
-
                                     <Grid>
-
                                         <Grid.RowDefinitions>
-
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
                                         <Grid Background="Transparent"
                                               Grid.Row="0">
-
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
@@ -524,22 +525,17 @@
                                                                   Grid.ColumnSpan="2"
                                                                   ContentSource="Header" />
                                             </Border>
-
                                         </Grid>
 
                                         <Border Grid.Column="0"
                                                 Grid.Row="1">
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
-
                                     </Grid>
-
-
                                 </Border>
                             </Button>
 
                             <ControlTemplate.Triggers>
-
                                 <Trigger Property="IsExpanded"
                                          Value="false">
                                     <Setter Property="Visibility"
@@ -568,7 +564,6 @@
                                             TargetName="Bd"
                                             Value="#222222" />
                                 </MultiTrigger>
-
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -594,7 +589,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
 
             <Style x:Key="VerticalThumb"
                    TargetType="{x:Type Thumb}">
