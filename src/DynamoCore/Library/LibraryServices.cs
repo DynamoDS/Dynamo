@@ -337,22 +337,29 @@ namespace Dynamo.DSEngine
             if (!File.Exists(migrationsXMLFile))
                 return;
 
-            using (var reader = XmlReader.Create(migrationsXMLFile))
+            try
             {
-                while (reader.Read())
+                using (var reader = XmlReader.Create(migrationsXMLFile))
                 {
-                    reader.ReadToFollowing("priorNameHint");
+                    while (reader.Read())
+                    {
+                        reader.ReadToFollowing("priorNameHint");
 
-                    if (!reader.Read())
-                        break;
+                        if (!reader.Read())
+                            break;
 
-                    reader.ReadToFollowing("oldName");
-                    string oldName = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("newName");
-                    string newName = reader.ReadElementContentAsString();
+                        reader.ReadToFollowing("oldName");
+                        string oldName = reader.ReadElementContentAsString();
+                        reader.ReadToFollowing("newName");
+                        string newName = reader.ReadElementContentAsString();
 
-                    priorNameHints[oldName] = newName;
+                        priorNameHints[oldName] = newName;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                return; // if the XML file is badly formatted, return like it doesn't exist
             }
         }
 
