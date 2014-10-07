@@ -36,7 +36,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.double-double",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor,"Foo"));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement1.FunctionDescriptor));
 
             //2 case
             List<TypedParameter> parameters2 = new List<TypedParameter>();
@@ -48,7 +48,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.Point",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor,"Foo"));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement2.FunctionDescriptor));
 
             //3 case
             List<TypedParameter> parameters3 = new List<TypedParameter>();
@@ -62,7 +62,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.bool2-var1-double2",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor,"Foo"));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement3.FunctionDescriptor));
 
             //4 case
             List<TypedParameter> parameters4 = new List<TypedParameter>();
@@ -75,7 +75,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.varN-int",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor,"Foo"));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement4.FunctionDescriptor));
 
             //5 case
             List<TypedParameter> parameters5 = new List<TypedParameter>();
@@ -88,7 +88,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 "Foo.Circle-Curve",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement5.FunctionDescriptor,"Foo"));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement5.FunctionDescriptor));
 
             //6 case
             List<TypedParameter> parameters6 = new List<TypedParameter>();
@@ -100,7 +100,7 @@ namespace Dynamo
 
             Assert.AreEqual(
                 ".int",
-                Utils.TypedParametersToString(dsFunctionNodeSearchElement6.FunctionDescriptor, ""));
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement6.FunctionDescriptor));
 
         }
     }

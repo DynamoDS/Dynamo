@@ -149,7 +149,7 @@ namespace Dynamo.Nodes
         /// <param name="descriptor"></param>
         /// <param name="fullName">Name for icon, that passed all checks.</param>
         /// <returns></returns>
-        public static string TypedParametersToString(FunctionDescriptor descriptor, string fullName)
+        public static string TypedParametersToString(FunctionDescriptor descriptor)
         {
             var builder = new StringBuilder();
 
@@ -187,7 +187,14 @@ namespace Dynamo.Nodes
                 builder.Append(typeOfParameter);
             }
 
-            return fullName + "." + builder.ToString();
+            string overridePrefix = Nodes.Utilities.NormalizeAsResourceName(descriptor.QualifiedName);
+            // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+            // Should be used FunctionDescriptor.Name property instead.
+            // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+            if (overridePrefix != descriptor.QualifiedName)
+                overridePrefix += Nodes.Utilities.NormalizeAsResourceName(descriptor.Name);
+
+            return overridePrefix + "." + builder.ToString();
         }
 
         /// <summary>
