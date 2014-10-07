@@ -64,12 +64,13 @@ namespace Dynamo.Models
             }
         }
 
-        public event EventHandler EngineReset;
-        internal void OnEngineReset()
+        public delegate void EngineResetEventHandler(EngineResetEventArgs args);
+        public event EngineResetEventHandler EngineReset;
+        internal void OnEngineReset(EngineController controller)
         {
             if (EngineReset != null)
             {
-                EngineReset(this, EventArgs.Empty);
+                EngineReset(new EngineResetEventArgs(controller));
             }
         }
 
@@ -498,8 +499,6 @@ namespace Dynamo.Models
             ResetEngineInternal();
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
-
-            OnEngineReset();
         }
 
 #if !ENABLE_DYNAMO_SCHEDULER
@@ -630,6 +629,8 @@ namespace Dynamo.Models
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
             EngineController = new EngineController(this, geomFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
+
+            OnEngineReset(EngineController);
         }
 
         /// <summary>
@@ -1535,5 +1536,15 @@ namespace Dynamo.Models
 
         #endregion
 
+    }
+
+    public class EngineResetEventArgs : EventArgs
+    {
+        public EngineController Controller { get; set; }
+
+        public EngineResetEventArgs(EngineController controller)
+        {
+            Controller = controller;
+        }
     }
 }

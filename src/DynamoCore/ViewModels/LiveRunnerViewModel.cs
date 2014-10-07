@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 using Dynamo.DSEngine;
+using Dynamo.Models;
 
 using Microsoft.Practices.Prism.ViewModel;
 using ProtoScript.Runners;
@@ -12,31 +13,34 @@ namespace Dynamo.ViewModels
 {
     public class LiveRunnerViewModel : NotificationObject
     {
+        private EngineController controller;
         private DynamoViewModel vm;
 
         internal ChangeSetComputer CSComputer
         {
             get
             {
-                return vm.model.EngineController.LiveRunnerServices.LiveRunner.ChangeSetComputer;
+                return controller.LiveRunnerServices.LiveRunner.ChangeSetComputer;
             }
         }
 
         internal SyncDataManager SyncDataManager
         {
-            get { return vm.model.EngineController.SyncDataManager; }
+            get { return controller.SyncDataManager; }
         }
 
         public LiveRunnerViewModel(DynamoViewModel vm)
         {
             this.vm = vm;
-            this.vm.Model.EngineReset += Model_EngineReset;
+            controller = vm.model.EngineController;
+            vm.Model.EngineReset += Model_EngineReset;
             CSComputer.PropertyChanged += ChangeSetComputerOnPropertyChanged;
             SyncDataManager.PropertyChanged += SyncDataManager_PropertyChanged;
         }
 
-        void Model_EngineReset(object sender, System.EventArgs e)
+        void Model_EngineReset(EngineResetEventArgs args)
         {
+            controller = args.Controller;
             CSComputer.PropertyChanged += ChangeSetComputerOnPropertyChanged;
             SyncDataManager.PropertyChanged += SyncDataManager_PropertyChanged;
         }
