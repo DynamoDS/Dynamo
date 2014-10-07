@@ -39,12 +39,20 @@ namespace Dynamo.Nodes
 
             return resultAst;
         }
-        
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            return; // No visualization update is required for this node type.
+        }
+#else
         public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs
         }
+#endif
 
         protected override bool ShouldDisplayPreviewCore()
         {
