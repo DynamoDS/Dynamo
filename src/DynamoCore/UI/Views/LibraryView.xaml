@@ -15,10 +15,9 @@
             
             <!--Converter to Make class details not focusable-->
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
-            
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
-            
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+            
             <!--EndRegion-->
 
             <!-- Region Expander Templates -->
@@ -285,7 +284,8 @@
                 </ListView>
             </DataTemplate>
 
-            <HierarchicalDataTemplate x:Key="NestedClassesTemplate"
+            <!-- Used for nested classes. E.g. classesfrom Revit. -->
+            <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
                 <Border Height="30">
                     <TextBlock Foreground="#989898"
@@ -295,6 +295,7 @@
                 </Border>
             </HierarchicalDataTemplate>
 
+            <!-- Used for categories that is full of methods, not classes. E.g. operators.-->
             <DataTemplate x:Key="CategoryClassDetailsTemplate">
                 <Expander Header="{Binding Path=Name}"
                           OverridesDefaultStyle="True"
