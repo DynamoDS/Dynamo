@@ -1351,7 +1351,7 @@ namespace ProtoScript.Runners
                         return;
                     }
                 }
-                Thread.Sleep(0);
+                Thread.Sleep(1);
             }
         }
 
