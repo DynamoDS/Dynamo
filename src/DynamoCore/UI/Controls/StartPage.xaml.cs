@@ -344,6 +344,11 @@ namespace Dynamo.UI.Controls
                 case ButtonNames.OpenWorkspace:
                     dvm.ShowOpenDialogAndOpenResultCommand.Execute(null);
                     break;
+                    
+                case ButtonNames.NewCustomNodeWorkspace:
+                    dvm.ShowNewFunctionDialogCommand.Execute(null);
+                    dvm.ShowStartPage = false;
+                    break;
 
                 default:
                     throw new ArgumentException(
