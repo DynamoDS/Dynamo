@@ -1505,15 +1505,21 @@ namespace Dynamo.Models
             if (Workspace.DynamoModel == null)
                 return;
 
+            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
+            // called in quick succession from the UI thread -- the first task may 
+            // be updating '_renderPackages' when the second call gets here. In 
+            // this case '_renderPackages' should be protected against concurrent 
+            // accesses.
+            // 
             lock (RenderPackagesMutex)
             {
                 _renderPackages.Clear();
                 HasRenderPackages = false;
             }
 
-            if (State == ElementState.Error)
-                return;
-            if (!IsVisible || CachedValue == null)
+            // If a node is in either of the following states, then it will not 
+            // produce any geometric output. Bail after clearing the render packages.
+            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
                 return;
 
             RequestVisualUpdateCore(maxTesselationDivisions);
@@ -1549,6 +1555,15 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
+        /// completed, at which point the render packages (specific to this node) 
+        /// become available. Since this handler is called off the UI thread, the 
+        /// '_renderPackages' must be guarded against concurrent access.
+        /// </summary>
+        /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
+        /// that was responsible of generating the render packages.</param>
+        /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             lock (RenderPackagesMutex)
