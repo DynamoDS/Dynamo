@@ -4041,7 +4041,7 @@ namespace ProtoCore.DSASM
                 {
                     GCRelease(rmem.Stack[n]);
                 }
-            }
+           }
         }
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
@@ -7685,6 +7685,7 @@ namespace ProtoCore.DSASM
         [Conditional("GC_MARK_AND_SWEEP")]
         private void GC()
         {
+            var currentFramePointer = rmem.FramePointer;
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
             var gcRoots = new List<StackValue>();
@@ -7718,7 +7719,7 @@ namespace ProtoCore.DSASM
 
                 foreach (var symbol in symbols)
                 {
-                    StackValue value = rmem.GetSymbolValue(symbol);
+                    StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
                     if (value.IsReferenceType)
                     {
                         gcRoots.Add(value);
@@ -7732,6 +7733,7 @@ namespace ProtoCore.DSASM
 #endif
                 gcRoots.Add(stackFrame.ThisPtr);
                 blockId = stackFrame.FunctionCallerBlock;
+                currentFramePointer = stackFrame.FramePointer;
             }
 
             rmem.GC(gcRoots, this);

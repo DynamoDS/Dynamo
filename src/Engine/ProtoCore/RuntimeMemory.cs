@@ -154,8 +154,14 @@ namespace ProtoCore
 
             public StackValue GetAtRelative(int relativeOffset)
             {
-                int n = GetRelative(relativeOffset);
-                return Stack[n];
+                return GetAtRelative(relativeOffset, FramePointer);
+            }
+
+            private StackValue GetAtRelative(int relativeOffset, int framePointer)
+            {
+                return relativeOffset >= 0
+                    ? Stack[relativeOffset]
+                    : Stack[framePointer + relativeOffset];
             }
             
             public void SetAtRelative(int offset, StackValue data)
@@ -164,15 +170,48 @@ namespace ProtoCore
                 Stack[n] = data;
             }
 
+            /// <summary>
+            /// Return the value of symbol on current stack frame.
+            /// </summary>
+            /// <param name="symbol"></param>
+            /// <returns></returns>
             public StackValue GetSymbolValue(SymbolNode symbol)
             {
-                int index = GetStackIndex(symbol);
+                return GetSymbolValueOnFrame(symbol, FramePointer);
+            }
+
+            /// <summary>
+            /// Return the value of symbol on specified frame. 
+            /// </summary>
+            /// <param name="symbol"></param>
+            /// <param name="framePointer"></param>
+            /// <returns></returns>
+            public StackValue GetSymbolValueOnFrame(SymbolNode symbol, int framePointer)
+            {
+                int index = GetStackIndex(symbol, framePointer);
                 return Stack[index];
             }
 
+            /// <summary>
+            /// Set the value for symbol on current stack frame.
+            /// </summary>
+            /// <param name="symbol"></param>
+            /// <param name="data"></param>
             public void SetSymbolValue(SymbolNode symbol, StackValue data)
             {
-                int index = GetStackIndex(symbol);
+                int index = GetStackIndex(symbol, FramePointer);
+                Stack[index] = data;
+            }
+
+            /// <summary>
+            /// Set the value for symbol on specified frame. 
+            /// </summary>
+            /// <param name="symbol"></param>
+            /// <param name="data"></param>
+            /// <param name="framePointer"></param>
+            public void SetSymbolValueOnFrame(SymbolNode symbol, StackValue data, int framePointer)
+            {
+                int index = GetStackIndex(symbol, framePointer);
                 Stack[index] = data;
             }
 
@@ -187,30 +226,24 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Return stack index of the corresponding symbol node in runtime
-            /// stack.
+            /// Return stack index of symbol for specified frame.
             /// </summary>
-            /// <param name="symbolNode"></param>
+            /// <param name="symbol"></param>
+            /// <param name="framePointer"></param>
             /// <returns></returns>
-            private int GetStackIndex(SymbolNode symbolNode)
+            private int GetStackIndex(SymbolNode symbol, int framePointer)
             {
-                int offset = symbolNode.index;
+                int offset = symbol.index;
 
-                int depth = 0;
-                int blockOffset = 0;
-                // TODO Jun: the property 'localFunctionIndex' must be deprecated and just use 'functionIndex'.
-                // The GC currenlty has an issue of needing to reset 'functionIndex' at codegen
-                bool isGlobal = Constants.kInvalidIndex == symbolNode.absoluteClassScope && 
-                                Constants.kGlobalScope == symbolNode.absoluteFunctionIndex;
-                if (!isGlobal)
+                if (symbol.absoluteClassScope != Constants.kGlobalScope ||
+                    symbol.absoluteFunctionIndex != Constants.kGlobalScope)
                 {
-                    depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-                    blockOffset = depth * StackFrame.kStackFrameSize;
+                    int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).opdata;
+                    int blockOffset = depth * StackFrame.kStackFrameSize;
+                    offset -= blockOffset;
                 }
-                offset -= blockOffset;
 
-                int index = GetRelative(offset);
-                return index;
+                return offset >= 0 ? offset : framePointer + offset;
             }
 
             public void SetGlobalStackData(int globalOffset, StackValue svData)
