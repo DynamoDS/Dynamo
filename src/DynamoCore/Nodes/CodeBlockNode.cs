@@ -211,12 +211,12 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Temporary variables that generated in code.
         /// </summary>
-        public List<string> TempVariables
+        public IEnumerable<string> TempVariables
         {
             get { return tempVariables; }
         }
 
-        public List<Statement> CodeStatements
+        public IEnumerable<Statement> CodeStatements
         {
             get { return codeStatements; }
         }

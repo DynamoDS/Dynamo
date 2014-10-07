@@ -13,7 +13,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The name that is used during node creation
         /// </summary>
-        public override string CreatingName { get { return FunctionDescriptor != null ? FunctionDescriptor.MangledName : this.Name; } }
+        public override string CreationName { get { return FunctionDescriptor != null ? FunctionDescriptor.MangledName : this.Name; } }
 
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionDescriptorItem) :
             base(displayString, functionDescriptorItem.Description, new List<string> { })

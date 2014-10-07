@@ -338,5 +338,16 @@ namespace Dynamo.Search
             }
         }
 
+        /// <summary>
+        /// Get all tags for search specified element
+        /// </summary>
+        /// <param name="element">The element to match</param>
+        /// <returns>All tags of the given element</returns>
+        public IEnumerable<string> GetTags(V element)
+        {
+            if (_symbolDictionary.ContainsKey(element))
+                return _symbolDictionary[element];
+            return null;
+        }
     }
 }
