@@ -75,17 +75,8 @@ namespace Revit.Elements.InternalUtilities
         public static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
         {
             var collector = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            var elements = collector.OfClass(typeof(Autodesk.Revit.DB.Level)).ToElements();
-            List<Autodesk.Revit.DB.Level> levels = new List<Autodesk.Revit.DB.Level>();
-            foreach (var e in elements)
-            {
-                Autodesk.Revit.DB.Level level = e as Autodesk.Revit.DB.Level;
-                if (null != level)
-                {
-                    levels.Add(level);
-                }
-            }
-            return levels;
+            collector.OfClass(typeof(Autodesk.Revit.DB.Level));
+            return collector.ToElements().Cast<Autodesk.Revit.DB.Level>();
         }
     }
 }
