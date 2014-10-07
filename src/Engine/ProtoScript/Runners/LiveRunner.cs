@@ -225,11 +225,21 @@ namespace ProtoScript.Runners
     /// <summary>
     /// ChangeSetComputer handles delta computation of AST's
     /// </summary>
-    public class ChangeSetComputer
+    public class ChangeSetComputer : INotifyPropertyChanged
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
+
         private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
+
+        public Dictionary<Guid, List<ProtoCore.AST.Node>> ASTCache
+        {
+            get
+            {
+                return astCache;
+                
+            }
+        }
 
         public ChangeSetData csData { get; private set; }
 
@@ -808,6 +818,8 @@ namespace ProtoScript.Runners
                     astCache[t.GUID] = astNodes;
                 }
             }
+
+            OnPropertyChanged("ASTCache");
         }
 
         private bool CompileToSSA(Guid guid, List<AssociativeNode> astList, out List<AssociativeNode> ssaAstList)
@@ -905,6 +917,14 @@ namespace ProtoScript.Runners
             }
             return astNodeList;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public interface ILiveRunner
@@ -933,6 +953,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        ChangeSetComputer ChangeSetComputer { get; }
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1035,7 +1056,8 @@ namespace ProtoScript.Runners
 
         private bool terminating;
 
-        private ChangeSetComputer changeSetComputer;
+        public ChangeSetComputer ChangeSetComputer { get; private set; }
+
         private ChangeSetApplier changeSetApplier;
 
         public LiveRunner(): this(new Configuration())
@@ -1062,7 +1084,7 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             terminating = false;
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            ChangeSetComputer = new ChangeSetComputer(runnerCore);
             changeSetApplier = new ChangeSetApplier();
         }
 
@@ -1610,10 +1632,10 @@ namespace ProtoScript.Runners
             }
 
             // Get AST list that need to be executed
-            var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+            var finalDeltaAstList = ChangeSetComputer.GetDeltaASTList(syncData);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
-            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
+            changeSetApplier.Apply(runnerCore, ChangeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
@@ -1660,7 +1682,7 @@ namespace ProtoScript.Runners
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            ChangeSetComputer = new ChangeSetComputer(runnerCore);
             CLRModuleType.ClearTypes();
         }
 

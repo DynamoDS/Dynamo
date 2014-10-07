@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
@@ -12,12 +13,13 @@ namespace Dynamo.DSEngine
     ///     corresponding AST nodes of that Dynamo node. It is responsible for
     ///     generating GraphSyncData that will be consumed by LiveRunner.
     /// </summary>
-    internal class SyncDataManager
+    public class SyncDataManager : INotifyPropertyChanged
     {
         private readonly LinkedListOfList<Guid, AssociativeNode> nodes = new LinkedListOfList<Guid, AssociativeNode>();
 
         private readonly Dictionary<Guid, State> states = new Dictionary<Guid, State>();
-
+        public Dictionary<Guid,State> States{get { return states; }}
+ 
         /// <summary>
         ///     Return graph sync data that will be executed by LiveRunner.
         /// </summary>
@@ -58,6 +60,8 @@ namespace Dynamo.DSEngine
             else
                 states[guid] = State.Added;
             nodes.Removes(guid);
+
+            OnPropertyChanged("States");
         }
 
         /// <summary>
@@ -78,6 +82,8 @@ namespace Dynamo.DSEngine
         {
             states[guid] = State.Deleted;
             nodes.Removes(guid);
+
+            OnPropertyChanged("States");
         }
 
         private List<Subtree> GetSubtrees(State state)
@@ -87,12 +93,20 @@ namespace Dynamo.DSEngine
             return guids.Select(guid => new Subtree(nodes.GetItems(guid), guid)).ToList();
         }
 
-        internal enum State
+        public enum State
         {
             Clean,
             Added,
             Modified,
             Deleted
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
