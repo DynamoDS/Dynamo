@@ -7,7 +7,7 @@ using NUnit.Framework;
 using RTF.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodesTests.GeometryConversion
+namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
     internal class ProtoToRevitCurveTests : GeometricRevitNodeTest

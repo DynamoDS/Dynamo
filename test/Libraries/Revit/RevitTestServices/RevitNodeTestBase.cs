@@ -1,16 +1,12 @@
-﻿using System;
-using System.Reflection;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     /// <summary>
     /// Base class for units tests of Revit nodes.
-    /// 
     /// </summary>
     public class RevitNodeTestBase
     {

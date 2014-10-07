@@ -11,7 +11,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;

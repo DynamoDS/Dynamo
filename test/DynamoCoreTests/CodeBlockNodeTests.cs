@@ -8,7 +8,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
