@@ -10,6 +10,7 @@ using Autodesk.Revit.DB.Structure;
 using Dynamo.Applications.Models;
 using Dynamo.Models;
 using Dynamo.Nodes;
+
 using ProtoCore.AST.AssociativeAST;
 
 using Revit.Elements;
@@ -32,15 +33,14 @@ namespace DSRevitNodesUI
 {
     public abstract class ElementsQueryBase : RevitNodeModel
     {
-        protected ElementsQueryBase(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        protected ElementsQueryBase(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             var u = RevitDynamoModel.RevitServicesUpdater;
             u.ElementsAdded += Updater_ElementsAdded;
             u.ElementsModified += Updater_ElementsModified;
             u.ElementsDeleted += Updater_ElementsDeleted;
         }
-        
+
         public override void Destroy()
         {
             base.Destroy();
@@ -51,6 +51,7 @@ namespace DSRevitNodesUI
         }
 
         private bool forceReExecuteOfNode;
+
         public override bool ForceReExecuteOfNode
         {
             get { return forceReExecuteOfNode; }
@@ -83,14 +84,12 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("All Elements of Family Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Get all elements of the specified family type from the model.")]
-    [IsDesignScriptCompatible]
+    [NodeName("All Elements of Family Type"), NodeCategory(BuiltinNodeCategories.REVIT_SELECTION),
+     NodeDescription("Get all elements of the specified family type from the model."),
+     IsDesignScriptCompatible]
     public class ElementsOfFamilyType : ElementsQueryBase
     {
-        public ElementsOfFamilyType(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ElementsOfFamilyType(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("Family Type", "The Family Type."));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
@@ -98,87 +97,86 @@ namespace DSRevitNodesUI
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
             var func =
-                new Func<FamilySymbol, IList<Revit.Elements.Element>>(
-                    ElementQueries.OfFamilyType);
+                new Func<FamilySymbol, IList<Revit.Elements.Element>>(ElementQueries.OfFamilyType);
 
             var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[]
+            { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
-    [NodeName("All Elements of Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("All elements in the active document of a given type.")]
-    [IsDesignScriptCompatible]
+    [NodeName("All Elements of Type"), NodeCategory(BuiltinNodeCategories.REVIT_SELECTION),
+     NodeDescription("All elements in the active document of a given type."),
+     IsDesignScriptCompatible]
     public class ElementsOfType : ElementsQueryBase
     {
-        public ElementsOfType(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ElementsOfType(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("element type", "An element type."));
-            OutPortData.Add(new PortData("elements", "All elements in the active document of a given type."));
+            OutPortData.Add(
+                new PortData("elements", "All elements in the active document of a given type."));
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
-            var func =
-                new Func<Type, IList<Revit.Elements.Element>>(
-                    ElementQueries.OfElementType);
+            var func = new Func<Type, IList<Revit.Elements.Element>>(ElementQueries.OfElementType);
 
             var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[]
+            { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
-    [NodeName("All Elements of Category")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Get all elements of the specified category from the model.")]
-    [IsDesignScriptCompatible]
+    [NodeName("All Elements of Category"), NodeCategory(BuiltinNodeCategories.REVIT_SELECTION),
+     NodeDescription("Get all elements of the specified category from the model."),
+     IsDesignScriptCompatible]
     public class ElementsOfCategory : ElementsQueryBase
     {
-        public ElementsOfCategory(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ElementsOfCategory(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("Category", "The Category"));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
-            
+
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
-            var func =
-                new Func<Category, IList<Revit.Elements.Element>>(ElementQueries.OfCategory);
+            var func = new Func<Category, IList<Revit.Elements.Element>>(ElementQueries.OfCategory);
 
             var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[]
+            { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
-    [NodeName("All Elements at Level")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Get all the elements at the specified Level from the model.")]
-    [IsDesignScriptCompatible]
+    [NodeName("All Elements at Level"), NodeCategory(BuiltinNodeCategories.REVIT_SELECTION),
+     NodeDescription("Get all the elements at the specified Level from the model."),
+     IsDesignScriptCompatible]
     public class ElementsAtLevel : ElementsQueryBase
     {
-        public ElementsAtLevel(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ElementsAtLevel(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("Level", "A Level"));
             OutPortData.Add(new PortData("Elements", "Elements at the given level."));
-            
+
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
             var func = new Func<Level, IList<Revit.Elements.Element>>(ElementQueries.AtLevel);
             var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[]
+            { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
@@ -189,18 +187,22 @@ namespace DSRevitNodesUI
     {
         private Document doc;
         private HashSet<ElementId> elementIds = new HashSet<ElementId>();
-        private HashSet<string> uniqueIds = new HashSet<string>(); 
- 
+        private HashSet<string> uniqueIds = new HashSet<string>();
+
         public ElementsInView(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             OutPortData.Add(new PortData("elements", "All visible elements in the active view."));
             RegisterAllPorts();
 
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated += RevitDynamoModel_RevitDocumentChanged;
+            DocumentManager.Instance.CurrentUIApplication.ViewActivated +=
+                RevitDynamoModel_RevitDocumentChanged;
             RevitDynamoModel.RevitDocumentChanged += RevitDynamoModel_RevitDocumentChanged;
-            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted += RevitServicesUpdaterOnElementsDeleted;
-            RevitDynamoModel.RevitServicesUpdater.ElementsModified += RevitServicesUpdaterOnElementsModified;
-            RevitDynamoModel.RevitServicesUpdater.ElementsAdded += RevitServicesUpdaterOnElementsAdded;
+            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted +=
+                RevitServicesUpdaterOnElementsDeleted;
+            RevitDynamoModel.RevitServicesUpdater.ElementsModified +=
+                RevitServicesUpdaterOnElementsModified;
+            RevitDynamoModel.RevitServicesUpdater.ElementsAdded +=
+                RevitServicesUpdaterOnElementsAdded;
 
             RevitDynamoModel_RevitDocumentChanged(null, null);
         }
@@ -208,11 +210,15 @@ namespace DSRevitNodesUI
         public override void Destroy()
         {
             base.Destroy();
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated -= RevitDynamoModel_RevitDocumentChanged;
+            DocumentManager.Instance.CurrentUIApplication.ViewActivated -=
+                RevitDynamoModel_RevitDocumentChanged;
             RevitDynamoModel.RevitDocumentChanged -= RevitDynamoModel_RevitDocumentChanged;
-            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdaterOnElementsDeleted;
-            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= RevitServicesUpdaterOnElementsModified;
-            RevitDynamoModel.RevitServicesUpdater.ElementsAdded -= RevitServicesUpdaterOnElementsAdded;
+            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -=
+                RevitServicesUpdaterOnElementsDeleted;
+            RevitDynamoModel.RevitServicesUpdater.ElementsModified -=
+                RevitServicesUpdaterOnElementsModified;
+            RevitDynamoModel.RevitServicesUpdater.ElementsAdded -=
+                RevitServicesUpdaterOnElementsAdded;
         }
 
         private void RevitServicesUpdaterOnElementsAdded(IEnumerable<string> updated)
@@ -312,10 +318,10 @@ namespace DSRevitNodesUI
             filterList.Add(fRebar);
             filterList.Add(fTruss);
             filterList.Add(fSpatialElement);
-            
+
             var cRvtLinks = new ElementCategoryFilter(BuiltInCategory.OST_RvtLinks);
             filterList.Add(cRvtLinks);
-            
+
             var filters = new LogicalOrFilter(filterList);
             return filters;
         }
@@ -341,39 +347,43 @@ namespace DSRevitNodesUI
             RequiresRecalc = true;
         }
 
-        private void RevitServicesUpdaterOnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        private void RevitServicesUpdaterOnElementsDeleted(
+            Document document, IEnumerable<ElementId> deleted)
         {
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             if (doc == document || doc.Equals(document))
             {
                 elementIds.RemoveWhere(deleted.Contains);
-                uniqueIds = new HashSet<string>(elementIds.Select(id => document.GetElement(id).UniqueId));
+                uniqueIds =
+                    new HashSet<string>(elementIds.Select(id => document.GetElement(id).UniqueId));
+
                 ForceReExecuteOfNode = true;
                 RequiresRecalc = true;
             }
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
             if (uniqueIds == null)
                 return new[] { AstFactory.BuildNullNode() };
 
             Func<string, bool, Revit.Elements.Element> func = ElementSelector.ByUniqueId;
 
+            var elementList =
+                AstFactory.BuildExprList(
+                    uniqueIds.Select(
+                        id =>
+                            AstFactory.BuildFunctionCall(
+                                func,
+                                new List<AssociativeNode>
+                                {
+                                    AstFactory.BuildStringNode(id),
+                                    AstFactory.BuildBooleanNode(true)
+                                })).ToList());
+
             return new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        func,
-                        new List<AssociativeNode>
-                        {
-                            AstFactory.BuildExprList(
-                                uniqueIds.Select(AstFactory.BuildStringNode)
-                                    .Cast<AssociativeNode>()
-                                    .ToList()),
-                            AstFactory.BuildBooleanNode(true)
-                        }))
-            };
+            { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), elementList) };
         }
     }
 }
