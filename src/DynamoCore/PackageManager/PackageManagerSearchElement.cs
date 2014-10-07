@@ -74,7 +74,12 @@ namespace Dynamo.PackageManager
                         new Tuple<PackageHeader, PackageVersion>(
                         pair.Item1,
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
-        } 
+        }
+
+        public override void Execute()
+        {
+            this.IsExpanded = !this.IsExpanded;
+        }
 
         #region Properties 
 
@@ -142,10 +147,6 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        public override void Execute()
-        {
-            this.IsExpanded = !this.IsExpanded;
-        }
     }
 
 }

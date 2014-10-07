@@ -393,7 +393,7 @@ namespace Dynamo.PackageManager
 
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
-            element.Model.Executed += this.PackageOnExecuted;
+            element.RequestDownload += this.PackageOnExecuted;
             this.SearchResults.Add(element);
         }
 
@@ -401,18 +401,14 @@ namespace Dynamo.PackageManager
         {
             foreach (var ele in this.SearchResults)
             {
-                ele.Model.Executed -= PackageOnExecuted;
+                ele.RequestDownload -= PackageOnExecuted;
             }
 
             this.SearchResults.Clear();
         }
 
-        private void PackageOnExecuted( SearchElementBase searchElement )
+        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
         {
-            var element = searchElement as PackageManagerSearchElement;
-
-            var version = element.VersionNumberToDownload ?? element.Header.versions.Last();
-
             string message = "Are you sure you want to install " + element.Name + " " + version.version + "?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",

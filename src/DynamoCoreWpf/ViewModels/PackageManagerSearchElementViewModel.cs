@@ -7,6 +7,7 @@ using System.Windows.Input;
 
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.ViewModels;
 
 using Greg.Responses;
 
@@ -14,23 +15,21 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.PackageManager.ViewModels
 {
-    public class PackageManagerSearchElementViewModel
+    public class PackageManagerSearchElementViewModel : BrowserItemViewModel
     {
         public ICommand DownloadLatest { get; set; }
         public ICommand UpvoteCommand { get; set; }
         public ICommand DownvoteCommand { get; set; }
-        public ICommand ToggleIsExpandedCommand { get; set; }
 
         public PackageManagerSearchElement Model { get; private set; }
 
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element)
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element) : base(element)
         {
             this.Model = element;
 
-            this.DownloadLatest = new DelegateCommand((Action)element.Execute);
-            this.UpvoteCommand = new DelegateCommand((Action)element.Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action)element.Downvote);
-            this.ToggleIsExpandedCommand = new DelegateCommand((Action)element.Execute);
+            this.DownloadLatest = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
+            this.UpvoteCommand = new DelegateCommand(element.Upvote);
+            this.DownvoteCommand = new DelegateCommand(element.Downvote);
         }
 
         public List<Tuple<PackageVersion, DelegateCommand>> Versions
@@ -39,17 +38,18 @@ namespace Dynamo.PackageManager.ViewModels
             {
                 return
                     Model.Header.versions.Select(
-                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                        {
-                            this.Model.VersionNumberToDownload = x;
-                            this.Model.Execute();
-                        }, () => true))).ToList();
+                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).ToList();
             }
-
         }
 
+        public delegate void PackageSearchElementDownloadHandler(PackageManagerSearchElement element, PackageVersion version);
+        public event PackageSearchElementDownloadHandler RequestDownload;
+        public void OnRequestDownload(PackageVersion version)
+        {
+            if (RequestDownload != null)
+            {
+                RequestDownload(this.Model, version);
+            }
+        }
     }
-
-
-
 }
