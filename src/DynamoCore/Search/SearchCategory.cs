@@ -9,28 +9,29 @@ namespace Dynamo.Search
 {
     public class SearchCategory
     {
-        public string Name { get; private set; }
+        private readonly List<BrowserInternalElement> classes;
+        private readonly List<SearchMemberGroup> memberGroups;
 
-        private List<BrowserInternalElement> classes;
-        public IEnumerable<BrowserInternalElement> Classes
+        internal string Name { get; private set; }
+
+        internal IEnumerable<BrowserInternalElement> Classes
         {
             get { return classes; }
         }
 
-        private List<SearchMemberGroup> memberGroups;
-        public IEnumerable<SearchMemberGroup> MemberGroups
+        internal IEnumerable<SearchMemberGroup> MemberGroups
         {
             get { return memberGroups; }
         }
 
-        public SearchCategory(string name)
+        internal SearchCategory(string name)
         {
             Name = name;
             classes = new List<BrowserInternalElement>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
-        public void AddMemberToGroup(BrowserInternalElement memberNode)
+        internal void AddMemberToGroup(BrowserInternalElement memberNode)
         {
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 (memberNode as NodeSearchElement).Group);
@@ -46,7 +47,7 @@ namespace Dynamo.Search
             group.AddMember(memberNode);
         }
 
-        public void AddClassToGroup(BrowserInternalElement memberNode)
+        internal void AddClassToGroup(BrowserInternalElement memberNode)
         {
             // Here is fake implementation.
             // Added not more two different classes.

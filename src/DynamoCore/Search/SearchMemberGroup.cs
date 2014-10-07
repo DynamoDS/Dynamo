@@ -5,15 +5,16 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup
     {
-        public string Name { get; private set; }
+        private readonly List<BrowserInternalElement> members;
 
-        private List<BrowserInternalElement> members;
-        public IEnumerable<BrowserInternalElement> Members
+        internal string Name { get; private set; }
+
+        internal IEnumerable<BrowserInternalElement> Members
         {
             get { return members; }
         }
 
-        public SearchMemberGroup(string name)
+        internal SearchMemberGroup(string name)
         {
             Name = name;
             members = new List<BrowserInternalElement>();
@@ -21,7 +22,7 @@ namespace Dynamo.Search
 
         //some UI properties which control style of one MemberGroup
 
-        public void AddMember(BrowserInternalElement node)
+        internal void AddMember(BrowserInternalElement node)
         {
             members.Add(node);
         }
