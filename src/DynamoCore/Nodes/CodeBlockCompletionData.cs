@@ -14,8 +14,46 @@ namespace Dynamo.Nodes
 {
     class CodeBlockCompletionData : ICompletionData
     {
+        #region Class data members
+
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
         private CodeBlockEditor codeEditor;
+
+        // image
+        public System.Windows.Media.ImageSource Image { get; private set; }
+
+        public string Text { get; private set; }
+
+        public string Stub { get; private set; }
+
+        public bool IsInstance { get; private set; }
+
+        // Use this property if you want to show a fancy UIElement in the drop down list.
+        public object Content
+        {
+            get { return this.Text; }
+        }
+
+        // description
+        private string description;
+
+        // TODO: Implement this
+        public object Description
+        {
+            get
+            {
+                // lazily get the description
+                if (description == null)
+                {
+                    //description = codeEditor.GetDescription();
+                }
+
+                return description;
+            }
+        }
+
+        public double Priority { get { return 0; } }
+
 
         public enum CompletionType
         {
@@ -25,6 +63,8 @@ namespace Dynamo.Nodes
             Class,
             Property,
         };
+
+        #endregion
 
         public CodeBlockCompletionData(string text, string stub, bool isInstance, CompletionType type, CodeBlockEditor codeEditor)
         {
@@ -44,50 +84,9 @@ namespace Dynamo.Nodes
                 TypeToIcon.Add(CompletionType.Property, GetBitmapImage(assembly, @"property.png"));
             }
 
-            this.image = TypeToIcon[type];
+            this.Image = TypeToIcon[type];
         }
-        
-        // image
-        private BitmapImage image;
-        public System.Windows.Media.ImageSource Image
-        {
-            get
-            {
-                return image;
-            }
-        }
-
-        public string Text { get; private set; }
-
-        public string Stub { get; private set; }
-
-        public bool IsInstance { get; private set; }
-
-        // Use this property if you want to show a fancy UIElement in the drop down list.
-        public object Content
-        {
-            get { return this.Text;  }
-        }
-
-        // description
-        private string description;
-        
-        // TODO: Implement this
-        public object Description
-        {
-            get {
-                // lazily get the description
-                if (description == null)
-                {
-                    //description = codeEditor.GetDescription();
-                }
-
-                return description;
-            }
-        }
-
-        public double Priority { get { return 0; } }
-
+       
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, this.Text);

@@ -175,7 +175,7 @@ namespace Dynamo.UI.Controls
                     
                     var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
 
-                    if (completions.Count() == 0)
+                    if (!completions.Any())
                         return;
 
                     // TODO: Need to make this more efficient by instantiating 'completionWindow'
