@@ -337,6 +337,8 @@ namespace Dynamo.DSEngine
             if (!File.Exists(migrationsXMLFile))
                 return;
 
+            var foundPriorNameHints = new Dictionary<string, string>();
+
             try
             {
                 using (var reader = XmlReader.Create(migrationsXMLFile))
@@ -353,13 +355,20 @@ namespace Dynamo.DSEngine
                         reader.ReadToFollowing("newName");
                         string newName = reader.ReadElementContentAsString();
 
-                        priorNameHints[oldName] = newName;
+                        foundPriorNameHints[oldName] = newName;
                     }
                 }
             }
             catch (Exception e)
             {
                 return; // if the XML file is badly formatted, return like it doesn't exist
+            }
+
+            // if everything parsed correctly, then add these names to the priorNameHints
+
+            foreach (string key in foundPriorNameHints.Keys)
+            {
+                priorNameHints[key] = foundPriorNameHints[key];
             }
         }
 
