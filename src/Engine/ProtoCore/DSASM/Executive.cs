@@ -7699,16 +7699,16 @@ namespace ProtoCore.DSASM
                 var functionScope = stackFrame.FunctionScope;
                 var classScope = stackFrame.ClassScope;
 
-                IEnumerable<SymbolNode> symbols;
+                ICollection<SymbolNode> symbols;
                 if (blockId == 0)
                 {
                     if (classScope == Constants.kGlobalScope)
                     {
-                        symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                        symbols = exe.runtimeSymbols[blockId].symbolList.Values;
                     }
                     else
                     {
-                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values.Where( s => s.functionIndex == functionScope);
+                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values;
                     }
                 }
                 else
@@ -7717,7 +7717,8 @@ namespace ProtoCore.DSASM
                     symbols = exe.runtimeSymbols[blockId].symbolList.Values;
                 }
 
-                foreach (var symbol in symbols)
+                var symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
+                foreach (var symbol in symbolsInScope)
                 {
                     StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
                     if (value.IsReferenceType)
