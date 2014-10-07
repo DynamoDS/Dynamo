@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using Dynamo.Models;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -223,12 +222,16 @@ namespace Dynamo.ViewModels
 
             //sw.Start();
 
-            var result = this.Model.Search(query).ToList();
+            this.Model.Search(query);
 
             //sw.Stop();
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
+            // Next code do not need for now. 
+            // But logic should be saved to restore original behavior for new design.
+            // Code will be removed as soon as Search functionality fully implemented. 
+#if false
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
             {
@@ -282,7 +285,7 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
-
+#endif
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
@@ -309,7 +312,7 @@ namespace Dynamo.ViewModels
 
             return catName;
         }
-
+        
         #endregion
 
         #region Selection
@@ -435,7 +438,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             this.dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -453,7 +456,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -469,7 +472,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

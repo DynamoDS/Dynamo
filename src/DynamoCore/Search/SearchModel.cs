@@ -72,7 +72,7 @@ namespace Dynamo.Search
             // Element is part of custom DLL. 
             CustomDll
         };
-        
+
         /// <summary>
         /// The root elements for the browser
         /// </summary>
@@ -91,6 +91,13 @@ namespace Dynamo.Search
         {
             get { return _addonRootCategories; }
             set { _addonRootCategories = value; }
+        }
+
+        private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return _searchRootCategories; }
+            set { _searchRootCategories = value; }
         }
 
         /// <summary>
@@ -211,7 +218,39 @@ namespace Dynamo.Search
                 return _searchElements;
             }
 
-            return SearchDictionary.Search(search, MaxNumSearchResults);
+            return Search(search, MaxNumSearchResults);
+        }
+
+        private IEnumerable<SearchElementBase> Search(string search, int maxNumSearchResults)
+        {
+            var foundNodes = SearchDictionary.Search(search, maxNumSearchResults);
+
+            ClearSearchCategories();
+            PopulateSearchCategories(foundNodes);
+
+            return foundNodes;
+        }
+
+        private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
+
+                var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
+                if (category == null)
+                {
+                    category = new SearchCategory(rootCategoryName);
+                    _searchRootCategories.Add(category);
+                }
+
+                category.AddMemberToGroup(node);
+            }
+        }
+
+        private void ClearSearchCategories()
+        {
+            _searchRootCategories.Clear();
         }
 
         #endregion

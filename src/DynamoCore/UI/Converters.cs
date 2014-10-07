@@ -1768,7 +1768,23 @@ namespace Dynamo.Controls
             return Visibility.Collapsed;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(
+            object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullValueToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
