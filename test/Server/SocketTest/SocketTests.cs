@@ -110,7 +110,7 @@ namespace Dynamo.Tests
 
             webServer.SendResponse(response, "TestID");
 
-            mock.Verify(m => m.GetAppSessionByID("TestID"));
+            mock.Verify(m => m.GetAppSessionById("TestID"));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The name that is used during node creation
         /// </summary>
-        public virtual string CreatingName { get { return this.Name; } }
+        public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
         /// Searchable property </summary>
@@ -120,7 +120,7 @@ namespace Dynamo.Search.SearchElements
         public double Weight { get; private set; }
 
         [DataMember]
-        public string Keywords { get; private set; }
+        public IEnumerable<string> Keywords { get; private set; }
 
         [DataMember]
         public IEnumerable<string> Parameters { get; private set; }
@@ -133,12 +133,12 @@ namespace Dynamo.Search.SearchElements
             Category = node.FullCategoryName;
             Type = node.Type;
             DisplayName = Name = node.Name;
-            CreationName = node.CreatingName;
+            CreationName = node.CreationName;
             Description = node.Description;
             Searchable = node.Searchable;
             Weight = node.Weight;
-            Keywords = node.Keywords;
-
+            Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
+            
             PopulateKeysAndParameters(dynamoModel);
         }
 
