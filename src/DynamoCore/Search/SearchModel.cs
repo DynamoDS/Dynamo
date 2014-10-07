@@ -640,15 +640,16 @@ namespace Dynamo.Search
         internal bool ContainsClass(string categoryName, string className)
         {
             var category = GetCategoryByName(categoryName);
-            if (category == null) return false;
+            if (category == null) 
+                return false;
 
             // Find in some category BrowserInternalElementForClasses, that is full of classes.
-            var classes = category.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
-            if (classes == null) return false;
+            var classes = category.Items.OfType<BrowserInternalElementForClasses>();
+            if (!classes.Any()) 
+                return false;
 
-            // Search among all classes one, that was needed.
-            var searchedClass = classes.Items.FirstOrDefault(x => x.Name == className);
-            return searchedClass != null;
+            BrowserInternalElementForClasses element = classes.ElementAt(0);
+            return element.ContainsClass(className);
         }
 
         #endregion

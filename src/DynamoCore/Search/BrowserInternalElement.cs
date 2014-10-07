@@ -254,6 +254,12 @@ namespace Dynamo.Nodes.Search
             this.name = name;
             this.Parent = parent;
         }
+
+        public bool ContainsClass(string className)
+        {
+            var searchedClass = Items.FirstOrDefault(x => x.Name == className);
+            return searchedClass != null;
+        }
     }
 
     public class ClassInformation : BrowserItem
