@@ -193,5 +193,20 @@ namespace Dynamo.UI.Controls
 
             castedDataContext.IsMoreButtonVisible = collection.Count() > TruncatedMembersCount;
         }
+
+        // This method will work only, when user presses Shift.
+        private void OnShiftMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
+
+            // Update property scv.HorizontalOffset.
+            scv.UpdateLayout();
+
+            // Scrollviewer moves button to the left side, so PlacementTarget(it's thing that
+            // affects tooltip placement) needs to make its' width longer. So, we use additional
+            // property HorizontalScrollOffset.
+            libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
+        }
     }
 }
