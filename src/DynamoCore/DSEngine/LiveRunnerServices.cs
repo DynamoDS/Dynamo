@@ -20,33 +20,34 @@ namespace Dynamo.DSEngine
 
     public class LiveRunnerServices : IDisposable
     {
-        private ILiveRunner liveRunner;
         private readonly DynamoModel dynamoModel;
 
         public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;
-            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
+            LiveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
       
         public void Dispose()
         {
-            if (liveRunner is IDisposable)
-                (liveRunner as IDisposable).Dispose();
+            if (LiveRunner is IDisposable)
+                (LiveRunner as IDisposable).Dispose();
         }
 
         public ProtoCore.Core Core
         {
             get
             {
-                return liveRunner.Core;
+                return LiveRunner.Core;
             }
         }
+
+        internal ILiveRunner LiveRunner { get; private set; }
 
         public RuntimeMirror GetMirror(string var)
         {
            
-            var mirror = liveRunner.InspectNodeValue(var);
+            var mirror = LiveRunner.InspectNodeValue(var);
 
             if (dynamoModel.DebugSettings.VerboseLogging)
                 dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
@@ -64,7 +65,7 @@ namespace Dynamo.DSEngine
             if (dynamoModel.DebugSettings.VerboseLogging)
                 dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
 
-            liveRunner.UpdateGraph(graphData);
+            LiveRunner.UpdateGraph(graphData);
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
         {
-            return liveRunner.GetRuntimeWarnings();
+            return LiveRunner.GetRuntimeWarnings();
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
-            return liveRunner.GetBuildWarnings();
+            return LiveRunner.GetBuildWarnings();
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Dynamo.DSEngine
         { 
             if (libraries.Count > 0)
             {
-                liveRunner.ResetVMAndResyncGraph(libraries);
+                LiveRunner.ResetVMAndResyncGraph(libraries);
             }
         }
 

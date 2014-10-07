@@ -18,6 +18,8 @@ using Dynamo.UpdateManager;
 
 using DynamoUnits;
 
+using ProtoScript.Runners;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 
@@ -400,6 +402,7 @@ namespace Dynamo.ViewModels
         public IVisualizationManager VisualizationManager { get; private set; }
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
+        public LiveRunnerViewModel LiveRunnerViewModel { get; set; }
 
         #endregion
 
@@ -437,6 +440,8 @@ namespace Dynamo.ViewModels
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
+            this.LiveRunnerViewModel = new LiveRunnerViewModel(this);
+
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;

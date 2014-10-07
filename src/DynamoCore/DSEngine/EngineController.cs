@@ -26,15 +26,16 @@ namespace Dynamo.DSEngine
     {
         public event AstBuiltEventHandler AstBuilt;
 
-        private LiveRunnerServices liveRunnerServices;
+        internal LiveRunnerServices LiveRunnerServices { get; private set; }
+
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
-        private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
 
         private Object MacroMutex = new Object();
+        internal SyncDataManager SyncDataManager { get; private set; }
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
@@ -45,11 +46,11 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            LiveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
+            LiveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(dynamoModel, this);
-            syncDataManager = new SyncDataManager();
+            SyncDataManager = new SyncDataManager();
 
             dynamoModel.NodeDeleted += NodeDeleted;
         }
@@ -57,7 +58,7 @@ namespace Dynamo.DSEngine
         public void Dispose()
         {
             dynamoModel.NodeDeleted -= NodeDeleted;
-            liveRunnerServices.Dispose();
+            LiveRunnerServices.Dispose();
 
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
@@ -94,7 +95,7 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                return liveRunnerServices.Core;
+                return LiveRunnerServices.Core;
             }
         }
 
@@ -112,7 +113,7 @@ namespace Dynamo.DSEngine
                 RuntimeMirror mirror = null;
                 try
                 {
-                    mirror = liveRunnerServices.GetMirror(variableName);
+                    mirror = LiveRunnerServices.GetMirror(variableName);
                 }
                 catch (SymbolNotFoundException)
                 {
@@ -265,8 +266,8 @@ namespace Dynamo.DSEngine
 
         private bool VerifyGraphSyncData()
         {
-            GraphSyncData data = syncDataManager.GetSyncData();
-            syncDataManager.ResetStates();
+            GraphSyncData data = SyncDataManager.GetSyncData();
+            SyncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
                                                                     .Where(n => n.ForceReExecuteOfNode)
@@ -357,7 +358,7 @@ namespace Dynamo.DSEngine
                         try
                         {
                             var data = graphSyncDataQueue.Dequeue();
-                            liveRunnerServices.UpdateGraph(data);
+                            LiveRunnerServices.UpdateGraph(data);
                             updated = true;
                         }
                         catch (Exception e)
@@ -400,7 +401,7 @@ namespace Dynamo.DSEngine
         private void ShowRuntimeWarnings()
         {
             // Clear all previous warnings
-            var warnings = liveRunnerServices.GetRuntimeWarnings();
+            var warnings = LiveRunnerServices.GetRuntimeWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
@@ -416,7 +417,7 @@ namespace Dynamo.DSEngine
         private void ShowBuildWarnings()
         {
             // Clear all previous warnings
-            var warnings = liveRunnerServices.GetBuildWarnings();
+            var warnings = LiveRunnerServices.GetBuildWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
@@ -483,7 +484,7 @@ namespace Dynamo.DSEngine
             dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            LiveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
@@ -497,14 +498,14 @@ namespace Dynamo.DSEngine
 
         public void OnAstNodeBuilding(Guid nodeGuid)
         {
-            syncDataManager.MarkForAdding(nodeGuid);
+            SyncDataManager.MarkForAdding(nodeGuid);
         }
 
         public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             foreach (var astNode in astNodes)
             {
-                syncDataManager.AddNode(nodeGuid, astNode); 
+                SyncDataManager.AddNode(nodeGuid, astNode); 
             }
 
             if (AstBuilt != null)
@@ -524,7 +525,7 @@ namespace Dynamo.DSEngine
         /// <param name="node"></param>
         private void NodeDeleted(NodeModel node)
         {
-            syncDataManager.DeleteNodes(node.GUID);
+            SyncDataManager.DeleteNodes(node.GUID);
         }
 
         #region N2C

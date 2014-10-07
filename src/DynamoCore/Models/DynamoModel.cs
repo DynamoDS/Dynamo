@@ -64,6 +64,15 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler EngineReset;
+        internal void OnEngineReset()
+        {
+            if (EngineReset != null)
+            {
+                EngineReset(this, EventArgs.Empty);
+            }
+        }
+
         /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
@@ -489,6 +498,8 @@ namespace Dynamo.Models
             ResetEngineInternal();
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
+
+            OnEngineReset();
         }
 
 #if !ENABLE_DYNAMO_SCHEDULER

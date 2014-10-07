@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+
+using Dynamo.DSEngine;
 using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
@@ -1597,6 +1599,30 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty((string)value))
                 return Visibility.Visible;
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class SyncStateToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (SyncDataManager.State)value;
+            switch (state)
+            {
+                case SyncDataManager.State.Added:
+                    return new SolidColorBrush(Colors.DeepSkyBlue);
+                case SyncDataManager.State.Deleted:
+                    return new SolidColorBrush(Colors.OrangeRed);
+                case SyncDataManager.State.Modified:
+                    return new SolidColorBrush(Colors.Green);
+                default:
+                    return new SolidColorBrush(Colors.Black);
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
