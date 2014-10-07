@@ -474,6 +474,13 @@ namespace Dynamo.Search
             // attempt to add root category
             var currentCat = TryAddRootCategory(splitCat[0], nodeType);
 
+            // If splitCat.Count equals 2, then we try to add not class.
+            // That means root category is full of methods, not classes.
+            // E.g. Operators, BuiltinFunctions.
+            // Rootcategory has property IsPlaceholder, that indicates of 
+            // which members category contains.
+            // So, just add method in category and do nothing.
+
             for (var i = 1; i < splitCat.Count-1; i++)
             {
                 // All next members are namespaces.
