@@ -59,6 +59,9 @@ namespace Dynamo.Search.SearchElements
                 {
                     string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
 
+                    if (name == string.Empty) 
+                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name); 
+
                     // Usual case.
                     if (!disambiguate)
                         return name;
