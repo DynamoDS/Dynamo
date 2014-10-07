@@ -8,11 +8,11 @@ namespace DynamoWebServer.Messages
         /// Guid of the specified node
         /// </summary>
         [DataMember]
-        public string NodeID { get; set; }
+        public string NodeId { get; set; }
 
         public GetNodeGeometryMessage(string id)
         {
-            this.NodeID = id;
+            this.NodeId = id;
         }
     }
 }
