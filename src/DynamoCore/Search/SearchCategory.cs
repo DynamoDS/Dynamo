@@ -12,14 +12,14 @@ namespace Dynamo.Search
         private readonly List<BrowserInternalElement> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
-        internal string Name { get; private set; }
+        public string Name { get; private set; }
 
-        internal IEnumerable<BrowserInternalElement> Classes
+        public IEnumerable<BrowserInternalElement> Classes
         {
             get { return classes; }
         }
 
-        internal IEnumerable<SearchMemberGroup> MemberGroups
+        public IEnumerable<SearchMemberGroup> MemberGroups
         {
             get { return memberGroups; }
         }
@@ -31,10 +31,10 @@ namespace Dynamo.Search
             memberGroups = new List<SearchMemberGroup>();
         }
 
-        internal void AddMemberToGroup(BrowserInternalElement memberNode)
+        internal void AddMemberToGroup(NodeSearchElement memberNode)
         {
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
-                (memberNode as NodeSearchElement).Group);
+                memberNode.Group);
             string shortenedCategory = SearchViewModel.MakeShortCategoryString(categoryWithGroup);
 
             var group = memberGroups.FirstOrDefault(mg => mg.Name == shortenedCategory);

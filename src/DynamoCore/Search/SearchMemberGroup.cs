@@ -7,9 +7,9 @@ namespace Dynamo.Search
     {
         private readonly List<BrowserInternalElement> members;
 
-        internal string Name { get; private set; }
+        public string Name { get; private set; }
 
-        internal IEnumerable<BrowserInternalElement> Members
+        public IEnumerable<BrowserInternalElement> Members
         {
             get { return members; }
         }

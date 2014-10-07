@@ -245,7 +245,7 @@ namespace Dynamo.Search
                     _searchRootCategories.Add(category);
                 }
 
-                category.AddMemberToGroup(node);
+                category.AddMemberToGroup(node as NodeSearchElement);
                 category.AddClassToGroup(node);
             }
         }
