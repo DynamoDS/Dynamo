@@ -199,7 +199,7 @@ namespace ProtoCore
         }
 
         public bool DumpByteCode { get; set; }
-        public bool DumpIL { get; private set; }
+        public bool DumpIL { get; set; }
         public bool GenerateSSA { get; set; }
         public bool ExecuteSSA { get; set; }
         public bool GCTempVarsOnDebug { get; set; }

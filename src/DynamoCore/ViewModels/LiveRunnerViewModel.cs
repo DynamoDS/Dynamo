@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -47,7 +46,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return controller.LiveRunnerCore.ExecutionLog.ToString();
+                return writer.ToString();
             }
         }
 
@@ -61,7 +60,17 @@ namespace Dynamo.ViewModels
 #endif
         }
 
-        void Model_EngineReset(EngineResetEventArgs args)
+        public void Dispose()
+        {
+            if (writer != null)
+            {
+                writer.Close();
+            }
+        }
+
+        #region private methods
+
+        private void Model_EngineReset(EngineResetEventArgs args)
         {
             Setup(args.Controller);
             RegisterEventHandlers();
@@ -75,14 +84,19 @@ namespace Dynamo.ViewModels
                 writer.Close();
                 writer = null;
             }
+
+            //controller.LiveRunnerCore.Options.Verbose = true;
+            //controller.LiveRunnerCore.Options.WebRunner = true;
+            controller.LiveRunnerCore.Options.DumpIL = true;
+            controller.LiveRunnerCore.Options.DumpByteCode = true;
+
             writer = new ExecutionLogWriter();
-            controller.LiveRunnerCore.ExecutionLog = writer;
+            //controller.LiveRunnerCore.ExecutionLog = writer;
+            controller.LiveRunnerCore.AsmOutput = writer;
             writer.WriteToLog += writer_WriteToLog;
-            controller.LiveRunnerCore.Options.Verbose = true;
-            controller.LiveRunnerCore.Options.WebRunner = true;
         }
 
-        void writer_WriteToLog(object sender, EventArgs e)
+        private void writer_WriteToLog(object sender, EventArgs e)
         {
             RaisePropertyChanged("ExecutionLogText");
         }
@@ -154,16 +168,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void Dispose()
-        {
-            if (writer != null)
-            {
-                writer.Close();
-            }
-        }
+        #endregion
     }
 
-    public class ExecutionLogWriter : StringWriter
+    /// <summary>
+    /// A string writer which raises events when it writes.
+    /// </summary>
+    internal class ExecutionLogWriter : StringWriter
     {
         public event EventHandler WriteToLog;
 
