@@ -33,9 +33,12 @@ namespace Dynamo.ViewModels
         {
             this.vm = vm;
             controller = vm.model.EngineController;
+
+#if DEBUG
             vm.Model.EngineReset += Model_EngineReset;
             CSComputer.PropertyChanged += ChangeSetComputerOnPropertyChanged;
             SyncDataManager.PropertyChanged += SyncDataManager_PropertyChanged;
+#endif
         }
 
         void Model_EngineReset(EngineResetEventArgs args)
