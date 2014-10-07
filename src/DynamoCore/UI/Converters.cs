@@ -1752,6 +1752,25 @@ namespace Dynamo.Controls
         }
     }
 
+    public class MultiBoolToVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool allTrue = true;
+            foreach (var value in values)
+                // If at least one will be false, the result will be false.
+                allTrue = allTrue && ((bool)value);
+
+            return allTrue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(
+            object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class NullValueToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
