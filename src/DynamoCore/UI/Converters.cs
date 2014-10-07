@@ -1756,16 +1756,12 @@ namespace Dynamo.Controls
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool result = true;
+            bool allTrue = true;
             foreach (var value in values)
-            {
                 // If at least one will be false, the result will be false.
-                if (!(bool)value) result = false;
-            }
+                allTrue = allTrue && ((bool)value);
 
-            if (result) return Visibility.Visible;
-
-            return Visibility.Collapsed;
+            return allTrue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object[] ConvertBack(
