@@ -480,7 +480,7 @@ namespace Dynamo.Models
         [Obsolete("Use AddNode(NodeModel)", true)]
         public T AddNode<T>(NodeFactory factory) where T : NodeModel
         {
-            var node = factory.CreateNodeInstance<T>();
+            var node = factory.CreateNodeInstance<T>(TODO);
             if (node == null) throw new Exception("The supplied node Type was invalid!");
 
             nodes.Add(node);
@@ -1236,7 +1236,6 @@ namespace Dynamo.Models
                 }
             }
 
-#if USE_DSENGINE
             if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
                 typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
             {
@@ -1246,7 +1245,6 @@ namespace Dynamo.Models
                 // 
                 typeName = modelData.Attributes["name"].Value;
             }
-#endif
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {

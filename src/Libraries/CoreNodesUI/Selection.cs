@@ -5,25 +5,22 @@ using System.Linq;
 using System.Windows.Data;
 using System.Xml;
 
-using DSCoreNodesUI;
-
-using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
     SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
-    
+
+
     /// <summary>
     /// The base class for all selection nodes.
     /// </summary>
     /// <typeparam name="TSelection">The type which is used to constrain the selection.</typeparam>
     /// <typeparam name="TResult">The type which is returned from the selection or subselection.</typeparam>
-    public abstract class SelectionBase<TSelection, TResult> : NodeModel, IWpfNode
+    public abstract class SelectionBase<TSelection, TResult> : NodeModel
     {
         private bool canSelect = true;
         private readonly string selectionMessage;
@@ -123,12 +120,6 @@ namespace Dynamo.Nodes
         #endregion
 
         #region public methods
-
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var selectionControl = new ElementSelectionControl { DataContext = this };
-            nodeUI.inputGrid.Children.Add(selectionControl);
-        }
 
         public override string ToString()
         {

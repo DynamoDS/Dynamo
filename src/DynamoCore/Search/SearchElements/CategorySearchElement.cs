@@ -1,6 +1,6 @@
 ﻿namespace Dynamo.Search.SearchElements
 {
-    class CategorySearchElement : SearchElementBase
+    public class CategorySearchElement : SearchElementBase
     {
         #region Properties
         /// <summary>
@@ -79,6 +79,5 @@
             NumElements = 0;
             _description = "";
         }
-        
     }
 }

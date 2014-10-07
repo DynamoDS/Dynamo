@@ -9,6 +9,8 @@ using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
+
 using NUnit.Framework;
 using Dynamo.ViewModels;
 
@@ -48,7 +50,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, workspace.CanRedo);
             Assert.AreEqual(0, workspace.Nodes.Count); // An empty workspace
 
-            var createNodeCommand = new DynamoViewModel.CreateNodeCommand(
+            var createNodeCommand = new DynamoModel.CreateNodeCommand(
                 Guid.NewGuid(), "Add", 0, 0, false, false);
 
             // Create a new node in the empty workspace.
@@ -679,11 +681,11 @@ namespace Dynamo.Tests
             var res1 = ViewModel.SearchViewModel.SearchResults[0];
             var res2 = ViewModel.SearchViewModel.SearchResults[1];
 
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
 
-            var node1 = res1 as CustomNodeSearchElement;
-            var node2 = res2 as CustomNodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElementViewModel;
+            var node2 = res2 as CustomNodeSearchElementViewModel;
 
             Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
                           (node1.Guid == newId && node2.Guid == oldId));

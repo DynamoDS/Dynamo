@@ -11,6 +11,8 @@ using Dynamo.Applications.Models;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Category = Revit.Elements.Category;
@@ -19,7 +21,6 @@ namespace DSRevitNodesUI
 {
     public abstract class RevitDropDownBase : DSDropDownBase
     {
-
         protected RevitDropDownBase(WorkspaceModel workspaceModel, string value) : base(workspaceModel, value)
         {
             var revModel = workspaceModel.dynamoModel as RevitDynamoModel;
@@ -38,6 +39,8 @@ namespace DSRevitNodesUI
         }
     }
 
+    #region FamilyTypes
+
     [NodeName("Family Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
@@ -49,7 +52,7 @@ namespace DSRevitNodesUI
         public FamilyTypes(WorkspaceModel workspaceModel) : base(workspaceModel, "Family Type")
         {}
         
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 
@@ -98,6 +101,10 @@ namespace DSRevitNodesUI
 
     }
 
+    #endregion
+
+    #region FamilyInstanceParameters
+
     [NodeName("Get Family Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
@@ -142,7 +149,7 @@ namespace DSRevitNodesUI
             }
         }
 
-        protected override void PopulateItems() //(IEnumerable set, bool readOnly)
+        public override void PopulateItems() //(IEnumerable set, bool readOnly)
         {
             //only update the collection on evaluate
             //if the item coming in is different
@@ -279,6 +286,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region FloorTypes
+
     [NodeName("Floor Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
@@ -290,7 +301,7 @@ namespace DSRevitNodesUI
         public FloorTypes(WorkspaceModel workspaceModel)
             : base(workspaceModel, "Floor Type") { }
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 
@@ -334,6 +345,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region WallTypes
+
     [NodeName("Wall Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
@@ -345,7 +360,7 @@ namespace DSRevitNodesUI
         public WallTypes(WorkspaceModel workspaceModel)
             : base(workspaceModel, "Wall Type") { }
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 
@@ -388,6 +403,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region Categories
+
     [NodeName("Categories")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
@@ -396,7 +415,7 @@ namespace DSRevitNodesUI
     {
         public Categories(WorkspaceModel workspace) : base(workspace) { }
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
             foreach (var constant in Enum.GetValues(typeof(BuiltInCategory)))
@@ -421,6 +440,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region Levels
+
     [NodeName("Levels")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level in the active document")]
@@ -432,7 +455,7 @@ namespace DSRevitNodesUI
         public Levels(WorkspaceModel workspaceModel)
             : base(workspaceModel, "Levels"){}
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 
@@ -473,6 +496,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region StructuralFramingTypes
+
     [NodeName("Structural Framing Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level in the active document")]
@@ -484,7 +511,7 @@ namespace DSRevitNodesUI
         public StructuralFramingTypes(WorkspaceModel workspaceModel)
             : base(workspaceModel, "Framing Types"){}
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 
@@ -528,6 +555,10 @@ namespace DSRevitNodesUI
         }
     }
 
+    #endregion
+
+    #region SpacingRuleLayout
+
     [NodeName("Spacing Rule Layout")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("A spacing rule layout for calculating divided paths.")]
@@ -535,6 +566,10 @@ namespace DSRevitNodesUI
     public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> {
         public SpacingRuleLayouts(WorkspaceModel workspace) : base(workspace) { }
     }
+
+    #endregion
+
+    #region ElementTypes
 
     [NodeName("Element Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -552,4 +587,6 @@ namespace DSRevitNodesUI
             return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)};
         }
     }
+
+    #endregion
 }

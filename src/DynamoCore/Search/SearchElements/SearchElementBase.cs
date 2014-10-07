@@ -1,6 +1,5 @@
-﻿using Dynamo.Nodes.Search;
-
 namespace Dynamo.Search.SearchElements
+
 {
     /// <summary>
     /// A base class for elements found in search </summary>
@@ -37,7 +36,7 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public virtual void Execute()
+        public override void Execute()
         {
             this.OnExecuted();
         }

@@ -12,56 +12,30 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Autodesk.Revit.DB;
 
 namespace DSRevitNodesUI
 {
-    [NodeName("SunPath Direction")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Returns the current Sun Path direction.")]
-    [IsDesignScriptCompatible]
-    public class SunPathDirection : NodeModel, IWpfNode
+    public class SunPathDirectionNodeViewCustomization : INodeViewCustomization<SunPathDirection>
     {
         TextBox _tb;
         Button _sunPathButt;
-        private XYZ _sunVector;
+        private SunPathDirection model;
 
-        public SunAndShadowSettings PickedSunAndShadowSettings { get; set; }
-
-        public SunPathDirection(WorkspaceModel workspaceModel) : base()
+        public void CustomizeView(SunPathDirection model, dynNodeView nodeUI)
         {
-            OutPortData.Add(new PortData("direction", "The sun direction vector."));
-            RegisterAllPorts();
+            this.model = model;
 
-            // we need to obtain the dynamo model directly from the workspace model 
-            // here, as it is not yet initialized on the base class
-            var revMod = workspaceModel.dynamoModel as RevitDynamoModel;
-            if (revMod == null) return;
-
-            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
-            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
-        }
-
-        private void Updater_ElementsModified(IEnumerable<string> updated)
-        {
-            if (PickedSunAndShadowSettings != null)
+            if (model.PickedSunAndShadowSettings != null)
             {
-                if (!updated.Contains(PickedSunAndShadowSettings.UniqueId)) return;
-
-                _sunVector = GetSunDirection(PickedSunAndShadowSettings);
-                RequiresRecalc = true;
+                _tb.Text = model.PickedSunAndShadowSettings.Name;
+                _sunPathButt.Content = "Use SunPath from Current View";
             }
-        }
 
-        void Controller_RevitDocumentChanged(object sender, EventArgs e)
-        {
-            PickedSunAndShadowSettings = null;
-        }
-
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
             //add a button to the inputGrid on the dynElement
             _sunPathButt = new DynamoNodeButton
             {
@@ -82,7 +56,7 @@ namespace DSRevitNodesUI
             };
             var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             _tb.Background = backgroundBrush;
-            _tb.BorderThickness = new Thickness(0);
+            _tb.BorderThickness = new System.Windows.Thickness(0);
             _tb.IsReadOnly = true;
             _tb.IsReadOnlyCaretVisible = false;
 
@@ -96,12 +70,74 @@ namespace DSRevitNodesUI
             System.Windows.Controls.Grid.SetRow(_tb, 1);
         }
 
+        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var activeView = DocumentManager.Instance.CurrentDBDocument.ActiveView;
+            model.PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
+
+            if (model.PickedSunAndShadowSettings != null)
+            {
+                model.UpdateSunVector();
+                _tb.Text = model.PickedSunAndShadowSettings.Name;
+            }
+            else
+            {
+                _tb.Text = "Nothing Selected";
+            }
+        }
+
+        public void Dispose()
+        {
+
+        }
+    }
+
+
+    [NodeName("SunPath Direction")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Returns the current Sun Path direction.")]
+    [IsDesignScriptCompatible]
+    public class SunPathDirection : NodeModel
+    {
+        internal XYZ sunVector;
+        public SunAndShadowSettings PickedSunAndShadowSettings { get; set; }
+
+        public SunPathDirection(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
+        {
+            OutPortData.Add(new PortData("direction", "The sun direction vector."));
+            RegisterAllPorts();
+
+            // we need to obtain the dynamo model directly from the workspace model 
+            // here, as it is not yet initialized on the base class
+            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            if (revMod == null) return;
+
+            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
+        }
+
+        private void Updater_ElementsModified(IEnumerable<string> updated)
+        {
+            if (PickedSunAndShadowSettings != null)
+            {
+                if (!updated.Contains(PickedSunAndShadowSettings.UniqueId)) return;
+
+                sunVector = GetSunDirection(PickedSunAndShadowSettings);
+                RequiresRecalc = true;
+            }
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            PickedSunAndShadowSettings = null;
+        }
+
         /// <summary>
         /// Description of ShadowCalculatorUtils.
         /// NOTE: this is derived from Scott Connover's great class "Geometry API in Revit" from DevCamp 2012, source files accesed 6-8-12 from here 
         /// https://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Homehttps://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Home
         /// </summary>
-
         public static XYZ GetSunDirection(SunAndShadowSettings sunSettings)
         {
             //SunAndShadowSettings sunSettings = view.SunAndShadowSettings;
@@ -124,22 +160,6 @@ namespace DSRevitNodesUI
 
         }
 
-        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var activeView = DocumentManager.Instance.CurrentDBDocument.ActiveView;
-            PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
-
-            if (PickedSunAndShadowSettings != null)
-            {
-                _sunVector = GetSunDirection(PickedSunAndShadowSettings);
-                _tb.Text = PickedSunAndShadowSettings.Name;
-            }
-            else
-            {
-                _tb.Text = "Nothing Selected";
-            }
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode node = null;
@@ -150,17 +170,17 @@ namespace DSRevitNodesUI
             }
             else
             {
-                _sunVector = GetSunDirection(PickedSunAndShadowSettings).Normalize();
+                sunVector = GetSunDirection(PickedSunAndShadowSettings).Normalize();
 
-                var xNode = AstFactory.BuildDoubleNode(_sunVector.X);
-                var yNode = AstFactory.BuildDoubleNode(_sunVector.Y);
-                var zNode = AstFactory.BuildDoubleNode(_sunVector.Z);
+                var xNode = AstFactory.BuildDoubleNode(sunVector.X);
+                var yNode = AstFactory.BuildDoubleNode(sunVector.Y);
+                var zNode = AstFactory.BuildDoubleNode(sunVector.Z);
                 node = AstFactory.BuildFunctionCall(
                     new Func<double, double, double, Autodesk.DesignScript.Geometry.Vector>(Autodesk.DesignScript.Geometry.Vector.ByCoordinates),
                     new List<AssociativeNode> { xNode, yNode, zNode });
             }
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) }; 
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -171,6 +191,11 @@ namespace DSRevitNodesUI
                 outEl.SetAttribute("id", PickedSunAndShadowSettings.Id.ToString());
                 nodeElement.AppendChild(outEl);
             }
+        }
+
+        internal void UpdateSunVector()
+        {
+            this.sunVector = GetSunDirection(this.PickedSunAndShadowSettings);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -184,11 +209,6 @@ namespace DSRevitNodesUI
                         PickedSunAndShadowSettings = DocumentManager.Instance.CurrentDBDocument.GetElement(
                            new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
                         ) as SunAndShadowSettings;
-                        if (PickedSunAndShadowSettings != null)
-                        {
-                            _tb.Text = PickedSunAndShadowSettings.Name;
-                            _sunPathButt.Content = "Use SunPath from Current View";
-                        }
                     }
                     catch { }
                 }
@@ -199,5 +219,7 @@ namespace DSRevitNodesUI
         {
             return false; // Previews are not shown for this node type.
         }
+
+
     }
 }

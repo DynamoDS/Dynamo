@@ -13,7 +13,7 @@ using Dynamo.DSEngine;
 using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {

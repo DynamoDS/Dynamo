@@ -460,45 +460,4 @@ namespace ProtoCore.DSASM
         kMemHeap,
         kMemRegionTypes
     }
-
-    public enum AccessSpecifier
-    {
-       kPublic,
-       kProtected,
-       kPrivate
-    }
-
-    public enum AssociativeCompilePass
-    {
-        kClassName,
-        kClassBaseClass,
-        kClassHierarchy,
-        kClassMemVar,
-        
-        kClassMemFuncSig,
-        kGlobalFuncSig,
-
-        kGlobalScope,
-
-        kClassMemFuncBody,
-        kGlobalFuncBody,
-        kDone
-    }
-
-    public enum AssociativeSubCompilePass
-    {
-        kNone,
-        kUnboundIdentifier,
-        kGlobalInstanceFunctionBody,
-        kAll
-    }
-
-    public enum ImperativeCompilePass
-    {
-        kGlobalFuncSig,
-        kGlobalScope,
-        kGlobalFuncBody,
-        kDone
-    }
-
 }

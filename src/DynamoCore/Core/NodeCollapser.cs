@@ -90,62 +90,65 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                var curriedNodeArgs =
-                    new HashSet<NodeModel>(
-                        inputs.Select(x => x.Item3.Item2)
-                            .Intersect(outputs.Select(x => x.Item3.Item2))).Select(
-                                outerNode =>
-                                {
-                                    //var node = new Apply1();
-                                    var node = newNodeWorkspace.AddNode<Apply1>();
-                                    node.SetNickNameFromAttribute();
+                dynamoModel.Logger.LogWarning("Could not repair 1-node holes", WarningLevel.Mild);
 
-                                    node.DisableReporting();
+                // PB: This was already broken - Apply1 is a dummy node
+                //var curriedNodeArgs =
+                //    new HashSet<NodeModel>(
+                //        inputs.Select(x => x.Item3.Item2)
+                //            .Intersect(outputs.Select(x => x.Item3.Item2))).Select(
+                //                outerNode =>
+                //                {
+                //                    //var node = new Apply1();
+                //                    var node = newNodeWorkspace.AddNode<Apply1>();
+                //                    node.SetNickNameFromAttribute();
 
-                                    node.X = outerNode.X;
-                                    node.Y = outerNode.Y;
+                //                    node.DisableReporting();
 
-                                    //Fetch all input ports
-                                    // in order
-                                    // that have inputs
-                                    // and whose input comes from an inner node
-                                    List<int> inPortsConnected =
-                                        Enumerable.Range(0, outerNode.InPortData.Count)
-                                            .Where(
-                                                x =>
-                                                    outerNode.HasInput(x)
-                                                        && selectedNodeSet.Contains(
-                                                            outerNode.Inputs[x].Item2))
-                                            .ToList();
+                //                    node.X = outerNode.X;
+                //                    node.Y = outerNode.Y;
 
-                                    var nodeInputs =
-                                        outputs.Where(output => output.Item3.Item2 == outerNode)
-                                            .Select(
-                                                output =>
-                                                    new
-                                                    {
-                                                        InnerNodeInputSender = output.Item1,
-                                                        OuterNodeInPortData = output.Item3.Item1
-                                                    })
-                                            .ToList();
+                //                    //Fetch all input ports
+                //                    // in order
+                //                    // that have inputs
+                //                    // and whose input comes from an inner node
+                //                    List<int> inPortsConnected =
+                //                        Enumerable.Range(0, outerNode.InPortData.Count)
+                //                            .Where(
+                //                                x =>
+                //                                    outerNode.HasInput(x)
+                //                                        && selectedNodeSet.Contains(
+                //                                            outerNode.Inputs[x].Item2))
+                //                            .ToList();
 
-                                    nodeInputs.ForEach(_ => node.AddInput());
+                //                    var nodeInputs =
+                //                        outputs.Where(output => output.Item3.Item2 == outerNode)
+                //                            .Select(
+                //                                output =>
+                //                                    new
+                //                                    {
+                //                                        InnerNodeInputSender = output.Item1,
+                //                                        OuterNodeInPortData = output.Item3.Item1
+                //                                    })
+                //                            .ToList();
 
-                                    node.RegisterAllPorts();
+                //                    nodeInputs.ForEach(_ => node.AddInput());
 
-                                    return
-                                        new
-                                        {
-                                            OuterNode = outerNode,
-                                            InnerNode = node,
-                                            Outputs =
-                                                inputs.Where(
-                                                    input => input.Item3.Item2 == outerNode)
-                                                    .Select(input => input.Item3.Item1),
-                                            Inputs = nodeInputs,
-                                            OuterNodePortDataList = inPortsConnected
-                                        };
-                                }).ToList();
+                //                    node.RegisterAllPorts();
+
+                //                    return
+                //                        new
+                //                        {
+                //                            OuterNode = outerNode,
+                //                            InnerNode = node,
+                //                            Outputs =
+                //                                inputs.Where(
+                //                                    input => input.Item3.Item2 == outerNode)
+                //                                    .Select(input => input.Item3.Item1),
+                //                            Inputs = nodeInputs,
+                //                            OuterNodePortDataList = inPortsConnected
+                //                        };
+                //                }).ToList();
 
                 #endregion
 
@@ -274,28 +277,28 @@ namespace Dynamo.Utilities
                         uniqueInputSenders[key] = node;
                     }
 
-                    var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
+                    //var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
 
-                    if (curriedNode == null)
-                    {
+                    //if (curriedNode == null)
+                    //{
                         newNodeWorkspace.AddConnection(
                             node,
                             inputReceiverNode,
                             0,
-                            inputReceiverData, TODO);
-                    }
-                    else
-                    {
-                        //Connect it to the applier
-                        newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0, TODO);
+                            inputReceiverData);
+                    //}
+                    //else
+                    //{
+                    //    //Connect it to the applier
+                    //    newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
 
-                        //Connect applier to the inner input receive
-                        newNodeWorkspace.AddConnection(
-                            curriedNode.InnerNode,
-                            inputReceiverNode,
-                            0,
-                            inputReceiverData, TODO);
-                    }
+                    //    //Connect applier to the inner input receive
+                    //    newNodeWorkspace.AddConnection(
+                    //        curriedNode.InnerNode,
+                    //        inputReceiverNode,
+                    //        0,
+                    //        inputReceiverData);
+                    //}
                 }
 
                 #endregion
@@ -320,8 +323,8 @@ namespace Dynamo.Utilities
                             int outputSenderData = output.Item2;
                             NodeModel outputReceiverNode = output.Item3.Item2;
 
-                            if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                                continue;
+                            //if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
+                            //    continue;
 
                             outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
 
@@ -357,11 +360,11 @@ namespace Dynamo.Utilities
                         int outputReceiverData = output.Item3.Item1;
                         NodeModel outputReceiverNode = output.Item3.Item2;
 
-                        var curriedNode =
-                            curriedNodeArgs.FirstOrDefault(x => x.OuterNode == outputReceiverNode);
+                        //var curriedNode =
+                        //    curriedNodeArgs.FirstOrDefault(x => x.OuterNode == outputReceiverNode);
 
-                        if (curriedNode == null)
-                        {
+                        //if (curriedNode == null)
+                        //{
                             // we create the connectors in the current space later
                             outConnectors.Add(
                                 Tuple.Create(
@@ -371,25 +374,25 @@ namespace Dynamo.Utilities
                                             x.Item1 == outputSenderNode
                                                 && x.Item2 == outputSenderData),
                                     outputReceiverData));
-                        }
-                        else
-                        {
-                            int targetPort =
-                                curriedNode.Inputs.First(
-                                    x => x.InnerNodeInputSender == outputSenderNode)
-                                    .OuterNodeInPortData;
+                        //}
+                        //else
+                        //{
+                        //    int targetPort =
+                        //        curriedNode.Inputs.First(
+                        //            x => x.InnerNodeInputSender == outputSenderNode)
+                        //            .OuterNodeInPortData;
 
-                            int targetPortIndex =
-                                curriedNode.OuterNodePortDataList.IndexOf(targetPort);
+                        //    int targetPortIndex =
+                        //        curriedNode.OuterNodePortDataList.IndexOf(targetPort);
 
-                            //Connect it (new dynConnector)
-                            newNodeWorkspace.AddConnection(
-                                outputSenderNode,
-                                curriedNode.InnerNode,
-                                outputSenderData,
-                                targetPortIndex + 1, TODO);
+                        //    //Connect it (new dynConnector)
+                        //    newNodeWorkspace.AddConnection(
+                        //        outputSenderNode,
+                        //        curriedNode.InnerNode,
+                        //        outputSenderData,
+                        //        targetPortIndex + 1);
 
-                        }
+                        //}
                     }
                 }
                 else

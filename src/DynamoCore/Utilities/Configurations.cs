@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿
 using System.Windows;
 using System.Windows.Media;
 
@@ -8,6 +8,7 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.UI
 {
+    // SEPARATECORE: ugh ugh ugh
     public class Configurations
     {
         #region Dynamo Universal Constants
@@ -42,7 +43,8 @@ namespace Dynamo.UI
         //public static readonly double Minimum
 
         // Generic Constants
-        public static readonly double PortHeightInPixels = 26.0;
+        public static readonly double PortHeightInPixels = 26;
+        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
 
         // Grid Settings
         public static readonly int GridSpacing = 100;
@@ -168,7 +170,9 @@ namespace Dynamo.UI
 
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly double CBNMaxTextBoxWidth = 500;
-        public static readonly double CBNFontSize = 14.67;
+        public static readonly double CBNFontSize = 15;
+        public static readonly string HighlightingFile =
+            "DesignScript.Resources.SyntaxHighlighting.xshd";
 
         #endregion
 
@@ -196,8 +200,8 @@ namespace Dynamo.UI
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
 #else
-        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
-        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3-us-west-2.amazonaws.com/";
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
+        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
 #endif
 
     }
@@ -286,6 +290,6 @@ namespace Dynamo.UI
     public class ResourceNames
     {
         public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCore;component/UI/Images/";
+        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
     }
 }

@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
     public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
     {
-        public DelegateCommand EditCommand { get; set; }
-
         public Guid Guid { get; internal set; }
 
         private string _path;
         public string Path
         {
             get { return _path; }
-            set { 
-                _path = value; 
-                RaisePropertyChanged("Path"); 
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
             }
         }
 
         public override string Type { get { return "Custom Node"; } }
 
-        public CustomNodeSearchElement(CustomNodeInfo info) : base(info.Name, info.Description, new List<string>())
+        public CustomNodeSearchElement(CustomNodeInfo info)
+            : base(info.Name, info.Description, new List<string>())
         {
             this.Node = null;
             this.FullCategoryName = info.Category;

@@ -7,21 +7,11 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
     public abstract class BrowserItem : NotificationObject
     {
-
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
-
-        /// <summary>
-        /// Sort this items children and then tell its children and recurse on children
-        /// </summary>
-        public void RecursivelySort()
-        {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-            this.Items.ToList().ForEach(x=>x.RecursivelySort());
-        }
 
         /// <summary>
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
@@ -149,99 +139,17 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public ToggleIsExpandedCommand _toggleIsExpanded;
-        public ToggleIsExpandedCommand ToggleIsExpanded
+        public abstract void Execute();
+
+        public delegate void BrowserItemHandler(BrowserItem ele);
+        public event BrowserItemHandler Executed;
+        protected void OnExecuted()
         {
-            get
+            if (Executed != null)
             {
-                if (_toggleIsExpanded == null)
-                    _toggleIsExpanded = new ToggleIsExpandedCommand(this);
-                return _toggleIsExpanded;
+                Executed(this);
             }
         }
 
-        public class ToggleIsExpandedCommand
-        {
-            private BrowserItem item;
-
-            public ToggleIsExpandedCommand(BrowserItem i)
-            {
-                this.item = i;
-            }
-
-            public void Execute(object parameters)
-            {
-                if (item is PackageManagerSearchElement)
-                {
-                    item.IsExpanded = !item.IsExpanded;
-                    return;
-                }
-
-                if (item is SearchElementBase)
-                {
-                    ((SearchElementBase)item).Execute();
-                    return;
-                }
-                var endState = !item.IsExpanded;
-                if (item is BrowserInternalElement)
-                {
-                    BrowserInternalElement element = (BrowserInternalElement)item;
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-                    }
-                }
-
-                if (item is BrowserRootElement)
-                {
-                    BrowserRootElement element = (BrowserRootElement)item;
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-
-                    }
-
-                }
-                item.IsExpanded = endState;
-            }
-
-            //public event EventHandler CanExecuteChanged
-            //{
-            //    add { CommandManager.RequerySuggested += value; }
-            //    remove { CommandManager.RequerySuggested -= value; }
-            //}
-
-            public bool CanExecute(object parameters)
-            {
-                return true;
-            }
-        }
     }
 }

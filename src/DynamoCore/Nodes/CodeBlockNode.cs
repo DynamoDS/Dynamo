@@ -28,7 +28,9 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
-        private bool shouldFocus = true;
+
+        public bool ShouldFocus { get; set; }
+
         private readonly DynamoLogger logger;
 
         private struct Formatting
@@ -59,7 +61,7 @@ namespace Dynamo.Nodes
             this.Y = yPos;
             this.code = userCode;
             this.GUID = guid;
-            this.shouldFocus = false;
+            this.ShouldFocus = false;
             ProcessCodeDirect();
         }
 
@@ -225,7 +227,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", shouldFocus);
+            helper.SetAttribute("ShouldFocus", ShouldFocus);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -234,7 +236,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
             ProcessCodeDirect();
-            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            ShouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
         protected override bool UpdateValueCore(string name, string value)
@@ -278,7 +280,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", shouldFocus);
+            helper.SetAttribute("ShouldFocus", ShouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -287,7 +289,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                shouldFocus = helper.ReadBoolean("ShouldFocus");
+                ShouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
                 ProcessCodeDirect();
             }

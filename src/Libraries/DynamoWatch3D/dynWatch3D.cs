@@ -17,6 +17,8 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 
 using VMDataBridge;
@@ -25,97 +27,18 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Watch 3D")]
-    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
-    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
-    [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel, IWatchViewModel, IWpfNode
+    public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
-        private bool _canNavigateBackground = true;
-        private double _watchWidth = 200;
-        private double _watchHeight = 200;
-        private Point3D _camPosition = new Point3D(10,10,10);
-        private Vector3D _lookDirection = new Vector3D(-1,-1,-1);
-
-        public DelegateCommand GetBranchVisualizationCommand { get; set; }
-        public DelegateCommand CheckForLatestRenderCommand { get; set; }
-
-        public DelegateCommand ToggleCanNavigateBackgroundCommand
-        {
-            get
-            {
-                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
-            }
-        }
-
-        public bool WatchIsResizable { get; set; }
-        public bool IsBackgroundPreview { get { return false; } }
-
+        private DynamoViewModel dynamoViewModel;
+        private Watch3D watch3dModel;
         public Watch3DView View { get; private set; }
 
-        public bool CanNavigateBackground
+        public void CustomizeView(Watch3D model, dynNodeView nodeUI)
         {
-            get
-            {
-                return _canNavigateBackground;
-            }
-            set
-            {
-                _canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
-            }
-        }
+            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            this.watch3dModel = model;
 
-        public Watch3D(WorkspaceModel workspace) : base()
-        {
-            InPortData.Add(new PortData("", "Incoming geometry objects."));
-            OutPortData.Add(new PortData("", "Watch contents, passed through"));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Disabled;
-
-            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
-            WatchIsResizable = true;
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
-            DataBridge.Instance.UnregisterCallback(GUID.ToString());
-        }
-
-        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
-        {
-            if (data is IGraphicItem)
-                yield return data as IGraphicItem;
-            else if (data is IEnumerable)
-            {
-                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
-                foreach (var g in graphics)
-                    yield return g;
-            }
-        }
-
-        private RenderPackage PackageRenderData(IGraphicItem gItem)
-        {
-            var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, this.DynamoViewModel.VisualizationManager.MaxTesselationDivisions);
-            renderPackage.ItemsCount++;
-            return renderPackage;
-        }
-
-        private void RenderData(object data)
-        {
-            View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString(), -1));
-        }
-
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            this.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
@@ -125,15 +48,15 @@ namespace Dynamo.Nodes
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             //_watchView = new WatchView();
-            View = new Watch3DView(GUID.ToString())
+            View = new Watch3DView(model.GUID.ToString())
             {
-                DataContext = this,
-                Width = _watchWidth,
-                Height = _watchHeight
+                DataContext = model,
+                Width = model.WatchWidth,
+                Height = model.WatchHeight
             };
 
-            View.View.Camera.Position = _camPosition;
-            View.View.Camera.LookDirection = _lookDirection;
+            View.View.Camera.Position = model.CameraPosition;
+            View.View.Camera.LookDirection = model.LookDirection;
 
             var backgroundRect = new Rectangle
             {
@@ -153,7 +76,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
-                GUID.ToString(),
+                model.GUID.ToString(),
                 obj =>
                     nodeUI.Dispatcher.Invoke(
                         new Action<object>(RenderData),
@@ -161,15 +84,136 @@ namespace Dynamo.Nodes
                         obj));
         }
 
+        private void UpdateLatestCameraPosition()
+        {
+            watch3dModel.CameraPosition = View.View.Camera.Position;
+            watch3dModel.LookDirection = View.View.Camera.LookDirection;
+        }
+
+        private void RenderData(object data)
+        {
+            View.RenderDrawables(
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID.ToString(), -1));
+        }
+
         void mi_Click(object sender, RoutedEventArgs e)
         {
             View.View.ZoomExtents();
         }
 
+        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        {
+            if (data is IGraphicItem)
+                yield return data as IGraphicItem;
+            else if (data is IEnumerable)
+            {
+                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                foreach (var g in graphics)
+                    yield return g;
+            }
+        }
+
+        private RenderPackage PackageRenderData(IGraphicItem gItem)
+        {
+            var renderPackage = new RenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, this.dynamoViewModel.VisualizationManager.MaxTesselationDivisions);
+            renderPackage.ItemsCount++;
+            return renderPackage;
+        }
+
+        public void Dispose()
+        {
+            watch3dModel.RequestUpdateLatestCameraPosition -= this.UpdateLatestCameraPosition;
+        }
+    }
+
+    [NodeName("Watch 3D")]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
+    [NodeDescription("Shows a dynamic preview of geometry.")]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
+    [IsDesignScriptCompatible]
+    public class Watch3D : NodeModel, IWatchViewModel
+    {
+        public bool _canNavigateBackground { get; private set; }
+        public double WatchWidth { get; private set; }
+        public double WatchHeight { get; private set; }
+        public Point3D CameraPosition { get; internal set; }
+        public Vector3D LookDirection { get; internal set; }
+
+        public DynamoViewModel DynamoViewModel { get; set; }
+
+        public delegate void VoidHandler();
+        public event VoidHandler RequestUpdateLatestCameraPosition;
+
+        private void OnRequestUpdateLatestCameraPosition()
+        {
+            if (RequestUpdateLatestCameraPosition != null)
+            {
+                RequestUpdateLatestCameraPosition();
+            }
+        }
+
+        public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public DelegateCommand CheckForLatestRenderCommand { get; set; }
+        public DelegateCommand ToggleCanNavigateBackgroundCommand
+        {
+            get
+            {
+                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
+            }
+        }
+
+        public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return false; } }
+
+        public bool CanNavigateBackground
+        {
+            get
+            {
+                return _canNavigateBackground;
+            }
+            set
+            {
+                _canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
+        public Watch3D(WorkspaceModel workspace)
+            : base(workspace)
+        {
+            InPortData.Add(new PortData("", "Incoming geometry objects."));
+            OutPortData.Add(new PortData("", "Watch contents, passed through"));
+
+            SetupDefaults();
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+
+            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
+            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
+            WatchIsResizable = true;
+        }
+
+        private void SetupDefaults()
+        {
+            _canNavigateBackground = true;
+            WatchWidth = 200;
+            WatchHeight = 200;
+            CameraPosition = new Point3D(10, 10, 10);
+            LookDirection = new Vector3D(-1, -1, -1);
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             base.SaveNode(xmlDoc, nodeElement, context);
-            
+
             var viewElement = xmlDoc.CreateElement("view");
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
@@ -177,20 +221,19 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", Width);
             viewHelper.SetAttribute("height", Height);
 
-            //Bail out early if the view hasn't been created.
-            if (View == null)
-                return;
+            // the view stores the latest position
+            OnRequestUpdateLatestCameraPosition();
 
             var camElement = xmlDoc.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
-            camHelper.SetAttribute("pos_x", View.View.Camera.Position.X);
-            camHelper.SetAttribute("pos_y", View.View.Camera.Position.Y);
-            camHelper.SetAttribute("pos_z", View.View.Camera.Position.Z);
-            camHelper.SetAttribute("look_x", View.View.Camera.LookDirection.X);
-            camHelper.SetAttribute("look_y", View.View.Camera.LookDirection.Y);
-            camHelper.SetAttribute("look_z", View.View.Camera.LookDirection.Z);
+            camHelper.SetAttribute("pos_x", CameraPosition.X);
+            camHelper.SetAttribute("pos_y", CameraPosition.Y);
+            camHelper.SetAttribute("pos_z", CameraPosition.Z);
+            camHelper.SetAttribute("look_x", LookDirection.X);
+            camHelper.SetAttribute("look_y", LookDirection.Y);
+            camHelper.SetAttribute("look_z", LookDirection.Z);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -202,8 +245,8 @@ namespace Dynamo.Nodes
                 {
                     if (node.Name == "view")
                     {
-                        _watchWidth = Convert.ToDouble(node.Attributes["width"].Value);
-                        _watchHeight = Convert.ToDouble(node.Attributes["height"].Value);
+                        WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
+                        WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
 
                         foreach (XmlNode inNode in node.ChildNodes)
                         {
@@ -215,27 +258,38 @@ namespace Dynamo.Nodes
                                 var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value);
                                 var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value);
                                 var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value);
-                                _camPosition = new Point3D(x,y,z);
-                                _lookDirection = new Vector3D(lx,ly,lz);
+                                CameraPosition = new Point3D(x, y, z);
+                                LookDirection = new Vector3D(lx, ly, lz);
                             }
                         }
                     }
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.Workspace.DynamoModel.Logger.Log(ex);
                 this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
             }
-            
+
         }
 
-        public override void UpdateRenderPackage(int maxTessDivisions, object engineController)
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            return; // No visualization update is required for this node type.
+        }
+
+#else
+
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs
         }
+
+#endif
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -301,7 +355,5 @@ namespace Dynamo.Nodes
         {
             return false; // Previews are not shown for this node type.
         }
-
-        public DynamoViewModel DynamoViewModel { get; set; }
     }
 }

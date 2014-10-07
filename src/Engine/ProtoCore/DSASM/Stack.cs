@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
@@ -130,6 +132,12 @@ namespace ProtoCore.DSASM
             Init(svThisPtr, classIndex, funcIndex, pc, functionBlockDecl, functionBlockCaller, callerType, type, depth, framePointer, stack, execStates);
         }
 
+        public StackFrame(StackValue[] frame)
+        {
+            Validity.Assert(frame.Count() == kStackFrameSize);
+            Frame = frame;
+        }
+
         public StackFrame(int globalOffset)
         {
             StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
@@ -139,48 +147,148 @@ namespace ProtoCore.DSASM
             int blockDecl = Constants.kInvalidIndex;
             int blockCaller = 0;
 
-            StackFrameType callerType = StackFrameType.kTypeLanguage;
-            StackFrameType type = StackFrameType.kTypeLanguage;
+            StackFrameType callerType = DSASM.StackFrameType.kTypeLanguage;
+            StackFrameType type = DSASM.StackFrameType.kTypeLanguage;
             int depth = -1;
             int framePointer = globalOffset;
 
             Init(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, StackValue.BuildInvalidRegisters(), new List<bool>());
         }
 
-        public StackValue GetAt(AbsoluteIndex index)
+        private StackValue GetAt(AbsoluteIndex index)
         {
-            Validity.Assert(null != Frame);
             return Frame[(int)index];
         }
 
-        public int GetReturnAddress()
+        private void SetAt(AbsoluteIndex index, StackValue sv)
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress);
-            return (int)stackValue.opdata;
+            Frame[(int)index] = sv;
         }
 
-        public int GetFunctionBlock()
+        public StackValue ThisPtr
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
-            return (int)stackValue.opdata;
+            get { return GetAt(AbsoluteIndex.kThisPtr); }
+            set { SetAt(AbsoluteIndex.kThisPtr, value);}
         }
 
-        public int GetFunctionCallerBlock()
+        public int ClassScope
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock);
-            return (int)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kClass).opdata; }
+            set { SetAt(AbsoluteIndex.kClass, StackValue.BuildClassIndex(value)); }
         }
 
-        public StackFrameType GetStackFrameType()
+        public int FunctionScope
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType);
-            return (StackFrameType)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kFunction).opdata; }
+            set { SetAt(AbsoluteIndex.kFunction, StackValue.BuildFunctionIndex(value)); }
         }
 
-        public int GetCallerClassIndex()
+        public int ReturnPC
         {
-            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
-            return (int)stackValue.opdata;
+            get { return (int)GetAt(AbsoluteIndex.kReturnAddress).opdata; }
+            set { SetAt(AbsoluteIndex.kReturnAddress, StackValue.BuildInt(value));}
+        }
+
+        public int FunctionBlock
+        {
+            get { return (int)GetAt(AbsoluteIndex.kFunctionBlock).opdata; }
+            set { SetAt(AbsoluteIndex.kFunctionBlock, StackValue.BuildBlockIndex(value)); }
+        }
+
+        public int FunctionCallerBlock
+        {
+            get { return (int)GetAt(AbsoluteIndex.kFunctionCallerBlock).opdata; }
+            set { SetAt(AbsoluteIndex.kFunctionCallerBlock, StackValue.BuildBlockIndex(value)); }
+        }
+
+        public StackFrameType CallerStackFrameType
+        {
+            get { return (StackFrameType)GetAt(AbsoluteIndex.kCallerStackFrameType).opdata; }
+            set { SetAt(AbsoluteIndex.kCallerStackFrameType, StackValue.BuildInt((int)value));}
+        }
+
+        public StackFrameType StackFrameType
+        {
+            get { return (StackFrameType)GetAt(AbsoluteIndex.kStackFrameType).opdata; }
+            set { SetAt(AbsoluteIndex.kStackFrameType, StackValue.BuildInt((int)value)); }
+        }
+
+        public int Depth
+        {
+            get { return (int)GetAt(AbsoluteIndex.kStackFrameDepth).opdata; }
+            set { SetAt(AbsoluteIndex.kStackFrameDepth, StackValue.BuildInt(value)); }
+        }
+
+        public int FramePointer
+        {
+            get { return (int)GetAt(AbsoluteIndex.kFramePointer).opdata; }
+            set { SetAt(AbsoluteIndex.kFramePointer, StackValue.BuildInt(value));}
+        }
+
+        public int ExecutionStateSize
+        {
+            get { return (int)GetAt(AbsoluteIndex.kExecutionStates).opdata; }
+            set { SetAt(AbsoluteIndex.kExecutionStates, StackValue.BuildInt(value)); }
+        }
+
+        public StackValue AX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterAX); }
+            set { SetAt(AbsoluteIndex.kRegisterAX, value);}
+        }
+
+        public StackValue BX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterBX); }
+            set { SetAt(AbsoluteIndex.kRegisterBX, value);}
+        }
+
+        public StackValue CX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterCX); }
+            set { SetAt(AbsoluteIndex.kRegisterCX, value); }
+        }
+
+        public StackValue DX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterDX); }
+            set { SetAt(AbsoluteIndex.kRegisterDX, value); }
+        }
+
+        public StackValue EX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterEX); }
+            set { SetAt(AbsoluteIndex.kRegisterEX, value); }
+        }
+
+        public StackValue FX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterFX); }
+            set { SetAt(AbsoluteIndex.kRegisterFX, value); }
+        }
+
+        public StackValue LX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterLX); }
+            set { SetAt(AbsoluteIndex.kRegisterLX, value); }
+        }
+
+        public StackValue RX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterRX); }
+            set { SetAt(AbsoluteIndex.kRegisterRX, value); }
+        }
+
+        public StackValue SX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterSX); }
+            set { SetAt(AbsoluteIndex.kRegisterSX, value); }
+        }
+
+        public StackValue TX
+        {
+            get { return GetAt(AbsoluteIndex.kRegisterTX); }
+            set { SetAt(AbsoluteIndex.kRegisterTX, value); }
         }
 
         public List<StackValue> GetRegisters()
@@ -199,12 +307,6 @@ namespace ProtoCore.DSASM
             registers.Add(Frame[(int)AbsoluteIndex.kRegisterTX]);
 
             return registers;
-        }
-
-        public void SetAt(AbsoluteIndex index, StackValue sv)
-        {
-            Validity.Assert(null != Frame);
-            Frame[(int)index] = sv;
         }
     }
     
@@ -411,7 +513,7 @@ namespace ProtoCore.DSASM
             //Pop the addtional stack elements added
             int newStackCount = mRmem.Stack.Count;
             if (newStackCount > mRestorePoint)
-                mRmem.Pop(newStackCount - mRestorePoint);
+                mRmem.PopFrame(newStackCount - mRestorePoint);
 
             //Restore the old stack elements that is above the frame pointer
             int count = mStack.Count;

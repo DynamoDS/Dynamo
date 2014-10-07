@@ -65,10 +65,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Create a NodeModel with a given type as the method generic parameter
         /// </summary>
+        /// <param name="logger"></param>
         /// <returns> The newly instantiated NodeModel with a new guid</returns>
-        public T CreateNodeInstance<T>() where T : NodeModel
+        public T CreateNodeInstance<T>(ILogger logger) where T : NodeModel
         {
-            var node = GetNodeModelInstanceByType<T>();
+            var node = GetNodeModelInstanceByType<T>(logger);
             if (node == null) 
                 return null;
 
@@ -120,14 +121,14 @@ namespace Dynamo.Models
 
         #region Helper methods
 
-        private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
+        private static NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
         {
             if (functionItem.IsVarArg)
                 return new DSVarArgFunction(functionItem);
             return new DSFunction(functionItem);
         }
 
-        private NodeModel GetCustomNodeByName(CustomNodeManager manager, string name, ILogger logger)
+        private static NodeModel GetCustomNodeByName(CustomNodeManager manager, string name, ILogger logger)
         {
             CustomNodeDefinition def;
 
@@ -155,11 +156,11 @@ namespace Dynamo.Models
             return GetNodeModelInstanceByType(tld.Type, logger);
         }
 
-        private T GetNodeModelInstanceByType<T>(ILogger logger) where T : NodeModel
+        private static T GetNodeModelInstanceByType<T>(ILogger logger) where T : NodeModel
         {
             try
             {
-                return (T)Activator.CreateInstance(typeof(T));
+                return (T) typeof(T).GetInstance();
             }
             catch (Exception ex)
             {
@@ -169,11 +170,11 @@ namespace Dynamo.Models
             }
         }
 
-        private NodeModel GetNodeModelInstanceByType(Type type, ILogger logger)
+        private static NodeModel GetNodeModelInstanceByType(Type type, ILogger logger)
         {
             try
             {
-                return (NodeModel)Activator.CreateInstance(type);
+                return (NodeModel) type.GetInstance();
             }
             catch (Exception ex)
             {

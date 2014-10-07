@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
 using Dynamo.Interfaces;
+
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -96,7 +97,6 @@ namespace Dynamo.Nodes
 
         private void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton()
             {
@@ -146,9 +146,8 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
             };
             selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
-=======
+
             ClearSelections();
->>>>>>> master
         }
 
         #endregion

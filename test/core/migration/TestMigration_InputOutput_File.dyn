@@ -1,11 +1,7 @@
-<Workspace Version="0.6.3.7993" X="128.169736115557" Y="-415.44847590464" zoom="0.954042924882813" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.7993" X="-93.7824108738861" Y="-171.858094164474" zoom="0.662759780568406" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.ImageFileReader type="Dynamo.Nodes.ImageFileReader" guid="2742acc3-e637-46e3-a3e0-da1394a9fd2d" nickname="Read Image File" x="602.096568628419" y="1015.19979673381" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.FileReader type="Dynamo.Nodes.FileReader" guid="443a3eee-ddf3-4d89-977a-3834129efea1" nickname="Read Text File" x="262.4892076286" y="763.638788585794" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FileWatcherReset type="Dynamo.Nodes.FileWatcherReset" guid="077f1514-d674-44d5-ae6f-d6a795216fb9" nickname="Reset File Watch" x="262.4892076286" y="995.284550255424" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FileWatcher type="Dynamo.Nodes.FileWatcher" guid="633a1320-2756-4a14-b04e-355ca3391ad9" nickname="Watch File" x="602.096568628419" y="666.158897928439" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FileWatcherChanged type="Dynamo.Nodes.FileWatcherChanged" guid="75c8b03f-1e9a-4827-a66d-0e1c08ad16e6" nickname="Watched File Changed?" x="602.096568628419" y="772.024155524061" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FileWatcherWait type="Dynamo.Nodes.FileWatcherWait" guid="f261ed98-e8e7-4429-8bf3-01333412a0f2" nickname="Watched File Wait" x="602.096568628419" y="882.082096588818" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.ListToCsv type="Dynamo.Nodes.ListToCsv" guid="28eefe27-0492-4e1e-a44b-2fc8bea765f1" nickname="Write CSV File" x="262.4892076286" y="649.388164051905" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.FileWriter type="Dynamo.Nodes.FileWriter" guid="d3e52cf7-6563-4d24-a161-025a70782b06" nickname="Write File" x="262.4892076286" y="869.504046181417" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.ImageFileWriter type="Dynamo.Nodes.ImageFileWriter" guid="fbf8709e-8906-476e-b715-f25dfede6d3e" nickname="Write Image File" x="262.4892076286" y="1095.90895351463" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />

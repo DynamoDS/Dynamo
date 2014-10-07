@@ -6,13 +6,17 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Xml;
+
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
-using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
@@ -867,51 +871,6 @@ namespace Dynamo.Models
 
         #region UI Framework
 
-        /// <summary>
-        ///     Called back from the view to enable users to setup their own view elements
-        /// </summary>
-        /// <param name="view"></param>
-        internal void InitializeUI(dynamic view)
-        {
-            //Runtime dispatch
-            (this as dynamic).SetupCustomUIElements(view);
-        }
-
-        /// <summary>
-        /// Used as a catch-all if runtime dispatch for UI initialization is unimplemented.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void SetupCustomUIElements(object view) { }
-
-        /// <summary>
-        /// As hacky as the name sounds, this method is used to retrieve the 
-        /// "DynamoViewModel" from a given "MenuItem" object. The reason it is
-        /// needed boils down to the fact that we still do "SetupCustomUIElements"
-        /// at the "NodeModel" level. This method will be removed when we 
-        /// eventually refactor "SetupCustomUIElements" out into view layer.
-        /// </summary>
-        /// <param name="menuItem">The MenuItem from which DynamoViewModel is to 
-        /// be retrieved.</param>
-        /// <returns>Returns the corresponding DynamoViewModel retrieved from the 
-        /// given MenuItem.</returns>
-        [Obsolete("TODO: Move to ViewModel layer", true)] //TODO
-        protected object /* DynamoViewModel */ GetDynamoViewModelFromMenuItem(object /* MenuItem */ menuItem)
-        {
-            //if (menuItem == null || (menuItem.Tag == null))
-            //    throw new ArgumentNullException("menuItem");
-
-            //var dynamoViewModel = menuItem.Tag as DynamoViewModel;
-            //if (dynamoViewModel == null)
-            //{
-            //    const string message = "MenuItem.Tag is not DynamoViewModel";
-            //    throw new ArgumentException(message);
-            //}
-
-            //return dynamoViewModel;
-            throw new NotImplementedException();
-        }
-
         private void ClearTooltipText()
         {
             ToolTipText = "";
@@ -1465,6 +1424,40 @@ namespace Dynamo.Models
         public virtual bool ForceReExecuteOfNode { get; set; }
         #endregion
 
+        #region Visualization Related Methods
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for 
+        /// this node. This method accesses core properties of a NodeModel and 
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="maxTesselationDivisions">The maximum number of 
+        /// tessellation divisions to use for regenerating render packages.</param>
+        /// 
+        public void RequestVisualUpdate(int maxTesselationDivisions)
+        {
+            RequestVisualUpdateCore(maxTesselationDivisions);
+        }
+
+        /// <summary>
+        /// When called, the base implementation of this method schedules an 
+        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
+        /// asynchronously. Derived classes can optionally override this method 
+        /// to prevent render packages to be generated if they do not require 
+        /// geometric preview.
+        /// </summary>
+        /// <param name="maxTesselationDivisions">The maximum number of 
+        /// tessellation divisions to use for regenerating render packages.</param>
+        /// 
+        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            // SCHEDULER: Schedule an 'UpdateRenderPackageAsyncTask' here.
+        }
+
+#else
+
         /// <summary>
         /// Updates the render package for this node by
         /// getting the MirrorData objects corresponding to
@@ -1480,7 +1473,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            List<string> drawableIds = GetDrawableIds().ToList();
+            var drawableIds = GetDrawableIds();
 
             int count = 0;
             var labelMap = new List<string>();
@@ -1526,7 +1519,7 @@ namespace Dynamo.Models
             HasRenderPackages = RenderPackages.Any();
         }
 
-        public void ClearRenderPackages()
+        private void ClearRenderPackages()
         {
             lock (RenderPackagesMutex)
             {
@@ -1658,6 +1651,8 @@ namespace Dynamo.Models
         }
 */
 
+#endif
+
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
@@ -1687,6 +1682,8 @@ namespace Dynamo.Models
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
             return output == null ? null : output.ToString();
         }
+
+        #endregion
 
         #region Node Migration Helper Methods
 
@@ -1752,15 +1749,16 @@ namespace Dynamo.Models
             //if (!(this.Workspace is HomeWorkspaceModel))
             //    return false;
             //
-            //return ShouldDisplayPreviewCore();
+            return ShouldDisplayPreviewCore();
 
-            return true;
+            //return true;
         }
 
-        //protected virtual bool ShouldDisplayPreviewCore()
-        //{
-        //    return true; // Default implementation: always show preview.
-        //}
+        [Obsolete("Use Display Preview setter instead.", true)]
+        protected virtual bool ShouldDisplayPreviewCore()
+        {
+            return true; // Default implementation: always show preview.
+        }
     }
 
     public enum ElementState

@@ -1,4 +1,17 @@
-﻿using System;
+﻿using DSNodeServices;
+using Dynamo.Core;
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
+using Dynamo.Nodes;
+using Dynamo.PackageManager;
+using Dynamo.Search;
+using Dynamo.Selection;
+using Dynamo.Services;
+using Dynamo.UpdateManager;
+using Dynamo.Utilities;
+using DynamoUnits;
+using DynamoUtilities;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,30 +23,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
-
-using DSNodeServices;
-
-using Dynamo.Core;
-using Dynamo.Interfaces;
-using Dynamo.Nodes;
-using Dynamo.PackageManager;
-using Dynamo.Search;
-using Dynamo.UI;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
-using Dynamo.Selection;
-
-using DynamoUnits;
-
-using DynamoUtilities;
-
+using Double = System.Double;
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
-
-using Dynamo.DSEngine;
-
-using Double = System.Double;
 
 namespace Dynamo.Models
 {
@@ -66,6 +59,37 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// This event is raised right before the shutdown of DynamoModel started.
+        /// When this event is raised, the shutdown is guaranteed to take place
+        /// (i.e. user has had a chance to save the work and decided to proceed 
+        /// with shutting down Dynamo). Handlers of this event can still safely 
+        /// access the DynamoModel, the WorkspaceModel (along with its contents), 
+        /// and the DynamoScheduler.
+        /// </summary>
+        /// 
+        public event DynamoModelHandler ShutdownStarted;
+
+        private void OnShutdownStarted()
+        {
+            if (ShutdownStarted != null)
+                ShutdownStarted(this);
+        }
+
+        /// <summary>
+        /// This event is raised after DynamoModel has been shut down. At this 
+        /// point the DynamoModel is no longer valid and access to it should be 
+        /// avoided.
+        /// </summary>
+        /// 
+        public event DynamoModelHandler ShutdownCompleted;
+
+        private void OnShutdownCompleted()
+        {
+            if (ShutdownCompleted != null)
+                ShutdownCompleted(this);
+        }
+
         #endregion
         
         #region static properties
@@ -88,11 +112,16 @@ namespace Dynamo.Models
         #region public properties
 
         /// <summary>
-        /// 
+        /// TODO
+        /// </summary>
+        public bool ShutdownRequested { get; internal set; }
+
+        /// <summary>
+        /// TODO
         /// </summary>
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString(); }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         /// <summary>
@@ -102,62 +131,57 @@ namespace Dynamo.Models
         public string Context { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public DynamoLoader Loader { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public CustomNodeManager CustomNodeManager { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public DynamoLogger Logger { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public DynamoRunner Runner { get; protected set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public SearchModel SearchModel { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public DebugSettings DebugSettings { get; private set; }
         
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public EngineController EngineController { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public PreferenceSettings PreferenceSettings { get; private set; }
-
+        
         /// <summary>
-        /// 
-        /// </summary>
-        public IUpdateManager UpdateManager { get; private set; }
-
-        /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public NodeFactory NodeFactory { get; private set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public WorkspaceModel CurrentWorkspace { get; internal set;
             //get { return currentWorkspace; }
@@ -178,19 +202,18 @@ namespace Dynamo.Models
             //    }
             //}
         }
-
         //private WorkspaceModel currentWorkspace;
 
         [Obsolete("This makes no sense with multiple home workspaces.", true)]
         public HomeWorkspaceModel HomeSpace { get; protected set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public ObservableCollection<ModelBase> ClipBoard { get; set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public bool IsShowingConnectors
         {
@@ -202,7 +225,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public ConnectorType ConnectorType
         {
@@ -214,13 +237,13 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         //TODO(Steve): Determine if this is necessary, we should avoid static fields
         public static bool IsCrashing { get; set; }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public bool DynamicRunEnabled { get; set; }
 
@@ -239,7 +262,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public bool RunEnabled { get; set; }
         //{
@@ -272,7 +295,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         //TODO(Steve): Investigate if this is necessary
         public ObservableDictionary<string, Guid> CustomNodes
@@ -285,11 +308,38 @@ namespace Dynamo.Models
         #region initialization and disposal
 
         /// <summary>
-        /// 
+        /// External components call this method to shutdown DynamoModel. This 
+        /// method marks 'ShutdownRequested' property to 'true'. This method is 
+        /// used rather than a public virtual method to ensure that the value of
+        /// ShutdownRequested is set to true.
         /// </summary>
-        /// <param name="shutDownHost"></param>
-        /// <param name="args"></param>
-        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
+        /// <param name="shutdownHost">Set this parameter to true to shutdown 
+        /// the host application.</param>
+        /// 
+        public void ShutDown(bool shutdownHost)
+        {
+            if (ShutdownRequested)
+            {
+                const string message = "'DynamoModel.ShutDown' called twice";
+                throw new InvalidOperationException(message);
+            }
+
+            ShutdownRequested = true;
+
+            OnShutdownStarted(); // Notify possible event handlers.
+
+            PreShutdownCore(shutdownHost);
+            ShutDownCore(shutdownHost);
+            PostShutdownCore(shutdownHost);
+
+            OnShutdownCompleted(); // Notify possible event handlers.
+        }
+
+        protected virtual void PreShutdownCore(bool shutdownHost)
+        {
+        }
+
+        protected virtual void ShutDownCore(bool shutdownHost)
         {
             CleanWorkbench();
 
@@ -298,9 +348,25 @@ namespace Dynamo.Models
 
             PreferenceSettings.Save();
 
-            OnCleanup(args);
+            OnCleanup();
 
             Logger.Dispose();
+
+            DynamoSelection.DestroyInstance();
+
+            InstrumentationLogger.End();
+
+#if ENABLE_DYNAMO_SCHEDULER
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
+            }
+#endif
+        }
+
+        protected virtual void PostShutdownCore(bool shutdownHost)
+        {
         }
 
         /// <summary>
@@ -357,7 +423,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             DynamoRunner runner = configuration.Runner;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
@@ -382,8 +447,7 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager(updateManager);
-            //InitializeInstrumentationLogger();
+            InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel();
             CurrentWorkspaceChanged += SearchModel.RevealWorkspaceSpecificNodes;
@@ -393,17 +457,21 @@ namespace Dynamo.Models
             CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             Loader = new DynamoLoader(this);
 
-            //this.Loader.PackageLoader.DoCachedPackageUninstalls();
-            //this.Loader.PackageLoader.LoadPackages();
+            Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
+            Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
 
             DisposeLogic.IsShuttingDown = false;
 
             EngineController = new EngineController(DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
 
-            ////This is necessary to avoid a race condition by causing a thread join
-            ////inside the vm exec
-            Reset();
+            // Reset virtual machine to avoid a race condition by causing a 
+            // thread join inside the vm exec. Since DynamoModel is being called 
+            // on the main/idle thread, it is safe to call ResetEngineInternal 
+            // directly (we cannot call virtual method ResetEngine here).
+            // 
+            ResetEngineInternal();
+            Nodes.ForEach(n => n.RequiresRecalc = true);
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
@@ -424,13 +492,11 @@ namespace Dynamo.Models
             Runner.EvaluationCompleted -= Runner_EvaluationCompleted;
         }
 
-        private void InitializeUpdateManager(IUpdateManager updateManager)
+        //SEPARATECORE: causes mono crash
+        private void InitializeInstrumentationLogger()
         {
-            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(
-                new Uri(Configurations.UpdateDownloadLocation),
-                Logger,
-                UpdateManager.UpdateDataAvailable));
+            if (DynamoModel.IsTestMode == false)
+                InstrumentationLogger.Start(this);
         }
 
         private void InitializeCurrentWorkspace()
@@ -499,9 +565,22 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// Call this method to reset the virtual machine, avoiding a race 
+        /// condition by using a thread join inside the vm executive.
+        /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
-        public virtual void ResetEngine()
+        /// <param name="markNodesAsDirty">Set this parameter to true to force 
+        /// reset of the execution substrait. Note that setting this parameter 
+        /// to true will have a negative performance impact.</param>
+        /// 
+        public virtual void ResetEngine(bool markNodesAsDirty = false)
+        {
+            ResetEngineInternal();
+            if (markNodesAsDirty)
+                Nodes.ForEach(n => n.RequiresRecalc = true);
+        }
+
+        protected void ResetEngineInternal()
         {
             if (EngineController != null)
             {
@@ -509,7 +588,8 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            EngineController = new EngineController(DynamoPathManager.Instance.GeometryFactory);
+            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            EngineController = new EngineController(this, geomFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
@@ -672,9 +752,6 @@ namespace Dynamo.Models
         internal void PostUIActivation(object parameter)
         {
             Loader.LoadCustomNodes();
-
-            SearchModel.RemoveEmptyCategories();
-            SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
         }
@@ -992,7 +1069,7 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = NodeFactory.CreateNodeInstance(type, nickname, signature, guid, TODO);
+                            el = NodeFactory.CreateNodeInstance(type, nickname, signature, guid, Logger);
 
                         if (el != null)
                         {
@@ -1028,7 +1105,7 @@ namespace Dynamo.Models
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
 
-                        el = NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid, TODO);
+                        el = NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid, Logger);
                         el.Load(dummyElement);
                     }
 
@@ -1279,26 +1356,41 @@ namespace Dynamo.Models
 
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
-#if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
-#endif
-
+                
                 var xmlDoc = new XmlDocument();
-                var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
-                xmlDoc.AppendChild(dynEl);
-                node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                var newNode = CurrentWorkspace.AddNode(
-                    newGuid,
-                    nodeName,
-                    node.X,
-                    node.Y + 100,
-                    false,
-                    false, TODO, TODO, TODO, TODO,
-                    xmlNode: dynEl);
+                NodeModel newNode;
+
+                if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
+                {
+                    var symbol = (node is Symbol
+                        ? (node as Symbol).InputSymbol
+                        : (node as Output).Symbol);
+                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
+                    newNode = new CodeBlockNodeModel(CurrentWorkspace, code);
+
+                    CurrentWorkspace.AddNode(newNode, newGuid, node.X, node.Y + 100, false, false);
+                }
+                else
+                {
+                    var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
+                    xmlDoc.AppendChild(dynEl);
+                    node.Save(xmlDoc, dynEl, SaveContext.Copy);
+
+                    newNode = CurrentWorkspace.AddNode(
+                        newGuid,
+                        nodeName,
+                        node.X,
+                        node.Y + 100,
+                        false,
+                        false,
+                        dynEl);
+                }
+
                 createdModels.Add(newNode);
 
                 newNode.ArgumentLacing = node.ArgumentLacing;

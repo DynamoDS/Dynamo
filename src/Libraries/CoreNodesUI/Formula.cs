@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Xml;
-using Dynamo.Controls;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
 using Dynamo.Utilities;
+
 using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -23,7 +19,7 @@ namespace DSCoreNodesUI
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
-    public class Formula : NodeModel, IWpfNode
+    public class Formula : NodeModel
     {
         private string formulaString = "";
         public string FormulaString
@@ -64,29 +60,6 @@ namespace DSCoreNodesUI
             ArgumentLacing = LacingStrategy.Shortest;
             OutPortData.Add(new PortData("", "Result of math computation"));
             RegisterAllPorts();
-        }
-
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            var tb = new DynamoTextBox(FormulaString)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
-
-            view.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = this;
-            tb.BindToProperty(new Binding("FormulaString")
-            {
-                Mode = BindingMode.TwoWay,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
         }
 
         protected override bool UpdateValueCore(string name, string value)

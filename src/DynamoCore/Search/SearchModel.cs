@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
@@ -184,11 +183,6 @@ namespace Dynamo.Search
         internal void RemoveEmptyCategories()
         {
             BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
-        }
-
-        internal void SortCategoryChildren()
-        {
-            BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
         }
 
         internal void RemoveEmptyRootCategory(string categoryName)

@@ -53,32 +53,12 @@ namespace RevitServices.Threading
             set { idle = value; }
         }
 
-        public static void ClearPromises()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void RegisterIdle(UIApplication uIApplication)
-        {
-            // SCHEDULER: No-op, method to be removed eventually.
-        }
-
         public static void ExecuteOnIdleAsync(Action p)
         {
             var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler);
             task.Initialize(p);
             scheduler.ScheduleForExecution(task);
-        }
-
-        public static void ExecuteOnShutdown(Action p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void Shutdown()
-        {
-            throw new NotImplementedException();
         }
     }
 }
@@ -223,25 +203,20 @@ namespace Dynamo.Applications
             viewModel.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
-            revitDynamoModel.ShuttingDown += (drm) =>
-                IdlePromise.ExecuteOnShutdown(
-                    delegate
-                    {
-                        if (null != DocumentManager.Instance.CurrentDBDocument)
-                        {
-                            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+#if ENABLE_DYNAMO_SCHEDULER
 
-                            var keeperId = vizManager.KeeperId;
+            revitDynamoModel.ShutdownStarted += (drm) =>
+            {
+                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+                uiApplication.Idling += DeleteKeeperElementOnce;
+            };
 
-                            if (keeperId != ElementId.InvalidElementId)
-                            {
-                                DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                            }
+#else
 
-                            TransactionManager.Instance.ForceCloseTransaction();
-                        }
-                    });
+            revitDynamoModel.ShutdownStarted += (drm) =>
+                IdlePromise.ExecuteOnShutdown(DeleteKeeperElement);
 
+#endif
             return viewModel;
         }
 
@@ -254,7 +229,6 @@ namespace Dynamo.Applications
             handledCrash = false;
 
             dynamoView.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
-            dynamoView.Closing += DynamoView_Closing;
             dynamoView.Closed += DynamoView_Closed;
 
             SingleSignOnManager.UIDispatcher = dynamoView.Dispatcher;
@@ -267,7 +241,10 @@ namespace Dynamo.Applications
         {
             if (initializedCore) return;
 
+#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.RegisterIdle(commandData.Application);
+#endif
+
             InitializeAssemblies();
             InitializeUnits();
             InitializeDocumentManager(commandData);
@@ -427,17 +404,6 @@ namespace Dynamo.Applications
         #region Shutdown
 
         /// <summary>
-        ///     Executes right before Dynamo closes, gives you the chance to cache whatever you might want.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void DynamoView_Closing(object sender, EventArgs e)
-        {
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
-        }
-
-        /// <summary>
         ///     Executes after Dynamo closes.
         /// </summary>
         /// <param name="sender"></param>
@@ -450,7 +416,6 @@ namespace Dynamo.Applications
             DocumentManager.OnLogError -= revitDynamoModel.Logger.Log;
 
             view.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
-            view.Closing -= DynamoView_Closing;
             view.Closed -= DynamoView_Closed;
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -=
                 Application_ViewActivating;
@@ -462,6 +427,50 @@ namespace Dynamo.Applications
             revitDynamoModel.Logger.Dispose();
 
             DynamoRevitApp.DynamoButton.Enabled = true;
+        }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        private static void DeleteKeeperElementOnce(object sender, IdlingEventArgs idlingEventArgs)
+        {
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+            uiApplication.Idling -= DeleteKeeperElementOnce;
+            DynamoRevit.DeleteKeeperElement();
+        }
+
+#endif
+
+        /// <summary>
+        /// This method access Revit API, therefore it needs to be called only 
+        /// by idle thread (i.e. in an 'UIApplication.Idling' event handler).
+        /// </summary>
+        private static void DeleteKeeperElement()
+        {
+#if !ENABLE_DYNAMO_SCHEDULER
+
+            if (!IdlePromise.InIdleThread)
+            {
+                throw new AccessViolationException(
+                    "'DeleteKeeperElement' must be called in idle thread");
+            }
+
+#endif
+
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+            if (null == dbDoc || (dynamoViewModel == null))
+                return;
+
+            var vizManager = dynamoViewModel.VisualizationManager as RevitVisualizationManager;
+            if (vizManager != null)
+            {
+                var keeperId = vizManager.KeeperId;
+                if (keeperId != ElementId.InvalidElementId)
+                {
+                    TransactionManager.Instance.EnsureInTransaction(dbDoc);
+                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                    TransactionManager.Instance.ForceCloseTransaction();
+                }
+            }
         }
 
         #endregion

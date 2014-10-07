@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
+
 using ProtoCore.Utils;
 
 
@@ -19,6 +22,7 @@ namespace ProtoCore.DSASM
         public int Refcount { get; set; }
         public Dictionary<StackValue, StackValue> Dict;
         public StackValue[] Stack;
+        public MetaData MetaData { get; set; }
 
         public int GetAllocatedSize()
         {
@@ -210,8 +214,9 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        private List<int> freeList = new List<int>();
-        private List<HeapElement> heapElements = new List<HeapElement>();
+        private readonly List<int> freeList = new List<int>();
+        private readonly List<HeapElement> heapElements = new List<HeapElement>();
+        private bool isGarbageCollecting = false;
 
         public Heap()
         {
@@ -221,26 +226,50 @@ namespace ProtoCore.DSASM
         {
             var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
             int index = AllocateInternal(chs);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
             return StackValue.BuildString(index);
         }
 
-        public StackValue AllocateArray(IEnumerable<StackValue> values, Dictionary<StackValue, StackValue> dict = null)
+        public StackValue AllocateArray(IEnumerable<StackValue> values, 
+                                        Dictionary<StackValue, StackValue> dict = null)
         {
             int index = AllocateInternal(values);
-            heapElements[index].Dict = dict;
+            var heapElement = heapElements[index];
+            heapElement.Dict = dict;
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
             return StackValue.BuildArrayPointer(index);
         }
 
-        public StackValue AllocatePointer(int size)
-        {    
-            int index = AllocateInternal(size);
-            return StackValue.BuildPointer(index);
+        public StackValue AllocatePointer(IEnumerable<StackValue> values, 
+                                          MetaData metaData)
+        {
+            int index = AllocateInternal(values);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = metaData;
+            return StackValue.BuildPointer(index, metaData);
+        }
+
+        public StackValue AllocatePointer(IEnumerable<StackValue> values)
+        {
+            return AllocatePointer(
+                    values, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
             int index = AllocateInternal(size);
+            var hpe = heapElements[index];
+            hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
+        }
+
+        public StackValue AllocatePointer(int size)
+        {
+            return AllocatePointer(
+                    size, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
         public HeapElement GetHeapElement(StackValue pointer)
@@ -278,10 +307,9 @@ namespace ProtoCore.DSASM
 
         private int AddHeapElement(HeapElement hpe)
         {
-            int index = Constants.kInvalidIndex;
+            int index;
             if (TryFindFreeIndex(out index))
             {
-                heapElements[index].Active = true;
                 heapElements[index] = hpe;
             }
             else
@@ -309,21 +337,19 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void GCDisposeObject(ref StackValue svPtr, Executive exe)
+        private void GCDisposeObject(StackValue svPtr, Executive exe)
         {
             int classIndex = svPtr.metaData.type;
             ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
-            ProcedureNode pn = null;
 
+            ProcedureNode pn = cn.GetDisposeMethod();
             while (pn == null)
             {
-                pn = cn.GetDisposeMethod();
-                if (pn == null && cn.baseList != null && cn.baseList.Count != 0) // search the base class
+                if (cn.baseList != null && cn.baseList.Count != 0) 
                 {
-                    // assume multiple inheritance is not allowed
-                    // it will only has a single base class 
                     classIndex = cn.baseList[0];
-                    cn = exe.exe.classTable.ClassNodes[cn.baseList[0]];
+                    cn = exe.exe.classTable.ClassNodes[classIndex];
+                    pn = cn.GetDisposeMethod();
                 }
                 else
                 {
@@ -338,39 +364,91 @@ namespace ProtoCore.DSASM
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildBlockIndex(pn.runtimeIndex));
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildStaticType((int)ProtoCore.PrimitiveType.kTypeVar));
+                exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 
                 ++exe.Core.FunctionCallDepth;
 
-                // TODO: Need to move isExplicitCall to DebugProps and come up with a more elegant solution for this
+                // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
-                bool explicitCall = exe.isExplicitCall;
+                bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
                 exe.Callr(pn.procId, classIndex, 1, ref explicitCall);
 
-                exe.isExplicitCall = tempFlag;
+                exe.IsExplicitCall = tempFlag;
 
                 --exe.Core.FunctionCallDepth;
             }
         }
 
-        public void GCMarkSweep()
+        public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
-            throw new NotImplementedException("{3CDF5599-97DB-4EC2-9E25-EC11DBA7280E}");
-        }
+            if (isGarbageCollecting)
+                return;
 
-        public bool IsTemporaryPointer(StackValue sv)
-        {
-            if (!sv.IsReferenceType)
+            try
             {
-                return false;
-            }
+                isGarbageCollecting = true;
 
-            int ptr = (int)sv.opdata;
-            HeapElement he = this.heapElements[ptr];
-            return he.Active && he.Refcount == 0; 
+                // Mark
+                var markBits = new BitArray(heapElements.Count);
+                var workingStack = new Stack<StackValue>(rootPointers);
+                while (workingStack.Any())
+                {
+                    var pointer = workingStack.Pop();
+                    var ptr = (int)pointer.RawIntValue;
+                    if (!pointer.IsReferenceType || markBits.Get(ptr))
+                    {
+                        continue;
+                    }
+
+                    markBits.Set(ptr, true);
+
+                    var heapElement = heapElements[ptr];
+                    var subElements = heapElement.VisibleItems;
+                    if (heapElement.Dict != null)
+                    {
+                        subElements = subElements.Concat(heapElement.Dict.Keys)
+                            .Concat(heapElement.Dict.Values);
+                    }
+
+                    foreach (var subElement in subElements)
+                    {
+                        if (subElement.IsReferenceType &&
+                            !markBits.Get((int)subElement.RawIntValue))
+                        {
+                            workingStack.Push(subElement);
+                        }
+                    }
+                }
+
+                // Sweep
+                for (int i = 0; i < heapElements.Count; ++i)
+                {
+                    if (markBits.Get(i) || heapElements[i] == null)
+                    {
+                        continue;
+                    }
+
+                    var metaData = heapElements[i].MetaData;
+                    if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    {
+                        var objPointer = StackValue.BuildPointer(i, metaData);
+                        GCDisposeObject(objPointer, exe);
+                    }
+
+                    heapElements[i] = null;
+                    freeList.Add(i);
+                }
+            }
+            finally
+            {
+                isGarbageCollecting = false;
+            }
         }
 
+
+        #region Reference counting APIs
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -387,6 +465,7 @@ namespace ProtoCore.DSASM
             }
         }
 
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -403,7 +482,8 @@ namespace ProtoCore.DSASM
             {
             }
         }
-
+    
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
@@ -436,7 +516,7 @@ namespace ProtoCore.DSASM
                 {
                     // if it is of class type, first call its destructor before clean its members
                     if(svPtr.IsPointer)
-                        GCDisposeObject(ref svPtr, exe);
+                        GCDisposeObject(svPtr, exe);
 
                     if (svPtr.IsArray && hs.Dict != null)
                     {
@@ -455,8 +535,6 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-
-        #region Heap Verification Utils
 
         /// <summary>
         /// Checks if the heap contains at least 1 pointer element that points to itself
