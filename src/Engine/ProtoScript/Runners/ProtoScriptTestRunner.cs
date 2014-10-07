@@ -143,6 +143,7 @@ namespace ProtoScript.Runners
                     // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
                     // Passing it to bounce() increments it so the first depth is always 0
                     ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
+                    stackFrame.FramePointer = core.Rmem.FramePointer;
                     
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
