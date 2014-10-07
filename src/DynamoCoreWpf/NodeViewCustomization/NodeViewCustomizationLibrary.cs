@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Linq;
 
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -14,11 +17,33 @@ namespace Dynamo.Wpf
         internal void Apply(dynNodeView view)
         {
             var model = view.ViewModel.NodeModel;
-            Type t = model.GetType();
+
+            // We only apply the most specific INodeViewCustomization!
+
+            // By "specific", I mean the INodeViewCustomization<T> whose
+            // generic parameter is closest to the runtime type of the NodeModel
+
+            Type nodeModelType = model.GetType();
+            Type customizableType = null;
+
             do
             {
-                List<InternalNodeViewCustomization> custs; 
-                if (lookupDict.TryGetValue(t, out custs))
+                if (lookupDict.ContainsKey(nodeModelType))
+                {
+                    customizableType = nodeModelType;
+                    break;
+                }
+
+                nodeModelType = nodeModelType.BaseType;
+
+            } while (nodeModelType != typeof(NodeModel));
+
+            // If there is a NodeViewCustomization<T>, apply the most specific one
+            if (customizableType != null)
+            {
+                // There may be multiple customizations to apply
+                List<InternalNodeViewCustomization> custs;
+                if (lookupDict.TryGetValue(customizableType, out custs))
                 {
                     foreach (var customization in custs)
                     {
@@ -26,8 +51,8 @@ namespace Dynamo.Wpf
                         view.Unloaded += (s, a) => disposable.Dispose();
                     }
                 }
-                t = t.BaseType;
-            } while (t != typeof(NodeModel));
+            }
+           
         }
 
         internal void Add(INodeViewCustomizations cs)

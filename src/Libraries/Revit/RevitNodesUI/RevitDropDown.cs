@@ -41,15 +41,6 @@ namespace DSRevitNodesUI
 
     #region FamilyTypes
 
-    public class FamilyTypesNodeViewCustomization : DropDownNodeViewCustomization,
-                                                    INodeViewCustomization<FamilyTypes>
-    {
-        public void CustomizeView(FamilyTypes model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
-
     [NodeName("Family Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
@@ -113,15 +104,6 @@ namespace DSRevitNodesUI
     #endregion
 
     #region FamilyInstanceParameters
-
-    public class FamilyInstanceParametersNodeViewCustomization : DropDownNodeViewCustomization,
-                                                INodeViewCustomization<FamilyInstanceParameters>
-    {
-        public void CustomizeView(FamilyInstanceParameters model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
 
     [NodeName("Get Family Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -308,15 +290,6 @@ namespace DSRevitNodesUI
 
     #region FloorTypes
 
-    public class FloorTypesNodeViewCustomization : DropDownNodeViewCustomization,
-                                            INodeViewCustomization<FloorTypes>
-    {
-        public void CustomizeView(FloorTypes model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
-
     [NodeName("Floor Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
@@ -376,15 +349,6 @@ namespace DSRevitNodesUI
 
     #region WallTypes
 
-    public class WallTypesNodeViewCustomization : DropDownNodeViewCustomization,
-                                        INodeViewCustomization<WallTypes>
-    {
-        public void CustomizeView(WallTypes model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
-
     [NodeName("Wall Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
@@ -443,15 +407,6 @@ namespace DSRevitNodesUI
 
     #region Categories
 
-    public class CategoriesNodeViewCustomization : DropDownNodeViewCustomization,
-                                    INodeViewCustomization<Categories>
-    {
-        public void CustomizeView(Categories model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
-
     [NodeName("Categories")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
@@ -488,15 +443,6 @@ namespace DSRevitNodesUI
     #endregion
 
     #region Levels
-
-    public class LevelsNodeViewCustomization : DropDownNodeViewCustomization,
-                                INodeViewCustomization<Levels>
-    {
-        public void CustomizeView(Levels model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
 
     [NodeName("Levels")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -553,15 +499,6 @@ namespace DSRevitNodesUI
     #endregion
 
     #region StructuralFramingTypes
-
-    public class StructuralFramingTypesNodeViewCustomization : DropDownNodeViewCustomization,
-                            INodeViewCustomization<StructuralFramingTypes>
-    {
-        public void CustomizeView(StructuralFramingTypes model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
 
     [NodeName("Structural Framing Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
@@ -622,15 +559,6 @@ namespace DSRevitNodesUI
 
     #region SpacingRuleLayout
 
-    public class SpacingRuleLayoutsNodeViewCustomization : DropDownNodeViewCustomization,
-                        INodeViewCustomization<SpacingRuleLayouts>
-    {
-        public void CustomizeView(SpacingRuleLayouts model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
-
     [NodeName("Spacing Rule Layout")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("A spacing rule layout for calculating divided paths.")]
@@ -642,15 +570,6 @@ namespace DSRevitNodesUI
     #endregion
 
     #region ElementTypes
-
-    public class ElementTypesNodeViewCustomization : DropDownNodeViewCustomization,
-                    INodeViewCustomization<ElementTypes>
-    {
-        public void CustomizeView(ElementTypes model, Dynamo.Controls.dynNodeView view)
-        {
-            base.CustomizeView(model, view);
-        }
-    }
 
     [NodeName("Element Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]

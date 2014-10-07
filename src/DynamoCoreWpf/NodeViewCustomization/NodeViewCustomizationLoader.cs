@@ -47,8 +47,7 @@ namespace Dynamo.Wpf
                 var genInterf = toCheck.GetInterfaces().FirstOrDefault(
                     x =>
                         x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>) && 
-                                !x.GetGenericArguments()[0].IsAbstract);
+                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>));
 
                 if (genInterf != null)
                 {
