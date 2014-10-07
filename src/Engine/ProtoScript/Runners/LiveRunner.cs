@@ -229,7 +229,6 @@ namespace ProtoScript.Runners
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
-        private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
 
         public ChangeSetData csData { get; private set; }
 
@@ -237,7 +236,6 @@ namespace ProtoScript.Runners
         {
             this.core = core;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
-            astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
         /// <summary>
@@ -586,7 +584,6 @@ namespace ProtoScript.Runners
 
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
-            UpdateAstCache(syncData);
             csData = new ChangeSetData();
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
@@ -851,47 +848,6 @@ namespace ProtoScript.Runners
             }
         }
 
-        /// <summary>
-        /// Update the map from graph UI node to a list of ast nodes. Each
-        /// ast node is in SSA form. 
-        /// </summary>
-        /// <param name="syncData"></param>
-        private void UpdateAstCache(GraphSyncData syncData)
-        {
-            if (syncData.ModifiedSubtrees != null && astCache.Count > 0)
-            {
-                foreach (var t in syncData.ModifiedSubtrees)
-                {
-                    if (astCache.ContainsKey(t.GUID))
-                    {
-                        astCache[t.GUID].Clear();
-                        if (t.AstNodes != null)
-                        {
-                            astCache[t.GUID].AddRange(t.AstNodes);
-                        }
-                    }
-                }
-            }
-
-            if (syncData.DeletedSubtrees != null)
-            {
-                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
-            }
-
-            if (syncData.AddedSubtrees != null)
-            {
-                foreach (var t in syncData.AddedSubtrees)
-                {
-                    var astNodes = new List<ProtoCore.AST.Node>();
-                    if (t.AstNodes != null)
-                    {
-                        astNodes.AddRange(t.AstNodes);
-                    }
-                    astCache[t.GUID] = astNodes;
-                }
-            }
-        }
-
         private bool CompileToSSA(Guid guid, List<AssociativeNode> astList, out List<AssociativeNode> ssaAstList)
         {
             core.Options.GenerateSSA = true;
@@ -948,20 +904,6 @@ namespace ProtoScript.Runners
                     }
                 }
             }
-        }
-
-
-        /// <summary>
-        /// Get ast nodes for graph UI node. The returned ast nodes are in 
-        /// SSA form.
-        /// </summary>
-        /// <param name="nodeGuid"></param>
-        /// <returns></returns>
-        public IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid)
-        {
-            List<ProtoCore.AST.Node> nodes = null;
-            astCache.TryGetValue(nodeGuid, out nodes);
-            return nodes;
         }
 
 
