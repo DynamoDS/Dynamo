@@ -223,12 +223,16 @@ namespace Dynamo.ViewModels
 
             //sw.Start();
 
-            var result = this.Model.Search(query).ToList();
+            this.Model.Search(query);
 
             //sw.Stop();
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
+            // Next code do not need for now. 
+            // But logic should be saved to restore original behavior for new design.
+            // Code will be removed as soon as Search functionality fully implemented. 
+#if false
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
             {
@@ -282,7 +286,7 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
-
+#endif
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
@@ -309,7 +313,7 @@ namespace Dynamo.ViewModels
 
             return catName;
         }
-
+        
         #endregion
 
         #region Selection

@@ -843,7 +843,8 @@
         </ScrollViewer>
 
         <!-- LIBRARYSEARCH VIEW -->
-        <views:LibrarySearchView Grid.Row="2">
+        <views:LibrarySearchView Grid.Row="2"
+                                 DataContext="{Binding}">
             <views:LibrarySearchView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"
