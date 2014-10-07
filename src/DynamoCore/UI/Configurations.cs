@@ -211,11 +211,11 @@ namespace Dynamo.UI
 
         public const double MinWidthLibraryView = 308;
 
-        public const string CATEGORY_GROUP_CREATE = "Create";
-        public const string CATEGORY_GROUP_ACTION = "Actions";        
-        public const string CATEGORY_GROUP_QUERY = "Query";
-        public const char CATEGORY_DELIMITER = '.';
-        public const char SHORTENED_CATEGORY_DELIMITER = '>';
+        public const string CategoryGroupCreate = "Create";
+        public const string CategoryGroupAction = "Actions";        
+        public const string CategoryGroupQuery = "Query";
+        public const char CategoryDelimiter = '.';
+        public const char ShortenedCategoryDelimiter = '>';
 
         #endregion
 

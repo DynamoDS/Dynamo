@@ -304,7 +304,7 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyRootCategory(string categoryName)
         {
-            if (categoryName.Contains(Configurations.CATEGORY_DELIMITER))
+            if (categoryName.Contains(Configurations.CategoryDelimiter))
             {
                 RemoveEmptyCategory(categoryName);
                 return;
@@ -416,11 +416,11 @@ namespace Dynamo.Search
                 return new List<string>();
 
             var splitCat = new List<string>();
-            if (categoryName.Contains(Configurations.CATEGORY_DELIMITER))
+            if (categoryName.Contains(Configurations.CategoryDelimiter))
             {
                 splitCat =
-                    categoryName.Split(Configurations.CATEGORY_DELIMITER)
-                                .Where(x => x != Configurations.CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
+                    categoryName.Split(Configurations.CategoryDelimiter)
+                                .Where(x => x != Configurations.CategoryDelimiter.ToString() && !System.String.IsNullOrEmpty(x))
                                 .ToList();
             }
             else
@@ -491,7 +491,7 @@ namespace Dynamo.Search
         internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName,
                                                  string resourceAssembly = "")
         {
-            var newCategoryName = parent.Name + Configurations.CATEGORY_DELIMITER + childCategoryName;
+            var newCategoryName = parent.Name + Configurations.CategoryDelimiter + childCategoryName;
 
             // support long nested categories like Math.Math.StaticMembers.Abs
             var parentItem = parent as BrowserInternalElement;
@@ -501,7 +501,7 @@ namespace Dynamo.Search
                 if (null == grandParent)
                     break;
 
-                newCategoryName = grandParent.Name + Configurations.CATEGORY_DELIMITER + newCategoryName;
+                newCategoryName = grandParent.Name + Configurations.CategoryDelimiter + newCategoryName;
                 parentItem = grandParent as BrowserInternalElement;
             }
 
@@ -889,18 +889,18 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(category))
                 return category;
 
-            int index = category.LastIndexOf(Configurations.CATEGORY_DELIMITER);
+            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
 
             // If "index" is "-1", then the whole "category" will be used as-is.            
             switch (category.Substring(index + 1))
             {
-                case Configurations.CATEGORY_GROUP_ACTION:
+                case Configurations.CategoryGroupAction:
                     group = SearchElementGroup.Action;
                     break;
-                case Configurations.CATEGORY_GROUP_CREATE:
+                case Configurations.CategoryGroupCreate:
                     group = SearchElementGroup.Create;
                     break;
-                case Configurations.CATEGORY_GROUP_QUERY:
+                case Configurations.CategoryGroupQuery:
                     group = SearchElementGroup.Query;
                     break;
                 default:

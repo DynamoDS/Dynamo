@@ -291,12 +291,12 @@ namespace Dynamo.ViewModels
 
         internal static string MakeShortCategoryString(string fullCategoryName)
         {
-            var catName = fullCategoryName.Replace(Configurations.CATEGORY_DELIMITER.ToString(), " " + Configurations.SHORTENED_CATEGORY_DELIMITER + " ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split(Configurations.SHORTENED_CATEGORY_DELIMITER).Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -307,7 +307,7 @@ namespace Dynamo.ViewModels
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" " + Configurations.SHORTENED_CATEGORY_DELIMITER + " ", s);
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
                 }
             }
 

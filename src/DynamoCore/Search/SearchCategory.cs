@@ -49,10 +49,8 @@ namespace Dynamo.Search
 
         internal void AddClassToGroup(BrowserInternalElement memberNode)
         {
-            // Here is fake implementation.
-            // Added not more two different classes.
-            // Will be implemented when is clarified which classes
-            // should be presented in search results
+            // TODO(Vladimir): The following limit of displaying only two classes are 
+            // temporary, it should be updated whenever the design intent has been finalized.
 
             const int maxClassesCount = 2;
             if (classes.Count >= maxClassesCount)
@@ -73,11 +71,11 @@ namespace Dynamo.Search
             switch (group)
             {
                 case SearchElementGroup.Action:
-                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_ACTION;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupAction;
                 case SearchElementGroup.Create:
-                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_CREATE;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupCreate;
                 case SearchElementGroup.Query:
-                    return category + Configurations.CATEGORY_DELIMITER + Configurations.CATEGORY_GROUP_QUERY;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupQuery;
                 default:
                     return category;
             }
