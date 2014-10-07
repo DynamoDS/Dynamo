@@ -147,7 +147,6 @@ namespace Dynamo.Nodes
         /// This method returns a name for the icon based on type of this icon.
         /// </summary>
         /// <param name="descriptor"></param>
-        /// <param name="fullName">Name for icon, that passed all checks.</param>
         /// <returns></returns>
         public static string TypedParametersToString(FunctionDescriptor descriptor)
         {
