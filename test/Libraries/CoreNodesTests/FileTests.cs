@@ -63,7 +63,18 @@ namespace Dynamo.Tests
         [Test]
         public void TestZeroTouchMigrationFile()
         {
-            Assert.Fail();
+            var model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\files\MigrationHintGetClosestPoint.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("8527c4f5-f8e1-491e-b446-64c495fa1848", 4.54606056566195);
         }
     }
 }
