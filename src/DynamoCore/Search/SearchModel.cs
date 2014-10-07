@@ -259,9 +259,6 @@ namespace Dynamo.Search
 
         private const char CATEGORY_DELIMITER = '.';
 
-        // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
-        private BrowserInternalElementForClasses browserInternalElementForClasses;
-
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
         /// </summary>
@@ -541,7 +538,9 @@ namespace Dynamo.Search
                 parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent));
             }
 
-            browserInternalElementForClasses = parent.Items[0] as BrowserInternalElementForClasses;
+            // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
+            BrowserInternalElementForClasses browserInternalElementForClasses = 
+                parent.Items[0] as BrowserInternalElementForClasses;
 
             // Find among all presented classes requested class.
             var allPresentedClasses = browserInternalElementForClasses.Items;
