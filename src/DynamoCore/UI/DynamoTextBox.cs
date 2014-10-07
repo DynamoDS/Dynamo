@@ -12,7 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Search;
 
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;

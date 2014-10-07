@@ -1,14 +1,53 @@
+
 namespace ProtoCore
 {
-    public static class CompilerOptions
+    namespace Compiler
     {
-        public enum OptImperative
+        public enum AccessSpecifier
         {
-            kAutoAllocate   = 1 << 0,
-            kInferTypes     = 1 << 1
+            kPublic,
+            kProtected,
+            kPrivate
         }
 
-        public static int optSet { get; set; }
+        namespace Associative
+        {
+            public enum CompilePass
+            {
+                kClassName,
+                kClassBaseClass,
+                kClassHierarchy,
+                kClassMemVar,
+
+                kClassMemFuncSig,
+                kGlobalFuncSig,
+
+                kGlobalScope,
+
+                kClassMemFuncBody,
+                kGlobalFuncBody,
+                kDone
+            }
+
+            public enum SubCompilePass
+            {
+                kNone,
+                kUnboundIdentifier,
+                kGlobalInstanceFunctionBody,
+                kAll
+            }
+        }
+
+        namespace Imperative
+        {
+            public enum CompilePass
+            {
+                kGlobalFuncSig,
+                kGlobalScope,
+                kGlobalFuncBody,
+                kDone
+            }
+        }
     }
 }
 
