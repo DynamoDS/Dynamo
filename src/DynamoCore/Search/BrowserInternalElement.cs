@@ -260,6 +260,19 @@ namespace Dynamo.Nodes.Search
             var searchedClass = Items.FirstOrDefault(x => x.Name == className);
             return searchedClass != null;
         }
+
+        public BrowserItem GetChildCategory(string childCategoryName, string resourceAssembly)
+        {
+            // Find among all presented classes requested class.
+            var allPresentedClasses = Items;
+            var requestedClass = allPresentedClasses.FirstOrDefault(x => x.Name == childCategoryName);
+            if (requestedClass != null) return requestedClass;
+
+            //  Add new class, if it wasn't found.
+            var tempClass = new BrowserInternalElement(childCategoryName, this, resourceAssembly);
+            Items.Add(tempClass);
+            return tempClass;
+        }
     }
 
     public class ClassInformation : BrowserItem
