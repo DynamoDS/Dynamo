@@ -12,9 +12,13 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <!-- Region Converters -->
+            
             <!--Converter to Make class details not focusable-->
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+            
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
+            
+            <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <!--EndRegion-->
 
             <!-- Region Expander Templates -->
@@ -146,9 +150,6 @@
             <!-- Region DataContext Templates -->
             <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
-                <DataTemplate.Resources>
-                    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-                </DataTemplate.Resources>
                 <StackPanel Orientation="Vertical"
                             Width="96"
                             Height="96">
