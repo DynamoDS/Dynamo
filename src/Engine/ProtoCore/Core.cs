@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -920,7 +921,7 @@ namespace ProtoCore
         None
     }
 
-    public class Core
+    public class Core : INotifyPropertyChanged 
     {
         public const int FIRST_CORE_ID = 0;
 
@@ -1684,6 +1685,8 @@ namespace ProtoCore
         private int tempLanguageId = 0;
 
         private bool cancellationPending = false;
+        private TextWriter executionLog;
+
         public bool CancellationPending
         {
             get
@@ -1718,7 +1721,16 @@ namespace ProtoCore
         // name look up will fail beacuse all the local variables inside 
         // that language block and fucntion has non-zero function index 
         public int FunctionCallDepth { get; set; }
-        public System.IO.TextWriter ExecutionLog { get; set; }
+
+        public System.IO.TextWriter ExecutionLog
+        {
+            get { return executionLog; }
+            set
+            {
+                executionLog = value;
+                OnPropertyChanged("ExecutionLog");
+            }
+        }
 
         protected void OnDispose()
         {
@@ -2303,6 +2315,14 @@ namespace ProtoCore
             }
 
             this.cancellationPending = true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

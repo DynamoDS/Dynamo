@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -15,6 +16,7 @@ namespace Dynamo.ViewModels
     {
         private EngineController controller;
         private DynamoViewModel vm;
+        private bool isShowingExecutionLog = false;
 
         internal ChangeSetComputer CSComputer
         {
@@ -29,6 +31,24 @@ namespace Dynamo.ViewModels
             get { return controller.SyncDataManager; }
         }
 
+        public bool IsShowingExecutionLog
+        {
+            get { return isShowingExecutionLog; }
+            set
+            {
+                isShowingExecutionLog = value;
+                RaisePropertyChanged("IsShowingExecutionLog");
+            }
+        }
+
+        public string ExecutionLog
+        {
+            get
+            {
+                return controller.LiveRunnerCore.ExecutionLog.ToString();
+            }
+        }
+
         public LiveRunnerViewModel(DynamoViewModel vm)
         {
             this.vm = vm;
@@ -38,7 +58,16 @@ namespace Dynamo.ViewModels
             vm.Model.EngineReset += Model_EngineReset;
             CSComputer.PropertyChanged += ChangeSetComputerOnPropertyChanged;
             SyncDataManager.PropertyChanged += SyncDataManager_PropertyChanged;
+            controller.LiveRunnerCore.PropertyChanged += LiveRunnerCore_PropertyChanged;
 #endif
+        }
+
+        void LiveRunnerCore_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "ExecutionLog")
+                return;
+
+            RaisePropertyChanged("ExecutionLog");
         }
 
         void Model_EngineReset(EngineResetEventArgs args)
