@@ -356,7 +356,7 @@ namespace Dynamo.Models
             this.Loader = new DynamoLoader(this);
 
             this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences, EngineController.LibraryServices);
 
             DisposeLogic.IsShuttingDown = false;
 

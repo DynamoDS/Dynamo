@@ -189,11 +189,11 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger )
+        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             try
             {
-                this.LoadAssembliesIntoDynamo( loader, logger );
+                this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
                 this.LoadCustomNodesIntoDynamo( loader );
                 this.EnumerateAdditionalFiles();
                 
@@ -237,17 +237,8 @@ namespace Dynamo.PackageManager
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
+        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            var libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
-            var libraryServices = new LibraryServices(libraryServicesCore);
-
             var assemblies = LoadAssembliesInBinDirectory();
 
             // filter the assemblies

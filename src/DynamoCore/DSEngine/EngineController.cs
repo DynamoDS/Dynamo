@@ -120,6 +120,14 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Return libary service instance.
+        /// </summary>
+        public LibraryServices LibraryServices
+        {
+            get { return libraryServices; }
+        }
+
         #region Value queries
 
         /// <summary>
