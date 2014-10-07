@@ -55,25 +55,10 @@ namespace Dynamo.Search.SearchElements
             switch (resourceType)
             {
                 case ResourceType.SmallIcon:
-                {
-                    string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                    // Usual case.
-                    if (!disambiguate)
-                        return name;
-
-                    // Case for overloaded methods.
-                    return Utils.TypedParametersToString(this.FunctionDescriptor);
-                }
                 case ResourceType.LargeIcon:
                 {
                     string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
 
-                    // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
-                    // Should be used FunctionDescriptor.Name property instead.
-                    // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
-                    if (name != FunctionDescriptor.QualifiedName)
-                        name += Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
                     // Usual case.
                     if (!disambiguate)
                         return name;
