@@ -234,11 +234,11 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         ///     The classes inside of the browser item
         /// </summary>
-        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
+        private ObservableCollection<BrowserItem> classesItems = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items 
         {
-            get { return _items; }
-            set { _items = value; } 
+            get { return classesItems; }
+            set { classesItems = value; } 
         }
 
         private string _name;
