@@ -25,7 +25,7 @@ namespace Dynamo.Models
 
         private DispatcherTimer runExpressionTimer;
 
-        public override void OnModified()
+        protected override void OnModified()
         {
             base.OnModified();
 

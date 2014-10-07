@@ -13,24 +13,21 @@ namespace Dynamo.Models
     public class CustomNodeWorkspaceModel : WorkspaceModel
     {
         #region Contructors
+        
+        public CustomNodeWorkspaceModel(
+            string name, string category, string description, double x, double y)
+            : this(
+                name,
+                category,
+                description,
+                Enumerable.Empty<NodeModel>(),
+                Enumerable.Empty<ConnectorModel>(),
+                x,
+                y) { }
 
-        public CustomNodeWorkspaceModel(DynamoModel dynamoModel)
-            : this(dynamoModel, "", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category)
-            : this(dynamoModel, name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category, string description, double x, double y)
-            : this(dynamoModel, name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, 
-            String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+        public CustomNodeWorkspaceModel(
+            string name, string category, string description, IEnumerable<NodeModel> e,
+            IEnumerable<ConnectorModel> c, double x, double y) 
             : base(name, e, c, x, y)
         {
             WatchChanges = true;
@@ -53,10 +50,10 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return DynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get { return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
-        public override void OnModified()
+        protected override void OnModified()
         {
             base.OnModified();
 
@@ -64,12 +61,12 @@ namespace Dynamo.Models
                 return;
 
             CustomNodeDefinition.RequiresRecalc = true;
-            CustomNodeDefinition.SyncWithWorkspace(DynamoModel, false, true);
+            CustomNodeDefinition.SyncWithWorkspace(dynamoModel, false, true);
         }
 
         public List<Function> GetExistingNodes()
         {
-            return DynamoModel.AllNodes
+            return dynamoModel.AllNodes
                 .OfType<Function>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
@@ -103,8 +100,8 @@ namespace Dynamo.Models
             if (originalPath == null)
             {
                 CustomNodeDefinition.AddToSearch(this.DynamoModel.SearchModel);
-                DynamoModel.SearchModel.OnRequestSync();
-                CustomNodeDefinition.UpdateCustomNodeManager(DynamoModel.CustomNodeManager);
+                dynamoModel.SearchModel.OnRequestSync();
+                CustomNodeDefinition.UpdateCustomNodeManager(dynamoModel.CustomNodeManager);
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -115,23 +112,23 @@ namespace Dynamo.Models
                 if ( !File.Exists(originalPath) )
                 {
                     CustomNodeDefinition.FunctionId = newGuid;
-                    CustomNodeDefinition.SyncWithWorkspace(DynamoModel, true, true);
+                    CustomNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
                     return false;
                 }
 
                 var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
-                DynamoModel.CustomNodeManager.Remove(originalGuid);
-                DynamoModel.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = DynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                dynamoModel.CustomNodeManager.Remove(originalGuid);
+                dynamoModel.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = dynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
                 {
                     return false;
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                var instances = DynamoModel.AllNodes
+                var instances = dynamoModel.AllNodes
                         .OfType<Function>()
                         .Where(el => el.Definition.FunctionId == originalGuid);
 
@@ -140,7 +137,7 @@ namespace Dynamo.Models
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(DynamoModel, true, true);
+                newDef.SyncWithWorkspace(dynamoModel, true, true);
             }
 
             return true;

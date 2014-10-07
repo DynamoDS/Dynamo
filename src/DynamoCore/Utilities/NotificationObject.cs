@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Core
 {
@@ -20,7 +17,7 @@ namespace Dynamo.Core
         /// <param name="propertyName">The property that has a new value.</param>
         protected virtual void RaisePropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
+            PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
@@ -37,7 +34,7 @@ namespace Dynamo.Core
 
             foreach (var name in propertyNames)
             {
-                this.RaisePropertyChanged(name);
+                RaisePropertyChanged(name);
             }
         }
     }

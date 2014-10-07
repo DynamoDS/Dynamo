@@ -1102,7 +1102,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1133,7 +1133,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1171,7 +1171,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1192,7 +1192,7 @@ namespace Dynamo.Models
                 foundConnectors.Add(connector);
 
                 // There can only be one connector for input port...
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                     break; // ... so look no further.
             }
 
@@ -1215,7 +1215,7 @@ namespace Dynamo.Models
                 return;
 
             XmlAttributeCollection attribs = connector.Attributes;
-            if (port.PortType == PortType.INPUT) // We're updating end point.
+            if (port.PortType == PortType.Input) // We're updating end point.
             {
                 attribs["end"].Value = port.OwningNode;
                 attribs["end_index"].Value = port.PortIndex.ToString();

@@ -203,7 +203,7 @@ namespace Dynamo.ViewModels
             }
 
             ConnectorModel newConnectorModel = this.Model.AddConnection( firstPort.Owner,
-                second.Owner, firstPort.Index, second.Index, PortType.INPUT);
+                second.Owner, firstPort.Index, second.Index, TODO, portType: PortType.INPUT);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();

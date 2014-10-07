@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo.Core
 {
@@ -36,8 +40,12 @@ namespace Dynamo.Core
         /// UndoRedoRecorder calls this method to request a model to be created.
         /// </summary>
         /// <param name="modelData">The xml data from which the corresponding 
-        /// model can be re-created from.</param>
-        void CreateModel(XmlElement modelData);
+        ///     model can be re-created from.</param>
+        /// <param name="engine"></param>
+        /// <param name="factory"></param>
+        /// <param name="manager"></param>
+        /// <param name="logger"></param>
+        void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager, ILogger logger);
 
         /// <summary>
         /// UndoRedoRecorder calls this method to retrieve the up-to-date 
@@ -397,7 +405,7 @@ namespace Dynamo.Core
 
                     case UserAction.Deletion:
                         newGroup.AppendChild(element);
-                        undoClient.CreateModel(element);
+                        undoClient.CreateModel(element, TODO, TODO, TODO, TODO);
                         break;
                 }
             }
@@ -426,7 +434,7 @@ namespace Dynamo.Core
                 {
                     case UserAction.Creation:
                         newGroup.AppendChild(element);
-                        undoClient.CreateModel(element);
+                        undoClient.CreateModel(element, TODO, TODO, TODO, TODO);
                         break;
 
                     case UserAction.Modification:

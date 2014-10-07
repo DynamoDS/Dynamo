@@ -331,16 +331,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Determines whether or not the output of this Element will be saved. If true, Evaluate() will not be called
-        ///     unless IsDirty is true. Otherwise, Evaluate will be called regardless of the IsDirty value.
-        /// </summary>
-        internal bool SaveResult
-        {
-            get { return saveResult && Enumerable.Range(0, InPortData.Count).All(HasInput); }
-            set { saveResult = value; }
-        }
-
-        /// <summary>
         ///     Is this node an entry point to the program?
         /// </summary>
         public bool IsTopmost
@@ -448,7 +438,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Is this node being applied partially, resulting in a partial function?
         /// </summary>
-        public bool IsPartiallyApplied //TODO (SJE): Move to Graph level
+        public bool IsPartiallyApplied //TODO(Steve): Move to Graph level
         {
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
@@ -555,12 +545,7 @@ namespace Dynamo.Models
         ///     Called when this node is being removed from the Workspace.
         /// </summary>
         public virtual void Destroy() { }
-
-        /// <summary>
-        ///     Implement on derived classes to cleanup resources when
-        /// </summary>
-        public virtual void Cleanup() { }
-
+        
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
@@ -1018,7 +1003,7 @@ namespace Dynamo.Models
             //    this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
 
-        //TODO (SJE): When decoupling ConnectorModel and NodeModel, this should be handled at graph level
+        //TODO(Steve): When decoupling ConnectorModel and NodeModel, this should be handled at graph level
         public void ValidateConnections()
         {
             // if there are inputs without connections
@@ -1061,18 +1046,18 @@ namespace Dynamo.Models
             int index = inPorts.IndexOf(portModel);
             if (-1 != index)
             {
-                portType = PortType.INPUT;
+                portType = PortType.Input;
                 return index;
             }
 
             index = outPorts.IndexOf(portModel);
             if (-1 != index)
             {
-                portType = PortType.OUTPUT;
+                portType = PortType.Output;
                 return index;
             }
 
-            portType = PortType.INPUT;
+            portType = PortType.Input;
             return -1; // No port found.
         }
 
@@ -1098,12 +1083,12 @@ namespace Dynamo.Models
 
             switch (portType)
             {
-                case PortType.INPUT:
+                case PortType.Input:
                     for (int i = 0; i < index; i++)
                         verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
                     verticalOffset += inPorts[index].MarginThickness.Top;
                     break;
-                case PortType.OUTPUT:
+                case PortType.Output:
                     for (int i = 0; i < index; i++)
                         verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
                     verticalOffset += outPorts[index].MarginThickness.Top;
@@ -1126,7 +1111,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.INPUT, pd, count);
+                PortModel port = AddPort(PortType.Input, pd, count);
 
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
@@ -1161,7 +1146,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.OUTPUT, pd, count);
+                PortModel port = AddPort(PortType.Output, pd, count);
 
                 //MVVM : don't set the data context in the model
                 //port.DataContext = this;
@@ -1204,7 +1189,7 @@ namespace Dynamo.Models
             PortModel p;
             switch (portType)
             {
-                case PortType.INPUT:
+                case PortType.Input:
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
@@ -1222,7 +1207,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1242,7 +1227,7 @@ namespace Dynamo.Models
 
                     return p;
 
-                case PortType.OUTPUT:
+                case PortType.Output:
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
@@ -1251,7 +1236,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = false,
                         MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
@@ -1274,7 +1259,7 @@ namespace Dynamo.Models
             ValidateConnections();
 
             var port = (PortModel)sender;
-            if (port.PortType == PortType.INPUT)
+            if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
                 PortModel startPort = port.Connectors[0].Start;
@@ -1289,7 +1274,7 @@ namespace Dynamo.Models
             ValidateConnections();
 
             var port = (PortModel)sender;
-            if (port.PortType == PortType.INPUT)
+            if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
                 PortModel startPort = port.Connectors[0].Start;
@@ -1759,21 +1744,23 @@ namespace Dynamo.Models
             }
         }
         
-        //TODO: (SJE) This should probably be on the VM anyway
+        //TODO(Steve): This should probably be on the VM anyway
         [Obsolete("Use Display Preview setter instead.", true)]
         public bool ShouldDisplayPreview()
         {
             // Previews are only shown in Home Workspace.
-            if (!(this.Workspace is HomeWorkspaceModel))
-                return false;
+            //if (!(this.Workspace is HomeWorkspaceModel))
+            //    return false;
+            //
+            //return ShouldDisplayPreviewCore();
 
-            return ShouldDisplayPreviewCore();
+            return true;
         }
 
-        protected virtual bool ShouldDisplayPreviewCore()
-        {
-            return true; // Default implementation: always show preview.
-        }
+        //protected virtual bool ShouldDisplayPreviewCore()
+        //{
+        //    return true; // Default implementation: always show preview.
+        //}
     }
 
     public enum ElementState

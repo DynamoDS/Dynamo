@@ -717,7 +717,7 @@ namespace Dynamo.Nodes
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
                             var connector = this.Workspace.AddConnection(this, endNode, i,
-                                endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
+                                endNode.GetPortIndexAndType(endPortModel, out p), PortType.Input);
                             this.Workspace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
@@ -746,7 +746,7 @@ namespace Dynamo.Nodes
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
                         var connector = this.Workspace.AddConnection(this, endNode, index,
-                            endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
+                            endNode.GetPortIndexAndType(endPortModel, out p), PortType.Input);
                         Workspace.UndoRecorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
@@ -779,7 +779,7 @@ namespace Dynamo.Nodes
                         endNode,
                         undefinedIndices[0],
                         endNode.GetPortIndexAndType(endPortModel, out p),
-                        PortType.INPUT);
+                        PortType.Input);
                     Workspace.UndoRecorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);

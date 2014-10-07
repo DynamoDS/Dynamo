@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows;
 using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Selection;
-using Dynamo.Utilities;
 
 using Point = System.Windows.Point;
 
@@ -15,10 +13,10 @@ namespace Dynamo.Models
 
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
     {
-        private Guid _guid;
-        private bool _isSelected = false;
-        private double x = 0.0;
-        private double y = 0.0;
+        private Guid guid;
+        private bool isSelected;
+        private double x;
+        private double y;
         private double height = 100;
         private double width = 100;
         
@@ -26,7 +24,7 @@ namespace Dynamo.Models
         {
             get { return X + Width / 2; }
             set { 
-                this.X = value - this.Width/2;
+                X = value - Width/2;
             }
         }
 
@@ -35,7 +33,7 @@ namespace Dynamo.Models
             get { return Y + Height / 2; }
             set
             {
-                this.Y = value - this.Height / 2;
+                Y = value - Height / 2;
             }
         }
 
@@ -116,10 +114,10 @@ namespace Dynamo.Models
 
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get { return isSelected; }
             set
             {
-                _isSelected = value;
+                isSelected = value;
                 RaisePropertyChanged("IsSelected");
             }
         }
@@ -128,15 +126,15 @@ namespace Dynamo.Models
         {
             get
             {
-                if (_guid == null)
+                if (guid == null)
                 {
                     throw new Exception("GUID on model must never be null");
                 }
-                return _guid;
+                return guid;
             }
             set
             {
-                _guid = value;
+                guid = value;
                 RaisePropertyChanged("GUID");
             }
         }
@@ -178,7 +176,7 @@ namespace Dynamo.Models
 
         public bool UpdateValue(string name, string value)
         {
-            return this.UpdateValueCore(name, value);
+            return UpdateValueCore(name, value);
         }
 
         /// <summary>
@@ -192,7 +190,7 @@ namespace Dynamo.Models
         /// 
         public bool HandleModelEvent(string eventName)
         {
-            return this.HandleModelEventCore(eventName);
+            return HandleModelEventCore(eventName);
         }
 
         /// <summary>
@@ -228,15 +226,15 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
+            string typeName = GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
-            this.SerializeCore(element, context);
+            SerializeCore(element, context);
             return element;
         }
 
         public void Deserialize(XmlElement element, SaveContext context)
         {
-            this.DeserializeCore(element, context);
+            DeserializeCore(element, context);
         }
 
         protected abstract void SerializeCore(XmlElement element, SaveContext context);

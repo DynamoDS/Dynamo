@@ -282,19 +282,19 @@ namespace Dynamo.Utilities
                             node,
                             inputReceiverNode,
                             0,
-                            inputReceiverData);
+                            inputReceiverData, TODO);
                     }
                     else
                     {
                         //Connect it to the applier
-                        newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
+                        newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0, TODO);
 
                         //Connect applier to the inner input receive
                         newNodeWorkspace.AddConnection(
                             curriedNode.InnerNode,
                             inputReceiverNode,
                             0,
-                            inputReceiverData);
+                            inputReceiverData, TODO);
                     }
                 }
 
@@ -339,7 +339,7 @@ namespace Dynamo.Utilities
                                 outputSenderNode,
                                 node,
                                 outputSenderData,
-                                0);
+                                0, TODO);
 
                             i++;
                         }
@@ -387,7 +387,7 @@ namespace Dynamo.Utilities
                                 outputSenderNode,
                                 curriedNode.InnerNode,
                                 outputSenderData,
-                                targetPortIndex + 1);
+                                targetPortIndex + 1, TODO);
 
                         }
                     }
@@ -413,7 +413,7 @@ namespace Dynamo.Utilities
                         node.X = rightMost + 75 - leftShift;
                         node.Y = i*(50 + node.Height);
 
-                        newNodeWorkspace.AddConnection(hanging.node, node, hanging.port, 0);
+                        newNodeWorkspace.AddConnection(hanging.node, node, hanging.port, 0, TODO);
 
                         i++;
                     }
@@ -426,7 +426,7 @@ namespace Dynamo.Utilities
                 dynamoModel.Workspaces.Add(newNodeWorkspace);
 
                 string name = newNodeDefinition.FunctionId.ToString();
-                var collapsedNode = currentWorkspace.AddNode(avgX, avgY, name);
+                var collapsedNode = currentWorkspace.AddNode(avgX, avgY, name, TODO, TODO, TODO, TODO);
                 undoRecorder.RecordCreationForUndo(collapsedNode);
 
                 // place the node as intended, not centered
@@ -443,8 +443,8 @@ namespace Dynamo.Utilities
                     var conn = currentWorkspace.AddConnection(
                         nodeTuple.node,
                         collapsedNode,
-                        nodeTuple.from,
-                        nodeTuple.to);
+                        nodeTuple.@from,
+                        nodeTuple.to, TODO);
 
                     if (conn != null)
                     {
@@ -459,7 +459,7 @@ namespace Dynamo.Utilities
                         collapsedNode,
                         nodeTuple.Item1,
                         nodeTuple.Item2,
-                        nodeTuple.Item3);
+                        nodeTuple.Item3, TODO);
 
                     if (conn != null)
                     {

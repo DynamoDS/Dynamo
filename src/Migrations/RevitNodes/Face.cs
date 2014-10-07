@@ -78,9 +78,9 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Update connectors
-            PortId facePort = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId uvPort = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId facePort = new PortId(newNodeId, 0, PortType.Input);
+            PortId uvPort = new PortId(newNodeId, 1, PortType.Input);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.Input);
 
             XmlElement uvPortConnector = data.FindFirstConnector(uvPort);
             XmlElement facePortConnector = data.FindFirstConnector(facePort);
@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
                 // Update connectors
-                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
                 string nodeUVId = uvPortConnector.GetAttribute("start").ToString();
                 data.ReconnectToPort(uvPortConnector, newInPortNodeU);
@@ -131,9 +131,9 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.Input);
             
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
                 // Update connectors
-                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
                 string nodeUVId = connector0.GetAttribute("start").ToString();
                 data.ReconnectToPort(connector0, newInPortNodeU);
@@ -183,9 +183,9 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.Input);
 
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
@@ -206,7 +206,7 @@ namespace Dynamo.Nodes
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
                 // Update connectors
-                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
                 string nodeUVId = connector0.GetAttribute("start").ToString();
                 data.ReconnectToPort(connector0, newInPortNodeU);

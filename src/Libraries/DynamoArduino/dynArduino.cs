@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void Cleanup()
+        public override void Destroy()
         {
             if (port != null)
             {

@@ -341,7 +341,7 @@ b = c[w][x][y][z];";
             // Connect the two nodes
             var workspace = ViewModel.Model.CurrentWorkspace;
             ConnectorModel connector = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
-                0, 0, PortType.INPUT);
+                0, 0, PortType.Input);
             workspace.Connectors.Add(connector);
 
             // Update the first code block node to have errors
@@ -376,7 +376,7 @@ b = c[w][x][y][z];";
 
             // Connect the two nodes
             ConnectorModel connector0 = ConnectorModel.Make(workspace, codeBlockNode0, watchNode,
-                0, 0, PortType.INPUT);
+                0, 0, PortType.Input);
             workspace.Connectors.Add(connector0);
 
             // Run
@@ -394,7 +394,7 @@ b = c[w][x][y][z];";
 
             // Connect the two code block nodes
             ConnectorModel connector1 = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
-                0, 0, PortType.INPUT);
+                0, 0, PortType.Input);
             workspace.Connectors.Add(connector1);
 
             // Run
@@ -436,7 +436,7 @@ b = c[w][x][y][z];";
 
             // Connect the two nodes
             ConnectorModel connector = ConnectorModel.Make(workspace, pointOriginNode, codeBlockNode,
-                0, 0, PortType.INPUT);
+                0, 0, PortType.Input);
             workspace.Connectors.Add(connector);
 
             Assert.AreEqual(1, codeBlockNode.InPortData.Count);

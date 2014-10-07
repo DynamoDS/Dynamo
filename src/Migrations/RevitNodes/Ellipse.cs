@@ -63,14 +63,14 @@ namespace Dynamo.Nodes
             string minusNodeId = MigrationManager.GetGuidFromXmlElement(minusNode);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId oldInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
-            PortId oldInPort4 = new PortId(newNodeId, 4, PortType.INPUT);
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
+            PortId oldInPort3 = new PortId(newNodeId, 3, PortType.Input);
+            PortId oldInPort4 = new PortId(newNodeId, 4, PortType.Input);
 
-            PortId planeNodeInPort = new PortId(planeNodeId, 0, PortType.INPUT);
-            PortId converterInPort = new PortId(converterNode0Id, 0, PortType.INPUT);
-            PortId minusNodeInPort0 = new PortId(minusNodeId, 0, PortType.INPUT);
-            PortId minusNodeInPort1 = new PortId(minusNodeId, 1, PortType.INPUT);
+            PortId planeNodeInPort = new PortId(planeNodeId, 0, PortType.Input);
+            PortId converterInPort = new PortId(converterNode0Id, 0, PortType.Input);
+            PortId minusNodeInPort0 = new PortId(minusNodeId, 0, PortType.Input);
+            PortId minusNodeInPort1 = new PortId(minusNodeId, 1, PortType.Input);
 
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector3 = data.FindFirstConnector(oldInPort3);

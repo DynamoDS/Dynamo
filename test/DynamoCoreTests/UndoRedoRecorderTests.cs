@@ -5,6 +5,8 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using Dynamo.Core;
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -146,7 +148,7 @@ namespace Dynamo.Tests
             model.Deserialize(modelData, SaveContext.Undo);
         }
 
-        public void CreateModel(XmlElement modelData)
+        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager, ILogger logger)
         {
             DummyModel model = DummyModel.CreateBlankInstance();
             model.Deserialize(modelData, SaveContext.Undo);

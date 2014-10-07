@@ -111,7 +111,7 @@ namespace DSRevitNodesUI
         public FamilyInstanceParameters(WorkspaceModel workspaceModel)
             : base(workspaceModel, "Parameter") 
         {
-            this.AddPort(PortType.INPUT, new PortData("f", "Family Symbol or Instance"), 0);
+            this.AddPort(PortType.Input, new PortData("f", "Family Symbol or Instance"), 0);
             this.PropertyChanged += OnPropertyChanged;
         }
 

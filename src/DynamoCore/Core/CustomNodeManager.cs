@@ -12,7 +12,7 @@ using DynamoUtilities;
 
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+
 using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
@@ -694,8 +694,7 @@ namespace Dynamo.Utilities
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
                 this.dynamoModel.Logger.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
-                var ws = new CustomNodeWorkspaceModel(dynamoModel,
-                    funName, category.Length > 0
+                var ws = new CustomNodeWorkspaceModel(funName, category.Length > 0
                     ? category
                     : "Custom Nodes", description, cx, cy)
                 {
@@ -885,8 +884,8 @@ namespace Dynamo.Utilities
                     {
                         var newConnector = ws.AddConnection(
                             start, end,
-                            startIndex, endIndex,
-                            portType);
+                            startIndex, endIndex, TODO,
+                            portType: portType);
                     }
                     catch
                     {

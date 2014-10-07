@@ -113,14 +113,14 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
-            //TODO: (SJE) Move to DynamoModel [AddNodeToCurrentWorkspace]
+            //TODO(Steve): Move to DynamoModel [AddNodeToCurrentWorkspace]
             NodeModel nodeModel = CurrentSpace.AddNode(
                 command.NodeId,
                 command.NodeName,
                 command.X,
                 command.Y,
                 command.DefaultPosition,
-                command.TransformCoordinates, TODO, TODO);
+                command.TransformCoordinates, TODO, TODO, TODO, TODO);
 
             CurrentSpace.RecordCreatedModel(nodeModel);
 
