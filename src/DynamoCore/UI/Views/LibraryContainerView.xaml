@@ -827,7 +827,7 @@
 
                                 <ContextMenu>
                                     <MenuItem Header="Edit..."
-                                              Command="{Binding EditCommand}"></MenuItem>
+                                              Click="Edit_OnClick"></MenuItem>
                                 </ContextMenu>
 
                             </StackPanel.ContextMenu>
@@ -843,7 +843,8 @@
         </ScrollViewer>
 
         <!-- LIBRARYSEARCH VIEW -->
-        <views:LibrarySearchView Grid.Row="2">
+        <views:LibrarySearchView Grid.Row="2"
+                                 DataContext="{Binding}">
             <views:LibrarySearchView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"

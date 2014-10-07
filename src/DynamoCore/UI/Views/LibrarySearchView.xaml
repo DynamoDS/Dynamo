@@ -6,7 +6,101 @@
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
+                         TargetType="{x:Type ToggleButton}">
+            <Border x:Name="ExpanderButtonBorder"
+                    Background="#282828"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Padding="8,0,0,0">
+                <Grid MinHeight="27"
+                      MinWidth="66"
+                      Margin="0,0,0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image x:Name="ExpandCollapseStateIcon"
+                           Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                           Width="16"
+                           Height="16"
+                           VerticalAlignment="Center" />
+                    <ContentPresenter x:Name="HeaderContent"
+                                      Grid.Column="1"
+                                      ContentSource="Content"
+                                      VerticalAlignment="Center"
+                                      TextBlock.FontSize="13"
+                                      TextBlock.Foreground="#989898"
+                                      Margin="8,0,0,0" />
+                </Grid>
+            </Border>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="CategoryExpanderTemplate"
+                         TargetType="{x:Type Expander}">
+            <DockPanel Background="#2F2F2F">
+                <ToggleButton x:Name="ExpanderButton"
+                              DockPanel.Dock="Top"
+                              Template="{StaticResource CategoryExpanderButtonTemplate}"
+                              Content="{TemplateBinding Header}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                              OverridesDefaultStyle="True"
+                              Height="27" />
+                <ContentPresenter x:Name="ExpanderContent"
+                                  Visibility="Collapsed"
+                                  DockPanel.Dock="Bottom">
+                    <ContentPresenter.Width>
+                        <Binding Path="ActualWidth"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                    </ContentPresenter.Width>
+                </ContentPresenter>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded"
+                         Value="True">
+                    <Setter TargetName="ExpanderContent"
+                            Property="Visibility"
+                            Value="Visible" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
     <Grid>
-        <TextBlock Foreground="White">THIS IS LIBRARYSEARCHVIEW</TextBlock>
+        <ListView Name="CategoryListView"
+                  ScrollViewer.CanContentScroll="False"
+                  Background="#343434"
+                  BorderThickness="0"
+                  ItemsSource="{Binding Model.SearchRootCategories}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Expander Header="{Binding Path=Name}"
+                              OverridesDefaultStyle="True"
+                              Template="{StaticResource CategoryExpanderTemplate}">
+                        <!-- SearchCategory content should be here -->
+                    </Expander>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border BorderThickness="0,0,0,1"
+                                        BorderBrush="#2F2F2F">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </Grid>
 </UserControl>

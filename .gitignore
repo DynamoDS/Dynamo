@@ -74,3 +74,4 @@ extern/ASM/
 /src/DynamoIcons/*.resources
 images.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
+/src/DynamoCore/*.resources
