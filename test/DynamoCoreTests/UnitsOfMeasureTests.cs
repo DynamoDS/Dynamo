@@ -610,6 +610,48 @@ namespace Dynamo.Tests
             Assert.Throws<InvalidOperationException>(mixedList.Sort);
 
         }
+
+        [Test, Category("UnitTests")]
+        public void LengthConversions()
+        {
+            var length = Length.FromDouble(1.0);
+            Assert.AreEqual(1.0, length.Conversions[Length.METERS]);
+            Assert.AreEqual(Length.ToMillimeter, length.Conversions[Length.MILLIMETERS]);
+            Assert.AreEqual(Length.ToCentimeter, length.Conversions[Length.CENTIMETERS]);
+            Assert.AreEqual(Length.ToInch, length.Conversions[Length.INCHES]);
+            Assert.AreEqual(Length.ToFoot, length.Conversions[Length.FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void AreaConversions()
+        {
+            var area = Area.FromDouble(1.0);
+            Assert.AreEqual(1.0, area.Conversions[Area.SQUARE_METERS]);
+            Assert.AreEqual(Area.ToSquareMillimeters, area.Conversions[Area.SQUARE_MILLIMETERS]);
+            Assert.AreEqual(Area.ToSquareCentimeters, area.Conversions[Area.SQUARE_CENTIMETERS]);
+            Assert.AreEqual(Area.ToSquareInch, area.Conversions[Area.SQUARE_INCHES]);
+            Assert.AreEqual(Area.ToSquareFoot, area.Conversions[Area.SQUARE_FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void VolumeConversions()
+        {
+            var volume = Volume.FromDouble(1.0);
+            Assert.AreEqual(1.0, volume.Conversions[Volume.CUBIC_METERS]);
+            Assert.AreEqual(Volume.ToCubicMillimeter, volume.Conversions[Volume.CUBIC_MILLIMETERS]);
+            Assert.AreEqual(Volume.ToCubicCentimeter, volume.Conversions[Volume.CUBIC_CENTIMETERS]);
+            Assert.AreEqual(Volume.ToCubicInch, volume.Conversions[Volume.CUBIC_INCHES]);
+            Assert.AreEqual(Volume.ToCubicFoot, volume.Conversions[Volume.CUBIC_FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void InsolationConversions()
+        {
+            var insol = Insolation.FromDouble(1.0);
+            Assert.AreEqual(1.0, insol.Conversions[Insolation.WATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToKwhMeter2, insol.Conversions[Insolation.KILLOWATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToBTUFoot2, insol.Conversions[Insolation.BTU_PER_SQUARE_FOOT]);
+        }
     }
 
     internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest

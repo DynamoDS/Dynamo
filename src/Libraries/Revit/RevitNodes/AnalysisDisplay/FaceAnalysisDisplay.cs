@@ -8,6 +8,8 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 
+using DynamoUnits;
+
 using Revit.GeometryConversion;
 
 using RevitServices.Persistence;
@@ -267,7 +269,7 @@ namespace Revit.AnalysisDisplay
     {
         protected SolarInsolationAnalysisDisplay(Autodesk.Revit.DB.View view, 
             IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, 
-            string resultsName, string description) : base(view, data, resultsName, description) { }
+            string resultsName = "", string description = "") : base(view, data, resultsName, description) { }
 
         /// <summary>
         /// Show a colored Face Analysis Display in the Revit View
@@ -320,8 +322,8 @@ namespace Revit.AnalysisDisplay
                 var multipliers = new List<double>
                 {
                     1.0,
-                    DynamoUnits.SIUnit.ToKwhMeter2,
-                    DynamoUnits.SIUnit.ToBTUFoot2
+                    Insolation.ToKwhMeter2,
+                    Insolation.ToBTUFoot2
                 };
                 ars.SetUnits(unitNames, multipliers);
                 ars.CurrentUnits = 0;

@@ -183,7 +183,7 @@ namespace UnitsUI
                     if (child.Attributes != null && child.Attributes.Count > 0)
                     {
                         var valueAttrib = child.Attributes["value"];
-                        valueAttrib.Value = (double.Parse(valueAttrib.Value) / SIUnit.ToFoot).ToString(CultureInfo.InvariantCulture);
+                        valueAttrib.Value = (double.Parse(valueAttrib.Value) / Length.ToFoot).ToString(CultureInfo.InvariantCulture);
                     }
                 }
             }
