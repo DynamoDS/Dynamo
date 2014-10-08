@@ -17,10 +17,16 @@ namespace Dynamo.Controls
             if (item is BrowserInternalElementForClasses)
                 return SubclassesTemplate;
 
-            if (item is BrowserRootElement)
-                if ((item as BrowserRootElement).IsPlaceholder) return CategoryClassDetailsTemplate;
+            var browserRootElement = item as BrowserRootElement;
+            if (browserRootElement != null)
+            {
+                if (browserRootElement.IsPlaceholder)
+                    return CategoryClassDetailsTemplate;
 
-            if ((item is BrowserInternalElement) || (item is BrowserRootElement))
+                return NestedCategoryTemplate;
+            }
+
+            if (item is BrowserInternalElement)
                 return NestedCategoryTemplate;
 
             const string message = "Unknown object bound to collection";
