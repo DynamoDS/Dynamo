@@ -518,6 +518,50 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
+                        
+                        <!--Found member groups-->
+                        <ListBox Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0"
+                                 ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
+                                 ItemsSource="{Binding MemberGroups}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}"
+                                                   Margin="16,8,0,8"
+                                                   Foreground="#989898"
+                                                   FontSize="12" />
+                                        <ListBox Background="Transparent"
+                                                 BorderBrush="Transparent"
+                                                 ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                 ItemsSource="{Binding Members}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Image HorizontalAlignment="Left"
+                                                               Height="32"
+                                                               Margin="16,0,16,0"
+                                                               VerticalAlignment="Center"
+                                                               Width="32"
+                                                               Source="{Binding SmallIcon}" />
+
+                                                        <TextBlock HorizontalAlignment="Left"
+                                                                   Text="{Binding Name}"
+                                                                   VerticalAlignment="Top"
+                                                                   Margin="5,10,0,0"
+                                                                   Foreground="#CCCCCC"
+                                                                   FontSize="13" />
+
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Expander>
                 </DataTemplate>
             </ListView.ItemTemplate>
