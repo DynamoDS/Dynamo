@@ -7712,9 +7712,10 @@ namespace ProtoCore.DSASM
                 var functionScope = stackFrame.FunctionScope;
                 var classScope = stackFrame.ClassScope;
 
-                ICollection<SymbolNode> symbols;
+                IEnumerable<SymbolNode> symbolsInScope;
                 if (blockId == 0)
                 {
+                    ICollection<SymbolNode> symbols;
                     if (classScope == Constants.kGlobalScope)
                     {
                         symbols = exe.runtimeSymbols[blockId].symbolList.Values;
@@ -7723,12 +7724,14 @@ namespace ProtoCore.DSASM
                     {
                         symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values;
                     }
+                    symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
                 }
                 else
                 {
                     // Call some language block
+                    var symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
                     List<SymbolNode> blockSymbols = new List<SymbolNode>();
-                    blockSymbols.AddRange(exe.runtimeSymbols[blockId].symbolList.Values);
+                    blockSymbols.AddRange(symbols);
 
                     // One kind of block is construct block. This kind of block
                     // is not true block because the VM doesn't push a stack
@@ -7753,10 +7756,9 @@ namespace ProtoCore.DSASM
                         }
                     }
 
-                    symbols = blockSymbols;
+                    symbolsInScope = blockSymbols;
                 }
 
-                var symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
                 foreach (var symbol in symbolsInScope)
                 {
                     StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
