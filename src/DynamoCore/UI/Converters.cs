@@ -1785,4 +1785,21 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    //Converter that will be used, if number of found classes equals 0. Then classes will be collapsed.
+    public class IntToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value > 0)
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
