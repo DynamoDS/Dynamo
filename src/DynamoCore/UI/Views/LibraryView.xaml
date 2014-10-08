@@ -314,7 +314,7 @@
             <!--EndRegion-->
 
             <!-- Region Selectors -->
-            <controls:NestedClassesTemplateSelector x:Key="NestedClassesTemplateSelector"
+            <controls:LibraryTreeTemplateSelector x:Key="LibraryTreeTemplateSelector"
                                                     SubclassesTemplate="{StaticResource SubclassesTemplate}"
                                                     CategoryClassDetailsTemplate="{StaticResource CategoryClassDetailsTemplate}"
                                                     NestedCategoryTemplate="{StaticResource NestedCategoryTemplate}" />
@@ -716,7 +716,7 @@
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
             <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
-                      ItemTemplateSelector="{StaticResource NestedClassesTemplateSelector}"
+                      ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                       Name="CategoryTreeView">
                 <TreeView.Template>
                     <ControlTemplate>
