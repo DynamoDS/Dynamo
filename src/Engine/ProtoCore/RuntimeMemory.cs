@@ -374,7 +374,7 @@ namespace ProtoCore
                 // Note the first stack frame starts after the space for global 
                 // variables, so here we need to check the frame pointer is 
                 // large enought to contain a stack frame and all global variables
-                while (fp >= StackFrame.kStackFrameSize && fp >= startFramePointer)
+                while (fp - StackFrame.kStackFrameSize >= startFramePointer)
                 {
                     var frame = new StackValue[StackFrame.kStackFrameSize];
                     for (int sourceIndex = fp - StackFrame.kStackFrameSize; sourceIndex < fp; sourceIndex++)
