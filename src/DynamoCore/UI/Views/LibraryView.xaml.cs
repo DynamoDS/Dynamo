@@ -38,6 +38,23 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        private void OnEditClick(object sender, RoutedEventArgs e)
+        {
+            // Logic should be saved.
+#if false
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                var element = menuItem.DataContext as CustomNodeSearchElement;
+                if (element != null)
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
+                        dynamoViewModel.OpenCommand.Execute(element.Path);
+                }
+            }
+#endif
+        }
+
         private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
@@ -52,7 +69,7 @@ namespace Dynamo.UI.Views
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
             var expanderContent = (sender as FrameworkElement);
-            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent,"");
+            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent, "");
             if (buttons != null)
                 buttons.UnselectAll();
         }
