@@ -148,23 +148,50 @@ namespace Dynamo.PackageManager
             File.WriteAllText(headerPath, pkgHeaderStr);
         }
 
+        private static bool IsXmlDocFile(string path, IEnumerable<string> files)
+        {
+            if (!path.ToLower().EndsWith(".xml")) return false;
+
+            var fn = Path.GetFileNameWithoutExtension(path);
+
+            return
+                files.Where(x => x.EndsWith(".dll"))
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Contains(fn);
+        }
+
+        private static bool IsDynamoCustomizationFile(string path, IEnumerable<string> files)
+        {
+            if (!path.ToLower().EndsWith(".xml")) return false;
+
+            var name = Path.GetFileNameWithoutExtension(path);
+
+            if (!name.EndsWith("_DynamoCustomization")) return false;
+
+            name = name.Remove(name.Length - "_DynamoCustomization".Length);
+
+            return
+                files.Where(x => x.EndsWith(".dll"))
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Contains(name);
+        }
+
         private static void CopyFilesIntoPackageDirectory(IEnumerable<string> files, DirectoryInfo dyfDir,
                                                           DirectoryInfo binDir, DirectoryInfo extraDir)
         {
             // copy the files to their destination
             foreach (var file in files)
             {
-
                 if (file == null) continue;
                 if (!File.Exists(file)) continue;
                 string destPath;
 
-                
-                if (file.EndsWith("dyf"))
+                if (file.ToLower().EndsWith(".dyf"))
                 {
                     destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
                 }
-                else if (file.EndsWith("dll") || file.EndsWith("exe") || file.EndsWith("xml"))
+                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) 
+                    || IsDynamoCustomizationFile(file, files))
                 {
                     destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
                 }
