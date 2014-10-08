@@ -183,20 +183,21 @@ namespace Revit.AnalysisDisplay
         /// <summary>
         /// Show a colored Point Analysis Display in the Revit view.
         /// </summary>
-        /// <param name="view"></param>
-        /// <param name="samplePoints"></param>
-        /// <param name="samples"></param>
-        /// <returns></returns>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
+        /// <param name="sampleLocations">The locations at which you want to create analysis values.</param>
+        /// <param name="samples">The analysis values at the given locations.</param>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <returns>An PointAnalysisDisplay object.</returns>
         public static PointAnalysisDisplay ByViewPointsAndValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples) 
-                        
+                        Autodesk.DesignScript.Geometry.Point[] sampleLocations, double[] samples, string name = "", string description = "")
         {
             if (view == null)
             {
                 throw new ArgumentNullException("view");
             }
 
-            if (samplePoints == null)
+            if (sampleLocations == null)
             {
                 throw new ArgumentNullException("samplePoints");
             }
@@ -206,45 +207,7 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("samples");
             }
 
-            if (samplePoints.Length != samples.Length)
-            {
-                throw new Exception("The number of sample points and number of samples must be the same");
-            }
-
-            var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
-
-            var data = new PointAnalysisData(samplePoints, valueDict);
-            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData>{data}, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
-        }
-
-        /// <summary>
-        /// Show a colored Point Analysis Display in the Revit view.
-        /// </summary>
-        /// <param name="view"></param>
-        /// <param name="samplePoints"></param>
-        /// <param name="samples"></param>
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <returns></returns>
-        public static PointAnalysisDisplay ByViewPointsAndValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples, string name, string description)
-        {
-            if (view == null)
-            {
-                throw new ArgumentNullException("view");
-            }
-
-            if (samplePoints == null)
-            {
-                throw new ArgumentNullException("samplePoints");
-            }
-
-            if (samples == null)
-            {
-                throw new ArgumentNullException("samples");
-            }
-
-            if (samplePoints.Length != samples.Length)
+            if (sampleLocations.Length != samples.Length)
             {
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
@@ -261,7 +224,7 @@ namespace Revit.AnalysisDisplay
 
             var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
 
-            var data = new PointAnalysisData(samplePoints, valueDict);
+            var data = new PointAnalysisData(sampleLocations, valueDict);
             return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description);
         }
 

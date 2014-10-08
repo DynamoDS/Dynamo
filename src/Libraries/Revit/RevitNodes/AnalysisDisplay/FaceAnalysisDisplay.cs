@@ -168,64 +168,17 @@ namespace Revit.AnalysisDisplay
         #region Public static constructors
 
         /// <summary>
-        /// Show a colored Face Analysis Display in the Revit View.
+        /// Show a colored Face Analysis Display in the Revit view.
         /// </summary>
-        /// <param name="view">The view into which you want to draw the analysis data.</param>
-        /// <param name="surface">The surface onto which the analysis data will be displayed</param>
-        /// <param name="sampleUvPoints"></param>
-        /// <param name="samples"></param>
-        /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, Surface surface,
-                        double[][] sampleUvPoints, double[] samples)
-        {
-            if (view == null)
-            {
-                throw new ArgumentNullException("view");
-            }
-
-            if (surface == null)
-            {
-                throw new ArgumentNullException("surface");
-            }
-
-            if (sampleUvPoints == null)
-            {
-                throw new ArgumentNullException("sampleUvPoints");
-            }
-
-            if (samples == null)
-            {
-                throw new ArgumentNullException("samples");
-            }
-
-            if (sampleUvPoints.Length != samples.Length)
-            {
-                throw new Exception("The number of sample points and number of samples must be the same");
-            }
-
-            var valueDict = new Dictionary<string, IList<double>>
-            {
-                { "Dynamo Data", samples }
-            };
-
-            var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
-
-            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
-        }
-
-        /// <summary>
-        /// Show a colored Face Analysis Display in the Revit View.
-        /// </summary>
-        /// <param name="view">The view into which you want to draw the analysis data.</param>
-        /// <param name="surface">The surface onto which the analysis data will be displayed</param>
-        /// <param name="sampleUvPoints"></param>
-        /// <param name="samples"></param>
-        /// <param name="name">The name of the analysis results.</param>
-        /// <param name="description">A description of the analysis results.</param>
-        /// <returns></returns>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
+        /// <param name="sampleLocations">The locations at which you want to create analysis values.</param>
+        /// <param name="samples">The analysis values at the given locations.</param>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewFacePointsAndValues(
             View view, Surface surface,
-            double[][] sampleUvPoints, double[] samples, string name, string description)
+            double[][] sampleLocations, double[] samples, string name = "", string description = "")
         {
             if (view == null)
             {
@@ -237,7 +190,7 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("surface");
             }
 
-            if (sampleUvPoints == null)
+            if (sampleLocations == null)
             {
                 throw new ArgumentNullException("sampleUvPoints");
             }
@@ -247,7 +200,7 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("samples");
             }
 
-            if (sampleUvPoints.Length != samples.Length)
+            if (sampleLocations.Length != samples.Length)
             {
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
@@ -267,19 +220,21 @@ namespace Revit.AnalysisDisplay
                 { "Dynamo Data", samples }
             };
 
-            var data = new SurfaceAnalysisData(surface, sampleUvPoints.ToDSUvs(), valueDict);
+            var data = new SurfaceAnalysisData(surface, sampleLocations.ToDSUvs(), valueDict);
 
             return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description);
         }
 
         /// <summary>
-        /// Show a colored Face Analysis Display in the Revit View
+        /// Show a colored Face Analysis Display in the Revit view.
         /// </summary>
-        /// <param name="view">The view into which you want to draw the analysis data.</param>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
         /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
-        /// <returns></returns>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData[] data, string name, string description)
+            View view, SurfaceAnalysisData[] data, string name = "", string description = "")
         {
             if (view == null)
             {
@@ -321,7 +276,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
         /// <returns></returns>
         public static SolarInsolationAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData[] data, string name, string description)
+            View view, SurfaceAnalysisData[] data, string name = "", string description = "")
         {
             if (view == null)
             {

@@ -130,14 +130,17 @@ namespace Revit.AnalysisDisplay
         #region Public static constructors
 
         /// <summary>
-        /// Show a colored Vector Analysis Display in the Revit view.
+        /// Show a Vector Analysis Display in the Revit view.
         /// </summary>
-        /// <param name="view"></param>
-        /// <param name="samplePoints"></param>
-        /// <param name="samples"></param>
-        /// <returns></returns>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
+        /// <param name="samplePoints">The locations at which you want to create analysis values.</param>
+        /// <param name="samples">The analysis values at the given locations.</param>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <returns>A VectorAnalysisDisplay object.</returns>
         public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, Vector[] samples)
+                        Autodesk.DesignScript.Geometry.Point[] sampleLocations, Vector[] samples,
+            string name = "", string description = "")
         {
 
             if (view == null)
@@ -145,7 +148,7 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("view");
             }
 
-            if (samplePoints == null)
+            if (sampleLocations == null)
             {
                 throw new ArgumentNullException("samplePoints");
             }
@@ -155,54 +158,14 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("samples");
             }
 
-            if (samplePoints.Length != samples.Length)
+            if (sampleLocations.Length != samples.Length)
             {
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
-
-            var data = new VectorAnalysisData(samplePoints, valueDict);
-            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>(){data}, Resource1.AnalysisResultsDefaultName, Resource1.AnalysisResultsDefaultDescription);
-        }
-
-        /// <summary>
-        /// Show a colored Vector Analysis Display in the Revit view.
-        /// </summary>
-        /// <param name="view"></param>
-        /// <param name="samplePoints"></param>
-        /// <param name="samples"></param>
-        /// <param name="resultsName"></param>
-        /// <param name="description"></param>
-        /// <returns></returns>
-        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, Vector[] samples,
-            string resultsName, string description)
-        {
-
-            if (view == null)
+            if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("view");
-            }
-
-            if (samplePoints == null)
-            {
-                throw new ArgumentNullException("samplePoints");
-            }
-
-            if (samples == null)
-            {
-                throw new ArgumentNullException("samples");
-            }
-
-            if (samplePoints.Length != samples.Length)
-            {
-                throw new Exception("The number of sample points and number of samples must be the same");
-            }
-
-            if (string.IsNullOrEmpty(resultsName))
-            {
-                resultsName = Resource1.AnalysisResultsDefaultName;
+                name = Resource1.AnalysisResultsDefaultName;
             }
 
             if (string.IsNullOrEmpty(description))
@@ -212,8 +175,8 @@ namespace Revit.AnalysisDisplay
 
             var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
 
-            var data = new VectorAnalysisData(samplePoints, valueDict);
-            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, resultsName, description);
+            var data = new VectorAnalysisData(sampleLocations, valueDict);
+            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, name, description);
         }
 
         #endregion
