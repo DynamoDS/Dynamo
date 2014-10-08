@@ -50,7 +50,7 @@ namespace Revit.Elements
         /// <param name="referencePlane"></param>
         private ReferencePlane( Autodesk.Revit.DB.ReferencePlane referencePlane)
         {
-            this.InternalReferencePlane = referencePlane;
+            InternalSetReferencePlane(referencePlane);
         }
 
         /// <summary>
