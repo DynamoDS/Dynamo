@@ -270,6 +270,7 @@ namespace Dynamo.Search
             // but also assembly, where icon for category could be found.
             var cat = this.AddCategory(category, GetElementType(item),
                 (item as NodeSearchElement).Assembly);
+
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -473,10 +474,21 @@ namespace Dynamo.Search
             // attempt to add root category
             var currentCat = TryAddRootCategory(splitCat[0], nodeType);
 
-            for (var i = 1; i < splitCat.Count; i++)
+            // If splitCat.Count equals 2, then we try to add not class.
+            // That means root category is full of methods, not classes.
+            // E.g. Operators, BuiltinFunctions.
+            // Rootcategory has property IsPlaceholder, that indicates of 
+            // which members category contains.
+            // So, just add method in category and do nothing.
+
+            for (var i = 1; i < splitCat.Count-1; i++)
             {
+                // All next members are namespaces.
                 currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
+
+            // We sure, that the last member is class.
+            currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count-1], resourceAssembly);
 
             return currentCat;
         }
@@ -514,6 +526,30 @@ namespace Dynamo.Search
             parent.AddChild(tempCat);
 
             return tempCat;
+        }
+
+        /// <summary>
+        ///  Add in browserInternalElementForClasses new class or gets this class, if it alredy exists.
+        /// </summary>
+        /// <param name="parent">Root category or namespace(nested class)</param>
+        /// <param name="childCategoryName">Name of class</param>
+        /// <param name="resourceAssembly">Assembly, where icon for class button can be found.]</param>
+        /// <returns>Class, in which insert methods</returns>
+        internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
+                                                 string resourceAssembly = "")
+        {
+            // Find in this category BrowserInternalElementForClasses, if it's not presented,
+            // create it.
+            if (parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault() == null)
+            {
+                parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent));
+            }
+
+            // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
+            BrowserInternalElementForClasses element = 
+                parent.Items[0] as BrowserInternalElementForClasses;
+
+            return element.TryToGetChildCategory(childCategoryName, resourceAssembly);    
         }
 
         /// <summary>
@@ -591,6 +627,21 @@ namespace Dynamo.Search
         internal BrowserItem TryGetSubCategory(BrowserItem category, string catName)
         {
             return category.Items.FirstOrDefault(x => x.Name == catName);
+        }
+
+        internal bool ContainsClass(string categoryName, string className)
+        {
+            var category = GetCategoryByName(categoryName);
+            if (category == null) 
+                return false;
+
+            // Find in some category BrowserInternalElementForClasses, that is full of classes.
+            var classes = category.Items.OfType<BrowserInternalElementForClasses>();
+            if (!classes.Any()) 
+                return false;
+
+            BrowserInternalElementForClasses element = classes.ElementAt(0);
+            return element.ContainsClass(className);
         }
 
         #endregion
