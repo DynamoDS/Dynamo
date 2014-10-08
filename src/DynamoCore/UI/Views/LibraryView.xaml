@@ -17,6 +17,7 @@
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+            <controls:DataContextToMarginConverter x:Key="DataContextToMarginConverter" />
 
             <!--EndRegion-->
 
@@ -506,11 +507,15 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
+                                            <Grid.Margin>
+                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                         Path="DataContext"
+                                                         Converter="{StaticResource DataContextToMarginConverter}" />
+                                            </Grid.Margin>
 
                                             <ToggleButton Margin="5,0,0,0"
                                                           Grid.Row="0"
