@@ -558,8 +558,7 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
-                                                </DataTrigger>
-                                                
+                                                </DataTrigger>                                               
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
@@ -584,17 +583,24 @@
                                             Value="-3,0,0,0" />
                                 </Trigger>
 
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
-                                                   Value="true" />
-                                        <Condition Property="IsExpanded"
-                                                   Value="false" />
-                                    </MultiTrigger.Conditions>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                                   Value="True" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsExpanded}"
+                                                   Value="False" />
+                                        <Condition Value="False">
+                                            <Condition.Binding>
+                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                         Path="DataContext"
+                                                         Converter="{StaticResource DataContextToBoolConverter}" />
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="Background"
                                             TargetName="Bd"
                                             Value="#222222" />
-                                </MultiTrigger>
+                                </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
