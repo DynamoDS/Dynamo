@@ -73,6 +73,5 @@ namespace Dynamo.UI.Views
             if (buttons != null)
                 buttons.UnselectAll();
         }
-
     }
 }

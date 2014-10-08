@@ -241,26 +241,6 @@ namespace Dynamo.Search
             this.viewModel.SearchCommand.Execute(null);
         }
 
-        // Not used anywhere.
-        public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ((SearchViewModel)DataContext).Execute();
-        }
-
-        // Not used anywhere.
-        public void ListBoxItem_Click(object sender, RoutedEventArgs e)
-        {
-            ((ListBoxItem)sender).IsSelected = true;
-            Keyboard.Focus(this.SearchTextBox);
-        }
-
-        // Not used anywhere.
-        private void Back_Click(object sender, RoutedEventArgs e)
-        {
-            ((SearchViewModel)DataContext).RemoveLastPartOfSearchText();
-            Keyboard.Focus(this.SearchTextBox);
-        }
-
         private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
@@ -350,20 +330,5 @@ namespace Dynamo.Search
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
             }
         }
-
-        private void Edit_OnClick(object sender, RoutedEventArgs e)
-        {
-            var menuItem = sender as MenuItem;
-            if (menuItem != null)
-            {
-                var element = menuItem.DataContext as CustomNodeSearchElement;
-                if (element != null)
-                {
-                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
-                        dynamoViewModel.OpenCommand.Execute(element.Path);
-                }
-            }
-        }
-
     }
 }
