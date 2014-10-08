@@ -546,6 +546,8 @@
                                         </Border>
                                     </Grid>
                                     <Border.Style>
+                                        <!--If item is RootElement Background will be dark grey.
+                                            If item is InternalElement Background will be light grey.-->
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Background"
                                                     Value="#282828" />
@@ -583,6 +585,8 @@
                                             Value="-3,0,0,0" />
                                 </Trigger>
 
+                                <!--Highlight item just in case this item is root element, not selected and
+                                    ,mouse is over it.-->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
