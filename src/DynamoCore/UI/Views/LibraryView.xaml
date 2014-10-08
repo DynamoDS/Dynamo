@@ -494,8 +494,7 @@
                                 </Button.Template>
                                 <Border Name="Bd"
                                         BorderThickness="0"
-                                        BorderBrush="Transparent"
-                                        Background="#282828">
+                                        BorderBrush="Transparent">                                   
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -546,6 +545,24 @@
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
                                     </Grid>
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background"
+                                                    Value="#282828" />
+                                            <Style.Triggers>
+                                                <DataTrigger Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource DataContextToBoolConverter}" />
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Background"
+                                                            Value="#2F2F2F" />
+                                                </DataTrigger>
+                                                
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                 </Border>
                             </Button>
 
