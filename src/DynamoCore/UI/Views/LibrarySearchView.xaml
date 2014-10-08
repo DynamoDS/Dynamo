@@ -442,82 +442,84 @@
                               OverridesDefaultStyle="True"
                               Template="{StaticResource CategoryExpanderTemplate}"
                               IsExpanded="True">
-                        <!--Found classes-->
-                        <ListView Name="SubCategoryListView"
-                                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                  Background="#333333"
-                                  BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                  ScrollViewer.CanContentScroll="False"
-                                  ScrollViewer.IsDeferredScrollingEnabled="False"
-                                  ItemsSource="{Binding Path=Classes}">
-                            <ListView.Visibility>
-                                <Binding Path="Classes.Count"
-                                         Converter="{StaticResource IntToVisibilityConverter}" />
-                            </ListView.Visibility>
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <controls:LibraryWrapPanel Background="Transparent"
-                                                               Margin="0,10,0,10">
-                                        <controls:LibraryWrapPanel.Width>
-                                            <Binding Path="ActualWidth"
-                                                     ElementName="CategoryListView" />
-                                        </controls:LibraryWrapPanel.Width>
-                                    </controls:LibraryWrapPanel>
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="PreviewMouseLeftButtonDown"
-                                                 Handler="OnClassButtonCollapse" />
+                        <StackPanel Orientation="Vertical">
+                            <!--Found classes-->
+                            <ListView Name="SubCategoryListView"
+                                      ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                      Background="#333333"
+                                      BorderThickness="0"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      ScrollViewer.CanContentScroll="False"
+                                      ScrollViewer.IsDeferredScrollingEnabled="False"
+                                      ItemsSource="{Binding Path=Classes}">
+                                <ListView.Visibility>
+                                    <Binding Path="Classes.Count"
+                                             Converter="{StaticResource IntToVisibilityConverter}" />
+                                </ListView.Visibility>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <controls:LibraryWrapPanel Background="Transparent"
+                                                                   Margin="0,10,0,10">
+                                            <controls:LibraryWrapPanel.Width>
+                                                <Binding Path="ActualWidth"
+                                                         ElementName="CategoryListView" />
+                                            </controls:LibraryWrapPanel.Width>
+                                        </controls:LibraryWrapPanel>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <EventSetter Event="PreviewMouseLeftButtonDown"
+                                                     Handler="OnClassButtonCollapse" />
 
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ContentPresenter />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderBrush="Transparent"
+                                                            BorderThickness="0">
+                                                        <ContentPresenter />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
 
-                                    <!--Make class details not focusable-->
-                                    <Setter Property="Focusable">
-                                        <Setter.Value>
-                                            <Binding RelativeSource="{RelativeSource Self}"
-                                                     Path="DataContext"
-                                                     Converter="{StaticResource DataContextToBoolConverter}" />
-                                        </Setter.Value>
-                                    </Setter>
+                                        <!--Make class details not focusable-->
+                                        <Setter Property="Focusable">
+                                            <Setter.Value>
+                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                         Path="DataContext"
+                                                         Converter="{StaticResource DataContextToBoolConverter}" />
+                                            </Setter.Value>
+                                        </Setter>
 
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected"
-                                                 Value="true">
-                                            <Setter Property="Background"
-                                                    Value="#272727" />
-                                            <Setter Property="BorderThickness"
-                                                    Value="0" />
-                                        </Trigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsSelected"
-                                                           Value="False" />
-                                                <Condition Property="IsMouseOver"
-                                                           Value="True" />
-                                            </MultiTrigger.Conditions>
-                                            <MultiTrigger.Setters>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected"
+                                                     Value="true">
                                                 <Setter Property="Background"
-                                                        Value="#404040" />
-                                            </MultiTrigger.Setters>
-                                        </MultiTrigger>
-                                    </Style.Triggers>
+                                                        Value="#272727" />
+                                                <Setter Property="BorderThickness"
+                                                        Value="0" />
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected"
+                                                               Value="False" />
+                                                    <Condition Property="IsMouseOver"
+                                                               Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.Setters>
+                                                    <Setter Property="Background"
+                                                            Value="#404040" />
+                                                </MultiTrigger.Setters>
+                                            </MultiTrigger>
+                                        </Style.Triggers>
 
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </StackPanel>
                     </Expander>
                 </DataTemplate>
             </ListView.ItemTemplate>
