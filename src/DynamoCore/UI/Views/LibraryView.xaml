@@ -318,6 +318,14 @@
 
             <!--EndRegion-->
 
+            <!-- Region Selectors -->
+            <controls:LibraryTreeTemplateSelector x:Key="LibraryTreeTemplateSelector"
+                                                    SubclassesTemplate="{StaticResource SubclassesTemplate}"
+                                                    CategoryClassDetailsTemplate="{StaticResource CategoryClassDetailsTemplate}"
+                                                    NestedCategoryTemplate="{StaticResource NestedCategoryTemplate}" />
+
+            <!--EndRegion-->
+
             <!-- Region ScrollBar Template-->
 
             <ControlTemplate x:Key="ScrollViewerControlTemplate"
@@ -716,6 +724,15 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
+            <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
+                      ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
+                      Name="CategoryTreeView">
+                <TreeView.Template>
+                    <ControlTemplate>
+                        <ItemsPresenter />
+                    </ControlTemplate>
+                </TreeView.Template>
+            </TreeView>
         </ScrollViewer>
         <Border Background="#353535"
                 Height="27"

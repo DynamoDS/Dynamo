@@ -269,7 +269,7 @@ namespace Dynamo.Nodes.Search
         /// <param name="childCategoryName">Name of searched class</param>
         /// <param name="resourceAssembly">Assembly with icons</param>
         /// <returns></returns>
-        public BrowserItem TryToGetChildCategory(string childCategoryName, string resourceAssembly)
+        public BrowserItem GetChildCategory(string childCategoryName, string resourceAssembly)
         {
             // Find among all presented classes requested class.
             var allPresentedClasses = Items;

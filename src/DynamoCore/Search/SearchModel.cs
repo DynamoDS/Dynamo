@@ -546,10 +546,9 @@ namespace Dynamo.Search
             }
 
             // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
-            BrowserInternalElementForClasses element = 
-                parent.Items[0] as BrowserInternalElementForClasses;
+            var element = parent.Items[0] as BrowserInternalElementForClasses;
 
-            return element.TryToGetChildCategory(childCategoryName, resourceAssembly);    
+            return element.GetChildCategory(childCategoryName, resourceAssembly);    
         }
 
         /// <summary>
