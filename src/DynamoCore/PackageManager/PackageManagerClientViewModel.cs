@@ -142,8 +142,11 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel);
-                newPkgVm.CustomNodeDefinitions = fs;
+                var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel)
+                {
+                    CustomNodeDefinitions = fs
+                };
+
                 this.dynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else

@@ -345,7 +345,6 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                this.Name = CustomNodeDefinitions[0].WorkspaceModel.Name;
                 this.UpdateDependencies();
             }
         }
