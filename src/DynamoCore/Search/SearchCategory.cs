@@ -1,38 +1,84 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Search
 {
     public class SearchCategory
     {
+        private readonly List<BrowserInternalElement> classes;
+        private readonly List<SearchMemberGroup> memberGroups;
+
         public string Name { get; private set; }
 
-        private List<BrowserInternalElement> classes;
         public IEnumerable<BrowserInternalElement> Classes
         {
             get { return classes; }
         }
 
-        private List<SearchMemberGroup> memberGroups;
         public IEnumerable<SearchMemberGroup> MemberGroups
         {
             get { return memberGroups; }
         }
 
-        public SearchCategory(string name)
+        internal SearchCategory(string name)
         {
             Name = name;
+            classes = new List<BrowserInternalElement>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
-        public void AddMemberToGroup(BrowserInternalElement node)
+        internal void AddMemberToGroup(NodeSearchElement memberNode)
         {
+            string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
+                memberNode.Group);
+            string shortenedCategory = SearchViewModel.ShortenCategoryName(categoryWithGroup);
 
+            var group = memberGroups.FirstOrDefault(mg => mg.Name == shortenedCategory);
+            if (group == null)
+            {
+                group = new SearchMemberGroup(shortenedCategory);
+                memberGroups.Add(group);
+            }
+
+            group.AddMember(memberNode);
         }
 
-        public void AddClassToGroup(BrowserInternalElement node)
+        internal void AddClassToGroup(BrowserInternalElement memberNode)
         {
+            // TODO(Vladimir): The following limit of displaying only two classes are 
+            // temporary, it should be updated whenever the design intent has been finalized.
 
+            const int maxClassesCount = 2;
+            if (classes.Count >= maxClassesCount)
+                return;
+
+            // Parent should be of 'BrowserInternalElement' type or derived.
+            // Root category can't be added to classes list.
+            var parent = memberNode.Parent as BrowserInternalElement;
+            if (parent == null)
+                return;
+
+            if (!classes.Any(cl => cl.Name == parent.Name))
+                classes.Add(parent);
+        }
+
+        private string AddGroupToCategory(string category, SearchElementGroup group)
+        {
+            switch (group)
+            {
+                case SearchElementGroup.Action:
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupAction;
+                case SearchElementGroup.Create:
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupCreate;
+                case SearchElementGroup.Query:
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupQuery;
+                default:
+                    return category;
+            }
         }
     }
 }

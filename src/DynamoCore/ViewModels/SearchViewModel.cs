@@ -8,6 +8,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -288,14 +289,14 @@ namespace Dynamo.ViewModels
 #endif
         }
 
-        private static string MakeShortCategoryString(string fullCategoryName)
+        internal static string ShortenCategoryName(string fullCategoryName)
         {
-            var catName = fullCategoryName.Replace(".", " > ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -306,7 +307,7 @@ namespace Dynamo.ViewModels
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" > ", s);
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
                 }
             }
 
