@@ -52,7 +52,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushGlobFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
                 Execute(core);
 

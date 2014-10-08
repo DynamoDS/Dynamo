@@ -1486,40 +1486,6 @@ namespace Dynamo.Models
         }
         #endregion
 
-        #region Visualization Related Methods
-
-#if ENABLE_DYNAMO_SCHEDULER
-
-        /// <summary>
-        /// Call this method to asynchronously regenerate render package for 
-        /// this node. This method accesses core properties of a NodeModel and 
-        /// therefore is typically called on the main/UI thread.
-        /// </summary>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        /// 
-        public void RequestVisualUpdate(int maxTesselationDivisions)
-        {
-            RequestVisualUpdateCore(maxTesselationDivisions);
-        }
-
-        /// <summary>
-        /// When called, the base implementation of this method schedules an 
-        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
-        /// asynchronously. Derived classes can optionally override this method 
-        /// to prevent render packages to be generated if they do not require 
-        /// geometric preview.
-        /// </summary>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        /// 
-        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
-        {
-            // SCHEDULER: Schedule an 'UpdateRenderPackageAsyncTask' here.
-        }
-
-#else
-
         /// <summary>
         /// Updates the render package for this node by
         /// getting the MirrorData objects corresponding to
@@ -1541,7 +1507,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            var drawableIds = GetDrawableIds();
+            List<string> drawableIds = GetDrawableIds().ToList();
 
             int count = 0;
             var labelMap = new List<string>();
@@ -1596,7 +1562,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void ClearRenderPackages()
+        public void ClearRenderPackages()
         {
             lock (RenderPackagesMutex)
             {
@@ -1721,8 +1687,6 @@ namespace Dynamo.Models
             return size;
         }
 
-#endif
-
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
@@ -1757,8 +1721,6 @@ namespace Dynamo.Models
 
             return output.ToString();
         }
-
-        #endregion
 
         #region Node Migration Helper Methods
 

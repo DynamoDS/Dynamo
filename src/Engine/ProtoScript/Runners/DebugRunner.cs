@@ -444,7 +444,7 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushGlobFrame(core.GlobOffset);
 
             }
             catch (Exception ex)

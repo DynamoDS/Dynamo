@@ -415,9 +415,7 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                var hpe = core.Heap.GetHeapElement(sv);
-                var isTemporary = hpe.Active && hpe.Refcount == 0;
-                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
+                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && core.Heap.IsTemporaryPointer(sv))
                 {
                     return sv;
                 }
