@@ -4,17 +4,18 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace Dynamo.Search
 {
     public class SearchCategory
     {
-        private readonly List<BrowserInternalElement> classes;
+        private readonly ObservableCollection<BrowserItem> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
 
-        public IEnumerable<BrowserInternalElement> Classes
+        public ObservableCollection<BrowserItem> Classes
         {
             get { return classes; }
         }
@@ -27,7 +28,7 @@ namespace Dynamo.Search
         internal SearchCategory(string name)
         {
             Name = name;
-            classes = new List<BrowserInternalElement>();
+            classes = new ObservableCollection<BrowserItem>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
