@@ -179,6 +179,10 @@
             </ListBox>
             <Border Padding="0,10,0,10"
                     Grid.Row="2">
+                <Border.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
                 <StackPanel Orientation="Horizontal"
                             Margin="16,0,0,0">
                     <TextBlock x:Name="secondaryHeaderLeft"
