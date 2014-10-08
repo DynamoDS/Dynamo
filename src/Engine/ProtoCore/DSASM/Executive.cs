@@ -7304,6 +7304,8 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+
+            GC();
             pc++;
         }
 
@@ -7692,6 +7694,17 @@ namespace ProtoCore.DSASM
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+            var isInNestedImperativeBlock = frames.Any(f =>
+                {
+                    var callerBlockId = f.FunctionCallerBlock;
+                    var cbn = core.CompleteCodeBlockList[callerBlockId];
+                    return cbn.language == Language.kImperative;
+                });
+
+            if (isInNestedImperativeBlock)
+            {
+                return;
+            }
 
             foreach (var stackFrame in frames)
             {
@@ -7737,6 +7750,14 @@ namespace ProtoCore.DSASM
                 currentFramePointer = stackFrame.FramePointer;
             }
 
+            foreach (var value in core.GetAllCallSiteGCRoots())
+            {
+                if (value.IsReferenceType)
+                {
+                    gcRoots.Add(value);
+                }
+            }
+            
             rmem.GC(gcRoots, this);
         }
     }
