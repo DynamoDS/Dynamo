@@ -791,12 +791,12 @@ namespace Dynamo.PackageManager
         private bool CanSubmit()
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
-            // be active
-            //if (!this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
-            //{
-            //    this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
-            //    return false;
-            //}
+            // be active when there is no authenticator
+            if (!this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
+            {
+                this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
+                return false;
+            }
 
             if (this.Name.Contains(@"\") || this.Name.Contains(@"/") || this.Name.Contains(@"*"))
             {
