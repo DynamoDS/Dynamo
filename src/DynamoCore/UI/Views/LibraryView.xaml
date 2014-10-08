@@ -701,6 +701,10 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto" />
+            <RowDefinition  Height="Auto" />
+        </Grid.RowDefinitions>
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
                       Background="Transparent"
@@ -708,5 +712,14 @@
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
         </ScrollViewer>
+        <Border Background="#353535"
+                Height="27"
+                Grid.Row="1">
+            <TextBlock Text="Add-ons"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       Foreground="#989898"
+                       Margin="16,0,0,0" />
+        </Border>
     </Grid>
 </UserControl>
