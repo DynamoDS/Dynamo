@@ -186,7 +186,14 @@ namespace Dynamo.Nodes
                 builder.Append(typeOfParameter);
             }
 
-            return descriptor.QualifiedName + "." + builder.ToString();
+            string overridePrefix = Nodes.Utilities.NormalizeAsResourceName(descriptor.QualifiedName);
+            // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+            // Should be used FunctionDescriptor.Name property instead.
+            // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+            if (overridePrefix != descriptor.QualifiedName)
+                overridePrefix += Nodes.Utilities.NormalizeAsResourceName(descriptor.Name);
+
+            return overridePrefix + "." + builder.ToString();
         }
 
         /// <summary>

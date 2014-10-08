@@ -55,39 +55,16 @@ namespace Dynamo.Search.SearchElements
             switch (resourceType)
             {
                 case ResourceType.SmallIcon:
-                {
-                    string name = String.Empty;
-
-                    // Usual case.
-                    if (!disambiguate)
-                    {
-                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                        // Case for operators. Operators should use FunctionDescriptor.Name property.
-                        if (string.IsNullOrEmpty(name))
-                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-
-                        return name;
-                    }
-
-                    // Case for overloaded methods.
-                    return Utils.TypedParametersToString(this.FunctionDescriptor);
-                }
                 case ResourceType.LargeIcon:
                 {
-                    string name = String.Empty;
+                    string name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                    if (string.IsNullOrEmpty(name)) 
+                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name); 
 
                     // Usual case.
                     if (!disambiguate)
-                    {
-                        name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
-
-                        // Case for operators. Operators should use FunctionDescriptor.Name property.
-                        if (string.IsNullOrEmpty(name))
-                            name = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-
                         return name;
-                    }
 
                     // Case for overloaded methods.
                     return Utils.TypedParametersToString(this.FunctionDescriptor);

@@ -22,6 +22,7 @@ namespace Dynamo
             //3. Foo(a : bool[][], b : var[], c : double[][]) -> Foo.bool2-var1-double2
             //4. Foo(arr : var[]..[], a : int) -> Foo.varN-int
             //5. Foo(a: Autodesk.DesignScript.Geometry.Circle, b: Xxxx.Yyy.Curve)
+            //6. Empty string(a: int)
 
 
             // 1 case
@@ -88,6 +89,18 @@ namespace Dynamo
             Assert.AreEqual(
                 "Foo.Circle-Curve",
                 Utils.TypedParametersToString(dsFunctionNodeSearchElement5.FunctionDescriptor));
+
+            //6 case
+            List<TypedParameter> parameters6 = new List<TypedParameter>();
+            parameters6.Add(new TypedParameter("a", "int"));
+            FunctionDescriptor functionItem6 = new FunctionDescriptor("", parameters6, FunctionType.GenericFunction);
+
+            var dsFunctionNodeSearchElement6 =
+                new DSFunctionNodeSearchElement("", functionItem6, SearchElementGroup.Create);
+
+            Assert.AreEqual(
+                ".int",
+                Utils.TypedParametersToString(dsFunctionNodeSearchElement6.FunctionDescriptor));
 
         }
     }
