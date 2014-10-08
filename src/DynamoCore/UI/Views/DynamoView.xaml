@@ -402,6 +402,8 @@
                                   IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
                         <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
                                       IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
+                        <MenuItem Focusable="False" Name="ShowExecutionLog" Header="Show Execution Log" DataContext="{Binding Path=LiveRunnerViewModel}"
+                                  IsCheckable="True" IsChecked="{Binding Path=IsShowingExecutionLog, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -1096,7 +1098,12 @@
             </StackPanel.RenderTransform>
         </StackPanel>
 
-        <ScrollViewer Name="LogScroller" 
+        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer Name="LogScroller" 
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
                     HorizontalAlignment="Stretch"
@@ -1104,22 +1111,37 @@
                     Background="Black" 
                     Opacity="1" 
                     Visibility="Visible"
-                    Grid.Row="4"
-                    Grid.Column="0" 
-                    Grid.ColumnSpan="3">
+                    Grid.Row="0"
+                    Grid.Column="0">
 
-            <ScrollViewer.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
-                </ContextMenu>
-            </ScrollViewer.ContextMenu>
+                <ScrollViewer.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
+                    </ContextMenu>
+                </ScrollViewer.ContextMenu>
 
-            <TextBox Text="{Binding Path=LogText, Mode=OneWay}" 
+                <TextBox Text="{Binding Path=LogText, Mode=OneWay}" 
                     Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
                     Margin="0" TextWrapping="Wrap"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
-        </ScrollViewer>
+            </ScrollViewer>
+            <ScrollViewer Name="ExecutionLogScroller" 
+                          Width="800"
+                          Grid.Column="1" 
+                          Grid.Row="0" 
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          DataContext="{Binding Path=LiveRunnerViewModel}"
+                          Visibility="{Binding IsShowingExecutionLog, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <TextBlock 
+                           Text="{Binding ExecutionLogText}" 
+                           Margin="10" 
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+            </ScrollViewer>
+        </Grid>
+        
 
         <!--Sidebar-->
         <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 

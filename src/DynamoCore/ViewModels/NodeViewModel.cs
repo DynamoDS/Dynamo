@@ -35,6 +35,7 @@ namespace Dynamo.ViewModels
         private bool isFullyConnected = false;
         private double zIndex = 3;
         private string astText = string.Empty;
+        private SyncDataManager.State syncState;
 
         #endregion
 
@@ -282,6 +283,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public SyncDataManager.State SyncState
+        {
+            get { return syncState; }
+            set
+            {
+                syncState = value; 
+                RaisePropertyChanged("SyncState");
+            }
+        }
+
         #endregion
 
         #region events
@@ -341,10 +352,6 @@ namespace Dynamo.ViewModels
             //are initially registered
             SetupInitialPortViewModels();
 
-            if (IsDebugBuild)
-            {
-                DynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
-            }
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -352,42 +359,6 @@ namespace Dynamo.ViewModels
             if (e.PropertyName == "ShowDebugASTs")
             {
                 RaisePropertyChanged("ShowDebugASTs");
-            }
-        }
-
-        /// <summary>
-        /// Handler for the EngineController's AstBuilt event.
-        /// Formats a string of AST for preview on the node.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
-        {
-            if (e.Node == nodeLogic)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node.GUID));
-
-                foreach (var assocNode in e.AstNodes)
-                {
-                    var pretty = assocNode.ToString();
-
-                    //shorten the guids
-                    var strRegex = @"([0-9a-f-]{32}).*?";
-                    var myRegex = new Regex(strRegex, RegexOptions.None);
-                    string strTargetString = assocNode.ToString();
-
-                    foreach (Match myMatch in myRegex.Matches(strTargetString))
-                    {
-                        if (myMatch.Success)
-                        {
-                            pretty = pretty.Replace(myMatch.Value, "..." + myMatch.Value.Substring(myMatch.Value.Length - 7));
-                        }
-                    }
-                    sb.AppendLine(pretty);
-                }
-
-                ASTText = sb.ToString();
             }
         }
 

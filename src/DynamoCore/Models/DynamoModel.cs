@@ -64,6 +64,16 @@ namespace Dynamo.Models
             }
         }
 
+        public delegate void EngineResetEventHandler(EngineResetEventArgs args);
+        public event EngineResetEventHandler EngineReset;
+        internal void OnEngineReset(EngineController controller)
+        {
+            if (EngineReset != null)
+            {
+                EngineReset(new EngineResetEventArgs(controller));
+            }
+        }
+
         /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
@@ -619,6 +629,8 @@ namespace Dynamo.Models
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
             EngineController = new EngineController(this, geomFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
+
+            OnEngineReset(EngineController);
         }
 
         /// <summary>
@@ -1524,5 +1536,15 @@ namespace Dynamo.Models
 
         #endregion
 
+    }
+
+    public class EngineResetEventArgs : EventArgs
+    {
+        public EngineController Controller { get; set; }
+
+        public EngineResetEventArgs(EngineController controller)
+        {
+            Controller = controller;
+        }
     }
 }
