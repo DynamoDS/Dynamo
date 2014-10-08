@@ -1795,9 +1795,9 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value as string == null) return new Thickness(0, 0, 0, 0);
-
             var incomingString = value as string;
+
+            if (incomingString == null) return new Thickness(0, 0, 0, 0);
 
             var numberOfPoints = incomingString.Count(x => x == '.');
             return new Thickness(10 * numberOfPoints, 0, 0, 0);
