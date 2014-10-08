@@ -170,7 +170,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -199,7 +199,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
                 core.InitializeContextGlobals(staticContext.GlobalVarList);
 
@@ -230,7 +230,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -259,7 +259,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 try
