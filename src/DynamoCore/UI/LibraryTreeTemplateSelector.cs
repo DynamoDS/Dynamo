@@ -6,7 +6,7 @@ using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Controls
 {
-    public class NestedClassesTemplateSelector : DataTemplateSelector
+    public class LibraryTreeTemplateSelector : DataTemplateSelector
     {
         public DataTemplate NestedCategoryTemplate { get; set; }
         public DataTemplate SubclassesTemplate { get; set; }
