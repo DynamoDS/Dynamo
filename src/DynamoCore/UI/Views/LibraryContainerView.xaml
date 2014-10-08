@@ -418,7 +418,7 @@
                     </Setter>
                 </Style>
 
-                <Style x:Key="SearchTreeView"
+                <Style x:Key="AddonsTreeView"
                        TargetType="{x:Type TreeView}">
                     <Setter Property="Focusable"
                             Value="False" />
@@ -741,10 +741,10 @@
 
             </ScrollViewer.Resources>
 
-            <TreeView Name="SearchTreeView"
+            <TreeView Name="AddonsTreeView"
                       Background="Blue"
                       ItemsSource="{Binding Path=Model.AddonRootCategories}"
-                      Style="{StaticResource SearchTreeView}"
+                      Style="{StaticResource AddonsTreeView}"
                       BorderThickness="0"
                       Grid.Column="0"
                       Grid.ColumnSpan="1"
