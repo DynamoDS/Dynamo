@@ -7727,7 +7727,33 @@ namespace ProtoCore.DSASM
                 else
                 {
                     // Call some language block
-                    symbols = exe.runtimeSymbols[blockId].symbolList.Values;
+                    List<SymbolNode> blockSymbols = new List<SymbolNode>();
+                    blockSymbols.AddRange(exe.runtimeSymbols[blockId].symbolList.Values);
+
+                    // One kind of block is construct block. This kind of block
+                    // is not true block because the VM doesn't push a stack
+                    // frame for it, and all variables defined in construct
+                    // block are visible in language block. For example, 
+                    // if-else, for-loop
+                    var workingList = new Stack<int>();
+                    workingList.Push(blockId);
+
+                    while (workingList.Any())
+                    {
+                        var id = workingList.Pop();
+                        var block = core.CompleteCodeBlockList[id];
+                        foreach (var child in block.children)
+                        {
+                            if (child.blockType == CodeBlockType.kConstruct)
+                            {
+                                var childBlockId = child.codeBlockId;
+                                workingList.Push(childBlockId);
+                                blockSymbols.AddRange(exe.runtimeSymbols[childBlockId].symbolList.Values);
+                            }
+                        }
+                    }
+
+                    symbols = blockSymbols;
                 }
 
                 var symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
