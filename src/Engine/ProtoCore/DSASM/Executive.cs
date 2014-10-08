@@ -7757,7 +7757,9 @@ namespace ProtoCore.DSASM
                     gcRoots.Add(value);
                 }
             }
-            
+
+            gcRoots.Add(RX);
+
             rmem.GC(gcRoots, this);
         }
     }
