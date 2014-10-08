@@ -17,7 +17,9 @@
             <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            <controls:DataContextToMarginConverter x:Key="DataContextToMarginConverter" />
+            
+            <!--Depending on the number of points in FullCategoryName margin will be done.-->
+            <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
 
             <!--EndRegion-->
 
@@ -512,9 +514,8 @@
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <Grid.Margin>
-                                                <Binding RelativeSource="{RelativeSource Self}"
-                                                         Path="DataContext"
-                                                         Converter="{StaticResource DataContextToMarginConverter}" />
+                                                <Binding Path="FullCategoryName"
+                                                         Converter="{StaticResource FullCategoryNameToMarginConverter}" />
                                             </Grid.Margin>
 
                                             <ToggleButton Margin="5,0,0,0"

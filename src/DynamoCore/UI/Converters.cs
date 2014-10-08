@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Linq;
+
 
 using Dynamo.Nodes.Search;
 using Dynamo.UI;
@@ -1786,12 +1788,19 @@ namespace Dynamo.Controls
         }
     }
 
-    public class DataContextToMarginConverter : IValueConverter
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry.Tesselation -> Margin="10,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2.NestedClass -> Margin="20,0,0,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Visibility.Collapsed;
-            return Visibility.Visible;
+            if (value as string == null) return new Thickness(0, 0, 0, 0);
+
+            var incomingString = value as string;
+
+            var numberOfPoints = incomingString.Count(x => x == '.');
+            return new Thickness(10 * numberOfPoints, 0, 0, 0);
         }
 
         public object ConvertBack(

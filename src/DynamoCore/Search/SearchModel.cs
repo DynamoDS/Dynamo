@@ -523,6 +523,7 @@ namespace Dynamo.Search
             }
 
             var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
+            tempCat.FullCategoryName = newCategoryName;
             parent.AddChild(tempCat);
 
             return tempCat;
