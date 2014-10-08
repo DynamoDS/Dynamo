@@ -411,7 +411,7 @@ namespace DynamoWebServer.Messages
             {
                 var codeBlock = node as CodeBlockNodeModel;
                 var map = CodeBlockUtils.MapLogicalToVisualLineIndices(codeBlock.Code);
-                var allDefs = codeBlock.GetDefinitionLineIndexMap();
+                var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlock.CodeStatements);
                 var lineIndices = new List<int>();
 
                 foreach (var def in allDefs)

@@ -108,9 +108,9 @@ namespace Dynamo.Tests
         {
             var response = Mock.Of<Response>();
 
-            webServer.SendResponse(response, "TestID");
+            webServer.SendResponse(response, "TestId");
 
-            mock.Verify(m => m.GetAppSessionById("TestID"));
+            mock.Verify(m => m.GetAppSessionById("TestId"));
         }
     }
 }
