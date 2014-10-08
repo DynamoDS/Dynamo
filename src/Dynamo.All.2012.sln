@@ -128,6 +128,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitTestServices", "..\test\Libraries\Revit\RevitTestServices\RevitTestServices.csproj", "{589F14D7-2937-479C-834A-D44197CB1930}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C} = {87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
