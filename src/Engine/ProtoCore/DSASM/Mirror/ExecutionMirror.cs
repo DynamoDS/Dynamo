@@ -200,8 +200,7 @@ namespace ProtoCore.DSASM.Mirror
             if (!formatParams.ContinueOutputTrace())
                 return "...";
 
-            Executable exe = MirrorTarget.exe;
-            ClassTable classTable = MirrorTarget.Core.ClassTable;
+            ClassTable classTable = MirrorTarget.rmem.Executable.classTable;
 
             int classtype = val.metaData.type;
             if (classtype < 0 || (classtype >= classTable.ClassNodes.Count))
@@ -248,8 +247,7 @@ namespace ProtoCore.DSASM.Mirror
                         string propValue = "";
                         if (symbol.isStatic)
                         {
-                            var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
-                            StackValue staticProp = core.Rmem.GetSymbolValue(staticSymbol);
+                            StackValue staticProp = this.core.Rmem.GetStackData(langblock, symbol.symbolTableIndex, Constants.kGlobalScope);
                             propValue = GetStringValue(staticProp, heap, langblock, forPrint);
                         }
                         else
@@ -418,7 +416,7 @@ namespace ProtoCore.DSASM.Mirror
             if (null == variableTraces)
                 globaltrace = new StringBuilder();
 
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
 
             // Only display symbols defined in the default top-most langauge block;
             // Otherwise garbage information may be displayed.
@@ -445,7 +443,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
 
                     RuntimeMemory rmem = MirrorTarget.rmem;
-                    StackValue sv = rmem.GetSymbolValue(symbolNode);
+                    StackValue sv = rmem.GetStackData(blockId, i, Constants.kGlobalScope);
                     string formattedString = GetFormattedValue(symbolNode.name, GetStringValue(sv, rmem.Heap, blockId));
 
                     if (null != globaltrace)
@@ -485,7 +483,7 @@ namespace ProtoCore.DSASM.Mirror
 
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
-            ProtoCore.DSASM.Executable exe = core.DSExecutable;
+            ProtoCore.DSASM.Executable exe = core.Rmem.Executable;
 
             int functionIndex = Constants.kGlobalScope;
             ci = Constants.kInvalidIndex;
@@ -493,9 +491,9 @@ namespace ProtoCore.DSASM.Mirror
             
             if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
-                functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
+                ci = core.watchClassScope = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexClass)).opdata;
+                functionIndex = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunction)).opdata;
+                functionBlock = (int)core.Rmem.GetAtRelative(core.Rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock)).opdata;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
@@ -509,7 +507,7 @@ namespace ProtoCore.DSASM.Mirror
             int index = -1;
             if (ci != Constants.kInvalidIndex)
             {
-                ClassNode classnode = core.ClassTable.ClassNodes[ci];
+                ClassNode classnode = core.Rmem.Executable.classTable.ClassNodes[ci];
 
                 if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != core.RunningBlock)
                 {
@@ -646,9 +644,9 @@ namespace ProtoCore.DSASM.Mirror
 
             StackValue val;
             if (symbol.functionIndex == -1 && classcope != Constants.kInvalidIndex)
-                val = rmem.GetMemberData(index, classcope, core.DSExecutable);
+                val = rmem.GetMemberData(index, classcope);                
             else
-                val = rmem.GetSymbolValue(symbol);
+                val = rmem.GetStackData(block, index, classcope);                
 
             switch (val.optype)
             {
@@ -661,7 +659,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Pointer:
                     {
                         int classtype = val.metaData.type;
-                        ClassNode classnode = core.ClassTable.ClassNodes[classtype];
+                        ClassNode classnode = rmem.Executable.classTable.ClassNodes[classtype];
                         return classnode.name;
                     }
                 case AddressType.ArrayPointer:
@@ -748,7 +746,7 @@ namespace ProtoCore.DSASM.Mirror
         
         public Obj GetValue(string name, int block = 0, int classcope = Constants.kGlobalScope)
         {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
 
             int index = Constants.kInvalidIndex;
             if (block == 0)
@@ -771,13 +769,12 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                var symbol = exe.runtimeSymbols[block].symbolList[index];
-                if (symbol.arraySizeList != null)
+                if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
                 {
                     throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                 }
 
-                Obj retVal = Unpack(MirrorTarget.rmem.GetSymbolValue(symbol), MirrorTarget.rmem.Heap, core);
+                Obj retVal = Unpack(MirrorTarget.rmem.GetStackData(block, index, classcope), MirrorTarget.rmem.Heap, core);
 
                 return retVal;
 
@@ -870,7 +867,7 @@ namespace ProtoCore.DSASM.Mirror
 
             // 4. Get all graphnpodes dependent on the symbol and mark them dirty
             const int outerBlock = 0;
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
                 graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, core.Options.ExecuteSSA, outerBlock);
 
@@ -950,9 +947,9 @@ namespace ProtoCore.DSASM.Mirror
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
             StackValue sv;
             if (symbol.functionIndex == -1 && classcope != Constants.kInvalidIndex)
-                sv = rmem.GetMemberData(index, classcope, core.DSExecutable);
+                sv = rmem.GetMemberData(index, classcope);
             else
-                sv = rmem.GetSymbolValue(symbol);
+                sv = rmem.GetStackData(block, index, classcope);
 
             if (sv.IsInvalid)
                 throw new UninitializedVariableException { Name = name };
@@ -1026,7 +1023,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public StackValue GetGlobalValue(string name, int startBlock = 0)
         {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
@@ -1051,7 +1048,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public StackValue GetRawFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
         {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
@@ -1059,13 +1056,12 @@ namespace ProtoCore.DSASM.Mirror
                 if (Constants.kInvalidIndex != index)
                 {
                     //Q(Luke): This seems to imply that the LHS is an array index?
-                    var symbol = exe.runtimeSymbols[block].symbolList[index];
-                    if (symbol.arraySizeList != null)
+                    if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
                     {
                         throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
 
-                    return MirrorTarget.rmem.GetSymbolValue(symbol);
+                    return MirrorTarget.rmem.GetStackData(block, index, classcope);
                 }
             }
             throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
@@ -1076,7 +1072,7 @@ namespace ProtoCore.DSASM.Mirror
             if (!v.IsPointer)
                 throw new ArgumentException("SV to highlight must be a pointer");
 
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
 
             List<SymbolNode> symNodes = new List<SymbolNode>();
 
