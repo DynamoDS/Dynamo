@@ -254,11 +254,15 @@ namespace Dynamo.PackageManager
                     if (isNewVersion)
                     {
                         var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle);
+
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
                         var pkg = PackageUploadBuilder.NewPackage(this.dynamoModel, l, files, packageUploadHandle);
+
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)
