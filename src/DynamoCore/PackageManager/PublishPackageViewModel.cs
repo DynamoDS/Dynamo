@@ -434,7 +434,6 @@ namespace Dynamo.PackageManager
                     l.LoadedCustomNodes.Select(
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
-                Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 Package = l
             };
@@ -446,11 +445,8 @@ namespace Dynamo.PackageManager
                 vm.AdditionalFiles.Add(file.Model.FullName);
             }
 
-            // add unloaded assemblies, that are not yet loaded
-            var unloadedAssemblies =
-                l.EnumerateAssemblyFiles()
-                    .Where(x => !l.LoadedAssemblies.Select(a => a.Location).Contains(x));
-            foreach (var file in unloadedAssemblies)
+            // load assemblies into reflection only context
+            foreach (var file in l.EnumerateAssemblyFiles())
             {
                 vm.Assemblies.Add( Assembly.ReflectionOnlyLoadFrom(file) );
             }

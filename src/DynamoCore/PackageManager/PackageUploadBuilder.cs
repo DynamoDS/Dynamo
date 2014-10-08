@@ -52,9 +52,20 @@ namespace Dynamo.PackageManager
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
-            var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+            string zipPath;
+            FileInfo info;
 
-            var info = new FileInfo(zipPath);
+            try
+            {
+                zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
+                info = new FileInfo(zipPath);
+            }
+            catch
+            {
+                // give nicer error
+                throw new Exception("Could not compress file.  Is the file in use?");
+            }
+            
             if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
 
             return zipPath;
@@ -176,6 +187,13 @@ namespace Dynamo.PackageManager
                     .Contains(name);
         }
 
+        public static string NormalizePath(string path)
+        {
+            return Path.GetFullPath(new Uri(path).LocalPath)
+                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                       .ToUpperInvariant();
+        }
+
         private static void CopyFilesIntoPackageDirectory(IEnumerable<string> files, DirectoryInfo dyfDir,
                                                           DirectoryInfo binDir, DirectoryInfo extraDir)
         {
@@ -200,7 +218,7 @@ namespace Dynamo.PackageManager
                     destPath = Path.Combine(extraDir.FullName, Path.GetFileName(file));
                 }
 
-                if (destPath == file) continue;
+                if (NormalizePath(destPath) == NormalizePath(file)) continue;
                 if (File.Exists(destPath))
                 {
                     File.Delete(destPath);
