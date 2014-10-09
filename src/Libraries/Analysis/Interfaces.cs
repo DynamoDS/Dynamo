@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+
 using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
@@ -24,6 +26,8 @@ namespace Analysis
         /// each calculation location.
         /// </summary>
         Dictionary<string, IList<TResult>> Results { get; }
+
+        IList<TResult> GetResultByKey(string key);
     }
 
     public interface ISurfaceAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>

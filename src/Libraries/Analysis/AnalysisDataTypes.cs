@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Autodesk.DesignScript.Geometry;
 
@@ -24,6 +25,16 @@ namespace Analysis
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; set; }
 
+        public IList<double> GetResultByKey(string key)
+        {
+            if (!Results.ContainsKey(key))
+            {
+                throw new Exception("The requested result collection does not exist.");
+            }
+
+            return Results[key];
+        }
+
         /// <summary>
         /// Create a SurfaceAnalysisData object.
         /// </summary>
@@ -42,11 +53,21 @@ namespace Analysis
         /// <param name="surface">The surface which contains the calculation locations.</param>
         /// <param name="calculationLocations">UV coordinates on the surface.</param>
         /// <param name="results">A set of results keyed by the name of the result type.</param>
-        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string, IList<double>> results)
+        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations, IList<string> resultNames, IList<IList<double>> resultValues)
         {
             Surface = surface;
             CalculationLocations = CullCalculationLocations(surface, calculationLocations);
-            Results = results;
+
+            if (resultNames.Count != resultValues.Count)
+            {
+                throw new ArgumentException("The number of result names and result values must match.");
+            }
+
+            Results = new Dictionary<string, IList<double>>();
+            for (var i = 0; i < resultNames.Count; i++)
+            {
+                Results.Add(resultNames[i], resultValues[i]);
+            }
         }
 
         #region private methods
@@ -105,10 +126,30 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of calculation locations.</param>
         /// <param name="results">A set of results keyed by the name of the result type.</param>
-        public VectorAnalysisData(IEnumerable<Point> points, Dictionary<string, IList<Vector>> results)
+        public VectorAnalysisData(IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues)
         {
             CalculationLocations = points;
-            Results = results;
+            
+            if (resultNames.Count != resultValues.Count)
+            {
+                throw new ArgumentException("The number of result names and result values must match.");
+            }
+
+            Results = new Dictionary<string, IList<Vector>>();
+            for (var i = 0; i < resultNames.Count; i++)
+            {
+                Results.Add(resultNames[i], resultValues[i]);
+            }
+        }
+
+        public IList<Vector> GetResultByKey(string key)
+        {
+            if (!Results.ContainsKey(key))
+            {
+                throw new Exception("The requested result collection does not exist.");
+            }
+
+            return Results[key];
         }
     }
 
@@ -142,10 +183,30 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of calculation locations.</param>
         /// <param name="results">A set of resutls keyed by the name of the result type.</param>
-        public PointAnalysisData(IEnumerable<Point> points, Dictionary<string, IList<double>> results)
+        public PointAnalysisData(IEnumerable<Point> points, IList<string> resultNames, IList<IList<double>> resultValues)
         {
             CalculationLocations = points;
-            Results = results;
+
+            if (resultNames.Count != resultValues.Count)
+            {
+                throw new ArgumentException("The number of result names and result values must match.");
+            }
+
+            Results = new Dictionary<string, IList<double>>();
+            for (var i = 0; i < resultNames.Count; i++)
+            {
+                Results.Add(resultNames[i], resultValues[i]);
+            }
+        }
+
+        public IList<double> GetResultByKey(string key)
+        {
+            if (!Results.ContainsKey(key))
+            {
+                throw new Exception("The requested result collection does not exist.");
+            }
+
+            return Results[key];
         }
     }
 }

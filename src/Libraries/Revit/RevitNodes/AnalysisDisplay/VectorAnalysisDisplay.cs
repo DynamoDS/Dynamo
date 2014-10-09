@@ -175,9 +175,7 @@ namespace Revit.AnalysisDisplay
                 description = Resource1.AnalysisResultsDefaultDescription;
             }
 
-            var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
-
-            var data = new VectorAnalysisData(sampleLocations, valueDict);
+            var data = new VectorAnalysisData(sampleLocations, new List<string> { "Dynamo Data" }, new List<IList<Vector>>{samples});
             return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, name, description, unitType);
         }
 

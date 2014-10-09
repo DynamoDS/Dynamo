@@ -224,9 +224,7 @@ namespace Revit.AnalysisDisplay
                 description = Resource1.AnalysisResultsDefaultDescription;
             }
 
-            var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
-
-            var data = new PointAnalysisData(sampleLocations, valueDict);
+            var data = new PointAnalysisData(sampleLocations, new List<string>{"Dynamo Data"}, new List<IList<double>>{samples});
             return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description, unitType);
         }
 
