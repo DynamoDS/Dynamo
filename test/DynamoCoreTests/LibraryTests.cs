@@ -9,8 +9,12 @@ using System.Text;
 
 namespace Dynamo.Tests
 {
-    class LibraryTests : DynamoViewModelUnitTest
+    [TestFixture]
+    class LibraryTests : DSEvaluationViewModelUnitTest
     {
+        protected static bool LibraryLoaded { get; set; }
+        protected LibraryServices libraryServices;
+
         [SetUp]
         public override void Init()
         {
@@ -49,7 +53,7 @@ namespace Dynamo.Tests
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
                 Assert.IsTrue(LibraryLoaded);
@@ -176,5 +180,6 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(LibraryLoaded);
         }
+
     }
 }

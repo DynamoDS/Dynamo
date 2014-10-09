@@ -1086,6 +1086,11 @@
             Sweeps this closed Curve along the path Curve, creating a Solid
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>
+            Returns a new Curve approximated with the supplied tolerance
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
             <summary>
             The total arc length of the curve
