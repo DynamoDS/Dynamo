@@ -1,4 +1,6 @@
 ﻿using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -41,6 +43,14 @@ namespace Dynamo.UI.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            var searchViewModel = this.DataContext as SearchViewModel;
+            if (searchViewModel == null) return;
+
+            searchViewModel.SearchText = "";
         }
     }
 }
