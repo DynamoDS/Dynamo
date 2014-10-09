@@ -195,7 +195,7 @@ namespace Dynamo.Tests
         {
             var length = Length.FromDouble(0.03175); //1.25"
 
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalInch;
+            SIUnit.LengthUnit = LengthUnit.FractionalInch;
             Assert.AreEqual("1 1/4\"", length.ToString());
 
             length.Value = -0.03175;
@@ -232,7 +232,7 @@ namespace Dynamo.Tests
         {
             //test just the fractional case
             var length = Length.FromDouble(0.0762); //.25"
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
 
             Assert.AreEqual("3\"", length.ToString());
 
@@ -518,15 +518,15 @@ namespace Dynamo.Tests
             const double x = 5.0;
 
             var length = x.ToLength();
-            SIUnit.LengthUnit = DynamoLengthUnit.Meter;
+            SIUnit.LengthUnit = LengthUnit.Meter;
             Assert.AreEqual("5.0000m", length.ToString());
 
             var area = x.ToArea();
-            SIUnit.AreaUnit = DynamoAreaUnit.SquareMeter;
+            SIUnit.AreaUnit = AreaUnit.SquareMeter;
             Assert.AreEqual("5.0000m²", area.ToString());
 
             var volume = x.ToVolume();
-            SIUnit.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            SIUnit.VolumeUnit = VolumeUnit.CubicMeter;
             Assert.AreEqual("5.0000m³", volume.ToString());
 
         }
@@ -535,10 +535,10 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UiRounding()
         {
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
 
             var length = Length.FromFeet(1.5);
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
             Assert.AreEqual("2' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
@@ -561,7 +561,7 @@ namespace Dynamo.Tests
             //this fails as explained here:
             //http://msdn.microsoft.com/en-us/library/wyk4d9cy(v=vs.110).aspx
             //length = Units.Length.FromFeet(.5);
-            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(LengthUnit.FractionalFoot));
         }
 
         [Test]
@@ -614,43 +614,39 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void LengthConversions()
         {
-            var length = Length.FromDouble(1.0);
-            Assert.AreEqual(1.0, length.Conversions[Length.METERS]);
-            Assert.AreEqual(Length.ToMillimeter, length.Conversions[Length.MILLIMETERS]);
-            Assert.AreEqual(Length.ToCentimeter, length.Conversions[Length.CENTIMETERS]);
-            Assert.AreEqual(Length.ToInch, length.Conversions[Length.INCHES]);
-            Assert.AreEqual(Length.ToFoot, length.Conversions[Length.FEET]);
+            Assert.AreEqual(1.0, Length.Conversions[Length.METERS]);
+            Assert.AreEqual(Length.ToMillimeter, Length.Conversions[Length.MILLIMETERS]);
+            Assert.AreEqual(Length.ToCentimeter, Length.Conversions[Length.CENTIMETERS]);
+            Assert.AreEqual(Length.ToInch, Length.Conversions[Length.INCHES]);
+            Assert.AreEqual(Length.ToFoot, Length.Conversions[Length.FEET]);
         }
 
         [Test, Category("UnitTests")]
         public void AreaConversions()
         {
-            var area = Area.FromDouble(1.0);
-            Assert.AreEqual(1.0, area.Conversions[Area.SQUARE_METERS]);
-            Assert.AreEqual(Area.ToSquareMillimeters, area.Conversions[Area.SQUARE_MILLIMETERS]);
-            Assert.AreEqual(Area.ToSquareCentimeters, area.Conversions[Area.SQUARE_CENTIMETERS]);
-            Assert.AreEqual(Area.ToSquareInch, area.Conversions[Area.SQUARE_INCHES]);
-            Assert.AreEqual(Area.ToSquareFoot, area.Conversions[Area.SQUARE_FEET]);
+            Assert.AreEqual(1.0, Area.Conversions[Area.SQUARE_METERS]);
+            Assert.AreEqual(Area.ToSquareMillimeters, Area.Conversions[Area.SQUARE_MILLIMETERS]);
+            Assert.AreEqual(Area.ToSquareCentimeters, Area.Conversions[Area.SQUARE_CENTIMETERS]);
+            Assert.AreEqual(Area.ToSquareInch, Area.Conversions[Area.SQUARE_INCHES]);
+            Assert.AreEqual(Area.ToSquareFoot, Area.Conversions[Area.SQUARE_FEET]);
         }
 
         [Test, Category("UnitTests")]
         public void VolumeConversions()
         {
-            var volume = Volume.FromDouble(1.0);
-            Assert.AreEqual(1.0, volume.Conversions[Volume.CUBIC_METERS]);
-            Assert.AreEqual(Volume.ToCubicMillimeter, volume.Conversions[Volume.CUBIC_MILLIMETERS]);
-            Assert.AreEqual(Volume.ToCubicCentimeter, volume.Conversions[Volume.CUBIC_CENTIMETERS]);
-            Assert.AreEqual(Volume.ToCubicInch, volume.Conversions[Volume.CUBIC_INCHES]);
-            Assert.AreEqual(Volume.ToCubicFoot, volume.Conversions[Volume.CUBIC_FEET]);
+            Assert.AreEqual(1.0, Volume.Conversions[Volume.CUBIC_METERS]);
+            Assert.AreEqual(Volume.ToCubicMillimeter, Volume.Conversions[Volume.CUBIC_MILLIMETERS]);
+            Assert.AreEqual(Volume.ToCubicCentimeter, Volume.Conversions[Volume.CUBIC_CENTIMETERS]);
+            Assert.AreEqual(Volume.ToCubicInch, Volume.Conversions[Volume.CUBIC_INCHES]);
+            Assert.AreEqual(Volume.ToCubicFoot, Volume.Conversions[Volume.CUBIC_FEET]);
         }
 
         [Test, Category("UnitTests")]
         public void InsolationConversions()
         {
-            var insol = Insolation.FromDouble(1.0);
-            Assert.AreEqual(1.0, insol.Conversions[Insolation.WATT_HOURS_PER_SQUARE_METER]);
-            Assert.AreEqual(Insolation.ToKwhMeter2, insol.Conversions[Insolation.KILLOWATT_HOURS_PER_SQUARE_METER]);
-            Assert.AreEqual(Insolation.ToBTUFoot2, insol.Conversions[Insolation.BTU_PER_SQUARE_FOOT]);
+            Assert.AreEqual(1.0, Insolation.Conversions[Insolation.WATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToKwhMeter2, Insolation.Conversions[Insolation.KILLOWATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToBTUFoot2, Insolation.Conversions[Insolation.BTU_PER_SQUARE_FOOT]);
         }
     }
 

@@ -269,9 +269,9 @@ namespace Dynamo.Applications
         public static void InitializeUnits()
         {
             // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
         }
 
         public static void InitializeAssemblies()

@@ -1848,28 +1848,28 @@ namespace Dynamo.ViewModels
             switch (parameter.ToString())
             {
                 case "FractionalInch":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.FractionalInch;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.FractionalInch;
                     return;
                 case "DecimalInch":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.DecimalInch;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.DecimalInch;
                     return;
                 case "FractionalFoot":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.FractionalFoot;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.FractionalFoot;
                     return;
                 case "DecimalFoot":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.DecimalFoot;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.DecimalFoot;
                     return;
                 case "Meter":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.Meter;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.Meter;
                     return;
                 case "Millimeter":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.Millimeter;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.Millimeter;
                     return;
                 case "Centimeter":
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.Centimeter;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.Centimeter;
                     return;
                 default:
-                    model.PreferenceSettings.LengthUnit = DynamoLengthUnit.Meter;
+                    model.PreferenceSettings.LengthUnit = LengthUnit.Meter;
                     return;
             }
         }
@@ -1884,22 +1884,22 @@ namespace Dynamo.ViewModels
             switch (parameter.ToString())
             {
                 case "SquareInch":
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareInch;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareInch;
                     return;
                 case "SquareFoot":
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareFoot;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareFoot;
                     return;
                 case "SquareMillimeter":
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMillimeter;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMillimeter;
                     return;
                 case "SquareCentimeter":
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareCentimeter;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareCentimeter;
                     return;
                 case "SquareMeter":
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMeter;
                     return;
                 default:
-                    model.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMeter;
                     return;
             }
         }
@@ -1914,22 +1914,22 @@ namespace Dynamo.ViewModels
             switch (parameter.ToString())
             {
                 case "CubicInch":
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicInch;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicInch;
                     return;
                 case "CubicFoot":
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicFoot;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicFoot;
                     return;
                 case "CubicMillimeter":
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMillimeter;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMillimeter;
                     return;
                 case "CubicCentimeter":
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicCentimeter;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicCentimeter;
                     return;
                 case "CubicMeter":
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMeter;
                     return;
                 default:
-                    model.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMeter;
                     return;
             }
         }
