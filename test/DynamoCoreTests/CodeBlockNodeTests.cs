@@ -742,7 +742,7 @@ b = c[w][x][y][z];";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
                 Assert.IsTrue(libraryLoaded);
@@ -774,7 +774,7 @@ b = c[w][x][y][z];";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
                 Assert.IsTrue(libraryLoaded);
