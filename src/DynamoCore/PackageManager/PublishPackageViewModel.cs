@@ -726,7 +726,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var newpkg = Package == null;
+                var isNewPackage = Package == null;
 
                 Package = Package ?? new Package("", this.Name, this.FullVersion);
 
@@ -734,8 +734,6 @@ namespace Dynamo.PackageManager
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
-
-                var files = GetAllFiles().ToList();
 
                 Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
 
@@ -745,7 +743,12 @@ namespace Dynamo.PackageManager
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
-                if (newpkg) this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
+                var files = GetAllFiles().ToList();
+
+                if (isNewPackage)
+                {
+                    this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
+                }
 
                 var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);
 
