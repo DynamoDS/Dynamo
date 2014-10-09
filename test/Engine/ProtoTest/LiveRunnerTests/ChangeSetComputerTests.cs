@@ -531,6 +531,119 @@ namespace ProtoTest.LiveRunner
             List<Guid> expectedGuid = new List<Guid> { guid3, guid4, guid5 };
             AssertPreview(reachableGuidList, expectedGuid, 3);
         }
+
+        [Test]
+        public void TestPreviewDepth01()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+                    a = 1;
+                ",
+                 
+               @"
+                    x = a;
+                ",
+
+               @"
+                    y = x;
+                ",
+
+               @"
+                    a = 10;
+                "
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create and run the graph  
+            ProtoScript.Runners.LiveRunner liveRunner = CreateLiveRunner();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+
+
+            // Modify [a = 1;] to [a = 10;] 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            syncData = new GraphSyncData(null, null, modified);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get the the preview guids (affected graphs)
+            List<Guid> reachableGuidList = changeSetState.GenerateReachableNodeGuids(astList);
+
+            // Check if the the affected guids are in the list
+            List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
+            AssertPreview(reachableGuidList, expectedGuid, 2);
+        }
+
+
+        [Test]
+        public void TestPreviewDepth02()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+                    a = 1;
+                ",
+                 
+               @"
+                    x = a;
+                ",
+
+               @"
+                    y = x;
+                ",
+
+               @"
+                    z = y;
+                ",
+
+               @"
+                    a = 10;
+                "
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create and run the graph  
+            ProtoScript.Runners.LiveRunner liveRunner = CreateLiveRunner();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+
+
+            // Modify [a = 1;] to [a = 10;] 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[4]));
+            syncData = new GraphSyncData(null, null, modified);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get the the preview guids (affected graphs)
+            List<Guid> reachableGuidList = changeSetState.GenerateReachableNodeGuids(astList);
+
+            // Check if the the affected guids are in the list
+            List<Guid> expectedGuid = new List<Guid> { guid2, guid3, guid4 };
+            AssertPreview(reachableGuidList, expectedGuid, 3); 
+        }
     }
 
 }
