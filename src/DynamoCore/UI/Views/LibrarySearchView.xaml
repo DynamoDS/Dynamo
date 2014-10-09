@@ -7,7 +7,8 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="525"
-             d:DesignWidth="350">
+             d:DesignWidth="350"
+             Loaded="OnUserControlLoaded">
     <UserControl.Resources>
 
         <!-- Region Expander Templates -->
@@ -221,6 +222,37 @@
         <!--EndRegion-->
 
         <!-- Region ListBoxItem -->
+
+        <!--Style for Top Result member-->
+        <Style x:Key="ListBoxTopResultStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="Height"
+                    Value="40" />
+            <Setter Property="Background"
+                    Value="#333333" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#444444" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonDown"
+                         Handler="OnMouseLeftButtonDown" />
+        </Style>
 
         <!--Style for every member in found MemberGroup-->
         <Style x:Key="ListBoxMembersStyle"
@@ -458,16 +490,18 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel>
-                    <TextBlock Text="{Binding TopResult.Name}"
+                <StackPanel DataContext="{Binding TopResult}"
+                            DataContextChanged="OnTopResultChanged">
+                    <TextBlock Text="{Binding Name}"
                                Margin="16,8,0,8"
                                Foreground="#989898"
                                FontSize="12" />
-                    <ListBox Background="Transparent"
+                    <ListBox x:Name="topResultListBox"
+                             Background="Transparent"
                              BorderBrush="Transparent"
-                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                             ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ItemsSource="{Binding TopResult.Members}">
+                             ItemsSource="{Binding Members}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"

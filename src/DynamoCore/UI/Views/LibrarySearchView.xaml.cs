@@ -1,6 +1,7 @@
-﻿using Dynamo.Search.SearchElements;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -9,9 +10,16 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
+        private SearchViewModel viewModel;
+
         public LibrarySearchView()
         {
             InitializeComponent();
+        }
+
+        private void OnUserControlLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            viewModel = DataContext as SearchViewModel;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -41,6 +49,12 @@ namespace Dynamo.UI.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void OnTopResultChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            if (viewModel != null || viewModel.TopResult != null)
+                topResultListBox.SelectedIndex = 0;
         }
     }
 }
