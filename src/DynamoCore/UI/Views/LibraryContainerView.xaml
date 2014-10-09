@@ -227,10 +227,7 @@
             </views:LibrarySearchView.Visibility>
         </views:LibrarySearchView>
 
-        <!--
         <Button Name="NoMatchFoundButton"
-                Grid.Column="0"
-                Grid.ColumnSpan="1"
                 Grid.Row="2"
                 Height="20"
                 Click="OnSearchCancelButtonClick">
@@ -268,7 +265,7 @@
                     <Setter Property="Visibility">
                         <Setter.Value>
                             <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
-                                <Binding Path="SearchResults.Count" />
+                                <Binding Path="Model.SearchRootCategories.Count" />
                                 <Binding ElementName="SearchTextBox"
                                          Path="Text" />
                             </MultiBinding>
@@ -276,8 +273,7 @@
                     </Setter>
                 </Style>
             </Button.Style>
-        </Button> 
--->
+        </Button>
     </Grid>
 
 </UserControl>
