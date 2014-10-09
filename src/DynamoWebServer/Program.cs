@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 
 using Dynamo.Controls;
@@ -34,16 +35,22 @@ namespace DynamoWebServer
                     DynamoModel = model
                 });
 
-            // Comment out if we do not need a view.
-            var view = new DynamoView(viewModel);
-
             var webSocketServer = new WebServer(viewModel, new WebSocket());
 
             webSocketServer.Start();
 
             var app = new Application();
             app.Exit += webSocketServer.ProcessExit;
-            app.Run(view);
+
+            if (args.Any(arg => arg.ToLower().Contains("headless")))
+            {
+                app.Run();
+            }
+            else
+            {
+                var view = new DynamoView(viewModel);
+                app.Run(view);
+            }
         }
     }
 }
