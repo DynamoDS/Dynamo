@@ -7724,12 +7724,19 @@ namespace ProtoCore.DSASM
                     {
                         symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values;
                     }
+
                     symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
                 }
                 else
                 {
-                    // Call some language block
-                    var symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                    // Call some language block, so symbols should come from
+                    // the corresponding language block. 
+                    var symbols = exe.runtimeSymbols[blockId]
+                                     .symbolList
+                                     .Values
+                                     .Where(s => s.absoluteFunctionIndex == functionScope &&
+                                                 s.absoluteClassScope == classScope);
+
                     List<SymbolNode> blockSymbols = new List<SymbolNode>();
                     blockSymbols.AddRange(symbols);
 
