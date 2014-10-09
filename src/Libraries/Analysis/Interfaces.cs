@@ -17,13 +17,13 @@ namespace Analysis
         /// <summary>
         /// A collection of calculation locations.
         /// </summary>
-        IEnumerable<TLocation> CalculationLocations { get; set; }
+        IEnumerable<TLocation> CalculationLocations { get; }
 
         /// <summary>
         /// A dictionary of calculation results for
         /// each calculation location.
         /// </summary>
-        Dictionary<string, IList<TResult>> Results { get; set; }
+        Dictionary<string, IList<TResult>> Results { get; }
     }
 
     public interface ISurfaceAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
@@ -31,7 +31,7 @@ namespace Analysis
         /// <summary>
         /// The analysis surface.
         /// </summary>
-        Surface Surface { get; set; }
+        Surface Surface { get; }
     }
 
     public interface ICurveAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
@@ -39,7 +39,7 @@ namespace Analysis
         /// <summary>
         /// The analysis curve.
         /// </summary>
-        Curve Curve { get; set; }
+        Curve Curve { get; }
     }
 
     /// <summary>
