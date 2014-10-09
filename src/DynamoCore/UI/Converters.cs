@@ -1797,7 +1797,7 @@ namespace Dynamo.Controls
         {
             var incomingString = value as string;
 
-            if (incomingString == null) return new Thickness(0, 0, 0, 0);
+            if (string.IsNullOrEmpty(incomingString)) return new Thickness(0, 0, 0, 0);
 
             var numberOfPoints = incomingString.Count(x => x == '.');
             return new Thickness(10 * numberOfPoints, 0, 0, 0);

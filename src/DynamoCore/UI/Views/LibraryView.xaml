@@ -509,10 +509,12 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
+                                            
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
+                                            
                                             <Grid.Margin>
                                                 <Binding Path="FullCategoryName"
                                                          Converter="{StaticResource FullCategoryNameToMarginConverter}" />
