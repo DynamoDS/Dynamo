@@ -171,8 +171,23 @@ namespace Revit.AnalysisDisplay
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var sfm = SpatialFieldManager.GetSpatialFieldManager(view) ??
-                      SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
+            var sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+
+            if (sfm == null)
+            {
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
+            }
+            else
+            {
+                // If the number of values stored
+                // at each location is not equal to what we are requesting,
+                // then create a new SFM
+                if (sfm.NumberOfMeasurements != numValuesPerAnalysisPoint)
+                {
+                    DocumentManager.Instance.CurrentDBDocument.Delete(sfm);
+                    sfm = SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
+                }
+            }
 
             TransactionManager.Instance.TransactionTaskDone();
 
