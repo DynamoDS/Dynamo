@@ -45,7 +45,7 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
+        private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
         {
             var searchViewModel = this.DataContext as SearchViewModel;
             if (searchViewModel == null) return;
