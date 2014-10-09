@@ -278,6 +278,7 @@ namespace Dynamo.Nodes.Search
 
             //  Add new class, if it wasn't found.
             var tempClass = new BrowserInternalElement(childCategoryName, this, resourceAssembly);
+            tempClass.FullCategoryName = Parent.Name + childCategoryName;
             Items.Add(tempClass);
             return tempClass;
         }
