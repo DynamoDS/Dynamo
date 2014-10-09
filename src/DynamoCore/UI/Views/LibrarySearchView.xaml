@@ -431,7 +431,7 @@
     <Grid>
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="Transparent"
+                      Background="#333333"
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
@@ -441,7 +441,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel>
-                    <TextBlock Text="{Binding Model.TopResult.Name}"
+                    <TextBlock Text="{Binding TopResult.Name}"
                                Margin="16,8,0,8"
                                Foreground="#989898"
                                FontSize="12" />
@@ -449,24 +449,27 @@
                              BorderBrush="Transparent"
                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ItemsSource="{Binding Model.TopResult.Members}">
+                             ItemsSource="{Binding TopResult.Members}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image HorizontalAlignment="Left"
-                                           Height="32"
-                                           Margin="16,0,16,0"
-                                           VerticalAlignment="Center"
-                                           Width="32"
-                                           Source="{Binding SmallIcon}" />
+                                <Border BorderThickness="2,0,0,0"
+                                        BorderBrush="Yellow">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image HorizontalAlignment="Left"
+                                               Height="32"
+                                               Margin="16,0,16,0"
+                                               VerticalAlignment="Center"
+                                               Width="32"
+                                               Source="{Binding SmallIcon}" />
 
-                                    <TextBlock HorizontalAlignment="Left"
-                                               Text="{Binding Name}"
-                                               VerticalAlignment="Top"
-                                               Margin="5,10,0,0"
-                                               Foreground="#CCCCCC"
-                                               FontSize="13" />
-                                </StackPanel>
+                                        <TextBlock HorizontalAlignment="Left"
+                                                   Text="{Binding Name}"
+                                                   VerticalAlignment="Top"
+                                                   Margin="5,10,0,0"
+                                                   Foreground="#CCCCCC"
+                                                   FontSize="13" />
+                                    </StackPanel>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

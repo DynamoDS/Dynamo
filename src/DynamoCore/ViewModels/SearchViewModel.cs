@@ -63,6 +63,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private SearchMemberGroup topResult;
+        public SearchMemberGroup TopResult
+        {
+            get { return topResult; }
+            set
+            {
+                topResult = value;
+                RaisePropertyChanged("TopResult");
+            }
+        }
+
         /// <summary>
         ///     SearchIconAlignment property
         /// </summary>
@@ -224,6 +235,8 @@ namespace Dynamo.ViewModels
             //sw.Start();
 
             this.Model.Search(query);
+            this.SetTopResult();
+            
 
             //sw.Stop();
 
@@ -312,6 +325,24 @@ namespace Dynamo.ViewModels
             }
 
             return catName;
+        }
+
+        private void SetTopResult()
+        {
+            if (!Model.SearchRootCategories.Any())
+            {
+                TopResult = null;
+                return;
+            }
+
+            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
+            var firstMemberGroup = Model.SearchRootCategories.First().
+                MemberGroups.First();
+
+            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.Name);
+            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+
+            TopResult = topMemberGroup;
         }
         
         #endregion
