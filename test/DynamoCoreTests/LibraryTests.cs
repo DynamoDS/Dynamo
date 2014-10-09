@@ -91,5 +91,92 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library");
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationNoFileFound() 
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "FFITarget.dll";
+
+            string tempPath = Path.GetTempPath();
+            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            var tempDirectory = uniqueDirectory.FullName;
+            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+
+            File.Copy(libraryPath, tempLibraryPath);
+
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationFileBadlyFormatted()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "FFITarget.dll";
+            string badXMLPath = "FFITarget.Migrations.xml";
+
+            string badXmlText = "<?xml version=\"1.0\"?>" + System.Environment.NewLine +
+                "<migrations>" + System.Environment.NewLine +
+                "<priorNameHint>" + System.Environment.NewLine +
+                "Because I'm bad, I'm bad, Really, Really Bad." + System.Environment.NewLine +
+                "</priorNameHint>" + System.Environment.NewLine +
+                "</migrations>" + System.Environment.NewLine;
+
+            string tempPath = Path.GetTempPath();
+            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            var tempDirectory = uniqueDirectory.FullName;
+            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+
+            File.Copy(libraryPath, tempLibraryPath);
+
+            System.IO.File.WriteAllText(tempBadXMLPath, badXmlText);
+
+            // The proper behavior is for ImportLibrary to ignore the migrations file if it's badly formatted
+
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestZeroTouchMigrationCannotFindOldMethodName()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "FFITarget.dll";
+            string badXMLPath = "FFITarget.Migrations.xml";
+
+            string badXmlText = "<?xml version=\"1.0\"?>" + System.Environment.NewLine +
+                "<migrations>" + System.Environment.NewLine +
+                "<priorNameHint>" + System.Environment.NewLine +
+                "<oldName>I.Am.A.Method.That.Does.Not.Exist</oldName>" + System.Environment.NewLine +
+                "<newName>FFITarget.Dummy.TwiceNewName</newName>" + System.Environment.NewLine +
+                "</priorNameHint>" + System.Environment.NewLine +
+                "</migrations>" + System.Environment.NewLine;
+
+            string tempPath = Path.GetTempPath();
+            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            var tempDirectory = uniqueDirectory.FullName;
+            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+
+            File.Copy(libraryPath, tempLibraryPath);
+
+            System.IO.File.WriteAllText(tempBadXMLPath, badXmlText);
+
+            // The proper behavior is for ImportLibrary to ignore the migrations file if it has errors
+
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+
+            Assert.IsTrue(LibraryLoaded);
+        }
+
     }
 }
