@@ -41,10 +41,6 @@ namespace Dynamo.PackageManager
             {
                 RequestAuthentication(this);
             }
-            else
-            {
-                throw new AuthenticationException("You need Revit to publish to the Package Manager!");
-            }
         }
 
         #endregion
