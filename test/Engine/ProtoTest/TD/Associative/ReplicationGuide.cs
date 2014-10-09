@@ -239,7 +239,6 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_19()
         {
             String code =
@@ -1291,7 +1290,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void T0106_FuncCall_Int_MultipleGuides()
         {
             string code =
@@ -1305,7 +1303,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void T0107_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =

@@ -3246,7 +3246,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             AssertValue("a", 2);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestReExecuteOnModifiedNode01()
         {
             List<string> codes = new List<string>() 

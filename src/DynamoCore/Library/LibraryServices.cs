@@ -88,7 +88,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public static void DestroyInstance()
+        internal static void DestroyInstance()
         {
             lock (singletonMutex)
             {
@@ -184,6 +184,17 @@ namespace Dynamo.DSEngine
                     groupMap => TryGetFunctionGroup(groupMap, qualifiedName, out functionGroup))
                     ? functionGroup.GetFunctionDescriptor(managledName)
                     : null;
+        }
+
+        /// <summary>
+        /// Checks if a given library is already loaded or not.
+        /// Only unique assembly names are allowed to be loaded
+        /// </summary>
+        /// <param name="library"> can be either the full path or the assembly name </param>
+        /// <returns> true even if the same library name is loaded from different paths </returns>
+        public bool IsLibraryLoaded(string library)
+        {
+            return importedFunctionGroups.ContainsKey(library);
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
