@@ -93,11 +93,10 @@ namespace Dynamo.DSEngine
             {
                 var qualifiedPath = Path.GetFullPath(assemblyLocation);
                 var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-                var dir = Path.GetDirectoryName(qualifiedPath);
 
                 fn = fn + Configurations.ResourcesDLL;
 
-                resourceAssemblyPath = Path.Combine(dir, fn);
+                resourceAssemblyPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, fn);
 
                 return File.Exists(resourceAssemblyPath);
             }
