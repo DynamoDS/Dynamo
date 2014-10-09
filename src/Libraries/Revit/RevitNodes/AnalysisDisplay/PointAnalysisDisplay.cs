@@ -73,7 +73,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples"></param>
         private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data, string resultsName, string description, Type unitType)
         {
-            var sfm = GetSpatialFieldManagerFromView(view);
+            var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
 
             //var sfmAndIds = GetElementAndPrimitiveIdListFromTrace();
 

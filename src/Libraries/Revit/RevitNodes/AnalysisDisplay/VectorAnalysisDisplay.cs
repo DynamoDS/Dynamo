@@ -33,7 +33,7 @@ namespace Revit.AnalysisDisplay
         private VectorAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<VectorAnalysisData> data, 
             string resultsName, string description, Type unitType)
         {
-            var sfm = GetSpatialFieldManagerFromView(view);
+            var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
 
             //var sfmAndId = GetElementAndPrimitiveIdFromTrace();
 
