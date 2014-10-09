@@ -200,6 +200,24 @@
                 </uicontrols:StandardPanel.Width>
             </uicontrols:StandardPanel>
         </DataTemplate>
+        <!-- This data template is used to show one member. -->
+        <ControlTemplate x:Key="MemberControlTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Image HorizontalAlignment="Left"
+                       Height="32"
+                       Margin="16,0,16,0"
+                       VerticalAlignment="Center"
+                       Width="32"
+                       Source="{Binding SmallIcon}" />
+
+                <TextBlock HorizontalAlignment="Left"
+                           Text="{Binding Name}"
+                           VerticalAlignment="Top"
+                           Margin="5,10,0,0"
+                           Foreground="#CCCCCC"
+                           FontSize="13" />
+            </StackPanel>
+        </ControlTemplate>
         <!--EndRegion-->
 
         <!-- Region ListBoxItem -->
@@ -454,21 +472,7 @@
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
                                         BorderBrush="Yellow">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image HorizontalAlignment="Left"
-                                               Height="32"
-                                               Margin="16,0,16,0"
-                                               VerticalAlignment="Center"
-                                               Width="32"
-                                               Source="{Binding SmallIcon}" />
-
-                                        <TextBlock HorizontalAlignment="Left"
-                                                   Text="{Binding Name}"
-                                                   VerticalAlignment="Top"
-                                                   Margin="5,10,0,0"
-                                                   Foreground="#CCCCCC"
-                                                   FontSize="13" />
-                                    </StackPanel>
+                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -586,22 +590,7 @@
                                                              ItemsSource="{Binding Members}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <Image HorizontalAlignment="Left"
-                                                                           Height="32"
-                                                                           Margin="16,0,16,0"
-                                                                           VerticalAlignment="Center"
-                                                                           Width="32"
-                                                                           Source="{Binding SmallIcon}" />
-
-                                                                    <TextBlock HorizontalAlignment="Left"
-                                                                               Text="{Binding Name}"
-                                                                               VerticalAlignment="Top"
-                                                                               Margin="5,10,0,0"
-                                                                               Foreground="#CCCCCC"
-                                                                               FontSize="13" />
-
-                                                                </StackPanel>
+                                                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
