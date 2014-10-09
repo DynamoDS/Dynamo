@@ -101,7 +101,7 @@ namespace DynamoUtilities
             get { return instance ?? (instance = new DynamoPathManager()); }
         }
 
-        public static void DestroyInstance()
+        internal static void DestroyInstance()
         {
             instance = null;
         }
