@@ -101,6 +101,11 @@ namespace DynamoUtilities
             get { return instance ?? (instance = new DynamoPathManager()); }
         }
 
+        public static void DestroyInstance()
+        {
+            instance = null;
+        }
+
         /// <summary>
         /// Provided a main execution path, find other Dynamo paths
         /// relatively. This operation should be called only once at
