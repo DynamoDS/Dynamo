@@ -9,8 +9,12 @@ using System.Text;
 
 namespace Dynamo.Tests
 {
+    [TestFixture]
     class LibraryTests : DynamoViewModelUnitTest
     {
+        protected static bool LibraryLoaded { get; set; }
+        protected LibraryServices libraryServices;
+
         [SetUp]
         public override void Init()
         {
@@ -87,7 +91,5 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library");
         }
 
-        private static bool LibraryLoaded { get; set; }
-        private LibraryServices libraryServices;
     }
 }
