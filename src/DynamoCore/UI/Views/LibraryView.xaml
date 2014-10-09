@@ -16,7 +16,7 @@
             <!-- Region Converters -->
 
             <!--Converter to Make class details not focusable-->
-            <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+            <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -262,7 +262,7 @@
                                 <Setter.Value>
                                     <Binding RelativeSource="{RelativeSource Self}"
                                              Path="DataContext"
-                                             Converter="{StaticResource DataContextToBoolConverter}" />
+                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
                                 </Setter.Value>
                             </Setter>
 
@@ -562,7 +562,7 @@
                                                     <DataTrigger.Binding>
                                                         <Binding RelativeSource="{RelativeSource Self}"
                                                                  Path="DataContext"
-                                                                 Converter="{StaticResource DataContextToBoolConverter}" />
+                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
@@ -605,7 +605,7 @@
                                             <Condition.Binding>
                                                 <Binding RelativeSource="{RelativeSource Self}"
                                                          Path="DataContext"
-                                                         Converter="{StaticResource DataContextToBoolConverter}" />
+                                                         Converter="{StaticResource ElementTypeToBoolConverter}" />
                                             </Condition.Binding>
                                         </Condition>
                                     </MultiDataTrigger.Conditions>

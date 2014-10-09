@@ -134,7 +134,7 @@
         <!-- Region Converters -->
 
         <!--Converter to Make class details not focusable-->
-        <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+        <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
         <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
         <!--Converter that will be used, if number of found classes equals 0. 
@@ -497,7 +497,7 @@
                                                 <Setter.Value>
                                                     <Binding RelativeSource="{RelativeSource Self}"
                                                              Path="DataContext"
-                                                             Converter="{StaticResource DataContextToBoolConverter}" />
+                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
                                                 </Setter.Value>
                                             </Setter>
 
