@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Analysis
 {
-    public class ResultsDictionary
+    public class AnalysisResultsDictionary
     {
         /// <summary>
-        /// Create a Results Dictionary from lists of keys and values.
+        /// Create a results dictionary from lists of keys and values.
         /// </summary>
         /// <param name="keys">A list of keys. The list must be equal in length to the list of values.</param>
         /// <param name="values">A list of list of analysis values. The list must be equal in length to the list of keys.</param>
