@@ -88,7 +88,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public static void DestroyInstance()
+        internal static void DestroyInstance()
         {
             lock (singletonMutex)
             {

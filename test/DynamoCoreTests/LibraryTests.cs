@@ -10,7 +10,7 @@ using System.Text;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DynamoViewModelUnitTest
+    class LibraryTests : DSEvaluationViewModelUnitTest
     {
         protected static bool LibraryLoaded { get; set; }
         protected LibraryServices libraryServices;
