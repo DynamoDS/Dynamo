@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 
+using DynamoUnits;
+
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -114,7 +116,7 @@ namespace Revit.AnalysisDisplay
         /// Get the AnalysisResultsSchemaIndex for the SpatialFieldManager
         /// </summary>
         /// <returns></returns>
-        protected virtual int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
+        protected virtual int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription, Type unitType)
         {
             // Get the AnalysisResultSchema index - there is only one for Dynamo
             var schemaIndex = 0;
@@ -128,6 +130,23 @@ namespace Revit.AnalysisDisplay
             else
             {
                 var ars = new AnalysisResultSchema(resultsSchemaName, resultsDescription);
+                
+                if (unitType != null)
+                {
+                    if (typeof(SIUnit).IsAssignableFrom(unitType))
+                    {
+                        var prop = unitType.GetProperty("Conversions");
+                        var conversions = (Dictionary<string, double>)prop.GetValue(null, new object[] { });
+                        if (conversions != null)
+                        {
+                            var unitNames = conversions.Keys.ToList();
+                            var multipliers = conversions.Values.ToList();
+                            ars.SetUnits(unitNames, multipliers);
+                            ars.CurrentUnits = 0;
+                        }
+                    }
+                }
+
                 schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
 

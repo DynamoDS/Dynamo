@@ -71,7 +71,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data, string resultsName, string description)
+        private PointAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<PointAnalysisData> data, string resultsName, string description, Type unitType)
         {
             var sfm = GetSpatialFieldManagerFromView(view);
 
@@ -103,7 +103,7 @@ namespace Revit.AnalysisDisplay
 
             foreach (var d in pointAnalysisData)
             {
-                InternalSetSpatialFieldValues(d, ref primitiveIds, resultsName, description);
+                InternalSetSpatialFieldValues(d, ref primitiveIds, resultsName, description, unitType);
             }
 
             //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
@@ -122,7 +122,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="pointLocations"></param>
         /// <param name="values"></param>
-        private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds, string schemaName, string description)
+        private void InternalSetSpatialFieldValues(PointAnalysisData data, ref List<int> primitiveIds, string schemaName, string description, Type unitType)
         {
             var values = data.Results.Values;
 
@@ -162,7 +162,7 @@ namespace Revit.AnalysisDisplay
                 var sampleValues = new FieldValues(valList);
 
                 // Get the analysis results schema
-                var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
+                var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description, unitType);
 
                 // Update the values
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
@@ -190,7 +190,8 @@ namespace Revit.AnalysisDisplay
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
         /// <returns>An PointAnalysisDisplay object.</returns>
         public static PointAnalysisDisplay ByViewPointsAndValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] sampleLocations, double[] samples, string name = "", string description = "")
+                        Autodesk.DesignScript.Geometry.Point[] sampleLocations, double[] samples, 
+            string name = "", string description = "", Type unitType = null)
         {
             if (view == null)
             {
@@ -225,7 +226,7 @@ namespace Revit.AnalysisDisplay
             var valueDict = new Dictionary<string, IList<double>> { { "Dynamo Data", samples } };
 
             var data = new PointAnalysisData(sampleLocations, valueDict);
-            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description);
+            return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description, unitType);
         }
 
         #endregion

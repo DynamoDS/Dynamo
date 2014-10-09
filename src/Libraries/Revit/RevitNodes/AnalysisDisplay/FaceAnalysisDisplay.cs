@@ -36,7 +36,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="data"></param>
         protected FaceAnalysisDisplay(
-            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, string resultsName, string description)
+            Autodesk.Revit.DB.View view, IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, string resultsName, string description,Type unitType)
         {
             var sfm = GetSpatialFieldManagerFromView(view, (uint)data.First().Results.Count());
 
@@ -81,7 +81,7 @@ namespace Revit.AnalysisDisplay
                 
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive(reference);
                 primitiveIds.Add(primitiveId);
-                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description);
+                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description, unitType);
             }
 
             //SetElementAndPrimitiveIdsForTrace(SpatialFieldManager, primitiveIds);
@@ -99,7 +99,8 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="primitiveId"></param>
         /// <param name="data"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double> data, string schemaName, string description)
+        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, 
+            double> data, string schemaName, string description, Type unitType)
         {
             // Get the surface reference
             var reference = data.Surface.Tags.LookupTag(DefaultTag) as Reference;
@@ -157,7 +158,7 @@ namespace Revit.AnalysisDisplay
             var samplePts = new FieldDomainPointsByUV(pointLocations.ToList());
 
             // Get the analysis results schema
-            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
+            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description, unitType);
 
             // Update the values
             SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
@@ -180,7 +181,7 @@ namespace Revit.AnalysisDisplay
         /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewFacePointsAndValues(
             View view, Surface surface,
-            double[][] sampleLocations, double[] samples, string name = "", string description = "")
+            double[][] sampleLocations, double[] samples, string name = "", string description = "", Type unitType = null)
         {
             if (view == null)
             {
@@ -224,7 +225,7 @@ namespace Revit.AnalysisDisplay
 
             var data = new SurfaceAnalysisData(surface, sampleLocations.ToDSUvs(), valueDict);
 
-            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description);
+            return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description, unitType);
         }
 
         /// <summary>
@@ -236,7 +237,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
         /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData[] data, string name = "", string description = "")
+            View view, SurfaceAnalysisData[] data, string name = "", string description = "", Type unitType = null)
         {
             if (view == null)
             {
@@ -258,80 +259,10 @@ namespace Revit.AnalysisDisplay
                 description = Resource1.AnalysisResultsDefaultDescription;
             }
 
-            return new FaceAnalysisDisplay(view.InternalView, data, name, description);
+            return new FaceAnalysisDisplay(view.InternalView, data, name, description, unitType);
         }
 
         #endregion
 
-    }
-
-    public class SolarInsolationAnalysisDisplay : FaceAnalysisDisplay
-    {
-        protected SolarInsolationAnalysisDisplay(Autodesk.Revit.DB.View view, 
-            IEnumerable<ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>> data, 
-            string resultsName = "", string description = "") : base(view, data, resultsName, description) { }
-
-        /// <summary>
-        /// Show a colored Face Analysis Display in the Revit View
-        /// </summary>
-        /// <param name="view">The view into which you want to draw the analysis data.</param>
-        /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
-        /// <returns></returns>
-        public static SolarInsolationAnalysisDisplay ByViewAndFaceAnalysisData(
-            View view, SurfaceAnalysisData[] data, string name = "", string description = "")
-        {
-            if (view == null)
-            {
-                throw new ArgumentNullException("view");
-            }
-
-            if (data == null || !data.Any())
-            {
-                throw new ArgumentException("The input data does not have any locations.");
-            }
-
-            if (string.IsNullOrEmpty(name))
-            {
-                name = Resource1.AnalysisResultsDefaultName;
-            }
-
-            if (string.IsNullOrEmpty(description))
-            {
-                description = Resource1.AnalysisResultsDefaultDescription;
-            }
-
-            return new SolarInsolationAnalysisDisplay(view.InternalView, data, name, description);
-        }
-
-        protected override int GetAnalysisResultSchemaIndex(string resultsSchemaName, string resultsDescription)
-        {
-            // Get the AnalysisResultSchema index - there is only one for Dynamo
-            var schemaIndex = 0;
-            if (!SpatialFieldManager.IsResultSchemaNameUnique(resultsSchemaName, -1))
-            {
-                var arses = SpatialFieldManager.GetRegisteredResults();
-                schemaIndex =
-                    arses.First(
-                        x => SpatialFieldManager.GetResultSchema(x).Name == resultsSchemaName);
-            }
-            else
-            {
-                var ars = new AnalysisResultSchema(resultsSchemaName, resultsDescription);
-                var unitNames = new List<string> { "Wh/m²", "kWh/m²", "BTU/ft²" };
-
-                var multipliers = new List<double>
-                {
-                    1.0,
-                    Insolation.ToKwhMeter2,
-                    Insolation.ToBTUFoot2
-                };
-                ars.SetUnits(unitNames, multipliers);
-                ars.CurrentUnits = 0;
-
-                schemaIndex = SpatialFieldManager.RegisterResult(ars);
-            }
-
-            return schemaIndex;
-        }
     }
 }

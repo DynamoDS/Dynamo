@@ -30,7 +30,8 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private VectorAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<VectorAnalysisData> data, string resultsName, string description)
+        private VectorAnalysisDisplay(Autodesk.Revit.DB.View view, IEnumerable<VectorAnalysisData> data, 
+            string resultsName, string description, Type unitType)
         {
             var sfm = GetSpatialFieldManagerFromView(view);
 
@@ -69,7 +70,7 @@ namespace Revit.AnalysisDisplay
             foreach (var d in vectorAnalysisDatas)
             {
                 var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
-                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description);
+                InternalSetSpatialFieldValues(primitiveId, d, resultsName, description, unitType);
                 primitiveIds.Add(primitiveId);
             }
 
@@ -89,7 +90,7 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="sampleLocations"></param>
         /// <param name="samples"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, VectorAnalysisData data, string schemaName, string description)
+        private void InternalSetSpatialFieldValues(int primitiveId, VectorAnalysisData data, string schemaName, string description, Type unitType)
         {
             var values = data.Results.Values;
 
@@ -117,7 +118,7 @@ namespace Revit.AnalysisDisplay
             var samplePts = new FieldDomainPointsByXYZ(data.CalculationLocations.Select(p=>p.ToXyz()).ToList());
 
             // Get the analysis results schema
-            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description);
+            var schemaIndex = GetAnalysisResultSchemaIndex(schemaName, description, unitType);
 
             // Update the values
             SpatialFieldManager.UpdateSpatialFieldPrimitive(primitiveId, samplePts, sampleValues, schemaIndex);
@@ -140,7 +141,7 @@ namespace Revit.AnalysisDisplay
         /// <returns>A VectorAnalysisDisplay object.</returns>
         public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
                         Autodesk.DesignScript.Geometry.Point[] sampleLocations, Vector[] samples,
-            string name = "", string description = "")
+            string name = "", string description = "", Type unitType = null)
         {
 
             if (view == null)
@@ -176,7 +177,7 @@ namespace Revit.AnalysisDisplay
             var valueDict = new Dictionary<string, IList<Vector>> { { "Dynamo Data", samples } };
 
             var data = new VectorAnalysisData(sampleLocations, valueDict);
-            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, name, description);
+            return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, name, description, unitType);
         }
 
         #endregion
