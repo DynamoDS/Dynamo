@@ -488,6 +488,7 @@ namespace Dynamo.Search
             }
 
             // We sure, that the last member is class.
+            if(nodeType == ElementType.Regular)
             currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count-1], resourceAssembly);
 
             return currentCat;
