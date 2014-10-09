@@ -101,6 +101,9 @@ namespace Dynamo.Search
             set { _searchRootCategories = value; }
         }
 
+
+        public SearchMemberGroup TopResult { get; private set; }
+
         /// <summary>
         ///     SearchDictionary property
         /// </summary>
