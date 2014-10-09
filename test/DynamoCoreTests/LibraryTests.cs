@@ -91,9 +91,6 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library");
         }
 
-        private static bool LibraryLoaded { get; set; }
-        private LibraryServices libraryServices;
-
         [Test]
         [Category("UnitTests")]
         public void TestZeroTouchMigrationNoFileFound() 
