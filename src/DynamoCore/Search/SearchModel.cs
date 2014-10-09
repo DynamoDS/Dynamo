@@ -228,6 +228,7 @@ namespace Dynamo.Search
 
             ClearSearchCategories();
             PopulateSearchCategories(foundNodes);
+            PopulateTopResultCategory(foundNodes.FirstOrDefault() as NodeSearchElement);
 
             return foundNodes;
         }
@@ -248,6 +249,17 @@ namespace Dynamo.Search
                 category.AddMemberToGroup(node as NodeSearchElement);
                 category.AddClassToGroup(node);
             }
+        }
+
+        private void PopulateTopResultCategory(NodeSearchElement memberNode)
+        {
+            if (memberNode == null)
+                return;
+
+            var category = new SearchCategory(Configurations.TopResult);
+            category.AddMemberToGroup(memberNode);
+
+            _searchRootCategories.Insert(0, category);
         }
 
         private void ClearSearchCategories()
