@@ -138,6 +138,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples">The analysis values at the given locations.</param>
         /// <param name="name">An optional analysis results name to show on the results legend.</param>
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>A VectorAnalysisDisplay object.</returns>
         public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
                         Autodesk.DesignScript.Geometry.Point[] sampleLocations, Vector[] samples,
@@ -178,6 +179,43 @@ namespace Revit.AnalysisDisplay
 
             var data = new VectorAnalysisData(sampleLocations, valueDict);
             return new VectorAnalysisDisplay(view.InternalView, new List<VectorAnalysisData>() { data }, name, description, unitType);
+        }
+
+        /// <summary>
+        /// Show a Vector Analysis Display in the Revit view.
+        /// </summary>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
+        /// <param name="data">A list of VectorAnalysisData objects.</param>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
+        /// <returns>A VectorAnalysisDisplay object.</returns>
+        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
+                        VectorAnalysisData[] data,
+            string name = "", string description = "", Type unitType = null)
+        {
+
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (data == null || !data.Any())
+            {
+                throw new ArgumentException("There is no input data.");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            return new VectorAnalysisDisplay(view.InternalView, data, name, description, unitType);
         }
 
         #endregion

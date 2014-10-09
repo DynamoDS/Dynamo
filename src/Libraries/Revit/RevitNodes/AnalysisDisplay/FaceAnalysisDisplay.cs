@@ -178,6 +178,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples">The analysis values at the given locations.</param>
         /// <param name="name">An optional analysis results name to show on the results legend.</param>
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewFacePointsAndValues(
             View view, Surface surface,
@@ -235,6 +236,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="data">A collection of SurfaceAnalysisData objects.</param>
         /// <param name="name">An optional analysis results name to show on the results legend.</param>
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewAndFaceAnalysisData(
             View view, SurfaceAnalysisData[] data, string name = "", string description = "", Type unitType = null)
@@ -246,7 +248,7 @@ namespace Revit.AnalysisDisplay
 
             if (data == null || !data.Any())
             {
-                throw new ArgumentException("The input data does not have any locations.");
+                throw new ArgumentException("There is no input data.");
             }
 
             if (string.IsNullOrEmpty(name))

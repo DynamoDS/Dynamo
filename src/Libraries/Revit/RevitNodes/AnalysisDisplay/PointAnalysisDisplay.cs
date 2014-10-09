@@ -188,6 +188,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples">The analysis values at the given locations.</param>
         /// <param name="name">An optional analysis results name to show on the results legend.</param>
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>An PointAnalysisDisplay object.</returns>
         public static PointAnalysisDisplay ByViewPointsAndValues(View view,
                         Autodesk.DesignScript.Geometry.Point[] sampleLocations, double[] samples, 
@@ -227,6 +228,42 @@ namespace Revit.AnalysisDisplay
 
             var data = new PointAnalysisData(sampleLocations, valueDict);
             return new PointAnalysisDisplay(view.InternalView, new List<PointAnalysisData> { data }, name, description, unitType);
+        }
+
+        /// <summary>
+        /// Show a colored Point Analysis Display in the Revit view.
+        /// </summary>
+        /// <param name="view">The view into which you want to draw the analysis results.</param>
+        /// <param name="data">A list of PointAnalysisData objects.</param>
+        /// <param name="name">An optional analysis results name to show on the results legend.</param>
+        /// <param name="description">An optional analysis results description to show on the results legend.</param>
+        /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
+        /// <returns>An PointAnalysisDisplay object.</returns>
+        public static PointAnalysisDisplay ByViewAndPointAnalysisData(View view,
+                        PointAnalysisData[] data,
+            string name = "", string description = "", Type unitType = null)
+        {
+            if (view == null)
+            {
+                throw new ArgumentNullException("view");
+            }
+
+            if (data == null || !data.Any())
+            {
+                throw new ArgumentException("There is no input data.");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Resource1.AnalysisResultsDefaultName;
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                description = Resource1.AnalysisResultsDefaultDescription;
+            }
+
+            return new PointAnalysisDisplay(view.InternalView, data, name, description, unitType);
         }
 
         #endregion
