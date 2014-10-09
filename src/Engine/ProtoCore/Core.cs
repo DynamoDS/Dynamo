@@ -1119,6 +1119,46 @@ namespace ProtoCore
         // A list of graphnodes that contain a function call
         public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
 
+        private Dictionary<Guid, List<StackValue>> callSiteGCRoot =
+            new Dictionary<Guid, List<StackValue>>();
+
+        public IEnumerable<StackValue> GetCallSiteGCRoots(Guid callSiteGuid)
+        {
+            List<StackValue> gcroots;
+            if (callSiteGCRoot.TryGetValue(callSiteGuid, out gcroots))
+            {
+                return gcroots;
+            }
+            else
+            {
+                return Enumerable.Empty<StackValue>();
+            }
+        }
+
+        public void RemoveCallSiteGCRoots(Guid callSiteGuid)
+        {
+            callSiteGCRoot.Remove(callSiteGuid);
+        }
+
+        public void AddCallSiteGCRoot(Guid callSiteGuid, StackValue gcRoot)
+        {
+            List<StackValue> gcRoots;
+            if (callSiteGCRoot.TryGetValue(callSiteGuid, out gcRoots))
+            {
+                gcRoots.Add(gcRoot);
+            }
+            else
+            {
+                gcRoots = new List<StackValue>() { gcRoot };
+                callSiteGCRoot[callSiteGuid] = gcRoots;
+            }
+        }
+
+        public IEnumerable<StackValue> GetAllCallSiteGCRoots()
+        {
+            return callSiteGCRoot.Values.SelectMany(s => s);
+        }
+          
         public int newEntryPoint { get; private set; }
 
         public void SetNewEntryPoint(int pc)

@@ -1236,9 +1236,9 @@ namespace ProtoCore
 
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);
 
+            core.RemoveCallSiteGCRoots(this.CallSiteID);
+
             return ret;
-
-
         }
 
        
@@ -1765,6 +1765,8 @@ namespace ProtoCore
             if (!ret.IsExplicitCall)
             {
                 ret = PerformReturnTypeCoerce(finalFep, core, ret);
+
+                core.AddCallSiteGCRoot(this.callsiteID, ret);
             }
             return ret;
         }
