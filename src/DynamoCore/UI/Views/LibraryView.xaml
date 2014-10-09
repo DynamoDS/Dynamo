@@ -566,6 +566,8 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
+                                                    <Setter Property="Padding"
+                                                            Value="0,0,0,10" />
                                                 </DataTrigger>                                               
                                             </Style.Triggers>
                                         </Style>
