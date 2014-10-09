@@ -50,6 +50,7 @@ namespace Dynamo.UI.Views
             var searchViewModel = this.DataContext as SearchViewModel;
             if (searchViewModel == null) return;
 
+            // Clear SearchText in ViewModel, as result search textbox clears as well.
             searchViewModel.SearchText = "";
         }
     }
