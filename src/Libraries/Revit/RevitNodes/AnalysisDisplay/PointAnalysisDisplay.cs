@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 using Analysis;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using Revit.Elements.Views;
+
 using Revit.GeometryConversion;
-using Revit.Elements;
+
 using RevitServices.Transactions;
 using View = Revit.Elements.Views.View;
 using RevitServices.Persistence;
