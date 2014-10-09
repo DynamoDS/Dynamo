@@ -7750,16 +7750,25 @@ namespace ProtoCore.DSASM
 
                     while (workingList.Any())
                     {
-                        var id = workingList.Pop();
-                        var block = core.CompleteCodeBlockList[id];
+                        blockId = workingList.Pop();
+                        var block = core.CompleteCodeBlockList[blockId];
+
                         foreach (var child in block.children)
                         {
-                            if (child.blockType == CodeBlockType.kConstruct)
+                            if (child.blockType != CodeBlockType.kConstruct)
                             {
-                                var childBlockId = child.codeBlockId;
-                                workingList.Push(childBlockId);
-                                blockSymbols.AddRange(exe.runtimeSymbols[childBlockId].symbolList.Values);
+                                continue;
                             }
+
+                            var childBlockId = child.codeBlockId;
+                            workingList.Push(childBlockId);
+
+                            var childSymbols = exe.runtimeSymbols[childBlockId]
+                                                  .symbolList
+                                                  .Values
+                                                  .Where(s => s.absoluteFunctionIndex == functionScope && 
+                                                              s.absoluteClassScope == classScope);
+                            blockSymbols.AddRange(childSymbols);
                         }
                     }
 
