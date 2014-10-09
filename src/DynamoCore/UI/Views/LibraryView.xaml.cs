@@ -40,7 +40,8 @@ namespace Dynamo.UI.Views
 
         private void OnEditClick(object sender, RoutedEventArgs e)
         {
-            // Logic should be saved.
+            // Logic of original TreeView should be saved until
+            // new design is not implemented.
 #if false
             var menuItem = sender as MenuItem;
             if (menuItem != null)
