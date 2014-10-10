@@ -62,6 +62,7 @@ namespace RevitServices.Materials
                 return;
             }
 
+#if !ENABLE_DYNAMO_SCHEDULER
             Threading.IdlePromise.ExecuteOnIdleAsync(
             () =>
             {
@@ -75,6 +76,7 @@ namespace RevitServices.Materials
 
                 TransactionManager.Instance.ForceCloseTransaction();
             });
+#endif
         }
 
         private void FindDynamoGraphicsStyle()
