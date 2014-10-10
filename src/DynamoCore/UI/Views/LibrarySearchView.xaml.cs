@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Search.SearchElements;
-using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -10,8 +9,6 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
-        private SearchViewModel viewModel;
-
         public LibrarySearchView()
         {
             InitializeComponent();
