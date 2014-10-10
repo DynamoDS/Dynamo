@@ -368,11 +368,8 @@ namespace Revit.Elements
 
         #region Geometry extraction
 
-        /// <summary>
-        /// Extract the Revit GeometryObject's from a Revit Element
-        /// </summary>
-        /// <returns></returns>
-        internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
+        [SupressImportIntoVM]
+        public IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
         {
             var thisElement = InternalElement;
 
@@ -397,11 +394,6 @@ namespace Revit.Elements
             return CollectConcreteGeometry(geomElement);
         }
 
-        /// <summary>
-        /// Collects the concrete GeometryObject's in a GeometryElement, which is a recursive collection of GeometryObject's.
-        /// </summary>
-        /// <param name="geometryElement">The Geometry collection</param>
-        /// <returns></returns>
         private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement)
         {
             var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
@@ -416,7 +408,7 @@ namespace Revit.Elements
                 if (geomInstance != null)
                 {
                     var instanceGeom = geomInstance.GetInstanceGeometry();
-                    instanceGeometryObjects.AddRange( CollectConcreteGeometry(instanceGeom) );
+                    instanceGeometryObjects.AddRange(CollectConcreteGeometry(instanceGeom));
                 }
                 else if (geomElement != null)
                 {
@@ -435,89 +427,63 @@ namespace Revit.Elements
                         !(x is Autodesk.Revit.DB.Solid) || (x as Autodesk.Revit.DB.Solid).Faces.Size > 0);
         }
 
-        /// <summary>
-        /// A generic method extract all GeometryObject's of the supplied type
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        private IEnumerable<T> InternalGeometry<T>() where T : GeometryObject
-        {
-            return this.InternalGeometry().OfType<T>();
-        } 
-
-        /// <summary>
-        /// The Solids in this Element
-        /// </summary>
         public Autodesk.DesignScript.Geometry.Solid[] Solids
         {
-            get
-            {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Solid>()
-                        .Select(x => x.ToProtoType())
-                        .ToArray();
-            }
+            get { return Geometry().OfType<Autodesk.DesignScript.Geometry.Solid>().ToArray(); }
         }
 
-        /// <summary>
-        /// The Curves in this Element
-        /// </summary>
         public Curve[] Curves
         {
             get
             {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Curve>()
-                        .Select(x => x.ToProtoType())
-                        .ToArray();
+                var curves = GetCurves(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(x => x.ToProtoType()).ToArray();
             }
         }
 
-        /// <summary>
-        /// The Faces in this Element
-        /// </summary>
         public Surface[] Faces
         {
             get
             {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Face>()
-                        .SelectMany(x => x.ToProtoType())
-                        .ToArray();
+                var faces = GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return faces.SelectMany(x => x.ToProtoType()).ToArray();
             }
         }
 
-        /// <summary>
-        /// The ElementCurveReference's in this Element.  Useful for downstream
-        /// Element creation.
-        /// </summary>
         public ElementCurveReference[] ElementCurveReferences
         {
             get
             {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Curve>()
-                        .Select(ElementCurveReference.FromExisting)
-                        .ToArray();
+                var curves = GetCurves(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(ElementCurveReference.FromExisting).ToArray();
             }
         }
 
-        /// <summary>
-        /// The ElementFaceReference's in this Element.  Useful for downstream
-        /// Element creation.
-        /// </summary>
         public ElementFaceReference[] ElementFaceReferences
         {
             get
             {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Face>()
-                        .Select(ElementFaceReference.FromExisting)
-                        .ToArray();
+                var faces = GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return faces.Select(ElementFaceReference.FromExisting).ToArray();
             }
         }
 
-        #endregion
 
         /// <summary>
         /// Is this element still alive in Revit, and good to be drawn, queried etc.
@@ -532,7 +498,7 @@ namespace Revit.Elements
                 }
 
                 //Ensure that the object is still alive
-
+                
                 //Check whether the internal element Id is null
                 if (null == InternalElementId)
                     return false;
@@ -541,6 +507,87 @@ namespace Revit.Elements
             }
         }
 
+        protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
+        {
+            var geomElem = this.InternalElement.get_Geometry(options);
+            var curves = new CurveArray();
+            GetCurves(geomElem, ref curves);
+
+            return curves.Cast<Autodesk.Revit.DB.Curve>();
+
+        }
+
+        protected IEnumerable<Autodesk.Revit.DB.Face> GetFaces(Autodesk.Revit.DB.Options options)
+        {
+            var geomElem = this.InternalElement.get_Geometry(options);
+            var faces = new FaceArray();
+            GetFaces(geomElem, ref faces);
+
+            return faces.Cast<Autodesk.Revit.DB.Face>();
+
+        }
+
+        /// <summary>
+        /// Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+        /// </summary>
+        /// <param name="geomElem"></param>
+        /// <param name="curves"></param>
+        private static void GetCurves(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElem, ref CurveArray curves)
+        {
+            foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
+            {
+                var curve = geomObj as Autodesk.Revit.DB.Curve;
+                if (null != curve)
+                {
+                    curves.Append(curve);
+                    continue;
+                }
+
+                //If this GeometryObject is Instance, call AddCurve
+                var geomInst = geomObj as GeometryInstance;
+                if (null != geomInst)
+                {
+                    var transformedGeomElem // curves transformed into project coords
+                        = geomInst.GetSymbolGeometry(geomInst.Transform.Inverse);
+                    GetCurves(transformedGeomElem, ref curves);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+        /// </summary>
+        /// <param name="geomElement"></param>
+        /// <param name="faces"></param>
+        private static void GetFaces(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElement, ref FaceArray faces)
+        {
+
+                foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
+                {
+                    if (geob is GeometryInstance)
+                    {
+                        GetFaces((geob as GeometryInstance).GetInstanceGeometry(), ref faces);
+                    }
+                    else if (geob is Autodesk.Revit.DB.Solid)
+                    {
+                        var mySolid = geob as Autodesk.Revit.DB.Solid;
+                        if (mySolid != null)
+                        {
+                            foreach (var f in mySolid.Faces.Cast<Autodesk.Revit.DB.Face>().ToList())
+                            {
+                                faces.Append(f);
+                            }
+                        }
+
+                    } else if (geob is Autodesk.Revit.DB.GeometryElement)
+                    {
+                        GetFaces(geob as GeometryElement, ref faces);
+                    }
+                }
+
+        }
+
+        #endregion
 
     }
 }
