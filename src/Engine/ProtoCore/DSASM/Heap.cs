@@ -275,16 +275,7 @@ namespace ProtoCore.DSASM
         public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
-            var heapElement = heapElements[index];
-
-            if (!heapElement.Active)
-            {
-#if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Access dead memory (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
-#endif
-            }
-
-            return heapElement;
+            return heapElements[index];
         }
 
         public void Free()
@@ -489,9 +480,6 @@ namespace ProtoCore.DSASM
             }
             else
             {
-#if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Decrease reference count to negative (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
-#endif
             }
         }
     
@@ -509,28 +497,15 @@ namespace ProtoCore.DSASM
                 int ptr = (int)svPtr.opdata;
                 if (ptr < 0 || ptr >= heapElements.Count)
                 {
-#if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release invalid pointer (7364B8C2-FF34-4C67-8DFE-5DFA678BF50D).");
-#else
                     continue;
-#endif
                 }
                 HeapElement hs = heapElements[ptr];
 
                 if (!hs.Active)
                 {
-#if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release dead memory (7F70A6A1-FE99-476E-BE8B-CA7615EE1A3B).");
-#else
                     continue;
-#endif
                 }
-                
-                // The reference count could be 0 if this heap object
-                // is a temporary heap object that hasn't been assigned
-                // to any variable yet, for example, Type.Coerce() may 
-                // allocate a new array and when this one is type converted
-                // again, it will be released. 
+
                 if (hs.Refcount > 0)
                 {
                     hs.Refcount--;
@@ -556,9 +531,7 @@ namespace ProtoCore.DSASM
                     hs.Active = false;
 
                     GCRelease(hs.Stack, exe);
-#if !HEAP_VERIFICATION
                     freeList.Add(ptr);
-#endif
                 }
             }
         }

@@ -86,6 +86,7 @@ b = 20;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failure")]
         public void TestWatchExpression2()
         {
             // Execute and verify the main script in a debug session
@@ -12860,6 +12861,7 @@ c = 90;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failure")]
         public void inlineconditional_stepnext_656_13()
         {
             // Execute and verify the main script in a debug session
@@ -13152,6 +13154,7 @@ list3 = GetCoor(list1);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failure")]
         public void inlineconditional_stepnext_656_14()
         {
             // Execute and verify the main script in a debug session

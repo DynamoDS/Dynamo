@@ -239,13 +239,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            if (CheckAccess())
-                RenderDrawables(e);
-            else
-            {
-                // Scheduler invokes ResultsReadyToVisualize on background thread.
-                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(e)));
-            }
+            RenderDrawables(e);
         }
 
         /// <summary>

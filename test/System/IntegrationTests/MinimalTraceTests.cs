@@ -48,6 +48,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("Failure")]
         //[Category("UnitTests")] --uncomment when failure category is removed
         //[Category("Trace")]
         public static void ExecTraceClassVerifyCleanThread()

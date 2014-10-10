@@ -7,8 +7,6 @@ using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
 using DSNodeServices;
-
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -493,8 +491,7 @@ namespace Dynamo
             if (updateVisualization)
                 renderManager.RequestRenderAsync(new RenderTask());
 #else
-            if (updateVisualization)
-                RequestNodeVisualUpdate(null);
+            // SCHEDULER: Implement visualization update.
 #endif
         }
 
@@ -580,47 +577,9 @@ namespace Dynamo
 #if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
 #else
-            RequestNodeVisualUpdate(null);
+            // SCHEDULER: Implement visualization update.
 #endif
         }
-
-#if ENABLE_DYNAMO_SCHEDULER
-
-        private void RequestNodeVisualUpdate(NodeModel nodeModel)
-        {
-            if (nodeModel != null)
-            {
-                // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
-            }
-            else
-            {
-                // Get each node in workspace to update their visuals.
-                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdate(MaxTesselationDivisions);
-            }
-
-            var scheduler = dynamoModel.Scheduler;
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(dynamoModel.CurrentWorkspace, null))
-            {
-                task.Completed += OnRenderPackageAggregationCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
-        }
-
-        private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
-        {
-            var task = asyncTask as AggregateRenderPackageAsyncTask;
-            var rps = new List<RenderPackage>();
-            rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
-            rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
-
-            var e = new VisualizationEventArgs(rps, string.Empty, -1);
-            OnResultsReadyToVisualize(this, e);
-        }
-
-#endif
 
         private void Clear(DynamoModel dynamoModel)
         {

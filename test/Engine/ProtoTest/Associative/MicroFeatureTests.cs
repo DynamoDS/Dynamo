@@ -2073,6 +2073,7 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Category("Failure")]
         public void TestXLangUpdate_AssociativeTriggersAssociative01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
