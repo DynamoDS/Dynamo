@@ -7,7 +7,7 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Nodes
 {

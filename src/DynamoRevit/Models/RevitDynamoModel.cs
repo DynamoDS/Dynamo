@@ -40,16 +40,6 @@ namespace Dynamo.Applications.Models
                 RevitDocumentChanged(this, EventArgs.Empty);
         }
 
-        public delegate void DynamoRevitModelHandler(RevitDynamoModel model);
-        public event DynamoRevitModelHandler ShuttingDown;
-        private void OnShuttingDown()
-        {
-            if (ShuttingDown != null)
-            {
-                ShuttingDown(this);
-            }
-        }
-
         #endregion
 
         #region Properties/Fields
@@ -203,13 +193,43 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
-        public override void ShutDown(bool shutDownHost, EventArgs args = null)
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void PreShutdownCore(bool shutdownHost)
+        {
+            if (shutdownHost)
+            {
+                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+                uiApplication.Idling += ShutdownRevitHostOnce;
+            }
+
+            base.PreShutdownCore(shutdownHost);
+        }
+
+        private static void ShutdownRevitHostOnce(object sender, IdlingEventArgs idlingEventArgs)
+        {
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+            uiApplication.Idling -= ShutdownRevitHostOnce;
+            RevitDynamoModel.ShutdownRevitHost();
+        }
+
+#else
+
+        protected override void PreShutdownCore(bool shutdownHost)
+        {
+            if (shutdownHost)
+                IdlePromise.ExecuteOnShutdown(ShutdownRevitHost);
+
+            base.PreShutdownCore(shutdownHost);
+        }
+
+#endif
+
+        protected override void ShutDownCore(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
 
-            OnShuttingDown();
-
-            base.ShutDown(shutDownHost, args);
+            base.ShutDownCore(shutDownHost);
 
             // unsubscribe events
             RevitServicesUpdater.UnRegisterAllChangeHooks();
@@ -217,25 +237,15 @@ namespace Dynamo.Applications.Models
             UnsubscribeDocumentManagerEvents();
             UnsubscribeRevitServicesUpdaterEvents();
             UnsubscribeTransactionManagerEvents();
+        }
 
-            if (shutDownHost)
-            {
-                // this method cannot be called without Revit 2014
-                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-
-                IdlePromise.ExecuteOnIdleAsync(
-                    () =>
-                    {
-                        if (uiapp.CanPostCommand(exitCommand))
-                            uiapp.PostCommand(exitCommand);
-                        else
-                        {
-                            MessageBox.Show(
-                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                        }
-                    });
-            }
+        protected override void PostShutdownCore(bool shutdownHost)
+        {
+#if !ENABLE_DYNAMO_SCHEDULER
+            IdlePromise.ClearPromises();
+            IdlePromise.Shutdown();
+#endif
+            base.PostShutdownCore(shutdownHost);
         }
 
         public override void ResetEngine(bool markNodesAsDirty = false)
@@ -388,6 +398,22 @@ namespace Dynamo.Applications.Models
             }
 
             OnRevitDocumentChanged();
+        }
+
+        private static void ShutdownRevitHost()
+        {
+            // this method cannot be called without Revit 2014
+            var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+            var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+
+            if ((uiApplication != null) && uiApplication.CanPostCommand(exitCommand))
+                uiApplication.PostCommand(exitCommand);
+            else
+            {
+                MessageBox.Show(
+                    "A command in progress prevented Dynamo from " +
+                        "closing revit. Dynamo update will be cancelled.");
+            }
         }
 
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)

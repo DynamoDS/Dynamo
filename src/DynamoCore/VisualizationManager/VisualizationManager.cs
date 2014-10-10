@@ -42,7 +42,10 @@ namespace Dynamo
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
         private List<long> taskList = new List<long>();
+
+#if !ENABLE_DYNAMO_SCHEDULER
         private readonly RenderManager renderManager;
+#endif
 
         #endregion
 
@@ -221,8 +224,11 @@ namespace Dynamo
             MaxTesselationDivisions = 128;
 
             this.dynamoModel = dynamoModel;
+
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager = new RenderManager(this, dynamoModel);
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+#endif
 
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
@@ -470,13 +476,23 @@ namespace Dynamo
         /// <param name="e"></param>
         private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible" ||
-                e.PropertyName == "IsUpstreamVisible" ||
-                e.PropertyName == "DisplayLabels")
+            bool updateVisualization = false;
+
+            switch (e.PropertyName)
             {
-                renderManager.RequestRenderAsync(new RenderTask());
-                //renderManager.Render();
+                case "IsVisible":
+                case "IsUpstreamVisible":
+                case "DisplayLabels":
+                    updateVisualization = true;
+                    break;
             }
+
+#if !ENABLE_DYNAMO_SCHEDULER
+            if (updateVisualization)
+                renderManager.RequestRenderAsync(new RenderTask());
+#else
+            // SCHEDULER: Implement visualization update.
+#endif
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -527,9 +543,9 @@ namespace Dynamo
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
 
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RenderComplete += RenderManagerOnRenderComplete;
-
-
+#endif
         }
 
         private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
@@ -546,7 +562,9 @@ namespace Dynamo
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
 
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RenderComplete -= RenderManagerOnRenderComplete;
+#endif
         }
 
         /// <summary>
@@ -556,13 +574,18 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
+#else
+            // SCHEDULER: Implement visualization update.
+#endif
         }
 
-        private void Clear(object sender, EventArgs e)
+        private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
             QueueRenderTask();
+            Cleanup();
         }
 
         /// <summary>
@@ -628,6 +651,10 @@ namespace Dynamo
         public void Cleanup()
         {
             UnregisterEventListeners();
+
+#if !ENABLE_DYNAMO_SCHEDULER
+            renderManager.CleanUp();
+#endif
         }
 
         #endregion

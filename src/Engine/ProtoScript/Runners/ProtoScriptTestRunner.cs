@@ -147,7 +147,7 @@ namespace ProtoScript.Runners
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                    stackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+                    stackFrame.TX = svCallConvention;
 
                     core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, EventSink);
                 }
@@ -169,7 +169,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -198,7 +198,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
                 core.InitializeContextGlobals(staticContext.GlobalVarList);
 
@@ -229,7 +229,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -258,7 +258,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 try

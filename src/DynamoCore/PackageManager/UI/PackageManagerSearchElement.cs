@@ -121,6 +121,25 @@ namespace Dynamo.PackageManager
 
                 var allPackageVersions = ListRequiredPackageVersions(headers, version);
 
+                // determine if any of the packages contain binaries or python scripts.  
+                var containsBinaries =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant));
+
+                var containsPythonScripts =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+
+                // if any do, notify user and allow cancellation
+                if (containsBinaries || containsPythonScripts)
+                {
+                    var res = MessageBox.Show("The package or one of its dependencies contains Python scripts or binaries. "+
+                        "Do you want to continue?", "Package Download",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel) return;
+                }
+
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
                 var dynamoVersion = dynamoViewModel.Model.Version;
@@ -158,25 +177,64 @@ namespace Dynamo.PackageManager
 
                 var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
 
+                var uninstallsRequiringRestart = new List<Package>();
+                var uninstallRequiringUserModifications = new List<Package>();
+                var immediateUninstalls = new List<Package>();
+
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
                 foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
                 {
                     if (localPkg == null) continue;
-                    string msg;
 
-                    // if the package is in use, we will not be able to uninstall it.  
-                    if (localPkg.InUse())
+                    if (localPkg.LoadedAssemblies.Any())
                     {
-                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
-                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                        MessageBoxImage.Error);
-                        return;
+                        uninstallsRequiringRestart.Add(localPkg);
+                        continue;
                     }
 
+                    if (localPkg.InUse(this.dynamoViewModel.Model))
+                    {
+                        uninstallRequiringUserModifications.Add(localPkg);
+                        continue;
+                    }
+
+                    immediateUninstalls.Add(localPkg);
+                }
+
+                string msg;
+
+                if (uninstallRequiringUserModifications.Any())
+                {
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallRequiringUserModifications) + 
+                        " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (uninstallsRequiringRestart.Any())
+                {
+                    // mark for uninstallation
+                    uninstallsRequiringRestart.ForEach(
+                        x =>
+                            x.MarkForUninstall(
+                                this.dynamoViewModel.Model.PreferenceSettings));
+
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallsRequiringRestart) + 
+                        " to continue but it contains binaries already loaded into Dynamo.  It's now marked "+
+                        "for removal, but you'll need to first restart Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (immediateUninstalls.Any())
+                {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
-                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    msg = "Dynamo has already installed " + JoinPackageNames(immediateUninstalls) + 
+                        ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
 
@@ -189,6 +247,11 @@ namespace Dynamo.PackageManager
             }
 
         }
+
+        private string JoinPackageNames(IEnumerable<Package> pkgs)
+        {
+            return String.Join(", ", pkgs.Select(x => x.Name));
+        } 
 
         #region Properties 
 

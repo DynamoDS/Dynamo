@@ -415,7 +415,9 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && core.Heap.IsTemporaryPointer(sv))
+                var hpe = core.Heap.GetHeapElement(sv);
+                var isTemporary = hpe.Active && hpe.Refcount == 0;
+                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
                 {
                     return sv;
                 }
@@ -460,7 +462,7 @@ namespace ProtoCore
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
                     GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = HeapUtils.StoreArray(new StackValue[] { coercedValue }, null, core);
+                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
                 else
@@ -475,7 +477,7 @@ namespace ProtoCore
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
                     GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = HeapUtils.StoreArray(new StackValue[] { coercedValue }, null, core);
+                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
             }

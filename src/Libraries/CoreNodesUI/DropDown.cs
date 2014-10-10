@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
+using System.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -55,16 +59,79 @@ namespace DSCoreNodesUI
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            try
+            // Drop downs previsouly saved their selected index as an int.
+            // Between versions of host applications where the number or order of items
+            // in a list would vary, this made loading of drop downs un-reliable.
+            // We have upgraded drop downs to save their selected index as 
+            // something like "9:Reference Point".
+
+            var attrib = nodeElement.Attributes["index"];
+            if (attrib == null)
+                return;
+
+            SelectedIndex = ParseSelectedIndex(attrib.Value, Items);
+        }
+
+        public static int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
+        {
+            int selectedIndex = -1;
+
+            var splits = index.Split(':');
+            if (splits.Count() > 1)
             {
-                SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
+                var name = XmlUnescape(index.Substring(index.IndexOf(':') + 1));
+                var item = items.FirstOrDefault(i => i.Name == name);
+                selectedIndex = item != null ?
+                    items.IndexOf(item) :
+                    -1;
             }
-            catch { }
+            else
+            {
+                var tempIndex = Convert.ToInt32(index);
+                selectedIndex = tempIndex > (items.Count - 1)? 
+                    -1:
+                    tempIndex ;
+            }
+
+            return selectedIndex;
+        }
+
+        public static string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
+        {
+            var result = "-1";
+
+            if (index == -1)
+            {
+                result = index.ToString();
+            }
+            else
+            {
+                var item = items[index];
+                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
+            }
+
+            return result;
+        }
+
+        private static string XmlEscape(string unescaped)
+        {
+            var doc = new XmlDocument();
+            XmlNode node = doc.CreateElement("root");
+            node.InnerText = unescaped;
+            return node.InnerXml;
+        }
+
+        private static string XmlUnescape(string escaped)
+        {
+            var doc = new XmlDocument();
+            XmlNode node = doc.CreateElement("root");
+            node.InnerXml = escaped;
+            return node.InnerText;
         }
 
         protected abstract void PopulateItems();

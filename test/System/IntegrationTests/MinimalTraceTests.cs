@@ -48,8 +48,8 @@ namespace IntegrationTests
         }
 
         [Test]
-        [Category("UnitTests")]
-        [Category("Trace")]
+        //[Category("UnitTests")] --uncomment when failure category is removed
+        //[Category("Trace")]
         public static void ExecTraceClassVerifyCleanThread()
         {
             MinimalTracedClass mtc = new MinimalTracedClass();

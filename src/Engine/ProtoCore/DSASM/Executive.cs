@@ -1,25 +1,19 @@
-﻿
-
-using System;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
-using ProtoCore.Lang;
 using ProtoCore.RuntimeData;
-
+using System.Diagnostics;
 
 namespace ProtoCore.DSASM
 {
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;
-        private readonly ProtoCore.Core core;
-        public ProtoCore.Core Core
+        private readonly Core core;
+        public Core Core
         {
             get
             {
@@ -45,7 +39,7 @@ namespace ProtoCore.DSASM
         bool terminate;
 
         private InstructionStream istream;
-        public ProtoCore.Runtime.RuntimeMemory rmem { get; set; }
+        public Runtime.RuntimeMemory rmem { get; set; }
 
         private StackValue AX;
         private StackValue BX;
@@ -54,15 +48,12 @@ namespace ProtoCore.DSASM
         protected StackValue EX;
         protected StackValue FX;
         private StackValue LX;
-
         public StackValue RX { get; set; }
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
 
         //public ProtoCore.AssociativeGraph.GraphNode executingGraphNode { get; private set; }
         public InterpreterProperties Properties { get; set; }
-
-        private List<ProtoCore.AssociativeGraph.GraphNode> allSSA;
 
         enum DebugFlags
         {
@@ -78,11 +69,11 @@ namespace ProtoCore.DSASM
 
         public int executingBlock = Constants.kInvalidIndex;
 
-        ProtoCore.DSASM.CallingConvention.BounceType bounceType;
+        CallingConvention.BounceType bounceType;
 
-        public bool isExplicitCall { get; set; }
+        public bool IsExplicitCall { get; set; }
 
-        private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
         
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
         /// <summary>
@@ -95,7 +86,7 @@ namespace ProtoCore.DSASM
 
         public Executive(Core core, bool isFep = false)
         {
-            isExplicitCall = false;
+            IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
             enableLogging = core.Options.Verbose;
@@ -107,8 +98,6 @@ namespace ProtoCore.DSASM
             //executingGraphNode = null;
             //nodeExecutedSameTimes = new List<AssociativeGraph.GraphNode>();
             Properties = new InterpreterProperties();
-            allSSA = new List<AssociativeGraph.GraphNode>();
-
 
             rmem = core.Rmem;
 
@@ -118,6 +107,8 @@ namespace ProtoCore.DSASM
 
             bounceType = CallingConvention.BounceType.kImplicit;
 
+            deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+
             // Execute DS Debug watch
             //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
         }
@@ -126,14 +117,14 @@ namespace ProtoCore.DSASM
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
         {
             fepRun = false;
-            rmem.PushStackFrame(frame, 0, 0);
+            rmem.PushStackFrame(frame);
 
             SetupExecutive(exeblock, entry, language, breakpoints);
 
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage("Start JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
 
@@ -141,23 +132,16 @@ namespace ProtoCore.DSASM
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame)
         {
             fepRun = false;
-            rmem.PushStackFrame(frame, 0, 0);
+            rmem.PushStackFrame(frame);
 
-            SetupExecutive(exeblock, entry, language);
+            SetupExecutive(exeblock, entry);
 
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage("Start JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
-
-        /*private void CallExplicit(int exeblock, int entry, int locals, StackFrame frame)
-        {
-            fepRun = true;
-            rmem.PushStackFrame(frame, locals);
-            SetupExecutiveForCall(exeblock, entry);
-        }*/
 
         private void CallExplicit(int entry)
         {
@@ -250,7 +234,7 @@ namespace ProtoCore.DSASM
             RestoreExecutive(executingBlock);
 
 
-            logVMMessage("End JIL Execution - " + ProtoCore.Utils.CoreUtils.GetLanguageString(currentLang));
+            logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(currentLang));
         }
 
 
@@ -282,17 +266,17 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
         }
 
-        private void PushInterpreterProps(ProtoCore.InterpreterProperties properties)
+        private void PushInterpreterProps(InterpreterProperties properties)
         {
-            core.InterpreterProps.Push(new ProtoCore.InterpreterProperties(properties));
+            core.InterpreterProps.Push(new InterpreterProperties(properties));
         }
 
-        private ProtoCore.InterpreterProperties PopInterpreterProps()
+        private InterpreterProperties PopInterpreterProps()
         {
             return core.InterpreterProps.Pop();
         }
 
-        private void SetupExecutive(int exeblock, int entry, Language language)
+        private void SetupExecutive(int exeblock, int entry)
         {
             PushInterpreterProps(Properties);
             Properties.Reset();
@@ -369,8 +353,6 @@ namespace ProtoCore.DSASM
             }
 
             Validity.Assert(null != rmem);
-            rmem.Executable = exe;
-            rmem.ClassTable = exe.classTable;
         }
 
         private void SetupExecutiveForCall(int exeblock, int entry)
@@ -493,7 +475,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            rmem.Pop(argFrameSize);
+            rmem.PopFrame(argFrameSize);
         }
 
         public void GCDotMethods(string name, ref StackValue sv, List<StackValue> dotCallDimensions = null, List<StackValue> arguments = null)
@@ -621,7 +603,7 @@ namespace ProtoCore.DSASM
                 // If array dimension were provided then retrive the final pointer 
                 if (svDimensionCount.opdata > 0)
                 {
-                    HeapElement he = rmem.Heap.Heaplist[(int)svArrayPtrDimesions.opdata];
+                    HeapElement he = rmem.Heap.GetHeapElement(svArrayPtrDimesions);
                     Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
                     dotCallDimensions.AddRange(he.VisibleItems);
                 }
@@ -722,13 +704,12 @@ namespace ProtoCore.DSASM
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
-                    svThisPtr = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
-
+                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
                 }
                 else
                 {
                     // Global
-                    svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
+                    svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
                 }
             }
 
@@ -753,22 +734,13 @@ namespace ProtoCore.DSASM
 
             int blockDecl = (int)svBlockDeclaration.opdata;
 
-            int currentFunctionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
-            {
-                if (Constants.kGlobalScope != currentFunctionIndex)
-                {
-                    int currentFunctionDeclBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
-                }
-            }
-
             if (null != Properties.executingGraphNode)
             {
                 core.ExecutingGraphnode = Properties.executingGraphNode;
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
+            CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -822,8 +794,7 @@ namespace ProtoCore.DSASM
 
                     if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
                     {
-                        bool isBaseCall = false;
-                        core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, isBaseCall, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
+                        core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
                     sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
@@ -832,7 +803,7 @@ namespace ProtoCore.DSASM
                 {
                     FindRecursivePoints();
                     string message = String.Format(WarningMessage.kMethodStackOverflow, core.recursivePoint[0].name);
-                    core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidRecursion, message);
+                    core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
                     core.recursivePoint = new List<FunctionCounter>();
                     core.funcCounterTable = new List<FunctionCounter>();
@@ -843,14 +814,13 @@ namespace ProtoCore.DSASM
             {
                 if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    bool isBaseCall = false;
                     if (core.ContinuationStruct.IsFirstCall)
                     {
                         core.DebugProps.SetUpCallrForDebug(core, 
                                                            this, 
                                                            fNode, 
                                                            pc, 
-                                                           isBaseCall, 
+                                                           false, 
                                                            callsite, 
                                                            arguments, 
                                                            replicationGuides, 
@@ -864,7 +834,7 @@ namespace ProtoCore.DSASM
                                                            this, 
                                                            fNode, 
                                                            pc, 
-                                                           isBaseCall, 
+                                                           false, 
                                                            callsite, 
                                                            core.ContinuationStruct.InitialArguments, 
                                                            replicationGuides, 
@@ -875,11 +845,11 @@ namespace ProtoCore.DSASM
                 }
 
                 SX = svBlockDeclaration;
-                stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, svBlockDeclaration);
+                stackFrame.SX = svBlockDeclaration;
 
                 //Dispatch without recursion tracking 
                 explicitCall = false;
-                isExplicitCall = explicitCall;
+                IsExplicitCall = explicitCall;
 
 #if __DEBUG_REPLICATE
                 // TODO: This if block is currently executed only for a replicating function call in Debug Mode (including each of its continuations) 
@@ -951,7 +921,7 @@ namespace ProtoCore.DSASM
                     Properties.functionCallDotCallDimensions = dotCallDimensions;
 
                     explicitCall = true;
-                    isExplicitCall = explicitCall;
+                    IsExplicitCall = explicitCall;
                     int entryPC = (int)sv.opdata;
 
                     CallExplicit(entryPC);
@@ -1073,7 +1043,7 @@ namespace ProtoCore.DSASM
             }
 
             SX = StackValue.BuildBlockIndex(0);
-            stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, SX);
+            stackFrame.SX = SX;
 
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
@@ -1165,19 +1135,7 @@ namespace ProtoCore.DSASM
                     core.ExecutionLog.WriteLine(msg);
             }
         }
-        private void logMessage(string msg)
-        {
-            if (!enableLogging)
-                return;
-
-            if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
-            {
-                if (exe.EventSink != null && exe.EventSink.PrintMessage != null)
-                    exe.EventSink.PrintMessage.Invoke(msg + "\n");
-                if (core.Options.WebRunner && (null != core.ExecutionLog))
-                    core.ExecutionLog.WriteLine(msg);
-            }
-        }
+       
         private void logWatchWindow(int blockId, int index)
         {
             if (!enableLogging)
@@ -1186,68 +1144,63 @@ namespace ProtoCore.DSASM
             const string watchPrompt = "watch: ";
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
-                string symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[index].name;
-                if (symbol.StartsWith(Constants.kInternalNamePrefix))
+                SymbolNode symbol = exe.runtimeSymbols[blockId].symbolList[index];
+                string symbolName = symbol.name;
+
+                if (symbolName.StartsWith(Constants.kInternalNamePrefix))
                 {
                     return;
                 }
-                int ci = core.DSExecutable.runtimeSymbols[blockId].symbolList[index].classScope;
+                int ci = symbol.classScope;
                 if (ci != Constants.kInvalidIndex)
                 {
-                    symbol = core.ClassTable.ClassNodes[ci].name + "::" + symbol;
+                    symbolName = core.ClassTable.ClassNodes[ci].name + "::" + symbolName;
                 }
-                string lhs = watchPrompt + symbol;
+                string lhs = watchPrompt + symbolName;
 
-                if (null != core.DSExecutable.runtimeSymbols[blockId].symbolList[index].arraySizeList)
+                if (null != exe.runtimeSymbols[blockId].symbolList[index].arraySizeList)
                 {
                     lhs = lhs + "[" + "offset:" + DX + "]";
                 }
 
                 string rhs = null;
-                StackValue snode = rmem.GetStackData(blockId, index, Constants.kGlobalScope);
+                StackValue snode = rmem.GetSymbolValue(symbol);
                 if (snode.IsPointer)
                 {
                     int type = snode.metaData.type;
                     string cname = core.ClassTable.ClassNodes[type].name;
-
-                    Int64 ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    rhs = cname + ":ptr(" + ptr.ToString() + ")";
+                    rhs = cname + ":ptr(" + snode.opdata + ")";
                 }
                 else if (snode.IsArray)
                 {
-                    Int64 ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    rhs = "Array:ptr(" + ptr + "):{" + GetArrayTrace((int)ptr, blockId, index, new HashSet<int> { (int)ptr }) + "}";
+                    int rawPtr = (int)snode.RawIntValue;
+                    rhs = "Array:ptr(" + rawPtr + "):{" + GetArrayTrace(snode, blockId, index, new HashSet<int> { rawPtr } ) + "}";
                 }
                 else if (snode.IsFunctionPointer)
                 {
-                    Int64 fptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    rhs = "fptr: " + fptr.ToString();
+                    rhs = "fptr: " + snode.opdata;
                 }
                 else if (snode.IsInteger)
                 {
-                    Int64 data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    rhs = data.ToString();
+                    rhs = snode.opdata.ToString();
                 }
                 else if (snode.IsDouble)
                 {
-                    double data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).RawDoubleValue;
+                    double data = snode.RawDoubleValue;
                     rhs = data.ToString("R").IndexOf('.') != -1 ? data.ToString("R") : data.ToString("R") + ".0";
                 }
                 else if (snode.IsBoolean)
                 {
-                    bool data = (rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata == 0) ? false : true;
-                    rhs = data.ToString().ToLower();
+                    rhs = snode.RawBooleanValue.ToString().ToLower();
                 }
                 else if (snode.IsChar)
                 {
-                    Int64 data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(data);
+                    Char character = EncodingUtils.ConvertInt64ToCharacter(snode.RawIntValue);
                     rhs = "'" + character + "'";
                 }
                 else if (snode.IsString)
                 {
-                    Int64 ptr = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata;
-                    rhs = UnboxString((int)ptr, blockId, index);
+                    rhs = UnboxString(snode);
                 }
                 else if (snode.IsNull)
                 {
@@ -1269,8 +1222,7 @@ namespace ProtoCore.DSASM
             String rhs = null;
             if (snode.IsArray)
             {
-                Int64 ptr = snode.opdata;
-                rhs = "{" + GetArrayTrace((int)ptr, blockId, index, new HashSet<int> { (int)ptr }) + "}";
+                rhs = "{" + GetArrayTrace(snode, blockId, index, new HashSet<int> { (int)snode.opdata}) + "}";
             }
             else if (snode.IsInteger)
             {
@@ -1294,13 +1246,12 @@ namespace ProtoCore.DSASM
             else if (snode.IsChar)
             {
                 Int64 data = snode.opdata;
-                Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(data);
+                Char character = EncodingUtils.ConvertInt64ToCharacter(data);
                 rhs = "'" + character + "'";
             }
             else if (snode.IsString)
             {
-                Int64 ptr = snode.opdata;
-                rhs = UnboxString((int)ptr, blockId, index);
+                rhs = UnboxString(snode);
             }
             else if (snode.IsPointer)
             {
@@ -1311,16 +1262,16 @@ namespace ProtoCore.DSASM
             return rhs;
         }
 
-        private string UnboxString(int pointer, int blockId, int index)
+        private string UnboxString(StackValue pointer)
         {
-            HeapElement hs = rmem.Heap.Heaplist[pointer];
+            HeapElement hs = rmem.Heap.GetHeapElement(pointer);
 
             string str = "";
             foreach (var item in hs.VisibleItems)
             {
                 if (!item.IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
+                str += EncodingUtils.ConvertInt64ToCharacter(item.opdata);
             }
 
             if (str == "")
@@ -1329,10 +1280,10 @@ namespace ProtoCore.DSASM
             return "\"" + str + "\"";
         }
 
-        private string GetArrayTrace(int pointer, int blockId, int index, HashSet<int> pointers)
+        private string GetArrayTrace(StackValue pointer, int blockId, int index, HashSet<int> pointers)
         {
             StringBuilder arrayelements = new StringBuilder();
-            HeapElement hs = rmem.Heap.Heaplist[pointer];
+            HeapElement hs = rmem.Heap.GetHeapElement(pointer); 
 
             for (int n = 0; n < hs.VisibleSize; ++n)
             {
@@ -1347,7 +1298,7 @@ namespace ProtoCore.DSASM
                     else
                     {
                         pointers.Add(ptr);
-                        arrayelements.Append("{" + GetArrayTrace(ptr, blockId, index, pointers) + "}");
+                        arrayelements.Append("{" + GetArrayTrace(sv, blockId, index, pointers) + "}");
                     }
                 }
                 else
@@ -1384,7 +1335,7 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
             if (graphNodes != null)
             {
-                foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
                     if (!graphNode.isDirty || !graphNode.isActive)
                     {
@@ -1441,7 +1392,7 @@ namespace ProtoCore.DSASM
                                 {
                                     if (Properties.nodeIterations.Count != 1)
                                     {
-                                        handleCycle(graphNode);
+                                        HandleCycle();
                                     }
                                 }
                             }
@@ -1462,7 +1413,7 @@ namespace ProtoCore.DSASM
         {
             // Find the graph where the entry point matches the graph pc
             // Set that graph node as not dirty   
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
             {
                 if (core.Options.IsDeltaExecution)
                 {
@@ -1493,22 +1444,20 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void handleCycle(ProtoCore.AssociativeGraph.GraphNode graphNode)
+        private void HandleCycle()
         {
-            ProtoCore.AssociativeGraph.GraphNode[] CycleStartNodeAndEndNode = new ProtoCore.AssociativeGraph.GraphNode[2];
+            List<AssociativeGraph.GraphNode> nodeIterations = Properties.nodeIterations;
+            var CycleStartNodeAndEndNode = FindCycleStartNodeAndEndNode(nodeIterations);
 
-            List<AssociativeGraph.GraphNode> nodeIterations = Properties.nodeIterations;// core.InterpreterProps.Peek().nodeIterations;
-            CycleStartNodeAndEndNode = FindCycleStartNodeAndEndNode(nodeIterations);
-
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in nodeIterations)
+            foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
             }
 
             string message = String.Format(WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kCyclicDependency, message);
+            core.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in nodeIterations)
+            foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
                 node.isCyclic = true;
                 SetGraphNodeStackValueNull(node);
@@ -1517,57 +1466,28 @@ namespace ProtoCore.DSASM
             Properties.nodeIterations = new List<AssociativeGraph.GraphNode>();
         }
 
-        private void handleSSAAssignCycle(ProtoCore.AssociativeGraph.GraphNode graphNode)
+        private bool HasCyclicDependency(AssociativeGraph.GraphNode node)
         {
-            string message = String.Format(WarningMessage.kCyclicDependency, graphNode.updateNodeRefList[0].nodeList[0].symbol.name, graphNode.updateNodeRefList[0].nodeList[0].symbol.name);
-            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kCyclicDependency, message);
-
-            List<AssociativeGraph.GraphNode> nodeIterations = core.InterpreterProps.Peek().nodeIterations;
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in nodeIterations)
-            {
-                node.isCyclic = true;
-                SetGraphNodeStackValueNull(node);
-                node.dependentList.Clear();
-            }
-            Properties.nodeIterations = null;
+            return IsExecutedTooManyTimes(node, core.Options.kDynamicCycleThreshold);
         }
 
-        private bool HasCyclicDependency(ProtoCore.AssociativeGraph.GraphNode node)
-        {
-
-            //if (IsExecutedTooManyTimes(node, Constants.kDynamicCycleThreshold))
-            if (IsExecutedTooManyTimes(node, core.Options.kDynamicCycleThreshold))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool IsExecutedTooManyTimes(ProtoCore.AssociativeGraph.GraphNode node, int limit)
+        private bool IsExecutedTooManyTimes(AssociativeGraph.GraphNode node, int limit)
         {
             Validity.Assert(null != node);
-            if (node.counter > limit)
-            {
-
-                return true;
-            }
-            else
-                return false;
-
+            return (node.counter > limit);
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<ProtoCore.AssociativeGraph.GraphNode> nodesExecutedSameTime)
+        private AssociativeGraph.GraphNode[] FindCycleStartNodeAndEndNode(List<AssociativeGraph.GraphNode> nodesExecutedSameTime)
         {
-
-            ProtoCore.AssociativeGraph.GraphNode cyclicSymbolStart = null;
-            ProtoCore.AssociativeGraph.GraphNode cyclicSymbolEnd = null;
+            AssociativeGraph.GraphNode cyclicSymbolStart = null;
+            AssociativeGraph.GraphNode cyclicSymbolEnd = null;
 
             cyclicSymbolStart = nodesExecutedSameTime[0];
             cyclicSymbolEnd = nodesExecutedSameTime.Last();
 
-            ProtoCore.AssociativeGraph.GraphNode[] StartAndEnd = new ProtoCore.AssociativeGraph.GraphNode[] { cyclicSymbolStart, cyclicSymbolEnd };
+            var StartAndEnd = new [] { cyclicSymbolStart, cyclicSymbolEnd };
             //reset counter
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in nodesExecutedSameTime)
+            foreach (AssociativeGraph.GraphNode node in nodesExecutedSameTime)
             {
                 node.counter = 0;
             }
@@ -1590,52 +1510,13 @@ namespace ProtoCore.DSASM
         }
 
 
-        private void UpdateModifierBlockDependencyGraph(ProtoCore.AssociativeGraph.GraphNode graphNode)
-        {
-            int modBlkUID = graphNode.modBlkUID;
-            int index = graphNode.UID;
-            bool setModifierNode = true;
-            if (graphNode.isCyclic)
-            {
-                // If the graphnode is cyclic, mark it as not first so it wont get executed 
-                // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                // The cyclepoint is the other graphNode that the current node cycles with
-                graphNode.isDirty = false;
-                if (null != graphNode.cyclePoint)
-                {
-                    graphNode.cyclePoint.isDirty = false;
-                    graphNode.cyclePoint.isCyclic = true;
-                }
-                setModifierNode = false;
-            }
-
-            if (modBlkUID != Constants.kInvalidIndex)
-            {
-                for (int i = index; i < istream.dependencyGraph.GraphList.Count; ++i)
-                {
-                    ProtoCore.AssociativeGraph.GraphNode node = istream.dependencyGraph.GraphList[i];
-                    if (node.modBlkUID == modBlkUID)
-                    {
-                        node.isDirty = setModifierNode;
-                    }
-                }
-            }
-            else
-            {
-                graphNode.isDirty = true;
-            }
-        }
-
-
-
-
         private void SetGraphNodeStackValue(AssociativeGraph.GraphNode graphNode, StackValue sv)
         {
             Validity.Assert(!graphNode.isReturn);
             // TODO Jun: Expand me to handle complex ident lists
             SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
             Validity.Assert(null != symbol);
-            rmem.SetStackData(symbol.runtimeTableIndex, symbol.symbolTableIndex, symbol.classScope, sv);
+            rmem.SetSymbolValue(symbol, sv);
         }
 
         private void SetGraphNodeStackValueNull(AssociativeGraph.GraphNode graphNode)
@@ -1647,7 +1528,7 @@ namespace ProtoCore.DSASM
         private bool UpdatePropertyChangedGraphNode()
         {
             bool propertyChanged = false;
-            var graphNodes = this.istream.dependencyGraph.GraphList;
+            var graphNodes = istream.dependencyGraph.GraphList;
             foreach (var node in graphNodes)
             {
                 if (node.propertyChanged)
@@ -1656,19 +1537,31 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
+                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null; 
                     if (core.Options.ExecuteSSA)
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
                     else
                     {
-                        UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node, true);
+                        reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
                     }
+
+                    // Mark reachable nodes as dirty
+                    Validity.Assert(reachableGraphNodes != null);
+                    foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+                    {
+                        gnode.isDirty = true;
+                    }
+
                     node.propertyChanged = false;
                 }
             }
             return propertyChanged;
         }
+       
 
         private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
@@ -1679,45 +1572,32 @@ namespace ProtoCore.DSASM
                     UpdatePropertyChangedGraphNode();
                 }
             }
-            UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
 
-            if (Properties.executingGraphNode != null)
+            // Find reachable graphnodes
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock);
+
+            // Mark reachable nodes as dirty
+            Validity.Assert(reachableGraphNodes != null);
+            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
             {
-                // Remove this condition when full SSA is enabled
-                bool isssa = (!Properties.executingGraphNode.IsSSANode() && Properties.executingGraphNode.DependsOnTempSSA());
+                gnode.isDirty = true;
+            }
+             
 
-                if (core.Options.ExecuteSSA)
-                {
-                    isssa = Properties.executingGraphNode.IsSSANode();
-                }
-                if (!isssa)
-                {
-                    for (int n = 0; n < istream.dependencyGraph.GraphList.Count; ++n)
-                    {
-                        ProtoCore.AssociativeGraph.GraphNode graphNode = istream.dependencyGraph.GraphList[n];
-
-                        bool allowRedefine = true;
-
-                        SymbolNode symbol = Properties.executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != Constants.kInvalidIndex
-                            && symbol.functionIndex == Constants.kInvalidIndex;
-
-                        if (isMember)
-                        {
-                            // For member vars, do not allow if not in the same scope
-                            if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
-                            {
-                                allowRedefine = false;
-                            }
-                        }
-
-                        if (allowRedefine)
-                        {
-                            // Update redefinition that this graphnode may have cauased
-                            UpdateGraphNodeDependency(graphNode, Properties.executingGraphNode);
-                        }
-                    }
-                }
+            // Get all redefined graphnodes
+            int classScope = Constants.kInvalidIndex;
+            int functionScope = Constants.kInvalidIndex;
+            GetCallerInformation(out classScope, out functionScope);
+            var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+            List<AssociativeGraph.GraphNode> redefinedNodes = AssociativeEngine.Utils.GetRedefinedGraphNodes(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            Validity.Assert(redefinedNodes != null);
+            foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
+            {
+                // Handle deactivated graphnodes
+                GCAnonymousSymbols(gnode.symbolListWithinExpression);
+                gnode.symbolListWithinExpression.Clear();
+                gnode.isActive = false;
             }
         }
 
@@ -1761,10 +1641,6 @@ namespace ProtoCore.DSASM
             {
                 return;
             }
-
-            // We may take replication control into account in the future. 
-            // But right now let's just skip it.
-            var rcInstructions = executingGraphNode.replicationControl.Instructions;
 
             // Update node list can be a, b, c for the case like:
             //     a.b.c[0] = ...
@@ -1887,7 +1763,7 @@ namespace ProtoCore.DSASM
 
                     case AssociativeGraph.UpdateNodeType.kLiteral:
                         {
-                            int dimValue = Constants.kInvalidIndex;
+                            int dimValue;
                             if (Int32.TryParse(dimSymbol.name, out dimValue))
                             {
                                 graphNode.updateDimensions.Add(StackValue.BuildInt(dimValue));
@@ -1907,308 +1783,12 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-
-        /// <summary>
-        /// Check if an update is triggered;
-        /// Find all graph nodes whos dependents contain this symbol;
-        /// Mark those nodes as dirty
-        /// </summary>
-        public int UpdateDependencyGraph(
-            int exprUID,
-            int modBlkId,
-            bool isSSAAssign,
-            AssociativeGraph.GraphNode executingGraphNode,
-            bool propertyChanged = false)
-        {
-            int nodesMarkedDirty = 0;
-            if (executingGraphNode == null)
-            {
-                return nodesMarkedDirty;
-            }
-
-            int classIndex = executingGraphNode.classIndex;
-            int procIndex = executingGraphNode.procIndex;
-
-            var graph = istream.dependencyGraph;
-            var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
-            if (graphNodes == null)
-            {
-                return nodesMarkedDirty;
-            }
-
-            //foreach (var graphNode in graphNodes)
-            for (int i = 0; i < graphNodes.Count; ++i)
-            {
-                var graphNode = graphNodes[i];
-
-                // If the graphnode is inactive then it is no longer executed
-                if (!graphNode.isActive)
-                {
-                    continue;
-                }
-                //
-                // Comment Jun: 
-                //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
-                //
-                bool allowUpdateWithinSSA = false;
-                if (core.Options.ExecuteSSA)
-                {
-                    allowUpdateWithinSSA = true;
-                    isSSAAssign = false; // Remove references to this when ssa flag is removed
-
-                    // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == Properties.executingGraphNode.exprUID)
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    // TODO Jun: Remove this code immediatley after enabling SSA
-                    bool withinSSAStatement = graphNode.UID == executingGraphNode.UID;
-                    allowUpdateWithinSSA = !withinSSAStatement;
-                }
-
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == Properties.executingGraphNode))
-                {
-                    continue;
-                }
-
-                foreach (var noderef in executingGraphNode.updateNodeRefList)
-                {
-                    ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
-                    if (!graphNode.DependsOn(noderef, ref matchingNode))
-                    {
-                        continue;
-                    }
-
-                    // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (core.Options.ExecuteSSA && !propertyChanged)
-                    {
-                        if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
-                        {
-                            // This is still an SSA statement, if a node of another statement depends on it, ignore it
-                            if (graphNode.exprUID != Properties.executingGraphNode.exprUID)
-                            {
-                                // Defer this update until the final non-ssa node
-                                deferedGraphNodes.Add(graphNode);
-                                continue;
-                            }
-                        }
-                    }
-
-                    // @keyu: if we are modifying an object's property, e.g.,
-                    // 
-                    //    foo.id = 42;
-                    //
-                    // both dependent list and update list of the corresponding 
-                    // graph node contains "foo" and "id", so if property "id"
-                    // is changed, this graph node will be re-executed and the
-                    // value of "id" is incorrectly set back to old value.
-                    if (propertyChanged)
-                    {
-                        var depUpdateNodeRef = graphNode.dependentList[0].updateNodeRefList[0];
-                        if (graphNode.updateNodeRefList.Count == 1)
-                        {
-                            var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.Equals(updateNodeRef))
-                            {
-                                continue;
-                            }
-                        }
-                    }
-
-                    //
-                    // Comment Jun: We dont want to cycle between such statements:
-                    //
-                    // a1.a = 1;
-                    // a1.a = 10;
-                    //
-
-                    Validity.Assert(null != matchingNode);
-                    bool isLHSModification = matchingNode.isLHSNode;
-                    bool isUpdateable = matchingNode.IsUpdateableBy(noderef);
-
-                    // isSSAAssign means this is the graphnode of the final SSA assignment
-                    // Overrride this if allowing within SSA update
-                    // TODO Jun: Remove this code when SSA is completely enabled
-                    bool allowSSADownstream = false;
-                    if (core.Options.ExecuteSSA)
-                    {
-                        // Check if we allow downstream update
-                        if (exprUID == graphNode.exprUID)
-                        {
-                            allowSSADownstream = graphNode.AstID > executingGraphNode.AstID;
-                        }
-                    }
-
-
-                    // Comment Jun: 
-                    //      If the triggered dependent graphnode is LHS 
-                    //          and... 
-                    //      the triggering node (executing graphnode)
-                    if (isLHSModification && !isUpdateable)
-                    {
-                        break;
-                    }
-
-                    // TODO Jun: Optimization - Reimplement update delta evaluation using registers
-                    //if (IsNodeModified(EX, FX))
-                    bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
-                    if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
-                    {
-                        UpdateModifierBlockDependencyGraph(graphNode);
-                    }
-                    else if (allowSSADownstream
-                              || isSSAAssign
-                                || isLastSSAAssignment
-                              || (exprUID != graphNode.exprUID
-                                 && modBlkId == Constants.kInvalidIndex
-                                 && graphNode.modBlkUID == Constants.kInvalidIndex)
-                        )
-                    {
-                        if (graphNode.isCyclic)
-                        {
-                            // If the graphnode is cyclic, mark it as not dirst so it wont get executed 
-                            // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
-                            // The cyclepoint is the other graphNode that the current node cycles with
-                            graphNode.isDirty = false;
-                            if (null != graphNode.cyclePoint)
-                            {
-                                graphNode.cyclePoint.isDirty = false;
-                                graphNode.cyclePoint.isCyclic = true;
-                            }
-                        }
-                        else if (!graphNode.isDirty)
-                        {
-                            if (core.Options.ElementBasedArrayUpdate)
-                            {
-                                UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            }
-                            graphNode.isDirty = true;
-                            graphNode.forPropertyChanged = propertyChanged;
-                            nodesMarkedDirty++;
-                            
-                            // On debug mode:
-                            //      we want to mark all ssa statements dirty for an if the lhs pointer is a new instance.
-                            //      In this case, the entire line must be re-executed
-                            //      
-                            //  Given:
-                            //      x = 1
-                            //      p = p.f(x) 
-                            //      x = 2
-                            //
-                            //  To SSA:
-                            //
-                            //      x = 1
-                            //      t0 = p -> we want to execute from here of member function 'f' returned a new instance of 'p'
-                            //      t1 = x
-                            //      t2 = t0.f(t1)
-                            //      p = t2
-                            //      x = 2
-                            if (null != executingGraphNode.lastGraphNode && executingGraphNode.lastGraphNode.reExecuteExpression)
-                            {
-                                executingGraphNode.lastGraphNode.reExecuteExpression = false;
-                                //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
-                                {
-                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
-                                    var firstGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
-                                    firstGraphNode.isDirty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return nodesMarkedDirty;
-        }
-
-        //
-        // Comment Jun: Revised 
-        //
-        //  proc UpdateGraphNodeDependency(execnode)
-        //      foreach node in graphnodelist 
-        //          if execnode.lhs is equal to node.lhs
-        //              if execnode.HasDependents() 
-        //                  if execnode.Dependents() is not equal to node.Dependents()
-        //                      node.RemoveDependents()
-        //                  end
-        //              end
-        //          end
-        //      end
-        //  end
-        //
-        private void UpdateGraphNodeDependency(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
-        {
-            if (gnode.UID >= executingNode.UID // for previous graphnodes
-                || gnode.updateNodeRefList.Count == 0
-                || gnode.updateNodeRefList.Count != executingNode.updateNodeRefList.Count
-                || gnode.isAutoGenerated
-                || !gnode.isActive  // If the graphnode is inactive there is no need to update it
-                )
-            {
-                return;
-            }
-
-            for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
-            {
-                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
-                {
-                    return;
-                }
-
-                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                //if (gnode.exprUID == executingNode.exprUID)
-                {
-                    // These nodes are within the same expression, no redifinition can occur
-                    return;
-                }
-            }
-
-            //if (executingNode.dependentList.Count > 0)
-            {
-                // if execnode.Dependents() is not equal to node.Dependents()
-                // TODO Jun: Extend this check
-                bool areDependentsEqual = false;
-                if (!areDependentsEqual)
-                {
-                    gnode.dependentList.Clear();
-
-                    // GC all the temporaries associated with the redefined variable
-                    // Given:
-                    //      a = A.A()
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      a = t0
-                    //      a = 10      // Redefinition of 'a' will GC 't0'
-                    //
-                    // Another example
-                    // Given:
-                    //      a = {A.A()}
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      t1 = {t0}
-                    //      a = t1
-                    //      a = 10      // Redefinition of 'a' will GC t0 and t1
-                    //
-                    GCAnonymousSymbols(gnode.symbolListWithinExpression);
-                    gnode.symbolListWithinExpression.Clear();
-                }
-            }
-        }
-
+        
         private void UpdateLanguageBlockDependencyGraph(int entry)
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
-            ProtoCore.AssociativeGraph.GraphNode entryNode = null;
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
             {
                 graphNode.isDirty = true;
                 if (!isFirstGraphSet)
@@ -2216,15 +1796,13 @@ namespace ProtoCore.DSASM
                     // Setting the first graph of this function to be in executed (not dirty) state
                     isFirstGraphSet = true;
                     graphNode.isDirty = false;
-                    entryNode = graphNode;
                 }
 
-                if (DSASM.Constants.kInvalidIndex == setentry)
+                if (Constants.kInvalidIndex == setentry)
                 {
                     // Set the entry point as this graph and mark this graph as executed 
                     setentry = graphNode.updateBlock.startpc;
                     graphNode.isDirty = false;
-                    entryNode = graphNode;
                 }
             }
             pc = setentry;
@@ -2234,7 +1812,7 @@ namespace ProtoCore.DSASM
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
-            ProtoCore.AssociativeGraph.GraphNode entryNode = null;
+            AssociativeGraph.GraphNode entryNode = null;
 
             StackValue svFunctionBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock);
             Validity.Assert(svFunctionBlock.IsBlockIndex);
@@ -2244,7 +1822,7 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;//istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes != null)
             {
-                foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
                     graphNode.isDirty = true;
                     if (!isFirstGraphSet)
@@ -2259,7 +1837,7 @@ namespace ProtoCore.DSASM
                         }
                     }
 
-                    if (DSASM.Constants.kInvalidIndex == setentry)
+                    if (Constants.kInvalidIndex == setentry)
                     {
                         // Set the entry point as this graph and mark this graph as executed 
                         setentry = graphNode.updateBlock.startpc;
@@ -2282,7 +1860,7 @@ namespace ProtoCore.DSASM
             {
                 if (Language.kAssociative == instrStream.language && instrStream.dependencyGraph.GraphList.Count > 0)
                 {
-                    foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in instrStream.dependencyGraph.GraphList)
+                    foreach (AssociativeGraph.GraphNode graphNode in instrStream.dependencyGraph.GraphList)
                     {
                         if (graphNode.isDirty)
                         {
@@ -2320,7 +1898,7 @@ namespace ProtoCore.DSASM
             int classScope = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             int functionScope = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
-            List<ProtoCore.AssociativeGraph.UpdateNodeRef> upadatedList = new List<AssociativeGraph.UpdateNodeRef>();
+            List<AssociativeGraph.UpdateNodeRef> upadatedList = new List<AssociativeGraph.UpdateNodeRef>();
 
             // For every instruction list in the executable
             foreach (InstructionStream xInstrStream in exe.instrStreamList)
@@ -2329,8 +1907,14 @@ namespace ProtoCore.DSASM
                 if (null != xInstrStream && Language.kAssociative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
                 {
                     // For every graphnode in the dependency list
-                    foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
+                    foreach (AssociativeGraph.GraphNode graphNode in xInstrStream.dependencyGraph.GraphList)
                     {
+                        // Do not check for xlang dependencies from within the same block
+                        if (graphNode.languageBlockId == executingBlock)
+                        {
+                            continue;
+                        }
+
                         if (graphNode.classIndex != classScope || graphNode.procIndex != functionScope)
                         {
                             continue;
@@ -2370,13 +1954,13 @@ namespace ProtoCore.DSASM
                         }
 
                         // For every updated in the updatelist
-                        foreach (ProtoCore.AssociativeGraph.UpdateNodeRef modifiedRef in istream.xUpdateList)
+                        foreach (AssociativeGraph.UpdateNodeRef modifiedRef in istream.xUpdateList)
                         {
                             // We allow dependency check if the modified graphnode list belong to some other block
                             if (modifiedRef.block != currentLangBlock)
                             {
                                 // Check if the graphnode in the associative language depends on the current updated node
-                                ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
+                                AssociativeGraph.GraphNode matchingNode = null;
                                 if (!graphNode.isReturn && graphNode.DependsOn(modifiedRef, ref matchingNode))
                                 {
                                     Validity.Assert(null != matchingNode);
@@ -2407,13 +1991,13 @@ namespace ProtoCore.DSASM
                                     // TODO: to check whether this is required - Randy, Jun
                                     if (Constants.kInvalidIndex == firstSymbolInUpdatedRef.classScope)
                                     {
-                                        if (core.DSExecutable.runtimeSymbols[firstSymbolInUpdatedRef.runtimeTableIndex].symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
+                                        if (exe.runtimeSymbols[firstSymbolInUpdatedRef.runtimeTableIndex].symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
                                         {
                                             continue;
                                         }
                                     }
                                     else if (firstSymbolInUpdatedRef.classScope >= 0 &&
-                                        rmem.ClassTable.ClassNodes[firstSymbolInUpdatedRef.classScope].symbols.symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
+                                        core.ClassTable.ClassNodes[firstSymbolInUpdatedRef.classScope].symbols.symbolList.Count <= firstSymbolInUpdatedRef.symbolTableIndex)
                                     {
                                         continue;
                                     }
@@ -2423,10 +2007,9 @@ namespace ProtoCore.DSASM
                                            : StackValue.BuildVarIndex(firstSymbolInUpdatedRef.symbolTableIndex);
                                     StackValue svClass = StackValue.BuildClassIndex(firstSymbolInUpdatedRef.classScope);
 
-                                    runtimeVerify(DSASM.Constants.kInvalidIndex != firstSymbolInUpdatedRef.runtimeTableIndex);
+                                    runtimeVerify(Constants.kInvalidIndex != firstSymbolInUpdatedRef.runtimeTableIndex);
                                     StackValue svGraphNode = GetOperandData(firstSymbolInUpdatedRef.runtimeTableIndex, svSym, svClass);
                                     StackValue svPropagateNode = modifiedRef.symbolData;
-
                                     if (IsNodeModified(svGraphNode, svPropagateNode))
                                     {
                                         graphNode.isDirty = true;
@@ -2441,7 +2024,7 @@ namespace ProtoCore.DSASM
 
             if (upadatedList.Count > 0)
             {
-                foreach (ProtoCore.AssociativeGraph.UpdateNodeRef noderef in upadatedList)
+                foreach (AssociativeGraph.UpdateNodeRef noderef in upadatedList)
                 {
                     istream.xUpdateList.Remove(noderef);
                 }
@@ -2450,61 +2033,54 @@ namespace ProtoCore.DSASM
 
         private void ResumeRegistersFromStack()
         {
-            List<StackValue> runtimeStack = rmem.Stack;
             int fp = rmem.FramePointer;
-
-            if (runtimeStack != null && fp >= StackFrame.kStackFrameSize)
+            if (fp >= StackFrame.kStackFrameSize)
             {
-                AX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterAX)];
-                BX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterBX)];
-                CX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterCX)];
-                DX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterDX)];
-                EX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterEX)];
-                FX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterFX)];
-                LX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterLX)];
-                RX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterRX)];
-                SX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterSX)];
-                TX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterTX)];
+                AX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterAX);
+                BX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterBX);
+                CX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterCX);
+                DX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterDX);
+                EX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterEX);
+                FX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterFX);
+                LX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterLX);
+                RX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterRX);
+                SX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX);
+                TX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
             }
         }
 
         private void ResumeRegistersFromStackExceptRX()
         {
-            List<StackValue> runtimeStack = rmem.Stack;
             int fp = rmem.FramePointer;
-
-            if (runtimeStack != null && fp >= StackFrame.kStackFrameSize)
+            if (fp >= StackFrame.kStackFrameSize)
             {
-                AX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterAX)];
-                BX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterBX)];
-                CX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterCX)];
-                DX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterDX)];
-                EX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterEX)];
-                FX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterFX)];
-                LX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterLX)];
-
-                SX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterSX)];
-                TX = runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterTX)];
+                AX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterAX);
+                BX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterBX);
+                CX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterCX);
+                DX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterDX);
+                EX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterEX);
+                FX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterFX);
+                LX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterLX);
+                SX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX);
+                TX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
             }
-        }
+       }
 
         private void SaveRegistersToStack()
         {
-            List<StackValue> runtimeStack = rmem.Stack;
             int fp = rmem.FramePointer;
-
-            if (runtimeStack != null && fp >= StackFrame.kStackFrameSize)
+            if (fp >= StackFrame.kStackFrameSize)
             {
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterAX)] = AX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterBX)] = BX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterCX)] = CX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterDX)] = DX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterEX)] = EX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterFX)] = FX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterLX)] = LX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterRX)] = RX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterSX)] = SX;
-                runtimeStack[rmem.GetRelative(StackFrame.kFrameIndexRegisterTX)] = TX;
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterAX, AX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterBX, BX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterCX, CX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterDX, DX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterEX, EX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterFX, FX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterLX, LX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterRX, RX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterSX, SX);
+                rmem.SetAtRelative(StackFrame.kFrameIndexRegisterTX, TX);
             }
         }
 
@@ -2531,10 +2107,6 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Performs type coercion of returned value and GC of arguments, this ptr and Dot methods
         /// </summary>
-        /// <param name="finalFep"></param>
-        /// <param name="debugFrame"></param>
-        /// <param name="Arguments"></param>
-        /// <param name="DotCallDimensions"></param>
         private void DebugPerformCoercionAndGC(DebugFrame debugFrame)
         {
             ProcedureNode procNode = debugFrame.FinalFepChosen != null ? debugFrame.FinalFepChosen.procedureNode : null;
@@ -2548,7 +2120,7 @@ namespace ProtoCore.DSASM
             // and for such calls 'PerformReturnTypeCoerce' is not called 
             if (!isBaseCall)
             {
-                RX = ProtoCore.CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
 
                 for (int i = 0; i < Arguments.Count; ++i)
                 {
@@ -2577,7 +2149,7 @@ namespace ProtoCore.DSASM
         /// <param name="exeblock"></param>
         /// <param name="instructions"></param>
         /// <returns></returns>
-        bool RestoreDebugPropsOnReturnFromBuiltIns(ref int exeblock, ref List<Instruction> instructions)
+        bool RestoreDebugPropsOnReturnFromBuiltIns()
         {
             bool waspopped = false;
             // Restore fepRun
@@ -2712,11 +2284,9 @@ namespace ProtoCore.DSASM
             ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
-            int localCount = 0;
-            int paramCount = 0;
-
+            int localCount;
+            int paramCount;
             int blockId = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
-
             GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
             // Get execution states
@@ -2737,7 +2307,7 @@ namespace ProtoCore.DSASM
             StackFrameType frametype = (StackFrameType)svFrameType.opdata;
             if (frametype == StackFrameType.kTypeLanguage)
             {
-                bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                bounceType = (CallingConvention.BounceType)TX.opdata;
             }
             return waspopped;
         }
@@ -2783,12 +2353,12 @@ namespace ProtoCore.DSASM
                 rmem.PopFrame(StackFrame.kStackFrameSize);
 
                 ResumeRegistersFromStackExceptRX();
-                bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                bounceType = (CallingConvention.BounceType)TX.opdata;
             }
 
             if (pc < 0)
             {
-                throw new ProtoCore.Exceptions.EndOfScript();
+                throw new EndOfScript();
             }
         }
 
@@ -2803,9 +2373,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         private bool DebugReturnFromFunctionCall(int currentPC, ref int exeblock, out int ci, out int fi, out bool isReplicating, out DebugFrame debugFrame)
         {
-            DebugFrame tempFrame = null;
-
-            tempFrame = core.DebugProps.DebugStackFrame.Peek();
+            var tempFrame = core.DebugProps.DebugStackFrame.Peek();
 
             List<Instruction> instructions = istream.instrList;
 
@@ -2839,7 +2407,7 @@ namespace ProtoCore.DSASM
                     // If call returns to Dot Call, restore debug props for Dot call
                     if (debugFrame.IsDotCall)
                     {
-                        waspopped = RestoreDebugPropsOnReturnFromBuiltIns(ref exeblock, ref instructions);
+                        waspopped = RestoreDebugPropsOnReturnFromBuiltIns();
                     }
                 }
                 core.DebugProps.DebugEntryPC = currentPC;
@@ -2855,10 +2423,10 @@ namespace ProtoCore.DSASM
             // 
             bool waspopped = false;
 
-            bool isReplicating = false;
+            bool isReplicating;
             int exeblock = Constants.kInvalidIndex;
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kInvalidIndex;
+            int ci;
+            int fi;
 
             DebugFrame debugFrame = null;
             if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
@@ -2971,12 +2539,10 @@ namespace ProtoCore.DSASM
             }
 
             Validity.Assert(null != rmem);
-            rmem.Executable = exe;
-            rmem.ClassTable = exe.classTable;
         }
 
 
-        private bool HandleBreakpoint(List<Instruction> breakpoints, List<Instruction> runningInstructions, int currentPC, int exeblock)
+        private bool HandleBreakpoint(List<Instruction> breakpoints, List<Instruction> runningInstructions, int currentPC)
         {
             bool terminateExec = false;
             bool isBreakPoint = false;
@@ -3038,7 +2604,7 @@ namespace ProtoCore.DSASM
                     {
                         core.DebugProps.FirstStackFrame = null;
                     }
-                    throw new ProtoCore.Exceptions.DebugHalting(); 
+                    throw new DebugHalting(); 
                 }
             }
             return terminateExec;
@@ -3056,7 +2622,7 @@ namespace ProtoCore.DSASM
             if (StackFrameType.kTypeLanguage == type || StackFrameType.kTypeFunction == type)
             {
                 ResumeRegistersFromStack();
-                bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                bounceType = (CallingConvention.BounceType)TX.opdata;
             }
 
             SetupExecutive(exeblock, entry, language, breakpoints);
@@ -3107,7 +2673,7 @@ namespace ProtoCore.DSASM
                     executeInstruction.opCode == OpCode.CALLR ||
                     executeInstruction.opCode == OpCode.RETURN
                     || executeInstruction.opCode == OpCode.RETC;
-                if (restoreInstructionStream && isExplicitCall)
+                if (restoreInstructionStream && IsExplicitCall)
                 {
                     // The instruction stream list is updated on callr
                     instructions = istream.instrList;
@@ -3119,11 +2685,11 @@ namespace ProtoCore.DSASM
                 // Check if the current instruction is a return from a function call or constructor
 
                 DebugFrame tempFrame = null;
-                if (!isExplicitCall && (instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETURN || instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETC))
+                if (!IsExplicitCall && (instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETURN || instructions[core.DebugProps.DebugEntryPC].opCode == OpCode.RETC))
                 {
                     int ci, fi;
                     bool isReplicating;
-                    DebugFrame debugFrame = null;
+                    DebugFrame debugFrame;
                     DebugReturnFromFunctionCall(pc, ref exeblock, out ci, out fi, out isReplicating, out debugFrame);
 
                     instructions = istream.instrList;
@@ -3172,13 +2738,13 @@ namespace ProtoCore.DSASM
                     // The reference count of RX has been decreased in RETB
                     // instruction for inline conditional statement. 
                     GCRetain(RX);
-                    RestoreDebugPropsOnReturnFromBuiltIns(ref exeblock, ref instructions);
+                    RestoreDebugPropsOnReturnFromBuiltIns();
                     core.DebugProps.DebugEntryPC = pc;
                 }
 
                 core.Rmem = rmem;
 
-                bool terminateExec = HandleBreakpoint(breakpoints, instructions, pc, exeblock);
+                bool terminateExec = HandleBreakpoint(breakpoints, instructions, pc);
                 if (terminateExec)
                 {
                     break;
@@ -3194,7 +2760,7 @@ namespace ProtoCore.DSASM
 
         public void Execute(int exeblock, int entry, Language language = Language.kInvalid)
         {
-            SetupExecutive(exeblock, entry, language);
+            SetupExecutive(exeblock, entry);
 
             string engine = CoreUtils.GetLanguageString(language);
 
@@ -3248,23 +2814,9 @@ namespace ProtoCore.DSASM
 #endif
         }
 
-        public SymbolNode GetGlobalSymbolNode(string variable)
-        {
-            IEnumerable<SymbolNode> symbols = exe.runtimeSymbols[0].GetNodeForName(variable);
-            foreach (var symbol in symbols)
-            {
-                if (symbol.functionIndex == Constants.kGlobalScope &&
-                    symbol.classScope == Constants.kGlobalScope)
-                {
-                    return symbol;
-                }
-            }
-            return null;
-        }
-
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
         {
-            if (DSASM.Constants.kGlobalScope == classIndex)
+            if (Constants.kGlobalScope == classIndex)
             {
                 return exe.runtimeSymbols[blockId].symbolList[symbolIndex];
             }
@@ -3280,7 +2832,7 @@ namespace ProtoCore.DSASM
             return GetOperandData(-1, op1, op2);
         }
 
-        private StackValue GetOperandData(int blockId, StackValue opSymbol, StackValue opClass, int offset = 0)
+        private StackValue GetOperandData(int blockId, StackValue opSymbol, StackValue opClass)
         {
             StackValue data;
             switch (opSymbol.optype)
@@ -3344,19 +2896,21 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.VarIndex:
-                    data = rmem.GetStackData(blockId, (int)opSymbol.opdata, (int)opClass.opdata, offset);
+                    SymbolNode symbol = GetSymbolNode(blockId, (int)opClass.opdata, (int)opSymbol.opdata);
+                    data = rmem.GetSymbolValue(symbol);
                     break;
 
                 case AddressType.MemVarIndex:
-                    data = rmem.GetMemberData((int)opSymbol.opdata, (int)opClass.opdata);
+                    data = rmem.GetMemberData((int)opSymbol.opdata, (int)opClass.opdata, exe);
                     break;
 
                 case AddressType.StaticMemVarIndex:
-                    data = rmem.GetStackData(blockId, (int)opSymbol.opdata, Constants.kGlobalScope);
+                    SymbolNode staticMember = GetSymbolNode(blockId, Constants.kGlobalScope, (int)opSymbol.opdata);
+                    data = rmem.GetSymbolValue(staticMember);
                     break;
 
                 case AddressType.ThisPtr:
-                    data = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
+                    data = rmem.CurrentStackFrame.ThisPtr;
                     break;
 
                 default:
@@ -3378,10 +2932,10 @@ namespace ProtoCore.DSASM
         {
             int symbol = (int)op1.opdata;
             int scope = (int)op2.opdata;
-            SymbolNode node = null;
+            SymbolNode node;
             if (Constants.kGlobalScope == scope)
             {
-                node = core.DSExecutable.runtimeSymbols[block].symbolList[symbol];
+                node = exe.runtimeSymbols[block].symbolList[symbol];
             }
             else
             {
@@ -3407,7 +2961,10 @@ namespace ProtoCore.DSASM
             {
                 case AddressType.VarIndex:
                 case AddressType.MemVarIndex:
-                    opPrev = rmem.SetStackData(blockId, (int)op1.opdata, (int)op2.opdata, opVal);
+
+                    SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
+                    opPrev = rmem.GetSymbolValue(symbol);
+                    rmem.SetSymbolValue(symbol, opVal);
 
                     if (IsDebugRun())
                     {
@@ -3422,7 +2979,9 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.StaticMemVarIndex:
-                    opPrev = rmem.SetStackData(blockId, (int)op1.opdata, Constants.kGlobalScope, opVal);
+                    var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
+                    opPrev = rmem.GetSymbolValue(staticMember);
+                    rmem.SetSymbolValue(staticMember, opVal);
 
                     if (IsDebugRun())
                     {
@@ -3489,80 +3048,12 @@ namespace ProtoCore.DSASM
             return opPrev;
         }
 
-        private StackValue PopToIndexedArrayW(int blockId, int symbol, int classIndex, List<StackValue> dimlist, StackValue data)
-        {
-            int symindex = DSASM.Constants.kInvalidIndex;
-            SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbol);
-
-            Type t = symbolnode.staticType;
-
-            StackValue value = core.watchStack[symindex];
-            if (value.IsArray)
-            {
-                StackValue oldValue;
-
-                if (t.UID == (int)PrimitiveType.kTypeVar && t.rank == Constants.kArbitraryRank)
-                {
-                    oldValue = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
-                }
-                else
-                {
-                    int lhsRepCount = 0;
-                    foreach (var dim in dimlist)
-                    {
-                        if (dim.IsArray)
-                        {
-                            lhsRepCount++;
-                        }
-                    }
-
-                    if (t.rank > 0)
-                    {
-                        t.rank = t.rank - dimlist.Count;
-                        t.rank += lhsRepCount;
-
-                        if (t.rank < 0)
-                        {
-                            string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
-                        }
-                    }
-
-                    oldValue = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
-                }
-
-                return oldValue;
-            }
-            else if (value.IsString)
-            {
-                t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0);
-
-                return ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
-            }
-            else
-            {
-                if (symbolnode.staticType.rank == 0)
-                {
-                    rmem.SetAtSymbol(symbolnode, StackValue.Null);
-                    return value;
-                }
-                else
-                {
-                    StackValue array = rmem.BuildNullArray(0);
-                    GCRetain(array);
-                    rmem.SetAtSymbol(symbolnode, array);
-                    ArrayUtils.SetValueForIndex(array, 0, value, core);
-                    return ArrayUtils.SetValueForIndices(array, dimlist, data, t, core);
-                }
-            }
-        }
-
         protected StackValue PopToIndexedArray(int blockId, int symbol, int classIndex, List<StackValue> dimlist, StackValue data)
         {
             SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbol);
             Validity.Assert(symbolnode != null);
 
-            StackValue value = rmem.GetAtRelative(symbolnode);
+            StackValue value = rmem.GetSymbolValue(symbolnode);
             if (value.IsInvalid)
             {
                 value = StackValue.Null;
@@ -3590,8 +3081,8 @@ namespace ProtoCore.DSASM
 
                         if (t.rank < 0)
                         {
-                            string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
+                            string message = String.Format(WarningMessage.kSymbolOverIndexed, symbolnode.name);
+                            core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                         }
                     }
 
@@ -3608,14 +3099,14 @@ namespace ProtoCore.DSASM
             {
                 if (symbolnode.staticType.rank == 0)
                 {
-                    rmem.SetAtSymbol(symbolnode, StackValue.Null);
+                    rmem.SetSymbolValue(symbolnode, StackValue.Null);
                     return value;
                 }
                 else
                 {
-                    StackValue array = rmem.BuildNullArray(0);
+                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>(), null);
                     GCRetain(array);
-                    rmem.SetAtSymbol(symbolnode, array);
+                    rmem.SetSymbolValue(symbolnode, array);
                     if (!value.IsNull)
                     {
                         ArrayUtils.SetValueForIndex(array, 0, value, core);
@@ -3642,32 +3133,35 @@ namespace ProtoCore.DSASM
             return (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER) != 0;
         }
 
-        private void SetOperandData(StackValue opdest, Object stackdata = null, int blockId = Constants.kInvalidIndex)
+        private void SetOperandData(StackValue opdest, StackValue stackData, int blockId = Constants.kInvalidIndex)
         {
             switch (opdest.optype)
             {
                 case AddressType.VarIndex:
                 case AddressType.MemVarIndex:
                     Validity.Assert(false);
-                    rmem.SetStackData(0, (int)opdest.opdata, -1, stackdata);
+
+                    SymbolNode symbol = GetSymbolNode(0, Constants.kGlobalScope, (int)opdest.opdata);
+                    rmem.SetSymbolValue(symbol, stackData);
 
                     if (IsDebugRun())
                     {
-                        logWatchWindow(DSASM.Constants.kInvalidIndex, (int)opdest.opdata);
+                        logWatchWindow(Constants.kInvalidIndex, (int)opdest.opdata);
                         System.Console.ReadLine();
                     }
 
                     if (isGlobScope)
                     {
-                        logWatchWindow(DSASM.Constants.kInvalidIndex, (int)opdest.opdata);
+                        logWatchWindow(Constants.kInvalidIndex, (int)opdest.opdata);
                     }
                     break;
                 case AddressType.StaticMemVarIndex:
-                    rmem.SetStackData(blockId, (int)opdest.opdata, -1, stackdata);
+                    SymbolNode staticMember = GetSymbolNode(0, Constants.kGlobalScope, (int)opdest.opdata);
+                    rmem.SetSymbolValue(staticMember, stackData);
 
                     if (IsDebugRun())
                     {
-                        logWatchWindow(DSASM.Constants.kInvalidIndex, (int)opdest.opdata);
+                        logWatchWindow(Constants.kInvalidIndex, (int)opdest.opdata);
                         System.Console.ReadLine();
                     }
 
@@ -3677,17 +3171,9 @@ namespace ProtoCore.DSASM
                     }
                     break;
                 case AddressType.Register:
-                    {
-                        StackValue data;
-                        if (null == stackdata)
-                        {
-                            data = rmem.Pop();
-                        }
-                        else
-                        {
-                            data = (StackValue)stackdata;
-                        }
-
+                {
+                    StackValue data = stackData;
+                        
                         switch ((Registers)opdest.opdata)
                         {
                             case Registers.AX:
@@ -3734,12 +3220,12 @@ namespace ProtoCore.DSASM
         {
             // TODO Jun: hook this up to a runtime error handler            
             if (!condition)
-                throw new ProtoCore.Exceptions.RuntimeException(msg);
+                throw new RuntimeException(msg);
         }
 
         private StackValue GetFinalPointer(int depth, bool isDotFunctionBody = false)
         {
-            DSASM.RTSymbol[] rtSymbols = new DSASM.RTSymbol[depth];
+            RTSymbol[] rtSymbols = new RTSymbol[depth];
             bool isInvalidIdentList = false;
             for (int i = depth - 1; i >= 0; --i)
             {
@@ -3775,7 +3261,8 @@ namespace ProtoCore.DSASM
                         {
                             //push its dimension value
                             StackValue dimValArraySv = rmem.Pop();
-                            foreach (StackValue dimValSv in core.Heap.Heaplist[(int)dimValArraySv.opdata].Stack)
+                            HeapElement he = core.Heap.GetHeapElement(dimValArraySv);
+                            foreach (StackValue dimValSv in he.Stack)
                             {
                                 rmem.Push(dimValSv);
                             }
@@ -3833,7 +3320,7 @@ namespace ProtoCore.DSASM
             }
 
             int index = -1;
-            int ptr = (int)rtSymbols[0].Sv.opdata;
+            StackValue ptr = rtSymbols[0].Sv;
 
             // Traverse the heap until the last pointer
             int n;
@@ -3867,12 +3354,12 @@ namespace ProtoCore.DSASM
                 else
                 {
                     index = (int)rtSymbols[n].Sv.opdata;
-                    rtSymbols[n].Sv = core.Heap.Heaplist[ptr].Stack[index];
+                    rtSymbols[n].Sv = core.Heap.GetHeapElement(ptr).Stack[index];
                 }
 
                 // Once a pointer to the member is retrieved, get its indexed value
                 rtSymbols[n].Sv = GetIndexedArray(rtSymbols[n].Sv, rtSymbols[n].Dimlist);
-                ptr = (int)rtSymbols[n].Sv.opdata;
+                ptr = rtSymbols[n].Sv;
             }
 
             // Check the last pointer
@@ -3891,8 +3378,8 @@ namespace ProtoCore.DSASM
                 // Determine if we still need to move one more time on the heap
                 // Peek into the pointed data using nextPtr. 
                 // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
-                int nextPtr = (int)opVal.opdata;
-                var data = core.Heap.Heaplist[nextPtr].Stack[0];
+                StackValue nextPtr = opVal;
+                var data = core.Heap.GetHeapElement(nextPtr).Stack[0];
 
                 bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid;
                 if (isActualData)
@@ -3914,7 +3401,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3934,44 +3421,43 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
-            int ptr = (int)svPtr.opdata;
             int dimensions = dimList.Length;
             for (int n = 0; n < dimensions - 1; ++n)
             {
                 // TODO Jun: This means that variables are coerced to 32-bit when used as an array index
                 try
                 {
-                    StackValue array = core.Heap.Heaplist[ptr].GetValue(dimList[n], core);
+                    StackValue array = core.Heap.GetHeapElement(svPtr).GetValue(dimList[n], core);
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                         return StackValue.Null;
                     }
-                    ptr = (int)array.opdata;
+                    svPtr = array;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
-            StackValue sv = StackValue.Null;
+            StackValue sv;
             try
             {
-                sv = core.Heap.Heaplist[ptr].GetValue(dimList[dimensions - 1], core);
+                sv = core.Heap.GetHeapElement(svPtr).GetValue(dimList[dimensions - 1], core);
             }
             catch (ArgumentOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                 sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, RuntimeData.WarningMessage.kIndexOutOfRange);
+                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, WarningMessage.kIndexOutOfRange);
                 return StackValue.Null;
             }
             return sv;
@@ -4006,12 +3492,12 @@ namespace ProtoCore.DSASM
             {
                 if (op1.IsMemberVariableIndex)
                 {
-                    int thisptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
-                    thisArray = rmem.Heap.Heaplist[thisptr].Stack[stackindex];
+                    StackValue thisptr = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
+                    thisArray = rmem.Heap.GetHeapElement(thisptr).Stack[stackindex];
                 }
                 else
                 {
-                    thisArray = rmem.GetAtRelative(symbolNode);
+                    thisArray = rmem.GetSymbolValue(symbolNode);
                 }
             }
 
@@ -4048,21 +3534,16 @@ namespace ProtoCore.DSASM
             int classIndex = (int)op2.opdata;
 
             SymbolNode symbolNode = GetSymbolNode(blockId, classIndex, symbolIndex);
-            int stackindex = rmem.GetStackIndex(symbolNode);
             string varname = symbolNode.name;
 
             StackValue thisArray;
             if (op1.IsMemberVariableIndex)
             {
-                int thisptr = (int)rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr)).opdata;
-
-                // For member variables, the stackindex is absolute and needs no offset as this is found in the heap
-                stackindex = symbolNode.index;
-                thisArray = rmem.Heap.Heaplist[thisptr].Stack[stackindex];
-            }
+                thisArray = rmem.GetMemberData(symbolIndex, classIndex, exe);
+           }
             else
             {
-                thisArray = rmem.GetAtRelative(symbolNode);
+                thisArray = rmem.GetSymbolValue(symbolNode);
             }
 
             if (!thisArray.IsArray && !thisArray.IsString)
@@ -4164,10 +3645,10 @@ namespace ProtoCore.DSASM
 
             string procName = dynamicFunction.Name;
             int argumentNumber = dynamicFunction.ArgumentNumber;
-            List<ProtoCore.Type> arglist = new List<Type>();
+            List<Type> arglist = new List<Type>();
             for (int i = 0; i < argumentNumber; ++i)
             {
-                arglist.Add(new ProtoCore.Type());
+                arglist.Add(new Type());
             }
 
             if (procName == Constants.kFunctionPointerCall && depth == 0)
@@ -4177,7 +3658,7 @@ namespace ProtoCore.DSASM
                 StackValue fpSv = rmem.Pop();
                 if (!fpSv.IsFunctionPointer)
                 {
-                    rmem.Pop(argumentNumber); //remove the arguments
+                    rmem.PopFrame(argumentNumber); //remove the arguments
                     return false;
                 }
                 fptr = (int)fpSv.opdata;
@@ -4191,9 +3672,9 @@ namespace ProtoCore.DSASM
                 StackValue argArraySv = rmem.Pop();
                 for (int i = 0; i < ArrayUtils.GetElementSize(argArraySv, core); ++i)
                 {
-                    StackValue sv = core.Heap.Heaplist[(int)argArraySv.opdata].Stack[i];
+                    StackValue sv = core.Heap.GetHeapElement(argArraySv).Stack[i];
                     argSvList.Add(sv); //actual arguments
-                    ProtoCore.Type paramType = new ProtoCore.Type();
+                    Type paramType = new Type();
                     paramType.UID = sv.metaData.type;
                     paramType.rank = 0;
                     if (sv.IsArray)
@@ -4202,17 +3683,16 @@ namespace ProtoCore.DSASM
                         while (paramSv.IsArray)
                         {
                             paramType.rank++;
-                            int arrayHeapPtr = (int)paramSv.opdata;
-                            var he = core.Heap.Heaplist[arrayHeapPtr];
+                            var he = core.Heap.GetHeapElement(paramSv);
 
                             if (he.VisibleItems.Any())
                             {
                                 paramSv = he.VisibleItems.First();
-                                paramType.UID = (int)paramSv.metaData.type;
+                                paramType.UID = paramSv.metaData.type;
                             }
                             else
                             {
-                                paramType.UID = (int)ProtoCore.PrimitiveType.kTypeArray;
+                                paramType.UID = (int)PrimitiveType.kTypeArray;
                                 break;
                             }
                         }
@@ -4229,7 +3709,7 @@ namespace ProtoCore.DSASM
                     argSvList.Add(argSv);
                 }
             }
-            int lefttype = DSASM.Constants.kGlobalScope;
+            int lefttype = Constants.kGlobalScope;
             bool isLeftClass = false;
             if (isDotMemFuncBody && rmem.Stack.Last().IsInteger) //constructor or static function
             {
@@ -4243,7 +3723,7 @@ namespace ProtoCore.DSASM
                 StackValue pSv = GetFinalPointer(depth);
                 //push the resolved stack value to stack
                 rmem.Push(pSv);
-                lefttype = (int)pSv.metaData.type;
+                lefttype = pSv.metaData.type;
             }
 
             int type = lefttype;
@@ -4252,7 +3732,7 @@ namespace ProtoCore.DSASM
             {
                 // check whether it is function pointer, this checking is done at runtime to handle the case
                 // when turning on converting dot operator to function call
-                if (!((int)ProtoCore.PrimitiveType.kTypeVoid == type
+                if (!((int)PrimitiveType.kTypeVoid == type
                     || Constants.kInvalidIndex == type
                     || core.ClassTable.ClassNodes[type].symbols == null))
                 {
@@ -4260,7 +3740,7 @@ namespace ProtoCore.DSASM
                     AddressType addressType;
                     SymbolNode node = null;
                     bool isStatic = false;
-                    int symbolIndex = core.ClassTable.ClassNodes[type].GetSymbolIndex(procName, type, DSASM.Constants.kGlobalScope, core.RunningBlock, core, out hasThisSymbol, out addressType);
+                    int symbolIndex = core.ClassTable.ClassNodes[type].GetSymbolIndex(procName, type, Constants.kGlobalScope, core.RunningBlock, core, out hasThisSymbol, out addressType);
                     if (Constants.kInvalidIndex != symbolIndex)
                     {
                         if (addressType == AddressType.StaticMemVarIndex)
@@ -4289,8 +3769,8 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            int ptr = (int)rmem.Stack.Last().opdata;
-                            fpSv = core.Heap.Heaplist[ptr].Stack[(int)fpSv.opdata];
+                            StackValue ptr = rmem.Stack.Last();
+                            fpSv = core.Heap.GetHeapElement(ptr).Stack[(int)fpSv.opdata];
                         }
                         //assuming the dimension is zero, as funtion call with nonzero dimension is not supported yet
 
@@ -4309,8 +3789,7 @@ namespace ProtoCore.DSASM
                             // Determine if we still need to move one more time on the heap
                             // Peek into the pointed data using nextPtr. 
                             // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
-                            int nextPtr = (int)fpSv.opdata;
-                            var data = core.Heap.Heaplist[nextPtr].Stack[0];
+                            var data = core.Heap.GetHeapElement(fpSv).Stack[0];
 
                             bool isActualData = !data.IsPointer && 
                                                 !data.IsArray && 
@@ -4332,10 +3811,10 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            ProtoCore.DSASM.ProcedureNode procNode = null;
+            ProcedureNode procNode = null;
             if (isFunctionPointerCall)
             {
-                ProtoCore.DSASM.FunctionPointerNode fptrNode;
+                FunctionPointerNode fptrNode;
                 if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
                 {
                     int blockId = fptrNode.blockId;
@@ -4367,7 +3846,7 @@ namespace ProtoCore.DSASM
                 {
                     int realType;
                     bool isAccessible;
-                    ProtoCore.DSASM.ProcedureNode memProcNode = core.ClassTable.ClassNodes[type].GetMemberFunction(procName, arglist, classIndex, out isAccessible, out realType);
+                    ProcedureNode memProcNode = core.ClassTable.ClassNodes[type].GetMemberFunction(procName, arglist, classIndex, out isAccessible, out realType);
 
                     if (memProcNode == null)
                     {
@@ -4441,7 +3920,7 @@ namespace ProtoCore.DSASM
         {
             if ((core.ExecMode != InterpreterMode.kExpressionInterpreter))
             {
-                rmem.Heap.GCRelease(new StackValue[] { sv }, this);
+                rmem.Heap.GCRelease(new [] { sv }, this);
             }
         }
 
@@ -4463,7 +3942,7 @@ namespace ProtoCore.DSASM
         }
 
         // GC for local code blocks if,for,while
-        public void GCCodeBlock(int blockId, int functionIndex = DSASM.Constants.kGlobalScope, int classIndex = DSASM.Constants.kInvalidIndex)
+        public void GCCodeBlock(int blockId, int functionIndex = Constants.kGlobalScope, int classIndex = Constants.kInvalidIndex)
         {
             foreach (SymbolNode sn in exe.runtimeSymbols[blockId].symbolList.Values)
             {   
@@ -4487,7 +3966,7 @@ namespace ProtoCore.DSASM
                 {
                     int offset = sn.index;
                     int n = offset;
-                    if (sn.absoluteFunctionIndex != DSASM.Constants.kGlobalScope)
+                    if (sn.absoluteFunctionIndex != Constants.kGlobalScope)
                     {
                         // Comment Jun: We only want the relative offset if a variable is in a function
                         n = rmem.GetRelative(rmem.GetStackIndex(offset));
@@ -4552,7 +4031,7 @@ namespace ProtoCore.DSASM
 
                 int offset = symbol.index;
                 int n = offset;
-                if (symbol.absoluteFunctionIndex != DSASM.Constants.kGlobalScope)
+                if (symbol.absoluteFunctionIndex != Constants.kGlobalScope)
                 {
                     // Comment Jun: We only want the relative offset if a variable is in a function
                     n = rmem.GetRelative(rmem.GetStackIndex(offset));
@@ -4562,22 +4041,19 @@ namespace ProtoCore.DSASM
                 {
                     GCRelease(rmem.Stack[n]);
                 }
-            }
+           }
         }
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
-            ProcedureNode pn = null;
-            SymbolTable st = null;
+            SymbolTable st;
             List<StackValue> ptrList = new List<StackValue>();
-            if (DSASM.Constants.kInvalidIndex == classIndex)
+            if (Constants.kInvalidIndex == classIndex)
             {
-                pn = exe.procedureTable[blockId].procList[functionIndex];
                 st = core.CompleteCodeBlockList[blockId].symbolTable;
             }
             else
             {
-                pn = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex];
                 st = exe.classTable.ClassNodes[classIndex].symbols;
             }
 
@@ -4598,7 +4074,7 @@ namespace ProtoCore.DSASM
 
                 if (allowGC)
                 {
-                    StackValue sv = rmem.GetAtRelative(symbol);
+                    StackValue sv = rmem.GetSymbolValue(symbol);
                     if (sv.IsPointer || sv.IsArray)
                     {
                         ptrList.Add(sv);
@@ -4697,24 +4173,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        /*
-        public int GetPreviousFramePointer(int offset)
-        {
-            int ptr = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexThisPtr).opdata;
-            int ci = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexFunction).opdata;
-            int blockId = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexFunctionBlock).opdata;
-
-            int localVars = 0;
-            int paramCount = 0;
-            GetLocalAndParamCount(blockId, ci, fi, out localVars, out paramCount);
-            int localCount = localVars + paramCount;
-
-
-            return rmem.Stack.Count - StackFrame.kStackFrameSize - localCount - paramCount - offset;
-        }
-         * */
-
         public List<List<ReplicationGuide>> GetCachedReplicationGuides(Core core, int argumentCount)
         {
             int index = core.replicationGuides.Count - argumentCount;
@@ -4729,16 +4187,7 @@ namespace ProtoCore.DSASM
 
         #region Opcode Handlers
 
-        private void NONE_Handler(Instruction instruction)
-        {
-
-        }
-
-        private void END_Handler(Instruction instruction)
-        {
-
-        }
-        private void ALLOC_Handler(Instruction instruction)
+        private void ALLOC_Handler()
         {
             throw new NotImplementedException();
         }
@@ -4748,15 +4197,9 @@ namespace ProtoCore.DSASM
             fepRunStack.Push(fepRun);
             runtimeVerify(instruction.op1.IsClassIndex);
             int type = (int)instruction.op1.opdata;
-            int ptr = Constants.kInvalidPointer;
-            lock (core.Heap.cslock)
-            {
-                ptr = core.Heap.Allocate(exe.classTable.ClassNodes[type].size);
-            }
-
             MetaData metadata;
             metadata.type = type;
-            StackValue pointer = StackValue.BuildPointer(ptr, metadata);
+            StackValue pointer = core.Heap.AllocatePointer(exe.classTable.ClassNodes[type].size, metadata);
             rmem.SetAtRelative(StackFrame.kFrameIndexThisPtr, pointer);
 
             // Increase reference count here to avoid that in the 
@@ -4765,28 +4208,6 @@ namespace ProtoCore.DSASM
             GCRetain(pointer);
 
             ++pc;
-            return;
-        }
-
-        private void ALLOCM_Handler(Instruction instruction)
-        {
-            runtimeVerify(instruction.op1.IsMemberVariableIndex);
-            int offset = (int)instruction.op1.opdata;
-            int ptr = -1;
-
-            lock (core.Heap.cslock)
-            {
-                ptr = core.Heap.Allocate(Constants.kPointerSize);
-            }
-
-            int thisptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
-
-            lock (core.Heap.cslock)
-            {
-                core.Heap.Heaplist[thisptr].Stack[offset] = StackValue.BuildPointer(ptr);
-            }
-            ++pc;
-            return;
         }
 
         private void PUSH_Handler(Instruction instruction)
@@ -4794,7 +4215,7 @@ namespace ProtoCore.DSASM
             int dimensions = 0;
             bool objectIndexing = false;
 
-            int blockId = DSASM.Constants.kInvalidIndex;
+            int blockId = Constants.kInvalidIndex;
             StackValue op1 = instruction.op1;
 
             if (op1.IsVariableIndex ||
@@ -4877,14 +4298,12 @@ namespace ProtoCore.DSASM
             }
 
             ++pc;
-            return;
         }
-
 
         private void PUSHW_Handler(Instruction instruction)
         {
             int dimensions = 0;
-            int blockId = DSASM.Constants.kInvalidIndex;
+            int blockId = Constants.kInvalidIndex;
 
             StackValue op1 = instruction.op1;
             StackValue op2 = instruction.op2;
@@ -4932,7 +4351,6 @@ namespace ProtoCore.DSASM
                 core.Rmem.FramePointer = fp;
 
             ++pc;
-            return;
         }
 
         private void PUSHINDEX_Handler(Instruction instruction)
@@ -4970,7 +4388,7 @@ namespace ProtoCore.DSASM
                 {
                     StackValue svGuideProperty = rmem.Pop();
                     runtimeVerify(svGuideProperty.IsBoolean);
-                    bool isLongest = (int)svGuideProperty.opdata == 1 ? true : false;
+                    bool isLongest = (int)svGuideProperty.opdata == 1;
 
                     StackValue svGuide = rmem.Pop();
                     runtimeVerify(svGuide.IsInteger);
@@ -4984,15 +4402,15 @@ namespace ProtoCore.DSASM
             }
 
             ++pc;
-            return;
         }
+
         private void PUSHG_Handler(Instruction instruction)
         {
             if (core.Options.TempReplicationGuideEmptyFlag)
             {
                 int dimensions = 0;
                 int guides = 0;
-                int blockId = DSASM.Constants.kInvalidIndex;
+                int blockId = Constants.kInvalidIndex;
 
                 StackValue op1 = instruction.op1;
                 if (op1.IsVariableIndex ||
@@ -5028,7 +4446,7 @@ namespace ProtoCore.DSASM
                     {
                         StackValue svGuideProperty = rmem.Pop();
                         runtimeVerify(svGuideProperty.IsBoolean);
-                        bool isLongest = (int)svGuideProperty.opdata == 1 ? true : false;
+                        bool isLongest = (int)svGuideProperty.opdata == 1;
 
                         StackValue svGuide = rmem.Pop();
                         runtimeVerify(svGuide.IsInteger);
@@ -5073,7 +4491,7 @@ namespace ProtoCore.DSASM
             {
                 int dimensions = 0;
                 int guides = 0;
-                int blockId = DSASM.Constants.kInvalidIndex;
+                int blockId = Constants.kInvalidIndex;
 
                 StackValue op1 = instruction.op1;
                 if (op1.IsVariableIndex ||
@@ -5109,7 +4527,7 @@ namespace ProtoCore.DSASM
                     {
                         StackValue svGuideProperty = rmem.Pop();
                         runtimeVerify(svGuideProperty.IsBoolean);
-                        bool isLongest = (int)svGuideProperty.opdata == 1 ? true : false;
+                        bool isLongest = (int)svGuideProperty.opdata == 1;
 
                         StackValue svGuide = rmem.Pop();
                         runtimeVerify(svGuide.IsInteger);
@@ -5146,7 +4564,6 @@ namespace ProtoCore.DSASM
             }
 
             ++pc;
-            return;
         }
 
         private void PUSHB_Handler(Instruction instruction)
@@ -5156,17 +4573,15 @@ namespace ProtoCore.DSASM
                 core.Rmem.PushConstructBlockId((int)instruction.op1.opdata);
             }
             ++pc;
-            return;
         }
 
-        private void POPB_Handler(Instruction instruction)
+        private void POPB_Handler()
         {
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
                 core.Rmem.PopConstructBlockId();
             }
             ++pc;
-            return;
         }
 
         private void PUSHM_Handler(Instruction instruction)
@@ -5189,7 +4604,6 @@ namespace ProtoCore.DSASM
             }
 
             ++pc;
-            return;
         }
         private void PUSHLIST_Handler(Instruction instruction)
         {
@@ -5212,7 +4626,6 @@ namespace ProtoCore.DSASM
             rmem.Push(sv);
 
             ++pc;
-            return;
         }
 
         private void PUSH_VARSIZE_Handler(Instruction instruction)
@@ -5230,37 +4643,48 @@ namespace ProtoCore.DSASM
             SymbolNode snode = GetSymbolNode(blockId, classIndex, symbolIndex);
             runtimeVerify(null != snode);
 
-            StackValue array = rmem.GetAtRelative(snode);
+            StackValue svArrayToIterate = rmem.GetSymbolValue(snode);
 
-            if (!array.IsArray && snode.datatype.IsIndexable)
-            {
-                array = core.Heap.Heaplist[(int)array.opdata].Stack[0];
-            }
-
+            // Check if the array to iterate is a valid array
             StackValue key = StackValue.Null;
-            HeapElement he = ArrayUtils.GetHeapElement(array, core);
-            if (he != null)
+            if (svArrayToIterate.IsArray)
             {
-                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
+                HeapElement he = ArrayUtils.GetHeapElement(svArrayToIterate, core);
+                Validity.Assert(he != null);
+                bool arrayHasElement = he.VisibleItems.Any();
+                bool dictionaryHasElement = he.Dict != null && he.Dict.Count > 0;
+                if (arrayHasElement || dictionaryHasElement)
                 {
-                    key = StackValue.BuildArrayKey(array, 0);
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                }
+                else
+                {
+                    // svArrayToIterate has no elements 
+                    key = StackValue.Null;
                 }
             }
-            else if (!array.IsNull)
+            else
             {
-                key = StackValue.BuildArrayKey(Constants.kInvalidIndex, Constants.kInvalidIndex);
+                // Handle the case if svArrayToIterate is not an array
+                if (svArrayToIterate.IsNull)
+                {
+                    key = StackValue.Null;
+                }
+                else
+                {
+                    // svArrayToIterate is not an array and is non-null, build the default key
+                    key = StackValue.BuildArrayKey(Constants.kInvalidIndex, Constants.kInvalidIndex);
+                }
             }
-            rmem.Push(key);
-
+            rmem.Push(key); 
             ++pc;
-            return;
         }
 
         protected StackValue POP_helper(Instruction instruction, out int blockId, out int dimensions)
         {
             dimensions = 0;
-            blockId = DSASM.Constants.kInvalidIndex;
-            int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
+            blockId = Constants.kInvalidIndex;
+            int staticType = (int)PrimitiveType.kTypeVar;
             int rank = Constants.kArbitraryRank;
             bool objectIndexing = false;
 
@@ -5271,7 +4695,7 @@ namespace ProtoCore.DSASM
 
                 StackValue svType = rmem.Pop();
                 runtimeVerify(svType.IsStaticType);
-                staticType = (int)svType.metaData.type;
+                staticType = svType.metaData.type;
                 rank = (int)svType.opdata;
 
                 StackValue svDim = rmem.Pop();
@@ -5420,9 +4844,13 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (!isSSANode && rmem.Heap.IsTemporaryPointer(svData))
+            if (!isSSANode && svData.IsReferenceType)
             {
-                GCRelease(svData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svData);
+                }
             }
 
             ++pc;
@@ -5431,16 +4859,16 @@ namespace ProtoCore.DSASM
 
         protected virtual void POP_Handler(Instruction instruction)
         {
-            int blockId = DSASM.Constants.kInvalidIndex;
-            int dimensions = 0;
+            int blockId;
+            int dimensions;
             POP_helper(instruction, out blockId, out dimensions);
         }
 
         private void POPW_Handler(Instruction instruction)
         {
             int dimensions = 0;
-            int blockId = DSASM.Constants.kInvalidIndex;
-            int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
+            int blockId = Constants.kInvalidIndex;
+            int staticType = (int)PrimitiveType.kTypeVar;
             int rank = Constants.kArbitraryRank;
             if (instruction.op1.IsVariableIndex ||
                 instruction.op1.IsPointer ||
@@ -5499,15 +4927,19 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (rmem.Heap.IsTemporaryPointer(svData))
+            if (svData.IsReferenceType)
             {
-                GCRelease(svData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svData);
+                }
             }
+
             ++pc;
-            return;
         }
 
-        private void POPG_Handler(Instruction instruction)
+        private void POPG_Handler()
         {
             StackValue svNumGuides = rmem.Pop();
             runtimeVerify(svNumGuides.IsReplicationGuide);
@@ -5518,7 +4950,7 @@ namespace ProtoCore.DSASM
             {
                 StackValue svGuideProperty = rmem.Pop();
                 runtimeVerify(svGuideProperty.IsBoolean);
-                bool isLongest = (int)svGuideProperty.opdata == 1 ? true : false;
+                bool isLongest = (int)svGuideProperty.opdata == 1;
 
                 StackValue svGuide = rmem.Pop();
                 runtimeVerify(svGuide.IsInteger);
@@ -5531,7 +4963,6 @@ namespace ProtoCore.DSASM
             core.replicationGuides.Add(argGuides);
 
             ++pc;
-            return;
         }
 
         protected StackValue POPM_Helper(Instruction instruction, out int blockId, out int classIndex)
@@ -5589,9 +5020,13 @@ namespace ProtoCore.DSASM
                     GCRelease(EX);
                 }
 
-                if (rmem.Heap.IsTemporaryPointer(svData))
+                if (svData.IsReferenceType)
                 {
-                    GCRelease(svData);
+                    var dataHeapElement = rmem.Heap.GetHeapElement(svData);
+                    if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                    {
+                        GCRelease(svData);
+                    }
                 }
 
                 ++pc;
@@ -5607,13 +5042,12 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
+            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
             runtimeVerify(svThis.IsPointer);
-            int thisptr = (int)svThis.opdata;
-            StackValue svProperty = core.Heap.Heaplist[thisptr].Stack[stackIndex];
+            StackValue svProperty = core.Heap.GetHeapElement(svThis).Stack[stackIndex];
 
             StackValue svOldData = svData;
-            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
             if (staticType != (int)PrimitiveType.kTypeFunctionPointer)
             {
                 if (dimensions == 0)
@@ -5647,8 +5081,8 @@ namespace ProtoCore.DSASM
 
                                 if (targetType.rank < 0)
                                 {
-                                    string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
-                                    core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
+                                    string message = String.Format(WarningMessage.kSymbolOverIndexed, symbolnode.name);
+                                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                                 }
                             }
 
@@ -5663,66 +5097,48 @@ namespace ProtoCore.DSASM
                 if (svData.IsPointer || svData.IsArray)
                 {
                     // Assign the src pointer directily to this property
-                    lock (core.Heap.cslock)
-                    {
-                        // TODO Jun: Implement gcUpdate here
-                        GCRelease(svProperty);
-                        core.Heap.Heaplist[thisptr].Stack[stackIndex] = svData;
-                    }
+                    GCRelease(svProperty);
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
                 }
                 else
                 {
                     GCRelease(svProperty);
 
-                    lock (core.Heap.cslock)
-                    {
-                        int ptr = core.Heap.Allocate(DSASM.Constants.kPointerSize);
-                        core.Heap.Heaplist[ptr].Stack[0] = svData;
+                    StackValue svNewProperty = core.Heap.AllocatePointer(new [] { svData });
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    GCRetain(svNewProperty);
 
-                        StackValue svNewProperty = StackValue.BuildPointer(ptr);
-                        core.Heap.Heaplist[thisptr].Stack[stackIndex] = svNewProperty;
-                        GCRetain(svNewProperty);
-
-                        exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = ptr;
-                    }
+                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
             else if (svProperty.IsArray && (dimensions > 0))
             {
-                lock (core.Heap.cslock)
-                {
-                    EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
-                    GCRelease(EX);
-                }
+                EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
+                GCRelease(EX);
             }
             else // This property has NOT been allocated
             {
                 if (svData.IsPointer || svData.IsArray)
                 {
-                    lock (core.Heap.cslock)
-                    {
-                        core.Heap.Heaplist[thisptr].Stack[stackIndex] = svData;
-                    }
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
                 }
                 else
                 {
-                    lock (core.Heap.cslock)
-                    {
-                        int ptr = core.Heap.Allocate(DSASM.Constants.kPointerSize);
-                        core.Heap.Heaplist[ptr].Stack[0] = svData;
+                    StackValue svNewProperty = core.Heap.AllocatePointer(new [] {svData});
+                    core.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    GCRetain(svNewProperty);
 
-                        StackValue svNewProperty = StackValue.BuildPointer(ptr);
-                        core.Heap.Heaplist[thisptr].Stack[stackIndex] = svNewProperty;
-                        GCRetain(svNewProperty);
-
-                        exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = ptr;
-                    }
+                    exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
             }
 
-            if (!isSSANode && rmem.Heap.IsTemporaryPointer(svOldData))
+            if (!isSSANode && svOldData.IsReferenceType)
             {
-                GCRelease(svOldData);
+                var dataHeapElement = rmem.Heap.GetHeapElement(svOldData);
+                if (dataHeapElement.Active && dataHeapElement.Refcount == 0)
+                {
+                    GCRelease(svOldData);
+                }
             }
 
             ++pc;
@@ -5752,7 +5168,7 @@ namespace ProtoCore.DSASM
             int blockId = (int)instruction.op3.opdata;
             // TODO(Jun/Jiong): Find a more reliable way to update the current block Id
             //core.DebugProps.CurrentBlockId = blockId;
-            DSASM.RTSymbol[] listInfo = new RTSymbol[depth];
+            RTSymbol[] listInfo = new RTSymbol[depth];
             for (int n = 0; n < depth; ++n)
             {
                 listInfo[n].Sv = rmem.Pop();
@@ -5799,13 +5215,13 @@ namespace ProtoCore.DSASM
                     if (listInfo[n].Sv.IsStaticVariableIndex)
                         finalPointer = listInfo[n].Sv = GetOperandData(blockId, listInfo[n].Sv, new StackValue());
                     else
-                        finalPointer = listInfo[n].Sv = core.Heap.Heaplist[(int)finalPointer.opdata].Stack[(int)listInfo[n].Sv.opdata];
+                        finalPointer = listInfo[n].Sv = core.Heap.GetHeapElement(finalPointer).Stack[(int)listInfo[n].Sv.opdata];
                 }
                 if (listInfo[n].Dimlist != null)
                 {
                     for (int d = listInfo[n].Dimlist.Length - 1; d >= 0; --d)
                     {
-                        finalPointer = listInfo[n].Sv = core.Heap.Heaplist[(int)finalPointer.opdata].GetValue(listInfo[n].Dimlist[d], core);
+                        finalPointer = listInfo[n].Sv = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[n].Dimlist[d], core);
                     }
                 }
             }
@@ -5833,7 +5249,7 @@ namespace ProtoCore.DSASM
                             ++pc;
                             return;
                         }
-                        tryPointer = core.Heap.Heaplist[(int)finalPointer.opdata].Stack[listInfo[0].Sv.opdata];
+                        tryPointer = core.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata];
                     }
                 }
                 else if (listInfo[0].Sv.IsStaticVariableIndex)
@@ -5844,7 +5260,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    tryPointer = core.Heap.Heaplist[(int)finalPointer.opdata].Stack[listInfo[0].Sv.opdata];
+                    tryPointer = core.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata];
                 }
             }
             else
@@ -5856,71 +5272,56 @@ namespace ProtoCore.DSASM
             {
                 finalPointer = tryPointer;
                 for (int d = listInfo[0].Dimlist.Length - 1; d >= 1; --d)
-                    finalPointer = core.Heap.Heaplist[(int)finalPointer.opdata].GetValue(listInfo[0].Dimlist[d], core);
-                tryPointer = core.Heap.Heaplist[(int)finalPointer.opdata].GetValue(listInfo[0].Dimlist[0], core);
+                    finalPointer = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[d], core);
+                tryPointer = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
             }
 
             if (tryPointer.IsNull)
             { //do nothing
             }
-            else if (core.Heap.Heaplist[(int)tryPointer.opdata].Stack.Length == 1 &&
-                !core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0].IsPointer &&
-                !core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0].IsArray)
+            else if (core.Heap.GetHeapElement(tryPointer).Stack.Length == 1 &&
+                !core.Heap.GetHeapElement(tryPointer).Stack[0].IsPointer &&
+                !core.Heap.GetHeapElement(tryPointer).Stack[0].IsArray)
             {
                 // TODO Jun:
                 // Spawn GC here
 
-                lock (core.Heap.cslock)
-                {
-                    // Setting a primitive
-                    DX = core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0];
-                    core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0] = data;
-                    // GCPointer(DX); No need to spawn GC here, the data been replaced is not a pointer or array
-                }
+                // Setting a primitive
+                DX = core.Heap.GetHeapElement(tryPointer).Stack[0];
+                core.Heap.GetHeapElement(tryPointer).Stack[0] = data;
             }
             else if (finalPointer.IsPointer || data.IsNull)
             {
                 if (data.IsNull)
                 {
-                    int ptr = core.Heap.Allocate(1);
-                    lock (core.Heap.cslock)
-                    {
-                        core.Heap.Heaplist[ptr].Stack = new[] { data };
-                        data = StackValue.BuildPointer(ptr);
-                        // TODO Jun/Jiong,  write test case for this
-                        GCRetain(data);
-                    }
+                    StackValue ptr = core.Heap.AllocatePointer(new [] { data });
+                    GCRetain(data);
                 }
-                lock (core.Heap.cslock)
-                {
-                    // Setting a pointer
-                    int idx = (int)listInfo[0].Sv.opdata;
-                    DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, core);
-                    GCRelease(DX);
-                    core.Heap.Heaplist[(int)finalPointer.opdata].Stack[listInfo[0].Sv.opdata] = data;
-                }
+
+                // Setting a pointer
+                int idx = (int)listInfo[0].Sv.opdata;
+                DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, core);
+                GCRelease(DX);
+                core.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata] = data;
             }
             else
             {
                 // TODO Jun:
                 // Spawn GC here
                 runtimeVerify(finalPointer.IsArray);
-                lock (core.Heap.cslock)
-                {
-                    // Setting an array
-                    DX = core.Heap.Heaplist[(int)finalPointer.opdata].GetValue(listInfo[0].Dimlist[0], core);
-                    GCRelease(DX);
-                    core.Heap.Heaplist[(int)finalPointer.opdata].SetValue(listInfo[0].Dimlist[0], data);
-                }
+
+                // Setting an array
+                DX = core.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
+                GCRelease(DX);
+                core.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
             }
 
             ++pc;
-            return;
         }
+
         private void MOV_Handler(Instruction instruction)
         {
-            int dimensions = 0;
-            int blockId = DSASM.Constants.kInvalidIndex;
+            int blockId = Constants.kInvalidIndex;
             if (instruction.op2.IsVariableIndex ||
                 instruction.op2.IsMemberVariableIndex ||
                 instruction.op2.IsPointer ||
@@ -5928,7 +5329,6 @@ namespace ProtoCore.DSASM
             {
                 StackValue svDim = rmem.Pop();
                 runtimeVerify(svDim.IsArrayDimension);
-                dimensions = (int)svDim.opdata;
 
                 StackValue svBlock = rmem.Pop();
                 runtimeVerify(svBlock.IsBlockIndex);
@@ -5940,7 +5340,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata1);
 
             ++pc;
-            return;
         }
 
         private void ADD_Handler(Instruction instruction)
@@ -5999,7 +5398,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void SUB_Handler(Instruction instruction)
@@ -6017,15 +5415,10 @@ namespace ProtoCore.DSASM
                 double value2 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
                 opdata2 = StackValue.BuildDouble(value1 - value2);
             }
-            else
-            {
-                opdata1 = StackValue.Null;
-            }
 
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void MUL_Handler(Instruction instruction)
@@ -6051,7 +5444,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void DIV_Handler(Instruction instruction)
@@ -6074,7 +5466,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void MOD_Handler(Instruction instruction)
@@ -6094,84 +5485,8 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
-        private void BITAND_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if (opdata1.IsInteger && opdata2.IsInteger)
-            {
-                opdata2.opdata &= opdata1.opdata;
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
-
-        private void BITOR_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if (opdata1.IsInteger && opdata2.IsInteger)
-            {
-                opdata2.opdata |= opdata1.opdata;
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
-        private void BITXOR_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if (opdata1.IsInteger && opdata2.IsInteger)
-            {
-                opdata2 = StackValue.BuildInt(opdata2.RawIntValue ^ opdata1.RawIntValue);
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
-        private void NEGATE_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
-            if (opdata1.IsInteger)
-            {
-                opdata1.opdata = ~opdata1.opdata;
-            }
-            else
-            {
-                opdata1 = StackValue.Null;
-            }
-
-            SetOperandData(instruction.op1, opdata1);
-
-            ++pc;
-            return;
-        }
+       
         private void NEG_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -6190,8 +5505,8 @@ namespace ProtoCore.DSASM
 
             SetOperandData(instruction.op1, opdata1);
             ++pc;
-            return;
         }
+
         private void AND_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
@@ -6210,8 +5525,8 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
+
         private void OR_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
@@ -6231,8 +5546,8 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
+
         private void NOT_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -6240,14 +5555,14 @@ namespace ProtoCore.DSASM
             opdata1 = opdata1.ToBoolean(core);
             if (!opdata1.IsNull)
             {
-                opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L ? true : false);
+                opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L);
             }
 
             SetOperandData(instruction.op1, opdata1);
 
             ++pc;
-            return;
         }
+
         private void EQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
@@ -6296,7 +5611,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void NQ_Handler(Instruction instruction)
@@ -6340,7 +5654,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void GT_Handler(Instruction instruction)
@@ -6361,7 +5674,6 @@ namespace ProtoCore.DSASM
 
             SetOperandData(instruction.op1, opdata2);
             ++pc;
-            return;
         }
         
         private void LT_Handler(Instruction instruction)
@@ -6383,7 +5695,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void GE_Handler(Instruction instruction)
@@ -6412,7 +5723,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
         
         private void LE_Handler(Instruction instruction)
@@ -6441,7 +5751,6 @@ namespace ProtoCore.DSASM
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
-            return;
         }
 
         private void ALLOCA_Handler(Instruction instruction)
@@ -6449,7 +5758,7 @@ namespace ProtoCore.DSASM
             StackValue op1 = instruction.op1;
             runtimeVerify(op1.IsInteger || op1.IsRegister);
 
-            int size = DSASM.Constants.kInvalidIndex;
+            int size;
             if (op1.IsInteger)
             {
                 size = (int)op1.opdata; //Number of the elements in the array
@@ -6461,8 +5770,17 @@ namespace ProtoCore.DSASM
                 size = (int)arraySize.opdata;
             }
 
-            runtimeVerify(DSASM.Constants.kInvalidIndex != size);
-            StackValue pointer = rmem.BuildArrayFromStack(size);
+            runtimeVerify(Constants.kInvalidIndex != size);
+
+            StackValue[] svs = new StackValue[size];
+            for (int i = size - 1; i >= 0; i--)
+            {
+                StackValue value = rmem.Pop();
+                GCRetain(value);
+                svs[i] = value;
+            }
+            StackValue pointer = rmem.Heap.AllocateArray(svs);
+
             if (instruction.op2.IsString)
             {
                 pointer = StackValue.BuildString(pointer.opdata);
@@ -6470,12 +5788,12 @@ namespace ProtoCore.DSASM
             rmem.Push(pointer);
 
             ++pc;
-            return;
         }
+
         private void BOUNCE_Handler(Instruction instruction)
         {
             // We disallow language blocks inside watch window currently - pratapa
-            Validity.Assert(DSASM.InterpreterMode.kExpressionInterpreter != Core.ExecMode);
+            Validity.Assert(InterpreterMode.kExpressionInterpreter != Core.ExecMode);
 
             runtimeVerify(instruction.op1.IsBlockIndex);
             int blockId = (int)instruction.op1.opdata;
@@ -6517,7 +5835,15 @@ namespace ProtoCore.DSASM
             core.ExceptionHandlingManager.SwitchContextTo(blockId, fi, ci, pc);
 #endif
 
-            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
+            StackValue svThisPtr;
+            if (rmem.CurrentStackFrame == null)
+            {
+                svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
+            }
+            else
+            {
+                svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+            }
             int returnAddr = pc + 1;
 
             Validity.Assert(Constants.kInvalidIndex != executingBlock);
@@ -6530,8 +5856,8 @@ namespace ProtoCore.DSASM
             int framePointer = core.Rmem.FramePointer;
 
             // Comment Jun: Use the register TX to store explicit/implicit bounce state
-            bounceType = ProtoCore.DSASM.CallingConvention.BounceType.kExplicit;
-            TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kExplicit);
+            bounceType = CallingConvention.BounceType.kExplicit;
+            TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kExplicit);
 
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
@@ -6550,18 +5876,16 @@ namespace ProtoCore.DSASM
                 core.DebugProps.SetUpBounce(this, blockCaller, returnAddr);
 
                 StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
-                ProtoCore.Language bounceLangauge = exe.instrStreamList[blockId].language;
+                Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame, core.Breakpoints);
             }
             else //if (core.Breakpoints == null)
             {
                 StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
 
-                ProtoCore.Language bounceLangauge = exe.instrStreamList[blockId].language;
+                Language bounceLangauge = exe.instrStreamList[blockId].language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
             }
-
-            return;
         }
 
         private void CALL_Handler(Instruction instruction)
@@ -6586,7 +5910,7 @@ namespace ProtoCore.DSASM
             }
             SX = svBlock;
 
-            ProcedureNode fNode = null;
+            ProcedureNode fNode;
             if (ci != Constants.kInvalidIndex)
             {
                 fNode = core.ClassTable.ClassNodes[ci].vtable.procList[fi];
@@ -6602,8 +5926,7 @@ namespace ProtoCore.DSASM
             // we need a corresponding SetUpCallr to save the states. Therefore this call here - pratapa
             if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
-                bool isBaseCall = true;
-                core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, isBaseCall);
+                core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, true);
             }
 
             StackValue svThisPointer = StackValue.BuildInvalid();
@@ -6662,7 +5985,7 @@ namespace ProtoCore.DSASM
                         replicationGuideList.Reverse();
                     }
                 }
-                rmem.Pop(fNode.argTypeList.Count);
+                rmem.PopFrame(fNode.argTypeList.Count);
                 for (int idx = 0; idx < fNode.argTypeList.Count; ++idx)
                 {
                     rmem.Push(argvalues[idx]);
@@ -6711,10 +6034,9 @@ namespace ProtoCore.DSASM
             {
                 rmem.PopConstructBlockId();
             }
-            return;
         }
 
-        private void CALLC_Handler(Instruction instruction)
+        private void CALLC_Handler()
         {
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6849,9 +6171,9 @@ namespace ProtoCore.DSASM
                 ++pc;
 #endif
             }
-            return;
         }
-        private void RETC_Handler(Instruction instruction)
+
+        private void RETC_Handler()
         {
             runtimeVerify(rmem.ValidateStackFrame());
 
@@ -6866,7 +6188,7 @@ namespace ProtoCore.DSASM
             // not meaningful here, because we are inside a constructor
             int blockId = (int)SX.opdata;
 
-            if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
                 ReturnSiteGC(blockId, ci, fi);
             }
@@ -6880,13 +6202,13 @@ namespace ProtoCore.DSASM
             Validity.Assert(sv.IsCallingConvention);
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
-            isExplicitCall = explicitCall;
+            IsExplicitCall = explicitCall;
 
             List<bool> execStateRestore = new List<bool>();
             if (!core.Options.IDEDebugMode || core.ExecMode == InterpreterMode.kExpressionInterpreter)
             {
-                int localCount = 0;
-                int paramCount = 0;
+                int localCount;
+                int paramCount;
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
                 execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
@@ -6899,7 +6221,7 @@ namespace ProtoCore.DSASM
                     // Restoring the registers require the current frame pointer of the stack frame 
                     RestoreRegistersFromStackFrame();
 
-                    bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                    bounceType = (CallingConvention.BounceType)TX.opdata;
                 }
             }
 
@@ -6944,11 +6266,9 @@ namespace ProtoCore.DSASM
             {
                 RestoreGraphNodeExecutionStates(procNode, execStateRestore);
             }
-
-            return;
         }
 
-        private void RETB_Handler(Instruction instruction)
+        private void RETB_Handler()
         {
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6960,20 +6280,20 @@ namespace ProtoCore.DSASM
                 GCCodeBlock(core.RunningBlock);
             }
 
-            if (ProtoCore.DSASM.CallingConvention.BounceType.kExplicit == bounceType)
+            if (CallingConvention.BounceType.kExplicit == bounceType)
             {
                 RestoreFromBounce();
                 core.RunningBlock = executingBlock;
             }
 
-            if (ProtoCore.DSASM.CallingConvention.BounceType.kImplicit == bounceType)
+            if (CallingConvention.BounceType.kImplicit == bounceType)
             {
                 pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
                 terminate = true;
             }
 
 
-            StackFrameType type = StackFrameType.kTypeLanguage;
+            StackFrameType type;
 
             // Comment Jun: Just want to see if this is the global rerb, in which case we dont retrieve anything
             //if (executingBlock > 0)
@@ -6995,7 +6315,7 @@ namespace ProtoCore.DSASM
                     // Restoring the registers require the current frame pointer of the stack frame 
                     RestoreRegistersFromStackFrame();
 
-                    bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                    bounceType = (CallingConvention.BounceType)TX.opdata;
 
 #if ENABLE_EXCEPTION_HANDLING
                     core.ExceptionHandlingManager.CurrentActiveRegistration = core.stackActiveExceptionRegistration.Pop();
@@ -7057,7 +6377,6 @@ namespace ProtoCore.DSASM
                 }
             }
             Properties = PopInterpreterProps();
-            return;
         }
 
         private void RETCN_Handler(Instruction instruction)
@@ -7076,7 +6395,6 @@ namespace ProtoCore.DSASM
             runtimeVerify(codeBlock.blockType == CodeBlockType.kConstruct);
             GCCodeBlock(blockId);
             pc++;
-            return;
         }
 
         private List<bool> RetrieveExecutionStatesFromStack(int localSize, int paramSize)
@@ -7110,7 +6428,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void RETURN_Handler(Instruction instruction)
+        private void RETURN_Handler()
         {
             isGlobScope = true;
 
@@ -7143,7 +6461,7 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
             executingBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
 
-            if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
                 ReturnSiteGC(blockId, ci, fi);
             }
@@ -7157,15 +6475,15 @@ namespace ProtoCore.DSASM
             Validity.Assert(sv.IsCallingConvention);
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType;
-            isExplicitCall = explicitCall;
+            IsExplicitCall = explicitCall;
 
 
             List<bool> execStateRestore = new List<bool>();
             if (!core.Options.IDEDebugMode || core.ExecMode == InterpreterMode.kExpressionInterpreter)
             {
                 // Get stack frame size
-                int localCount = 0;
-                int paramCount = 0;
+                int localCount;
+                int paramCount;
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
                 execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
@@ -7182,7 +6500,7 @@ namespace ProtoCore.DSASM
                     // Restoring the registers require the current frame pointer of the stack frame 
                     RestoreRegistersFromStackFrame();
 
-                    bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
+                    bounceType = (CallingConvention.BounceType)TX.opdata;
                 }
             }
 
@@ -7238,7 +6556,6 @@ namespace ProtoCore.DSASM
             }
 
             RestoreGraphNodeExecutionStates(procNode, execStateRestore);
-            return;
         }
 
         private void SerialReplication(ProcedureNode procNode, ref int exeblock, int ci, int fi, DebugFrame debugFrame = null)
@@ -7255,7 +6572,7 @@ namespace ProtoCore.DSASM
 
                 if (core.ContinuationStruct.Done)
                 {
-                    RX = HeapUtils.StoreArray(core.ContinuationStruct.RunningResult.ToArray(), null, core);
+                    RX = core.Heap.AllocateArray(core.ContinuationStruct.RunningResult, null);
                     GCUtils.GCRetain(RX, core);
 
                     core.ContinuationStruct.RunningResult.Clear();
@@ -7282,7 +6599,7 @@ namespace ProtoCore.DSASM
                         if (debugFrame.IsDotCall)
                         {
                             List<Instruction> instructions = istream.instrList;
-                            bool wasPopped = RestoreDebugPropsOnReturnFromBuiltIns(ref exeblock, ref instructions);
+                            bool wasPopped = RestoreDebugPropsOnReturnFromBuiltIns();
                             if (wasPopped)
                             {
                                 executingBlock = exeblock;
@@ -7369,8 +6686,8 @@ namespace ProtoCore.DSASM
         private void JMP_Handler(Instruction instruction)
         {
             pc = (int)instruction.op1.opdata;
-            return;
         }
+
         private void CJMP_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7401,9 +6718,8 @@ namespace ProtoCore.DSASM
                     pc = (int)GetOperandData(instruction.op2).opdata;
                 }
             }
-
-            return;
         }
+
         private void JMP_EQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7434,14 +6750,14 @@ namespace ProtoCore.DSASM
                     ++pc;
                 }
             }
-            return;
         }
+
         private void JMP_GT_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            bool isGT = false;
+            bool isGT;
             if (opdata1.IsDouble || opdata2.IsDouble)
             {
                 double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
@@ -7461,8 +6777,8 @@ namespace ProtoCore.DSASM
             {
                 ++pc;
             }
-            return;
         }
+
         private void JMP_GTEQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7492,8 +6808,8 @@ namespace ProtoCore.DSASM
                     ++pc;
                 }
             }
-            return;
         }
+
         private void JMP_LT_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7523,8 +6839,8 @@ namespace ProtoCore.DSASM
                     ++pc;
                 }
             }
-            return;
         }
+
         private void JMP_LTEQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7554,8 +6870,8 @@ namespace ProtoCore.DSASM
                     ++pc;
                 }
             }
-            return;
         }
+
         private void JMP_NEQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7585,8 +6901,8 @@ namespace ProtoCore.DSASM
                     ++pc;
                 }
             }
-            return;
         }
+
         private void JLZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7600,9 +6916,8 @@ namespace ProtoCore.DSASM
             {
                 ++pc;
             }
-
-            return;
         }
+
         private void JGZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7616,9 +6931,8 @@ namespace ProtoCore.DSASM
             {
                 ++pc;
             }
-
-            return;
         }
+
         private void JZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -7632,14 +6946,11 @@ namespace ProtoCore.DSASM
             {
                 ++pc;
             }
-
-            return;
         }
 
-        private void CAST_Handler(Instruction instruction)
+        private void CAST_Handler()
         {
             ++pc;
-            return;
         }
 
         //instruction dep(block, symbol)
@@ -7669,18 +6980,16 @@ namespace ProtoCore.DSASM
 
             // The SSA assignment flag
             runtimeVerify(instruction.op2.IsInteger);
-            bool isSSA = (1 == (int)instruction.op2.opdata) ? true : false;
+            bool isSSA = (1 == (int)instruction.op2.opdata);
 
             runtimeVerify(instruction.op3.IsInteger);
             int modBlkID = (int)instruction.op3.opdata;
 
 
             // The current function and class scope
-            int ci = DSASM.Constants.kInvalidIndex;
-            int fi = DSASM.Constants.kGlobalScope;
-            bool isInFunction = core.FunctionCallDepth > 0;
-
-            isInFunction = IsInsideFunction();
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kGlobalScope;
+            bool isInFunction = IsInsideFunction();
 
             if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -7737,8 +7046,7 @@ namespace ProtoCore.DSASM
             // Get the next graph to be executed
             SetupNextExecutableGraph(fi, ci);
 
-
-            return;
+            GC();
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
@@ -7771,22 +7079,22 @@ namespace ProtoCore.DSASM
 
             if (Constants.kInvalidIndex != symindex)
             {
-                SymbolNode symnode = null;
+                SymbolNode symnode;
                 if (Constants.kInvalidIndex != classIndex)
                 {
                     symnode = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[symindex];
                 }
                 else
                 {
-                    symnode = core.DSExecutable.runtimeSymbols[block].symbolList[symindex];
+                    symnode = exe.runtimeSymbols[block].symbolList[symindex];
                 }
 
-                ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
+                AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
                 updateNode.symbol = symnode;
                 updateNode.nodeType = AssociativeGraph.UpdateNodeType.kSymbol;
 
                 // Build the first symbol of the modified ref
-                ProtoCore.AssociativeGraph.UpdateNodeRef modifiedRef = new AssociativeGraph.UpdateNodeRef();
+                AssociativeGraph.UpdateNodeRef modifiedRef = new AssociativeGraph.UpdateNodeRef();
                 modifiedRef.nodeList.Add(updateNode);
                 modifiedRef.block = symnode.runtimeTableIndex;
 
@@ -7815,8 +7123,8 @@ namespace ProtoCore.DSASM
 
                 // Get the current value of symbol
                 StackValue svSym;
-                if (DSASM.Constants.kInvalidIndex != symnode.classScope
-                    && DSASM.Constants.kInvalidIndex == symnode.functionIndex)
+                if (Constants.kInvalidIndex != symnode.classScope
+                    && Constants.kInvalidIndex == symnode.functionIndex)
                 {
                     svSym = StackValue.BuildMemVarIndex(symnode.symbolTableIndex);
                 }
@@ -7843,39 +7151,15 @@ namespace ProtoCore.DSASM
             }
 
             ++pc;
-            return;
         }
 
-
-        //
-        //  instruction depx()
-        //      foreach dependencygraph in exe.instructionstreams
-        //          foreach graphnode in dependencygraph
-        //              foreach updatenode in updatelist
-        //                  if graphnode.dependsOn(updatenode.symbol)
-        //                      if graphnode.symdata is equal to updatenode.symdata
-        //                          graphnode.isdirty = true
-        //                      end
-        //                  end
-        //              end
-        //          end
-        //      end
-        //      updatelist.clear()
-        //  end
-        //
-
-        private void DEPX_Handler(Instruction instruction)
+        private void DEPX_Handler()
         {
-            //XLangUpdateDependencyGraph();
-
-            //// Clear the propagation list
-            //istream.xUpdateList.Clear();
-
             runtimeVerify(Language.kAssociative == istream.language);
 
             // The current function and class scope
-            int ci = DSASM.Constants.kInvalidIndex;
-            int fi = DSASM.Constants.kGlobalScope;
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kGlobalScope;
             if (fepRun)
             {
                 ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
@@ -7884,11 +7168,9 @@ namespace ProtoCore.DSASM
 
             // Set the next graph to be executed
             SetupNextExecutableGraph(fi, ci);
-
-            return;
         }
 
-        private void THROW_Handler(Instruction instruction)
+        private void THROW_Handler()
         {
 #if ENABLE_EXCEPTION_HANDLING
             runtimeVerify(instruction.op1.IsBlockIndex);
@@ -8007,7 +7289,7 @@ namespace ProtoCore.DSASM
 #endif
         }
 
-        private void SETEXPUID_Handler(Instruction instruction)
+        private void SETEXPUID_Handler()
         {
             if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -8023,7 +7305,6 @@ namespace ProtoCore.DSASM
                 }
             }
             pc++;
-            return;
         }
 
         #endregion
@@ -8034,19 +7315,13 @@ namespace ProtoCore.DSASM
             {
                 case OpCode.ALLOC:
                     {
-                        ALLOC_Handler(instruction);
+                        ALLOC_Handler();
                         return;
                     }
 
                 case OpCode.ALLOCC:
                     {
                         ALLOCC_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.ALLOCM:
-                    {
-                        ALLOCM_Handler(instruction);
                         return;
                     }
 
@@ -8081,7 +7356,7 @@ namespace ProtoCore.DSASM
 
                 case OpCode.POPB:
                     {
-                        POPB_Handler(instruction);
+                        POPB_Handler();
                         return;
                     }
 
@@ -8115,7 +7390,7 @@ namespace ProtoCore.DSASM
 
                 case OpCode.POPG:
                     {
-                        POPG_Handler(instruction);
+                        POPG_Handler();
                         return;
                     }
 
@@ -8268,7 +7543,7 @@ namespace ProtoCore.DSASM
 
                 case OpCode.CALLC:
                     {
-                        CALLC_Handler(instruction);
+                        CALLC_Handler();
                         return;
                     }
 
@@ -8280,13 +7555,13 @@ namespace ProtoCore.DSASM
 
                 case OpCode.RETC:
                     {
-                        RETC_Handler(instruction);
+                        RETC_Handler();
                         return;
                     }
 
                 case OpCode.RETB:
                     {
-                        RETB_Handler(instruction);
+                        RETB_Handler();
                         return;
                     }
 
@@ -8298,7 +7573,7 @@ namespace ProtoCore.DSASM
 
                 case OpCode.RETURN:
                     {
-                        RETURN_Handler(instruction);
+                        RETURN_Handler();
                         return;
                     }
 
@@ -8369,7 +7644,7 @@ namespace ProtoCore.DSASM
 
                 case OpCode.CAST:
                     {
-                        CAST_Handler(instruction);
+                        CAST_Handler();
                         return;
                     }
 
@@ -8387,24 +7662,81 @@ namespace ProtoCore.DSASM
 
                 case OpCode.DEPX:
                     {
-                        DEPX_Handler(instruction);
+                        DEPX_Handler();
                         return;
                     }
 
                 case OpCode.THROW:
                     {
-                        THROW_Handler(instruction);
+                        THROW_Handler();
                         return;
                     }
 
                 case OpCode.SETEXPUID:
                     {
-                        SETEXPUID_Handler(instruction);
+                        SETEXPUID_Handler();
                         return;
                     }
                 default: //Unknown OpCode
                     throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
             }
+        }
+
+        [Conditional("GC_MARK_AND_SWEEP")]
+        private void GC()
+        {
+            var currentFramePointer = rmem.FramePointer;
+            var frames = rmem.GetStackFrames();
+            var blockId = executingBlock;
+            var gcRoots = new List<StackValue>();
+#if DEBUG
+            var gcRootSymbolNames = new List<string>();
+#endif
+
+            foreach (var stackFrame in frames)
+            {
+                Validity.Assert(blockId != Constants.kInvalidIndex);
+                var functionScope = stackFrame.FunctionScope;
+                var classScope = stackFrame.ClassScope;
+
+                IEnumerable<SymbolNode> symbols;
+                if (blockId == 0)
+                {
+                    if (classScope == Constants.kGlobalScope)
+                    {
+                        symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                    }
+                    else
+                    {
+                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values.Where( s => s.functionIndex == functionScope);
+                    }
+                }
+                else
+                {
+                    // Call some language block
+                    symbols = exe.runtimeSymbols[blockId].symbolList.Values;
+                }
+
+                foreach (var symbol in symbols)
+                {
+                    StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
+                    if (value.IsReferenceType)
+                    {
+                        gcRoots.Add(value);
+#if DEBUG
+                        gcRootSymbolNames.Add(symbol.name);
+#endif
+                    }
+                }
+#if DEBUG
+                gcRootSymbolNames.Add("__thisptr");
+#endif
+                gcRoots.Add(stackFrame.ThisPtr);
+                blockId = stackFrame.FunctionCallerBlock;
+                currentFramePointer = stackFrame.FramePointer;
+            }
+
+            rmem.GC(gcRoots, this);
         }
     }
 }

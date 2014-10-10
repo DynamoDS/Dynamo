@@ -153,7 +153,7 @@ namespace ProtoScript.Runners
             // Mark all graphnodes dirty which are associated with the force exec ASTs
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
-        
+
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -239,7 +239,6 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
-
 
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
@@ -357,7 +356,7 @@ namespace ProtoScript.Runners
                 {
                     langblock = (rightNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode).CodeBlockNode;
                 }
-                else if  (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
+                else if (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
                 {
                     langblock = (rightNode as ProtoCore.AST.ImperativeAST.LanguageBlockNode).CodeBlockNode;
                 }
@@ -934,6 +933,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        ClassMirror GetClassType(string className);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1002,11 +1002,6 @@ namespace ProtoScript.Runners
             }
         }
 
-        private void ResetModifiedSymbols()
-        {
-            this.runnerCore.Rmem.ResetModifedSymbols();
-        }
-
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private GraphToDSCompiler.GraphCompiler graphCompiler;
@@ -1039,7 +1034,8 @@ namespace ProtoScript.Runners
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 
-        public LiveRunner(): this(new Configuration())
+        public LiveRunner()
+            : this(new Configuration())
         {
         }
 
@@ -1260,8 +1256,8 @@ namespace ProtoScript.Runners
             //  Exelist, Globals symbols
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ProtoCore.DSASM.Mirror.ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
-            ProtoCore.DSASM.Executable exe = exec.rmem.Executable;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
             // Otherwise garbage information may be displayed.
@@ -1274,40 +1270,21 @@ namespace ProtoScript.Runners
 
                 for (int i = 0; i < symbolTable.symbolList.Count; ++i)
                 {
-                    //int n = symbolTable.symbolList.Count - 1;
-                    //formatParams.ResetOutputDepth();
-                    ProtoCore.DSASM.SymbolNode symbolNode = symbolTable.symbolList[i];
+                    SymbolNode symbolNode = symbolTable.symbolList[i];
 
                     bool isLocal = ProtoCore.DSASM.Constants.kGlobalScope != symbolNode.functionIndex;
                     bool isStatic = (symbolNode.classScope != ProtoCore.DSASM.Constants.kInvalidIndex && symbolNode.isStatic);
                     if (symbolNode.isArgument || isLocal || isStatic || symbolNode.isTemp)
                     {
-                        // These have gone out of scope, their values no longer exist
-                        //return ((null == globaltrace) ? string.Empty : globaltrace.ToString());
                         continue;
                     }
 
                     ProtoCore.Runtime.RuntimeMemory rmem = exec.rmem;
-                    StackValue sv = rmem.GetStackData(blockId, i, ProtoCore.DSASM.Constants.kGlobalScope);
+                    StackValue sv = rmem.GetSymbolValue(symbolNode);
                     formattedString = formattedString + string.Format("{0} = {1}\n", symbolNode.name, execMirror.GetStringValue(sv, rmem.Heap, blockId));
-
-                    //if (null != globaltrace)
-                    //{
-                    //    int maxLength = 1020;
-                    //    while (formattedString.Length > maxLength)
-                    //    {
-                    //        globaltrace.AppendLine(formattedString.Substring(0, maxLength));
-                    //        formattedString = formattedString.Remove(0, maxLength);
-                    //    }
-
-                    //    globaltrace.AppendLine(formattedString);
-                    //}
                 }
-
-                //formatParams.ResetOutputDepth();
             }
 
-            //return ((null == globaltrace) ? string.Empty : globaltrace.ToString());
             return formattedString;
         }
 
@@ -1501,7 +1478,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.ReAllocateMemory(newSymbols);
+                runnerCore.Rmem.PushFrame(newSymbols);
             }
 
             // Store the current number of global symbols
@@ -1619,10 +1596,9 @@ namespace ProtoScript.Runners
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
 #if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
-            ProtoCore.Utils.HeapUtils.VerifyHeap(runnerCore);
+            runnerCore.Heap.Verify();
 #endif
         }
-
 
         private void SynchronizeInternal(string code)
         {
@@ -1788,6 +1764,17 @@ namespace ProtoScript.Runners
             return ret;
         }
 
+        public ClassMirror GetClassType(string className)
+        {
+            try
+            {
+                return new ClassMirror(className, this.Core);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         #endregion
     }

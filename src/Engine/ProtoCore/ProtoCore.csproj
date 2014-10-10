@@ -83,8 +83,17 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;GC_REFERENCE_COUNTING</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DefineConstants>TRACE;GC_REFERENCE_COUNTING</DefineConstants>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -171,7 +180,6 @@
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\GCUtils.cs" />
-    <Compile Include="Utils\HeapUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\LegacyUtils.cs" />
     <Compile Include="Utils\LexUtils.cs" />
@@ -179,12 +187,6 @@
     <Compile Include="Utils\NodeUtils.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\Validity.cs" />
-	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

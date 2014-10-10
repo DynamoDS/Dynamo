@@ -2,7 +2,6 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.Exceptions;
-using Autodesk.Revit.UI;
 using DSNodeServices;
 using Revit.Elements;
 using Revit.GeometryConversion;
@@ -51,7 +50,7 @@ namespace Revit.Elements
         /// <param name="referencePlane"></param>
         private ReferencePlane( Autodesk.Revit.DB.ReferencePlane referencePlane)
         {
-            this.InternalReferencePlane = referencePlane;
+            InternalSetReferencePlane(referencePlane);
         }
 
         /// <summary>

@@ -6075,7 +6075,6 @@ r2 = b1.count;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T95_1467421_4()
         {
             String code =

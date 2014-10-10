@@ -5,12 +5,12 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.AnalysisDisplay
+namespace RevitTestServices.AnalysisDisplay
 {
     [TestFixture]
     public class FaceAnalysisDisplayTests : RevitNodeTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_ValidArgs()
         {

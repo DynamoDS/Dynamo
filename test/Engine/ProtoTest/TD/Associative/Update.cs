@@ -1432,7 +1432,6 @@ c1 = x.c;
 
         [Test]
         [Category("Update")]
-        [Category("Failure")]
         public void T024_Defect_1459470_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4020

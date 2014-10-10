@@ -22,3 +22,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
+[assembly: InternalsVisibleTo("DynamoMSOfficeTests")]

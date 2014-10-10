@@ -32,7 +32,11 @@ namespace Dynamo.Tests
                 var vm = ViewModel;
                 ViewModel = null;
                 DynamoSelection.Instance.ClearSelection();
-                vm.Model.ShutDown(false, null);
+
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                vm.PerformShutdownSequence(shutdownParams);
             }
             catch (Exception ex)
             {

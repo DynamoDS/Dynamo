@@ -74,6 +74,8 @@ namespace Dynamo
             set { _recentFiles = value; }
         }
 
+        public List<string> PackageDirectoriesToUninstall { get; set; }
+
         public DynamoAreaUnit AreaUnit
         {
             get { return _areaUnit; }
@@ -125,13 +127,14 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
-            ConsoleHeight = 100;
+            ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             LastUpdateDownloadPath = "";
         }

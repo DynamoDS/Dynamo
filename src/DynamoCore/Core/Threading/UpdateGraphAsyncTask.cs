@@ -1,10 +1,18 @@
-﻿using BuildWarning = ProtoCore.BuildData.WarningEntry;
+﻿#if ENABLE_DYNAMO_SCHEDULER
+
+using System;
+using System.Collections.Generic;
+
+using Dynamo.DSEngine;
+using Dynamo.Models;
+
+using ProtoScript.Runners;
+
+using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.Core.Threading
 {
-#if ENABLE_DYNAMO_SCHEDULER
-
     class UpdateGraphAsyncTask : AsyncTask
     {
         private GraphSyncData graphSyncData;
@@ -69,8 +77,19 @@ namespace Dynamo.Core.Threading
             // Mark all modified nodes as being updated (if the task has been 
             // successfully scheduled, executed and completed, it is expected 
             // for "modifiedNodes" to be both non-null and non-empty.
+            // 
+            // In addition to marking modified nodes as being updated, their 
+            // warning states are cleared (which include the tool-tip). Any node
+            // that has build/runtime warnings assigned to it will properly be 
+            // restored to warning state when task completion handler sets the 
+            // corresponding build/runtime warning on it.
+            // 
             foreach (var modifiedNode in modifiedNodes)
+            {
                 modifiedNode.IsUpdated = true;
+                if (modifiedNode.State == ElementState.Warning)
+                    modifiedNode.ClearError();
+            }
         }
 
         #endregion
@@ -92,6 +111,6 @@ namespace Dynamo.Core.Threading
 
         #endregion
     }
+}
 
 #endif
-}

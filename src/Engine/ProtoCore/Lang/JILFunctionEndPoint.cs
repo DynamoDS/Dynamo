@@ -54,7 +54,7 @@ namespace ProtoCore.Lang
             // as this mechanism is used to keep track of maintining execution states of recursive calls
             // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
             int execStateSize = procedureNode.GraphNodeList.Count;
-            stackFrame.SetAt(StackFrame.AbsoluteIndex.kExecutionStates, StackValue.BuildInt(execStateSize));
+            stackFrame.ExecutionStateSize = execStateSize;
             for (int n = execStateSize - 1; n >= 0; --n)
             {
                 AssociativeGraph.GraphNode gnode = procedureNode.GraphNodeList[n];
@@ -68,8 +68,8 @@ namespace ProtoCore.Lang
                 interpreter.Push(formalParameters[i]);
             }
 
-            StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
-            StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+            StackValue svThisPtr = stackFrame.ThisPtr;
+            StackValue svBlockDecl = StackValue.BuildBlockIndex(stackFrame.FunctionBlock);
 
             // Jun: Make sure we have no empty or unaligned frame data
             Validity.Assert(DSASM.StackFrame.kStackFrameSize == stackFrame.Frame.Length);
@@ -78,9 +78,9 @@ namespace ProtoCore.Lang
             //int thisPtr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr).opdata;
             int ci = activation.classIndex;
             int fi = activation.funcIndex;
-            int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int blockDecl = (int)svBlockDecl.opdata;
-            int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+            int returnAddr = stackFrame.ReturnPC;
+            int blockDecl = stackFrame.FunctionBlock;
+            int blockCaller = stackFrame.FunctionCallerBlock;
             int framePointer = core.Rmem.FramePointer; 
             int locals = activation.locals;
             
@@ -93,7 +93,7 @@ namespace ProtoCore.Lang
             // Set SX register 
             interpreter.runtime.SX = svBlockDecl;
 
-            DSASM.StackFrameType callerType = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kCallerStackFrameType).opdata;
+            StackFrameType callerType = stackFrame.CallerStackFrameType;
 
             List<StackValue> registers = new List<DSASM.StackValue>();
 
@@ -110,11 +110,11 @@ namespace ProtoCore.Lang
                 svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
             }
 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+            stackFrame.TX = svCallConvention;
             interpreter.runtime.TX = svCallConvention;
 
             // Set SX register 
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterSX, svBlockDecl);
+            stackFrame.SX = svBlockDecl;
             interpreter.runtime.SX = svBlockDecl;
 
             // TODO Jun:
@@ -125,8 +125,8 @@ namespace ProtoCore.Lang
 
             // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
             // This is only incremented for every language block bounce
-            int depth = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameDepth).opdata;
-            DSASM.StackFrameType type = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType).opdata;
+            int depth = stackFrame.Depth;
+            DSASM.StackFrameType type = stackFrame.StackFrameType;
             Validity.Assert(depth == 0);
             Validity.Assert(type == DSASM.StackFrameType.kTypeFunction);
 

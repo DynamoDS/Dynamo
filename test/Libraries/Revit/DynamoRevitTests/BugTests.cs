@@ -6,7 +6,7 @@ using RTF.Framework;
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Dynamo.Nodes;
-using DSRevitNodesTests;
+using RevitTestServices;
 
 namespace Dynamo.Tests
 {
@@ -232,6 +232,35 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(refPt1);
             (10.0).ShouldBeApproximately(refPt1.X, 1.0e-6);
+
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\empty.rfa")]
+        public void MAGN_4511()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-34511
+
+            var model = ViewModel.Model;
+
+            string samplePath = Path.Combine(_testPath, 
+                                    @".\Bugs\MAGN_4511_NullInputToForm.ByLoftCrossSections.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            // If this test reaches here, it means there is no hang in system.
+            Assert.Pass();
 
         }
     }

@@ -96,6 +96,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Assembler\MicroFeatureTests.cs" />
     <Compile Include="Associative\BuiltinMethodsTest.cs" />
     <Compile Include="Associative\FunctionObject.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapCorruptionTests.cs" />
+    <Compile Include="DSASM\HeapMarkSweepTests.cs" />
     <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="EventTests\EventTest.cs" />
     <Compile Include="FFITests\ArgumentMarshalingTests.cs" />

@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Security.Policy;
+
 using ProtoCore.Utils;
 
 
@@ -18,6 +22,7 @@ namespace ProtoCore.DSASM
         public int Refcount { get; set; }
         public Dictionary<StackValue, StackValue> Dict;
         public StackValue[] Stack;
+        public MetaData MetaData { get; set; }
 
         public int GetAllocatedSize()
         {
@@ -69,7 +74,7 @@ namespace ProtoCore.DSASM
         //      1. Copying the temps can be optimized.
         //      2. Explore using List for the HeapStack stack. In this case we take advantage of .Net List arrays
         //
-        public void ReAllocate(int size)
+        private void ReAllocate(int size)
         {
             int newAllocatedSize = GetNewSize(size);
 
@@ -90,7 +95,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(size <= AllocSize);
         }
 
-        public void RightShiftElements(int size)
+        private void RightShiftElements(int size)
         {
             Validity.Assert(VisibleSize + size <= AllocSize);
             if (size <= 0)
@@ -160,22 +165,6 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-    
-        public HeapElement Clone()
-        {
-            HeapElement second = new HeapElement(AllocSize, Symbol);
-            second.Active = Active;
-            second.Symbol = Symbol;
-            second.AllocSize = AllocSize;
-            second.VisibleSize = VisibleSize;
-            second.Refcount = Refcount;
-
-            second.Stack = new StackValue[Stack.Length];
-            for (int i = 0; i < Stack.Length; i++)
-                second.Stack[i] = Stack[i].ShallowClone();
-
-            return second;
-        }
     }
 
     public class StackValueComparer : IEqualityComparer<StackValue>
@@ -225,119 +214,142 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        public int TotalSize { get; set; }
-        public List<HeapElement> Heaplist { get; set; }
-        public Object cslock { get; private set; }
-
-        private List<int> freeList;
+        private readonly List<int> freeList = new List<int>();
+        private readonly List<HeapElement> heapElements = new List<HeapElement>();
+        private bool isGarbageCollecting = false;
 
         public Heap()
         {
-            TotalSize = 0;
-            Heaplist = new List<HeapElement>();
-            cslock = new Object();
-            freeList = new List<int>();
         }
 
-        public int Allocate(StackValue[] elements)
+        public StackValue AllocateString(string str)
         {
-            TotalSize += elements.Length;
-            HeapElement hpe = new HeapElement(elements);
-            return AddHeapElement(hpe);
+            var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
+            int index = AllocateInternal(chs);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
+            return StackValue.BuildString(index);
         }
 
-        public int Allocate(int size, int symbol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        public StackValue AllocateArray(IEnumerable<StackValue> values, 
+                                        Dictionary<StackValue, StackValue> dict = null)
         {
-            TotalSize += size;
-            HeapElement hpe = new HeapElement(size, symbol);
-            return AddHeapElement(hpe);
+            int index = AllocateInternal(values);
+            var heapElement = heapElements[index];
+            heapElement.Dict = dict;
+            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
+            return StackValue.BuildArrayPointer(index);
         }
 
-        private int AddHeapElement(HeapElement hpe)
+        public StackValue AllocatePointer(IEnumerable<StackValue> values, 
+                                          MetaData metaData)
         {
-            int index = FindFree();
-            if (ProtoCore.DSASM.Constants.kInvalidIndex == index)
-            {
-                Heaplist.Add(hpe);
-                index = Heaplist.Count - 1;
-            }
-            else
-            {
-                Heaplist[index].Active = true;
-                Heaplist[index] = hpe;
-            }
-            return index;
+            int index = AllocateInternal(values);
+            var heapElement = heapElements[index];
+            heapElement.MetaData = metaData;
+            return StackValue.BuildPointer(index, metaData);
         }
 
-        public Heap Clone()
+        public StackValue AllocatePointer(IEnumerable<StackValue> values)
         {
-            Heap ret = new Heap();
-            ret.TotalSize = TotalSize;
-            ret.freeList = freeList;
-            foreach (HeapElement he in Heaplist)
-                ret.Heaplist.Add(he.Clone());
-
-            return ret;
+            return AllocatePointer(
+                    values, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
-        public void Append(int lastPtr, Heap rhs)
-        {
-            TotalSize += rhs.TotalSize;
-        
-            rhs.ReallocPointers(lastPtr);
-
-            Heaplist.InsertRange(lastPtr, rhs.Heaplist);
+        public StackValue AllocatePointer(int size, MetaData metadata)
+        {    
+            int index = AllocateInternal(size);
+            var hpe = heapElements[index];
+            hpe.MetaData = metadata;
+            return StackValue.BuildPointer(index, metadata);
         }
 
-        private void ReallocPointers(int offset)
+        public StackValue AllocatePointer(int size)
         {
-            for (int i = 0; i < Heaplist.Count; ++i)
-            {
-                for (int j = 0; j < Heaplist[i].GetAllocatedSize(); ++j)
-                {
-                    if (Heaplist[i].Stack[j].IsPointer)
-                    {
-                        Heaplist[i].Stack[j].opdata += offset;
-                    }
-                }
-            }
+            return AllocatePointer(
+                    size, 
+                    new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
-        private int FindFree()
+        public HeapElement GetHeapElement(StackValue pointer)
         {
-            int freeItemCount = freeList.Count;
-            if (freeItemCount > 0)
-            {
-                int index = freeList[freeItemCount - 1];
-                freeList.RemoveAt(freeItemCount - 1);
-                return index;
-            }
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
-
+            int index = (int)pointer.opdata;
+            return heapElements[index];
         }
 
         public void Free()
         {
-            TotalSize = 0;
-            Heaplist.Clear();
-            freeList = new List<int>();
+            heapElements.Clear();
+            freeList.Clear();
         }
 
-        private void GCDisposeObject(ref StackValue svPtr, Executive exe)
+        private int AllocateInternal(int size)
+        {
+            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
+            return AddHeapElement(hpe);
+        }
+
+        private int AllocateInternal(IEnumerable<StackValue> values)
+        {
+            int size = values.Count();
+            int index = AllocateInternal(size);
+            var heapElement = heapElements[index];
+
+            int i = 0;
+            foreach (var item in values)
+            {
+                heapElement.Stack[i] = item;
+                i++;
+            }
+            return index;
+        }
+
+        private int AddHeapElement(HeapElement hpe)
+        {
+            int index;
+            if (TryFindFreeIndex(out index))
+            {
+                heapElements[index] = hpe;
+            }
+            else
+            {
+                heapElements.Add(hpe);
+                index = heapElements.Count - 1;
+            }
+ 
+            return index;
+        }
+
+        private bool TryFindFreeIndex(out int index)
+        {
+            int freeItemCount = freeList.Count;
+            if (freeItemCount > 0)
+            {
+                index = freeList[freeItemCount - 1];
+                freeList.RemoveAt(freeItemCount - 1);
+                return true;
+            }
+            else
+            {
+                index = Constants.kInvalidIndex;
+                return false;
+            }
+        }
+
+        private void GCDisposeObject(StackValue svPtr, Executive exe)
         {
             int classIndex = svPtr.metaData.type;
             ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
-            ProcedureNode pn = null;
 
+            ProcedureNode pn = cn.GetDisposeMethod();
             while (pn == null)
             {
-                pn = cn.GetDisposeMethod();
-                if (pn == null && cn.baseList != null && cn.baseList.Count != 0) // search the base class
+                if (cn.baseList != null && cn.baseList.Count != 0) 
                 {
-                    // assume multiple inheritance is not allowed
-                    // it will only has a single base class 
                     classIndex = cn.baseList[0];
-                    cn = exe.exe.classTable.ClassNodes[cn.baseList[0]];
+                    cn = exe.exe.classTable.ClassNodes[classIndex];
+                    pn = cn.GetDisposeMethod();
                 }
                 else
                 {
@@ -352,55 +364,91 @@ namespace ProtoCore.DSASM
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildBlockIndex(pn.runtimeIndex));
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildStaticType((int)ProtoCore.PrimitiveType.kTypeVar));
+                exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 
                 ++exe.Core.FunctionCallDepth;
 
-                // TODO: Need to move isExplicitCall to DebugProps and come up with a more elegant solution for this
+                // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
-                bool explicitCall = exe.isExplicitCall;
+                bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
                 exe.Callr(pn.procId, classIndex, 1, ref explicitCall);
 
-                exe.isExplicitCall = tempFlag;
+                exe.IsExplicitCall = tempFlag;
 
                 --exe.Core.FunctionCallDepth;
             }
         }
 
-        public void Sweep(int first, int last)
+        public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
-            for (int i = 0; i < Heaplist.Count; ++i)  
+            if (isGarbageCollecting)
+                return;
+
+            try
             {
-                for (int symbol = first; symbol < last; ++symbol) 
+                isGarbageCollecting = true;
+
+                // Mark
+                var markBits = new BitArray(heapElements.Count);
+                var workingStack = new Stack<StackValue>(rootPointers);
+                while (workingStack.Any())
                 {
-                    // Any stack allocated symbols are left out since they are not in the heaplist
-                    if (symbol == Heaplist[i].Symbol)
+                    var pointer = workingStack.Pop();
+                    var ptr = (int)pointer.RawIntValue;
+                    if (!pointer.IsReferenceType || markBits.Get(ptr))
                     {
-                        Heaplist[i].Active = false;
+                        continue;
+                    }
+
+                    markBits.Set(ptr, true);
+
+                    var heapElement = heapElements[ptr];
+                    var subElements = heapElement.VisibleItems;
+                    if (heapElement.Dict != null)
+                    {
+                        subElements = subElements.Concat(heapElement.Dict.Keys)
+                            .Concat(heapElement.Dict.Values);
+                    }
+
+                    foreach (var subElement in subElements)
+                    {
+                        if (subElement.IsReferenceType &&
+                            !markBits.Get((int)subElement.RawIntValue))
+                        {
+                            workingStack.Push(subElement);
+                        }
                     }
                 }
+
+                // Sweep
+                for (int i = 0; i < heapElements.Count; ++i)
+                {
+                    if (markBits.Get(i) || heapElements[i] == null)
+                    {
+                        continue;
+                    }
+
+                    var metaData = heapElements[i].MetaData;
+                    if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    {
+                        var objPointer = StackValue.BuildPointer(i, metaData);
+                        GCDisposeObject(objPointer, exe);
+                    }
+
+                    heapElements[i] = null;
+                    freeList.Add(i);
+                }
             }
-        }
-
-
-        public void GCMarkSweep()
-        {
-            throw new NotImplementedException("{3CDF5599-97DB-4EC2-9E25-EC11DBA7280E}");
-        }
-
-        public bool IsTemporaryPointer(StackValue sv)
-        {
-            if (!sv.IsReferenceType)
+            finally
             {
-                return false;
+                isGarbageCollecting = false;
             }
-
-            int ptr = (int)sv.opdata;
-            HeapElement he = this.Heaplist[ptr];
-            return he.Active && he.Refcount == 0; 
         }
 
+
+        #region Reference counting APIs
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -410,13 +458,14 @@ namespace ProtoCore.DSASM
 
             int ptr = (int)sv.opdata;
 
-            this.Heaplist[ptr].Refcount++;
-            if (this.Heaplist[ptr].Refcount > 0)
+            this.heapElements[ptr].Refcount++;
+            if (this.heapElements[ptr].Refcount > 0)
             {
-                this.Heaplist[ptr].Active = true;
+                this.heapElements[ptr].Active = true;
             }
         }
 
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -425,15 +474,16 @@ namespace ProtoCore.DSASM
             }
 
             int ptr = (int)sv.opdata;
-            if (this.Heaplist[ptr].Refcount > 0)
+            if (this.heapElements[ptr].Refcount > 0)
             {
-                this.Heaplist[ptr].Refcount--;
+                this.heapElements[ptr].Refcount--;
             }
             else
             {
             }
         }
-
+    
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
@@ -445,11 +495,11 @@ namespace ProtoCore.DSASM
                 }
 
                 int ptr = (int)svPtr.opdata;
-                if (ptr < 0 || ptr >= Heaplist.Count)
+                if (ptr < 0 || ptr >= heapElements.Count)
                 {
                     continue;
                 }
-                HeapElement hs = Heaplist[ptr];
+                HeapElement hs = heapElements[ptr];
 
                 if (!hs.Active)
                 {
@@ -466,7 +516,7 @@ namespace ProtoCore.DSASM
                 {
                     // if it is of class type, first call its destructor before clean its members
                     if(svPtr.IsPointer)
-                        GCDisposeObject(ref svPtr, exe);
+                        GCDisposeObject(svPtr, exe);
 
                     if (svPtr.IsArray && hs.Dict != null)
                     {
@@ -485,5 +535,67 @@ namespace ProtoCore.DSASM
                 }
             }
         }
+
+        /// <summary>
+        /// Checks if the heap contains at least 1 pointer element that points to itself
+        /// This function is used as a diagnostic tool for detecting heap cycles and should never return true
+        /// </summary>
+        /// <returns> Returns true if the heap contains at least one cycle</returns>
+        public bool IsHeapCyclic()
+        {
+            for (int n = 0; n < heapElements.Count; ++n)
+            {
+                HeapElement heapElem = heapElements[n];
+                if (IsHeapCyclic(heapElem, n))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the heap element is cyclic. 
+        /// Traverses the pointer element and determines it points to itself
+        /// </summary>
+        /// <param name="heapElement"></param>
+        /// <param name="core"></param>
+        /// <returns> Returns true if the array contains a cycle </returns>
+        private bool IsHeapCyclic(HeapElement heapElement, int HeapID)
+        {
+            if (heapElement.Active && heapElement.VisibleSize > 0)
+            {
+                // Traverse each element in the heap
+                foreach (StackValue sv in heapElement.Stack)
+                {
+                    // Is it a pointer
+                    if (sv.IsReferenceType)
+                    {
+                        // Check if the current element in the heap points to the original pointer
+                        if (sv.opdata == HeapID)
+                        {
+                            return true;
+                        }
+                        return IsHeapCyclic(GetHeapElement(sv),  HeapID);
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Verify the heap integrity by performing tests on the current state of the heap
+        /// Throws an exception if the heap is corrupted
+        /// </summary>
+        /// <param name="core"></param>
+        public void Verify()
+        {
+            // Check the integrity of the heap memory layout
+            if (IsHeapCyclic())
+            {
+                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
+            }
+        }
+        #endregion
     }
 }
