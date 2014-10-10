@@ -140,6 +140,7 @@
         <!--Converter that will be used, if number of found classes equals 0. 
             Then classes will be collapsed.-->
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
 
         <!--EndRegion-->
 
@@ -435,161 +436,208 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
-            <ListView Name="CategoryListView"
-                      ScrollViewer.CanContentScroll="False"
-                      Background="#343434"
-                      BorderThickness="0"
-                      ItemsSource="{Binding Model.SearchRootCategories}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      SelectionMode="Single">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Expander Header="{Binding Path=Name}"
-                                  OverridesDefaultStyle="True"
-                                  Template="{StaticResource CategoryExpanderTemplate}"
-                                  IsExpanded="True">
-                            <StackPanel Orientation="Vertical">
+                <ListView Name="CategoryListView"
+                          ScrollViewer.CanContentScroll="False"
+                          Background="#343434"
+                          BorderThickness="0"
+                          ItemsSource="{Binding Model.SearchRootCategories}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Expander Header="{Binding Path=Name}"
+                                      OverridesDefaultStyle="True"
+                                      Template="{StaticResource CategoryExpanderTemplate}"
+                                      IsExpanded="True">
+                                <StackPanel Orientation="Vertical">
 
-                                <!--Found classes-->
-                                <ListView Name="SubCategoryListView"
-                                          ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                          Background="#333333"
-                                          BorderThickness="0"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                          ScrollViewer.CanContentScroll="False"
-                                          ScrollViewer.IsDeferredScrollingEnabled="False"
-                                          ItemsSource="{Binding Path=Classes}">
-                                    <ListView.Visibility>
-                                        <Binding Path="Classes.Count"
-                                                 Converter="{StaticResource IntToVisibilityConverter}" />
-                                    </ListView.Visibility>
-                                    <ListView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <controls:LibraryWrapPanel Background="Transparent"
-                                                                       Margin="0,10,0,10">
-                                                <controls:LibraryWrapPanel.Width>
-                                                    <Binding Path="ActualWidth"
-                                                             ElementName="CategoryListView" />
-                                                </controls:LibraryWrapPanel.Width>
-                                            </controls:LibraryWrapPanel>
-                                        </ItemsPanelTemplate>
-                                    </ListView.ItemsPanel>
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type ListViewItem}">
-                                            <EventSetter Event="PreviewMouseLeftButtonDown"
-                                                         Handler="OnClassButtonCollapse" />
+                                    <!--Found classes-->
+                                    <ListView Name="SubCategoryListView"
+                                              ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                              Background="#333333"
+                                              BorderThickness="0"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                              ScrollViewer.CanContentScroll="False"
+                                              ScrollViewer.IsDeferredScrollingEnabled="False"
+                                              ItemsSource="{Binding Path=Classes}">
+                                        <ListView.Visibility>
+                                            <Binding Path="Classes.Count"
+                                                     Converter="{StaticResource IntToVisibilityConverter}" />
+                                        </ListView.Visibility>
+                                        <ListView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <controls:LibraryWrapPanel Background="Transparent"
+                                                                           Margin="0,10,0,10">
+                                                    <controls:LibraryWrapPanel.Width>
+                                                        <Binding Path="ActualWidth"
+                                                                 ElementName="CategoryListView" />
+                                                    </controls:LibraryWrapPanel.Width>
+                                                </controls:LibraryWrapPanel>
+                                            </ItemsPanelTemplate>
+                                        </ListView.ItemsPanel>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <EventSetter Event="PreviewMouseLeftButtonDown"
+                                                             Handler="OnClassButtonCollapse" />
 
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                        <Border Background="{TemplateBinding Background}"
-                                                                BorderBrush="Transparent"
-                                                                BorderThickness="0">
-                                                            <ContentPresenter />
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                    BorderBrush="Transparent"
+                                                                    BorderThickness="0">
+                                                                <ContentPresenter />
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
 
-                                            <!--Make class details not focusable-->
-                                            <Setter Property="Focusable">
-                                                <Setter.Value>
-                                                    <Binding RelativeSource="{RelativeSource Self}"
-                                                             Path="DataContext"
-                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
-                                                </Setter.Value>
-                                            </Setter>
+                                                <!--Make class details not focusable-->
+                                                <Setter Property="Focusable">
+                                                    <Setter.Value>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                    </Setter.Value>
+                                                </Setter>
 
-                                            <Style.Triggers>
-                                                <Trigger Property="IsSelected"
-                                                         Value="true">
-                                                    <Setter Property="Background"
-                                                            Value="#272727" />
-                                                    <Setter Property="BorderThickness"
-                                                            Value="0" />
-                                                </Trigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected"
-                                                                   Value="False" />
-                                                        <Condition Property="IsMouseOver"
-                                                                   Value="True" />
-                                                    </MultiTrigger.Conditions>
-                                                    <MultiTrigger.Setters>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsSelected"
+                                                             Value="true">
                                                         <Setter Property="Background"
-                                                                Value="#404040" />
-                                                    </MultiTrigger.Setters>
-                                                </MultiTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                </ListView>
+                                                                Value="#272727" />
+                                                        <Setter Property="BorderThickness"
+                                                                Value="0" />
+                                                    </Trigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected"
+                                                                       Value="False" />
+                                                            <Condition Property="IsMouseOver"
+                                                                       Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter Property="Background"
+                                                                    Value="#404040" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
 
-                                <!--Found member groups-->
-                                <ListBox Background="Transparent"
-                                         BorderBrush="Transparent"
-                                         BorderThickness="0"
-                                         ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
-                                         ItemsSource="{Binding MemberGroups}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Name}"
-                                                           Margin="16,8,0,8"
-                                                           Foreground="#989898"
-                                                           FontSize="12" />
-                                                <ListBox Background="Transparent"
-                                                         BorderBrush="Transparent"
-                                                         ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
-                                                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                                         ItemsSource="{Binding Members}">
-                                                    <ListBox.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Image HorizontalAlignment="Left"
-                                                                       Height="32"
-                                                                       Margin="16,0,16,0"
-                                                                       VerticalAlignment="Center"
-                                                                       Width="32"
-                                                                       Source="{Binding SmallIcon}" />
+                                    <!--Found member groups-->
+                                    <ListBox Background="Transparent"
+                                             BorderBrush="Transparent"
+                                             BorderThickness="0"
+                                             ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
+                                             ItemsSource="{Binding MemberGroups}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               Margin="16,8,0,8"
+                                                               Foreground="#989898"
+                                                               FontSize="12" />
+                                                    <ListBox Background="Transparent"
+                                                             BorderBrush="Transparent"
+                                                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                                                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                             ItemsSource="{Binding Members}">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Image HorizontalAlignment="Left"
+                                                                           Height="32"
+                                                                           Margin="16,0,16,0"
+                                                                           VerticalAlignment="Center"
+                                                                           Width="32"
+                                                                           Source="{Binding SmallIcon}" />
 
-                                                                <TextBlock HorizontalAlignment="Left"
-                                                                           Text="{Binding Name}"
-                                                                           VerticalAlignment="Top"
-                                                                           Margin="5,10,0,0"
-                                                                           Foreground="#CCCCCC"
-                                                                           FontSize="13" />
+                                                                    <TextBlock HorizontalAlignment="Left"
+                                                                               Text="{Binding Name}"
+                                                                               VerticalAlignment="Top"
+                                                                               Margin="5,10,0,0"
+                                                                               Foreground="#CCCCCC"
+                                                                               FontSize="13" />
 
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </ListBox.ItemTemplate>
-                                                </ListBox>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </StackPanel>
-                        </Expander>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderThickness="0,0,0,0"
-                                            BorderBrush="#2F2F2F">
-                                        <ContentPresenter />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-            </ListView>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                    </ListBox>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
+                            </Expander>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border BorderThickness="0,0,0,0"
+                                                BorderBrush="#2F2F2F">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
         </ScrollViewer>
+
+        <Button Name="NoMatchFoundButton"
+                Grid.Row="2"
+                Height="20"
+                Click="OnNoMatchFoundButtonClick">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="OverridesDefaultStyle"
+                            Value="True" />
+                    <Setter Property="FontSize"
+                            Value="13" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Foreground"
+                            Value="#666" />
+                    <Setter Property="VerticalAlignment"
+                            Value="Top" />
+                    <Setter Property="HorizontalAlignment"
+                            Value="Center" />
+                    <Setter Property="Margin"
+                            Value="0,10,0,0" />
+                    <Setter Property="Content"
+                            Value="No matches found" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border x:Name="Border"
+                                        Background="Transparent"
+                                        BorderThickness="0 0 0 0">
+                                    <ContentPresenter Margin="0 1 0 0" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Visibility">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
+                                <Binding Path="Model.SearchRootCategories.Count" />
+                                <Binding Path="SearchText" />
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </UserControl>

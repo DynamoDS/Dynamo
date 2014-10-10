@@ -227,57 +227,6 @@
             </views:LibrarySearchView.Visibility>
         </views:LibrarySearchView>
 
-        <!--
-        <Button Name="NoMatchFoundButton"
-                Grid.Column="0"
-                Grid.ColumnSpan="1"
-                Grid.Row="2"
-                Height="20"
-                Click="OnSearchCancelButtonClick">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="OverridesDefaultStyle"
-                            Value="True" />
-                    <Setter Property="FontSize"
-                            Value="13" />
-                    <Setter Property="BorderThickness"
-                            Value="0" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="Foreground"
-                            Value="#666" />
-                    <Setter Property="VerticalAlignment"
-                            Value="Top" />
-                    <Setter Property="HorizontalAlignment"
-                            Value="Center" />
-                    <Setter Property="Margin"
-                            Value="0,10,0,0" />
-                    <Setter Property="Content"
-                            Value="No matches found" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border x:Name="Border"
-                                        Background="Transparent"
-                                        BorderThickness="0 0 0 0">
-                                    <ContentPresenter Margin="0 1 0 0" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Visibility">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
-                                <Binding Path="SearchResults.Count" />
-                                <Binding ElementName="SearchTextBox"
-                                         Path="Text" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Button.Style>
-        </Button> 
--->
     </Grid>
 
 </UserControl>
