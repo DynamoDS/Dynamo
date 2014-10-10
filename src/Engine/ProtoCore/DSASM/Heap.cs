@@ -390,7 +390,8 @@ namespace ProtoCore.DSASM
                 isGarbageCollecting = true;
 
                 // Mark
-                var markBits = new BitArray(heapElements.Count);
+                var count = heapElements.Count;
+                var markBits = new BitArray(count);
                 var workingStack = new Stack<StackValue>(rootPointers);
                 while (workingStack.Any())
                 {
@@ -422,7 +423,7 @@ namespace ProtoCore.DSASM
                 }
 
                 // Sweep
-                for (int i = 0; i < heapElements.Count; ++i)
+                for (int i = 0; i < count; ++i)
                 {
                     if (markBits.Get(i) || heapElements[i] == null)
                     {
