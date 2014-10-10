@@ -491,6 +491,12 @@ namespace ProtoCore.Utils
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
         }
 
+        public static bool IsDefaultArgTemp(string varname)
+        {
+            Validity.Assert(null != varname);
+            return varname.StartsWith(ProtoCore.DSASM.Constants.kTempDefaultArg);
+        }
+
         public static ProtoCore.AST.AssociativeAST.FunctionDotCallNode GenerateCallDotNode(ProtoCore.AST.AssociativeAST.AssociativeNode lhs, 
             ProtoCore.AST.AssociativeAST.FunctionCallNode rhsCall, Core core = null)
         {
