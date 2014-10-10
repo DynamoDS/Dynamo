@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 
 using NUnit.Framework;
@@ -17,7 +16,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    class ElementTests : GeometricRevitNodeTest
+    class ElementTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\materials.rvt")]
@@ -41,22 +40,6 @@ namespace RevitTestServices.Elements
 
             Assert.AreEqual(mat.InternalElement.Id, elemId1);
 
-        }
-
-        [Test]
-        [TestModel(@".\GetCurvesFromFamilyInstance.rfa")]
-        public void Curves_ExtractsCurvesAccountingForInstanceTransform()
-        {
-            var ele = ElementSelector.ByElementId(32107, true);
-            var crvs = ele.Curves;
-
-            Assert.AreEqual(4, crvs.Length);
-            Assert.AreEqual(4, crvs.OfType<Autodesk.DesignScript.Geometry.Line>().Count());
-
-            var bbox = BoundingBox.ByGeometry(crvs);
-
-            bbox.MaxPoint.ShouldBeApproximately(15.240, 0, 0, 1e-3);
-            bbox.MinPoint.ShouldBeApproximately(0, -30.480, 0, 1e-3);
         }
 
     }
