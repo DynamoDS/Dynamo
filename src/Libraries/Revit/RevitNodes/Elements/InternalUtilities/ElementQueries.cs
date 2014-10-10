@@ -71,5 +71,12 @@ namespace Revit.Elements.InternalUtilities
                     .ToList();
             return instances;
         }
+
+        public static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
+        {
+            var collector = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            collector.OfClass(typeof(Autodesk.Revit.DB.Level));
+            return collector.ToElements().Cast<Autodesk.Revit.DB.Level>();
+        }
     }
 }
