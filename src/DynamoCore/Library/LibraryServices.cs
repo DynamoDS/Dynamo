@@ -2,21 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using Dynamo.Interfaces;
 using Dynamo.Library;
-
+using Dynamo.Search;
 using DynamoUtilities;
-
 using GraphToDSCompiler;
-
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
-
 using ProtoFFI;
-
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.DSEngine
@@ -129,9 +124,29 @@ namespace Dynamo.DSEngine
             if (null == library)
                 throw new ArgumentNullException();
 
+            var customDllPrefix = SearchModel.ElementType.CustomDll.ToString() + "*";
+            bool isCustomDll = library.Contains(customDllPrefix);
+
             Dictionary<string, FunctionGroup> functionGroups;
+
+            if (isCustomDll)
+                library = library.Substring(customDllPrefix.Length);
+
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
-                return functionGroups.Values;
+            {
+                if (isCustomDll)
+                {
+                    var modifiedFGroups = functionGroups.Values.ToList();
+                    for (int i = 0; i < modifiedFGroups.Count; i++)
+                        modifiedFGroups[i].ElementType = SearchModel.ElementType.CustomDll;
+
+                    return modifiedFGroups;
+                }
+                else
+                {
+                    return functionGroups.Values;
+                }
+            }
 
             // Return an empty list instead of 'null' as some of the caller may
             // not have the opportunity to check against 'null' enumerator (for
@@ -559,7 +574,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            libraries.Add(e.LibraryPath);
+            libraries.Add(SearchModel.ElementType.CustomDll.ToString() + "*" + e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
@@ -591,10 +606,10 @@ namespace Dynamo.DSEngine
         {
             public LibraryLoadedEventArgs(string libraryPath)
             {
-                LibraryPath = libraryPath;
+                LibraryPath = libraryPath;                
             }
 
-            public string LibraryPath { get; private set; }
+            public string LibraryPath { get; private set; }            
         }
 
         public class LibraryLoadingEventArgs : EventArgs

@@ -13,6 +13,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
+using Dynamo.Search;
 
 namespace Dynamo.Utilities
 {
@@ -149,7 +150,7 @@ namespace Dynamo.Utilities
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-        public List<Type> LoadNodesFromAssembly(Assembly assembly)
+        public List<Type> LoadNodesFromAssembly(Assembly assembly, SearchModel.ElementType nodesType = SearchModel.ElementType.Regular)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
@@ -207,7 +208,7 @@ namespace Dynamo.Utilities
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
                         {
-                            searchViewModel.Add(t);
+                            searchViewModel.Add(t, nodesType);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
                         }
                         else

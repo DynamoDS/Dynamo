@@ -5,14 +5,13 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Search;
 using Dynamo.Utilities;
 using Greg.Requests;
-
 using Microsoft.Practices.Prism;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
@@ -266,7 +265,7 @@ namespace Dynamo.PackageManager
             // load the node model assemblies
             foreach (var nodeModelAssem in nodeModelAssemblies)
             {
-                var nodes = loader.LoadNodesFromAssembly(nodeModelAssem);
+                var nodes = loader.LoadNodesFromAssembly(nodeModelAssem, SearchModel.ElementType.Package);
                 nodes.ForEach(x => LoadedTypes.Add(x));
             }
         }
