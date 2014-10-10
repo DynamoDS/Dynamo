@@ -8,8 +8,7 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="525"
-             d:DesignWidth="350"
-             Loaded="OnUserControlLoaded">
+             d:DesignWidth="350">
     <UserControl.Resources>
 
         <!-- Region Expander Templates -->
@@ -232,7 +231,7 @@
             <Setter Property="Height"
                     Value="40" />
             <Setter Property="Background"
-                    Value="#333333" />
+                    Value="#444444" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -241,13 +240,6 @@
                             <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}" />
                         </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#444444" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -493,8 +485,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel DataContext="{Binding TopResult}"
-                            DataContextChanged="OnTopResultChanged">
+                <StackPanel DataContext="{Binding TopResult}">
                     <TextBlock Text="{Binding Name}"
                                Margin="16,8,0,8"
                                Foreground="#989898"
@@ -579,7 +570,7 @@
                                                     <Setter.Value>
                                                         <Binding RelativeSource="{RelativeSource Self}"
                                                                  Path="DataContext"
-                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
                                                     </Setter.Value>
                                                 </Setter>
 

@@ -17,11 +17,6 @@ namespace Dynamo.UI.Views
             InitializeComponent();
         }
 
-        private void OnUserControlLoaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            viewModel = DataContext as SearchViewModel;
-        }
-
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
@@ -49,12 +44,6 @@ namespace Dynamo.UI.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
-        }
-
-        private void OnTopResultChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            if (viewModel != null || viewModel.TopResult != null)
-                topResultListBox.SelectedIndex = 0;
         }
     }
 }
