@@ -271,7 +271,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitTestServices", "..\tes
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblySharedInfoGenerator", "AssemblySharedInfoGenerator\AssemblySharedInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
