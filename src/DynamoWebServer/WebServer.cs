@@ -24,7 +24,7 @@ namespace DynamoWebServer
         private readonly IWebSocket webSocket;
 
         private readonly MessageHandler messageHandler;
-        private SocketMessageQueue messageQueue;
+        private readonly SocketMessageQueue messageQueue;
 
         public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
         {
@@ -94,16 +94,16 @@ namespace DynamoWebServer
             }
         }
 
-        public void ExecuteMessageFromSocket(string message, string sessionId)
+        public void ExecuteMessageFromSocket(string message, string sessionId, bool enqueue = true)
         {
             var msg = messageHandler.DeserializeMessage(message);
-            ExecuteMessageFromSocket(msg, sessionId);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
         }
 
-        public void ExecuteFileFromSocket(byte[] file, string sessionId)
+        public void ExecuteFileFromSocket(byte[] file, string sessionId, bool enqueue = true)
         {
-            UploadFileMessage msg = new UploadFileMessage(file);
-            ExecuteMessageFromSocket(msg, sessionId);
+            var msg = new UploadFileMessage(file);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
         }
 
         public void ProcessExit(object sender, EventArgs e)
@@ -126,7 +126,7 @@ namespace DynamoWebServer
 
             messageHandler.SessionId = session.SessionID;
 
-            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID);
+            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
             LogInfo("Web socket: connected");
         }
 
@@ -203,9 +203,16 @@ namespace DynamoWebServer
             dynamoViewModel.VisualizationManager.RenderComplete -= messageHandler.NodesDataModified;
         }
 
-        void ExecuteMessageFromSocket(Message message, string sessionId)
+        void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
         {
-            messageQueue.EnqueueMessage(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
+            if (enqueue)
+            {
+                messageQueue.EnqueueMessage(() => messageHandler.Execute(dynamoViewModel, message, sessionId));
+            }
+            else
+            {
+                messageHandler.Execute(dynamoViewModel, message, sessionId);
+            }
         }
 
         void LogInfo(string info)

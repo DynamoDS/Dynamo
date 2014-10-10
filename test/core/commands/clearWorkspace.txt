@@ -1,0 +1,3 @@
+{
+    "$type":"DynamoWebServer.Messages.ClearWorkspaceMessage, DynamoWebServer"
+}
