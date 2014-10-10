@@ -10,8 +10,6 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
@@ -1502,26 +1500,6 @@ namespace Dynamo.Models
         /// 
         public void RequestVisualUpdate(int maxTesselationDivisions)
         {
-            if (Workspace.DynamoModel == null)
-                return;
-
-            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
-            // called in quick succession from the UI thread -- the first task may 
-            // be updating '_renderPackages' when the second call gets here. In 
-            // this case '_renderPackages' should be protected against concurrent 
-            // accesses.
-            // 
-            lock (RenderPackagesMutex)
-            {
-                _renderPackages.Clear();
-                HasRenderPackages = false;
-            }
-
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
-                return;
-
             RequestVisualUpdateCore(maxTesselationDivisions);
         }
 
@@ -1537,42 +1515,7 @@ namespace Dynamo.Models
         /// 
         protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
         {
-            var initParams = new UpdateRenderPackageParams()
-            {
-                Node = this,
-                MaxTesselationDivisions = maxTesselationDivisions,
-                EngineController = Workspace.DynamoModel.EngineController,
-                DrawableIds = GetDrawableIds(),
-                PreviewIdentifierName = AstIdentifierForPreview.Name
-            };
-
-            var scheduler = Workspace.DynamoModel.Scheduler;
-            var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(initParams))
-            {
-                task.Completed += OnRenderPackageUpdateCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
-        }
-
-        /// <summary>
-        /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
-        /// completed, at which point the render packages (specific to this node) 
-        /// become available. Since this handler is called off the UI thread, the 
-        /// '_renderPackages' must be guarded against concurrent access.
-        /// </summary>
-        /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
-        /// that was responsible of generating the render packages.</param>
-        /// 
-        private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
-        {
-            lock (RenderPackagesMutex)
-            {
-                var task = asyncTask as UpdateRenderPackageAsyncTask;
-                _renderPackages.Clear();
-                _renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = _renderPackages.Any();
-            }
+            // SCHEDULER: Schedule an 'UpdateRenderPackageAsyncTask' here.
         }
 
 #else

@@ -83,12 +83,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestMigration_InputOutput_File()
         {
             TestMigration("TestMigration_InputOutput_File.dyn");
         }
 
         [Test]
+        [Category("Failure")]
         public void TestMigration_InputOutput_Hardware()
         {
             TestMigration("TestMigration_InputOutput_Hardware.dyn");

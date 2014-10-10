@@ -5435,6 +5435,7 @@ pt3 = pt1.XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T66_1467513_RighthandsideUpdate_innerassociative()
         {
             String code = @"
@@ -6474,6 +6475,7 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T85_1467452_update_using_class_methods_3()
         {
             String code = @"
