@@ -201,9 +201,51 @@
                 </uicontrols:StandardPanel.Width>
             </uicontrols:StandardPanel>
         </DataTemplate>
+        <!-- This data template is used to show one member. -->
+        <ControlTemplate x:Key="MemberControlTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Image HorizontalAlignment="Left"
+                       Height="32"
+                       Margin="16,0,16,0"
+                       VerticalAlignment="Center"
+                       Width="32"
+                       Source="{Binding SmallIcon}" />
+
+                <TextBlock HorizontalAlignment="Left"
+                           Text="{Binding Name}"
+                           VerticalAlignment="Top"
+                           Margin="5,10,0,0"
+                           Foreground="#CCCCCC"
+                           FontSize="13" />
+            </StackPanel>
+        </ControlTemplate>
         <!--EndRegion-->
 
         <!-- Region ListBoxItem -->
+
+        <!--Style for Top Result member-->
+        <Style x:Key="ListBoxTopResultStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="Height"
+                    Value="40" />
+            <Setter Property="Background"
+                    Value="#444444" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonDown"
+                         Handler="OnMouseLeftButtonDown" />
+        </Style>
 
         <!--Style for every member in found MemberGroup-->
         <Style x:Key="ListBoxMembersStyle"
@@ -432,11 +474,38 @@
     <Grid>
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="Transparent"
+                      Background="#333333"
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel DataContext="{Binding TopResult}">
+                    <TextBlock Text="{Binding Name}"
+                               Margin="16,8,0,8"
+                               Foreground="#989898"
+                               FontSize="12" />
+                    <ListBox x:Name="topResultListBox"
+                             Background="Transparent"
+                             BorderBrush="Transparent"
+                             ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                             ItemsSource="{Binding Members}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="2,0,0,0"
+                                        BorderBrush="Yellow">
+                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
                 <ListView Name="CategoryListView"
+                          Grid.Row="1"
                           ScrollViewer.CanContentScroll="False"
                           Background="#343434"
                           BorderThickness="0"
@@ -547,22 +616,7 @@
                                                              ItemsSource="{Binding Members}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <Image HorizontalAlignment="Left"
-                                                                           Height="32"
-                                                                           Margin="16,0,16,0"
-                                                                           VerticalAlignment="Center"
-                                                                           Width="32"
-                                                                           Source="{Binding SmallIcon}" />
-
-                                                                    <TextBlock HorizontalAlignment="Left"
-                                                                               Text="{Binding Name}"
-                                                                               VerticalAlignment="Top"
-                                                                               Margin="5,10,0,0"
-                                                                               Foreground="#CCCCCC"
-                                                                               FontSize="13" />
-
-                                                                </StackPanel>
+                                                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
@@ -591,6 +645,7 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
+            </Grid>
         </ScrollViewer>
 
         <Button Name="NoMatchFoundButton"

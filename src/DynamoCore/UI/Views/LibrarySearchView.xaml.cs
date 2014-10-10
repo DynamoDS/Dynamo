@@ -1,8 +1,8 @@
-﻿using Dynamo.Search.SearchElements;
-using Dynamo.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
