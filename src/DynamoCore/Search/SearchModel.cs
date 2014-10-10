@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
-using System.Collections.ObjectModel;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using Dynamo.UI;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search
 {
@@ -480,8 +480,11 @@ namespace Dynamo.Search
             // Rootcategory has property IsPlaceholder, that indicates of 
             // which members category contains.
             // So, just add method in category and do nothing.
+            // This situation is true for Regular nodes. For other element types we work
+            // with all pieces of category.
+            var count = nodeType == ElementType.Regular ? splitCat.Count - 1 : splitCat.Count;
 
-            for (var i = 1; i < splitCat.Count - 1; i++)
+            for (var i = 1; i < count; i++)
             {
                 // All next members are namespaces.
                 currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
@@ -489,7 +492,7 @@ namespace Dynamo.Search
 
             // We sure, that the last member is class.
             if (nodeType == ElementType.Regular)
-                currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1], 
+                currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1],
                     resourceAssembly);
 
             return currentCat;
