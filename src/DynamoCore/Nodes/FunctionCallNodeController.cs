@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -14,7 +15,7 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller for nodes that act as function calls.
     /// </summary>
-    public abstract class FunctionCallNodeController<T> where T : IFunctionDescriptor
+    public abstract class FunctionCallNodeController<T> : LogSourceBase where T : IFunctionDescriptor
     {
         private T definition;
 

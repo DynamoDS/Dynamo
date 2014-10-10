@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-
+using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Base class for NodeModels representing zero-touch-imported-function calls.
     /// </summary>
-    public abstract class DSFunctionBase : FunctionCallBase
+    public abstract class DSFunctionBase : FunctionCallBase<FunctionDescriptor>
     {
         protected DSFunctionBase(ZeroTouchNodeController controller)
             : base(controller)

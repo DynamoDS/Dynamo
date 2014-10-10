@@ -44,8 +44,7 @@ namespace Dynamo.Core
         /// <param name="engine"></param>
         /// <param name="factory"></param>
         /// <param name="manager"></param>
-        /// <param name="logger"></param>
-        void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager, ILogger logger);
+        void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager);
 
         /// <summary>
         /// UndoRedoRecorder calls this method to retrieve the up-to-date 

@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public partial class Function : FunctionCallBase
+    public partial class Function : FunctionCallBase<CustomNodeDefinition>
     {
         public Function(CustomNodeManager manager) : this(manager, null) { }
 

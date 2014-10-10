@@ -7,12 +7,11 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
-    SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
+    SelectionType selectionType, SelectionObjectType objectType);
 
 
     /// <summary>
@@ -30,9 +29,7 @@ namespace Dynamo.Nodes
         private readonly SelectionObjectType selectionObjectType;
 
         private const string SELECTION_SUGGESTION = "Select something in the model.";
-
-        protected ILogger Logger;
-
+        
         #region public properties
 
         public IEnumerable<TSelection> Selection { get { return selection; } } 
@@ -168,8 +165,7 @@ namespace Dynamo.Nodes
                     SelectionHelper.RequestSelectionOfType(
                         selectionMessage,
                         selectionType,
-                        selectionObjectType,
-                        Logger);
+                        selectionObjectType);
 
                 // If there is a sub element selector, then run it
                 // using the selection as an input. If not, attempt
@@ -182,7 +178,7 @@ namespace Dynamo.Nodes
             catch (Exception e)
             {
                 CanSelect = true;
-                Logger.Log(e);
+                Log(LogMessage.Error(e));
             }
         }
 

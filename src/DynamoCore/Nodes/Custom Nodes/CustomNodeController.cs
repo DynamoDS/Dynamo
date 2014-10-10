@@ -15,15 +15,13 @@ namespace Dynamo.Nodes
     /// </summary>
     public class CustomNodeController : FunctionCallNodeController<CustomNodeDefinition>
     {
-        private readonly DynamoLogger dynamoLogger;
         private readonly CustomNodeManager customNodeManager;
         private bool watchingDefForChanges;
 
-        public CustomNodeController(CustomNodeManager manager, DynamoLogger logger, CustomNodeDefinition def)
+        public CustomNodeController(CustomNodeManager manager, CustomNodeDefinition def)
             : base(def)
         {
             customNodeManager = manager;
-            dynamoLogger = logger;
         }
 
         /// <summary>
@@ -233,7 +231,7 @@ namespace Dynamo.Nodes
 
             string userMsg = "Failed to load custom node: " + nickname + ".  Replacing with proxy custom node.";
 
-            dynamoLogger.Log(userMsg);
+            Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             customNodeManager.SetFunctionDefinition(funcId, proxyDef);

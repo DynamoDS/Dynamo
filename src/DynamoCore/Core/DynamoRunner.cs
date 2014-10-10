@@ -20,7 +20,7 @@ namespace Dynamo.Core
     /// <summary>
     ///     Class that handles requests to run Dynamo graph
     /// </summary>
-    public class DynamoRunner
+    public class DynamoRunner : LogSourceBase
     {
         /// <summary>
         ///     Protect guard for setting the run flag
@@ -52,7 +52,7 @@ namespace Dynamo.Core
             }
         }
 
-        public void RunExpression(HomeWorkspaceModel workspaceModel, EngineController engineController, bool isTestMode, ILogger dynamoLogger, int? executionInterval = null)
+        public void RunExpression(HomeWorkspaceModel workspaceModel, EngineController engineController, bool isTestMode, int? executionInterval = null)
         {
             execInternval = executionInterval;
 
@@ -92,14 +92,14 @@ namespace Dynamo.Core
                 {
                     Validity.Assert(Running);
                 }
-                RunAsync(workspaceModel, engineController, dynamoLogger);
+                RunAsync(workspaceModel, engineController);
             }
             else
             {
                 //for testing, we do not want to run asynchronously, as it will finish the 
                 //test before the evaluation (and the run) is complete
                 //RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
-                RunSync(workspaceModel, engineController, dynamoLogger);
+                RunSync(workspaceModel, engineController);
             }
         }
 
@@ -110,17 +110,17 @@ namespace Dynamo.Core
             if (handler != null) handler();
         }
 
-        private void RunAsync(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger dynamoLogger)
+        private void RunAsync(HomeWorkspaceModel workspaceModel, EngineController engineController)
         {
-            evaluationThread = new Thread(() => RunSync(workspaceModel, engineController, dynamoLogger));
+            evaluationThread = new Thread(() => RunSync(workspaceModel, engineController));
             evaluationThread.Start();
         }
 
-        private void RunSync(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger dynamoLogger)
+        private void RunSync(HomeWorkspaceModel workspaceModel, EngineController engineController)
         {
             do
             {
-                Evaluate(workspaceModel, engineController, dynamoLogger);
+                Evaluate(workspaceModel, engineController);
 
                 if (execInternval == null)
                     break;
@@ -152,7 +152,7 @@ namespace Dynamo.Core
             if (handler != null) handler(obj, obj2);
         }
 
-        protected virtual void Evaluate(HomeWorkspaceModel workspace, EngineController engineController, ILogger logger)
+        protected virtual void Evaluate(HomeWorkspaceModel workspace, EngineController engineController)
         {
             var sw = new Stopwatch();
 
@@ -164,7 +164,7 @@ namespace Dynamo.Core
 
                 //No additional work needed
                 if (engineController.HasPendingGraphSyncData)
-                    Eval(workspace, engineController, logger);
+                    Eval(workspace, engineController);
             }
             finally
             {
@@ -173,8 +173,7 @@ namespace Dynamo.Core
                 InstrumentationLogger.LogAnonymousEvent("Run", "Eval");
                 InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed);
 
-                logger.Log(
-                    string.Format("Evaluation completed in {0}", sw.Elapsed));
+                Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
             OnEvaluationCompleted();
@@ -187,14 +186,14 @@ namespace Dynamo.Core
             if (handler != null) handler();
         }
 
-        private void Eval(HomeWorkspaceModel workspaceModel, EngineController engineController, ILogger logger)
+        private void Eval(HomeWorkspaceModel workspaceModel, EngineController engineController)
         {
             // We have caught all possible exceptions in UpdateGraph call, I am 
             // not certain if this try-catch block is still meaningful or not.
             try
             {
-                Exception fatalException = null;
-                bool updated = engineController.UpdateGraph(ref fatalException);
+                Exception fatalException;
+                bool updated = engineController.UpdateGraph(out fatalException);
 
                 if (fatalException != null)
                     OnExceptionOccurred(fatalException, true);
@@ -214,7 +213,7 @@ namespace Dynamo.Core
             {
                 /* Evaluation failed due to error */
 
-                logger.Log(ex);
+                Log(ex);
 
                 //OnRunCancelled(true);
                 OnExceptionOccurred(ex, false);

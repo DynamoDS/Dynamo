@@ -50,7 +50,10 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get
+            {
+                return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this);
+            }
         }
 
         protected override void OnModified()

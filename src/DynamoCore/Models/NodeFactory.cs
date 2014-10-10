@@ -8,7 +8,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
-    public class NodeFactory
+    public class NodeFactory : LogSourceBase
     {
         //TODO(Steve): Kill these. Nodes should be loaded based off of TypeLoadData.
         //TODO(Steve): TypeLoadData should be abstract, takes appropriate action based off of node type (0-touch, Custom, ModelExtension)
@@ -36,7 +36,7 @@ namespace Dynamo.Models
         /// <param name="manager"></param>
         /// <param name="logger"></param>
         /// <returns>If the name is valid, a new NodeModel.  Otherwise, null.</returns>
-        public NodeModel CreateNodeInstance(string name, EngineController engineController, CustomNodeManager manager, ILogger logger)
+        public NodeModel CreateNodeInstance(string name, EngineController engineController, CustomNodeManager manager)
         {
             NodeModel node;
 
@@ -48,15 +48,15 @@ namespace Dynamo.Models
             }
             else if (builtInTypesByName.ContainsKey(name))
             {
-                node = GetNodeModelInstanceByName(name, logger);
+                node = GetNodeModelInstanceByName(name);
             }
             else if (builtInTypesByNickname.ContainsKey(name))
             {
-                node = GetNodeModelInstanceByNickName(name, logger);
+                node = GetNodeModelInstanceByNickName(name);
             }
             else
             {
-                node = GetCustomNodeByName(manager, name, logger);
+                node = GetCustomNodeByName(manager, name);
             }
 
             return node;
@@ -67,9 +67,9 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="logger"></param>
         /// <returns> The newly instantiated NodeModel with a new guid</returns>
-        public T CreateNodeInstance<T>(ILogger logger) where T : NodeModel
+        public T CreateNodeInstance<T>() where T : NodeModel
         {
-            var node = GetNodeModelInstanceByType<T>(logger);
+            var node = GetNodeModelInstanceByType<T>();
             if (node == null) 
                 return null;
 
@@ -87,9 +87,9 @@ namespace Dynamo.Models
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <param name="logger"></param>
         /// <returns> The newly instantiated NodeModel</returns>
-        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid, ILogger logger)
+        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = GetNodeModelInstanceByType(elementType, logger);
+            object createdNode = GetNodeModelInstanceByType(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -128,7 +128,8 @@ namespace Dynamo.Models
             return new DSFunction(functionItem);
         }
 
-        private static NodeModel GetCustomNodeByName(CustomNodeManager manager, string name, ILogger logger)
+        //TODO(Steve): Move to CustomNodeManager
+        private NodeModel GetCustomNodeByName(CustomNodeManager manager, string name)
         {
             CustomNodeDefinition def;
 
@@ -140,23 +141,23 @@ namespace Dynamo.Models
                 };
             }
 
-            logger.Log("Failed to find CustomNodeDefinition!");
+            Log("Failed to find CustomNodeDefinition!");
             return null;
         }
 
-        private NodeModel GetNodeModelInstanceByName(string name, ILogger logger)
+        private NodeModel GetNodeModelInstanceByName(string name)
         {
             TypeLoadData tld = BuiltInTypesByName[name];
-            return GetNodeModelInstanceByType(tld.Type, logger);
+            return GetNodeModelInstanceByType(tld.Type);
         }
 
-        private NodeModel GetNodeModelInstanceByNickName(string name, ILogger logger)
+        private NodeModel GetNodeModelInstanceByNickName(string name)
         {
             TypeLoadData tld = BuiltInTypesByNickname[name];
-            return GetNodeModelInstanceByType(tld.Type, logger);
+            return GetNodeModelInstanceByType(tld.Type);
         }
 
-        private static T GetNodeModelInstanceByType<T>(ILogger logger) where T : NodeModel
+        private T GetNodeModelInstanceByType<T>() where T : NodeModel
         {
             try
             {
@@ -164,22 +165,22 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log("Failed to load built-in type");
-                logger.Log(ex);
+                Log("Failed to load built-in type", WarningLevel.Error);
+                Log(ex);
                 return null;
             }
         }
 
-        private static NodeModel GetNodeModelInstanceByType(Type type, ILogger logger)
+        private NodeModel GetNodeModelInstanceByType(Type type)
         {
             try
             {
-                return (NodeModel) type.GetInstance();
+                return (NodeModel)type.GetInstance();
             }
             catch (Exception ex)
             {
-                logger.Log("Failed to load built-in type");
-                logger.Log(ex);
+                Log("Failed to load built-in type");
+                Log(ex);
                 return null;
             }
         }

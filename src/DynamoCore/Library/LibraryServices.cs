@@ -25,7 +25,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    internal class LibraryServices
+    internal class LibraryServices : LogSourceBase
     {
         /// <summary>
         ///     lock object to prevent races on establishing the singleton
@@ -214,7 +214,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library, ILogger logger)
+        public void ImportLibrary(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -253,10 +253,10 @@ namespace Dynamo.DSEngine
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    logger.LogWarning(errorMessage, WarningLevel.Moderate);
+                    Log(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
                     {
-                        logger.LogWarning(error.Message, WarningLevel.Moderate);
+                        Log(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 

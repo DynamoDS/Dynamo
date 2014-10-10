@@ -3,6 +3,7 @@ using System.Windows;
 using System.Xml;
 
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Selection;
 
 using Point = System.Windows.Point;
@@ -11,7 +12,7 @@ namespace Dynamo.Models
 {
     public enum SaveContext { File, Copy, Undo };
 
-    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
+    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
         private Guid guid;
         private bool isSelected;
@@ -240,6 +241,34 @@ namespace Dynamo.Models
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
         protected abstract void DeserializeCore(XmlElement element, SaveContext context);
 
+        #endregion
+
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
         #endregion
     }
 

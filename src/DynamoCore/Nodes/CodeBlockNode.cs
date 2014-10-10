@@ -31,8 +31,6 @@ namespace Dynamo.Nodes
 
         public bool ShouldFocus { get; set; }
 
-        private readonly DynamoLogger logger;
-
         private struct Formatting
         {
             public const double InitialMargin = 0;

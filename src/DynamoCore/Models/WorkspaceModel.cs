@@ -20,7 +20,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource
     {
         public const double ZOOM_MAXIMUM = 4.0;
         public const double ZOOM_MINIMUM = 0.01;
@@ -448,21 +448,21 @@ namespace Dynamo.Models
         /// <param name="newPath">The path to save to</param>
         /// <param name="logger"></param>
         /// <param name="core"></param>
-        public virtual bool SaveAs(string newPath, ProtoCore.Core core, ILogger logger)
+        public virtual bool SaveAs(string newPath, ProtoCore.Core core)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            logger.Log("Saving " + newPath + "...");
+            Log("Saving " + newPath + "...");
             try
             {
-                if (SaveInternal(newPath, core, logger))
+                if (SaveInternal(newPath, core))
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
             {
                 //Log(ex);
-                logger.Log(ex.Message);
-                logger.Log(ex.StackTrace);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -471,16 +471,16 @@ namespace Dynamo.Models
         }
 
         [Obsolete("Use AddNode(NodeModel)", true)]
-        public NodeModel AddNode(double xPos, double yPos, string nodeName, NodeFactory factory, ILogger logger, EngineController engine, CustomNodeManager manager)
+        public NodeModel AddNode(double xPos, double yPos, string nodeName, NodeFactory factory, EngineController engine, CustomNodeManager manager)
         {
             var id = Guid.NewGuid();
-            return AddNode(id, nodeName, xPos, yPos, false, false, factory, logger, engine, manager);
+            return AddNode(id, nodeName, xPos, yPos, false, false, factory, engine, manager);
         }
 
         [Obsolete("Use AddNode(NodeModel)", true)]
         public T AddNode<T>(NodeFactory factory) where T : NodeModel
         {
-            var node = factory.CreateNodeInstance<T>(TODO);
+            var node = factory.CreateNodeInstance<T>();
             if (node == null) throw new Exception("The supplied node Type was invalid!");
 
             nodes.Add(node);
@@ -545,16 +545,16 @@ namespace Dynamo.Models
         /// <returns>Returns the created NodeModel, or null if the operation has 
         /// failed.</returns>
         [Obsolete("Use AddNode(NodeModel)", true)]
-        public NodeModel AddNode(Guid nodeId, string nodeName, double xPos, double yPos, bool useDefaultPos, bool transformCoordinates, NodeFactory factory, ILogger dynamoLogger, EngineController engine, CustomNodeManager customNodeManager, XmlNode xmlNode = null)
+        public NodeModel AddNode(Guid nodeId, string nodeName, double xPos, double yPos, bool useDefaultPos, bool transformCoordinates, NodeFactory factory, EngineController engine, CustomNodeManager customNodeManager, XmlNode xmlNode = null)
         {
             if (nodeId == Guid.Empty)
                 throw new ArgumentException(@"Node ID must be specified", "nodeId");
 
-            NodeModel node = factory.CreateNodeInstance(nodeName, engine, customNodeManager, dynamoLogger);
+            NodeModel node = factory.CreateNodeInstance(nodeName, engine, customNodeManager);
             if (node == null)
             {
                 const string format = "Failed to create node '{0}' (GUID: {1})";
-                dynamoLogger.Log(string.Format(format, nodeName, nodeId));
+                Log(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
@@ -586,7 +586,7 @@ namespace Dynamo.Models
         }
 
         [Obsolete("Use AddConnection(ConnectorModel) instead", true)]
-        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, ILogger logger, PortType portType = PortType.Input)
+        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.Input)
         {
             try
             {
@@ -601,8 +601,7 @@ namespace Dynamo.Models
             }
             catch (Exception e)
             {
-                logger.Log(e.Message);
-                logger.Log(e);
+                Log(LogMessage.Error(e));
             }
 
             return null;
@@ -638,9 +637,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        public virtual bool Save(ProtoCore.Core core, ILogger logger)
+        public virtual bool Save(ProtoCore.Core core)
         {
-            return SaveAs(FileName, core, logger);
+            return SaveAs(FileName, core);
         }
 
         //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
@@ -701,7 +700,7 @@ namespace Dynamo.Models
                 Updated(this, e);
         }
 
-        private bool SaveInternal(string targetFilePath, ProtoCore.Core core, ILogger logger)
+        private bool SaveInternal(string targetFilePath, ProtoCore.Core core)
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
@@ -713,7 +712,7 @@ namespace Dynamo.Models
             if (!PopulateXmlDocument(document))
                 return false;
 
-            SerializeSessionData(document, core, logger);
+            SerializeSessionData(document, core);
 
             try
             {
@@ -814,7 +813,7 @@ namespace Dynamo.Models
         }
 
         // TODO(Ben): Documentation to come before pull request.
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core, ILogger logger)
+        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)
             {
@@ -843,8 +842,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                logger.Log(exception.Message);
-                logger.Log(exception.StackTrace);
+                Log(exception.Message);
+                Log(exception.StackTrace);
             }
         }
 
@@ -901,7 +900,8 @@ namespace Dynamo.Models
             }
         }
 
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, ILogger logger)
+        [Obsolete("Node to Code not enabled, API subject to change.")]
+        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController)
         {
             IEnumerable<NodeModel> selectedNodes =
                 DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
@@ -982,8 +982,8 @@ namespace Dynamo.Models
                 #endregion
 
                 #region Step III. Recreate the necessary connections
-                ReConnectInputConnections(externalInputConnections, codeBlockNode, logger);
-                ReConnectOutputConnections(externalOutputConnections, codeBlockNode, logger);
+                ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
                 #endregion
             }
             //End UndoRedo Action Group------------------------------------------
@@ -1218,7 +1218,7 @@ namespace Dynamo.Models
             model.Deserialize(modelData, SaveContext.Undo);
         }
 
-        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager, ILogger logger)
+        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager)
         {
             var helper = new XmlElementHelper(modelData);
             string typeName = helper.ReadString("type", String.Empty);
@@ -1260,7 +1260,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = factory.CreateNodeInstance(typeName, engine, manager, logger);
+                NodeModel nodeModel = factory.CreateNodeInstance(typeName, engine, manager);
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }
@@ -1313,6 +1313,7 @@ namespace Dynamo.Models
         /// This determines if it should be redrawn(if it is external) or if it should be 
         /// deleted (if it is internal)
         /// </summary>
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private static bool IsInternalNodeToCodeConnection(ConnectorModel connector)
         {
             return DynamoSelection.Instance.Selection.Contains(connector.Start.Owner) && DynamoSelection.Instance.Selection.Contains(connector.End.Owner);
@@ -1325,7 +1326,8 @@ namespace Dynamo.Models
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
         /// <param name="logger"></param>
-        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode, ILogger logger)
+        [Obsolete("Node to Code not enabled, API subject to change.")]
+        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
         {
             foreach (var kvp in externalOutputConnections)
             {
@@ -1345,7 +1347,7 @@ namespace Dynamo.Models
 
                 //Make the new connection and then record and add it
                 var newConnector = AddConnection(codeBlockNode, connector.End.Owner,
-                    startIndex, endIndex, logger);
+                    startIndex, endIndex);
 
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
@@ -1358,9 +1360,10 @@ namespace Dynamo.Models
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
         /// <param name="logger"></param>
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectInputConnections(
             Dictionary<ConnectorModel, string> externalInputConnections,
-            CodeBlockNodeModel codeBlockNode, ILogger logger)
+            CodeBlockNodeModel codeBlockNode)
         {
             foreach (var kvp in externalInputConnections)
             {
@@ -1382,12 +1385,12 @@ namespace Dynamo.Models
                         connector.Start.Owner,
                         codeBlockNode,
                         startIndex,
-                        endIndex,
-                        logger);
+                        endIndex);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }
         }
+        
         #endregion
 
         /// <summary>
@@ -1424,6 +1427,33 @@ namespace Dynamo.Models
             
             return document.OuterXml;
         }
+        
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
 
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
+        #endregion
     }
 }

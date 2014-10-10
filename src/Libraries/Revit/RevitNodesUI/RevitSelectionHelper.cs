@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.Revit.DB;
@@ -20,25 +21,24 @@ namespace Revit.Interactivity
         }
 
         public IEnumerable<Reference> RequestSelectionOfType(
-            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
-            ILogger logger)
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType)
         {
             switch (selectionType)
             {
                 case SelectionType.One:
-                    return RequestReferenceSelection(selectionMessage, logger, objectType);
+                    return RequestReferenceSelection(selectionMessage, objectType);
 
                 case SelectionType.Many:
-                    return RequestMultipleReferencesSelection(selectionMessage, logger, objectType);
+                    return RequestMultipleReferencesSelection(selectionMessage, objectType);
             }
 
             return null;
         }
 
-        #region private static methods
+        #region private methods
 
-        private static IEnumerable<Reference> RequestReferenceSelection(
-            string message, ILogger logger, SelectionObjectType selectionType)
+        private IEnumerable<Reference> RequestReferenceSelection(
+            string message, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -47,7 +47,7 @@ namespace Revit.Interactivity
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            logger.Log(message);
+            Log(LogMessage.Info(message));
 
             switch (selectionType)
             {
@@ -65,8 +65,8 @@ namespace Revit.Interactivity
             return reference == null ? null : new List<Reference> { reference };
         }
 
-        private static IEnumerable<Reference> RequestMultipleReferencesSelection(
-            string message, ILogger logger, SelectionObjectType selectionType)
+        private IEnumerable<Reference> RequestMultipleReferencesSelection(
+            string message, SelectionObjectType selectionType)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -75,7 +75,7 @@ namespace Revit.Interactivity
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            logger.Log(message);
+            Log(LogMessage.Info(message));
 
             switch (selectionType)
             {
@@ -97,6 +97,14 @@ namespace Revit.Interactivity
         }
 
         #endregion
+
+        public event Action<ILogMessage> MessageLogged;
+
+        protected virtual void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
     }
 
     internal class RevitElementSelectionHelper<T> : IModelSelectionHelper<T> where T : Element
@@ -113,21 +121,19 @@ namespace Revit.Interactivity
         /// </summary>
         /// <typeparam name="T">The type of the Element.</typeparam>
         /// <param name="selectionMessage">The message to display.</param>
-        /// <param name="logger">A logger.</param>
         /// <param name="selectionType">The selection type.</param>
         /// <param name="objectType">The selection object type.</param>
         /// <returns></returns>
         public IEnumerable<T> RequestSelectionOfType(
-            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType,
-            ILogger logger)
+            string selectionMessage, SelectionType selectionType, SelectionObjectType objectType)
         {
             switch (selectionType)
             {
                 case SelectionType.One:
-                    return RequestElementSelection(selectionMessage, logger);
+                    return RequestElementSelection(selectionMessage);
 
                 case SelectionType.Many:
-                    return RequestMultipleElementsSelection(selectionMessage, logger);
+                    return RequestMultipleElementsSelection(selectionMessage);
             }
 
             return null;
@@ -166,9 +172,9 @@ namespace Revit.Interactivity
             }
         }
 
-        #region private static methods
+        #region private methods
 
-        private static IEnumerable<T> RequestElementSelection(string selectionMessage, ILogger logger)
+        private IEnumerable<T> RequestElementSelection(string selectionMessage)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -177,7 +183,7 @@ namespace Revit.Interactivity
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            logger.Log(selectionMessage);
+            Log(LogMessage.Info(selectionMessage));
 
             var elementRef = doc.Selection.PickObject(
                 ObjectType.Element,
@@ -192,15 +198,14 @@ namespace Revit.Interactivity
             return new[] { e }.Cast<T>();
         }
 
-        private static IEnumerable<T> RequestMultipleElementsSelection(
-            string selectionMessage, ILogger logger)
+        private IEnumerable<T> RequestMultipleElementsSelection(string selectionMessage)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            logger.Log(selectionMessage);
+            Log(LogMessage.Info(selectionMessage));
 
             var elements = doc.Selection.PickElementsByRectangle(
                 new ElementSelectionFilter<T>(),
@@ -210,6 +215,14 @@ namespace Revit.Interactivity
         }
 
         #endregion
+
+        public event Action<ILogMessage> MessageLogged;
+
+        protected virtual void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
     }
 
     internal class ElementSelectionFilter<T> : ISelectionFilter

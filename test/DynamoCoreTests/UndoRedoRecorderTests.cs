@@ -148,7 +148,7 @@ namespace Dynamo.Tests
             model.Deserialize(modelData, SaveContext.Undo);
         }
 
-        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager, ILogger logger)
+        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager)
         {
             DummyModel model = DummyModel.CreateBlankInstance();
             model.Deserialize(modelData, SaveContext.Undo);

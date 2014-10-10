@@ -19,11 +19,9 @@ namespace Dynamo.Python
     /// <summary>
     /// Provides code completion for the Python Editor
     /// </summary>
-    public class IronPythonCompletionProvider
+    public class IronPythonCompletionProvider : LogSourceBase
     {
         #region Properties and fields
-
-        private readonly ILogger logger;
 
         /// <summary>
         /// The engine used for autocompletion.  This essentially keeps
@@ -91,10 +89,8 @@ namespace Dynamo.Python
         /// <summary>
         /// Class constructor
         /// </summary>
-        public IronPythonCompletionProvider(ILogger logger)
+        public IronPythonCompletionProvider()
         {
-            this.logger = logger;
-
             engine = IronPython.Hosting.Python.CreateEngine();
             scope = engine.CreateScope();
 
@@ -123,7 +119,7 @@ namespace Dynamo.Python
                 }
                 catch
                 {
-                    this.logger.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -140,8 +136,8 @@ namespace Dynamo.Python
                 }
                 catch (Exception e)
                 {
-                    this.logger.Log(e.ToString());
-                    this.logger.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    Log(e.ToString());
+                    Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -484,8 +480,8 @@ namespace Dynamo.Python
             }
             catch (Exception e)
             {
-                this.logger.Log(e.ToString());
-                this.logger.Log("Failed to look up type");
+                Log(e.ToString());
+                Log("Failed to look up type");
             }
             return type as Type;
         }

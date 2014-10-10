@@ -38,30 +38,29 @@ namespace Dynamo.PackageManager
         public PackageFileInfo(string packageRoot, string filename)
         {
             this.packageRoot = packageRoot;
-            this.Model = new FileInfo(filename);
+            Model = new FileInfo(filename);
         }
     }
 
-    public class Package : NotificationObject
+    public class Package : NotificationObject, ILogSource
     {
-
         #region Properties/Fields
 
         public string Name { get; set; }
 
         public string CustomNodeDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "dyf"); }
+            get { return Path.Combine(RootDirectory, "dyf"); }
         }
 
         public string BinaryDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "bin"); }
+            get { return Path.Combine(RootDirectory, "bin"); }
         }
 
         public string ExtraDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "extra"); }
+            get { return Path.Combine(RootDirectory, "extra"); }
         }
 
         public bool Loaded { get; set; }
@@ -76,7 +75,7 @@ namespace Dynamo.PackageManager
             set
             {
                 // this implies the user would like to rescan additional files
-                this.EnumerateAdditionalFiles();
+                EnumerateAdditionalFiles();
                 typesVisibleInManager = value;
                 RaisePropertyChanged("TypesVisibleInManager");
             }
@@ -126,33 +125,33 @@ namespace Dynamo.PackageManager
 
         public Package(string directory, string name, string versionName)
         {
-            this.Loaded = false;
-            this.RootDirectory = directory;
-            this.Name = name;
-            this.VersionName = versionName;
-            this.LoadedTypes = new ObservableCollection<Type>();
-            this.LoadedAssemblies = new ObservableCollection<Assembly>();
-            this.LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
-            this.Dependencies = new ObservableCollection<PackageDependency>();
-            this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
-            this.AdditionalFiles = new ObservableCollection<PackageFileInfo>();
+            Loaded = false;
+            RootDirectory = directory;
+            Name = name;
+            VersionName = versionName;
+            LoadedTypes = new ObservableCollection<Type>();
+            LoadedAssemblies = new ObservableCollection<Assembly>();
+            LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
+            Dependencies = new ObservableCollection<PackageDependency>();
+            LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+            AdditionalFiles = new ObservableCollection<PackageFileInfo>();
 
-            this.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
+            LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
 
         }
 
         private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.LoadedAssemblyNames.Clear();
+            LoadedAssemblyNames.Clear();
             foreach (var ass in LoadedAssemblies)
             {
-                this.LoadedAssemblyNames.Add(ass.GetName());
+                LoadedAssemblyNames.Add(ass.GetName());
             }
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
         {
-            return Package.FromJson(Path.Combine(rootPath, "pkg.json"), logger);
+            return FromJson(Path.Combine(rootPath, "pkg.json"), logger);
         }
 
         public static Package FromJson(string headerPath, ILogger logger)
@@ -163,19 +162,21 @@ namespace Dynamo.PackageManager
                 var body = JsonConvert.DeserializeObject<PackageUploadRequestBody>(pkgHeader);
 
                 if (body.name == null || body.version == null)
-                {
                     throw new Exception("The header is missing a name or version field.");
-                }
 
-                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version);
-                pkg.Group = body.group;
-                pkg.Description = body.description;
-                pkg.Keywords = body.keywords;
-                pkg.VersionName = body.version;
-                pkg.License = body.license;
-                pkg.EngineVersion = body.engine_version;
-                pkg.Contents = body.contents;
-                body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
+                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version)
+                {
+                    Group = body.@group,
+                    Description = body.description,
+                    Keywords = body.keywords,
+                    VersionName = body.version,
+                    License = body.license,
+                    EngineVersion = body.engine_version,
+                    Contents = body.contents
+                };
+
+                foreach (var dep in body.dependencies)
+                    pkg.Dependencies.Add(dep);
 
                 return pkg;
             }
@@ -188,20 +189,20 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void LoadIntoDynamo(DynamoLoader loader, ILogger logger)
+        public void LoadIntoDynamo(DynamoLoader loader)
         {
             try
             {
-                this.LoadAssembliesIntoDynamo(loader, logger);
-                this.LoadCustomNodesIntoDynamo(loader);
-                this.EnumerateAdditionalFiles();
+                LoadAssembliesIntoDynamo(loader);
+                LoadCustomNodesIntoDynamo(loader);
+                EnumerateAdditionalFiles();
 
                 Loaded = true;
             }
             catch (Exception e)
             {
-                logger.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
-                logger.Log(e.GetType() + ": " + e.Message);
+                Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
             }
 
         }
@@ -215,10 +216,10 @@ namespace Dynamo.PackageManager
                 "*",
                 SearchOption.AllDirectories)
                 .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") && !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup"))
-                .Select(x => new PackageFileInfo(this.RootDirectory, x));
+                .Select(x => new PackageFileInfo(RootDirectory, x));
 
-            this.AdditionalFiles.Clear();
-            this.AdditionalFiles.AddRange(nonDyfDllFiles);
+            AdditionalFiles.Clear();
+            AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
         public IEnumerable<string> EnumerateAssemblyFiles()
@@ -236,7 +237,7 @@ namespace Dynamo.PackageManager
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo(DynamoLoader loader, ILogger logger)
+        private void LoadAssembliesIntoDynamo(DynamoLoader loader)
         {
             var assemblies = LoadAssembliesInBinDirectory();
 
@@ -259,7 +260,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                LibraryServices.GetInstance().ImportLibrary(zeroTouchAssem.Location, logger);
+                LibraryServices.GetInstance().ImportLibrary(zeroTouchAssem.Location);
             }
 
             // load the node model assemblies
@@ -280,9 +281,7 @@ namespace Dynamo.PackageManager
                     .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
 
             foreach (var assem in assemblies)
-            {
-                this.LoadedAssemblies.Add(assem);
-            }
+                LoadedAssemblies.Add(assem);
 
             return assemblies;
         }
@@ -326,25 +325,25 @@ namespace Dynamo.PackageManager
 
         internal void MarkForUninstall(IPreferences prefs)
         {
-            this.MarkedForUninstall = true;
+            MarkedForUninstall = true;
 
-            if (!prefs.PackageDirectoriesToUninstall.Contains(this.RootDirectory))
+            if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
-                prefs.PackageDirectoriesToUninstall.Add(this.RootDirectory);
+                prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            this.MarkedForUninstall = false;
-            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(this.RootDirectory));
+            MarkedForUninstall = false;
+            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
-        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs, ILogger logger)
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
-            if (this.LoadedAssemblies.Any())
+            if (LoadedAssemblies.Any())
             {
-                this.MarkForUninstall(prefs);
+                MarkForUninstall(prefs);
                 return;
             }
 
@@ -352,24 +351,36 @@ namespace Dynamo.PackageManager
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.RemoveFromDynamo(x.Guid));
                 packageLoader.LocalPackages.Remove(this);
-                Directory.Delete(this.RootDirectory, true);
+                Directory.Delete(RootDirectory, true);
             }
             catch (Exception e)
             {
-                logger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
-                logger.Log(e.GetType() + ": " + e.Message);
+                Log("Exception when attempting to uninstall the package " + Name + " from " + RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
                 throw e;
             }
         }
 
         internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager)
         {
-            this.LoadedCustomNodes.Clear();
+            LoadedCustomNodes.Clear();
             customNodeManager
-                        .GetInfosFromFolder(this.CustomNodeDirectory)
+                        .GetInfosFromFolder(CustomNodeDirectory)
                         .ToList()
-                        .ForEach(x => this.LoadedCustomNodes.Add(x));
+                        .ForEach(x => LoadedCustomNodes.Add(x));
         }
 
+        public event Action<ILogMessage> MessageLogged;
+
+        protected virtual void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected virtual void Log(string s)
+        {
+            Log(LogMessage.Info(s));
+        }
     }
 }
