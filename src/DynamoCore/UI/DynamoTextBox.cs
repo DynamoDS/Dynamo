@@ -544,8 +544,9 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
+            var dynamoWindow = WPF.FindUpVisualTree<DynamoView>(this.PlacementTarget);
             Point targetLocation = this.PlacementTarget
-                .TransformToAncestor(Application.Current.MainWindow)
+                .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
 
             switch (this.AttachmentSide)
@@ -560,7 +561,7 @@ namespace Dynamo.UI.Controls
                     x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
                         + gap + HorizontalScrollOffset;
 
-                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height
+                    var availableHeight = dynamoWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)
                         y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);

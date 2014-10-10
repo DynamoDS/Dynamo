@@ -16,7 +16,7 @@
             <!-- Region Converters -->
 
             <!--Converter to Make class details not focusable-->
-            <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+            <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
             <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -262,7 +262,7 @@
                                 <Setter.Value>
                                     <Binding RelativeSource="{RelativeSource Self}"
                                              Path="DataContext"
-                                             Converter="{StaticResource DataContextToBoolConverter}" />
+                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
                                 </Setter.Value>
                             </Setter>
 
@@ -498,8 +498,7 @@
                                 </Button.Template>
                                 <Border Name="Bd"
                                         BorderThickness="0"
-                                        BorderBrush="Transparent"
-                                        Background="#282828">
+                                        BorderBrush="Transparent">                                   
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -552,6 +551,27 @@
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
                                     </Grid>
+                                    <Border.Style>
+                                        <!--If item is RootElement Background will be dark grey.
+                                            If item is InternalElement Background will be light grey.-->
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background"
+                                                    Value="#282828" />
+                                            <Style.Triggers>
+                                                <DataTrigger Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Background"
+                                                            Value="#2F2F2F" />
+                                                    <Setter Property="Padding"
+                                                            Value="0,0,0,10" />
+                                                </DataTrigger>                                               
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                 </Border>
                             </Button>
 
@@ -573,17 +593,26 @@
                                             Value="-3,0,0,0" />
                                 </Trigger>
 
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
-                                                   Value="true" />
-                                        <Condition Property="IsExpanded"
-                                                   Value="false" />
-                                    </MultiTrigger.Conditions>
+                                <!--Highlight item just in case this item is root element, not selected and
+                                    ,mouse is over it.-->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                                   Value="True" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsExpanded}"
+                                                   Value="False" />
+                                        <Condition Value="False">
+                                            <Condition.Binding>
+                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                         Path="DataContext"
+                                                         Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="Background"
                                             TargetName="Bd"
                                             Value="#222222" />
-                                </MultiTrigger>
+                                </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

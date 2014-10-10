@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
@@ -135,7 +136,7 @@
         <!-- Region Converters -->
 
         <!--Converter to Make class details not focusable-->
-        <controls:DataContextToBoolConverter x:Key="DataContextToBoolConverter" />
+        <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
         <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
         <!--Converter that will be used, if number of found classes equals 0. 
@@ -477,6 +478,8 @@
         </Style>
 
         <!--EndRegion-->
+
+        <sys:Int32 x:Key="fixedValue">123</sys:Int32>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer CanContentScroll="True"
@@ -501,7 +504,8 @@
                              BorderBrush="Transparent"
                              ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ItemsSource="{Binding Members}">
+                             ItemsSource="{Binding Members}"
+                             SelectedIndex="{StaticResource fixedValue}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
@@ -575,7 +579,7 @@
                                                     <Setter.Value>
                                                         <Binding RelativeSource="{RelativeSource Self}"
                                                                  Path="DataContext"
-                                                                 Converter="{StaticResource DataContextToBoolConverter}" />
+                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
                                                     </Setter.Value>
                                                 </Setter>
 
