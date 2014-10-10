@@ -28,9 +28,6 @@ namespace Dynamo.Nodes
             : base(workspaceModel, new ZeroTouchVarArgNodeController(workspaceModel.DynamoModel.EngineController, descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
-            //Create a default input port for the variable arg method.
-            VarInputController.AddInputToModel();
-            this.RegisterInputPorts();
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
