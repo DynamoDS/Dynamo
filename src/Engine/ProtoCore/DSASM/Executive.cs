@@ -7305,7 +7305,6 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            GC();
             pc++;
         }
 
