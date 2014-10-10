@@ -8,6 +8,7 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
+
 namespace RevitTestServices.AnalysisDisplay
 {
     [TestFixture]
@@ -25,9 +26,10 @@ namespace RevitTestServices.AnalysisDisplay
 
             var samplePoints = new[]
             {
-                new double[]{0,0},
-                new[]{0.1,0.2},
-                new[]{0,0.1}
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.1,0.2),
+                UV.ByCoordinates(0,0.1),
+                
             };
 
             var sampleValues = new[]
@@ -56,9 +58,9 @@ namespace RevitTestServices.AnalysisDisplay
 
             var samplePoints = new[]
             {
-                new double[]{0,0},
-                new[]{0.5,0},
-                new[]{0,0.5}
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.5,0),
+                UV.ByCoordinates(0,0.5)
             };
 
             var sampleValues = new[]

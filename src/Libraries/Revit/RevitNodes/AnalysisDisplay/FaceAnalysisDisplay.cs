@@ -182,7 +182,7 @@ namespace Revit.AnalysisDisplay
         /// <returns>A FaceAnalysisDisplay object.</returns>
         public static FaceAnalysisDisplay ByViewFacePointsAndValues(
             View view, Surface surface,
-            double[][] sampleLocations, double[] samples, string name = "", string description = "", Type unitType = null)
+            Autodesk.DesignScript.Geometry.UV[] sampleLocations, double[] samples, string name = "", string description = "", Type unitType = null)
         {
             if (view == null)
             {
@@ -219,7 +219,7 @@ namespace Revit.AnalysisDisplay
                 description = Resource1.AnalysisResultsDefaultDescription;
             }
 
-            var data = new SurfaceAnalysisData(surface, sampleLocations.ToDSUvs(), new List<string> { "Dynamo Data" }, new List<IList<double>>{samples});
+            var data = new SurfaceAnalysisData(surface, sampleLocations.ToList(), new List<string> { "Dynamo Data" }, new List<IList<double>>{samples});
 
             return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description, unitType);
         }

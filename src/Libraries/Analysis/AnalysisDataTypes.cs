@@ -53,7 +53,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the calculation locations.</param>
         /// <param name="calculationLocations">UV coordinates on the surface.</param>
         /// <param name="results">A set of results keyed by the name of the result type.</param>
-        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations, IList<string> resultNames, IList<IList<double>> resultValues)
+        public SurfaceAnalysisData(Surface surface, IList<UV> calculationLocations, IList<string> resultNames, IList<IList<double>> resultValues)
         {
             Surface = surface;
             CalculationLocations = CullCalculationLocations(surface, calculationLocations);
