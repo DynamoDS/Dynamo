@@ -169,9 +169,11 @@ namespace Dynamo.Core
 
                 dynamoModel.EngineController.GenerateGraphSyncData(workspace.Nodes);
 
-                //No additional work needed
                 if (dynamoModel.EngineController.HasPendingGraphSyncData)
+                {
+                    ExecutionEvents.OnGraphPreExecution();
                     Eval(workspace);
+                }
             }
             catch (Exception ex)
             {
@@ -196,6 +198,7 @@ namespace Dynamo.Core
             }
 
             dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
+            ExecutionEvents.OnGraphPostExecution();
         }
 
         private void Eval(HomeWorkspaceModel workspaceModel)
