@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -41,6 +43,14 @@ namespace Dynamo.UI.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
+        {
+            var searchViewModel = this.DataContext as SearchViewModel;
+
+            // Clear SearchText in ViewModel, as result search textbox clears as well.
+            searchViewModel.SearchText = "";
         }
     }
 }
