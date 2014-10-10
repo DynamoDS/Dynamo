@@ -8,6 +8,9 @@ using ProtoTestFx.TD;
 using ProtoScript.Runners;
 namespace ProtoTest.DSASM
 {
+
+#if GC_MARK_AND_SWEEP
+
     [TestFixture]
     public class HeapMarkAndSweepTests
     {
@@ -39,7 +42,7 @@ namespace ProtoTest.DSASM
         /// Test basic mark and sweep for pointer and string.
         /// </summary>
         [Test]
-        public void TesBasic()
+        public void TestBasic()
         {
             var heap = new Heap();
             var values = new StackValue[]
@@ -231,4 +234,6 @@ namespace ProtoTest.DSASM
             Assert.IsNull(array2Hpe);
         }
     }
+
+#endif
 }
