@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Dynamo.UI.Commands;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -56,6 +51,7 @@ namespace Dynamo.ViewModels
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
             PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
@@ -75,7 +71,6 @@ namespace Dynamo.ViewModels
             SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
-            CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
@@ -132,6 +127,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
         public DelegateCommand SubmitCommand { get; set; }
+        public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
         public DelegateCommand PanCommand { get; set; }
@@ -147,7 +143,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand SetAreaUnitCommand { get; set; }
         public DelegateCommand SetVolumeUnitCommand { get; set; }
         public DelegateCommand ShowAboutWindowCommand { get; set; }
-        public DelegateCommand CheckForUpdateCommand { get; set; }
         public DelegateCommand SetNumberFormatCommand { get; set; }
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }

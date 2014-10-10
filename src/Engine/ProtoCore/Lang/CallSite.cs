@@ -367,11 +367,25 @@ namespace ProtoCore
 
         #region Support Methods
 
+
+        /// <summary>
+        /// Report that whole function group couldn't be found
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        private StackValue ReportFunctionGroupNotFound(Core core)
+        {
+            core.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            return StackValue.Null;
+        }
+
+
         /// <summary>
         /// Internal support method for reporting a method that can't be located
         /// </summary>
         /// <returns></returns>
-        private StackValue ReportMethodNotFound(Core core, List<StackValue> arguments)
+        private StackValue ReportMethodNotFoundForArguments(Core core, List<StackValue> arguments)
         {
             core.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
             return StackValue.Null;
@@ -818,7 +832,7 @@ namespace ProtoCore
         private FunctionEndPoint SelectFEPFromMultiple(StackFrame stackFrame, Core core,
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
         {
-            StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue svThisPtr = stackFrame.ThisPtr;
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
@@ -996,8 +1010,8 @@ namespace ProtoCore
                 //    && !fep.procedureNode.isConstructor
                 //    && !fep.procedureNode.isStatic)
 
-                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsPointer &&
-                     stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
+                if ((stackFrame.ThisPtr.IsPointer &&
+                     stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                     && (fep.procedureNode.classScope != -1))
                 {
@@ -1161,7 +1175,7 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportFunctionGroupNotFound(core);
             }
 
 
@@ -1217,7 +1231,7 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportMethodNotFoundForArguments(core, arguments);
             }
 
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);
@@ -1387,19 +1401,24 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
                 }
 
+
+                bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
                 {
 
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core);
+                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core).ToArray();
                     }
                     else
                     {
                         subParameters = new StackValue[] { formalParameters[repIndex] };
                     }
                     parameters.Add(subParameters);
+
+                    if (subParameters.Length == 0)
+                        hasEmptyArg = true;
 
                     switch (algorithm)
                     {
@@ -1412,6 +1431,12 @@ namespace ProtoCore
                     }
 
                 }
+
+                // If we're being asked to replicate across an empty list
+                // then it's always going to be zero, as there will never be any
+                // data to pass to that parameter.
+                if (hasEmptyArg)
+                    retSize = 0;
 
                 StackValue[] retSVs = new StackValue[retSize];
                 SingleRunTraceData retTrace = newTraceData;
@@ -1488,7 +1513,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
             }
@@ -1510,7 +1535,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core);
+                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core).ToArray();
                     retSize = parameters.Length;
                 }
                 else
@@ -1654,7 +1679,7 @@ namespace ProtoCore
 #endif
                 }
 
-                StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
+                StackValue ret = core.Heap.AllocateArray(retSVs, null);
                 GCUtils.GCRetain(ret, core);
                 return ret;
 
@@ -1695,10 +1720,7 @@ namespace ProtoCore
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, core);
 
             // Correct block id where the function is defined. 
-            StackValue funcBlock = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
-            funcBlock.opdata = finalFep.BlockScope;
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock, funcBlock);
-
+            stackFrame.FunctionBlock = finalFep.BlockScope;
 
             //TraceCache -> TLS
             //Extract left most high-D pack
@@ -1831,12 +1853,7 @@ namespace ProtoCore
                 for (int p = 0; p < promotionsRequired; p++)
                 {
 
-                    StackValue newSV = HeapUtils.StoreArray(
-                        new StackValue[1]
-                            {
-                                oldSv
-                            }
-                        , null, core);
+                    StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
 
                     GCUtils.GCRetain(newSV, core);
                     // GCUtils.GCRelease(oldSv, core);

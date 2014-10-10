@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using Autodesk.DesignScript.Runtime;
+using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -20,7 +21,8 @@ namespace Revit.Elements
 
         #endregion
 
-        internal Autodesk.Revit.DB.Category InternalCategory
+        [IsVisibleInDynamoLibrary(false)]
+        public Autodesk.Revit.DB.Category InternalCategory
         {
             get { return internalCategory; }
         }

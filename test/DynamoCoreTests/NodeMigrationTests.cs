@@ -581,6 +581,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestModulo()
         {
             OpenModel(GetDynPath("TestModulo.dyn"));
@@ -1368,6 +1369,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestTakeEveryNth()
         {
             OpenModel(GetDynPath("TestTakeEveryNth.dyn"));
@@ -1526,7 +1528,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSort()
         {
             OpenModel(GetDynPath("TestSort.dyn"));
@@ -1671,6 +1672,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestSliceList()
         {
             OpenModel(GetDynPath("TestSliceList.dyn"));
@@ -1697,6 +1699,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestSliceList_ListOfListAsInput()
         {
             OpenModel(GetDynPath("TestSliceList_ListOfListAsInput.dyn"));
@@ -1734,7 +1737,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestNumberInput()
         {
             OpenModel(GetDynPath("TestNumberInput.dyn"));
@@ -1796,6 +1798,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestXyzAverage()
         {
             OpenModel(GetDynPath("TestXyzAverage.dyn"));
@@ -1892,7 +1895,7 @@ namespace Dynamo.Tests
         #region Dynamo Libraries Node Migration Tests
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void LibraryTestReferencePoint()
         {
             OpenModel(GetDynPath("LibraryTestReferencePoint.dyn"));
@@ -1911,7 +1914,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void LibraryTestCreateFamilyInstance()
         {
             OpenModel(GetDynPath("LibraryTestCreateFamilyInstance.dyn"));
@@ -1930,7 +1933,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void LibraryTestModelCurve()
         {
             OpenModel(GetDynPath("LibraryTestModelCurve.dyn"));
@@ -1984,6 +1987,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForUnresolvedNodes()
         {
             var model = ViewModel.Model;
@@ -2023,6 +2027,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("Failure")]
         public void TestSaveDontCorruptForDeprecatedNodes()
         {
             var model = ViewModel.Model;

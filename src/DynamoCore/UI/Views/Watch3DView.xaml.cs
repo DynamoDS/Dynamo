@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
 using Color = System.Windows.Media.Color;
@@ -240,7 +239,13 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            RenderDrawables(e);
+            if (CheckAccess())
+                RenderDrawables(e);
+            else
+            {
+                // Scheduler invokes ResultsReadyToVisualize on background thread.
+                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(e)));
+            }
         }
 
         /// <summary>

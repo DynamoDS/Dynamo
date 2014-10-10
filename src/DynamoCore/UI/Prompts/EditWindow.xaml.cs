@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Controls;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Prompts
 {

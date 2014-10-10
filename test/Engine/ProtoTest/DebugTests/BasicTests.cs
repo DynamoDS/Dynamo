@@ -86,7 +86,6 @@ b = 20;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
         public void TestWatchExpression2()
         {
             // Execute and verify the main script in a debug session
@@ -155,7 +154,7 @@ p = Vector.Vector();
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestWatchExpression3()
         {
             // Execute and verify the main script in a debug session
@@ -6254,7 +6253,7 @@ class A
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestUpdateLoopInsideFunction2()
         {
             String code =
@@ -6530,7 +6529,7 @@ a1.a = -1;";
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestUpdateLoopWithNestedDifferentBlocks()
         {
             String code = @"
@@ -6989,11 +6988,11 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Debugger")]
         public void Numeric_Associative()
         {
             String code =
-        @"import(""ProtoGeometry.dll"");
+        @"
 
 a : int;
 b : int;
@@ -7044,11 +7043,11 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Debugger")]
         public void Numeric_Imperative()
         {
             String code =
-        @"import(""ProtoGeometry.dll"");
+        @"
 
 a : int;
 b : int;
@@ -7244,7 +7243,7 @@ irrelevant = 3;
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void ToggleBreakPoint001()
         {
             string src = @"
@@ -7344,7 +7343,7 @@ b : int = 0;
         }
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void ToggleBreakPoint005()
         {
             string src = @"
@@ -8271,7 +8270,7 @@ surf = makeSurf(ps);
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_442()
         {
             string src =
@@ -11134,7 +11133,7 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfi
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_656_1()
         {
             fsr.PreStart(
@@ -11261,7 +11260,7 @@ c = 90;", runnerConfig);
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_656_2()
         {
             fsr.PreStart(
@@ -11384,7 +11383,7 @@ b = 2;", runnerConfig);
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_656_4_stepIn()
         {
             fsr.PreStart(
@@ -11528,7 +11527,7 @@ CountFalse({a4}) => a5;//0
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_722()
         {
             fsr.PreStart(
@@ -11570,7 +11569,7 @@ Print(c1);", runnerConfig);
 
         [Test]
         [Category("Debugger")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_IDE_722_1()
         {
             fsr.PreStart(
@@ -12159,7 +12158,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_656_2()
         {
             // Execute and verify the main script in a debug session
@@ -12196,7 +12195,7 @@ a;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_stepin_656_2()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -12238,7 +12237,7 @@ a;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_656_3()
         {
             // Execute and verify the main script in a debug session
@@ -12384,7 +12383,7 @@ b;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_656_4()
         {
             // Execute and verify the main script in a debug session
@@ -12861,7 +12860,6 @@ c = 90;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
         public void inlineconditional_stepnext_656_13()
         {
             // Execute and verify the main script in a debug session
@@ -13017,7 +13015,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_stepin_656_10()
         {
             // Execute and verify the main script in a debug session
@@ -13154,7 +13152,6 @@ list3 = GetCoor(list1);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
         public void inlineconditional_stepnext_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13203,7 +13200,7 @@ a =
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13763,7 +13760,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void IDE_DebuggerRefCount_ReplicatedFunctionCall()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14635,7 +14632,7 @@ z = { A.A(), A.A() };
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void undefinedclass()
         {
             // Execute and verify the main script in a debug session
@@ -14888,7 +14885,7 @@ x = y.add();
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void ModifyAndReturnClassPropertyInsideFunction_1()
         {
             // Execute and verify the main script in a debug session
@@ -14969,7 +14966,7 @@ x = y.add();
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void ModifyAndReturnClassPropertyInsideFunction_2()
         {
             // Execute and verify the main script in a debug session
@@ -15052,7 +15049,7 @@ x = add(y);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void ModifyAndReturnClassPropertyInsideFunction_3()
         {
             // Execute and verify the main script in a debug session

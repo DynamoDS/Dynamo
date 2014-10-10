@@ -18,6 +18,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestPreLoadedLibrary()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();
@@ -26,6 +27,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestLoadDSFile()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();
@@ -44,6 +46,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestLibraryAcrossSessions()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();

@@ -1,12 +1,11 @@
-﻿using System;
+﻿#if !ENABLE_DYNAMO_SCHEDULER
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 // TODO(LC)
 // Use TSO ordering for Render vizManager
@@ -42,6 +41,7 @@ namespace Dynamo
         private readonly DynamoModel dynamoModel;
         private readonly VisualizationManager visualizationManager;
         private readonly Thread controllerThread;
+        private bool isShuttingDown = false;
 
         public RenderManager(VisualizationManager vizManager, DynamoModel dynamoModel)
         {
@@ -103,7 +103,7 @@ namespace Dynamo
 
         private void RenderLoopController()
         {
-            while (true)
+            while (!this.isShuttingDown)
             {
                 RenderTask task = new RenderTask();
                 bool hasTask = false;
@@ -128,10 +128,7 @@ namespace Dynamo
                     //a polling model
                     Thread.Sleep(10);
                 }
-
-
             }
-
         }
 
         /// <summary>
@@ -199,5 +196,12 @@ namespace Dynamo
             node.UpdateRenderPackage(maxTesselationDivs);
         }
 
+        public void CleanUp()
+        {
+            isShuttingDown = true;
+            controllerThread.Join(); 
+        }
     }
 }
+
+#endif

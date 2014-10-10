@@ -14,14 +14,13 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
-using VMDataBridge;
-
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MenuItem = System.Windows.Controls.MenuItem;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Nodes
 {
@@ -442,34 +441,24 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(Code)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                AcceptsReturn = true,
-                MaxWidth = Configurations.CBNMaxTextBoxWidth,
-                TextWrapping = TextWrapping.Wrap
-            };
+            var cbe = new CodeBlockEditor(nodeUI.ViewModel);
 
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = nodeUI.ViewModel;
-            tb.BindToProperty(
+            nodeUI.inputGrid.Children.Add(cbe);
+            Grid.SetColumn(cbe, 0);
+            Grid.SetRow(cbe, 0);
+            
+            cbe.SetBinding(CodeBlockEditor.CodeProperty,
                 new Binding("Code")
                 {
-                    Mode = BindingMode.TwoWay,
+                    Mode = BindingMode.OneWay,
                     NotifyOnValidationError = false,
                     Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
+
 
             if (shouldFocus)
             {
-                tb.Focus();
+                cbe.Focus();
                 shouldFocus = false;
             }
         }
@@ -482,7 +471,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
             {
-                DataContext = nodeUI.ViewModel,
+                DataContext = this,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
@@ -605,26 +594,6 @@ namespace Dynamo.Nodes
             ((PreferenceSettings)this.Workspace.DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
-
-            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
-        }
-
-        private void EvaluationCompleted(object o)
-        {
-            CachedValue = o;
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
-
-                    Root.Children.Clear();
-                    Root.Children.Add(GetWatchNode());
-
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-            );
         }
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -797,7 +766,7 @@ namespace Dynamo.Nodes
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
-                var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
+                var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
             }
         }

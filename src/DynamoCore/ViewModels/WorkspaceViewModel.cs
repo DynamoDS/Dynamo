@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.Controls;
-using System.Windows.Threading;
+
 using System.Windows.Input;
 using Dynamo.Core;
 
@@ -453,7 +451,7 @@ namespace Dynamo.ViewModels
             }
 
             Guid nodeID = Guid.NewGuid();
-            var command = new DynamoViewModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
             this.DynamoViewModel.ExecuteCommand(command);
         }
 

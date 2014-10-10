@@ -15,10 +15,10 @@ using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using ReferencePoint = Revit.Elements.ReferencePoint;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
-    internal class ReferencePointTests : RevitNodeTestBase
+    internal class ReferencePointTests : GeometricRevitNodeTest
     {
 
         internal XYZ InternalPosition(Revit.Elements.ReferencePoint point)
@@ -39,7 +39,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByPoint_ShouldPlaceReferencePointCorrectly()
         {
             var p = Point.ByCoordinates(0, -10, 23.1);
@@ -51,7 +51,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByPointVectorDistance_ShouldPlaceReferencePointCorrectly()
         {
             var p = Point.ByCoordinates(0, -10, 23.1);
@@ -65,8 +65,8 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [Test, Category("Failure")]
+        [TestModel(@".\empty.rfa")]
         public void ByLengthOnCurveReference_ShouldPlaceReferencePointCorrectly()
         {
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
@@ -79,8 +79,8 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [Test, Category("Failure")]
+        [TestModel(@".\empty.rfa")]
         public void ByParameterOnCurveReference_ShouldPlaceReferencePointCorrectly()
         {
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
@@ -93,8 +93,8 @@ namespace DSRevitNodesTests
             InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
-        [Test]
-        [TestModelAttribute(@".\block.rfa")]
+        [Test, Category("Failure")]
+        [TestModel(@".\block.rfa")]
         public void ByParametersOnFaceReference_ShouldPlaceReferencePointCorrectly()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -110,7 +110,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByPointVectorDistance_NullInput1()
         {
             var v = Vector.ByCoordinates(1, 0, 0);
@@ -120,21 +120,21 @@ namespace DSRevitNodesTests
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByParametersOnFaceReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByParametersOnFaceReference(null, 0.5, 0.5));
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByParameterOnCurveReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByParameterOnCurveReference(null, 0.5));
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByLengthOnCurveReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByLengthOnCurveReference(null, 0.5));

@@ -1,21 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dynamo.Controls;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.Utilities;
+
 using System.Windows;
-using Dynamo.Core;
-using ProtoCore.AST.AssociativeAST;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -565,7 +561,7 @@ namespace Dynamo.ViewModels
 
         private void DeleteNodeAndItsConnectors(object parameter)
         {
-            var command = new DynamoViewModel.DeleteModelCommand(nodeLogic.GUID);
+            var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
         }
 

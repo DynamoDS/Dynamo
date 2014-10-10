@@ -42,12 +42,12 @@ namespace ProtoCore.Lang
             // Build the stackframe
             var runtimeCore = interpreter.runtime.Core;
 
-            int classScopeCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kClass).opdata;
-            int returnAddr = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kReturnAddress).opdata;
+            int classScopeCaller = stackFrame.ClassScope;
+            int returnAddr = stackFrame.ReturnPC;
             int blockDecl = procNode.runtimeIndex;
-            int blockCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+            int blockCaller = stackFrame.FunctionCallerBlock;
             int framePointer = runtimeCore.Rmem.FramePointer;
-            StackValue thisPtr = StackValue.BuildPointer(-1);
+            StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
             // for FFI functions whose last parameter's type is (params T[]).
@@ -67,7 +67,7 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = HeapUtils.StoreArray(varParams, null, interpreter.runtime.Core);
+                var packedParams = interpreter.runtime.Core.Heap.AllocateArray(varParams, null);
                 args.Add(packedParams);
             }
 
@@ -97,7 +97,7 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            var callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
+            var callerType = stackFrame.StackFrameType;
             interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);

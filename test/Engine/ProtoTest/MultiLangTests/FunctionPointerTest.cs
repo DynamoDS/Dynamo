@@ -322,7 +322,7 @@ class A
 
         [Test]
         [Category("Negative")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T14_NegativeTest_UsingFunctionNameInNonAssignBinaryExpr()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4038
@@ -478,7 +478,7 @@ b = a.x(3);    //b = 3";
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T21_FunctionPtrUpdateOnMemVar_2()
         {
             string err = "MAGN-4039 Update does not work well with function pointers";
@@ -531,7 +531,7 @@ t = a.x;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T22_FunctionPointerArray()
         {
             string err = "MAGN-4040 Array indexing on array of function pointers causes crash";
@@ -717,7 +717,7 @@ t6:function = foo;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T31_UsedAsMemberVariable()
         {
             string err = "MAGN-4039 Update does not work well with function pointers";

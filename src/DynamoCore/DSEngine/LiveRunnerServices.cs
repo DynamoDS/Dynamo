@@ -28,7 +28,7 @@ namespace Dynamo.DSEngine
             this.dynamoModel = dynamoModel;
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
-      
+
         public void Dispose()
         {
             if (liveRunner is IDisposable)
@@ -45,7 +45,7 @@ namespace Dynamo.DSEngine
 
         public RuntimeMirror GetMirror(string var)
         {
-           
+
             var mirror = liveRunner.InspectNodeValue(var);
 
             if (dynamoModel.DebugSettings.VerboseLogging)
@@ -91,11 +91,16 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="libraries"></param>
         public void ReloadAllLibraries(List<string> libraries)
-        { 
+        {
             if (libraries.Count > 0)
             {
                 liveRunner.ResetVMAndResyncGraph(libraries);
             }
+        }
+
+        internal ClassMirror GetClassType(string className)
+        {
+            return liveRunner.GetClassType(className);
         }
 
         /// <summary>

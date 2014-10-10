@@ -10,6 +10,9 @@ using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
+using Dynamo.UI.Controls;
+using Dynamo.Utilities;
 
 namespace DynamoCoreUITests
 {
@@ -46,7 +49,10 @@ namespace DynamoCoreUITests
         {
             if (this.ViewModel != null)
             {
-                this.ViewModel.Model.ShutDown(true);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                this.ViewModel.PerformShutdownSequence(shutdownParams);
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
@@ -119,7 +125,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         // Create a cyclic chain of three code block nodes, and verify that a
         // warning is shown on one of the cyclic nodes.
         // Reconnect a valid value to one of the chain items, and verify that the
@@ -184,6 +190,31 @@ namespace DynamoCoreUITests
                 }
             });
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSyntaxHighlightRuleForDigits()
+        {
+            string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
+
+            var rule = CodeBlockUtils.CreateDigitRule().Regex;
+            var matches = rule.Matches(text);
+
+            // Expected results (8):
+            // -2468.2342E+04
+            // 34534.345345
+            // 23423
+            // -98.7
+            // 0
+            // 10
+            // 2
+            // -555
+            Assert.AreEqual(8, matches.Count);
+            var actual = matches.Cast<Match>().Select(m => m.Value).ToArray();
+            string[] expected = new string[] { "-2468.2342E+04", "34534.345345", "23423", "-98.7", "0", "10", "2", "-555" };
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
 
         #region Private Helper Methods
 
@@ -265,7 +296,7 @@ namespace DynamoCoreUITests
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoViewModel.RecordableCommand
+            where CmdType : DynamoModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -275,7 +306,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;

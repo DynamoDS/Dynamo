@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
+
 using Revit.GeometryObjects;
 using Revit.GeometryReferences;
 using RevitServices.Persistence;
@@ -13,7 +14,7 @@ using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class Form : Element
     {
 
@@ -76,86 +77,65 @@ namespace Revit.Elements
 
         #endregion
 
-        #region Private helper methods 
+        #region Hidden public static constructors 
 
-
-
-        #endregion
-
-        #region Internal helper methods
-
-        private IEnumerable<Autodesk.Revit.DB.Face> EnumerateFaces()
+        [IsVisibleInDynamoLibrary(false)]
+        public static Form ByLoftCrossSections(ElementCurveReference[] curves, bool isSolid = true)
         {
-            return EnumerateSolids(GetGeometryElement()).SelectMany(x => x.Faces.Cast<Autodesk.Revit.DB.Face>());
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftCrossSectionsInternal(curves, isSolid);
         }
 
-        private IEnumerable<Autodesk.Revit.DB.Solid> EnumerateSolids()
+        [IsVisibleInDynamoLibrary(false)]
+        public static Form ByLoftCrossSections(ElementCurveReference[][] curves, bool isSolid = true)
         {
-            return EnumerateSolids(GetGeometryElement());
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftMultiPartCrossSectionsInternal(curves, isSolid);
         }
 
-        private IEnumerable<Autodesk.Revit.DB.Edge> EnumerateEdges()
+        [IsVisibleInDynamoLibrary(false)]
+        public static Form ByLoftCrossSections(Revit.Elements.Element[] curves, bool isSolid = true)
         {
-            return EnumerateSolids(GetGeometryElement()).SelectMany(x => x.Edges.Cast<Autodesk.Revit.DB.Edge>());
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftCrossSectionsInternal(curves, isSolid);
         }
 
-        private IEnumerable<Autodesk.Revit.DB.Solid> EnumerateSolids(GeometryElement geomElement)
+        [IsVisibleInDynamoLibrary(false)]
+        public static Form ByLoftCrossSections(Revit.Elements.Element[][] curves, bool isSolid = true)
         {
-            // get solid first level elements that are solids
-            var solidFaces = geomElement.Where(x => x is Autodesk.Revit.DB.Solid)
-                .OfType<Autodesk.Revit.DB.Solid>();
-
-            // get solids from geometry instances
-            var geomInstFaces = geomElement.OfType<Autodesk.Revit.DB.GeometryInstance>()
-                                            .SelectMany(x => x.GetInstanceGeometry())
-                                            .OfType<Autodesk.Revit.DB.Solid>();
-
-            return solidFaces.Concat(geomInstFaces);
-        }
-
-        private Autodesk.Revit.DB.GeometryElement GetGeometryElement()
-        {
-            var geoOptions = new Autodesk.Revit.DB.Options()
-            {
-                ComputeReferences = true
-            };
-            var geomObj = InternalForm.get_Geometry(geoOptions);
-
-            if (geomObj == null)
-            {
-                throw new Exception("Could not obtain geometry from element");
-            }
-
-            return geomObj;
-        }
-
-        private static IEnumerable<Autodesk.Revit.DB.Face> GetFaces(Autodesk.Revit.DB.GeometryInstance geomInst)
-        {
-            return geomInst.GetInstanceGeometry()
-                .OfType<Autodesk.Revit.DB.Solid>()
-                .SelectMany(x => x.Faces.Cast<Autodesk.Revit.DB.Face>());
-        }
-
-        private static IEnumerable<Autodesk.Revit.DB.Face> GetFaces(Autodesk.Revit.DB.Solid solid)
-        {
-            return solid.Faces.Cast<Autodesk.Revit.DB.Face>();
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftMultiPartCrossSectionsInternal(curves, isSolid);
         }
 
         #endregion
 
-        #region Public static constructors 
+        #region Public static constructors
 
-        public static Form ByLoftCrossSections(object[] curves, bool isSolid = true)
+        public static Form ByLoftCrossSections(Autodesk.DesignScript.Geometry.Curve[] curves, bool isSolid = true)
+        {
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftCrossSectionsInternal(curves, isSolid);
+        }
+
+        public static Form ByLoftCrossSections(Autodesk.DesignScript.Geometry.Curve[][] curves, bool isSolid = true)
+        {
+            if (curves == null) throw new ArgumentNullException("curves");
+            return ByLoftMultiPartCrossSectionsInternal(curves, isSolid);
+        }
+
+        #endregion
+
+        #region Private static constructors
+
+        private static Form ByLoftCrossSectionsInternal(object[] curves, bool isSolid = true)
         {
             if (curves == null) throw new ArgumentNullException("curves");
 
             // if the arguments are polycurves, explode them
             if (curves.Any(x => x is PolyCurve))
             {
-                var ca = curves.Cast<Autodesk.DesignScript.Geometry.Curve>()
-                    .Select(x => x is PolyCurve ? ((PolyCurve) x).Curves() : new []{ x } ).ToArray();
-
-                return ByLoftCrossSections(ca, isSolid);
+                var ca = curves.Select(x => x is PolyCurve ? ((PolyCurve)x).Curves() : new[] { x }).ToArray();
+                return ByLoftMultiPartCrossSectionsInternal(ca, isSolid);
             }
 
             var refArrArr = new ReferenceArrayArray();
@@ -165,7 +145,6 @@ namespace Revit.Elements
                 if (l == null) throw new ArgumentNullException("curves");
                 var refArr = new ReferenceArray();
 
-                
                 refArr.Append(ElementCurveReference.TryGetCurveReference(l, "Form").InternalReference);
                 refArrArr.Append(refArr);
             }
@@ -173,9 +152,12 @@ namespace Revit.Elements
             return new Form(isSolid, refArrArr);
         }
 
-        public static Form ByLoftCrossSections(object[][] curves, bool isSolid = true)
+        private static Form ByLoftMultiPartCrossSectionsInternal(object[][] curves, bool isSolid = true)
         {
-            if (curves == null) throw new ArgumentNullException("curves");
+            if (curves == null || curves.SelectMany(x => x).Any(x => x == null))
+            {
+                throw new ArgumentNullException("Some of the input curves are null.");
+            }
 
             var refArrArr = new ReferenceArrayArray();
 
@@ -187,7 +169,6 @@ namespace Revit.Elements
             }
 
             return new Form(isSolid, refArrArr);
-
         }
 
         #endregion

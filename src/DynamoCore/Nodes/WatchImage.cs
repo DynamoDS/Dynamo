@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
-using Dynamo.Utilities;
+
 using ProtoCore.AST.AssociativeAST;
 using Image = System.Windows.Controls.Image;
 
@@ -93,11 +93,22 @@ namespace Dynamo.Nodes
             return null;
         }
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            return; // No visualization update is required for this node type.
+        }
+
+#else
+
         public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs
         }
+
+#endif
 
         protected override bool ShouldDisplayPreviewCore()
         {

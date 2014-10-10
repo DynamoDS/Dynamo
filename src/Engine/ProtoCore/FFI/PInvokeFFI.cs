@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -102,14 +103,10 @@ namespace ProtoFFI
                                 out int size)
         {
             size = 0;
-            int ptr = (int)o.opdata;
-            HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
-            size = hs.VisibleSize;
+            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(o);
 
-            if (size == 0)
-            {
+            if (!hs.VisibleItems.Any())
                 return null;
-            }
 
             IList elements = null;
             var opType = hs.Stack[0].optype;
@@ -134,9 +131,8 @@ namespace ProtoFFI
                 throw new ArgumentException(string.Format("Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
             }
 
-            for (int idx = 0; idx < size; ++idx)
+            foreach (var op in hs.VisibleItems)
             {
-                var op = hs.Stack[idx];
                 if (opType == AddressType.Double)
                 {
                     elements.Add(op.RawDoubleValue);
@@ -189,18 +185,8 @@ namespace ProtoFFI
             var core = dsi.runtime.Core;
             object retVal = null;
 
-            lock (core.Heap.cslock)
-            {
-                var numElems = csArray.Length;
-                int ptr = core.Heap.Allocate(numElems);
-                for (int n = numElems - 1; n >= 0; --n)
-                {
-                    core.Heap.Heaplist[ptr].Stack[n] = StackValue.BuildDouble(csArray[n]);
-                }
-                retVal = StackValue.BuildArrayPointer(ptr);
-                //dsi.runtime.rmem.Push(StackValue.BuildArrayPointer(ptr));
-            }
-
+            var values = csArray.Select(x => StackValue.BuildDouble(x)).ToArray();
+            retVal = core.Heap.AllocateArray(values);
             return retVal;
         }
 

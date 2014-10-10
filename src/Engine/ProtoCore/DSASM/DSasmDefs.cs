@@ -147,15 +147,17 @@ namespace ProtoCore.DSASM
         public const string regLX = "_lx";
         public const string regTX = "_tx";
 
+        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string cast = "cast";
         public const string throwexception = "throw";
 
-
+        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
         public const string imperative = "Imperative";
         public const string options = "Options";
     }
 
+    // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
     public struct Literal
     {
         public const string True = "true";
@@ -459,45 +461,4 @@ namespace ProtoCore.DSASM
         kMemHeap,
         kMemRegionTypes
     }
-
-    public enum AccessSpecifier
-    {
-       kPublic,
-       kProtected,
-       kPrivate
-    }
-
-    public enum AssociativeCompilePass
-    {
-        kClassName,
-        kClassBaseClass,
-        kClassHierarchy,
-        kClassMemVar,
-        
-        kClassMemFuncSig,
-        kGlobalFuncSig,
-
-        kGlobalScope,
-
-        kClassMemFuncBody,
-        kGlobalFuncBody,
-        kDone
-    }
-
-    public enum AssociativeSubCompilePass
-    {
-        kNone,
-        kUnboundIdentifier,
-        kGlobalInstanceFunctionBody,
-        kAll
-    }
-
-    public enum ImperativeCompilePass
-    {
-        kGlobalFuncSig,
-        kGlobalScope,
-        kGlobalFuncBody,
-        kDone
-    }
-
 }

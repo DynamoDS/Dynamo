@@ -14,6 +14,7 @@ namespace Dynamo.Tests
     class VersionUtilitiesTests
     {
         [Test]
+        [Category("UnitTests")]
         public void PartialParse_String_ReturnsCorrectResults()
         {
             Assert.IsTrue(VersionUtilities.PartialParse("0.7.0.9") > VersionUtilities.PartialParse("0.0.5"));
@@ -32,6 +33,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void PartialParse_String_ThrowsAnExceptionWhenPassedAMalformedString()
         {
             Assert.Throws(typeof(FormatException), () => VersionUtilities.PartialParse("0.0.a"));

@@ -2,6 +2,8 @@
 {
     public struct Keyword
     {
+        // TODO: Add 
+        // local, Imperative, Associative, try, catch, throw, cast, Options
         public const string Native = "native";
         public const string Class = "class";
         public const string Constructor = "constructor";
@@ -38,6 +40,7 @@
         public const string Private = "private";
         public const string Static = "static";
         public const string Dispose = "_Dispose";
+        public const string GetType = "GetType";
         public const string Invalid = "__invalid";
         public static string[] KeywordList = {Native, Class, Constructor, Def, External, Extend, Heap,
                                         If, Elseif, Else, While, For, Import, From, Break,

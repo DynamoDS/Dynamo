@@ -4,10 +4,10 @@ using NUnit.Framework;
 using Revit.Elements;
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
     [TestFixture]
-    class TopographyTests : RevitNodeTestBase
+    class TopographyTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\empty.rvt")]

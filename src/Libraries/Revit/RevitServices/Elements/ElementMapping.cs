@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
@@ -75,9 +76,9 @@ namespace RevitServices.Elements
             }
         }
 
-
         public void WatcherMethodForAdd(Document document, IEnumerable<ElementId> added)
         {
+            Debug.WriteLine(string.Format("{0} elements added to Revit.", added.Count()));
             foreach (ElementId id in added)
             {
                 Add(document, id, document.GetElement(id).UniqueId);
@@ -86,12 +87,18 @@ namespace RevitServices.Elements
 
         public void WatcherMethodForDelete(Document document, IEnumerable<ElementId> deleted)
         {
+            Debug.WriteLine(string.Format("{0} elements deleted from Revit.", deleted.Count()));
             foreach (ElementId id in deleted)
             {
-                Delete(document, id);
-                ElementIDLifecycleManager<int>.GetInstance().NotifyOfRevitDeletion(id.IntegerValue);
+                try
+                {
+                    Delete(document, id);
+                    ElementIDLifecycleManager<int>.GetInstance()
+                        .NotifyOfRevitDeletion(id.IntegerValue);
+                }
+                catch
+                { }
             }
-            
         }
 
     }

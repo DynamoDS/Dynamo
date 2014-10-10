@@ -13,7 +13,7 @@ using Dynamo.DSEngine;
 using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -195,52 +195,9 @@ b = c[w][x][y][z];";
             Assert.AreEqual(true, refVarNames.Contains("z"));
         }
 #endif
-        [Test]
-        public void TestSemiColonAddition()
-        {
-            string userText, compilableText;
-            userText = "a";
-            compilableText = CodeBlockUtils.FormatUserText(userText);
-            Assert.AreEqual("a;", compilableText);
-
-            userText = "\na\n\n\n";
-            compilableText = CodeBlockUtils.FormatUserText(userText);
-            Assert.AreEqual("a;", compilableText);
-
-            userText = "a = 1; \n\n b = foo( c,\nd\n,\ne)";
-            compilableText = CodeBlockUtils.FormatUserText(userText);
-            Assert.AreEqual("a = 1;\n\n b = foo( c,\nd\n,\ne);", compilableText);
-
-            userText = "      a = b-c;\nx = 1+3;\n   ";
-            compilableText = CodeBlockUtils.FormatUserText(userText);
-            Assert.AreEqual("a = b-c;\nx = 1+3;", compilableText);
-
-            userText = "\n   \n   \n    \n";
-            compilableText = CodeBlockUtils.FormatUserText(userText);
-            Assert.AreEqual("", compilableText);
-        }
 
         [Test]
-        public void TestFormatTextScenarios()
-        {
-            var before = "1;2;";
-            var after = CodeBlockUtils.FormatUserText(before);
-            Assert.AreEqual("1;\n2;", after);
-
-            before = "  \t\n  1;2;  \t\n   ";
-            after = CodeBlockUtils.FormatUserText(before);
-            Assert.AreEqual("1;\n2;", after);
-
-            before = "  a = 1;    b = 2;  \n  \n  ";
-            after = CodeBlockUtils.FormatUserText(before);
-            Assert.AreEqual("a = 1;\n    b = 2;", after);
-
-            before = "  a = 1;    \nb = 2;  \n  \n  ";
-            after = CodeBlockUtils.FormatUserText(before);
-            Assert.AreEqual("a = 1;\nb = 2;", after);
-        }
-
-        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_1045()
         {
             // Create the initial code block node.
@@ -257,6 +214,8 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
             var model = ViewModel.Model;
@@ -289,6 +248,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
@@ -299,12 +259,13 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3244()
         {
             // Create the initial code block node.
             var codeBlockNode = CreateCodeBlockNode();
             UpdateCodeBlockNodeContent(codeBlockNode, @"point.ByCoordinates(0,0,0);");
-            
+
             // Check
             Assert.AreEqual(1, codeBlockNode.InPortData.Count);
 
@@ -316,6 +277,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3244_extended()
         {
             //This is to test if the code block node has errors, the connectors are still
@@ -350,6 +312,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3580()
         {
             // Create the initial code block node.
@@ -409,6 +372,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3599()
         {
             // Create the initial code block node.
@@ -440,6 +404,55 @@ b = c[w][x][y][z];";
         #region CodeBlockUtils Specific Tests
 
         [Test]
+        [Category("UnitTests")]
+        public void TestSemiColonAddition()
+        {
+            string userText, compilableText;
+            userText = "a";
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a;", compilableText);
+
+            userText = "\na\n\n\n";
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a;", compilableText);
+
+            userText = "a = 1; \n\n b = foo( c,\nd\n,\ne)";
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a = 1;\n\n b = foo( c,\nd\n,\ne);", compilableText);
+
+            userText = "      a = b-c;\nx = 1+3;\n   ";
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a = b-c;\nx = 1+3;", compilableText);
+
+            userText = "\n   \n   \n    \n";
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("", compilableText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFormatTextScenarios()
+        {
+            var before = "1;2;";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  \t\n  1;2;  \t\n   ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  a = 1;    b = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\n    b = 2;", after);
+
+            before = "  a = 1;    \nb = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\nb = 2;", after);
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -450,6 +463,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData01()
         {
             // Empty list of input should return empty result.
@@ -460,6 +474,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData02()
         {
             var unboundIdentifiers = new List<string>();
@@ -480,6 +495,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetStatementVariables00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -490,6 +506,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetStatementVariables01()
         {
             // Create a statement of "Value = 1234".
@@ -514,6 +531,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void StatementRequiresOutputPort00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -539,6 +557,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void StatementRequiresOutputPort01()
         {
             var svs = new List<List<string>>(); // An empty list should return false.
@@ -577,6 +596,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices00()
         {
             var firstResult = CodeBlockUtils.MapLogicalToVisualLineIndices(null);
@@ -589,6 +609,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices01()
         {
             var code = "point = Point.ByCoordinates(1, 2, 3);";
@@ -600,6 +621,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices02()
         {
             var code = "start = Point.ByCoordinates(1, 2, 3);\n" +
@@ -614,6 +636,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices03()
         {
             var code = "firstLine = Line.ByStartPointEndPoint(" +
@@ -635,6 +658,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices04()
         {
             var code = "firstLine = Line.ByStartPointEndPoint(" +
@@ -702,4 +726,110 @@ b = c[w][x][y][z];";
             ViewModel.ExecuteCommand(command);
         }
     }
+
+    class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
+    {
+        [Test]
+        [Category("UnitTests")]
+        public void TestClassMemberCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            string ffiTargetClass = "ClassFunctionality";
+
+            var engineController = ViewModel.Model.EngineController;
+            // Assert that the class name is indeed a class
+            var type = engineController.GetClassType(ffiTargetClass);
+
+            Assert.IsTrue(type != null);
+            var members = type.GetMembers();
+
+            var expected = new string[] { "ClassFunctionality", "StaticFunction", "StaticProp" };
+            AssertCompletions(members, expected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestInstanceMemberCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            string ffiTargetClass = "ClassFunctionality";
+
+            var engineController = ViewModel.Model.EngineController;
+            // Assert that the class name is indeed a class
+            var type = engineController.GetClassType(ffiTargetClass);
+
+            Assert.IsTrue(type != null);
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
+                "IntVal", "IsEqualTo", "OverloadedAdd" };
+            AssertCompletions(members, expected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParser()
+        {
+            string code = @"x[y[z.foo()].goo()].bar";
+            string actual = CodeCompletionParser.GetStringToComplete(code);
+            string expected = "x[y[z.foo()].goo()].bar";
+            Assert.AreEqual(expected, actual);
+
+            
+            code = @"abc.X[xyz.foo().Y";
+            actual = CodeCompletionParser.GetStringToComplete(code);
+            expected = "xyz.foo().Y";
+            Assert.AreEqual(expected, actual);
+
+            code = @"pnt[9][0] = abc.X[{xyz.b.foo((abc";
+            actual = CodeCompletionParser.GetStringToComplete(code);
+            expected = "abc";
+            Assert.AreEqual(expected, actual);
+
+            code = @"pnt[9][0] = abc.X[{xyz.b.foo((abc*x";
+            actual = CodeCompletionParser.GetStringToComplete(code);
+            expected = "x";
+            Assert.AreEqual(expected, actual);
+
+            code = @"w = abc; w = xyz; w = xyz.b; w = xyz.b.foo; w = xyz.b.foo.Y";
+            actual = CodeCompletionParser.GetStringToComplete(code);
+            expected = "xyz.b.foo.Y";
+            Assert.AreEqual(expected, actual);
+        }
+
+        private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
+        {
+            var actual = members.OrderBy(n => n.Name).Select(x => x.ToString()).ToArray();
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
 }

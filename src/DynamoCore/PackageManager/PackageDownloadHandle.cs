@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo.Utilities;
+
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
-using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -103,7 +97,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(dynamoViewModel.Model, installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName);
 
             return true;
         }

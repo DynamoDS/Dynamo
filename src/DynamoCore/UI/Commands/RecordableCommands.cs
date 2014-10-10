@@ -6,13 +6,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
-using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
-namespace Dynamo.ViewModels
+namespace Dynamo.Models
 {
-    partial class DynamoViewModel
+    public partial class DynamoModel
     {
         /// <summary>
         /// This is the base class of all recordable commands. It provides the 
@@ -64,12 +62,12 @@ namespace Dynamo.ViewModels
             /// Call this method to execute a RecordableCommand. A RecordableCommand 
             /// must be executed in the context of an existing DynamoViewModel.
             /// </summary>
-            /// <param name="dynamoViewModel">The DynamoViewModel object this 
+            /// <param name="dynamoModel">The DynamoModel object this 
             /// RecordableCommand is targeting.</param>
             /// 
-            internal void Execute(DynamoViewModel dynamoViewModel)
+            internal void Execute(DynamoModel dynamoModel)
             {
-                ExecuteCore(dynamoViewModel);
+                ExecuteCore(dynamoModel);
             }
 
             /// <summary>
@@ -222,7 +220,7 @@ namespace Dynamo.ViewModels
             /// <param name="dynamoViewModel">The DynamoViewModel object on which 
             /// this command should be executed.</param>
             /// 
-            protected abstract void ExecuteCore(DynamoViewModel dynamoViewModel);
+            protected abstract void ExecuteCore(DynamoModel dynamoModel);
 
             /// <summary>
             /// Derived classes must implement this method to serialize all relevant
@@ -265,7 +263,7 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 // A PausePlaybackCommand should never be executed.
                 throw new NotImplementedException();
@@ -343,9 +341,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.OpenFileImpl(this);
+                dynamoModel.OpenFileImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -386,9 +384,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.RunCancelImpl(this);
+                dynamoModel.RunCancelImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -408,15 +406,16 @@ namespace Dynamo.ViewModels
         public class ForceRunCancelCommand : RunCancelCommand
         {
 
-            public ForceRunCancelCommand(bool showErrors, bool cancelRun) : base(showErrors, cancelRun)
+            public ForceRunCancelCommand(bool showErrors, bool cancelRun)
+                : base(showErrors, cancelRun)
             {
             }
 
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
 
-                dynamoViewModel.ForceRunCancelImpl(this);
+                dynamoModel.ForceRunCancelImpl(this);
             }
 
         }
@@ -424,11 +423,7 @@ namespace Dynamo.ViewModels
         public class MutateTestCommand : RecordableCommand
         {
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
-            {
-                dynamoViewModel.MutateTestImpl();
-
-            }
+            protected override void ExecuteCore(DynamoModel dynamoModel) { }
 
             protected override void SerializeCore(XmlElement element)
             {
@@ -481,9 +476,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.CreateNodeImpl(this);
+                dynamoModel.CreateNodeImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -543,9 +538,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.CreateNoteImpl(this);
+                dynamoModel.CreateNoteImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -590,9 +585,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.SelectModelImpl(this);
+                dynamoModel.SelectModelImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -642,10 +637,7 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
-            {
-                dynamoViewModel.SelectInRegionImpl(this);
-            }
+            protected override void ExecuteCore(DynamoModel dynamoModel) { }
 
             protected override void SerializeCore(XmlElement element)
             {
@@ -692,10 +684,7 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
-            {
-                dynamoViewModel.DragSelectionImpl(this);
-            }
+            protected override void ExecuteCore(DynamoModel dynamoModel) { }
 
             protected override void SerializeCore(XmlElement element)
             {
@@ -745,9 +734,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.MakeConnectionImpl(this);
+                dynamoModel.MakeConnectionImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -788,9 +777,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.DeleteModelImpl(this);
+                dynamoModel.DeleteModelImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -830,9 +819,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.UndoRedoImpl(this);
+                dynamoModel.UndoRedoImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -873,9 +862,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.SendModelEventImpl(this);
+                dynamoModel.SendModelEventImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -920,9 +909,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.UpdateModelValueImpl(this);
+                dynamoModel.UpdateModelValueImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -967,9 +956,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.ConvertNodesToCodeImpl(this);
+                dynamoModel.ConvertNodesToCodeImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -1021,9 +1010,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.CreateCustomNodeImpl(this);
+                dynamoModel.CreateCustomNodeImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -1043,7 +1032,7 @@ namespace Dynamo.ViewModels
         {
             #region Public Class Methods
 
-            internal SwitchTabCommand(int tabIndex)
+            public SwitchTabCommand(int tabIndex)
             {
                 TabIndex = tabIndex;
             }
@@ -1064,9 +1053,9 @@ namespace Dynamo.ViewModels
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoViewModel.SwitchTabImpl(this);
+                dynamoModel.SwitchTabImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
