@@ -71,7 +71,7 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated NodeModel</returns>
         internal NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = this.GetNodeModelInstanceByType(elementType);
+            object createdNode = GetNodeModelInstanceByType(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -82,13 +82,13 @@ namespace Dynamo.Models
             if (node == null)
                 return null;
 
-            if (!string.IsNullOrEmpty(nickName)) 
+            if (!string.IsNullOrEmpty(signature))
             {
-                if (signature != null)
-                    node.NickName = LibraryServices.GetInstance().NicknameFromFunctionSignatureHint(signature);
-
-                if (node.NickName == null)
-                    node.NickName = nickName;
+                node.NickName = LibraryServices.GetInstance().NicknameFromFunctionSignatureHint(signature);
+            }
+            else if (!string.IsNullOrEmpty(nickName)) 
+            {
+                node.NickName = nickName;
             }
             else
             {
