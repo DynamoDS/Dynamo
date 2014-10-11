@@ -356,7 +356,6 @@ namespace Dynamo.Models
             this.Loader = new DynamoLoader(this);
 
             this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -379,6 +378,8 @@ namespace Dynamo.Models
             this.Loader.LoadNodeModels();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
 
             PackageManagerClient = new PackageManagerClient(this);
         }
