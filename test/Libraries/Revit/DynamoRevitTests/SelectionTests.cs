@@ -151,7 +151,8 @@ namespace Dynamo.Tests
 
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, list.Count());
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
@@ -268,6 +269,7 @@ namespace Dynamo.Tests
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
             Assert.AreEqual(3, list.Count);
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
