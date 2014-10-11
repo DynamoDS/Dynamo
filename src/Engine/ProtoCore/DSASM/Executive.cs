@@ -1456,6 +1456,10 @@ namespace ProtoCore.DSASM
             {
                 // Getting the entry point only graphnodes at the global scope
                 graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+
+                // Set the default entry point on ApplyUpdate  is the first graphNode
+                Validity.Assert(graphNodeList.Count > 0);
+                entrypoint = graphNodeList[0].updateBlock.startpc;
             }
             else
             {
