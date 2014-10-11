@@ -47,18 +47,7 @@ namespace DynamoCoreUITests
             View.Show();                             
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            string tempPath = Path.GetTempPath();
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder(TempFolder);
-            }
+            CreateTemporaryFolder();
         }
 
         [SetUp]
