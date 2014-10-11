@@ -1,5 +1,4 @@
-﻿//#define __RUN_TESTFILE
-
+﻿
 
 using System;
 using ProtoCore;
@@ -50,28 +49,11 @@ namespace ProtoTestConsoleRunner
             core.Options.DumpByteCode = false;
             core.Options.Verbose = false;
 #endif
-
-#if __RUN_TESTFILE
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"c:\project\github\test.ds", core);
-#else
-            //ProtoTest.Associative.MicroFeatureTests test = new ProtoTest.Associative.MicroFeatureTests();
-            //test.Setup();
-            //test.TestLocalKeywordDeclaration01();
 
-
-            ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
-            test.Setup();
-            test.TestTransactionUpdate03();
-
-            //ProtoTest.Associative.MicroFeatureTests test = new ProtoTest.Associative.MicroFeatureTests();
-            //test.Setup();
-            //test.TestNoUpdate01();
-
-            //ProtoTest.DebugTests.RunWatchTests test = new ProtoTest.DebugTests.RunWatchTests();
-            //test.DebugWatch1684_T88_1461985_Update_In_Nested_Blocks_2();
-#endif
+            // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
