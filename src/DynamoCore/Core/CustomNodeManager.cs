@@ -50,8 +50,6 @@ namespace Dynamo.Utilities
 
         #region Fields and properties
 
-        private readonly DynamoModel dynamoModel;
-
         /// <summary>
         /// An event that is fired when a definition is loaded (e.g. when the node is placed)
         /// </summary>
@@ -79,11 +77,9 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Class Constructor
         /// </summary>
-        /// <param name="dynamoModel"></param>
         /// <param name="searchPath">The path to search for definitions</param>
-        public CustomNodeManager(DynamoModel dynamoModel, string searchPath)
+        public CustomNodeManager(string searchPath)
         {
-            this.dynamoModel = dynamoModel;
             SearchPath = new ObservableCollection<string> { searchPath };
             NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
             AddDirectoryToSearchPath(DynamoPathManager.Instance.CommonDefinitions);
@@ -190,6 +186,7 @@ namespace Dynamo.Utilities
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
         /// <param name="guid"></param>
+        //TODO(Steve): Investigate where this gets called. If it's only called from DynamoModel, this probably belongs there
         public void RemoveFromDynamo(Guid guid)
         {
             var nodeInfo = Remove(guid);
@@ -341,7 +338,7 @@ namespace Dynamo.Utilities
                 return null;
             }
 
-
+            //TODO(Steve): Fire an event that says the Defintion changed, when CustomNodeManager creates instances have them subscribe to this event, and do the below logic in the handler.
             var customNodeInstances =
                     dynamoModel
                     .AllNodes
