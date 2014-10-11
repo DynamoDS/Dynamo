@@ -30,7 +30,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public partial class DynamoModel// : ModelBase
+    public partial class DynamoModel : IDisposable // : ModelBase
     {
         #region private members
 
@@ -474,6 +474,8 @@ namespace Dynamo.Models
             // directly (we cannot call virtual method ResetEngine here).
             // 
             ResetEngineInternal();
+
+            //TODO(Steve): Update location where nodes are marked dirty
             Nodes.ForEach(n => n.RequiresRecalc = true);
 
             Logger.Log(String.Format(
@@ -781,7 +783,7 @@ namespace Dynamo.Models
             foreach (NodeModel el in CurrentWorkspace.Nodes)
             {
                 el.DisableReporting(); //TODO: Disposable.Create to unregister/reregister modified event handler
-                el.Destroy();
+                el.Dispose();
 
                 foreach (PortModel p in el.InPorts)
                 {

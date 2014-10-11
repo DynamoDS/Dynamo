@@ -99,9 +99,9 @@ namespace Dynamo.Nodes
             );
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 

@@ -129,7 +129,7 @@ namespace Dynamo
         /// Compiles this custom node definition, updating all UI instances to match
         /// inputs and outputs and registering new definition with the EngineController.
         /// </summary>
-        public void Compile(DynamoModel dynamoModel, EngineController controller)
+        public void Compile(EngineController controller)
         {
             // If we are loading dyf file, dont compile it until all nodes are loaded
             // otherwise some intermediate function defintions will be created.
@@ -315,7 +315,7 @@ namespace Dynamo
                                               functionWorkspace.Description, WorkspaceModel.FileName);
 
                 dynamoModel.CustomNodeManager.SetNodeInfo(info);
-                Compile(dynamoModel, dynamoModel.EngineController);
+                Compile(dynamoModel.EngineController);
             }
             catch (Exception e)
             {

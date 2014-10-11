@@ -204,9 +204,9 @@ namespace Dynamo.Nodes
             LookDirection = new Vector3D(-1, -1, -1);
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 

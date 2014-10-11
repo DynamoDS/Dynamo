@@ -154,9 +154,9 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
             RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
         }

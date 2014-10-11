@@ -508,7 +508,7 @@ namespace Dynamo.Models
             if (nodes.Remove(model))
             {
                 model.Modified -= OnModified;
-                model.Destroy();
+                model.Dispose();
             }
         }
 

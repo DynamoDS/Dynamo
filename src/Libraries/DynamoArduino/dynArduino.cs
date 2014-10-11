@@ -86,7 +86,7 @@ namespace Dynamo.Nodes
             Port = new SerialPort { BaudRate = 9600, NewLine = "\r\n", DtrEnable = true };
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
             if (Port != null)
             {

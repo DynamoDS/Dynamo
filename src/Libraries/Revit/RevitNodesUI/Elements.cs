@@ -21,9 +21,9 @@ namespace DSRevitNodesUI
             u.ElementsDeleted += Updater_ElementsDeleted;
         }
         
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
 
             var u = this.RevitDynamoModel.RevitServicesUpdater;
             u.ElementsModified -= Updater_ElementsModified;

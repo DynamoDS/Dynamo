@@ -24,7 +24,7 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IBlockingModel
+    public abstract class NodeModel : ModelBase, IBlockingModel, IDisposable
     {
         #region private members
 
@@ -545,11 +545,8 @@ namespace Dynamo.Models
             //IsReportingModifications = true;
         }
 
-        /// <summary>
-        ///     Called when this node is being removed from the Workspace.
-        /// </summary>
-        public virtual void Destroy() { }
-        
+        public virtual void Dispose() { }
+
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();

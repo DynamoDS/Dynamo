@@ -29,9 +29,9 @@ namespace Dynamo.Nodes
             Controller.DefinitionChanged += ResyncWithDefinition;
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             Controller.DefinitionChanged -= ResyncWithDefinition;
         }
 

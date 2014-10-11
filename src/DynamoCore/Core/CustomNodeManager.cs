@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
@@ -45,7 +47,7 @@ namespace Dynamo.Utilities
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager
+    public class CustomNodeManager : LogSourceBase
     {
 
         #region Fields and properties
@@ -154,20 +156,20 @@ namespace Dynamo.Utilities
 
         } 
 
-        /// <summary>
-        ///     Removes the custom nodes loaded from a particular folder.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public bool RemoveTypesLoadedFromFolder(string path)
-        {
+        ///// <summary>
+        /////     Removes the custom nodes loaded from a particular folder.
+        ///// </summary>
+        ///// <param name="path"></param>
+        ///// <returns></returns>
+        //public bool RemoveTypesLoadedFromFolder(string path)
+        //{
 
-            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
-            guidsToRemove.ToList().ForEach(RemoveFromDynamo);
+        //    var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
+        //    guidsToRemove.ToList().ForEach(RemoveFromDynamo);
 
-            return guidsToRemove.Any();
+        //    return guidsToRemove.Any();
 
-        }
+        //}
 
         public CustomNodeInfo Remove(Guid guid)
         {
@@ -186,7 +188,7 @@ namespace Dynamo.Utilities
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
         /// <param name="guid"></param>
-        //TODO(Steve): Investigate where this gets called. If it's only called from DynamoModel, this probably belongs there
+        //TODO(Steve): This belongs primarily on DynamoModel
         public void RemoveFromDynamo(Guid guid)
         {
             var nodeInfo = Remove(guid);
@@ -376,7 +378,7 @@ namespace Dynamo.Utilities
                 var idDefPair in
                     LoadedCustomNodes.Where(idDefPair => !compiledNodes.Contains(idDefPair.Key)))
             {
-                idDefPair.Value.Compile(this.dynamoModel, engine);
+                idDefPair.Value.Compile(engine);
                 compiledNodes.Add(idDefPair.Key);
             }
         }
@@ -558,8 +560,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                this.dynamoModel.Logger.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
-                this.dynamoModel.Logger.Log(e.ToString());
+                Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
+                Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
                 name = "";
@@ -689,7 +691,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                this.dynamoModel.Logger.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var ws = new CustomNodeWorkspaceModel(funName, category.Length > 0
                     ? category
@@ -917,7 +919,7 @@ namespace Dynamo.Utilities
 
                 def.IsBeingLoaded = false;
 
-                def.Compile(this.dynamoModel, this.dynamoModel.EngineController);
+                def.Compile(this.dynamoModel.EngineController);
 
                 ws.WatchChanges = true;
 
