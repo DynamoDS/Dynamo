@@ -287,8 +287,8 @@ namespace Dynamo.Search
             if (item is CustomNodeSearchElement)
                 return ElementType.CustomNode;
 
-            if (item is DSFunctionNodeSearchElement)
-                return (item as DSFunctionNodeSearchElement).ElementType;
+            if (item is DSFunctionNodeSearchElement || item is NodeSearchElement)
+                return (item as NodeSearchElement).ElementType;
 
             return ElementType.Regular;
         }
