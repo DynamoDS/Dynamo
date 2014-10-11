@@ -128,6 +128,11 @@ namespace Dynamo.Interfaces
         {
             return new StandardLogMessage(message);
         }
+
+        public static void Log(this ILogger logger, ILogMessage message)
+        {
+            message.Log(logger);
+        }
     }
 
     /// <summary>
@@ -209,12 +214,9 @@ namespace Dynamo.Interfaces
             }
         }
 
-        public ILogger Logger
+        public ILogger AsLogger()
         {
-            get
-            {
-                return new DispatchedLogger(this);
-            }
+            return new DispatchedLogger(this);
         }
     }
 }

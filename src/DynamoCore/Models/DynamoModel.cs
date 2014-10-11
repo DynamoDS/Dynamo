@@ -370,7 +370,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public struct StartConfiguration
         {
@@ -427,19 +427,22 @@ namespace Dynamo.Models
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
+            Context = context;
+            IsTestMode = isTestMode;
+            DebugSettings = new DebugSettings();
+            Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
+
             NodeFactory = new NodeFactory();
+            NodeFactory.MessageLogged += LogMessage;
 
             Runner = runner;
             Runner.RunStarted += Runner_RunStarted;
             Runner.RunCompleted += Runner_RunCompeleted;
             Runner.EvaluationCompleted += Runner_EvaluationCompleted;
             Runner.ExceptionOccurred += Runner_ExceptionOccurred;
+            Runner.MessageLogged += LogMessage;
 
-            Context = context;
-            IsTestMode = isTestMode;
-            DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
-
+            //TODO(Steve): This is ugly
             if (preferences is PreferenceSettings)
             {
                 PreferenceSettings = preferences as PreferenceSettings;
@@ -454,9 +457,9 @@ namespace Dynamo.Models
 
             InitializeCurrentWorkspace();
 
-            CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
-            Loader = new DynamoLoader(this);
+            CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
 
+            Loader = new DynamoLoader();
             Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
             Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
 
@@ -487,9 +490,17 @@ namespace Dynamo.Models
 
         public void Dispose()
         {
+            NodeFactory.MessageLogged -= LogMessage;
             Runner.RunStarted -= Runner_RunStarted;
             Runner.RunCompleted -= Runner_RunCompeleted;
             Runner.EvaluationCompleted -= Runner_EvaluationCompleted;
+            Runner.ExceptionOccurred -= Runner_ExceptionOccurred;
+            Runner.MessageLogged -= LogMessage;
+            CurrentWorkspaceChanged -= SearchModel.RevealWorkspaceSpecificNodes;
+            if (PreferenceSettings != null)
+            {
+                PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            }
         }
 
         //SEPARATECORE: causes mono crash
@@ -864,8 +875,11 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
-            Workspaces.Remove(workspace);
-            workspaceEventRegistrations[workspace].Dispose();
+            if (Workspaces.Remove(workspace))
+            {
+                workspaceEventRegistrations[workspace].Dispose();
+                workspaceEventRegistrations.Remove(workspace);
+            }
         }
 
         /// <summary>
@@ -875,16 +889,21 @@ namespace Dynamo.Models
         public void AddWorkspace(WorkspaceModel workspace)
         {
             Workspaces.Add(workspace);
+            
             Action modifiedHandler = () => OnWorkspaceSaved(workspace);
             workspace.Modified += modifiedHandler;
+            
             workspace.NodeAdded += OnNodeAdded;
             workspace.ConnectorAdded += OnConnectorAdded;
+            workspace.MessageLogged += LogMessage;
+
             workspaceEventRegistrations[workspace] = Disposable.Create(
                 () =>
                 {
                     workspace.Modified -= modifiedHandler;
                     workspace.NodeAdded -= OnNodeAdded;
                     workspace.ConnectorAdded -= OnConnectorAdded;
+                    workspace.MessageLogged -= LogMessage;
                 });
         }
 
@@ -1495,6 +1514,15 @@ namespace Dynamo.Models
         public void Home(object parameter)
         {
             ViewHomeWorkspace();
+        }
+
+        #endregion
+
+        #region private methods
+
+        private void LogMessage(ILogMessage obj)
+        {
+            Logger.Log(obj);
         }
 
         #endregion

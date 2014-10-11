@@ -7,7 +7,7 @@ namespace Dynamo.Utilities
 {
     public static class Disposable
     {
-        sealed class SimpleDisposable : IDisposable
+        private sealed class SimpleDisposable : IDisposable
         {
             private readonly Action action;
 

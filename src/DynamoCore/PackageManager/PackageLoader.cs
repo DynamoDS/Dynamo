@@ -70,7 +70,7 @@ namespace Dynamo.PackageManager
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath, Logger);
+                    discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
                         throw new Exception(
                             headerPath + " contains a package with a malformed header.  Ignoring it.");
