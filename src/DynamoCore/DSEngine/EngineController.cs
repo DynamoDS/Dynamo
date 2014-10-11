@@ -70,7 +70,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Return all function groups.
         /// </summary>
-        public IEnumerable<FunctionGroup> GetFunctionGroups() 
+        public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
             return libraryServices.BuiltinFunctionGroups.Union(
                        libraryServices.Libraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));

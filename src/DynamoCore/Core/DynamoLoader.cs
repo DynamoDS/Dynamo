@@ -14,6 +14,7 @@ using Dynamo.PackageManager;
 
 using DynamoUtilities;
 using Dynamo.Search;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -123,6 +124,11 @@ namespace Dynamo.Utilities
             }
 
             dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
+            
+            // Earlier for some custom dlls was added prefix Configurations.CustomDll.
+            // We have used it and no need it anymore.
+            LibraryServices.GetInstance().RemoveLibrariesCustomDllPrefix();
+
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 

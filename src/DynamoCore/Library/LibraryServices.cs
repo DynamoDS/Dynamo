@@ -5,6 +5,7 @@ using System.Linq;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Search;
+using Dynamo.UI;
 using DynamoUtilities;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
@@ -124,13 +125,12 @@ namespace Dynamo.DSEngine
             if (null == library)
                 throw new ArgumentNullException();
 
-            var customDllPrefix = SearchModel.ElementType.CustomDll.ToString() + "*";
-            bool isCustomDll = library.Contains(customDllPrefix);
+            bool isCustomDll = library.Contains(Configurations.CustomDllPrefix);
 
             Dictionary<string, FunctionGroup> functionGroups;
 
             if (isCustomDll)
-                library = library.Substring(customDllPrefix.Length);
+                library = library.Substring(Configurations.CustomDllPrefix.Length);
 
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
             {
@@ -199,6 +199,17 @@ namespace Dynamo.DSEngine
                     groupMap => TryGetFunctionGroup(groupMap, qualifiedName, out functionGroup))
                     ? functionGroup.GetFunctionDescriptor(managledName)
                     : null;
+        }
+
+        /// <summary>
+        ///     For all elements of Libraries collection remove Configurations.CustomDllPrefix
+        ///     if exists.
+        /// </summary>
+        public void RemoveLibrariesCustomDllPrefix()
+        {
+            for (int i = 0; i < libraries.Count; i++)
+                if (libraries[i].Contains(Configurations.CustomDllPrefix))
+                    libraries[i] = libraries[i].Substring(Configurations.CustomDllPrefix.Length);
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
@@ -558,6 +569,7 @@ namespace Dynamo.DSEngine
                 ImportProcedure(library, proc);
         }
 
+
         private void OnLibraryLoading(LibraryLoadingEventArgs e)
         {
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
@@ -574,11 +586,13 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            libraries.Add(SearchModel.ElementType.CustomDll.ToString() + "*" + e.LibraryPath);
+            libraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
                 handler(this, e);
+            else
+                libraries[libraries.Count - 1] = Configurations.CustomDllPrefix + libraries[libraries.Count - 1];
         }
 
         public static class Categories
