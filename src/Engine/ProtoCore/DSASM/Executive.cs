@@ -1451,16 +1451,12 @@ namespace ProtoCore.DSASM
 
         private void SetupGraphEntryPoint(int entrypoint)
         {
-            List<AssociativeGraph.GraphNode> graphNodeList = null;
-            if (core.Options.ApplyUpdate)
-            {
-                // Getting the entry point only graphnodes at the global scope
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            }
-            else
-            {
-                graphNodeList = istream.dependencyGraph.GraphList;
-            }
+            // Getting the entry point only graphnodes at the global scope
+            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            //graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            List<AssociativeGraph.GraphNode> graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi); 
+            
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
             {
                 if (core.Options.IsDeltaExecution)
@@ -1680,7 +1676,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+        private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
             if (null != Properties.executingGraphNode)
             {
@@ -1716,6 +1712,7 @@ namespace ProtoCore.DSASM
                 gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
+            return reachableGraphNodes.Count;
         }
 
         /// <summary>
@@ -7160,7 +7157,7 @@ namespace ProtoCore.DSASM
             }
 
             // Find dependent nodes and mark them dirty
-            UpdateGraph(exprID, modBlkID, isSSA);
+            int reachableNodes = UpdateGraph(exprID, modBlkID, isSSA);
 
             if (core.Options.ApplyUpdate)
             {
@@ -7179,6 +7176,7 @@ namespace ProtoCore.DSASM
                 {
                     Properties.executingGraphNode.isDirty = false;
                 }
+                core.DeferredUpdates += reachableNodes;
             }
             GC();
             return;

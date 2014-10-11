@@ -5011,7 +5011,8 @@ v = foo(t);
         public void TestTransactionUpdate01()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll""); 
+TestUpdateCount.Reset();
 x = 1;
 y = 2;
 p = TestUpdateCount.Ctor(x,y);
@@ -5034,6 +5035,7 @@ a = p.UpdateCount;
         {
             string code = @"
 import(""FFITarget.dll"");
+TestUpdateCount.Reset();
 x = 1;
 y = 2;
 p = TestUpdateCount.Ctor(x,y);
@@ -5058,7 +5060,7 @@ a = p.UpdateCount;
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
                 "x = 1; y = 2;",
                 "p = TestUpdateCount.Ctor(x,y);",
                 "a = p.UpdateCount;",
