@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Autodesk.DesignScript.Geometry;
 
-namespace Analysis
+namespace Analysis.DataTypes
 {
     /// <summary>
     /// A class for storing structured surface analysis data.

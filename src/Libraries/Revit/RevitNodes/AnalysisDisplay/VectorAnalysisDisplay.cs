@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Analysis;
+using Analysis.DataTypes;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
