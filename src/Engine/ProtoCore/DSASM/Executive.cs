@@ -1450,13 +1450,18 @@ namespace ProtoCore.DSASM
         }
 
         private void SetupGraphEntryPoint(int entrypoint)
-        {
-            // Getting the entry point only graphnodes at the global scope
-            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            //graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            List<AssociativeGraph.GraphNode> graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi); 
-            
+        { 
+            List<AssociativeGraph.GraphNode> graphNodeList = null;
+            if (core.Options.ApplyUpdate)
+            {
+                // Getting the entry point only graphnodes at the global scope
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            }
+            else
+            {
+                graphNodeList = istream.dependencyGraph.GraphList;
+            }
+
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
             {
                 if (core.Options.IsDeltaExecution)
