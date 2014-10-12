@@ -90,7 +90,7 @@ namespace Dynamo.Models
         /// <summary>
         /// The unique name that was created the node by
         /// </summary>
-        public virtual string CreatingName { get { return this.Name; } }
+        public virtual string CreationName { get { return this.Name; } }
 
         #endregion
 

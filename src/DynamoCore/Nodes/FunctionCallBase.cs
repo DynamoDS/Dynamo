@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// The unique name that was created the node by
         /// </summary>
-        public override string CreatingName
+        public override string CreationName
         {
             get
             {
