@@ -568,8 +568,7 @@ namespace Dynamo.DSEngine
             foreach (ProcedureNode proc in classNode.vtable.procList)
                 ImportProcedure(library, proc);
         }
-
-
+        
         private void OnLibraryLoading(LibraryLoadingEventArgs e)
         {
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
@@ -586,6 +585,16 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
+            // The method can be called in two situations.
+            // 1. Dynamo loading process. 
+            //    handler is null. We need to indentify 
+            //    custom libraries to add them to AddonRootCategories. For this
+            //    purpose prefix is added to library path. Later in loading process
+            //    the prefix will be used and removed.
+            // 2. Installing package or importing library (Libraries - Import Library).
+            //    handler is not null. All operations connected with adding custom library
+            //    into AddonRootCategory will be done in handler. No need in prefix.
+
             libraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
