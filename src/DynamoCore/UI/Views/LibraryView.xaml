@@ -1094,102 +1094,86 @@
                                Foreground="#989898"
                                Margin="16,0,0,0" />
                 </Border>
-                <ScrollViewer Grid.Row="2"
-                              HorizontalAlignment="Stretch"
-                              Margin="0"
-                              Name="BrowserScrollView"
-                              VerticalAlignment="Stretch"
-                              Focusable="False"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              Width="{Binding Path=ActualWidth, ElementName=LibraryGrid}">
-                    <ScrollViewer.Visibility>
+                <TreeView Name="AddonsTreeView"
+                          ItemsSource="{Binding Path=Model.AddonRootCategories}"
+                          Style="{StaticResource AddonsTreeView}"
+                          BorderThickness="0"
+                          Grid.Row="2"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          ItemContainerStyle="{StaticResource AddonsTreeViewItem}">
+                    <TreeView.Visibility>
                         <Binding Path="BrowserVisibility"
                                  Converter="{StaticResource BoolToVisibilityConverter}" />
-                    </ScrollViewer.Visibility>
-                    <ScrollViewer.VerticalScrollBarVisibility>
-                        <Binding Path="SearchScrollBarVisibility"
-                                 Converter="{StaticResource BoolToScrollBarVisibilityConverter}" />
-                    </ScrollViewer.VerticalScrollBarVisibility>
-                    <TreeView Name="AddonsTreeView"
-                              ItemsSource="{Binding Path=Model.AddonRootCategories}"
-                              Style="{StaticResource AddonsTreeView}"
-                              BorderThickness="0"
-                              Grid.Column="0"
-                              Grid.ColumnSpan="1"
-                              VirtualizingStackPanel.IsVirtualizing="True"
-                              VirtualizingStackPanel.VirtualizationMode="Recycling"
-                              ItemContainerStyle="{StaticResource AddonsTreeViewItem}">
-                        <TreeView.Template>
-                            <ControlTemplate>
-                                <ItemsPresenter />
-                            </ControlTemplate>
-                        </TreeView.Template>
+                    </TreeView.Visibility>
+                    <TreeView.Template>
+                        <ControlTemplate>
+                            <ItemsPresenter />
+                        </ControlTemplate>
+                    </TreeView.Template>
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
+                                                  ItemsSource="{Binding Path=Items}">
+                            <Border Height="30"
+                                    BorderThickness="0,0,0,2"
+                                    BorderBrush="#2F2F2F">
+                                <TextBlock Foreground="#DDD"
+                                           FontSize="13"
+                                           Text="{Binding Path=Name}"
+                                           VerticalAlignment="Center" />
+                            </Border>
+                        </HierarchicalDataTemplate>
 
-                        <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
-                                                      ItemsSource="{Binding Path=Items}">
-                                <Border Height="30"
-                                        BorderThickness="0,0,0,2"
-                                        BorderBrush="#2F2F2F">
-                                    <TextBlock Foreground="#DDD"
-                                               FontSize="13"
-                                               Text="{Binding Path=Name}"
-                                               VerticalAlignment="Center" />
-                                </Border>
-                            </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
+                                                  ItemsSource="{Binding Path=Items}">
+                            <Border Height="30">
+                                <TextBlock Foreground="#DDD"
+                                           FontSize="13"
+                                           Text="{Binding Path=Name}"
+                                           VerticalAlignment="Center" />
+                            </Border>
+                        </HierarchicalDataTemplate>
 
-                            <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
-                                                      ItemsSource="{Binding Path=Items}">
+                        <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+                            <StackPanel Orientation="Horizontal">
                                 <Border Height="30">
                                     <TextBlock Foreground="#DDD"
                                                FontSize="13"
                                                Text="{Binding Path=Name}"
                                                VerticalAlignment="Center" />
                                 </Border>
-                            </HierarchicalDataTemplate>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
 
-                            <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Height="30">
-                                        <TextBlock Foreground="#DDD"
-                                                   FontSize="13"
-                                                   Text="{Binding Path=Name}"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-
-                            <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="#444"
-                                            Margin="0 6 10 6"
-                                            CornerRadius="1"
-                                            BorderThickness="1"
-                                            BorderBrush="#222">
-                                        <TextBlock Foreground="#222"
-                                                   FontWeight="Bold"
-                                                   Padding="4"
-                                                   FontSize="9"
-                                                   Text="C" />
-                                    </Border>
-                                    <Border Height="30">
-                                        <TextBlock Foreground="#DDD"
-                                                   FontSize="13"
-                                                   Text="{Binding Path=Name}"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                    <StackPanel.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Edit..."
-                                                      Click="OnEditClick"></MenuItem>
-                                        </ContextMenu>
-                                    </StackPanel.ContextMenu>
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
-                </ScrollViewer>
+                        <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="#444"
+                                        Margin="0 6 10 6"
+                                        CornerRadius="1"
+                                        BorderThickness="1"
+                                        BorderBrush="#222">
+                                    <TextBlock Foreground="#222"
+                                               FontWeight="Bold"
+                                               Padding="4"
+                                               FontSize="9"
+                                               Text="C" />
+                                </Border>
+                                <Border Height="30">
+                                    <TextBlock Foreground="#DDD"
+                                               FontSize="13"
+                                               Text="{Binding Path=Name}"
+                                               VerticalAlignment="Center" />
+                                </Border>
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Edit..."
+                                                  Click="OnEditClick"></MenuItem>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
             </Grid>
         </ScrollViewer>
     </Grid>
