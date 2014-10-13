@@ -501,6 +501,7 @@ namespace ProtoCore.AssociativeEngine
 
         public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
+            bool entrypointSet = false;
             foreach (var node in fnodeList)
             {
                 var fnode = node as AST.AssociativeAST.FunctionDefinitionNode;
@@ -509,7 +510,6 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
-                bool entrypointSet = false;
                 int exprId = Constants.kInvalidIndex;
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
