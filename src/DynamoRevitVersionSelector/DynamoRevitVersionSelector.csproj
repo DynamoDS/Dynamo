@@ -50,6 +50,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="VersionSelectorApp.cs" />
     <Compile Include="DynamoVersionSelector.xaml.cs">
       <DependentUpon>DynamoVersionSelector.xaml</DependentUpon>
