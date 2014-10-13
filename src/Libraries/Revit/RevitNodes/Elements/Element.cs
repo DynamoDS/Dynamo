@@ -4,20 +4,15 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
-using DSCore;
 using DSNodeServices;
 using DynamoUnits;
 using Revit.GeometryConversion;
 using Revit.GeometryReferences;
 using RevitServices.Persistence;
-using RevitServices.Threading;
 using RevitServices.Transactions;
 using Color = DSCore.Color;
-using Revit.GeometryObjects;
 using Area = DynamoUnits.Area;
-using ArgumentException = Autodesk.Revit.Exceptions.ArgumentException;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 
 namespace Revit.Elements
@@ -554,7 +549,6 @@ namespace Revit.Elements
                 return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
             }
         }
-
 
     }
 }

@@ -727,22 +727,25 @@ b = c[w][x][y][z];";
         }
     }
 
-    class CodeBlockCompletionTests : LibraryTests
+    class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            LibraryLoaded = false;
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
             string libraryPath = "FFITarget.dll";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(LibraryLoaded);
+                Assert.IsTrue(libraryLoaded);
             }
 
             string ffiTargetClass = "ClassFunctionality";
@@ -762,16 +765,19 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            LibraryLoaded = false;
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
             string libraryPath = "FFITarget.dll";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
                 libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(LibraryLoaded);
+                Assert.IsTrue(libraryLoaded);
             }
 
             string ffiTargetClass = "ClassFunctionality";
