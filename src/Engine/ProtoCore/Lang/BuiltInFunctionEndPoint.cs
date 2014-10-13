@@ -614,8 +614,9 @@ namespace ProtoCore.Lang
             // guide for the lhs variable. So if it is not an array, we should
             // clear its replication guide from the core. 
             if (removeFirstArgument && 
-                !CoreUtils.IsGetterSetter(procNode.name) &&
-                core.Options.TempReplicationGuideEmptyFlag)
+                core.Options.TempReplicationGuideEmptyFlag &&
+                procNode != null &&
+                !CoreUtils.IsGetterSetter(procNode.name))
             {
                 int count = core.replicationGuides.Count;
                 Validity.Assert(count > 0);
