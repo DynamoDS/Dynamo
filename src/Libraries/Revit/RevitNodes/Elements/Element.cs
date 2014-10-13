@@ -401,6 +401,7 @@ namespace Revit.Elements
         /// Collects the concrete GeometryObject's in a GeometryElement, which is a recursive collection of GeometryObject's.
         /// </summary>
         /// <param name="geometryElement">The Geometry collection</param>
+        /// <param name="useSymbolGeometry">When encountering a GeometryInstance, use GetSymbolGeometry() which obtains usable Reference objects</param>
         /// <returns></returns>
         private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement, bool useSymbolGeometry = false)
         {
@@ -408,7 +409,7 @@ namespace Revit.Elements
 
             if (geometryElement == null) return instanceGeometryObjects;
 
-            foreach (Autodesk.Revit.DB.GeometryObject geob in geometryElement)
+            foreach (GeometryObject geob in geometryElement)
             {
                 var geomInstance = geob as GeometryInstance;
                 var geomElement = geob as GeometryElement;
@@ -443,7 +444,7 @@ namespace Revit.Elements
         private IEnumerable<T> InternalGeometry<T>(bool useSymbolGeometry = false) where T : GeometryObject
         {
             return this.InternalGeometry(useSymbolGeometry).OfType<T>();
-        } 
+        }
 
         /// <summary>
         /// The Solids in this Element
@@ -466,10 +467,14 @@ namespace Revit.Elements
         {
             get
             {
-                return
-                    this.InternalGeometry<Autodesk.Revit.DB.Curve>()
-                        .Select( x => x.ToProtoType() )
-                        .ToArray();
+                // This is the correctly translated geometry, obtained from GetInstanceGeometry
+                var geoms = this.InternalGeometry<Autodesk.Revit.DB.Curve>();
+
+                // The is the geometry with the correctly computed References, from GetSymbolGeometry
+                var refs = InternalGeometry<Autodesk.Revit.DB.Curve>(true).Select(x => x.Reference);
+
+                return geoms.Zip( refs, (geom, reference) => geom.ToProtoType(true, reference))
+                    .ToArray();
             }
         }
 
@@ -480,11 +485,18 @@ namespace Revit.Elements
         {
             get
             {
+                // This is the correctly translated geometry, obtained from GetInstanceGeometry
+                var geoms = InternalGeometry<Autodesk.Revit.DB.Solid>()
+                    .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>());
+
+                // The is the geometry with the correctly computed References, from GetSymbolGeometry
+                var refs = InternalGeometry<Autodesk.Revit.DB.Solid>()
+                    .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
+                    .Select(x => x.Reference);
+
                 return
-                    this.InternalGeometry<Autodesk.Revit.DB.Solid>()
-                        .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
-                        .SelectMany(x => x.ToProtoType())
-                        .ToArray();
+                    geoms.Zip(refs, (geom, reference) => geom.ToProtoType(true, reference))
+                        .SelectMany(x => x).ToArray();
             }
         }
 
@@ -512,7 +524,7 @@ namespace Revit.Elements
             get
             {
                 return
-                    this.InternalGeometry<Autodesk.Revit.DB.Solid>()
+                    this.InternalGeometry<Autodesk.Revit.DB.Solid>(true)
                         .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
                         .Select(ElementFaceReference.FromExisting)
                         .ToArray();

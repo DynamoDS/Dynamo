@@ -9,6 +9,7 @@ using Autodesk.Revit.DB;
 using NUnit.Framework;
 
 using Revit.Elements;
+using Revit.GeometryReferences;
 
 using RevitServices.Persistence;
 
@@ -73,6 +74,13 @@ namespace RevitTestServices.Elements
 
             bbox.MaxPoint.ShouldBeApproximately(-64.266, -7.999, 60.693, 1e-3);
             bbox.MinPoint.ShouldBeApproximately(-92.708, -38.479, 0, 1e-3);
+
+            var refs = faces.Select(x => ElementFaceReference.TryGetFaceReference(x));
+
+            foreach (var refer in refs)
+            {
+                Assert.AreEqual(46874, refer.InternalReference.ElementId.IntegerValue);
+            }
         }
         
         [Test]
@@ -125,6 +133,13 @@ namespace RevitTestServices.Elements
 
             bbox.MaxPoint.ShouldBeApproximately(15.240, 0, 0, 1e-3);
             bbox.MinPoint.ShouldBeApproximately(0, -30.480, 0, 1e-3);
+
+            var refs = crvs.Select(x => ElementCurveReference.TryGetCurveReference(x));
+
+            foreach (var refer in refs)
+            {
+                Assert.AreEqual(32107, refer.InternalReference.ElementId.IntegerValue);
+            }
         }
 
         [Test]

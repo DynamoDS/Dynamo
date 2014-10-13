@@ -19,7 +19,7 @@ namespace Revit.GeometryConversion
     public static class RevitToProtoCurve
     {
         public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve revitCurve, 
-            bool performHostUnitConversion = true)
+            bool performHostUnitConversion = true, Reference referenceOverride = null)
         {
             if (revitCurve == null)
             {
@@ -37,7 +37,7 @@ namespace Revit.GeometryConversion
             converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
 
             // If possible, add a geometry reference for downstream Element creation
-            var revitRef = revitCurve.Reference;
+            var revitRef = referenceOverride ?? revitCurve.Reference;
             if (revitRef != null)
             {
                 converted.Tags.AddTag(ElementCurveReference.DefaultTag, revitRef);
