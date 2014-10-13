@@ -16,12 +16,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyDescription("Flavor=Debug")] // a.k.a. "Comments"
 #else
-[assembly: AssemblyConfiguration("Retail")]
-<<<<<<< Updated upstream
-[assembly: AssemblyDescription("Flavor=Retail")] // a.k.a. "Comments"
-=======
+[assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyDescription("Flavor=Release")] // a.k.a. "Comments"
->>>>>>> Stashed changes
 #endif
 
 [assembly: CLSCompliant(true)]
@@ -39,7 +35,8 @@ using System.Runtime.InteropServices;
 // to distinguish one build from another. AssemblyFileVersion is specified
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
-[assembly: AssemblyVersion("0.7.2.2823")]
+[assembly: AssemblyVersion("0.7.2.2850")]
+
 
 // By default, the "Product version" shown in the file properties window is
 // the same as the value specified for AssemblyFileVersionAttribute.
@@ -57,4 +54,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyFileVersion("0.7.2.2823")]
+[assembly: AssemblyFileVersion("0.7.2.2850")]

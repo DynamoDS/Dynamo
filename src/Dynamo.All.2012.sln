@@ -58,6 +58,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodesTests", "..\test\Libraries\CoreNodesTests\CoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\DynamoCoreTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUITests", "..\test\DynamoCoreUITests\DynamoCoreUITests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
