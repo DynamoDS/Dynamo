@@ -16,6 +16,7 @@ using RTF.Framework;
 
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
+using ReferencePoint = Revit.Elements.ReferencePoint;
 
 namespace Dynamo.Tests
 {
@@ -55,7 +56,36 @@ namespace Dynamo.Tests
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
         }
+        
+        [Test, Category("SmokeTests"), TestModel(@".\empty.rfa")]
+        public void SelectionDocModificationSync()
+        {
+            string samplePath = Path.Combine(_testPath, @".\Selection\SelectAndUpdate.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
+            ViewModel.OpenCommand.Execute(testPath);
+            AssertNoDummyNodes();
+
+            var selectNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSModelElementSelection>();
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+
+            var refPt = ReferencePoint.ByCoordinates(0, 0, 0);
+            selectNode.UpdateSelection(new[] { refPt.InternalElement });
+
+            ViewModel.Model.RunExpression();
+
+            Assert.AreEqual(0, watchNode.CachedValue);
+
+            refPt.X = 10;
+
+            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
+
+            ViewModel.Model.RunExpression();
+
+            Assert.AreNotEqual(0, watchNode.CachedValue); //Actual value depends on units
+        }
+
+           
         [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
         public void EmptySingleSelectionReturnsNull()
         {
