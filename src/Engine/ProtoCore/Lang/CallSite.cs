@@ -367,11 +367,25 @@ namespace ProtoCore
 
         #region Support Methods
 
+
+        /// <summary>
+        /// Report that whole function group couldn't be found
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        private StackValue ReportFunctionGroupNotFound(Core core)
+        {
+            core.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            return StackValue.Null;
+        }
+
+
         /// <summary>
         /// Internal support method for reporting a method that can't be located
         /// </summary>
         /// <returns></returns>
-        private StackValue ReportMethodNotFound(Core core, List<StackValue> arguments)
+        private StackValue ReportMethodNotFoundForArguments(Core core, List<StackValue> arguments)
         {
             core.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
             return StackValue.Null;
@@ -1161,7 +1175,7 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportFunctionGroupNotFound(core);
             }
 
 
@@ -1217,7 +1231,7 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportMethodNotFoundForArguments(core, arguments);
             }
 
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);

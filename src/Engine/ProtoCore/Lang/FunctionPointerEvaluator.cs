@@ -47,7 +47,7 @@ namespace ProtoCore.Lang
             int blockDecl = procNode.runtimeIndex;
             int blockCaller = stackFrame.FunctionCallerBlock;
             int framePointer = runtimeCore.Rmem.FramePointer;
-            StackValue thisPtr = StackValue.BuildPointer(-1);
+            StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
             // for FFI functions whose last parameter's type is (params T[]).

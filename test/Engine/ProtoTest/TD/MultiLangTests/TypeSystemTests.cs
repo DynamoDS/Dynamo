@@ -3828,7 +3828,6 @@ e;
 
         [Test]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS086_param_null_Array_replication_1467316()
         {
             string code =

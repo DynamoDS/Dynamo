@@ -3183,7 +3183,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""FFITarget.dll"");TestUpdateCount.Reset();", 
                 "p = TestUpdateCount.Ctor(10,20);",
                 "a = p.UpdateCount;"
             };
@@ -3246,12 +3246,12 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             AssertValue("a", 2);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestReExecuteOnModifiedNode01()
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
                 "p = TestUpdateCount.Ctor(10,20);",
                 "a = p.UpdateCount + p.Val;",
                 "p = TestUpdateCount.Ctor(10,30);"

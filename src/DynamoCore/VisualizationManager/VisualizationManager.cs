@@ -7,6 +7,8 @@ using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
 using DSNodeServices;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -42,7 +44,10 @@ namespace Dynamo
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
         private List<long> taskList = new List<long>();
+
+#if !ENABLE_DYNAMO_SCHEDULER
         private readonly RenderManager renderManager;
+#endif
 
         #endregion
 
@@ -221,8 +226,11 @@ namespace Dynamo
             MaxTesselationDivisions = 128;
 
             this.dynamoModel = dynamoModel;
+
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager = new RenderManager(this, dynamoModel);
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+#endif
 
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
@@ -470,13 +478,24 @@ namespace Dynamo
         /// <param name="e"></param>
         private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible" ||
-                e.PropertyName == "IsUpstreamVisible" ||
-                e.PropertyName == "DisplayLabels")
+            bool updateVisualization = false;
+
+            switch (e.PropertyName)
             {
-                renderManager.RequestRenderAsync(new RenderTask());
-                //renderManager.Render();
+                case "IsVisible":
+                case "IsUpstreamVisible":
+                case "DisplayLabels":
+                    updateVisualization = true;
+                    break;
             }
+
+#if !ENABLE_DYNAMO_SCHEDULER
+            if (updateVisualization)
+                renderManager.RequestRenderAsync(new RenderTask());
+#else
+            if (updateVisualization)
+                RequestNodeVisualUpdate(null);
+#endif
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -527,9 +546,9 @@ namespace Dynamo
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
 
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RenderComplete += RenderManagerOnRenderComplete;
-
-
+#endif
         }
 
         private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
@@ -546,7 +565,9 @@ namespace Dynamo
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
 
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RenderComplete -= RenderManagerOnRenderComplete;
+#endif
         }
 
         /// <summary>
@@ -556,8 +577,50 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
+#else
+            RequestNodeVisualUpdate(null);
+#endif
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        private void RequestNodeVisualUpdate(NodeModel nodeModel)
+        {
+            if (nodeModel != null)
+            {
+                // Visualization update for a given node is desired.
+                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
+            }
+            else
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(MaxTesselationDivisions);
+            }
+
+            var scheduler = dynamoModel.Scheduler;
+            var task = new AggregateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(dynamoModel.CurrentWorkspace, null))
+            {
+                task.Completed += OnRenderPackageAggregationCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
+        {
+            var task = asyncTask as AggregateRenderPackageAsyncTask;
+            var rps = new List<RenderPackage>();
+            rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
+            rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
+
+            var e = new VisualizationEventArgs(rps, string.Empty, -1);
+            OnResultsReadyToVisualize(this, e);
+        }
+
+#endif
 
         private void Clear(DynamoModel dynamoModel)
         {
@@ -629,7 +692,10 @@ namespace Dynamo
         public void Cleanup()
         {
             UnregisterEventListeners();
+
+#if !ENABLE_DYNAMO_SCHEDULER
             renderManager.CleanUp();
+#endif
         }
 
         #endregion

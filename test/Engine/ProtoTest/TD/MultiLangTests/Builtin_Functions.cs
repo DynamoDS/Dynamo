@@ -4169,7 +4169,6 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("Failure")]
         public void T068_Rand_1()
         {
             String code =
