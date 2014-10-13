@@ -482,6 +482,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel DataContext="{Binding TopResult}">
                     <TextBlock Text="{Binding Name}"
@@ -645,6 +646,13 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
+                <uicontrols:AddonsTreeView Grid.Row="2"
+                                           DataContext="{Binding Model.AddonRootCategories}">
+                    <uicontrols:AddonsTreeView.Visibility>
+                        <Binding Path="Model.AddonRootCategories.Count"
+                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                    </uicontrols:AddonsTreeView.Visibility>
+                </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
 
