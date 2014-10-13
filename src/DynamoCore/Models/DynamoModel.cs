@@ -346,8 +346,7 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            var updateUri = new Uri(UpdateManagerConfiguration.GetSettings().DownloadLocation);
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(updateUri));
+            UpdateManager.UpdateManager.CheckForProductUpdate();
 
             SearchModel = new SearchModel(this);
 

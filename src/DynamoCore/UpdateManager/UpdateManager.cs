@@ -173,15 +173,19 @@ namespace Dynamo.UpdateManager
     /// </summary>
     public class UpdateManagerConfiguration
     {
+        private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
+        private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
+        private const string DEFAULT_CONFIG_FILE_S = "UpdateManagerConfig.xml";
+
         /// <summary>
         /// Defines download location for new installer
         /// </summary>
-        public string DownloadLocation { get; set; }
+        public string DownloadSourcePath { get; set; }
         
         /// <summary>
         /// Defines location for signature file to validate the new installer.
         /// </summary>
-        public string SignatureLocation { get; set; }
+        public string SignatureSourcePath { get; set; }
 
         /// <summary>
         /// Defines whether to consider daily builds for update, default is false.
@@ -198,8 +202,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public UpdateManagerConfiguration()
         {
-            DownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
-            SignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
+            DownloadSourcePath = PRODUCTION_SOURCE_PATH_S;
+            SignatureSourcePath = PRODUCTION_SIG_SOURCE_PATH_S;
             CheckNewerDailyBuild = false;
             ForceUpdate = false;
         }
@@ -208,8 +212,9 @@ namespace Dynamo.UpdateManager
         /// Loads the configurations from given xml file.
         /// </summary>
         /// <param name="filePath">Xml file path that contains configuration details.</param>
+        /// <param name="updateManager"></param>
         /// <returns>UpdateManagerConfiguration</returns>
-        public static UpdateManagerConfiguration Load(string filePath)
+        public static UpdateManagerConfiguration Load(string filePath, IUpdateManager updateManager)
         {
             if(string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
                 return null;
@@ -222,7 +227,11 @@ namespace Dynamo.UpdateManager
                     return serializer.Deserialize(fs) as UpdateManagerConfiguration;
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                if (null != updateManager)
+                    updateManager.OnLog(new LogEventArgs(string.Format("Failed to load {0}\n, Exception: {1}", filePath, ex.Message), LogLevel.Console));
+            }
             return null;
         }
 
@@ -230,7 +239,8 @@ namespace Dynamo.UpdateManager
         /// Saves this configuration to a given file in xml format.
         /// </summary>
         /// <param name="filePath">File path to save this configuration.</param>
-        public void Save(string filePath)
+        /// <param name="updateManager"></param>
+        public void Save(string filePath, IUpdateManager updateManager)
         {
             try
             {
@@ -240,28 +250,35 @@ namespace Dynamo.UpdateManager
                     serializer.Serialize(fs, this);
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                if(null != updateManager)
+                    updateManager.OnLog(new LogEventArgs(string.Format("Failed to save {0}\n, Exception: {1}", filePath, ex.Message), LogLevel.Console));
+            }
         }
 
         /// <summary>
         /// Utility method to get the settings
         /// </summary>
+        /// <param name="updateManager"></param>
         /// <returns></returns>
-        public static UpdateManagerConfiguration GetSettings()
+        public static UpdateManagerConfiguration GetSettings(IUpdateManager updateManager = null)
         {
-            const string settingsFile = "UpdateManagerConfig.xml";
             string location = Assembly.GetExecutingAssembly().Location;
             string filePath = Path.Combine(
                 Path.GetDirectoryName(location),
-                settingsFile);
+                DEFAULT_CONFIG_FILE_S);
 #if DEBUG
+            //This code is just to create the default config file to
+            //save the default settings, which later on can be modified
+            //to re-direct it to other download target for testing.
             if (!File.Exists(filePath))
             {
                 var config = new UpdateManagerConfiguration();
-                config.Save(filePath);
+                config.Save(filePath, updateManager);
             }
 #endif
-            return File.Exists(filePath) ? Load(filePath) : new UpdateManagerConfiguration();
+            return File.Exists(filePath) ? Load(filePath, updateManager) : new UpdateManagerConfiguration();
         }
     }
 
@@ -386,7 +403,7 @@ namespace Dynamo.UpdateManager
             {
                 if (!Configuration.CheckNewerDailyBuild && value)
                 {
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadLocation)));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath)));
                 }
                 Configuration.CheckNewerDailyBuild = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
@@ -405,7 +422,7 @@ namespace Dynamo.UpdateManager
                 if (!Configuration.ForceUpdate && value)
                 {
                     // do a check
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadLocation)));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath)));
                 }
                 Configuration.ForceUpdate = value;
                 RaisePropertyChanged("ForceUpdate");
@@ -430,7 +447,7 @@ namespace Dynamo.UpdateManager
         {
             get 
             {
-                return configuration ?? (configuration = UpdateManagerConfiguration.GetSettings());
+                return configuration ?? (configuration = UpdateManagerConfiguration.GetSettings(this));
             }
         }
 
@@ -512,9 +529,9 @@ namespace Dynamo.UpdateManager
             // DynamoInstall0.7.0 becomes 0.7.0. Build a version
             // and compare it with the current product version.
 
-            var latestBuildDownloadUrl = Path.Combine(Configuration.DownloadLocation, latestBuildFilePath);
+            var latestBuildDownloadUrl = Path.Combine(Configuration.DownloadSourcePath, latestBuildFilePath);
             var latestBuildSignatureUrl = Path.Combine(
-                Configuration.SignatureLocation,
+                Configuration.SignatureSourcePath,
                 Path.GetFileNameWithoutExtension(latestBuildFilePath) + ".sig");
 
             BinaryVersion latestBuildVersion;
@@ -799,7 +816,7 @@ namespace Dynamo.UpdateManager
             UpdateInfo = new AppVersionInfo()
             {
                 Version = latestBuildVersion,
-                VersionInfoURL = Configuration.DownloadLocation,
+                VersionInfoURL = Configuration.DownloadSourcePath,
                 InstallerURL = latestBuildDownloadUrl,
                 SignatureURL = signatureUrl
             };
@@ -808,6 +825,7 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Check if a file name is a daily build.
         /// </summary>
+        /// <param name="installNameBase"></param>
         /// <param name="fileName"></param>
         /// <returns>True if this is a daily build, otherwise false.</returns>
         internal static bool IsDailyBuild(string installNameBase, string fileName)
@@ -832,6 +850,7 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Check if a file name is a stable build.
         /// </summary>
+        /// <param name="installNameBase"></param>
         /// <param name="fileName"></param>
         /// <returns>True if this is a stable build, otherwise false.</returns>
         internal static bool IsStableBuild(string installNameBase, string fileName)
@@ -849,6 +868,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="url">Web URL for file to download.</param>
         /// <param name="version">The version of package that is to be downloaded.</param>
+        /// <param name="tempPath">Temp folder path where the update package
+        /// to be downloaded.</param>
         /// <returns>Request status, it may return false if invalid URL was passed.</returns>
         private bool DownloadUpdatePackageAsynchronously(string url, BinaryVersion version, string tempPath)
         {
@@ -888,7 +909,9 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Async call to download the signature file.
         /// </summary>
-        /// <param name="url"></param>
+        /// <param name="url">Signature file url for download.</param>
+        /// <param name="tempPath">Temp folder path where the signature file 
+        /// to be downloaded.</param>
         /// <returns></returns>
         private bool DownloadSignatureFileAsynchronously(string url, string tempPath)
         {
@@ -925,5 +948,16 @@ namespace Dynamo.UpdateManager
         }
 
         #endregion
+
+        /// <summary>
+        /// Checks for the product update. Requests for update version info
+        /// from configured download source path.
+        /// </summary>
+        internal static void CheckForProductUpdate()
+        {
+            var self = Instance as UpdateManager;
+            var downloadUri = new Uri(self.Configuration.DownloadSourcePath);
+            self.CheckForProductUpdate(new UpdateRequest(downloadUri));
+        }
     }
 }
