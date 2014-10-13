@@ -36,7 +36,8 @@ namespace Dynamo.UI.Controls
         private CodeBlockNodeModel nodeModel = null;
         private CompletionWindow completionWindow = null;
         private CodeCompletionParser codeParser = null;
-        
+        private CodeBlockMethodInsightWindow insightWindow = null;
+
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -96,8 +97,45 @@ namespace Dynamo.UI.Controls
                         x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
                 }
             }
-            
+
             return completions;
+        }
+
+        private IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        {
+            IEnumerable<MethodMirror> candidates = null;
+            var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // if function is global, search for function in Built-ins
+            if (string.IsNullOrEmpty(functionPrefix))
+            {
+                candidates = engineController.GetOverloadsOnBuiltIns(functionName);
+                return candidates.Select(x => new CodeBlockInsightItem(x));
+            }
+
+            // Determine if the function prefix is a class name
+            var type = engineController.GetClassType(functionPrefix);
+            if (type != null)
+            {
+                candidates = type.GetOverloadsOnType(functionName);
+            }
+            // If not of class type
+            else
+            {
+                // Check if the function prefix is a declared identifier
+                string typeName = CodeCompletionParser.GetVariableType(code, functionPrefix);
+                if (typeName != null)
+                    type = engineController.GetClassType(typeName);
+
+                if (type != null)
+                {
+                    candidates = type.GetOverloadsOnInstance(functionName);
+                }
+            }
+            if (candidates != null)
+                return candidates.Select(x => new CodeBlockInsightItem(x));
+            else
+                return null;
         }
 
         internal string GetDescription()
@@ -170,30 +208,33 @@ namespace Dynamo.UI.Controls
                 if (e.Text == ".")
                 {
                     var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-                    
+
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
-                    
+
                     var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
 
                     if (!completions.Any())
                         return;
 
-                    // TODO: Need to make this more efficient by instantiating 'completionWindow'
-                    // just once and updating its contents each time
+                    ShowCompletionWindow(completions);
+                }
+                // Complete function signatures
+                else if (e.Text == "(")
+                {
+                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
 
-                    // This implementation has been referenced from
-                    // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
-                    completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
-                    var data = completionWindow.CompletionList.CompletionData;
+                    string functionName;
+                    string functionPrefix;
+                    CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+                    
+                    var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
 
-                    foreach (var completion in completions)
-                        data.Add(completion);
-
-                    completionWindow.Show();
-                    completionWindow.Closed += delegate
-                    {
-                        completionWindow = null;
-                    };
+                    ShowInsightWindow(insightItems);
+                }
+                else if (e.Text == ")")
+                {
+                    if (insightWindow != null)
+                        insightWindow.Close();
                 }
             }
             catch (System.Exception ex)
@@ -203,6 +244,57 @@ namespace Dynamo.UI.Controls
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
+
+        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions)
+        {
+            // TODO: Need to make this more efficient by instantiating 'completionWindow'
+            // just once and updating its contents each time
+
+            // This implementation has been referenced from
+            // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+            var data = completionWindow.CompletionList.CompletionData;
+
+            foreach (var completion in completions)
+                data.Add(completion);
+
+            completionWindow.Show();
+            completionWindow.Closed += delegate
+            {
+                completionWindow = null;
+            };
+        }
+
+        private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)
+        {
+            if (items == null)
+                return;
+
+            if (insightWindow != null)
+            {
+                insightWindow.Close();
+            }
+            insightWindow = new CodeBlockMethodInsightWindow(this.InnerTextEditor.TextArea);
+            foreach (var item in items)
+            {
+                insightWindow.Items.Add(item);
+            }
+            if (insightWindow.Items.Count > 0)
+            {
+                insightWindow.SelectedItem = insightWindow.Items[0];
+            }
+            else
+            {
+                // don't open insight window when there are no items
+                return;
+            }
+            insightWindow.Closed += delegate
+            {
+                insightWindow = null;
+            };
+           insightWindow.Show();
+        }
+
         #endregion
 
         #region Generic Event Handlers

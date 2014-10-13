@@ -934,6 +934,7 @@ namespace ProtoScript.Runners
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         ClassMirror GetClassType(string className);
+        IEnumerable<MethodMirror> GetOverloadsOnBuiltIns(string methodName);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1774,6 +1775,11 @@ namespace ProtoScript.Runners
             {
                 return null;
             }
+        }
+
+        public IEnumerable<MethodMirror> GetOverloadsOnBuiltIns(string methodName)
+        {
+            return StaticMirror.GetOverloadsOnBuiltIns(this.Core, methodName);
         }
 
         #endregion
