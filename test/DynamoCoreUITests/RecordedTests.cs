@@ -2831,7 +2831,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
@@ -2861,6 +2861,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
             RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", false, (commandTag) =>
