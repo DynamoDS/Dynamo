@@ -579,16 +579,6 @@ namespace ProtoCore.Lang
                 replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
-            // When TempReplicationGuideEmptyFlag is set, we always put replication
-            // guide for the lhs variable. So if it is not an array, we should
-            // clear its replication guide from the core. 
-            if (removeFirstArgument && core.Options.TempReplicationGuideEmptyFlag)
-            {
-                int count = core.replicationGuides.Count;
-                Validity.Assert(count > 0);
-                core.replicationGuides.RemoveAt(count - 1);
-            }
-
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
@@ -618,6 +608,18 @@ namespace ProtoCore.Lang
             else
             {
                 procNode = classNode.vtable.procList[procIndex];
+            }
+
+            // When TempReplicationGuideEmptyFlag is set, we always put replication
+            // guide for the lhs variable. So if it is not an array, we should
+            // clear its replication guide from the core. 
+            if (removeFirstArgument && 
+                !CoreUtils.IsGetterSetter(procNode.name) &&
+                core.Options.TempReplicationGuideEmptyFlag)
+            {
+                int count = core.replicationGuides.Count;
+                Validity.Assert(count > 0);
+                core.replicationGuides.RemoveAt(count - 1);
             }
 
             // If the function still isn't found, then it may be a function 
