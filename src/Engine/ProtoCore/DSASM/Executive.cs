@@ -7092,8 +7092,6 @@ namespace ProtoCore.DSASM
         //    end
         //    SetupDependencyGraph()
         //end
-
-
         private void DEP_Handler(Instruction instruction)
         {
             // This expression ID of this instruction
@@ -7171,7 +7169,6 @@ namespace ProtoCore.DSASM
             if (core.Options.ApplyUpdate)
             {
                 // Go to the first dirty pc
-                Properties.executingGraphNode = istream.dependencyGraph.GetNextGraphNode(pc + 1, ci, fi);
                 SetupNextExecutableGraph(fi, ci);
             }
             else
@@ -7180,10 +7177,19 @@ namespace ProtoCore.DSASM
                 pc++;
 
                 // Given the next pc, get the next graphnode to execute and mark it clean
-                Properties.executingGraphNode = istream.dependencyGraph.GetNextGraphNode(pc, ci, fi);
+                if (core.Options.IsDeltaExecution)
+                {
+                    Properties.executingGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(pc, ci, fi);
+                }
+                else
+                {
+                    Properties.executingGraphNode = istream.dependencyGraph.GetGraphNode(pc, ci, fi);
+                }
+
                 if (Properties.executingGraphNode != null)
                 {
                     Properties.executingGraphNode.isDirty = false;
+                    pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
                 core.DeferredUpdates += reachableNodes;
             }

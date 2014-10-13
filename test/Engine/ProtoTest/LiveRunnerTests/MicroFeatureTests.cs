@@ -1242,6 +1242,50 @@ namespace ProtoTest.LiveRunner
             }
         }
 
+        [Test]
+        public void TestFunctionModification03()
+        {
+            // Test function re-defintion but without parameters
+            List<string> codes = new List<string>() 
+            {
+                @"
+def f() 
+{ 
+    t = 41; 
+    return = t;
+} 
+x = f(); 
+r = Equals(x, 41);
+",
+                @"
+def f() 
+{ 
+    t1 = 41; 
+    t2 = 42; 
+    return = {t1, t2}; 
+} 
+x = f(); 
+r = Equals(x, {41, 42});
+",
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            // Create CBN
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", true);
+
+            // Modify CBN
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", true);
+        }
+
 
         [Test]
         [Category("Failure")]

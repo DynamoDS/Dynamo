@@ -1234,20 +1234,44 @@ namespace ProtoCore.AssociativeGraph
         }
 
         /// <summary>
-        /// Gets the next graphnode given the scope and pc regardless of dirty flag
+        /// Gets the graphnode of the given pc and scope
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="classIndex"></param>
         /// <param name="procIndex"></param>
         /// <returns></returns>
-        public GraphNode GetNextGraphNode(int pc, int classIndex, int procIndex)
+        public GraphNode GetGraphNode(int pc, int classIndex, int procIndex)
         {
             List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
             if (gnodeList != null && gnodeList.Count > 0)
             {
                 foreach (GraphNode gnode in gnodeList)
                 {
-                    if (gnode.updateBlock.startpc == pc)
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetFirstDirtyGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
                     {
                         return gnode;
                     }
