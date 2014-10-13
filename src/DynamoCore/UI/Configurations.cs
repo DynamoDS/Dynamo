@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using Dynamo.Search;
 
 namespace Dynamo.UI
 {
@@ -220,8 +219,6 @@ namespace Dynamo.UI
         public const char ShortenedCategoryDelimiter = '>';
 
         #endregion
-
-        public const string CustomDllPrefix = "CustomDll*";
 
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";

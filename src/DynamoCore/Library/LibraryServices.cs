@@ -5,7 +5,6 @@ using System.Linq;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Search;
-using Dynamo.UI;
 using DynamoUtilities;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
@@ -198,17 +197,6 @@ namespace Dynamo.DSEngine
                     groupMap => TryGetFunctionGroup(groupMap, qualifiedName, out functionGroup))
                     ? functionGroup.GetFunctionDescriptor(managledName)
                     : null;
-        }
-
-        /// <summary>
-        ///     For all elements of Libraries collection remove Configurations.CustomDllPrefix
-        ///     if exists.
-        /// </summary>
-        public void RemoveLibrariesCustomDllPrefix()
-        {
-            //for (int i = 0; i < libraries.Count; i++)
-            //    if (libraries[i].Contains(Configurations.CustomDllPrefix))
-            //        libraries[i] = libraries[i].Substring(Configurations.CustomDllPrefix.Length);
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
@@ -584,23 +572,11 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            // The method can be called in two situations.
-            // 1. Dynamo loading process. 
-            //    handler is null. We need to indentify 
-            //    custom libraries to add them to AddonRootCategories. For this
-            //    purpose prefix is added to library path. Later in loading process
-            //    the prefix will be used and removed.
-            // 2. Installing package or importing library (Libraries - Import Library).
-            //    handler is not null. All operations connected with adding custom library
-            //    into AddonRootCategory will be done in handler. No need in prefix.
-
             libraries.Add(e.LibraryPath, e.ElementType);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
                 handler(this, e);
-            //else
-            //    libraries[libraries.Count - 1] = Configurations.CustomDllPrefix + libraries[libraries.Count - 1];
         }
 
         public static class Categories

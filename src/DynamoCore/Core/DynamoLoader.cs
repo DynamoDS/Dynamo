@@ -124,11 +124,6 @@ namespace Dynamo.Utilities
             }
 
             dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
-            
-            // Earlier for some custom dlls was added prefix Configurations.CustomDll.
-            // We have used it and no need it anymore.
-            LibraryServices.GetInstance().RemoveLibrariesCustomDllPrefix();
-
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
