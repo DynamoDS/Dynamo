@@ -372,7 +372,7 @@ namespace Revit.Elements
         /// Extract the Revit GeometryObject's from a Revit Element
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
+        internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry(bool useSymbolGeometry = false)
         {
             var thisElement = InternalElement;
 
@@ -394,7 +394,7 @@ namespace Revit.Elements
                 }
             }
 
-            return CollectConcreteGeometry(geomElement);
+            return CollectConcreteGeometry(geomElement, useSymbolGeometry);
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="geometryElement">The Geometry collection</param>
         /// <returns></returns>
-        private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement)
+        private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement, bool useSymbolGeometry = false)
         {
             var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
 
@@ -415,7 +415,7 @@ namespace Revit.Elements
 
                 if (geomInstance != null)
                 {
-                    var instanceGeom = geomInstance.GetInstanceGeometry();
+                    var instanceGeom = useSymbolGeometry ? geomInstance.GetSymbolGeometry() : geomInstance.GetInstanceGeometry();
                     instanceGeometryObjects.AddRange( CollectConcreteGeometry(instanceGeom) );
                 }
                 else if (geomElement != null)
@@ -440,9 +440,9 @@ namespace Revit.Elements
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private IEnumerable<T> InternalGeometry<T>() where T : GeometryObject
+        private IEnumerable<T> InternalGeometry<T>(bool useSymbolGeometry = false) where T : GeometryObject
         {
-            return this.InternalGeometry().OfType<T>();
+            return this.InternalGeometry(useSymbolGeometry).OfType<T>();
         } 
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace Revit.Elements
             {
                 return
                     this.InternalGeometry<Autodesk.Revit.DB.Curve>()
-                        .Select(x => x.ToProtoType())
+                        .Select( x => x.ToProtoType() )
                         .ToArray();
             }
         }
@@ -481,7 +481,8 @@ namespace Revit.Elements
             get
             {
                 return
-                    this.InternalGeometry<Autodesk.Revit.DB.Face>()
+                    this.InternalGeometry<Autodesk.Revit.DB.Solid>()
+                        .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
                         .SelectMany(x => x.ToProtoType())
                         .ToArray();
             }
@@ -496,7 +497,7 @@ namespace Revit.Elements
             get
             {
                 return
-                    this.InternalGeometry<Autodesk.Revit.DB.Curve>()
+                    this.InternalGeometry<Autodesk.Revit.DB.Curve>(true)
                         .Select(ElementCurveReference.FromExisting)
                         .ToArray();
             }
@@ -511,7 +512,8 @@ namespace Revit.Elements
             get
             {
                 return
-                    this.InternalGeometry<Autodesk.Revit.DB.Face>()
+                    this.InternalGeometry<Autodesk.Revit.DB.Solid>()
+                        .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
                         .Select(ElementFaceReference.FromExisting)
                         .ToArray();
             }
