@@ -20,6 +20,15 @@ namespace Dynamo.Nodes.Search
         public void RecursivelySort()
         {
             this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+
+            // Classes must be always at the first lvl.
+            var classes = this.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
+            if (classes != null)
+            {
+                this.Items.Remove(classes);
+                this.Items.Insert(0, classes);
+            }
+
             this.Items.ToList().ForEach(x=>x.RecursivelySort());
         }
 
