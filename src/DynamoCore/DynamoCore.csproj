@@ -862,6 +862,11 @@ limitations under the License.
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\assemblies.png" />
+    <Resource Include="UI\Images\files.png" />
+    <Resource Include="UI\Images\nodes.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
