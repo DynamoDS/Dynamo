@@ -1906,6 +1906,27 @@ namespace ProtoTest.TD.Associative
                 });
         }
 
+        [Test]
+        public void RegressMagn4853_1()
+        {
+            string code =
+            @" def foo(x){}x = foo(""xyz"");";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
 
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_2()
+        {
+            string code =
+            @" class Test{    def foo()    {    }    def bar(x)    {    }}t = Test();r1 = t.foo();r2 = t.bar(42);r3 = t.bar({41, 42});ts = {Test(), Test()};vs = {41, 42};r4 = ts<1>.foo();r5 = ts.var(vs);r6 = ts<1>.bar(vs<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
     }
 }
