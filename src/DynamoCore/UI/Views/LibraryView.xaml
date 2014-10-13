@@ -24,6 +24,7 @@
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
+            <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
 
             <!--EndRegion-->
 
@@ -1088,6 +1089,10 @@
                 <Border Grid.Row="1"
                         Background="#353535"
                         Height="27">
+                    <Border.Visibility>
+                        <Binding Path="Model.AddonRootCategories.Count"
+                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                    </Border.Visibility>
                     <TextBlock Text="Add-ons"
                                VerticalAlignment="Center"
                                FontSize="13"
