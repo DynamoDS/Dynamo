@@ -130,11 +130,7 @@ namespace Dynamo.Tests
                     {
                         StartInTestMode = true,
                         DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\"),
-<<<<<<< HEAD
-                        Context = "Revit 2014",
-=======
                         Context = "Revit 2015",
->>>>>>> f7c7fbd15f7cd64c1c01f148e034c8631a01e0a0
                         SchedulerThread = new TestSchedulerThread()
                     });
 
