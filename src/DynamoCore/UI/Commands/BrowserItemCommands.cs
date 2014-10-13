@@ -21,7 +21,7 @@ namespace Dynamo.Nodes.Search
         {
             this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
 
-            // Classes must be always at the first lvl.
+            // Classes must be always at the top lvl.
             var classes = this.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
             if (classes != null)
             {
