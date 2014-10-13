@@ -800,6 +800,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Notes.Clear();
 
             CurrentWorkspace.ClearUndoRecorder();
+            currentWorkspace.ResetWorkspace();
 
             this.ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
