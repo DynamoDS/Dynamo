@@ -1314,45 +1314,6 @@ namespace ProtoCore.DSASM
             return arrayelements.ToString();
         }
 
-        private void SetupNextDeferredExecutableGraph(int function, int classscope)
-        {
-            Validity.Assert(istream != null);
-            if (istream.language != Language.kAssociative)
-            {
-                return;
-            }
-
-            bool isUpdated = false;
-            List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
-            if (graphNodes != null)
-            {
-                foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
-                {
-                    if (!graphNode.isDeferred || !graphNode.isActive)
-                    {
-                        continue;
-                    }
-                    // Is return node or is updatable
-                    if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
-                    {
-                        graphNode.isDeferred = false;
-
-                        graphNode.isDirty = true;
-
-                        break;
-                    }
-                }
-            }
-
-            if (!isUpdated)
-            {
-                // There were no updates, this is the end of this associative block
-                pc = Constants.kInvalidPC;
-            }
-        }
-
-        
-
         //proc SetupNextExecutableGraph
         //    Find the first dirty node and execute it
         //    foreach node in graphNodeList
@@ -1613,78 +1574,7 @@ namespace ProtoCore.DSASM
             }
             return propertyChanged;
         }
-       
-
-        private void UpdateGraphDefered(int exprUID, int modBlkId, bool isSSAAssign)
-        {
-            //UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
-
-            ProtoCore.AssociativeGraph.GraphNode executingGraphNode = Properties.executingGraphNode;
-            if (executingGraphNode == null)
-            {
-                return;// nodesMarkedDirty;
-            }
-
-            int classIndex = executingGraphNode.classIndex;
-            int procIndex = executingGraphNode.procIndex;
-
-            var graph = istream.dependencyGraph;
-            var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
-            if (graphNodes == null)
-            {
-                return;// nodesMarkedDirty;
-            }
-
-            //foreach (var graphNode in graphNodes)
-            for (int i = 0; i < graphNodes.Count; ++i)
-            {
-                var graphNode = graphNodes[i];
-
-                // If the graphnode is inactive then it is no longer executed
-                if (!graphNode.isActive)
-                {
-                    continue;
-                }
-                //
-                // Comment Jun: 
-                //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
-                //
-                bool allowUpdateWithinSSA = false;
-                if (core.Options.ExecuteSSA)
-                {
-                    allowUpdateWithinSSA = true;
-                    isSSAAssign = false; // Remove references to this when ssa flag is removed
-                }
-                else
-                {
-                    // TODO Jun: Remove this code immediatley after enabling SSA
-                    bool withinSSAStatement = graphNode.UID == executingGraphNode.UID;
-                    allowUpdateWithinSSA = !withinSSAStatement;
-                }
-
-                foreach (var noderef in executingGraphNode.updateNodeRefList)
-                {
-                    ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
-
-                    if (executingGraphNode.ssaExprID == graphNode.ssaExprID)
-                    {
-                        continue;
-                    }
-
-                    if (!graphNode.DependsOn(noderef, ref matchingNode))
-                    {
-                        continue;
-                    }
-
-                    if (!graphNode.isDirty)
-                    {
-                        graphNode.isDeferred = true;
-                        core.DeferredUpdates++;
-                    }
-                }
-            }
-        }
-
+     
         private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
             if (null != Properties.executingGraphNode)
@@ -7179,10 +7069,15 @@ namespace ProtoCore.DSASM
                 // Given the next pc, get the next graphnode to execute and mark it clean
                 if (core.Options.IsDeltaExecution)
                 {
+                    // On delta execution, it is possible that the next graphnode is clean
+                    // Retrieve the next dirty graphnode given the pc
+                    // Associative update is handled when ApplyUpdate = true
                     Properties.executingGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(pc, ci, fi);
                 }
                 else
                 {
+                    // On normal execution, just retrieve the graphnode associated with pc
+                    // Associative update is handled in jdep
                     Properties.executingGraphNode = istream.dependencyGraph.GetGraphNode(pc, ci, fi);
                 }
 
@@ -7215,7 +7110,6 @@ namespace ProtoCore.DSASM
                 ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
                 fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
-            //SetupNextDeferredExecutableGraph(fi, ci);
             SetupNextExecutableGraph(fi, ci);
         }
 
