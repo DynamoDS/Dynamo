@@ -433,6 +433,11 @@ namespace ProtoScript.Runners
                     // DeactivateGraphnodes(). 
                     // Right now just simply remove all related warnings.
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+
+                    foreach (var ast in csData.RemovedBinaryNodesFromModification)
+                    {
+                        core.BuildStatus.ClearWarningsForAst(ast.ID);
+                    }
                 }
 
                 // Cache the modifed functions
