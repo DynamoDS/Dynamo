@@ -36,7 +36,8 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private List<string> libraries;
+        private readonly Dictionary<string, SearchModel.ElementType> libraries = 
+            new Dictionary<string, SearchModel.ElementType>();
 
         private LibraryServices()
         {
@@ -52,7 +53,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<string> Libraries
         {
-            get { return libraries; }
+            get { return libraries.Keys; }
         }
 
         /// <summary>
@@ -111,8 +112,12 @@ namespace Dynamo.DSEngine
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
-            libraries = DynamoPathManager.Instance.PreloadLibraries;
-            GraphUtilities.PreloadAssembly(libraries);
+
+            libraries.Clear();
+            foreach (var str in DynamoPathManager.Instance.PreloadLibraries)
+                libraries.Add(str, SearchModel.ElementType.Regular);
+                        
+            GraphUtilities.PreloadAssembly(Libraries);
         }
 
         /// <summary>
@@ -125,16 +130,10 @@ namespace Dynamo.DSEngine
             if (null == library)
                 throw new ArgumentNullException();
 
-            bool isCustomDll = library.Contains(Configurations.CustomDllPrefix);
-
             Dictionary<string, FunctionGroup> functionGroups;
-
-            if (isCustomDll)
-                library = library.Substring(Configurations.CustomDllPrefix.Length);
-
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
             {
-                if (isCustomDll)
+                if (libraries[library] == SearchModel.ElementType.CustomDll)
                 {
                     var modifiedFGroups = functionGroups.Values.ToList();
                     for (int i = 0; i < modifiedFGroups.Count; i++)
@@ -207,9 +206,9 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void RemoveLibrariesCustomDllPrefix()
         {
-            for (int i = 0; i < libraries.Count; i++)
-                if (libraries[i].Contains(Configurations.CustomDllPrefix))
-                    libraries[i] = libraries[i].Substring(Configurations.CustomDllPrefix.Length);
+            //for (int i = 0; i < libraries.Count; i++)
+            //    if (libraries[i].Contains(Configurations.CustomDllPrefix))
+            //        libraries[i] = libraries[i].Substring(Configurations.CustomDllPrefix.Length);
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
@@ -306,7 +305,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(library, SearchModel.ElementType.CustomDll));
         }
 
         private void AddImportedFunctions(string library, IEnumerable<FunctionDescriptor> functions)
@@ -595,13 +594,13 @@ namespace Dynamo.DSEngine
             //    handler is not null. All operations connected with adding custom library
             //    into AddonRootCategory will be done in handler. No need in prefix.
 
-            libraries.Add(e.LibraryPath);
+            libraries.Add(e.LibraryPath, e.ElementType);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
                 handler(this, e);
-            else
-                libraries[libraries.Count - 1] = Configurations.CustomDllPrefix + libraries[libraries.Count - 1];
+            //else
+            //    libraries[libraries.Count - 1] = Configurations.CustomDllPrefix + libraries[libraries.Count - 1];
         }
 
         public static class Categories
@@ -627,12 +626,14 @@ namespace Dynamo.DSEngine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath)
+            public LibraryLoadedEventArgs(string libraryPath, SearchModel.ElementType elementType)
             {
-                LibraryPath = libraryPath;                
+                LibraryPath = libraryPath;
+                ElementType = elementType;
             }
 
-            public string LibraryPath { get; private set; }            
+            public string LibraryPath { get; private set; }
+            public SearchModel.ElementType ElementType { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs
