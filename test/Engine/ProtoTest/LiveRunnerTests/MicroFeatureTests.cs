@@ -5005,14 +5005,14 @@ v = foo(t);
         }
 
         [Test]
-        public void RegressMagn4710()
+        public void RegressMagn4659()
         {
             List<string> codes = new List<string>() 
             {
-                "a = {{1,2}, {3, 4}};",
-                "i = 0;",
-                "r = a[i][k];",
-                "r = a[0][0];",
+                @"import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
+                "x = p.X;",
+                "r = x;",
+                "x = p.X();",
             };
 
             List<Subtree> added = new List<Subtree>();
@@ -5027,15 +5027,15 @@ v = foo(t);
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(1, astLiveRunner.Core.BuildStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
 
-            // After change code, the warning should be cleared. 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(0, astLiveRunner.Core.BuildStatus.WarningCount);
+            Assert.AreEqual(1, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(guid2, astLiveRunner.Core.RuntimeStatus.Warnings.First().GraphNodeGuid);
         }
     }
 
