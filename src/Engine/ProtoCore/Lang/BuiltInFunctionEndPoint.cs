@@ -577,6 +577,13 @@ namespace ProtoCore.Lang
                 replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
+            if (!context.IsReplicating && core.Options.TempReplicationGuideEmptyFlag)
+            {
+                int count = core.replicationGuides.Count;
+                Validity.Assert(count > 0);
+                core.replicationGuides.RemoveAt(count - 1);
+            }
+
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);

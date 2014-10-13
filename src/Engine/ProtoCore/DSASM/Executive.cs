@@ -5820,6 +5820,12 @@ namespace ProtoCore.DSASM
             }
             rmem.Push(pointer);
 
+            if (instruction.op3.IsReplicationGuide)
+            {
+                Validity.Assert(instruction.op3.RawIntValue == 0);
+                core.replicationGuides.Add(new List<ReplicationGuide> {});
+            }
+
             ++pc;
         }
 

@@ -1755,6 +1755,10 @@ namespace ProtoCore
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildString(0);
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                instr.op3 = StackValue.BuildReplicationGuide(0);
+            }
 
             ++pc;
             AppendInstruction(instr);
