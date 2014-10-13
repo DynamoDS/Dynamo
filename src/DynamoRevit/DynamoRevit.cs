@@ -122,8 +122,6 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         public static RevitDynamoModel RevitDynamoModel
         {
             get
@@ -135,6 +133,8 @@ namespace Dynamo.Applications
                 revitDynamoModel = value;
             }
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
