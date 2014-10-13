@@ -369,7 +369,7 @@
 
             <!-- Region Styles -->
 
-            <Style x:Key="ExpandCollapseToggleStyle"
+            <Style x:Key="LibraryExpandCollapseToggleStyle"
                    TargetType="{x:Type ToggleButton}">
                 <Setter Property="Focusable"
                         Value="False" />
@@ -477,7 +477,8 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}">
+            <Style x:Key="LibraryTreeViewItem"
+                   TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded"
                         Value="{Binding IsExpanded, Mode=OneWay}" />
                 <Setter Property="Width">
@@ -498,7 +499,7 @@
                                 </Button.Template>
                                 <Border Name="Bd"
                                         BorderThickness="0"
-                                        BorderBrush="Transparent">                                   
+                                        BorderBrush="Transparent">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -528,7 +529,7 @@
                                                           x:Name="Expander"
                                                           Background="Transparent"
                                                           IsHitTestVisible="False"
-                                                          Style="{StaticResource ExpandCollapseToggleStyle}"
+                                                          Style="{StaticResource LibraryExpandCollapseToggleStyle}"
                                                           ClickMode="Press"
                                                           IsChecked="{Binding IsExpanded, Mode=OneWay}" />
 
@@ -568,7 +569,7 @@
                                                             Value="#2F2F2F" />
                                                     <Setter Property="Padding"
                                                             Value="0,0,0,10" />
-                                                </DataTrigger>                                               
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
@@ -764,6 +765,7 @@
                 <TreeView Grid.Row="0"
                           ItemsSource="{Binding Model.BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
+                          ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                           Name="CategoryTreeView">
                     <TreeView.Template>
                         <ControlTemplate>
@@ -849,7 +851,7 @@
                             </Setter>
                         </Style>
 
-                        <Style x:Key="ExpandCollapseToggleStyle"
+                        <Style x:Key="AddonsExpandCollapseToggleStyle"
                                TargetType="{x:Type ToggleButton}">
                             <Setter Property="Focusable"
                                     Value="False" />
@@ -938,7 +940,8 @@
                             </Setter>
                         </Style>
 
-                        <Style TargetType="{x:Type TreeViewItem}"
+                        <Style x:Key="AddonsTreeViewItem"
+                               TargetType="{x:Type TreeViewItem}"
                                d:DataContext="{d:DesignInstance search:BrowserItem }">
                             <Setter Property="Focusable"
                                     Value="False"></Setter>
@@ -995,7 +998,7 @@
                                                                           x:Name="Expander"
                                                                           Background="Transparent"
                                                                           IsHitTestVisible="False"
-                                                                          Style="{StaticResource ExpandCollapseToggleStyle}"
+                                                                          Style="{StaticResource AddonsExpandCollapseToggleStyle}"
                                                                           ClickMode="Press"
                                                                           IsChecked="{Binding IsExpanded, Mode=OneWay}" />
                                                             <Border Margin="5,0,5,0"
@@ -1100,10 +1103,6 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-
-                        <DataTemplate x:Key="ContextMenuStyle">
-                            <TextBlock  Text="{Binding Key}" />
-                        </DataTemplate>
                     </ScrollViewer.Resources>
                     <TreeView Name="AddonsTreeView"
                               ItemsSource="{Binding Path=Model.AddonRootCategories}"
@@ -1112,7 +1111,8 @@
                               Grid.Column="0"
                               Grid.ColumnSpan="1"
                               VirtualizingStackPanel.IsVirtualizing="True"
-                              VirtualizingStackPanel.VirtualizationMode="Recycling">
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              ItemContainerStyle="{StaticResource AddonsTreeViewItem}">
                         <TreeView.Template>
                             <ControlTemplate>
                                 <ItemsPresenter />
