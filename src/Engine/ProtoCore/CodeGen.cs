@@ -1755,6 +1755,7 @@ namespace ProtoCore
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildString(0);
+            // Push default replication guide.  
             if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
                 instr.op3 = StackValue.BuildReplicationGuide(0);
