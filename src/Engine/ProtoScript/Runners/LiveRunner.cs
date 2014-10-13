@@ -408,10 +408,7 @@ namespace ProtoScript.Runners
 
                 // Handle modified statements
                 var modifiedASTList = GetModifiedNodes(st);
-                if (null != modifiedASTList && modifiedASTList.Count > 0)
-                {
-                    deltaAstList.AddRange(modifiedASTList);
-                }
+                deltaAstList.AddRange(modifiedASTList);
 
                 var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
                                                      .Select(n => (n as BinaryExpressionNode).exprUID);
@@ -487,7 +484,7 @@ namespace ProtoScript.Runners
                     }
                 }
 
-                foreach (AssociativeNode node in deltaAstList)
+                foreach (AssociativeNode node in modifiedASTList)
                 {
                     var bnode = node as BinaryExpressionNode;
                     if (bnode != null)
