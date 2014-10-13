@@ -124,9 +124,16 @@ namespace Dynamo.Applications
 
 #if ENABLE_DYNAMO_SCHEDULER
 
-        internal static RevitDynamoModel RevitDynamoModel
+        public static RevitDynamoModel RevitDynamoModel
         {
-            get { return revitDynamoModel; }
+            get
+            {
+                return revitDynamoModel;
+            }
+            set
+            {
+                revitDynamoModel = value;
+            }
         }
 
         /// <summary>
