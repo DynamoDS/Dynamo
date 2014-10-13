@@ -7,13 +7,10 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
 using Dynamo.Applications;
-<<<<<<< HEAD
-=======
 using Dynamo.Applications.Models;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
->>>>>>> f7c7fbd15f7cd64c1c01f148e034c8631a01e0a0
 using Dynamo.Applications.Models;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
