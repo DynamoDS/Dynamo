@@ -553,6 +553,7 @@ namespace ProtoCore.Lang
             HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
             var arguments = heapElem.VisibleItems.ToList();
 
+            bool removeFirstArgument = false;
             if (arguments.Count > 0)
             {
                 bool isReplicatingCall = arguments[0].IsDynamic && lhs.IsArray;
@@ -565,6 +566,7 @@ namespace ProtoCore.Lang
                 {
                     context.IsReplicating = false;
                     arguments.RemoveAt(0);
+                    removeFirstArgument = true;
                 }
             }
 
@@ -577,7 +579,10 @@ namespace ProtoCore.Lang
                 replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
-            if (!context.IsReplicating && core.Options.TempReplicationGuideEmptyFlag)
+            // When TempReplicationGuideEmptyFlag is set, we always put replication
+            // guide for the lhs variable. So if it is not an array, we should
+            // clear its replication guide from the core. 
+            if (removeFirstArgument && core.Options.TempReplicationGuideEmptyFlag)
             {
                 int count = core.replicationGuides.Count;
                 Validity.Assert(count > 0);
