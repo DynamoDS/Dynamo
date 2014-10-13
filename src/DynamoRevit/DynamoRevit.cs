@@ -207,7 +207,7 @@ namespace Dynamo.Applications
                         new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings)
                 });
 
-            viewModel.RequestAuthentication +=
+            revitDynamoModel.PackageManagerClient.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
 #if ENABLE_DYNAMO_SCHEDULER
