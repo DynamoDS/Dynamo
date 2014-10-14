@@ -2899,6 +2899,48 @@ namespace DynamoCoreUITests
             AssertPreviewValue("91fb442c-8e17-4a2f-8b0b-cf520b543c18", new object [] { 43} );
         }
 
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4710()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4710
+
+            RunCommandsFromFile("Defect_MAGN_4710.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("1ded7b84-8cba-482b-81fd-6979650bb2a1") as CodeBlockNodeModel;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and Warning should be there on CBN.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(2, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and now there should be warning.
+                    Assert.AreNotEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+
+            });
+
+        }
+
         #endregion
 
         #region Tests moved from FScheme
