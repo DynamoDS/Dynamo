@@ -22,9 +22,9 @@ namespace Dynamo.Utilities
     /// <summary>
     /// A simple class to keep track of custom nodes.
     /// </summary>
-    public class CustomNodeInfo
+    public struct CustomNodeInfo
     {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path) : this()
         {
             Guid = guid;
             Name = name;
@@ -340,9 +340,9 @@ namespace Dynamo.Utilities
                 return null;
             }
 
-            //TODO(Steve): Fire an event that says the Defintion changed, when CustomNodeManager creates instances have them subscribe to this event, and do the below logic in the handler.
+            //TODO(Steve): Keep track of all created instances directly (makes sense since CustomNodeManager will handle instance creation).
             var customNodeInstances =
-                    dynamoModel
+                dynamoModel
                     .AllNodes
                     .OfType<Function>()
                     .Where(f => f.Definition != null &&
@@ -415,7 +415,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Get the guid from a name.
         /// </summary>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        /// <param name="name"></param>
         /// <returns>False if the name doesn't exist in this</returns>
         public Guid GetGuidFromName(string name)
         {
@@ -427,7 +427,6 @@ namespace Dynamo.Utilities
         ///     And add the compiled node to the enviro.
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
         public bool GetDefinition(string name, out CustomNodeDefinition result)
         {
             if (!Contains(name))
@@ -445,8 +444,8 @@ namespace Dynamo.Utilities
         ///     And add the compiled node to the enviro.
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
-        /// <param name="environment">The environment from which to get the </param>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        /// <param name="result"></param>
         public bool GetDefinition(Guid guid, out CustomNodeDefinition result)
         {
             if (!Contains(guid))
@@ -643,7 +642,11 @@ namespace Dynamo.Utilities
 
                 Version fileVersion = MigrationManager.VersionFromString(version);
 
+                //TODO(Steve): This should really be static somewhere
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
+
+                // TODO(Steve): Refactor to remove dialogs. Results of various dialogs should be passed to this method.
+                #region Migration
 
                 if (fileVersion > currentVersion)
                 {
@@ -673,12 +676,14 @@ namespace Dynamo.Utilities
                             "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
-                        dynamoModel.Logger.Log(message);
+                        Log(message);
                     }
 
                     MigrationManager.Instance.ProcessWorkspaceMigrations(this.dynamoModel, xmlDoc, fileVersion);
                     MigrationManager.Instance.ProcessNodesInWorkspace(this.dynamoModel, xmlDoc, fileVersion);
                 }
+
+                #endregion
 
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
@@ -693,6 +698,7 @@ namespace Dynamo.Utilities
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
                 Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
+                //TODO(Steve): Parse the file, construct workspace at the end.
                 var ws = new CustomNodeWorkspaceModel(funName, category.Length > 0
                     ? category
                     : "Custom Nodes", description, cx, cy)
@@ -928,8 +934,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                dynamoModel.WriteToLog("There was an error opening the workbench.");
-                dynamoModel.WriteToLog(ex);
+                Log("There was an error opening the workbench.");
+                Log(ex);
 
                 if (DynamoModel.IsTestMode)
                     throw ex; // Rethrow for NUnit.
@@ -965,11 +971,12 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        internal CustomNodeInfo GetNodeInfo(Guid x)
+        internal CustomNodeInfo? GetNodeInfo(Guid x)
         {
             CustomNodeInfo info;
-            NodeInfos.TryGetValue(x, out info);
-            return info;
+            if (NodeInfos.TryGetValue(x, out info))
+                return info;
+            return null;
         }
 
         internal CustomNodeInfo GetNodeInfo(string name)
@@ -989,7 +996,7 @@ namespace Dynamo.Utilities
         /// <returns> Returns false if it fails.</returns>
         internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
         {
-            var nodeInfo = GetNodeInfo(guid);
+            CustomNodeInfo? nodeInfo = GetNodeInfo(guid);
 
             if (nodeInfo == null) return false;
 
@@ -1005,16 +1012,11 @@ namespace Dynamo.Utilities
                                x.NickName = newName;
                            });
 
-            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
             nodeInfo.Description = newDescription;
 
             SetNodeInfo(nodeInfo);
-
-            dynamoModel.SearchModel.Add(nodeInfo);
-            dynamoModel.SearchModel.OnRequestSync();
 
             return true;
         }
@@ -1022,11 +1024,9 @@ namespace Dynamo.Utilities
         // this is a terrible hack
         internal ObservableDictionary<string, Guid> GetAllNodeNames()
         {
-            var dict = new ObservableDictionary<string, Guid>();
-            NodeInfos.Select(info => new KeyValuePair<string, Guid>(info.Value.Name, info.Value.Guid))
-                .ToList()
-                .ForEach(dict.Add);
-            return dict;
+            return
+                new ObservableDictionary<string, Guid>(
+                    NodeInfos.Values.ToDictionary(x => x.Name, x => x.Guid));
         }
 
     }

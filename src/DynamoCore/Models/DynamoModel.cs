@@ -1,4 +1,6 @@
-﻿using DSNodeServices;
+﻿using System.Security;
+
+using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -847,6 +849,19 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
+
+        /// <summary>
+        ///     TODO
+        /// </summary>
+        public void UpdateCustomNode(
+            Guid id, string name = null, string category = null, string description = null,
+            string path = null)
+        {
+            CustomNodeManager.Refactor(info);
+            SearchModel.RemoveNodeAndEmptyParentCategory(info.Guid);
+            SearchModel.Add(info);
+            SearchModel.OnRequestSync();
+        }
 
         [Obsolete("Remove concept of hiding workspaces alltogether", true)]
         public void HideWorkspace(WorkspaceModel workspace)
