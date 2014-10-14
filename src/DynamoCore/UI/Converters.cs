@@ -6,6 +6,10 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Linq;
+
+
+using Dynamo.Nodes.Search;
 using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
@@ -1590,18 +1594,236 @@ namespace Dynamo.Controls
         }
     }
 
-    public class StringLengthToVisibilityConverter : IValueConverter
+    public class FullyQualifiedNameToDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (string.IsNullOrEmpty((string)value))
+            string text = value.ToString();
+            string typeOfInput = parameter as string;
+            switch (typeOfInput)
+            {
+                case "ToolTip":
+                    if (text.Length > Configurations.MaxLengthTooltipCode)
+                        return text.Insert(text.LastIndexOf(".") + 1, "\n");
+                    return text;
+                case "ClassButton":
+                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
+                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
+                    {
+                        if (text.IndexOf(" ") != -1)
+                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
+                            // If title is too long, we can cat it.
+                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
+                                Configurations.TwoDots;
+                    }
+                    return text;
+
+                // Maybe, later we need more string converters.
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter is used to format the display string for both input and output 
+    /// parameters on the "TooltipWindow.xaml". If "parameter" here is "inputParam", 
+    /// then this converter is invoked by input parameter related binding. A colon 
+    /// character will be prefixed to the parameter type (e.g. "value : double") only 
+    /// for input parameter (since an output of a function does not have a name). Also,
+    /// the colon will only appended when there is actually an input parameter (for 
+    /// cases without input parameter, only "none" string will be displayed so there is 
+    /// no point in prefixing a colon character (e.g. we don't want ": none").
+    public class InOutParamTypeConverter : IValueConverter
+    {
+        private static readonly string NoneString = "none";
+        private static readonly string ColonString = ":";
+        private static readonly string SpaceString = " ";
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool shouldPrefixColon = false;
+
+            if (parameter != null)
+                shouldPrefixColon = ((parameter as string).Equals("inputParam"));
+
+            var input = value as string;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return NoneString;
+
+            if (shouldPrefixColon)
+                return String.Concat(ColonString, SpaceString, input);
+            else
+                return input;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter provides BrowserRootElement or ClassInformation
+    /// instance depending on value of IsPlaceHolder property. 
+    /// BrowserRootElement is needed to show subclasses in LibraryView.
+    /// ClassInformation is needed to show member list of root category
+    /// which doesn't have any subclasses.
+    public class BrowserRootElementToSubclassesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            BrowserRootElement rootElement = value as BrowserRootElement;
+
+            if (rootElement != null && rootElement.IsPlaceholder)
+                return rootElement.ClassDetails;
+
+            return rootElement;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
+    /// To know for which TextBlock the converter works the parameter used.
+    /// Converter is used on StandardPanel.
+    public class DisplayModeToTextDecorationsConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var displayMode = (ClassInformation.DisplayMode)value;
+
+            if (parameter == null)
+                return 0;
+
+            if (displayMode.ToString() == parameter.ToString())
+                return 1;
+
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
                 return Visibility.Visible;
+
             return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotImplementedException();
+        }
+    }
+
+    // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
+    // in contrast to ClassObject. 
+    public class ElementTypeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserInternalElement) return true;
+            return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MultiBoolToVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool allTrue = true;
+            foreach (var value in values)
+                // If at least one will be false, the result will be false.
+                allTrue = allTrue && ((bool)value);
+
+            return allTrue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(
+            object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullValueToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry.Tesselation -> Margin="10,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="20,0,0,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var incomingString = value as string;
+
+            if (string.IsNullOrEmpty(incomingString)) return new Thickness(0, 0, 0, 0);
+
+            var numberOfPoints = incomingString.Count(x => x == '.');
+            return new Thickness(10 * numberOfPoints, 0, 0, 0);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    //Converter that will be used, if number of found classes equals 0. Then classes will be collapsed.
+    public class IntToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value > 0)
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

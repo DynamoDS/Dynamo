@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Dynamo.Models;
-
 using String = System.String;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -13,7 +11,6 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        internal readonly string FullName ;
 
         #region Properties
 
@@ -37,12 +34,50 @@ namespace Dynamo.Search.SearchElements
         private string _name;
         public override string Name { get { return _name; } }
 
+        private string _fullName;
+        public string FullName { get { return _fullName; } }
+
         /// <summary>
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
         private string _description;
         public override string Description { get { return _description; } }
+
+        /// <summary>
+        /// Group property </summary>
+        /// <value>
+        /// Group to which Node belongs to</value>
+        private SearchElementGroup _group;
+        public SearchElementGroup Group { get { return _group; } }
+
+        /// <summary>
+        /// Property specifies how Node was created.
+        /// </summary>
+        public SearchModel.ElementType ElementType { get; set; }
+
+        private List<Tuple<string, string>> _inputParameters;
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get
+            {
+                if (_inputParameters == null)
+                {
+                    _inputParameters = GenerateInputParameters();
+                }
+                return _inputParameters;
+            }
+        }
+
+        private string _outputParameters;
+
+        public string OutputParameters
+        {
+            get
+            {
+                return GenerateOutputParameters();
+            }
+        }
 
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
@@ -88,7 +123,11 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
+        public NodeSearchElement(string name, string description,
+                                 IEnumerable<string> tags, SearchElementGroup group,
+                                 string fullName = "", string _assembly = "",
+                                 IEnumerable<Tuple<string, string>> inputParameters = null,
+                                 string outputParameters = "")
         {
             this.Node = null;
             this._name = name;
@@ -96,12 +135,19 @@ namespace Dynamo.Search.SearchElements
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
             this._description = description;
-            this.FullName = fullName;
+            this._fullName = fullName;
+            this._group = group;
+            if (inputParameters != null)
+                this._inputParameters = inputParameters.ToList();
+            this._outputParameters = outputParameters;
+            this.Assembly = _assembly;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(),
+                                          this._group, this._fullName, this.Assembly,
+                                          this._inputParameters, this._outputParameters);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -140,6 +186,34 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
-    }
 
+        /// <summary>
+        /// This method is called to obtain the resource name for this NodeSearchElement.
+        /// Typical NodeSearchElement includes 'ColorRange' or 'File.Directory'. Since these 
+        /// elements do not have overloads, the parameter 'disambiguate' is not checked.
+        /// </summary>
+        protected override string GetResourceName(ResourceType resourceType, bool disambiguate = false)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.SmallIcon: return this._fullName;
+                case ResourceType.LargeIcon: return this._fullName;
+            }
+
+            throw new InvalidOperationException("Unhandled resourceType");
+        }
+
+        protected virtual string GenerateOutputParameters()
+        {
+            return _outputParameters;
+        }
+
+
+        protected virtual List<Tuple<string, string>> GenerateInputParameters()
+        {
+            List<Tuple<string, string>> inputPar = new List<Tuple<string, string>>();
+            inputPar.Add(Tuple.Create("", "none"));
+            return inputPar;
+        }
+    }
 }

@@ -78,6 +78,15 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
+            if (parameters.Any())
+            {
+                InputParameters = parameters.Select(
+                    par =>
+                    {
+                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
+                    }
+                    );
+            }
 
             ReturnType = returnType == null ? "var[]..[]" : returnType.Split('.').Last();
             Type = type;
@@ -141,6 +150,14 @@ namespace Dynamo.DSEngine
             get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
 
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get;
+            private set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>

@@ -1,0 +1,299 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.StandardPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             Background="Transparent"
+             MinWidth="100">
+    <UserControl.Resources>
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
+        <controls:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
+        <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                          TrueBrush="#333333"
+                                          FalseBrush="#272727" />
+
+        <Style TargetType="{x:Type ScrollViewer}">
+            <Setter Property="HorizontalScrollBarVisibility"
+                    Value="Hidden" />
+            <EventSetter Event="PreviewMouseWheel"
+                         Handler="OnShiftMouseWheel" />
+        </Style>
+
+        <Style x:Key="ListBoxItemStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Height"
+                    Value="40" />
+            <Setter Property="ScrollViewer.CanContentScroll"
+                    Value="True" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver"
+                                               Value="True" />
+                                    <Condition Property="IsSelected"
+                                               Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background"
+                                        Value="#444444" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonDown"
+                         Handler="OnMouseLeftButtonDown" />
+            <EventSetter Event="MouseEnter"
+                         Handler="OnListBoxItemMouseEnter" />
+            <EventSetter Event="MouseLeave"
+                         Handler="OnPopupMouseLeave" />
+        </Style>
+        <Style x:Key="STextButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid x:Name="container">
+                            <TextBlock x:Name="text"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Foreground="#DDD"
+                                       FontSize="20px">
+                                <TextBlock.Text>
+                                    <Binding Path="Content"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver"
+                                     Value="true">
+                                <Setter TargetName="container"
+                                        Property="Background"
+                                        Value="#2F2F2F" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}"
+               x:Key="secondaryMembersTextBlock">
+            <Setter Property="Foreground"
+                    Value="#777777" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="#999999" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border Padding="0,10,0,10">
+        <Border.Visibility>
+            <Binding Path="ClassDetailsVisibility"
+                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+        </Border.Visibility>
+        <Border.Background>
+            <Binding Path="IsRootCategoryDetails"
+                     Converter="{StaticResource BooleanToBrushConverter}" />
+        </Border.Background>
+        <Grid DataContextChanged="GridDataContextChanged">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Padding="0,0,0,10">
+                <TextBlock x:Name="primaryHeader"
+                           Foreground="#777777"
+                           VerticalAlignment="Center"
+                           FontSize="9"
+                           Margin="16,0,0,0"
+                           Text="{Binding PrimaryHeaderText}">
+                    <TextBlock.Visibility>
+                        <Binding Path="IsPrimaryHeaderVisible"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    </TextBlock.Visibility>
+                    <TextBlock.TextDecorations>
+                        <TextDecoration Location="Underline"
+                                        PenOffset="2"
+                                        PenOffsetUnit="Pixel" />
+                    </TextBlock.TextDecorations>
+                </TextBlock>
+            </Border>
+            <ListBox x:Name="primaryMembers"
+                     Grid.Row="1"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image HorizontalAlignment="Left"
+                                   Height="32"
+                                   Margin="16,0,16,0"
+                                   VerticalAlignment="Center"
+                                   Width="32"
+                                   Source="{Binding SmallIcon}" />
+
+                            <TextBlock HorizontalAlignment="Left"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Top"
+                                       Margin="5,10,0,0"
+                                       Foreground="#CCCCCC"
+                                       FontSize="13" />
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Border Padding="0,10,0,10"
+                    Grid.Row="2">
+                <Border.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+                <StackPanel Orientation="Horizontal"
+                            Margin="16,0,0,0">
+                    <TextBlock x:Name="secondaryHeaderLeft"
+                               Tag="Query"
+                               PreviewMouseDown="OnHeaderMouseDown"
+                               VerticalAlignment="Center"
+                               FontSize="9"
+                               Margin="0,0,13.5,0"
+                               Style="{StaticResource secondaryMembersTextBlock}"
+                               Text="{Binding SecondaryHeaderLeftText}">
+                        <TextBlock.Visibility>
+                            <Binding Path="IsSecondaryHeaderLeftVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </TextBlock.Visibility>
+                        <TextBlock.TextDecorations>
+                            <TextDecoration PenOffset="2"
+                                            PenOffsetUnit="Pixel">
+                                <TextDecoration.Pen>
+                                    <Pen Brush="#777777">
+                                        <Pen.Thickness>
+                                            <Binding Path="CurrentDisplayMode"
+                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                     ConverterParameter="Query" />
+                                        </Pen.Thickness>
+                                    </Pen>
+                                </TextDecoration.Pen>
+                            </TextDecoration>
+                        </TextBlock.TextDecorations>
+                    </TextBlock>
+                    <Ellipse Fill="#777777"
+                             Height="3"
+                             Width="3"
+                             Margin="0,0,13.5,0">
+                        <Ellipse.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                <Binding Path="IsSecondaryHeaderRightVisible" />
+                                <Binding Path="IsSecondaryHeaderLeftVisible" />
+                            </MultiBinding> 
+                        </Ellipse.Visibility>
+                    </Ellipse>
+                    <TextBlock x:Name="secondaryHeaderRight"
+                               Tag="Action"
+                               PreviewMouseDown="OnHeaderMouseDown"
+                               VerticalAlignment="Center"
+                               FontSize="9"
+                               Style="{StaticResource secondaryMembersTextBlock}"
+                               Text="{Binding SecondaryHeaderRightText}">
+                        <TextBlock.Visibility>
+                            <Binding Path="IsSecondaryHeaderRightVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </TextBlock.Visibility>
+                        <TextBlock.TextDecorations>
+                            <TextDecoration PenOffset="2"
+                                            PenOffsetUnit="Pixel">
+                                <TextDecoration.Pen>
+                                    <Pen Brush="#777777">
+                                        <Pen.Thickness>
+                                            <Binding Path="CurrentDisplayMode"
+                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                     ConverterParameter="Action" />
+                                        </Pen.Thickness>
+                                    </Pen>
+                                </TextDecoration.Pen>
+                            </TextDecoration>
+                        </TextBlock.TextDecorations>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <ListBox x:Name="secondaryMembers"
+                     Grid.Row="3"
+                     Grid.ColumnSpan="2"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image HorizontalAlignment="Left"
+                                   Height="32"
+                                   Margin="16,0,16,0"
+                                   VerticalAlignment="Center"
+                                   Width="32"
+                                   Source="{Binding SmallIcon}" />
+
+                            <TextBlock HorizontalAlignment="Left"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Top"
+                                       Margin="5,10,0,0"
+                                       Foreground="#CCCCCC"
+                                       FontSize="13" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Row="4"
+                    Height="32"
+                    Style="{StaticResource STextButton}"
+                    Click="OnMoreButtonClick"
+                    Content="...">
+                <Button.Visibility>
+                    <Binding Path="IsMoreButtonVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Button.Visibility>
+            </Button>
+            <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                            AttachmentSide="Right"
+                                            StaysOpen="True"
+                                            AllowsTransparency="True"
+                                            MouseLeave="OnPopupMouseLeave">
+                <uicontrols:LibraryToolTipPopup.IsOpen>
+                    <Binding ElementName="libraryToolTipPopup"
+                             Path="DataContext"
+                             Mode="OneWay"
+                             Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                </uicontrols:LibraryToolTipPopup.IsOpen>
+            </uicontrols:LibraryToolTipPopup>
+        </Grid>
+    </Border>
+</UserControl>

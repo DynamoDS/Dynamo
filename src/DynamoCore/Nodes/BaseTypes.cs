@@ -15,6 +15,9 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
 using System.Web;
+using System.Text;
+using Dynamo.Library;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Nodes
 {
@@ -138,6 +141,59 @@ namespace Dynamo.Nodes
             {
                 return value.Remove(desiredLength - 1) + "...";
             }
+        }
+
+        /// <summary>
+        /// This method returns a name for the icon based on type of this icon.
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <returns></returns>
+        public static string TypedParametersToString(FunctionDescriptor descriptor)
+        {
+            var builder = new StringBuilder();
+
+            foreach (TypedParameter tp in descriptor.Parameters)
+            {
+                string typeOfParameter = tp.Type;
+
+                // Check if there simbols like "[]".
+                // And remove them, according how much we found.
+                // e.g. bool[][] -> bool2
+                int squareBrackets = typeOfParameter.Count(x => x == '[');
+                if (squareBrackets > 0)
+                {
+                    if (typeOfParameter.Contains("[]..[]"))
+                    {
+                        // Remove square brackets.
+                        typeOfParameter = typeOfParameter.Replace("[]..[]", "");
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, "N");
+                    }
+                    else
+                    {
+                        // Remove square brackets.
+                        typeOfParameter =
+                            typeOfParameter.Remove(typeOfParameter.Length - squareBrackets * 2);
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
+                    }
+                }
+
+                if (builder.Length > 0)
+                    builder.Append("-");
+
+                typeOfParameter = typeOfParameter.Split('.').Last();
+                builder.Append(typeOfParameter);
+            }
+
+            string overridePrefix = Nodes.Utilities.NormalizeAsResourceName(descriptor.QualifiedName);
+            // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+            // Should be used FunctionDescriptor.Name property instead.
+            // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+            if (overridePrefix != descriptor.QualifiedName)
+                overridePrefix += Nodes.Utilities.NormalizeAsResourceName(descriptor.Name);
+
+            return overridePrefix + "." + builder.ToString();
         }
 
         /// <summary>
@@ -621,6 +677,59 @@ namespace Dynamo.Nodes
             }
 
             return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
+        }
+
+        /// <summary>
+        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// </summary>
+        /// <param name="original">incoming string</param>
+        internal static string InsertSpacesToString(string original)
+        {
+            if (string.IsNullOrWhiteSpace(original))
+                return "";
+            StringBuilder newText = new StringBuilder(original.Length * 2);
+            newText.Append(original[0]);
+            for (int i = 1; i < original.Length; i++)
+            {
+                // We also have to check was previous character capital letter, e.g. Import From CSV
+                // In future there won't be "Method(parA : int)",
+                // TODO: this additional check Equals('(') will be removed.
+                var curr = original[i];
+                var prev = original[i - 1];
+                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
+                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                {
+                    newText.Append(" ");
+                }
+                newText.Append(original[i]);
+            }
+            return newText.ToString();
+        }
+        /// <summary>
+        ///  Remove "bad" characters for resource name, like "%","+",">" etc.
+        /// </summary>
+        internal static string NormalizeAsResourceName(string resource)
+        {
+            if (string.IsNullOrWhiteSpace(resource))
+                return "";
+
+            StringBuilder newText = new StringBuilder(resource.Length);
+
+            // Dots and minus we add, they are for overloaded methods.
+            var query = resource.Where(
+                c =>
+                {
+                    if (c == '.' || (c == '-'))
+                        return true;
+
+                    return Char.IsLetterOrDigit(c);
+                });
+
+            foreach (var c in query)
+                newText.Append(c);
+
+            var result = newText.ToString();
+            return ((result == "-") ? string.Empty : result);
         }
     }
 

@@ -8,6 +8,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -58,6 +59,35 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
+                RaisePropertyChanged("CurrentMode");
+            }
+        }
+
+        private SearchMemberGroup topResult;
+        public SearchMemberGroup TopResult
+        {
+            get { return topResult; }
+            set
+            {
+                topResult = value;
+                RaisePropertyChanged("TopResult");
+            }
+        }
+
+        /// <summary>
+        ///     SearchIconAlignment property
+        /// </summary>
+        /// <value>
+        ///     This is used for aligment search icon and text.
+        /// </value>
+        private System.Windows.HorizontalAlignment searchIconAlignment;
+        public System.Windows.HorizontalAlignment SearchIconAlignment
+        {
+            get { return searchIconAlignment; }
+            set
+            {
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
             }
         }
 
@@ -102,6 +132,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public enum ViewMode { LibraryView, LibrarySearchView };
+
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
+        public ViewMode CurrentMode
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                    ViewMode.LibrarySearchView;
+            }
+        }
+
         /// <summary>
         ///     SearchResults property
         /// </summary>
@@ -109,11 +153,6 @@ namespace Dynamo.ViewModels
         ///     This property is observed by SearchView to see the search results
         /// </value>
         public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
-
-        /// <summary>
-        /// A category representing the "Top Result"
-        /// </summary>
-        private BrowserRootElement topResult;
 
         /// <summary>
         ///     An ordered list representing all of the visible items in the browser.
@@ -149,9 +188,8 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
-            topResult = this.Model.AddRootCategoryToStart("Top Result");
-            
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
         }
@@ -196,19 +234,18 @@ namespace Dynamo.ViewModels
 
             //sw.Start();
 
-            var result = this.Model.Search(query).ToList();
+            this.Model.Search(query);
+            this.SetTopResult();
+            
 
             //sw.Stop();
-            
+
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
-            // Remove old execute handler from old top result
-            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
-            {
-                var oldTopResult = topResult.Items.First() as NodeSearchElement;
-                oldTopResult.Executed -= this.ExecuteElement;
-            }
-
+            // Next code do not need for now. 
+            // But logic should be saved to restore original behavior for new design.
+            // Code will be removed as soon as Search functionality fully implemented. 
+#if false
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
             {
@@ -227,8 +264,6 @@ namespace Dynamo.ViewModels
                     ele.SetVisibilityToLeaves(true);
                 }
 
-                // hide the top result
-                topResult.Visibility = false;
                 return;
             }
 
@@ -237,26 +272,6 @@ namespace Dynamo.ViewModels
             {
                 root.CollapseToLeaves();
                 root.SetVisibilityToLeaves(false);
-            }
-
-            // if there are any results, add the top result 
-            if (result.Any() && result.ElementAt(0) is NodeSearchElement)
-            {
-                topResult.Items.Clear();
-
-                var firstRes = (result.ElementAt(0) as NodeSearchElement);
-
-                var copy = firstRes.Copy();
-                copy.Executed += this.ExecuteElement;
-
-                var catName = MakeShortCategoryString(firstRes.FullCategoryName);
-
-                var breadCrumb = new BrowserInternalElement(catName, topResult);
-                breadCrumb.AddChild(copy);
-                topResult.AddChild(breadCrumb);
-
-                topResult.SetVisibilityToLeaves(true);
-                copy.ExpandToRoot();
             }
 
             // for all of the other results, show them in their category
@@ -284,17 +299,17 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
-
+#endif
         }
 
-        private static string MakeShortCategoryString(string fullCategoryName)
+        internal static string ShortenCategoryName(string fullCategoryName)
         {
-            var catName = fullCategoryName.Replace(".", " > ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -305,13 +320,31 @@ namespace Dynamo.ViewModels
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" > ", s);
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
                 }
             }
 
             return catName;
         }
 
+        private void SetTopResult()
+        {
+            if (!Model.SearchRootCategories.Any())
+            {
+                TopResult = null;
+                return;
+            }
+
+            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
+            var firstMemberGroup = Model.SearchRootCategories.First().
+                MemberGroups.First();
+
+            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.Name);
+            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+
+            TopResult = topMemberGroup;
+        }
+        
         #endregion
 
         #region Selection

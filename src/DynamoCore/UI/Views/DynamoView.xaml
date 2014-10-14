@@ -171,10 +171,13 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="500"/>
+            <ColumnDefinition Width="1*"
+                              MaxWidth="500"
+                              MinWidth="308"
+                              Name="LibraryViewColumn"/>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
@@ -1069,7 +1072,7 @@
                     Margin="0,120,0,0"
                     Visibility="Hidden">
             <Grid Background="#222222" Cursor="Hand">
-                <Button Click="Button_Click" Template="{DynamicResource BackgroundButton}">
+                <Button Click="OnCollapsedSidebarClick" Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
                             <Border Name="border" BorderThickness="0" BorderBrush="Black" VerticalAlignment="Stretch" Padding="5,0,5,0">

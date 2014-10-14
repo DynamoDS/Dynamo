@@ -23,7 +23,7 @@ namespace Dynamo.Search.SearchElements
 
         public override string Type { get { return "Custom Node"; } }
 
-        public CustomNodeSearchElement(CustomNodeInfo info) : base(info.Name, info.Description, new List<string>())
+        public CustomNodeSearchElement(CustomNodeInfo info, SearchElementGroup group) : base(info.Name, info.Description, new List<string>(), group)
         {
             this.Node = null;
             this.FullCategoryName = info.Category;
@@ -35,7 +35,7 @@ namespace Dynamo.Search.SearchElements
         {
             return
                 new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-                                                               this.Description, this.Path));
+                                                               this.Description, this.Path), Group);
         }
 
         public override bool Equals(object obj)

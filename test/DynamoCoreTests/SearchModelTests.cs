@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void Init()
         {
-           search = new SearchModel();
+            search = new SearchModel();
         }
 
         #region Refactoring
@@ -99,12 +99,12 @@ namespace Dynamo.Tests
             var results1 = search.Search(nodeName).ToList();
 
             // description is updated
-            Assert.AreEqual(1,results1.Count());
+            Assert.AreEqual(1, results1.Count());
             var res2 = results1[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
             var node2 = res2 as CustomNodeSearchElement;
-            Assert.AreEqual( guid1, node2.Guid );
-            Assert.AreEqual( newDescription, node2.Description);
+            Assert.AreEqual(guid1, node2.Guid);
+            Assert.AreEqual(newDescription, node2.Description);
 
         }
 
@@ -208,7 +208,7 @@ namespace Dynamo.Tests
         {
             const string catName = "Category";
             var cat = search.AddCategory(catName);
-            cat.Items.Add(new BrowserInternalElement("Child",cat));
+            cat.Items.Add(new BrowserInternalElement("Child", cat));
             Assert.IsNotNull(search.TryGetSubCategory(cat, "Child"));
         }
 
@@ -376,11 +376,11 @@ namespace Dynamo.Tests
         {
             var split = SearchModel.SplitCategoryName("this is a root category");
             Assert.AreEqual(1, split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and");
             Assert.AreEqual(2, split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub");
@@ -397,8 +397,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(" with noodles", split[3]);
 
             split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1,split.Count());
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual(1, split.Count());
+            Assert.AreEqual("this is a root category", split[0]);
         }
 
         [Test]
@@ -557,6 +557,36 @@ namespace Dynamo.Tests
             var catName = "TheCat.TheInnerCat";
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
+
+        [Test]
+        public void ProcessNodeCategoryTests()
+        {
+            SearchElementGroup group = SearchElementGroup.None;
+            string category = null;
+            Assert.AreEqual(null, search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "";
+            Assert.AreEqual("", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "Builtin Functions";
+            Assert.AreEqual("Builtin Functions", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.Evaluate";
+            Assert.AreEqual("Core.Evaluate", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.List.Create";
+            Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Create, group);
+        }
+
         #endregion
 
         #region Add Categories
@@ -577,19 +607,35 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void AddingANestedCategoryMultipleTimesDoeNotDuplicateParentCategories()
+        public void AddingCategoryWithNestedClasses()
         {
-            const string catName = "Category.Child";
+            const string class1 = "RootCategory.Namespace.Class1";
+            const string class2 = "RootCategory.Namespace.Class2";
+            search.AddCategory(class1);
+            search.AddCategory(class2);
 
-            for (var i = 0; i < 10; i++)
-            {
-                search.AddCategory(catName);
-            }
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = (BrowserInternalElement)search.GetCategoryByName("Category.Child");
-            Assert.NotNull(nestedCat);
-            Assert.AreEqual(1, nestedCat.Parent.Items.Count());
+            Assert.IsTrue(search.ContainsCategory("RootCategory.Namespace"));
+            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "RootCategory"));
+
+            Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class1"));
+            Assert.IsTrue(search.ContainsClass("RootCategory.Namespace", "Class2"));
+
+            // Try to mix nested class and usual class.
+            // It will be next structure:
+            // + RootCategory
+            //   + UsualClass
+            //   + Namespace
+            //     + Class1
+            //     + Class2
+
+            const string usualClass = "RootCategory.UsualClass";
+            search.AddCategory(usualClass);
+            Assert.IsTrue(search.ContainsClass("RootCategory", "UsualClass"));
+
+            // Ensure, that 1st element is always set of usual classes.
+            var cat = search.BrowserRootCategories.FirstOrDefault(x => x.Name == "RootCategory");
+            Assert.IsTrue(cat.Items[0] is BrowserInternalElementForClasses);
+
         }
 
         [Test]
@@ -600,9 +646,9 @@ namespace Dynamo.Tests
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
-            Assert.Contains( leafCat, root.Items );
+            Assert.Contains(leafCat, root.Items);
             Assert.Contains(root, search.BrowserRootCategories);
-            
+
         }
 
 
@@ -626,7 +672,7 @@ namespace Dynamo.Tests
             var leafCat = new BrowserInternalElement("Boyer", root);
             root.Items.Add(leafCat);
 
-            Assert.Contains( leafCat, root.Items );
+            Assert.Contains(leafCat, root.Items);
             Assert.Contains(root, search.BrowserRootCategories);
 
             search.RemoveCategory("Peter");

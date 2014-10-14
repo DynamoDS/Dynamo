@@ -70,8 +70,7 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         /// <param name="elem">The element in question</param>
         internal void AddChild(BrowserInternalElement elem)
-        {
-
+        {            
             elem.OldParent = elem.Parent;
             if (elem.Parent != null)
                 elem.Parent.Items.Remove(elem);
@@ -88,6 +87,7 @@ namespace Dynamo.Nodes.Search
             this.IsExpanded = false;
             foreach (var ele in Items)
             {
+                if (ele is ClassInformation) continue;
                 ele.CollapseToLeaves();
             }
         }
@@ -100,6 +100,7 @@ namespace Dynamo.Nodes.Search
             this.Visibility = visibility;
             foreach (var ele in Items)
             {
+                if (ele is ClassInformation) continue;
                 ele.SetVisibilityToLeaves(visibility);
             }
         }

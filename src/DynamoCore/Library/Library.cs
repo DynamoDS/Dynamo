@@ -17,6 +17,7 @@ using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
 using Dynamo.Utilities;
+using System.Windows.Media.Imaging;
 
 #endregion
 
@@ -165,6 +166,15 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
+            if (parameters.Any())
+            {
+                InputParametrs = parameters.Select(
+                    par =>
+                    {
+                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
+                    }
+                    );
+            }
 
             ReturnType = returnType == null? "var[]..[]" : returnType.Split('.').Last();
             Type = type;
@@ -219,7 +229,7 @@ namespace Dynamo.DSEngine
         {
             get { return summary ?? (summary = this.GetSummary()); }
         }
-
+        
         /// <summary>
         ///     A comment describing the function along with the signature
         /// </summary>
@@ -227,7 +237,14 @@ namespace Dynamo.DSEngine
         {
             get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
-
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
+        public IEnumerable<Tuple<string,string>> InputParametrs
+        {
+            get;
+            private set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>

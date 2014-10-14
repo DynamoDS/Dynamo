@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using Dynamo.Search;
 
 namespace Dynamo.DSEngine
 {
@@ -482,8 +483,11 @@ namespace Dynamo.DSEngine
         {
             string newLibrary = e.LibraryPath;
 
+            var functionGroups = libraryServices.GetFunctionGroups(newLibrary).ToList();
+            functionGroups.ForEach(fg => fg.ElementType = SearchModel.ElementType.CustomDll);
+
             // Load all functions defined in that library.
-            dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
+            dynamoModel.SearchModel.Add(functionGroups);
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
