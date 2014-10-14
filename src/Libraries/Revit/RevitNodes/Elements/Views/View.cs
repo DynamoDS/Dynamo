@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
 using Autodesk.Revit.DB;
-
-using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace Revit.Elements.Views
 {
@@ -66,21 +62,21 @@ namespace Revit.Elements.Views
             }
 
             extension = (extension ?? ".png");
+
+            var tmpFile = Path.Combine(
+                Path.GetTempPath(),
+                (Guid.NewGuid().ToString() +  extension));
+
             // and the intended destination
             var destFn = pathName + extension;
-
-            if (File.Exists(destFn))
-            {
-                File.Delete(destFn);
-            }
 
             var options = new ImageExportOptions
             {
                 ExportRange = ExportRange.VisibleRegionOfCurrentView,
-                FilePath = destFn,
+                FilePath = tmpFile,
                 FitDirection = FitDirectionType.Horizontal,
                 HLRandWFViewsFileType = fileType,
-                ImageResolution = ImageResolution.DPI_300,
+                ImageResolution = ImageResolution.DPI_150,
                 ShadowViewsFileType = fileType,
                 ShouldCreateWebSite = false,
                 ViewName = Guid.NewGuid().ToString(),
@@ -88,9 +84,14 @@ namespace Revit.Elements.Views
                 ZoomType = ZoomFitType.Zoom,
             };
 
-            options.SetViewsAndSheets(new List<ElementId> { InternalView.Id });
+            if (File.Exists(destFn))
+            {
+                File.Delete(destFn);
+            }
 
             Document.ExportImage(options);
+
+            File.Move(tmpFile, destFn);
 
             return new Bitmap(Image.FromFile(destFn));
         }
