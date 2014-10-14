@@ -2217,7 +2217,6 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failure")]
         public void TestPersistentValuesOnUpdate()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3789
