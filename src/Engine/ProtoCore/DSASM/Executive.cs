@@ -7793,14 +7793,6 @@ namespace ProtoCore.DSASM
                 currentFramePointer = stackFrame.FramePointer;
             }
 
-            foreach (var value in core.GetAllCallSiteGCRoots())
-            {
-                if (value.IsReferenceType)
-                {
-                    gcRoots.Add(value);
-                }
-            }
-
             gcRoots.Add(RX);
 
             rmem.GC(gcRoots, this);
