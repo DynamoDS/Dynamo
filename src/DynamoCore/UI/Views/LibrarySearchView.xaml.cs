@@ -27,6 +27,8 @@ namespace Dynamo.UI.Views
                 searchElement.Execute();
                 e.Handled = true;
             }
+
+            listBoxItem.Focus();
         }
 
         private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
