@@ -48,6 +48,7 @@ limitations under the License.
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,6 +60,7 @@ limitations under the License.
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -139,6 +141,8 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
+    <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
     <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
@@ -172,6 +176,7 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
+    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -898,6 +903,11 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\Tooltip\code.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

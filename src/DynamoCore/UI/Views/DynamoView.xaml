@@ -152,6 +152,9 @@
                     Modifiers="Ctrl"
                     Command="{Binding Path=TogglePanCommand}"/>
         <KeyBinding Key="F5"
+                    Modifiers="Shift"
+                    Command="{Binding Path=DataContext.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
     </Window.InputBindings>
@@ -1158,9 +1161,9 @@
                     ToolTip="Run Workflow (F5)"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
-
-                      Command="{Binding CancelRunCommand}" Margin="5"/>
+                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}"
+                            ToolTip="Cancel Run (Shift+F5)"
+                            Command="{Binding CancelRunCommand}" Margin="5"/>
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
