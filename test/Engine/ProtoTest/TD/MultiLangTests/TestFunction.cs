@@ -2797,10 +2797,8 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
-        [Category("Failure")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4011
             string str = "";
             string code = @"class Test
 {
