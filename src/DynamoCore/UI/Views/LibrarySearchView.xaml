@@ -281,9 +281,9 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
-            <!--<EventSetter Event="MouseEnter"
-                         Handler="OnListBoxItemMouseEnter" />
-            <EventSetter Event="MouseLeave"
+            <!--<EventSetter Event="KeyDown"
+                         Handler="MemberKeyDown" />-->
+            <!--<EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />-->
         </Style>
 
@@ -601,7 +601,8 @@
                                              BorderBrush="Transparent"
                                              BorderThickness="0"
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
-                                             ItemsSource="{Binding MemberGroups}">
+                                             ItemsSource="{Binding MemberGroups}"
+                                             KeyDown="MemberGroupsKeyDown">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -613,7 +614,8 @@
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                                             ItemsSource="{Binding Members}">
+                                                             ItemsSource="{Binding Members}"
+                                                             Name="MembersListBox">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <ContentControl Template="{StaticResource MemberControlTemplate}" />
