@@ -1941,5 +1941,41 @@ namespace ProtoTest.TD.Associative
             // Should get clear after running
             Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
         }
+
+        [Test]
+        public void RegressMagn4853_4()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    def foo()    {    }}ts = {Test(), Test()};r1 = ts.foo();r2 = ts<1>.foo();r3 = ts<1L>.foo();";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_5()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    def foo(x)    {       return = 42;    }}ts = {Test(), Test()};vs = {42, 43};r1 = ts.foo(vs);r2 = ts<1>.foo(vs<1>);r3 = ts<1L>.foo(vs<1L>);r4 = ts<1>.foo(vs<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_6()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    x = 42;}t = Test();r1 = t.x;ts = {Test(), Test()};r2 = ts.x;";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
     }
 }
