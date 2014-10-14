@@ -341,6 +341,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         public void ReduceAndRecursion()
         {
             var model = ViewModel.Model;
