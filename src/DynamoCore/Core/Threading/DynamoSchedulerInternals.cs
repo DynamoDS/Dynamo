@@ -36,6 +36,8 @@ namespace Dynamo.Core.Threading
             if (taskQueue.Count < 2) // Cannot compact further.
                 return;
 
+            // Go through all the items in list, comparing each of them 
+            // with others that followed (cross checking each pair in list).
             for (int start = 0; start < taskQueue.Count - 1; ++start)
             {
                 var removeBaseTask = false;
