@@ -579,6 +579,10 @@ namespace ProtoCore.Lang
             if (!CoreUtils.IsGetterSetter(functionName))
             {
                 replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                if (removeFirstArgument)
+                {
+                    replicationGuides.RemoveAt(0);
+                }
             }
 
             int thisObjectType = thisObject.metaData.type;
