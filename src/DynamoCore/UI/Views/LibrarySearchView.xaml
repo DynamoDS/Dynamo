@@ -281,10 +281,6 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
-            <!--<EventSetter Event="KeyDown"
-                         Handler="MemberKeyDown" />-->
-            <!--<EventSetter Event="MouseLeave"
-                         Handler="OnPopupMouseLeave" />-->
         </Style>
 
         <!--Style for found MemberGroup-->
