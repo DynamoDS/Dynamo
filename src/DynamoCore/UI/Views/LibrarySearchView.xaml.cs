@@ -118,9 +118,5 @@ namespace Dynamo.UI.Views
             e.Handled = true;                                    
         }
 
-        private void Expander_KeyDown_1(object sender, KeyEventArgs e)
-        {
-
-        }
     }
 }
