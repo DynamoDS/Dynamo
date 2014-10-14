@@ -9,6 +9,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Models;
+using Dynamo.Search;
 
 using DynamoUtilities;
 
@@ -47,7 +48,8 @@ namespace Dynamo.DSEngine
         private Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
-        private List<string> libraries;
+        private readonly Dictionary<string, SearchModel.ElementType> libraries = 
+            new Dictionary<string, SearchModel.ElementType>();
 
         private LibraryServices()
         {
@@ -63,7 +65,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<string> Libraries
         {
-            get { return libraries; }
+            get { return libraries.Keys; }
         }
 
         /// <summary>
@@ -161,8 +163,12 @@ namespace Dynamo.DSEngine
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
-            libraries = DynamoPathManager.Instance.PreloadLibraries;
-            GraphUtilities.PreloadAssembly(libraries);
+
+            libraries.Clear();
+            foreach (var str in DynamoPathManager.Instance.PreloadLibraries)
+                libraries.Add(str, SearchModel.ElementType.Regular);
+                        
+            GraphUtilities.PreloadAssembly(Libraries);
         }
 
         /// <summary>
@@ -177,7 +183,20 @@ namespace Dynamo.DSEngine
 
             Dictionary<string, FunctionGroup> functionGroups;
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
-                return functionGroups.Values;
+            {
+                if (libraries[library] == SearchModel.ElementType.CustomDll)
+                {
+                    var modifiedFGroups = functionGroups.Values.ToList();
+                    for (int i = 0; i < modifiedFGroups.Count; i++)
+                        modifiedFGroups[i].ElementType = SearchModel.ElementType.CustomDll;
+
+                    return modifiedFGroups;
+                }
+                else
+                {
+                    return functionGroups.Values;
+                }
+            }
 
             // Return an empty list instead of 'null' as some of the caller may
             // not have the opportunity to check against 'null' enumerator (for
@@ -337,7 +356,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(library, SearchModel.ElementType.CustomDll));
         }
 
         private void ParseLibraryMigrations(string library)
@@ -661,7 +680,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            libraries.Add(e.LibraryPath);
+            libraries.Add(e.LibraryPath, e.ElementType);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
@@ -691,12 +710,14 @@ namespace Dynamo.DSEngine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath)
+            public LibraryLoadedEventArgs(string libraryPath, SearchModel.ElementType elementType)
             {
                 LibraryPath = libraryPath;
+                ElementType = elementType;
             }
 
             public string LibraryPath { get; private set; }
+            public SearchModel.ElementType ElementType { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs

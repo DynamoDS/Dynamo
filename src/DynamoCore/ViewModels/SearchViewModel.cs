@@ -235,7 +235,7 @@ namespace Dynamo.ViewModels
             //sw.Start();
 
             this.Model.Search(query);
-            this.SetTopResult();
+            this.UpdateTopResult();
             
 
             //sw.Stop();
@@ -327,7 +327,7 @@ namespace Dynamo.ViewModels
             return catName;
         }
 
-        private void SetTopResult()
+        private void UpdateTopResult()
         {
             if (!Model.SearchRootCategories.Any())
             {
