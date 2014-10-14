@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
+
 using Autodesk.Revit.DB;
-using Revit.Elements;
 
 namespace Revit.Elements.Views
 {
@@ -34,7 +29,7 @@ namespace Revit.Elements.Views
         /// </summary>
         /// <param name="fullPath">A valid path for the image</param>
         /// <returns>The image</returns>
-        public System.Drawing.Image ExportAsImage(string fullPath)
+        public Image ExportAsImage(string fullPath)
         {
             string pathName = fullPath;
             string extension = null;
@@ -70,10 +65,10 @@ namespace Revit.Elements.Views
 
             var options = new ImageExportOptions
             {
-                ExportRange = ExportRange.SetOfViews,
+                ExportRange = ExportRange.VisibleRegionOfCurrentView,
                 FilePath = pathName,
                 HLRandWFViewsFileType = fileType,
-                ImageResolution = ImageResolution.DPI_72,
+                ImageResolution = ImageResolution.DPI_300,
                 ZoomType = ZoomFitType.Zoom,
                 ShadowViewsFileType = fileType
             };
@@ -82,16 +77,8 @@ namespace Revit.Elements.Views
 
             Document.ExportImage(options);
 
-            // Revit outputs file with a bunch of crap in the file name, let's construct that
-            var actualFn = string.Format("{0} - {1} - {2}{3}", pathName, ViewTypeString(InternalView.ViewType),
-                InternalView.ViewName, extension);
-
             // and the intended destination
             var destFn = pathName + extension;
-
-            // rename the file
-            if (File.Exists(destFn)) File.Delete(destFn);
-            File.Move(actualFn, destFn);
 
             return Image.FromFile(destFn);
         }
