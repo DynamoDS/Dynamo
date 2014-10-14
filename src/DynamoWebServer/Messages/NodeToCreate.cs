@@ -22,16 +22,16 @@ namespace DynamoWebServer.Messages
         public string _id { get; private set; }
 
         /// <summary>
-        /// CreatingName of the specified node
+        /// CreationName of the specified node
         /// </summary>
         [DataMember]
-        public string CreatingName { get; private set; }
+        public string CreationName { get; private set; }
 
         /// <summary>
-        /// CreatingName of the specified node
+        /// CreationName of the specified node
         /// </summary>
         [DataMember]
-        public string DisplayedName { get; private set; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         /// X and Y coordinate of the specified node
@@ -58,8 +58,8 @@ namespace DynamoWebServer.Messages
         public NodeToCreate(NodeModel node, string data)
         {
             this._id = node.GUID.ToString();
-            this.CreatingName = node.CreatingName;
-            if (CreatingName == "Number")
+            this.CreationName = node.CreationName;
+            if (CreationName == "Number")
             {
                 double number;
                 Value = double.TryParse(data, out number) ? number : 0;
@@ -70,7 +70,7 @@ namespace DynamoWebServer.Messages
                 IsCustomNode = node is Function;
             }
                     
-            this.DisplayedName = node.NickName;
+            this.DisplayName = node.NickName;
             this.Position = new List<double> { node.X, node.Y };
         }
     }
