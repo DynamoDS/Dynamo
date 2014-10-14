@@ -43,6 +43,64 @@ namespace Dynamo
         }
     }
 
+    /// <summary>
+    /// This is an AsyncTask that is important and should never be dropped by the
+    /// scheduler when it reorders its task queue. However, multiple instances of
+    /// this AsyncTask needs to be prioritized, based on their Priority value.
+    /// </summary>
+    /// 
+    class PrioritizedAsyncTask : SampleAsyncTask
+    {
+        internal int Priority { get; private set; }
+
+        internal PrioritizedAsyncTask(DynamoScheduler scheduler, int priority)
+            : base(scheduler)
+        {
+            Priority = priority; // Assign task priority.
+        }
+
+        protected override int WeighAgainstCore(AsyncTask otherTask)
+        {
+            // PrioritizedAsyncTask always come before InconsequentialAsyncTask.
+            if (otherTask is InconsequentialAsyncTask)
+                return -1;
+
+            // It is not weigh against another PrioritizedAsyncTask, fall back.
+            var task = otherTask as PrioritizedAsyncTask;
+            if (task == null)
+                return base.WeighAgainstCore(otherTask);
+
+            // Priority 1 tasks always come before priority 2 tasks.
+            return Priority - task.Priority;
+        }
+    }
+
+    /// <summary>
+    /// InconsequentialAsyncTask represents a task that is not important. If two 
+    /// such tasks are compared, only one that carries a bigger punch will be kept.
+    /// </summary>
+    /// 
+    class InconsequentialAsyncTask : SampleAsyncTask
+    {
+        internal int Punch { get; private set; }
+
+        internal InconsequentialAsyncTask(DynamoScheduler scheduler, int punch)
+            : base(scheduler)
+        {
+            Punch = punch;
+        }
+
+        protected override Comparison CompareCore(AsyncTask otherTask)
+        {
+            var task = otherTask as InconsequentialAsyncTask;
+            if (task == null)
+                return base.CompareCore(otherTask);
+
+            // The comparison only keeps the task that carries a bigger punch.
+            return Punch > task.Punch ? Comparison.KeepThis : Comparison.KeepOther;
+        }
+    }
+
     class TimeStampGrabber
     {
         private ManualResetEvent doneEvent = null;
