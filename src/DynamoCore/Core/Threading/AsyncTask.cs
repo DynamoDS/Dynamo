@@ -8,6 +8,29 @@ namespace Dynamo.Core.Threading
     {
         #region Private Class Data Members
 
+        /// <summary>
+        /// Comparison result obtained from a call to AsyncTask.Compare method.
+        /// </summary>
+        internal enum Comparison
+        {
+            /// <summary>
+            /// Both the AsyncTask objects in comparison should be kept.
+            /// </summary>
+            KeepBoth,
+
+            /// <summary>
+            /// The current instance of AsyncTask should be kept 
+            /// while discarding the other AsyncTask in comparison.
+            /// </summary>
+            KeepThis,
+
+            /// <summary>
+            /// The current instance of AsyncTask should be discarded 
+            /// while keeping the other AsyncTask in comparison.
+            /// </summary>
+            KeepOther
+        }
+
         private readonly DynamoScheduler scheduler;
 
         #endregion
@@ -38,6 +61,21 @@ namespace Dynamo.Core.Threading
         internal void MarkTaskAsScheduled()
         {
             ScheduledTime = scheduler.NextTimeStamp;
+        }
+
+        /// <summary>
+        /// This method is called by DynamoScheduler when it compacts the task 
+        /// queue. The result of this call indicates if either of the tasks in 
+        /// comparison should be dropped from the task queue, or both should be 
+        /// kept. Tasks that are discarded during this phase will not be executed.
+        /// </summary>
+        /// <param name="otherTask">Another task to compare with.</param>
+        /// <returns>Returns the comparison result. See Comparison enumeration 
+        /// for details of the possible values.</returns>
+        /// 
+        internal Comparison Compare(AsyncTask otherTask)
+        {
+            return CompareCore(otherTask);
         }
 
         /// <summary>
@@ -94,6 +132,11 @@ namespace Dynamo.Core.Threading
 
         protected abstract void ExecuteCore();
         protected abstract void HandleTaskCompletionCore();
+
+        protected virtual Comparison CompareCore(AsyncTask otherTask)
+        {
+            return Comparison.KeepBoth; // Keeping both tasks by default.
+        }
 
         #endregion
     }
