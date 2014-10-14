@@ -2,8 +2,7 @@
 using System.Configuration;
 using System.Net;
 
-using Dynamo.ViewModels;
-
+using Dynamo.Models;
 using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
 
@@ -19,18 +18,18 @@ namespace DynamoWebServer
 {
     public class WebServer : IWebServer
     {
-        private readonly DynamoViewModel dynamoViewModel;
+        private readonly DynamoModel dynamoModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
 
         private readonly MessageHandler messageHandler;
         private readonly SocketMessageQueue messageQueue;
 
-        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
+        public WebServer(DynamoModel dynamoModel, IWebSocket socket)
         {
             webSocket = socket;
-            this.dynamoViewModel = dynamoViewModel;
-            messageHandler = new MessageHandler(dynamoViewModel);
+            this.dynamoModel = dynamoModel;
+            messageHandler = new MessageHandler(dynamoModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
             messageQueue = new SocketMessageQueue();
             jsonSettings = new JsonSerializerSettings
@@ -189,8 +188,6 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
             webSocket.NewDataReceived += socketServer_NewDataReceived;
-
-            dynamoViewModel.VisualizationManager.RenderComplete += messageHandler.NodesDataModified;
         }
 
         void UnBindEvents()
@@ -199,26 +196,24 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
             webSocket.NewDataReceived -= socketServer_NewDataReceived;
-
-            dynamoViewModel.VisualizationManager.RenderComplete -= messageHandler.NodesDataModified;
         }
 
         void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
         {
             if (enqueue)
             {
-                messageQueue.EnqueueMessage(() => messageHandler.Execute(dynamoViewModel, message, sessionId));
+                messageQueue.EnqueueMessage(() => messageHandler.Execute(dynamoModel, message, sessionId));
             }
             else
             {
-                messageHandler.Execute(dynamoViewModel, message, sessionId);
+                messageHandler.Execute(dynamoModel, message, sessionId);
             }
         }
 
         void LogInfo(string info)
         {
-            if (dynamoViewModel.Model.Logger != null)
-                dynamoViewModel.Model.Logger.Log(info);
+            if (dynamoModel.Logger != null)
+                dynamoModel.Logger.Log(info);
         }
 
         #endregion

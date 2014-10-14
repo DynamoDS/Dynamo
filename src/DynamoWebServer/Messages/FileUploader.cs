@@ -26,7 +26,7 @@ namespace DynamoWebServer.Messages
             connectorsToCreate = new List<ConnectorToCreate>();
         }
 
-        internal bool ProcessFileData(UploadFileMessage uploadFileMessage, DynamoViewModel dynamoViewModel)
+        internal bool ProcessFileData(UploadFileMessage uploadFileMessage, DynamoModel dynamoViewModel)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace DynamoWebServer.Messages
                 
                 File.WriteAllBytes(filePath, content);
 
-                dynamoViewModel.ExecuteCommand(new DynamoViewModel.OpenFileCommand(filePath));
+                dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
                 
                 File.Delete(filePath);
 

@@ -367,11 +367,25 @@ namespace ProtoCore
 
         #region Support Methods
 
+
+        /// <summary>
+        /// Report that whole function group couldn't be found
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        private StackValue ReportFunctionGroupNotFound(Core core)
+        {
+            core.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            return StackValue.Null;
+        }
+
+
         /// <summary>
         /// Internal support method for reporting a method that can't be located
         /// </summary>
         /// <returns></returns>
-        private StackValue ReportMethodNotFound(Core core, List<StackValue> arguments)
+        private StackValue ReportMethodNotFoundForArguments(Core core, List<StackValue> arguments)
         {
             core.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
             return StackValue.Null;
@@ -818,7 +832,7 @@ namespace ProtoCore
         private FunctionEndPoint SelectFEPFromMultiple(StackFrame stackFrame, Core core,
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
         {
-            StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue svThisPtr = stackFrame.ThisPtr;
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
@@ -996,8 +1010,8 @@ namespace ProtoCore
                 //    && !fep.procedureNode.isConstructor
                 //    && !fep.procedureNode.isStatic)
 
-                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsPointer &&
-                     stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
+                if ((stackFrame.ThisPtr.IsPointer &&
+                     stackFrame.ThisPtr.opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                     && (fep.procedureNode.classScope != -1))
                 {
@@ -1161,7 +1175,7 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportFunctionGroupNotFound(core);
             }
 
 
@@ -1217,14 +1231,12 @@ namespace ProtoCore
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFound(core, arguments);
+                return ReportMethodNotFoundForArguments(core, arguments);
             }
 
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);
 
             return ret;
-
-
         }
 
        
@@ -1500,7 +1512,11 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
+#if GC_MARK_AND_SWEEP
+                core.AddCallSiteGCRoot(callsiteID, ret);
+#else
                 GCUtils.GCRetain(ret, core);
+#endif
                 return ret;
             }
             else
@@ -1666,7 +1682,11 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
+#if GC_MARK_AND_SWEEP
+                core.AddCallSiteGCRoot(callsiteID, ret);
+#else
                 GCUtils.GCRetain(ret, core);
+#endif
                 return ret;
 
             }
@@ -1706,10 +1726,7 @@ namespace ProtoCore
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, core);
 
             // Correct block id where the function is defined. 
-            StackValue funcBlock = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
-            funcBlock.opdata = finalFep.BlockScope;
-            stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock, funcBlock);
-
+            stackFrame.FunctionBlock = finalFep.BlockScope;
 
             //TraceCache -> TLS
             //Extract left most high-D pack

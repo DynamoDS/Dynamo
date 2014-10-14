@@ -317,7 +317,8 @@ namespace Dynamo.Nodes
             var publishCustomNodeItem = new MenuItem
             {
                 Header = "Publish This Custom Node...",
-                IsCheckable = false
+                IsCheckable = false,
+                IsEnabled = nodeUI.ViewModel.DynamoViewModel.PackageManagerClientViewModel.Model.HasAuthenticator
             };
             nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
             publishCustomNodeItem.Click += (sender, args) =>
@@ -471,7 +472,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
             {
-                DataContext = nodeUI.ViewModel,
+                DataContext = this,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
@@ -766,7 +767,7 @@ namespace Dynamo.Nodes
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
-                var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
+                var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
             }
         }

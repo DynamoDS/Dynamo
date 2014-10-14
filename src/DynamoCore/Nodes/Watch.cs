@@ -215,11 +215,20 @@ namespace Dynamo.Nodes
                 : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar);
         }
 
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            return; // No visualization update is required for this node type.
+        }
+
+#else
         public override void UpdateRenderPackage(int maxTessDivs)
         {
             //do nothing
             //a watch should not draw its outputs
         }
+#endif
 
         #endregion
     }

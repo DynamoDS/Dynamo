@@ -12,6 +12,7 @@ using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -21,11 +22,11 @@ namespace DynamoWebServer.Messages
         public string SessionId { get; set; }
 
         private readonly JsonSerializerSettings jsonSettings;
-        private readonly DynamoViewModel dynamoViewModel;
+        private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
         private RenderCompleteEventHandler RenderCompleteHandler;
 
-        public MessageHandler(DynamoViewModel dynamoViewModel)
+        public MessageHandler(DynamoModel dynamoModel)
         {
             jsonSettings = new JsonSerializerSettings
             {
@@ -33,7 +34,7 @@ namespace DynamoWebServer.Messages
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            this.dynamoViewModel = dynamoViewModel;
+            this.dynamoModel = dynamoModel;
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace DynamoWebServer.Messages
         /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
         /// <param name="sessionId">The identifier string that represents the current session</param>
-        internal void Execute(DynamoViewModel dynamo, Message message, string sessionId)
+        internal void Execute(DynamoModel dynamo, Message message, string sessionId)
         {
             if (message is RunCommandsMessage)
             {
@@ -78,7 +79,7 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
-                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory()
+                    LibraryItems = dynamo.SearchModel.GetAllLibraryItemsByCategory()
                 }, sessionId));
             }
             else if (message is SaveFileMessage)
@@ -104,7 +105,7 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event args</param>
-        internal void NodesDataModified(object sender, RenderCompletionEventArgs e)
+        internal void NodesDataModified(string sessionId)
         {
             var nodes = GetExecutedNodes();
             if (nodes == null || !nodes.Any())
@@ -113,7 +114,7 @@ namespace DynamoWebServer.Messages
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
             {
                 Nodes = nodes
-            }, SessionId));
+            }, sessionId));
         }
 
         /// <summary>
@@ -129,17 +130,18 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void UploadFile(DynamoViewModel dynamo, Message message, string sessionId)
+        private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
         {
             if (uploader == null)
                 uploader = new FileUploader();
 
             if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
             {
-                var manager = dynamo.VisualizationManager;
-                RenderCompleteHandler = (sender, e) => NodesDataCreated(sender, e, sessionId);
-                manager.RenderComplete += RenderCompleteHandler;
-                dynamo.ExecuteCommand(new DynamoViewModel.RunCancelCommand(false, false));
+                dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+
+                WaitWhileRunning();
+
+                NodesDataCreated(sessionId);
             }
             else
             {
@@ -151,10 +153,20 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void SaveFile(DynamoViewModel dynamo, Message message, string sessionId)
+        private void WaitWhileRunning()
+        {
+            Thread.Sleep(10);
+
+            while (dynamoModel.Runner.Running)
+            {
+                Thread.Sleep(10);
+            }
+        }
+
+        private void SaveFile(DynamoModel dynamo, Message message, string sessionId)
         {
             // Put into this list all workspaces that should be saved as files
-            var homeWorkspace = dynamo.Model.HomeSpace;
+            var homeWorkspace = dynamoModel.HomeSpace;
 
             // Add home workspace into it
             var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
@@ -164,7 +176,7 @@ namespace DynamoWebServer.Messages
             {
                 string fileName, filePath;
 
-                var customNodes = dynamo.Model.CustomNodeManager.GetLoadedDefinitions()
+                var customNodes = dynamoModel.CustomNodeManager.GetLoadedDefinitions()
                     .Select(cnd => cnd.WorkspaceModel);
 
                 // Add workspaces of all loaded custom nodes into saving list
@@ -222,7 +234,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void ExecuteCommands(DynamoViewModel dynamo, Message message, string sessionId)
+        private void ExecuteCommands(DynamoModel dynamo, Message message, string sessionId)
         {
             var recordableCommandMsg = (RunCommandsMessage)message;
 
@@ -231,39 +243,46 @@ namespace DynamoWebServer.Messages
             foreach (var command in recordableCommandMsg.Commands)
             {
                 dynamo.ExecuteCommand(command);
+
+                //TO DO: Find a better way to determine end of computations
+                if (command is DynamoModel.RunCancelCommand)
+                {
+                    WaitWhileRunning();
+                    NodesDataModified(sessionId);
+                }
             }
         }
 
-        private void SelectTabByGuid(DynamoViewModel dynamo, Guid guid)
+        private void SelectTabByGuid(DynamoModel dynamo, Guid guid)
         {
             // If guid is Empty - switch to HomeWorkspace
-            if (guid.Equals(Guid.Empty) && !dynamo.ViewingHomespace)
+            if (guid.Equals(Guid.Empty) && dynamo.CurrentWorkspace != dynamo.HomeSpace)
             {
-                dynamo.CurrentWorkspaceIndex = 0;
+                dynamo.Home(null);
             }
 
             if (!guid.Equals(Guid.Empty))
             {
-                if (dynamo.Model.CustomNodeManager.LoadedCustomNodes.ContainsKey(guid))
+                if (dynamo.CustomNodeManager.LoadedCustomNodes.Contains(guid))
                 {
-                    var name = dynamo.Model.CustomNodeManager.LoadedCustomNodes[guid]
-                        .WorkspaceModel.Name;
+                    var node = (CustomNodeDefinition)dynamo.CustomNodeManager.LoadedCustomNodes[guid];
+                    var name = node.WorkspaceModel.Name;
                     var workspace = dynamo.Workspaces.FirstOrDefault(elem => elem.Name == name);
                     if (workspace != null)
                     {
                         var index = dynamo.Workspaces.IndexOf(workspace);
 
-                        dynamo.CurrentWorkspaceIndex = index;
+                        dynamo.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
                     }
                 }
             }
         }
 
-        private void NodesDataCreated(object sender, RenderCompletionEventArgs e, string sessionId)
+        private void NodesDataCreated(string sessionId)
         {
             var nodes = GetExecutedNodes();
 
-            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
+            var currentWorkspace = dynamoModel.CurrentWorkspace;
 
             foreach (var node in currentWorkspace.Nodes)
             {
@@ -305,7 +324,7 @@ namespace DynamoWebServer.Messages
 
                 // after uploading custom node definition there may be proxy nodes
                 // that were updated 
-                var allWorkspaces = dynamoViewModel.Model.Workspaces;
+                var allWorkspaces = dynamoModel.Workspaces;
                 foreach (var ws in allWorkspaces)
                 {
                     // current workspace id
@@ -341,8 +360,6 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
             }
-
-            dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
         }
 
         private string GetData(NodeModel node)
@@ -374,7 +391,7 @@ namespace DynamoWebServer.Messages
         private IEnumerable<ExecutedNode> GetExecutedNodes()
         {
             var result = new List<ExecutedNode>();
-            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
+            var currentWorkspace = dynamoModel.CurrentWorkspace;
 
             foreach (var node in currentWorkspace.Nodes)
             {
@@ -441,7 +458,7 @@ namespace DynamoWebServer.Messages
         private void RetrieveGeometry(string nodeId, string sessionId)
         {
             Guid guid;
-            var nodeMap = dynamoViewModel.Model.NodeMap;
+            var nodeMap = dynamoModel.NodeMap;
             if (Guid.TryParse(nodeId, out guid) && nodeMap.ContainsKey(guid))
             {
                 NodeModel model = nodeMap[guid];
@@ -458,9 +475,8 @@ namespace DynamoWebServer.Messages
         /// </summary>
         private void ClearWorkspace()
         {
-            var dynamoModel = dynamoViewModel.Model;
             var customNodeManager = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoViewModel.SearchViewModel.Model;
+            var searchModel = dynamoModel.SearchModel;
             var nodeInfos = customNodeManager.NodeInfos;
 
             dynamoModel.Home(null);
