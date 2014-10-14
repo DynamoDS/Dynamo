@@ -143,6 +143,7 @@ namespace ProtoScript.Runners
                     // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
                     // Passing it to bounce() increments it so the first depth is always 0
                     ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
+                    stackFrame.FramePointer = core.Rmem.FramePointer;
                     
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
@@ -169,7 +170,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -198,7 +199,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
                 core.InitializeContextGlobals(staticContext.GlobalVarList);
 
@@ -229,7 +230,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 Execute(core, new ProtoCore.Runtime.Context());
@@ -258,7 +259,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
                 try
