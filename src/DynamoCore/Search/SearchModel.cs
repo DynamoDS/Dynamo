@@ -13,7 +13,7 @@ namespace Dynamo.Search
 {
     public class SearchModel
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after

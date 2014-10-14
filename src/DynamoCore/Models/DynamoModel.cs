@@ -854,12 +854,11 @@ namespace Dynamo.Models
         ///     TODO
         /// </summary>
         public void UpdateCustomNode(
-            Guid id, string name = null, string category = null, string description = null,
-            string path = null)
+            Guid id, string name = null, string category = null, string description = null)
         {
-            CustomNodeManager.Refactor(info);
-            SearchModel.RemoveNodeAndEmptyParentCategory(info.Guid);
-            SearchModel.Add(info);
+            CustomNodeManager.Refactor(id, name, category, description);
+            SearchModel.RemoveNodeAndEmptyParentCategory(id);
+            SearchModel.Add(info); //TODO(Steve): Figure out a better way to implement
             SearchModel.OnRequestSync();
         }
 

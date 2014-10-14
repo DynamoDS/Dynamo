@@ -324,7 +324,7 @@ namespace Dynamo.Utilities
 
         /// <summary>
         ///     Try to reload function definition and set all custom node 
-        ///     instances' defintion to the new one. It happens when loading
+        ///     instances' definition to the new one. It happens when loading
         ///     custom node for proxy node.
         /// </summary>
         /// <param name="id">The unique id for the node</param>
@@ -984,17 +984,11 @@ namespace Dynamo.Utilities
             return NodeInfos.FirstOrDefault(x => x.Value.Name == name).Value;
         }
 
-
-        public void Refactor(CustomNodeInfo nodeInfo)
-        {
-            Refactor(nodeInfo.Guid, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
-        }
-
         /// <summary>
         /// Refactor a custom node, including updating search
         /// </summary>
         /// <returns> Returns false if it fails.</returns>
-        internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
+        public bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
         {
             CustomNodeInfo? nodeInfo = GetNodeInfo(guid);
 
