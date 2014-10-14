@@ -2608,7 +2608,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
