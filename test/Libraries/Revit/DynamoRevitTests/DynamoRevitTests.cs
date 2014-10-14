@@ -10,6 +10,8 @@ using DSCoreNodesUI.Logic;
 
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
+using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -27,6 +29,19 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
 {
+    public class TestSchedulerThread : ISchedulerThread
+    {
+        public void Initialize(DynamoScheduler owningScheduler)
+        {
+
+        }
+
+        public void Shutdown()
+        {
+
+        }
+    }
+
     [TestFixture]
     public abstract class DynamoRevitUnitTestBase
     {
@@ -110,23 +125,25 @@ namespace Dynamo.Tests
 
                 DynamoRevit.InitializeUnits();
 
-                var model = RevitDynamoModel.Start(
+                DynamoRevit.RevitDynamoModel = RevitDynamoModel.Start(
                     new RevitDynamoModel.StartConfiguration()
                     {
                         StartInTestMode = true,
-                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
+                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\"),
+                        Context = "Revit 2014",
+                        SchedulerThread = new TestSchedulerThread()
                     });
 
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {
-                        DynamoModel = model
+                        DynamoModel = DynamoRevit.RevitDynamoModel,
                     });
 
                 // Because the test framework does not work in the idle thread. 
                 // We need to trick Dynamo into believing that it's in the idle
                 // thread already.
-                IdlePromise.InIdleThread = true;
+                //IdlePromise.InIdleThread = true;
             }
             catch (Exception ex)
             {
