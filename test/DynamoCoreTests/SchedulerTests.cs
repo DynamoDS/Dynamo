@@ -25,13 +25,33 @@ namespace Dynamo
         public void Shutdown()
         {
         }
+
+        internal void GetSchedulerToProcessTasks()
+        {
+            while (scheduler.ProcessNextTask(false))
+            {
+                // Continue too run till tasks are exhausted.
+            }
+        }
     }
 
     class SampleAsyncTask : AsyncTask
     {
+        private List<string> results; 
+
         internal SampleAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
+        }
+
+        internal void InitializeWithResultList(List<string> resultsList)
+        {
+            results = resultsList;
+        }
+
+        protected void AddToResultList(string result)
+        {
+            results.Add(result);
         }
 
         protected override void ExecuteCore()
@@ -57,6 +77,12 @@ namespace Dynamo
             : base(scheduler)
         {
             Priority = priority; // Assign task priority.
+        }
+
+        protected override void ExecuteCore()
+        {
+            // Task execution results in string added to list.
+            AddToResultList("PrioritizedAsyncTask: " + Priority);
         }
 
         protected override int WeighAgainstCore(AsyncTask otherTask)
@@ -88,6 +114,12 @@ namespace Dynamo
             : base(scheduler)
         {
             Punch = punch;
+        }
+
+        protected override void ExecuteCore()
+        {
+            // Task execution results in string added to list.
+            AddToResultList("InconsequentialAsyncTask: " + Punch);
         }
 
         protected override Comparison CompareCore(AsyncTask otherTask)
@@ -231,6 +263,51 @@ namespace Dynamo
                 // The first argument cannot be null.
                 var task = new SampleAsyncTask(null);
             });
+        }
+
+        #endregion
+
+        #region Scheduler Related Test Cases
+
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new InconsequentialAsyncTask(scheduler, 500),
+                new PrioritizedAsyncTask(scheduler, 3),
+                new InconsequentialAsyncTask(scheduler, 100),
+                new PrioritizedAsyncTask(scheduler, 5), 
+                new InconsequentialAsyncTask(scheduler, 300),
+                new PrioritizedAsyncTask(scheduler, 1), 
+                new InconsequentialAsyncTask(scheduler, 200),
+                new PrioritizedAsyncTask(scheduler, 6), 
+                new InconsequentialAsyncTask(scheduler, 700),
+                new PrioritizedAsyncTask(scheduler, 2), 
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+            Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
+            Assert.AreEqual("PrioritizedAsyncTask: 3", results[2]);
+            Assert.AreEqual("PrioritizedAsyncTask: 5", results[3]);
+            Assert.AreEqual("PrioritizedAsyncTask: 6", results[4]);
+            Assert.AreEqual("InconsequentialAsyncTask: 700", results[5]);
         }
 
         #endregion
