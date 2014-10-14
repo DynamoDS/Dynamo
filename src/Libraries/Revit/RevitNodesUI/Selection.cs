@@ -219,7 +219,6 @@ namespace Dynamo.Nodes
         {
             if (!SelectionResults.Any() || !document.Equals(SelectionOwner))
             {
-                ForceReExecuteOfNode = false;
                 return;
             }
 
@@ -242,7 +241,6 @@ namespace Dynamo.Nodes
 
             if (!SelectionResults.Where(x=>x.IsValidObject).Select(x => x.UniqueId).Any(updatedSet.Contains))
             {
-                ForceReExecuteOfNode = false;
                 return;
             }
 
@@ -376,7 +374,6 @@ namespace Dynamo.Nodes
             // If an element is modified, require recalc
             if (SelectionResults == null || !validIds.Any(updated.Contains))
             {
-                ForceReExecuteOfNode = false;
                 return;
             }
                 
