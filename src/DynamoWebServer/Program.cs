@@ -35,7 +35,7 @@ namespace DynamoWebServer
                     DynamoModel = model
                 });
 
-            var webSocketServer = new WebServer(viewModel, new WebSocket());
+            var webSocketServer = new WebServer(model, new WebSocket());
 
             webSocketServer.Start();
 

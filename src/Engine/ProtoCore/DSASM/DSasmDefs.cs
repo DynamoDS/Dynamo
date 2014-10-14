@@ -104,6 +104,7 @@ namespace ProtoCore.DSASM
         public const string jlz = "jlz";
         public const string jgz = "jgz";
         public const string jz = "jz";
+        public const string jdep = "jdep";
         public const string label = "label";
         public const string bounce = "bounce";
         public const string alloca = "alloca";
@@ -460,45 +461,4 @@ namespace ProtoCore.DSASM
         kMemHeap,
         kMemRegionTypes
     }
-
-    public enum AccessSpecifier
-    {
-       kPublic,
-       kProtected,
-       kPrivate
-    }
-
-    public enum AssociativeCompilePass
-    {
-        kClassName,
-        kClassBaseClass,
-        kClassHierarchy,
-        kClassMemVar,
-        
-        kClassMemFuncSig,
-        kGlobalFuncSig,
-
-        kGlobalScope,
-
-        kClassMemFuncBody,
-        kGlobalFuncBody,
-        kDone
-    }
-
-    public enum AssociativeSubCompilePass
-    {
-        kNone,
-        kUnboundIdentifier,
-        kGlobalInstanceFunctionBody,
-        kAll
-    }
-
-    public enum ImperativeCompilePass
-    {
-        kGlobalFuncSig,
-        kGlobalScope,
-        kGlobalFuncBody,
-        kDone
-    }
-
 }

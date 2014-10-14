@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
+
 using Dynamo.Selection;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Dynamo.ViewModels
 {
@@ -68,7 +70,7 @@ namespace Dynamo.ViewModels
 
         #region Workspace Command Entry Point
 
-        public void ExecuteCommand(RecordableCommand command)
+        public void ExecuteCommand(DynamoModel.RecordableCommand command)
         {
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
@@ -76,229 +78,129 @@ namespace Dynamo.ViewModels
             if (Model.DebugSettings.VerboseLogging)
                 model.Logger.Log("Command: " + command);
 
-            command.Execute(this);
+            this.model.ExecuteCommand(command);
         }
 
         #endregion
 
         #region The Actual Command Handlers (Private)
 
-        private void OpenFileImpl(OpenFileCommand command)
+        void OnModelCommandCompleted(DynamoModel.RecordableCommand command)
         {
-            this.VisualizationManager.Pause();
-
-            string xmlFilePath = command.XmlFilePath;
-            model.OpenInternal(xmlFilePath);
-
-            this.AddToRecentFiles(xmlFilePath);
-
-            //clear the clipboard to avoid copying between dyns
-            model.ClipBoard.Clear();
-            this.VisualizationManager.UnPause();
-        }
-
-        private void RunCancelImpl(RunCancelCommand command)
-        {
-            model.RunCancelInternal(
-                command.ShowErrors, command.CancelRun);
-        }
-
-        private void ForceRunCancelImpl(RunCancelCommand command)
-        {
-            model.ForceRunCancelInternal(
-                command.ShowErrors, command.CancelRun);
-        }
-
-        private void MutateTestImpl()
-        {
-            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
-            mutatorDriver.RunMutationTests();
-        }
-
-        private void CreateNodeImpl(CreateNodeCommand command)
-        {
-           NodeModel nodeModel;
-            // if we need to create a proxy custom node
-            // specify needed information for it from CreateProxyNodeCommand
-            if (command is CreateProxyNodeCommand)
+            var name = command.GetType().Name;
+            switch (name)
             {
-                var proxyCommand = command as CreateProxyNodeCommand;
+                case "OpenFileCommand":
+                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
+                    this.VisualizationManager.UnPause();
+                    break;
 
-                nodeModel = CurrentSpace.AddNode(command.NodeId,
-                command.NodeName,
-                command.X,
-                command.Y,
-                command.DefaultPosition,
-                command.TransformCoordinates,
-                nickName: proxyCommand.NickName,
-                inputs: proxyCommand.Inputs,
-                outputs: proxyCommand.Outputs);
-            }
-            else
-            {
-               nodeModel = CurrentSpace.AddNode(
-               command.NodeId,
-               command.NodeName,
-               command.X,
-               command.Y,
-               command.DefaultPosition,
-               command.TransformCoordinates);
-            }
+                case "MutateTestCommand":
+                    var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
+                    mutatorDriver.RunMutationTests();
+                    break;
 
-            CurrentSpace.RecordCreatedModel(nodeModel);
+                case "SelectInRegionCommand":
+                    var selectC = command as DynamoModel.SelectInRegionCommand;
+                    CurrentSpaceViewModel.SelectInRegion(selectC.Region, selectC.IsCrossSelection);
+                    break;
 
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
+                case "DragSelectionCommand":
+                    var dragC = command as DynamoModel.DragSelectionCommand;
 
-        private void CreateNoteImpl(CreateNoteCommand command)
-        {
-            NoteModel noteModel = Model.CurrentWorkspace.AddNote(
-                command.DefaultPosition,
-                command.X,
-                command.Y,
-                command.NoteText,
-                command.NodeId);
-            CurrentSpace.RecordCreatedModel(noteModel);
+                    if (DynamoModel.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
+                        CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                    else
+                        CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
+                    break;
 
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
+                case "DeleteModelCommand":
+                case "CreateNodeCommand":
+                case "CreateNoteCommand":
+                case "UndoRedoCommand":
+                case "ModelEventCommand":
+                case "UpdateModelValueCommand":
+                case "ConvertNodesToCodeCommand":
+                    UndoCommand.RaiseCanExecuteChanged();
+                    RedoCommand.RaiseCanExecuteChanged();
+                    break;
 
-        private void SelectModelImpl(SelectModelCommand command)
-        {
-            // Empty ModelGuid means clear selection.
-            if (command.ModelGuid == Guid.Empty)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                return;
-            }
+                case "SwitchTabCommand":
+                    if (command.IsInPlaybackMode)
+                        RaisePropertyChanged("CurrentWorkspaceIndex");
+                    break;
 
-            ModelBase model = CurrentSpace.GetModelInternal(command.ModelGuid);
+                case "RunCancelCommand":
+                case "ForceRunCancelCommand":
+                case "SelectModelCommand":
+                case "MakeConnectionCommand":
+                case "CreateCustomNodeCommand":
+                    // for this commands there is no need
+                    // to do anything after execution
+                    break;
 
-            if (false == model.IsSelected)
-            {
-                if (!command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.ClearSelection();
-
-                if (!DynamoSelection.Instance.Selection.Contains(model))
-                    DynamoSelection.Instance.Selection.Add(model);
-            }
-            else
-            {
-                if (command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.Selection.Remove(model);
+                default:
+                    throw new InvalidOperationException("Unhandled command name");
             }
         }
 
-        private void SelectInRegionImpl(SelectInRegionCommand command)
+        void OnModelCommandStarting(DynamoModel.RecordableCommand command)
         {
-            CurrentSpaceViewModel.SelectInRegion(command.Region, command.IsCrossSelection);
+            var name = command.GetType().Name;
+            switch (name)
+            {
+                case "OpenFileCommand":
+                    this.VisualizationManager.Pause();
+                    break;
+
+                case "MakeConnectionCommand":
+                    MakeConnectionImpl(command as DynamoModel.MakeConnectionCommand);
+                    break;
+
+                case "RunCancelCommand":
+                case "ForceRunCancelCommand":
+                case "CreateNodeCommand":
+                case "CreateNoteCommand":
+                case "SelectModelCommand":
+                case "SelectInRegionCommand":
+                case "DragSelectionCommand":
+                case "DeleteModelCommand":
+                case "UndoRedoCommand":
+                case "ModelEventCommand":
+                case "UpdateModelValueCommand":
+                case "ConvertNodesToCodeCommand":
+                case "CreateCustomNodeCommand":
+                case "SwitchTabCommand":
+                case "MutateTestCommand":
+                    // for this commands there is no need
+                    // to do anything before execution
+                    break;
+
+                default:
+                    throw new InvalidOperationException("Unhandled command name");
+            }
         }
 
-        private void DragSelectionImpl(DragSelectionCommand command)
+        private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
-            if (DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
-                CurrentSpaceViewModel.BeginDragSelection(command.MouseCursor);
-            else
-                CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
-        }
-
-        private void MakeConnectionImpl(MakeConnectionCommand command)
-        {
-            System.Guid nodeId = command.NodeId;
+            Guid nodeId = command.NodeId;
 
             switch (command.ConnectionMode)
             {
-                case MakeConnectionCommand.Mode.Begin:
+                case DynamoModel.MakeConnectionCommand.Mode.Begin:
                     CurrentSpaceViewModel.BeginConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.End:
+                case DynamoModel.MakeConnectionCommand.Mode.End:
                     CurrentSpaceViewModel.EndConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.Cancel:
+                case DynamoModel.MakeConnectionCommand.Mode.Cancel:
                     CurrentSpaceViewModel.CancelConnection();
                     break;
             }
-        }
-
-        private void DeleteModelImpl(DeleteModelCommand command)
-        {
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
-            if (command.ModelGuid != Guid.Empty)
-            {
-                modelsToDelete.Add(CurrentSpace.GetModelInternal(command.ModelGuid));
-            }
-            else
-            {
-                // When nothing is specified then it means all selected models.
-                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
-                {
-                    if (selectable is ModelBase)
-                        modelsToDelete.Add(selectable as ModelBase);
-                }
-            }
-
-            model.DeleteModelInternal(modelsToDelete);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void UndoRedoImpl(UndoRedoCommand command)
-        {
-            if (command.CmdOperation == UndoRedoCommand.Operation.Undo)
-                CurrentSpace.Undo();
-            else if (command.CmdOperation == UndoRedoCommand.Operation.Redo)
-                CurrentSpace.Redo();
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void SendModelEventImpl(ModelEventCommand command)
-        {
-            CurrentSpace.SendModelEvent(command.ModelGuid, command.EventName);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void UpdateModelValueImpl(UpdateModelValueCommand command)
-        {
-            CurrentSpace.UpdateModelValue(command.ModelGuid,
-                command.Name, command.Value);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
-        {
-            CurrentSpace.ConvertNodesToCodeInternal(command.NodeId);
-
-            UndoCommand.RaiseCanExecuteChanged();
-            RedoCommand.RaiseCanExecuteChanged();
-            CurrentSpace.HasUnsavedChanges = true;
-        }
-
-        private void CreateCustomNodeImpl(CreateCustomNodeCommand command)
-        {
-            this.model.NewCustomNodeWorkspace(command.NodeId,
-                command.Name, command.Category, command.Description, true);
-        }
-
-        private void SwitchTabImpl(SwitchTabCommand command)
-        {
-            // We don't attempt to null-check here, we need it to fail fast.
-            model.CurrentWorkspace = model.Workspaces[command.TabIndex];
-
-            if (command.IsInPlaybackMode)
-                RaisePropertyChanged("CurrentWorkspaceIndex");
         }
 
         #endregion

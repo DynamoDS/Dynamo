@@ -44,6 +44,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -74,6 +78,7 @@
   <ItemGroup>
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
+    <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

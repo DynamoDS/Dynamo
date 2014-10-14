@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using Dynamo.ViewModels;
+using Dynamo.Models;
 
 namespace DynamoWebServer.Messages
 {
@@ -15,7 +15,7 @@ namespace DynamoWebServer.Messages
         /// List of recordable commands that should be executed on server
         /// </summary>
         [DataMember]
-        public IEnumerable<DynamoViewModel.RecordableCommand> Commands { get; private set; }
+        public IEnumerable<DynamoModel.RecordableCommand> Commands { get; private set; }
 
         [DataMember]
         public Guid WorkspaceGuid { get; private set; }

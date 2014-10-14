@@ -1,10 +1,12 @@
 ﻿using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.AvalonEdit.Rendering;
+using ProtoCore.Mirror;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -31,6 +33,9 @@ namespace Dynamo.UI.Controls
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
+        private CodeBlockNodeModel nodeModel = null;
+        private CompletionWindow completionWindow = null;
+        private CodeCompletionParser codeParser = null;
         
         public CodeBlockEditor()
         {
@@ -44,13 +49,60 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
             // Register text editing events
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-            this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+
+            // the code block should not be in focus upon undo/redo actions on node
+            if (this.nodeModel.ShouldFocus)
+            {
+                this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
+            }
+
+            // Register auto-completion callbacks
+            this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
+            this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
             InitializeSyntaxHighlighter();
+        }
+
+        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
+        {
+            IEnumerable<CodeBlockCompletionData> completions = null;
+            var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // Determine if the string to be completed is a class
+            var type = engineController.GetClassType(stringToComplete);
+            if (type != null)
+            {
+                var members = type.GetMembers();
+                completions = members.Select<StaticMirror, CodeBlockCompletionData>(
+                    x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
+            }
+            // If not of class type
+            else
+            {
+                // Check if the string to be completed is a declared variable
+                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
+                if (typeName != null)
+                    type = engineController.GetClassType(typeName);
+
+                if (type != null)
+                {
+                    var members = type.GetInstanceMembers();
+                    completions = members.Select<StaticMirror, CodeBlockCompletionData>(
+                        x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
+                }
+            }
+            
+            return completions;
+        }
+
+        internal string GetDescription()
+        {
+            return "";
         }
 
         #region Generic Properties
@@ -90,6 +142,69 @@ namespace Dynamo.UI.Controls
         );
         #endregion
 
+        #region Auto-complete event handlers
+        private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                if (e.Text.Length > 0 && completionWindow != null)
+                {
+                    // If a completion item is highlighted and the user types
+                    // a special character or function key, select the item and insert it
+                    if (!char.IsLetterOrDigit(e.Text[0]))
+                        completionWindow.CompletionList.RequestInsertion(e);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                if (e.Text == ".")
+                {
+                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                    
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
+                    
+                    var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
+
+                    if (!completions.Any())
+                        return;
+
+                    // TODO: Need to make this more efficient by instantiating 'completionWindow'
+                    // just once and updating its contents each time
+
+                    // This implementation has been referenced from
+                    // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+                    completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+                    var data = completionWindow.CompletionList.CompletionData;
+
+                    foreach (var completion in completions)
+                        data.Add(completion);
+
+                    completionWindow.Show();
+                    completionWindow.Closed += delegate
+                    {
+                        completionWindow = null;
+                    };
+                }
+            }
+            catch (System.Exception ex)
+            {
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
+        #endregion
+
         #region Generic Event Handlers
         /// <summary>
         /// Called when the CBN is committed and the underlying source data 
@@ -125,32 +240,7 @@ namespace Dynamo.UI.Controls
 
             // Highlighting Digits
             var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-
-            var highlightingRule = new HighlightingRule();
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-            highlightingRule.Color = new HighlightingColor()
-            {
-                Foreground = new CustomizedBrush(color)
-            };
-
-            // These Regex's must match with the grammars in the DS ATG for digits
-            // Refer to the 'number' and 'float' tokens in Start.atg
-            //*******************************************************************************
-            // number = digit {digit} .
-            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-            //*******************************************************************************
-
-            string digit = @"(-?\b\d+)";
-            string floatingPoint = @"(\.[0-9]+)";
-            string numberWithOptionalDecimal = digit + floatingPoint + "?";
-            
-            string exponent = @"([eE][+-]?[0-9]+)";
-            string numberWithExponent = digit + floatingPoint + exponent;
-
-            highlightingRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
-
-            rules.Add(highlightingRule);
-            
+            rules.Add(CodeBlockUtils.CreateDigitRule());
         }
 
         private void OnRequestReturnFocusToSearch()
@@ -194,31 +284,5 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
-    // Refer to link: 
-    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
-    internal sealed class CustomizedBrush : HighlightingBrush
-    {
-        private readonly SolidColorBrush brush;
-        public CustomizedBrush(Color color)
-        {
-            brush = CreateFrozenBrush(color);
-        }
 
-        public override Brush GetBrush(ITextRunConstructionContext context)
-        {
-            return brush;
-        }
-
-        public override string ToString()
-        {
-            return brush.ToString();
-        }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
-    }
 }

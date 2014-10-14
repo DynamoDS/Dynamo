@@ -1,53 +1,48 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" NodeName="Python Script" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" Modifiers="0" />
-  <DragSelectionCommand X="292" Y="236" DragOperation="0" />
-  <DragSelectionCommand X="414" Y="197" DragOperation="1" />
+  <CreateNodeCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" NodeName="DSIronPythonNode.PythonNode" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" Name="ScriptContent" Value="import clr&#xA;clr.AddReference('ProtoGeometry')&#xA;from Autodesk.DesignScript.Geometry import *&#xA;#The inputs to this node will be stored as a list in the IN variable.&#xA;dataEnteringNode = IN&#xA;sum=0;&#xA;&#xA;    &#xA;for item in IN:&#xA;	sum=sum+item&#xA;#Assign your output to the OUT variable&#xA;OUT = sum" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectModelCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" Modifiers="0" />
-  <SelectModelCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" Name="ScriptContent" Value="import clr&#xA;clr.AddReference('ProtoGeometry')&#xA;from Autodesk.DesignScript.Geometry import *&#xA;#The inputs to this node will be stored as a list in the IN variable.&#xA;dataEnteringNode = IN&#xA;sum=0;&#xA;&#xA;def Sum(s,b):&#xA;    return s+b&#xA;    &#xA;for item in IN:&#xA;	sum=sum+item&#xA;sum=Sum(sum,5)&#xA;&#xA;#Assign your output to the OUT variable&#xA;OUT = sum" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <CreateNodeCommand NodeId="48180b1a-c854-4690-bc2d-b46f4d0d91dd" NodeName="Code Block" X="221.428219151212" Y="213.549204406936" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="2de848f6-6a33-4985-a4bf-db1613e22ace" NodeName="Code Block" X="155" Y="99" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="48180b1a-c854-4690-bc2d-b46f4d0d91dd" Name="Code" Value="3" />
+  <UpdateModelValueCommand ModelGuid="2de848f6-6a33-4985-a4bf-db1613e22ace" Name="Code" Value="1" />
+  <CreateNodeCommand NodeId="6e90a18b-9eee-46cc-b026-7d960daa88a4" NodeName="Code Block" X="159" Y="178" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <CreateNodeCommand NodeId="a793fc76-66ed-4629-b60a-a40ca8a405aa" NodeName="Code Block" X="158.658798694172" Y="319.659415179551" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="6e90a18b-9eee-46cc-b026-7d960daa88a4" Name="Code" Value="2" />
+  <CreateNodeCommand NodeId="65c47969-7c7d-4b2b-a43f-7eec9832bad6" NodeName="Code Block" X="128" Y="248" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="a793fc76-66ed-4629-b60a-a40ca8a405aa" Name="Code" Value="4" />
-  <CreateNodeCommand NodeId="8851d403-dbf3-4f13-bb95-a5aa3a1b2c6a" NodeName="Code Block" X="211.713904080479" Y="354.033145429835" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="65c47969-7c7d-4b2b-a43f-7eec9832bad6" Name="Code" Value="3" />
+  <CreateNodeCommand NodeId="5b8ebaf6-f249-4d7c-bc7a-7dffb2cde1bf" NodeName="Code Block" X="162" Y="352" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="8851d403-dbf3-4f13-bb95-a5aa3a1b2c6a" Name="Code" Value="5" />
-  <CreateNodeCommand NodeId="628e4a5e-4695-4032-b7e8-9e7dcd4bcf78" NodeName="Code Block" X="195.274293960778" Y="458.648846191568" DefaultPosition="false" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="628e4a5e-4695-4032-b7e8-9e7dcd4bcf78" Name="Code" Value="6" />
-  <SelectModelCommand ModelGuid="8851d403-dbf3-4f13-bb95-a5aa3a1b2c6a" Modifiers="0" />
-  <DragSelectionCommand X="185.559978890046" Y="342.824320348221" DragOperation="0" />
-  <DragSelectionCommand X="204.24135402607" Y="361.505695484245" DragOperation="1" />
-  <SelectModelCommand ModelGuid="a793fc76-66ed-4629-b60a-a40ca8a405aa" Modifiers="0" />
-  <DragSelectionCommand X="130.263108487416" Y="302.472550054409" DragOperation="0" />
-  <DragSelectionCommand X="169.120368770345" Y="279.30764488574" DragOperation="1" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="AddInPort" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="AddInPort" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="AddInPort" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="AddInPort" />
-  <MakeConnectionCommand NodeId="48180b1a-c854-4690-bc2d-b46f4d0d91dd" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" PortIndex="0" Type="0" ConnectionMode="1" />
-  <MakeConnectionCommand NodeId="a793fc76-66ed-4629-b60a-a40ca8a405aa" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" PortIndex="1" Type="0" ConnectionMode="1" />
-  <MakeConnectionCommand NodeId="8851d403-dbf3-4f13-bb95-a5aa3a1b2c6a" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" PortIndex="2" Type="0" ConnectionMode="1" />
-  <MakeConnectionCommand NodeId="628e4a5e-4695-4032-b7e8-9e7dcd4bcf78" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" PortIndex="3" Type="0" ConnectionMode="1" />
+  <UpdateModelValueCommand ModelGuid="5b8ebaf6-f249-4d7c-bc7a-7dffb2cde1bf" Name="Code" Value="4" />
+  <CreateNodeCommand NodeId="f70b5977-6136-441f-a450-3f5733c94f28" NodeName="Code Block" X="143" Y="438" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="f70b5977-6136-441f-a450-3f5733c94f28" Name="Code" Value="5" />
+  <SelectModelCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" Modifiers="0" />
+  <DragSelectionCommand X="300.520676691729" Y="305.815789473684" DragOperation="0" />
+  <DragSelectionCommand X="616.490601503759" Y="347.635338345865" DragOperation="1" />
+  <MakeConnectionCommand NodeId="2de848f6-6a33-4985-a4bf-db1613e22ace" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="0" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="1" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="6e90a18b-9eee-46cc-b026-7d960daa88a4" PortIndex="0" Type="1" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="65c47969-7c7d-4b2b-a43f-7eec9832bad6" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="2" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="3" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="5b8ebaf6-f249-4d7c-bc7a-7dffb2cde1bf" PortIndex="0" Type="1" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="f70b5977-6136-441f-a450-3f5733c94f28" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="4" Type="0" ConnectionMode="1" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="RemoveInPort" />
+  <SelectModelCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" Modifiers="0" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="RemoveInPort" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
-  <ModelEventCommand ModelGuid="3f1e91ab-8b71-4626-b632-a18df1be036c" EventName="AddInPort" />
-  <MakeConnectionCommand NodeId="a793fc76-66ed-4629-b60a-a40ca8a405aa" PortIndex="0" Type="1" ConnectionMode="0" />
-  <MakeConnectionCommand NodeId="3f1e91ab-8b71-4626-b632-a18df1be036c" PortIndex="3" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" PortIndex="4" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="f70b5977-6136-441f-a450-3f5733c94f28" PortIndex="0" Type="1" ConnectionMode="1" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="LastRun" PauseDurationInMs="20" />
 </Commands>

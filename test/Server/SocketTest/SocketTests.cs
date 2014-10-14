@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Nodes;
+using Dynamo.ViewModels;
+
 using DynamoWebServer;
 using DynamoWebServer.Messages;
 
@@ -45,6 +49,20 @@ namespace Dynamo.Tests
                 var message = messageHandler.DeserializeMessage(text);
                 Assert.NotNull(message);
             }
+
+            Assert.Throws<ArgumentException>(() => messageHandler.DeserializeMessage("Wrong data"));
+        }
+
+        [Test]
+        public void CanSerialize()
+        {
+            var messageHandler = new MessageHandler(ViewModel);
+            var message = new RunCommandsMessage();
+
+            var json = messageHandler.Serialize(message);
+            Assert.NotNull(json);
+            json = messageHandler.Serialize(null);
+            Assert.Null(json);
         }
 
         [Test]
@@ -54,7 +72,7 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
             string createCommand = File.ReadAllText(commandPath);
 
-            webServer.ExecuteMessageFromSocket(createCommand, "");
+            webServer.ExecuteMessageFromSocket(createCommand, "", false);
 
             Assert.IsTrue(model.Nodes.Any(node => node.GUID.ToString() == GUID));
         }
@@ -68,7 +86,7 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNode.txt");
             string updateCommand = File.ReadAllText(commandPath);
 
-            webServer.ExecuteMessageFromSocket(updateCommand, "");
+            webServer.ExecuteMessageFromSocket(updateCommand, "", false);
 
             var doubleInput = model.Nodes.First(
                     node => node.GUID.ToString() == GUID) as DoubleInput;
@@ -87,8 +105,36 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNode.txt");
             string deleteCommand = File.ReadAllText(commandPath);
 
-            webServer.ExecuteMessageFromSocket(deleteCommand, "");
+            webServer.ExecuteMessageFromSocket(deleteCommand, "", false);
             Assert.IsFalse(model.Nodes.Any(node => node.GUID.ToString() == GUID));
+        }
+
+        [Test]
+        public void CanClearWorkspace()
+        {
+            var model = ViewModel.Model;
+            CanExecuteCreateCommand();
+
+            Assert.IsTrue(model.Nodes.Any());
+
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\clearWorkspace.txt");
+            string clearWorkspace = File.ReadAllText(commandPath);
+
+            webServer.ExecuteMessageFromSocket(clearWorkspace, "", false);
+
+            Assert.IsFalse(model.Nodes.Any());
+        }
+
+        [Test]
+        public void CanExecuteCreateCommandQueue()
+        {
+            var model = ViewModel.Model;
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
+            string createCommand = File.ReadAllText(commandPath);
+
+            webServer.ExecuteMessageFromSocket(createCommand, "", true);
+
+            Assert.IsFalse(model.Nodes.Any());
         }
 
         [Test]

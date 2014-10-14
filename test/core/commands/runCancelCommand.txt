@@ -1,8 +1,8 @@
-{  
-   "$type":"DynamoWebServer.Messages.RunCommandsMessage, DynamoWebServer",
-   "commands":[  
-      {  
-         "$type":"Dynamo.ViewModels.DynamoViewModel+RunCancelCommand, DynamoCore"
-      }
-   ]
+{
+    "$type":"DynamoWebServer.Messages.RunCommandsMessage, DynamoWebServer",
+    "commands":
+    [{
+        "$type":"Dynamo.ViewModels.DynamoViewModel+RunCancelCommand, DynamoCore"
+    }],
+    "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
 }

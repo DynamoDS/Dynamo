@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
+
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
@@ -65,8 +67,13 @@ namespace ProtoCore
             public const string kPropertyOfClassNotFound = "Class '{0}' does not have a property '{1}'.";
             public const string kPropertyInaccessible = "Property '{0}' is inaccessible.";
             public const string kMethodResolutionFailure = "Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.";
+            public const string kMethodResolutionFailureWithTypes = "One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}.";
             public const string kMethodResolutionFailureForOperator = "Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.";
             public const string kConsoleWarningMessage = "> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>";
+
+            public const string FUNCTION_GROUP_RESOLUTION_FAILURE =
+                "No function called {0} could be found. Please check the name of the function.";
+
         }
 
         public struct WarningEntry
@@ -77,6 +84,7 @@ namespace ProtoCore
             public int Column;
             public int ExpressionID;
             public Guid GraphNodeGuid;
+            public int AstID;
             public string Filename;
         }
     }
@@ -123,10 +131,15 @@ namespace ProtoCore
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
         }
-
+        
         public void ClearWarningsForGraph(Guid guid)
         {
             warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+        }
+
+        public void ClearWarningsForAst(int astID)
+        {
+            warnings.RemoveAll(w => w.AstID.Equals(astID));
         }
 
         public RuntimeStatus(Core core, 
@@ -189,6 +202,7 @@ namespace ProtoCore
                 Line = line,
                 ExpressionID = core.RuntimeExpressionUID,
                 GraphNodeGuid = core.ExecutingGraphnode == null ? Guid.Empty : core.ExecutingGraphnode.guid,
+                AstID = core.ExecutingGraphnode == null ? Constants.kInvalidIndex : core.ExecutingGraphnode.OriginalAstID,
                 Filename = filename
             };
             warnings.Add(entry);
@@ -202,6 +216,18 @@ namespace ProtoCore
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
+
+        /// <summary>
+        /// Report that a function group couldn't be found
+        /// </summary>
+        /// <param name="methodName">The method that can't be found</param>
+        public void LogFunctionGroupNotFoundWarning(
+            string methodName)
+        {
+            String message = string.Format(WarningMessage.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
+            LogWarning(WarningID.kMethodResolutionFailure, message);
+        }
+
 
         public void LogMethodResolutionWarning(string methodName,
                                                int classScope = Constants.kGlobalScope, 
@@ -233,7 +259,19 @@ namespace ProtoCore
             }
             else
             {
-                message = string.Format(WarningMessage.kMethodResolutionFailure, methodName);
+                StringBuilder sb = new StringBuilder();
+                sb.Append("(");
+                foreach (StackValue sv in arguments)
+                {
+                    sb.Append(core.TypeSystem.GetType(sv.metaData.type));
+                    sb.Append(",");
+                }
+                String outString = sb.ToString();
+                String typesList = outString.Substring(0, outString.Length - 1); //Drop trailing ','
+                typesList = typesList + ")";
+
+
+                message = string.Format(WarningMessage.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
             LogWarning(WarningID.kMethodResolutionFailure, message);

@@ -14,7 +14,7 @@ namespace Dynamo.Search
 {
     public class SearchModel
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -64,7 +64,7 @@ namespace Dynamo.Search
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
+            get { return _browserRootCategories; }
             set { _browserRootCategories = value; }
         }
 
@@ -84,7 +84,10 @@ namespace Dynamo.Search
         /// </value>
         internal int MaxNumSearchResults { get; set; }
 
-        private readonly DynamoModel DynamoModel;
+        private readonly DynamoModel dynamoModel;
+
+        //For caching of search elements
+        List<LibraryItem> allLibraryItems;
 
         #endregion
 
@@ -101,8 +104,8 @@ namespace Dynamo.Search
 
         internal SearchModel(DynamoModel model)
         {
-            DynamoModel = model;
-            DynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
+            dynamoModel = model;
+            dynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
 
             InitializeCore();
         }
@@ -131,9 +134,9 @@ namespace Dynamo.Search
 
         ~SearchModel()
         {
-            if (DynamoModel != null)
+            if (dynamoModel != null)
             {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
+                dynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
             }
         }
 
@@ -502,6 +505,36 @@ namespace Dynamo.Search
             return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
+        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
+        {
+            if (allLibraryItems == null || !allLibraryItems.Any())
+            {
+                allLibraryItems = new List<LibraryItem>();
+                foreach (var elem in BrowserRootCategories)
+                {
+                    allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
+                }
+            }
+            return allLibraryItems;
+        }
+
+        private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
+        {
+            var result = new List<LibraryItem>();
+            foreach (BrowserItem item in elem.Items)
+            {
+                if (item is SearchElementBase)
+                {
+                    result.Add(new LibraryItem(item as SearchElementBase, dynamoModel));
+                }
+                else
+                {
+                    result.AddRange(GetLibraryItemsByCategory(item));
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region Add
@@ -570,7 +603,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    
+
                 }
             }
 
@@ -627,8 +660,8 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 this.NodesHiddenInHomeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is HomeWorkspaceModel)
+                if (this.dynamoModel != null && this.dynamoModel.CurrentWorkspace != null &&
+                    this.dynamoModel.CurrentWorkspace is HomeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }
@@ -638,8 +671,8 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 this.NodesHiddenInCustomNodeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
+                if (this.dynamoModel != null && this.dynamoModel.CurrentWorkspace != null &&
+                    this.dynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }

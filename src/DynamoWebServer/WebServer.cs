@@ -2,8 +2,7 @@
 using System.Configuration;
 using System.Net;
 
-using Dynamo.ViewModels;
-
+using Dynamo.Models;
 using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
 
@@ -19,18 +18,18 @@ namespace DynamoWebServer
 {
     public class WebServer : IWebServer
     {
-        private readonly DynamoViewModel dynamoViewModel;
+        private readonly DynamoModel dynamoModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
 
         private readonly MessageHandler messageHandler;
-        private SocketMessageQueue messageQueue;
+        private readonly SocketMessageQueue messageQueue;
 
-        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
+        public WebServer(DynamoModel dynamoModel, IWebSocket socket)
         {
             webSocket = socket;
-            this.dynamoViewModel = dynamoViewModel;
-            messageHandler = new MessageHandler(dynamoViewModel);
+            this.dynamoModel = dynamoModel;
+            messageHandler = new MessageHandler(dynamoModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
             messageQueue = new SocketMessageQueue();
             jsonSettings = new JsonSerializerSettings
@@ -94,16 +93,16 @@ namespace DynamoWebServer
             }
         }
 
-        public void ExecuteMessageFromSocket(string message, string sessionId)
+        public void ExecuteMessageFromSocket(string message, string sessionId, bool enqueue = true)
         {
             var msg = messageHandler.DeserializeMessage(message);
-            ExecuteMessageFromSocket(msg, sessionId);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
         }
 
-        public void ExecuteFileFromSocket(byte[] file, string sessionId)
+        public void ExecuteFileFromSocket(byte[] file, string sessionId, bool enqueue = true)
         {
-            UploadFileMessage msg = new UploadFileMessage(file);
-            ExecuteMessageFromSocket(msg, sessionId);
+            var msg = new UploadFileMessage(file);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
         }
 
         public void ProcessExit(object sender, EventArgs e)
@@ -126,7 +125,7 @@ namespace DynamoWebServer
 
             messageHandler.SessionId = session.SessionID;
 
-            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID);
+            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
             LogInfo("Web socket: connected");
         }
 
@@ -189,8 +188,6 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
             webSocket.NewDataReceived += socketServer_NewDataReceived;
-
-            dynamoViewModel.VisualizationManager.RenderComplete += messageHandler.NodesDataModified;
         }
 
         void UnBindEvents()
@@ -199,19 +196,24 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
             webSocket.NewDataReceived -= socketServer_NewDataReceived;
-
-            dynamoViewModel.VisualizationManager.RenderComplete -= messageHandler.NodesDataModified;
         }
 
-        void ExecuteMessageFromSocket(Message message, string sessionId)
+        void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
         {
-            messageQueue.EnqueueMessage(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
+            if (enqueue)
+            {
+                messageQueue.EnqueueMessage(() => messageHandler.Execute(dynamoModel, message, sessionId));
+            }
+            else
+            {
+                messageHandler.Execute(dynamoModel, message, sessionId);
+            }
         }
 
         void LogInfo(string info)
         {
-            if (dynamoViewModel.Model.Logger != null)
-                dynamoViewModel.Model.Logger.Log(info);
+            if (dynamoModel.Logger != null)
+                dynamoModel.Logger.Log(info);
         }
 
         #endregion

@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.GetClosestPoint", "Geometry.GetClosestPoint@Geometry");
+                "Geometry.ClosestPointTo", "Geometry.ClosestPointTo@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 

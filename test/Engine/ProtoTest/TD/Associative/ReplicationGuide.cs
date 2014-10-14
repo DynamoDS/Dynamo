@@ -239,7 +239,6 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T0001_Replication_Guide_Function_With_2_Arg_19()
         {
             String code =
@@ -593,7 +592,7 @@ namespace ProtoTest.TD.Associative
         public void T034_Replication_Guides_Not_On_All_Arguments_8()
         {
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;	   x = x1;	   y = y1;	      }}a = (0..1..#2);//a = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, a<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
+@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);//a = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, a<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -623,7 +622,7 @@ namespace ProtoTest.TD.Associative
             //Analysis: The Rep Guides are being resolved to C0C1, rather than C1C2. This needs to
             //have the fix applied for function calls applied to ctors as well.
             String code =
-@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;	   x = x1;	   y = y1;	      }}a = (0..1..#2);b = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, b<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
+@"class A{   z : double;   x : double;   y : double;      constructor A( z1, x1, y1)   {       z = z1;       x = x1;       y = y1;	      }}a = (0..1..#2);b = { 0, 1}; // fails with this as well//a = 0..1..#2; // fails with this as wellcs = A.A(1, a<1>, b<2>); //cs = A.A(1, { 0, 1 }<1>, { 0, 1 }<2>); //no warnign with this, but expected output : { { 0,0 }, { 1,1} }test = cs.x;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -740,7 +739,7 @@ namespace ProtoTest.TD.Associative
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_5()
         {
-            string code = @"            def foo : int(a : int,b:int)            {	            return = a * b;            }            list1 = {1,2};            list2 = {1,2};            list3 = foo(foo(foo(list1<1>, list2<2>)<1>, list2<2>)<1>, list2<2>);";
+            string code = @"            def foo : int(a : int,b:int)            {                return = a * b;            }            list1 = {1,2};            list2 = {1,2};            list3 = foo(foo(foo(list1<1>, list2<2>)<1>, list2<2>)<1>, list2<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("list3", new object[] { new object[] { new object[] { new object[] { 1 }, new object[] { 2 } }, new object[] { new object[] { 2 }, new object[] { 4 } } }, new object[] { new object[] { new object[] { 2 }, new object[] { 4 } }, new object[] { new object[] { 4 }, new object[] { 8 } } } } );
@@ -889,7 +888,7 @@ namespace ProtoTest.TD.Associative
         public void T039_1467423_replication_guide_on_array_6()
         {
             string code =
-@"def foo ( a, b, c){    x = a + b + c ;	return = x;}y = 3..4;test2 = 0..foo(1, { 1, 2}<1>, y<2>);test = test2[1][1];";
+@"def foo ( a, b, c){    x = a + b + c ;    return = x;}y = 3..4;test2 = 0..foo(1, { 1, 2}<1>, y<2>);test = test2[1][1];";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { 0, 1, 2, 3, 4, 5, 6, 7 });
@@ -900,7 +899,7 @@ namespace ProtoTest.TD.Associative
         public void T039_1467423_replication_guide_on_array_7()
         {
             string code =
-@"def foo ( a, b, c){    x = a + b + c ;	return = x;}y = 3..4;test = foo(1, (1..2)<1>, y<2>);";
+@"def foo ( a, b, c){    x = a + b + c ;    return = x;}y = 3..4;test = foo(1, (1..2)<1>, y<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
@@ -911,7 +910,7 @@ namespace ProtoTest.TD.Associative
         public void T039_1467423_replication_guide_on_array_8()
         {
             string code =
-@"def foo ( a, b, c){    x = a + b + c ;	return = x;}y = 3..4;test = 1 + foo(1, (1..2)<1>, y<2>);";
+@"def foo ( a, b, c){    x = a + b + c ;    return = x;}y = 3..4;test = 1 + foo(1, (1..2)<1>, y<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new object[] { 6, 7 }, new object[] { 7, 8 } });
@@ -1291,7 +1290,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void T0106_FuncCall_Int_MultipleGuides()
         {
             string code =
@@ -1305,7 +1303,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void T0107_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1482,7 +1479,7 @@ namespace ProtoTest.TD.Associative
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
             string code =
-@" def func (x1:int[],y1:int[],z1:int[]){    return = A.foo6( x1<2> , y1<2> , z1<5> );}class A{    x : int[];    y : int[];    z : int[];    a ;	p1 = x<2> + y<2> + z<5>;    constructor A ( )    {        this.x = {0,1};        this.y = {2,3};        this.z = {4,5};        a = this.foo(this.x<2>, this.y<2>, this.z<5>) ;      }    def foo (x1,y1,z1)    {        return = x1+y1+z1;    } 	def foo2 ()    {        return = this.foo(this.x<2>, this.y<2>, this.z<5>) ;     }	def foo3 ()    {        return = this.foo(x<2>, y<2>, z<5>) ;     }	static def foo4(x1, y1, z1)	{	    return = x1 + y1 + z1;	}	static def foo5(x1:int[], y1:int[], z1:int[])	{	    return = this.foo6( x1<2>, y1<2>, z1<5> );	}	static def foo6(x1:int, y1:int, z1:int)	{	    return = x1 + y1 + z1;	}}x = {0,1};y = {2,3};z = {4,5};test = A.A();  test1 = test.a;test2 = test.p1;test3 = test.foo2(); test4 = test.foo3();test5 = A.foo4(x<2>, y<2>, z<5>);test6 = A.foo5(x, y, z);test7 = func(x, y, z);            ";
+@" def func (x1:int[],y1:int[],z1:int[]){    return = A.foo6( x1<2> , y1<2> , z1<5> );}class A{    x : int[];    y : int[];    z : int[];    a ;    p1 = x<2> + y<2> + z<5>;    constructor A ( )    {        this.x = {0,1};        this.y = {2,3};        this.z = {4,5};        a = this.foo(this.x<2>, this.y<2>, this.z<5>) ;      }    def foo (x1,y1,z1)    {        return = x1+y1+z1;    }     def foo2 ()    {        return = this.foo(this.x<2>, this.y<2>, this.z<5>) ;     }    def foo3 ()    {        return = this.foo(x<2>, y<2>, z<5>) ;     }    static def foo4(x1, y1, z1)    {        return = x1 + y1 + z1;    }    static def foo5(x1:int[], y1:int[], z1:int[])    {        return = this.foo6( x1<2>, y1<2>, z1<5> );    }    static def foo6(x1:int, y1:int, z1:int)    {        return = x1 + y1 + z1;    }}x = {0,1};y = {2,3};z = {4,5};test = A.A();  test1 = test.a;test2 = test.p1;test3 = test.foo2(); test4 = test.foo3();test5 = A.foo4(x<2>, y<2>, z<5>);test6 = A.foo5(x, y, z);test7 = func(x, y, z);            ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { new Object[] { 6, 7 }, new Object[] { 8, 9 } });
@@ -1518,7 +1515,7 @@ namespace ProtoTest.TD.Associative
         public void T0124_ReplicationGuides_BuiltinMethods()
         {
             string code =
-@" test1;test2;test3;test4;test5;test6;test7;test8;[Associative]{	x = {{0,1},{2,3}};	y = {0,1};	z = { ""int"", ""double"" };	test1 = Contains ( x<1>, y<2>);	test2 = IndexOf ( x<1>, y<2>) ;	test3 = Remove ( x<1>, y<2>) ; 	test4 = Insert ( x<1>, y<2>, y<2>) ;	test5 = NormalizeDepth ( x<1>, y<2>) ; 	test6 = RemoveIfNot ( x<1>, z<2>) ; 	test7 = SortIndexByValue ( x<1>, y<2>) ; 	test8 = Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 	}    ";
+@" test1;test2;test3;test4;test5;test6;test7;test8;[Associative]{    x = {{0,1},{2,3}};    y = {0,1};    z = { ""int"", ""double"" };    test1 = Contains ( x<1>, y<2>);    test2 = IndexOf ( x<1>, y<2>) ;    test3 = Remove ( x<1>, y<2>) ;     test4 = Insert ( x<1>, y<2>, y<2>) ;    test5 = NormalizeDepth ( x<1>, y<2>) ;     test6 = RemoveIfNot ( x<1>, z<2>) ;     test7 = SortIndexByValue ( x<1>, y<2>) ;     test8 = Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ;     }    ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { new Object[] { true, true }, new Object[] { false, false } });
@@ -1548,7 +1545,7 @@ namespace ProtoTest.TD.Associative
         public void T0126_ReplicationGudes_ModifierBlock()
         {
             string code =
-@" test1;test2;test3;test4;test5;test6;test7;test8;[Associative]{	x = {{0,1},{2,3}};	y = {0,1};	z = { ""int"", ""double"" };	test1 = { x;	          			  Contains ( x<1>, y<2>);			  }			  	test2 = { IndexOf ( x<1>, y<2>);			  } 	test3 = { y;			  Remove ( x<1>, y<2>);			  } 	test4 = { x;	          y;			  Insert ( x<1>, y<2>, y<2>) ; 			  }	test5 = { x=>a1;	          			  NormalizeDepth ( a1<1>, y<2>) ; 			  }	test6 = { 0;	          1;			  RemoveIfNot ( x<1>, z<2>) ;			  }	test7 = { x => a1;	          y => a2;			  SortIndexByValue ( a1<1>, a2<2>) ; 			  }	test8 = { 			  Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 			  }	}    ";
+@" test1;test2;test3;test4;test5;test6;test7;test8;[Associative]{    x = {{0,1},{2,3}};    y = {0,1};    z = { ""int"", ""double"" };    test1 = { x;	                        Contains ( x<1>, y<2>);              }                  test2 = { IndexOf ( x<1>, y<2>);              }     test3 = { y;              Remove ( x<1>, y<2>);              }     test4 = { x;              y;              Insert ( x<1>, y<2>, y<2>) ;               }    test5 = { x=>a1;	                        NormalizeDepth ( a1<1>, y<2>) ;               }    test6 = { 0;              1;              RemoveIfNot ( x<1>, z<2>) ;              }    test7 = { x => a1;              y => a2;              SortIndexByValue ( a1<1>, a2<2>) ;               }    test8 = {               Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ;               }	}    ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { new Object[] { true, true }, new Object[] { false, false } });
@@ -1566,7 +1563,7 @@ namespace ProtoTest.TD.Associative
         public void T0127_ReplicationGudes_ModifierBlock()
         {
             string code =
-@" class A{    a;	constructor A (a1)	{	    a = a1;	}	def foo ( a1 , b1 )	{	    return = a1 + b1;	}	static def foo2 ( a1, b1 )	{	    return = a1 + b1;	}}def foo ( x, y ){   return = x + y;}[Associative]{	x = {0,1};	y = {2,3};		test1 = { foo ( x<1>, y<2>);			}			  	test2 = { A.A(0) => a1;	          a1.foo(x<1>, y<2>);			} 			  	test3 = { a1.foo(x<1>,y<1>);			} 				test4 = { A.foo2(x,y<2>) ;			}			  	test5 = { A.A({0,1})=>a2;	          			  a2<1>.foo(y<2>); 			}			  	//test6 = { A.A({0,1})=>a2;	          			  //a2<1>.foo(y)<2>;			//}			  	test7 = { 1 == 1 ? foo ( x<1>, y<2>) : 0;	           			}	}  ";
+@" class A{    a;    constructor A (a1)    {        a = a1;    }    def foo ( a1 , b1 )    {        return = a1 + b1;    }    static def foo2 ( a1, b1 )    {        return = a1 + b1;    }}def foo ( x, y ){   return = x + y;}[Associative]{    x = {0,1};    y = {2,3};        test1 = { foo ( x<1>, y<2>);            }                  test2 = { A.A(0) => a1;              a1.foo(x<1>, y<2>);            }                   test3 = { a1.foo(x<1>,y<1>);            }                 test4 = { A.foo2(x,y<2>) ;            }                  test5 = { A.A({0,1})=>a2;	                        a2<1>.foo(y<2>);             }                  //test6 = { A.A({0,1})=>a2;	                        //a2<1>.foo(y)<2>;            //}                  test7 = { 1 == 1 ? foo ( x<1>, y<2>) : 0;	                       }    }  ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { new Object[] { 2, 3 }, new Object[] { 3, 4 } });
@@ -1583,7 +1580,7 @@ namespace ProtoTest.TD.Associative
         public void T0128_ReplicationGudes_InlineCondition()
         {
             string code =
-@" import(""DSCoreNodes.dll"");def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}b = Count(foo1(foo2()<1>,foo3()<2>));a = Count(foo1(foo2()<1>,foo3()<2>)) == 2 ? foo1((5..6)<1>, (7..8)<2>) : foo1(foo2()<1>,foo3()<2>);c1 = 5..6;c2 = Math.Min ({0,1},{0,1} );c3 = foo1 ( c1<1>, c2<2>); // {{5,6},{6,7}}c4 = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;class A{    a : int;	constructor A()	{	    a = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}	def func ()	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}def func ( ) {    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;}t1 = [Imperative]{    return = [Associative]	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}t2 = [Imperative]{    return = [Associative]	{	    return = [Imperative]		{		    return = [Associative]			{			    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;			}		}	}}	t3 = func();t = A.A();t4 = t.a;t5 = t.func();	";
+@" import(""DSCoreNodes.dll"");def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}b = Count(foo1(foo2()<1>,foo3()<2>));a = Count(foo1(foo2()<1>,foo3()<2>)) == 2 ? foo1((5..6)<1>, (7..8)<2>) : foo1(foo2()<1>,foo3()<2>);c1 = 5..6;c2 = Math.Min ({0,1},{0,1} );c3 = foo1 ( c1<1>, c2<2>); // {{5,6},{6,7}}c4 = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;class A{    a : int;    constructor A()    {        a = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;    }    def func ()    {        return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;    }}def func ( ) {    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;}t1 = [Imperative]{    return = [Associative]    {        return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;    }}t2 = [Imperative]{    return = [Associative]    {        return = [Imperative]        {            return = [Associative]            {                return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;            }        }    }}	t3 = func();t = A.A();t4 = t.a;t5 = t.func();	";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { new Object[] { 12, 13 }, new Object[] { 13, 14 } });
@@ -1909,6 +1906,76 @@ namespace ProtoTest.TD.Associative
                 });
         }
 
+        [Test]
+        public void RegressMagn4853_1()
+        {
+            string code =
+            @" def foo(x){}x = foo(""xyz"");";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
 
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_2()
+        {
+            // Test replication on singleton
+            string code =
+            @" class Test{    def foo()    {    }}t = Test();r1 = t.foo();r2 = t<1>.foo();r3 = t<1L>.foo();";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_3()
+        {
+            // Test replication on singleton 
+            string code =
+            @" class Test{    def foo(x)    {       return = x;    }}t = Test();v = 42;r1 = t.foo(v);r2 = t<1>.foo(v<1>);r3 = t<1L>.foo(v<1L>);r4 = t<1>.foo(v<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_4()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    def foo()    {    }}ts = {Test(), Test()};r1 = ts.foo();r2 = ts<1>.foo();r3 = ts<1L>.foo();";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_5()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    def foo(x)    {       return = 42;    }}ts = {Test(), Test()};vs = {42, 43};r1 = ts.foo(vs);r2 = ts<1>.foo(vs<1>);r3 = ts<1L>.foo(vs<1L>);r4 = ts<1>.foo(vs<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
+
+        [Test]
+        public void RegressMagn4853_6()
+        {
+            // Test replication on LHS
+            string code =
+            @" class Test{    x = 42;}t = Test();r1 = t.x;ts = {Test(), Test()};r2 = ts.x;";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            // Should get clear after running
+            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+        }
     }
 }
