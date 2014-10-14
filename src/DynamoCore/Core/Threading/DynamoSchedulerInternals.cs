@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Dynamo.Interfaces;
 
@@ -69,7 +70,10 @@ namespace Dynamo.Core.Threading
 
         private void ReprioritizeTasksInQueue()
         {
-            // TODO: Add queue re-ordering codes here.
+            if (taskQueue.Count < 2) // Nothing to reprioritize here.
+                return;
+
+            taskQueue.Sort(new AsyncTaskComparer());
         }
 
         private static void ProcessTaskInternal(AsyncTask asyncTask)
