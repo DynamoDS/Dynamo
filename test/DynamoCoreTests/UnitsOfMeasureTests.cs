@@ -648,6 +648,24 @@ namespace Dynamo.Tests
             Assert.AreEqual(Insolation.ToKwhMeter2, Insolation.Conversions[Insolation.KILLOWATT_HOURS_PER_SQUARE_METER]);
             Assert.AreEqual(Insolation.ToBTUFoot2, Insolation.Conversions[Insolation.BTU_PER_SQUARE_FOOT]);
         }
+
+        [Test, Category("UnitTests")]
+        public void Location_ValidArgs()
+        {
+            var loc = Location.ByLatitudeAndLongitude(20.0, -20.0);
+            Assert.NotNull(loc);
+            Assert.AreEqual(loc.Latitude, 20.0);
+            Assert.AreEqual(loc.Longitude, -20.0);
+        }
+
+        [Test, Category("UnitTests")]
+        public void Location_InvalidArgs()
+        {
+            var loc = Location.ByLatitudeAndLongitude(20.0, -20.0);
+
+            Assert.Throws<Exception>(()=>Location.ByLatitudeAndLongitude(500.0, 10.0));
+            Assert.Throws<Exception>(() => Location.ByLatitudeAndLongitude(10.0, 500.0));
+        }
     }
 
     internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest
