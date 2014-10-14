@@ -1,8 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Core.Threading
 {
     internal delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
+
+    /// <summary>
+    /// DynamoScheduler makes use of this comparer class to sort its internal 
+    /// task queue. Refer to AsyncTask.WeighAgainst for details of comparison.
+    /// </summary>
+    /// 
+    internal class AsyncTaskComparer : IComparer<AsyncTask>
+    {
+        public int Compare(AsyncTask x, AsyncTask y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                throw new InvalidOperationException(
+                    "A task should not be scheduled twice");
+            }
+
+            return x.WeighAgainst(y);
+        }
+    }
 
     internal abstract class AsyncTask
     {
