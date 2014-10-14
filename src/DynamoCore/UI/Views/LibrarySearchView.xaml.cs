@@ -52,5 +52,17 @@ namespace Dynamo.UI.Views
             // Clear SearchText in ViewModel, as result search textbox clears as well.
             searchViewModel.SearchText = "";
         }
+
+        private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
+        {
+            ListBoxItem fromSender = sender as ListBoxItem;
+            libraryToolTipPopup.PlacementTarget = fromSender;
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+        }
+
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null);
+        }
     }
 }

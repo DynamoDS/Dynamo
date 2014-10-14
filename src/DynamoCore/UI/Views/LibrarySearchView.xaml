@@ -141,6 +141,7 @@
             Then classes will be collapsed.-->
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
+        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
 
         <!--EndRegion-->
 
@@ -281,10 +282,10 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
-            <!--<EventSetter Event="MouseEnter"
+            <EventSetter Event="MouseEnter"
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
-                         Handler="OnPopupMouseLeave" />-->
+                         Handler="OnPopupMouseLeave" />
         </Style>
 
         <!--Style for found MemberGroup-->
@@ -601,7 +602,8 @@
                                              BorderBrush="Transparent"
                                              BorderThickness="0"
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
-                                             ItemsSource="{Binding MemberGroups}">
+                                             ItemsSource="{Binding MemberGroups}"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -694,5 +696,18 @@
                 </Style>
             </Button.Style>
         </Button>
+
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        AttachmentSide="Right"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
     </Grid>
 </UserControl>
