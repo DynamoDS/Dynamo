@@ -293,6 +293,7 @@ namespace ProtoScript.Runners
                         }
                     }
 
+                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
@@ -428,15 +429,10 @@ namespace ProtoScript.Runners
                         csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                     }
 
-                    // There is a bug in DeactivateGraphNodes(), otherwise we
-                    // could remove all warnings generated from removedNodes in
-                    // DeactivateGraphnodes(). 
-                    // Right now just simply remove all related warnings.
-                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
-
                     foreach (var ast in csData.RemovedBinaryNodesFromModification)
                     {
                         core.BuildStatus.ClearWarningsForAst(ast.ID);
+                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
                     }
                 }
 
