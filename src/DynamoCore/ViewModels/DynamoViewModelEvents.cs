@@ -32,13 +32,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event AuthenticationRequestHandler RequestAuthentication;
-        public void OnRequestAuthentication()
-        {
-            if (RequestAuthentication != null)
-                RequestAuthentication(model.PackageManagerClient);
-        }
-
         public event ImageSaveEventHandler RequestSaveImage;
         public virtual void OnRequestSaveImage(Object sender, ImageSaveEventArgs e)
         {

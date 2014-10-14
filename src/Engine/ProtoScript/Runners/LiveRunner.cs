@@ -1533,6 +1533,16 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
+        private void ApplyUpdate()
+        {
+            if (runnerCore.DeferredUpdates > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                Execute();
+            }
+        }
+
         /// <summary>
         /// Resets few states in the core to prepare the core for a new
         /// delta code compilation and execution
@@ -1555,6 +1565,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(code);
+            ApplyUpdate();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1576,6 +1587,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
+            ApplyUpdate();
         }
 
 
