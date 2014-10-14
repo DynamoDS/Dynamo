@@ -18,7 +18,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    class ElementTests : RevitNodeTestBase
+    class ElementTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\materials.rvt")]
@@ -118,6 +118,29 @@ namespace RevitTestServices.Elements
         #endregion
 
         #region Curve extraction
+
+        [Test]
+        [TestModel(@".\projectWithNestedNonSharedAdaptiveComponent.rvt")]
+        public void Curves_ExtractsCurvesFromNestedNonSharedFamilyInstanceAccountingForInstanceTransform()
+        {
+            var ele = ElementSelector.ByElementId(186006, true);
+            var crvs = ele.Curves;
+
+            Assert.AreEqual(4, crvs.Length);
+            Assert.AreEqual(4, crvs.OfType<Autodesk.DesignScript.Geometry.Line>().Count());
+
+            var bbox = BoundingBox.ByGeometry(crvs);
+
+            bbox.MinPoint.ShouldBeApproximately(-31.607, -26.870, 0, 1e-3);
+            bbox.MaxPoint.ShouldBeApproximately(25.434, 33.212, 0, 1e-3);
+
+            var refs = crvs.Select(x => ElementCurveReference.TryGetCurveReference(x));
+
+            foreach (var refer in refs)
+            {
+                Assert.AreEqual(186006, refer.InternalReference.ElementId.IntegerValue);
+            }
+        }
 
         [Test]
         [TestModel(@".\GetCurvesFromFamilyInstance.rfa")]
