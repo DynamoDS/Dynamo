@@ -1,7 +1,11 @@
 ﻿using Autodesk.DesignScript.Runtime;
+
 using Revit.Elements;
-using Revit.Elements.Views;
+using Revit.GeometryConversion;
+
 using RevitServices.Persistence;
+
+using View = Revit.Elements.Views.View;
 
 namespace Revit.Application
 {
@@ -49,11 +53,19 @@ namespace Revit.Application
         /// <returns></returns>
         public static Document Current
         {
-            get
-            {
-                return new Document(DocumentManager.Instance.CurrentDBDocument);
-            }
+            get { return new Document(DocumentManager.Instance.CurrentDBDocument); }
         }
 
+        public DynamoUnits.Location Location
+        {
+            get
+            {
+                var loc = InternalDocument.SiteLocation;
+                return DynamoUnits.Location.ByLatitudeAndLongitude(
+                    loc.Latitude.ToDegrees(),
+                    loc.Longitude.ToDegrees());
+            }
+        }
     }
+
 }
