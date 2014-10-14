@@ -1,4 +1,4 @@
-<Workspace Version="0.7.2.37234" X="66.6724266793865" Y="198.974805981874" zoom="0.333707546771361" Description="" Category="" Name="Home">
+<Workspace Version="0.7.2.17096" X="18.6805611391203" Y="276.306715690526" zoom="0.583894907825018" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="bc973ecc-5d79-49fa-8b51-1e6065d53481" nickname="Code Block" x="0" y="192.218333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..1..0.05;" ShouldFocus="false" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="50ac3304-b200-4c8a-bd1e-6a8854a405b8" nickname="Count" x="601.166112864163" y="504.172590959108" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Count@var[]..[]" />
@@ -16,7 +16,7 @@
     <Dynamo.Nodes.DSFaceSelection type="Dynamo.Nodes.DSFaceSelection" guid="73850db5-ff1f-4d2b-b8b9-4db8ff3b211b" nickname="Select Face" x="0" y="83" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="3aef2475-c1ae-449a-9470-16d910ba0fb2-0002d8c1:21:SURFACE" />
     </Dynamo.Nodes.DSFaceSelection>
-    <DSRevitNodesUI.Views type="DSRevitNodesUI.Views" guid="e177a70c-c33e-4927-b964-e44831275fcb" nickname="Views" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="24:PointAnalysisDisplay" />
+    <DSRevitNodesUI.Views type="DSRevitNodesUI.Views" guid="e177a70c-c33e-4927-b964-e44831275fcb" nickname="Views" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="47:{3D}" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0caae220-4be1-44b0-842b-2121c6ffcf71" nickname="UV.ByCoordinates" x="336.572658009945" y="235.848946600366" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.UV.ByCoordinates@double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />

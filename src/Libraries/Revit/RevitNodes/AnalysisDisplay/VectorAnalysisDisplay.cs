@@ -189,7 +189,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
         /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>A VectorAnalysisDisplay object.</returns>
-        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
+        public static VectorAnalysisDisplay ByViewPointsAndVectorAnalysisData(View view,
                         VectorAnalysisData[] data,
             string name = "", string description = "", Type unitType = null)
         {
