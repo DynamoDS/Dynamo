@@ -2564,8 +2564,12 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")]
         public void Defect_MAGN_2290()
         {
+            //LC: This test is flaky - there is a race condition on the test for the warning state.
+            //This should be re-enabled once the scheduler is in place
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
 
             RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
