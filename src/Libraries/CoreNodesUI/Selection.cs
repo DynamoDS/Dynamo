@@ -47,6 +47,7 @@ namespace Dynamo.Nodes
                 if (dirty)
                 {
                     selectionResults = value.ToList();
+                    ForceReExecuteOfNode = true;
                     RequiresRecalc = true;
                 }
                 else

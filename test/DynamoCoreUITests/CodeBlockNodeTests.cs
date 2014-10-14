@@ -191,7 +191,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA]
+        [Test]
         [Category("UnitTests")]
         public void TestSyntaxHighlightRuleForDigits()
         {

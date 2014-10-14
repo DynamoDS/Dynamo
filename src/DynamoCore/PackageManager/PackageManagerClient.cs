@@ -13,8 +13,6 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-    public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
-
     public class LoginStateEventArgs : EventArgs
     {
         public string Text { get; set; }
@@ -36,12 +34,14 @@ namespace Dynamo.PackageManager
 
         #region Events
 
-        internal delegate void RequestAuthenticationHandler();
+        internal delegate void RequestAuthenticationHandler(PackageManagerClient sender);
         internal event RequestAuthenticationHandler RequestAuthentication;
         private void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)
-                RequestAuthentication();
+            {
+                RequestAuthentication(this);
+            }
         }
 
         #endregion
@@ -50,6 +50,11 @@ namespace Dynamo.PackageManager
 
         private readonly string rootPkgDir;
         private readonly CustomNodeManager customNodeManager;
+
+        public bool HasAuthenticator
+        {
+            get { return RequestAuthentication != null; }
+        }
 
         /// <summary>
         ///     Client property
@@ -244,11 +249,13 @@ namespace Dynamo.PackageManager
                     if (isNewVersion)
                     {
                         var pkg = PackageUploadBuilder.NewPackageVersion(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
                         var pkg = PackageUploadBuilder.NewPackage(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)

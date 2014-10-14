@@ -104,6 +104,7 @@ namespace ProtoCore.DSASM
         public const string jlz = "jlz";
         public const string jgz = "jgz";
         public const string jz = "jz";
+        public const string jdep = "jdep";
         public const string label = "label";
         public const string bounce = "bounce";
         public const string alloca = "alloca";

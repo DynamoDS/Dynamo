@@ -122,12 +122,19 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-        internal static RevitDynamoModel RevitDynamoModel
+        public static RevitDynamoModel RevitDynamoModel
         {
-            get { return revitDynamoModel; }
+            get
+            {
+                return revitDynamoModel;
+            }
+            set
+            {
+                revitDynamoModel = value;
+            }
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
@@ -200,7 +207,7 @@ namespace Dynamo.Applications
                         new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings)
                 });
 
-            viewModel.RequestAuthentication +=
+            revitDynamoModel.PackageManagerClient.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
 #if ENABLE_DYNAMO_SCHEDULER

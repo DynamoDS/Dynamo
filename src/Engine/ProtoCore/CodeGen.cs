@@ -801,8 +801,6 @@ namespace ProtoCore
             ProtoCore.Compiler.Associative.SubCompilePass subPass = ProtoCore.Compiler.Associative.SubCompilePass.kNone,
             ProtoCore.AST.Node binaryExpNode = null)
         {
-            Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
-
             bool isRefFromIdentifier = false;
 
             dynamic node = pNode;
@@ -914,7 +912,7 @@ namespace ProtoCore
                         if (isAllocated && !isAccessible)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, identnode.Value);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
                             return false;
@@ -922,7 +920,7 @@ namespace ProtoCore
                         else
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, identnode.Value);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
                         if (depth == 0)
@@ -965,17 +963,17 @@ namespace ProtoCore
                             if (null != staticProcCallNode)
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
 
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
@@ -1757,6 +1755,11 @@ namespace ProtoCore
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildString(0);
+            // Push default replication guide.  
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                instr.op3 = StackValue.BuildReplicationGuide(0);
+            }
 
             ++pc;
             AppendInstruction(instr);
@@ -2231,10 +2234,23 @@ namespace ProtoCore
             }
   
             String strValue = "'" + value + "'";
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
-
             StackValue op = ProtoCore.DSASM.StackValue.BuildChar(value[0]);
-            EmitPush(op, cNode.line, cNode.col);
+
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                int replicationGuides = 0;
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
+
+                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, strValue);
+                EmitPushG(op, node.line, node.col);
+            }
+            else
+            {
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
+                EmitPush(op, cNode.line, cNode.col);
+            }
         }
        
         protected void EmitStringNode(

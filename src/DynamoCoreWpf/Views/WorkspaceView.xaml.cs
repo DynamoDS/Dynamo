@@ -251,7 +251,11 @@ namespace Dynamo.Views
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    this.ViewModel.DynamoViewModel.Model.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    this.ViewModel.DynamoViewModel.Model.UpdateCustomNode(
+                        def.FunctionId,
+                        args.CanEditName ? args.Name : workspace.Name,
+                        args.Category,
+                        args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;

@@ -1460,7 +1460,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void AddToList_Complex()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");

@@ -60,5 +60,27 @@ namespace Dynamo.Models
 
             }
         }
+
+        protected override void ResetWorkspaceCore()
+        {
+            // It is possible for a timer to be started (due to the workspace 
+            // being modified) immediately before the DynamoModel gets destroyed.
+            // This is especially true for cases where multiple DynamoModel are
+            // re-created in a single app domain (e.g. across unit test cases, 
+            // or hosted scenario). Here OnRunExpression is unregistered from the
+            // DispatcherTimer so that it will never be called anymore after the 
+            // owning WorkspaceModel is destroyed.
+            // 
+            if (runExpressionTimer != null)
+            {
+                if (runExpressionTimer.IsEnabled)
+                    runExpressionTimer.Stop();
+
+                runExpressionTimer.Tick -= OnRunExpression;
+                runExpressionTimer = null;
+            }
+
+            base.ResetWorkspaceCore();
+        }
     }
 }

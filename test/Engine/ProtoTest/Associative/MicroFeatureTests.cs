@@ -1972,6 +1972,47 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        public void TestXLangUpdate_AssociativeTriggersAssociative01()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
+            String code =
+                @"a = 1;
+x = [Associative]
+{
+    return = a + 10;
+}
+a = 2;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4585: Failure to trigger update in an inner associative block";
+            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 12, err);
+        }
+
+        [Test]
+        public void TestXLangUpdate_AssociativeTriggersAssociative02()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
+            String code =
+                @"a = 1;
+x = [Associative]
+{
+    return = a + 100;
+}
+
+
+y = [Associative]
+{
+    return = a + 200;
+}
+a = 10;
+                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4585: Failure to trigger update in an inner associative block";
+            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 110, err);
+            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 210, err);
+        }
+
+
+        [Test]
         public void TestGCRefCount()
         {
             String code =

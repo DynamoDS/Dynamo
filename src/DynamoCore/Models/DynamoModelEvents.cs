@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-using System.Drawing;
-=======
-using System.Linq;
-using System.Text;
 using System.Windows;
->>>>>>> bd04ea8d4b5c818ef8e810135aed102ad72fd753
 
 using Dynamo.Core;
 

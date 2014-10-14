@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-using DSNodeServices;
+﻿using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -804,6 +802,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Notes.Clear();
 
             CurrentWorkspace.ClearUndoRecorder();
+            currentWorkspace.ResetWorkspace();
 
             ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;

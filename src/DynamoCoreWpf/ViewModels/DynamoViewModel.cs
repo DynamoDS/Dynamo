@@ -1079,26 +1079,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void PublishCurrentWorkspace(object parameters)
-        {
-            PackageManagerClientViewModel.PublishCurrentWorkspace();
-        }
-
-        private bool CanPublishCurrentWorkspace(object parameters)
-        {
-            return PackageManagerClientViewModel.CanPublishCurrentWorkspace();
-        }
-
-        private void PublishSelectedNodes(object parameters)
-        {
-            PackageManagerClientViewModel.PublishSelectedNode();
-        }
-
-        private bool CanPublishSelectedNodes(object parameters)
-        {
-            return PackageManagerClientViewModel.CanPublishSelectedNode(parameters);
-        }
-
         private void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
@@ -1107,16 +1087,6 @@ namespace Dynamo.ViewModels
         private bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
-        }
-
-        private void PublishNewPackage(object parameters)
-        {
-            PackageManagerClientViewModel.PublishNewPackage();
-        }
-
-        private bool CanPublishNewPackage(object parameters)
-        {
-            return PackageManagerClientViewModel.CanPublishNewPackage(parameters);
         }
 
         private void ShowInstalledPackages(object parameters)

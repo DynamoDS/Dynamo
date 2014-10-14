@@ -100,7 +100,11 @@ namespace Dynamo.Models
             if (node == null)
                 return null;
 
-            if (!string.IsNullOrEmpty(nickName))
+            if (!string.IsNullOrEmpty(signature))
+            {
+                node.NickName = LibraryServices.GetInstance().NicknameFromFunctionSignatureHint(signature);
+            }
+            else if (!string.IsNullOrEmpty(nickName)) 
             {
                 node.NickName = nickName;
             }

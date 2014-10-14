@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,7 +58,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -75,6 +75,9 @@ limitations under the License.
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
@@ -164,6 +167,7 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
+    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -292,6 +296,69 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\aboutback.png" />
+    <Resource Include="UI\Images\AboutWindow\autodeskLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\background_texture.png" />
+    <Resource Include="UI\Images\Update\clickbox.png" />
+    <Resource Include="UI\Images\AboutWindow\close_hover.png" />
+    <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
+    <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+    <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+    <Resource Include="UI\Images\Update\DownloadAnimation.png" />
+    <Resource Include="UI\Images\Update\DownloadIcon.png" />
+    <Resource Include="UI\Images\Update\download_ani.png" />
+    <Resource Include="UI\Images\Update\update.png" />
+    <Resource Include="UI\Images\Update\update_static.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

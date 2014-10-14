@@ -164,7 +164,10 @@ namespace Dynamo.Core
 
                 //No additional work needed
                 if (engineController.HasPendingGraphSyncData)
+                {
+                    ExecutionEvents.OnGraphPreExecution();
                     Eval(workspace, engineController);
+                }
             }
             finally
             {
@@ -177,6 +180,7 @@ namespace Dynamo.Core
             }
 
             OnEvaluationCompleted();
+            ExecutionEvents.OnGraphPostExecution();
         }
 
         public event Action EvaluationCompleted;

@@ -642,6 +642,20 @@ namespace Dynamo.Models
             return SaveAs(FileName, core);
         }
 
+        internal void ResetWorkspace()
+        {
+            ResetWorkspaceCore();
+        }
+
+        /// <summary>
+        /// Derived workspace classes can choose to override 
+        /// this method to perform clean-up specific to them.
+        /// </summary>
+        /// 
+        protected virtual void ResetWorkspaceCore()
+        {
+        }
+
         //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         [Obsolete("Use OnModified Event", true)]
         public void DisableReporting()

@@ -6,8 +6,6 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
 
-using String = System.String;
-
 namespace Dynamo.Models
 {
     public class CustomNodeWorkspaceModel : WorkspaceModel
