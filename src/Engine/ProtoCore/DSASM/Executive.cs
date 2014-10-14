@@ -7304,6 +7304,7 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+
             pc++;
         }
 
@@ -7692,6 +7693,17 @@ namespace ProtoCore.DSASM
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+            var isInNestedImperativeBlock = frames.Any(f =>
+                {
+                    var callerBlockId = f.FunctionCallerBlock;
+                    var cbn = core.CompleteCodeBlockList[callerBlockId];
+                    return cbn.language == Language.kImperative;
+                });
+
+            if (isInNestedImperativeBlock)
+            {
+                return;
+            }
 
             foreach (var stackFrame in frames)
             {
@@ -7699,25 +7711,70 @@ namespace ProtoCore.DSASM
                 var functionScope = stackFrame.FunctionScope;
                 var classScope = stackFrame.ClassScope;
 
-                IEnumerable<SymbolNode> symbols;
+                IEnumerable<SymbolNode> symbolsInScope;
                 if (blockId == 0)
                 {
+                    ICollection<SymbolNode> symbols;
                     if (classScope == Constants.kGlobalScope)
                     {
-                        symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                        symbols = exe.runtimeSymbols[blockId].symbolList.Values;
                     }
                     else
                     {
-                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values.Where( s => s.functionIndex == functionScope);
+                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values;
                     }
+
+                    symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
                 }
                 else
                 {
-                    // Call some language block
-                    symbols = exe.runtimeSymbols[blockId].symbolList.Values;
+                    // Call some language block, so symbols should come from
+                    // the corresponding language block. 
+                    var symbols = exe.runtimeSymbols[blockId]
+                                     .symbolList
+                                     .Values
+                                     .Where(s => s.absoluteFunctionIndex == functionScope &&
+                                                 s.absoluteClassScope == classScope);
+
+                    List<SymbolNode> blockSymbols = new List<SymbolNode>();
+                    blockSymbols.AddRange(symbols);
+
+                    // One kind of block is construct block. This kind of block
+                    // is not true block because the VM doesn't push a stack
+                    // frame for it, and all variables defined in construct
+                    // block are visible in language block. For example, 
+                    // if-else, for-loop
+                    var workingList = new Stack<int>();
+                    workingList.Push(blockId);
+
+                    while (workingList.Any())
+                    {
+                        blockId = workingList.Pop();
+                        var block = core.CompleteCodeBlockList[blockId];
+
+                        foreach (var child in block.children)
+                        {
+                            if (child.blockType != CodeBlockType.kConstruct)
+                            {
+                                continue;
+                            }
+
+                            var childBlockId = child.codeBlockId;
+                            workingList.Push(childBlockId);
+
+                            var childSymbols = exe.runtimeSymbols[childBlockId]
+                                                  .symbolList
+                                                  .Values
+                                                  .Where(s => s.absoluteFunctionIndex == functionScope && 
+                                                              s.absoluteClassScope == classScope);
+                            blockSymbols.AddRange(childSymbols);
+                        }
+                    }
+
+                    symbolsInScope = blockSymbols;
                 }
 
-                foreach (var symbol in symbols)
+                foreach (var symbol in symbolsInScope)
                 {
                     StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
                     if (value.IsReferenceType)
@@ -7735,6 +7792,8 @@ namespace ProtoCore.DSASM
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
+
+            gcRoots.Add(RX);
 
             rmem.GC(gcRoots, this);
         }
