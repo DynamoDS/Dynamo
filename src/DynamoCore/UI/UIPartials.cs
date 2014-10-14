@@ -317,7 +317,8 @@ namespace Dynamo.Nodes
             var publishCustomNodeItem = new MenuItem
             {
                 Header = "Publish This Custom Node...",
-                IsCheckable = false
+                IsCheckable = false,
+                IsEnabled = nodeUI.ViewModel.DynamoViewModel.PackageManagerClientViewModel.Model.HasAuthenticator
             };
             nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
             publishCustomNodeItem.Click += (sender, args) =>
