@@ -189,7 +189,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="description">An optional analysis results description to show on the results legend.</param>
         /// <param name="unitType">An optional Unit type to provide conversions in the analysis results.</param>
         /// <returns>A VectorAnalysisDisplay object.</returns>
-        public static VectorAnalysisDisplay ByViewPointsAndVectorAnalysisData(View view,
+        public static VectorAnalysisDisplay ByViewAndVectorAnalysisData(View view,
                         VectorAnalysisData[] data,
             string name = "", string description = "", Type unitType = null)
         {
@@ -199,9 +199,14 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("view");
             }
 
-            if (data == null || !data.Any())
+            if (data == null)
             {
-                throw new ArgumentException("There is no input data.");
+                throw new ArgumentNullException("data");
+            }
+
+            if (!data.Any())
+            {
+                throw new Exception("There is no input data.");
             }
 
             if (string.IsNullOrEmpty(name))

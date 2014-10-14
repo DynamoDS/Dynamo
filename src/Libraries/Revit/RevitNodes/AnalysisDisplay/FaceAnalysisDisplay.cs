@@ -242,9 +242,14 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("view");
             }
 
-            if (data == null || !data.Any())
+            if (data == null)
             {
-                throw new ArgumentException("There is no input data.");
+                throw new ArgumentNullException("data");
+            }
+
+            if (!data.Any())
+            {
+                throw new Exception("There is no input data.");
             }
 
             if (string.IsNullOrEmpty(name))

@@ -1,4 +1,8 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Collections.Generic;
+
+using Analysis.DataTypes;
+
+using Autodesk.DesignScript.Geometry;
 using Revit.AnalysisDisplay;
 using Revit.Application;
 using NUnit.Framework;
@@ -10,7 +14,7 @@ namespace RevitTestServices.AnalysisDisplay
     public class PointAnalysisDisplayTests : GeometricRevitNodeTest
     {
         [Test]
-        [TestModel(@".\Empty.rvt")]
+        [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
         public void ByViewPointsAndValues_ValidArgs()
         {
             var samplePoints = new[]
@@ -34,7 +38,7 @@ namespace RevitTestServices.AnalysisDisplay
         }
 
         [Test]
-        [TestModel(@".\Empty.rvt")]
+        [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
         public void ByViewPointsAndValues_BadArgs()
         {
             var samplePoints = new[]
@@ -55,6 +59,64 @@ namespace RevitTestServices.AnalysisDisplay
             Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(null, samplePoints, sampleValues));
             Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, null, sampleValues));
             Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, samplePoints, null));
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
+        public void ByViewAndPointAnalysisData_ValidArgs()
+        {
+            var samplePoints = new[]
+            {
+                Point.ByCoordinates(0, 2, 4),
+                Point.ByCoordinates(0, 7, 4),
+                Point.ByCoordinates(0, 19, 4)
+            };
+
+            var sampleValues = new[]
+            {
+                1.0,
+                1092,
+                -1
+            };
+
+            var data = new PointAnalysisData(
+                samplePoints,
+                new List<string>() { "Test points." },
+                new IList<double>[] { sampleValues });
+
+            var doc = Document.Current;
+            var grid = PointAnalysisDisplay.ByViewAndPointAnalysisData(doc.ActiveView, new []{data});
+
+            Assert.NotNull(grid);
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
+        public void ByViewAndPointAnalysisData_BadArgs()
+        {
+            var samplePoints = new[]
+            {
+                Point.ByCoordinates(0, 2, 4),
+                Point.ByCoordinates(0, 7, 4),
+                Point.ByCoordinates(0, 19, 4)
+            };
+
+            var sampleValues = new[]
+            {
+                1.0,
+                1092,
+                -1
+            };
+
+            var data = new PointAnalysisData(
+                samplePoints,
+                new List<string>() { "Test points." },
+                new IList<double>[] { sampleValues });
+
+            var doc = Document.Current;
+            Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewAndPointAnalysisData(null, new []{data}));
+            Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewAndPointAnalysisData(doc.ActiveView, null));
+            Assert.Throws(typeof(System.Exception), () => PointAnalysisDisplay.ByViewAndPointAnalysisData(doc.ActiveView, new PointAnalysisData[] { }));
         }
     }
 }
