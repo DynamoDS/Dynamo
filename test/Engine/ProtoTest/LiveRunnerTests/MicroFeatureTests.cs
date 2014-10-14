@@ -5052,6 +5052,40 @@ v = foo(t);
         }
 
         [Test]
+        public void RegressMagn4659()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
+                "x = p.X;",
+                "r = x;",
+                "x = p.X();",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            Assert.AreEqual(1, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(guid2, astLiveRunner.Core.RuntimeStatus.Warnings.First().GraphNodeGuid);
+        }
+
+
+        [Test]
         public void TestTransactionUpdate01()
         {
             string code = @"
