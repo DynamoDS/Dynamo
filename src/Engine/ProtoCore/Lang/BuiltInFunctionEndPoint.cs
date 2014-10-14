@@ -570,19 +570,16 @@ namespace ProtoCore.Lang
                 }
             }
 
-            // Any replication guides pushed in a dotarg->dot call must be 
-            // retrieved here from the core
-            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-            bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
-            if (doesDotCallFunctionHaveArgs)
-            {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
-            }
-
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
+
+            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            if (!CoreUtils.IsGetterSetter(functionName))
+            {
+                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+            }
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
@@ -608,19 +605,6 @@ namespace ProtoCore.Lang
             else
             {
                 procNode = classNode.vtable.procList[procIndex];
-            }
-
-            // When TempReplicationGuideEmptyFlag is set, we always put replication
-            // guide for the lhs variable. So if it is not an array, we should
-            // clear its replication guide from the core. 
-            if (removeFirstArgument && 
-                core.Options.TempReplicationGuideEmptyFlag &&
-                procNode != null &&
-                !CoreUtils.IsGetterSetter(procNode.name))
-            {
-                int count = core.replicationGuides.Count;
-                Validity.Assert(count > 0);
-                core.replicationGuides.RemoveAt(count - 1);
             }
 
             // If the function still isn't found, then it may be a function 
