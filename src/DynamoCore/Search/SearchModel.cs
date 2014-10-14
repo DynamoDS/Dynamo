@@ -234,8 +234,11 @@ namespace Dynamo.Search
 
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
         {
-            foreach (var node in nodes)
+            foreach (NodeSearchElement node in nodes)
             {
+                if (node.ElementType != SearchModel.ElementType.Regular)
+                    continue;
+
                 var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
@@ -245,7 +248,7 @@ namespace Dynamo.Search
                     _searchRootCategories.Add(category);
                 }
 
-                category.AddMemberToGroup(node as NodeSearchElement);
+                category.AddMemberToGroup(node);
                 category.AddClassToGroup(node);
             }
         }
