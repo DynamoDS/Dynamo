@@ -58,6 +58,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestPreAndPostExec()
         {
             //Before state
