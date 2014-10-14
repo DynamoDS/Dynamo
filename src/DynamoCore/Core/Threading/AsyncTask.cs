@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Markup;
 
 namespace Dynamo.Core.Threading
 {
@@ -14,13 +15,9 @@ namespace Dynamo.Core.Threading
     {
         public int Compare(AsyncTask x, AsyncTask y)
         {
-            if (ReferenceEquals(x, y))
-            {
-                throw new InvalidOperationException(
-                    "A task should not be scheduled twice");
-            }
-
-            return x.WeighAgainst(y);
+            // This method will be called for the same element in the list, and
+            // in this case ReferenceEquals will be true, return 0 for that case.
+            return ReferenceEquals(x, y) ? 0 : x.WeighAgainst(y);
         }
     }
 
@@ -112,6 +109,9 @@ namespace Dynamo.Core.Threading
         /// 
         internal Comparison Compare(AsyncTask otherTask)
         {
+            if (ReferenceEquals(this, otherTask))
+                return Comparison.KeepBoth; // Both tasks are the same.
+
             return CompareCore(otherTask);
         }
 
@@ -128,6 +128,9 @@ namespace Dynamo.Core.Threading
         /// 
         internal int WeighAgainst(AsyncTask otherTask)
         {
+            if (ReferenceEquals(this, otherTask))
+                return 0; // Both tasks are the same.
+
             return WeighAgainstCore(otherTask);
         }
 
