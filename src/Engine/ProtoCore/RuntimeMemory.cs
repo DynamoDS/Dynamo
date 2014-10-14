@@ -29,6 +29,12 @@ namespace ProtoCore
                 get; private set;
             }
 
+            /// <summary>
+            /// Where the first stack frame starts. Usually the stack below this
+            /// pointer is reserved for global variables. 
+            /// </summary>
+            private int startFramePointer = 0;
+
             public RuntimeMemory(Heap heap)
             {
                 FramePointer = 0;
@@ -57,6 +63,17 @@ namespace ProtoCore
                 {
                     Stack.Add(StackValue.Null);
                 }
+            }
+
+            /// <summary>
+            /// Reserve stack for global variables. It should be called once.
+            /// </summary>
+            /// <param name="size"></param>
+            public void PushFrameForGlobals(int size)
+            {
+                Validity.Assert(startFramePointer == 0);
+                PushFrame(size);
+                startFramePointer = size;
             }
 
             public void PopFrame(int size)
@@ -353,7 +370,11 @@ namespace ProtoCore
             public IEnumerable<StackFrame> GetStackFrames()
             {
                 var fp = FramePointer;
-                while (fp >= StackFrame.kStackFrameSize)
+                
+                // Note the first stack frame starts after the space for global 
+                // variables, so here we need to check the frame pointer is 
+                // large enought to contain a stack frame and all global variables
+                while (fp - StackFrame.kStackFrameSize >= startFramePointer)
                 {
                     var frame = new StackValue[StackFrame.kStackFrameSize];
                     for (int sourceIndex = fp - StackFrame.kStackFrameSize; sourceIndex < fp; sourceIndex++)
