@@ -32,7 +32,39 @@ namespace Dynamo.Core.Threading
 
         private void CompactTaskQueue()
         {
-            // TODO: Add queue compacting codes here.
+            if (taskQueue.Count < 2) // Cannot compact further.
+                return;
+
+            for (int start = 0; start < taskQueue.Count - 1; ++start)
+            {
+                var removeBaseTask = false;
+                var baseTask = taskQueue[start];
+
+                int index = start + 1;
+                while (index < taskQueue.Count && (removeBaseTask == false))
+                {
+                    switch (baseTask.Compare(taskQueue[index]))
+                    {
+                        case AsyncTask.Comparison.KeepBoth:
+                            index = index + 1;
+                            break; // Do nothing here.
+
+                        case AsyncTask.Comparison.KeepThis:
+                            taskQueue.RemoveAt(index);
+                            break; // Keep the base task.
+
+                        case AsyncTask.Comparison.KeepOther:
+                            removeBaseTask = true;
+                            break;
+                    }
+                }
+
+                if (removeBaseTask)
+                {
+                    taskQueue.RemoveAt(start);
+                    start = start - 1;
+                }
+            }
         }
 
         private void ReprioritizeTasksInQueue()
