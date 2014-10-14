@@ -1755,6 +1755,11 @@ namespace ProtoCore
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildString(0);
+            // Push default replication guide.  
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                instr.op3 = StackValue.BuildReplicationGuide(0);
+            }
 
             ++pc;
             AppendInstruction(instr);
@@ -2229,10 +2234,23 @@ namespace ProtoCore
             }
   
             String strValue = "'" + value + "'";
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
-
             StackValue op = ProtoCore.DSASM.StackValue.BuildChar(value[0]);
-            EmitPush(op, cNode.line, cNode.col);
+
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                int replicationGuides = 0;
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
+                EmitPush(opNumGuides);
+
+                EmitInstrConsole(ProtoCore.DSASM.kw.pushg, strValue);
+                EmitPushG(op, node.line, node.col);
+            }
+            else
+            {
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
+                EmitPush(op, cNode.line, cNode.col);
+            }
         }
        
         protected void EmitStringNode(
