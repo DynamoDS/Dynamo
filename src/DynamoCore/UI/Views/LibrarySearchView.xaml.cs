@@ -30,6 +30,8 @@ namespace Dynamo.UI.Views
                 e.Handled = true;
             }
 
+            // TODO: this focus setter should be removed in future.
+            // This item may get focus just by keyboard.
             listBoxItem.Focus();
         }
 
