@@ -726,7 +726,9 @@ namespace Dynamo.Utilities
                     IsBeingLoaded = true
                 };
 
-                LoadedCustomNodes.Remove(def.FunctionId);
+                // Add custom node definition firstly so that a recursive
+                // custom node won't recursively load itself.
+                SetFunctionDefinition(def.FunctionId, def);
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
@@ -937,7 +939,7 @@ namespace Dynamo.Utilities
 
                 def.Compile(this.dynamoModel, this.dynamoModel.EngineController);
 
-                LoadedCustomNodes.Add(def.FunctionId, def);
+                SetFunctionDefinition(def.FunctionId, def);
 
                 ws.WatchChanges = true;
 
