@@ -519,7 +519,8 @@
                                       OverridesDefaultStyle="True"
                                       Template="{StaticResource CategoryExpanderTemplate}"
                                       IsExpanded="True">
-                                <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Vertical"
+                                            KeyDown="OnCategoryContentKeyDown">
 
                                     <!--Found classes-->
                                     <ListView Name="SubCategoryListView"
@@ -538,7 +539,8 @@
                                         <ListView.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <controls:LibraryWrapPanel Background="Transparent"
-                                                                           Margin="0,10,0,10">
+                                                                           Margin="0,10,0,10"
+                                                                           KeyDown="OnSubClassesPanelKeyDown">
                                                     <controls:LibraryWrapPanel.Width>
                                                         <Binding Path="ActualWidth"
                                                                  ElementName="CategoryListView" />
@@ -604,7 +606,8 @@
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
                                              ItemsSource="{Binding MemberGroups}"
                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                             KeyDown="MemberGroupsKeyDown">
+                                             KeyDown="MemberGroupsKeyDown"
+                                             Name="MemberGroupsListBox">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
