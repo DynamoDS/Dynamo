@@ -78,14 +78,15 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up)) return;
 
             var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content;
-            var merberGroups = (sender as ListBox).Items;
+            var memberGroups = (sender as ListBox).Items;
+            var memberGroupListBox = sender as ListBox;
 
             int focusedMemberGroupIndex = 0;
 
             // Find out to which memberGroup focused member belong.
-            for (int i = 0; i < merberGroups.Count; i++)
+            for (int i = 0; i < memberGroups.Count; i++)
             {
-                var memberGroup = merberGroups[i];
+                var memberGroup = memberGroups[i];
                 if (memberGroup is SearchMemberGroup)
                 {
                     bool memberGroupFound = false;
@@ -113,23 +114,28 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 nextFocusedMemberGroupIndex--;
 
-            // This case is raised, when we move out of list of member groups.
-            // I.e. to class buttons list or to another category.
-            // TODO: Create this functionality later.
-            if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > merberGroups.Count - 1) return;
+            // The member group list box does not attempt to process the key event if it 
+            // has moved beyond its available list of member groups. In this case, the 
+            // key event is considered not handled and will be left to the parent visual 
+            // (e.g. class button or another category) to handle.
+            if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > memberGroups.Count - 1) 
+                return;
 
-            var nextFocusedMemberGroup = (sender as ListBox).ItemContainerGenerator.
-                                            ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
+            var generator = memberGroupListBox.ItemContainerGenerator;
+            var item = generator.ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
 
-            var nextFocusedMembers = WPF.FindChild<ListBox>(nextFocusedMemberGroup, "MembersListBox");
+            var nextFocusedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
 
-            // Focus can be set to first as well as to last member.
-            // If we move down, then to first one.
-            // If we move up, then to last one.
-            if (e.Key == Key.Down)
-                (nextFocusedMembers.ItemContainerGenerator.ContainerFromIndex(0) as ListBoxItem).Focus();
+            // When moving on to the next member group list below (by pressing down arrow),
+            // the focus should moved on to the first member in the member group list. Likewise,
+            // when moving to the previous member group list above, the focus should be set on 
+            // the last member in that list.
+            var itemIndex = 0;
             if (e.Key == Key.Up)
-                (nextFocusedMembers.ItemContainerGenerator.ContainerFromIndex(nextFocusedMembers.Items.Count - 1) as ListBoxItem).Focus();
+                itemIndex = nextFocusedMembers.Items.Count - 1;
+
+            generator = nextFocusedMembers.ItemContainerGenerator;
+            (generator.ContainerFromIndex(itemIndex) as ListBoxItem).Focus();
 
             e.Handled = true;
         }
