@@ -1480,7 +1480,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.PushFrame(newSymbols);
+                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
             }
 
             // Store the current number of global symbols
