@@ -5,6 +5,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.UI.Views
 {
@@ -78,7 +79,7 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up)) 
                 return;
 
-            var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content;
+            var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content as BrowserInternalElement;
             var memberGroups = (sender as ListBox).Items;
             var memberGroupListBox = sender as ListBox;
 
@@ -87,23 +88,11 @@ namespace Dynamo.UI.Views
             // Find out to which memberGroup focused member belong.
             for (int i = 0; i < memberGroups.Count; i++)
             {
-                var memberGroup = memberGroups[i];
-                if (memberGroup is SearchMemberGroup)
+                var memberGroup = memberGroups[i] as SearchMemberGroup;
+                if (memberGroup.ContainsMember(memberInFocus))
                 {
-                    bool memberGroupFound = false;
-
-                    foreach (var member in (memberGroup as SearchMemberGroup).Members)
-                        if (member.Equals(memberInFocus))
-                        {
-                            memberGroupFound = true;
-                            break;
-                        }
-
-                    if (memberGroupFound)
-                    {
-                        focusedMemberGroupIndex = i;
-                        break;
-                    }
+                    focusedMemberGroupIndex = i;
+                    break;
                 }
             }
 
