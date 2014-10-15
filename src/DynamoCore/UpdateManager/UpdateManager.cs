@@ -113,13 +113,19 @@ namespace Dynamo.UpdateManager
         public Uri Path { get; set; }
 
         /// <summary>
+        /// UpdateManager instance that created this request.
+        /// </summary>
+        private IUpdateManager manager = null;
+
+        /// <summary>
         /// The constructor.
         /// </summary>
-        /// <param name="onRequestCompleted">A callback which is invoked when data is returned from the request.</param>
+        /// <param name="path">Uri that needs to be read to get the update information.</param>
         /// <param name="manager">The update manager which is making this request.</param>
-        public UpdateRequest(Uri path)
+        public UpdateRequest(Uri path, IUpdateManager manager)
         {
-            OnRequestCompleted = UpdateManager.Instance.UpdateDataAvailable;
+            OnRequestCompleted = manager.UpdateDataAvailable;
+            this.manager = manager;
 
             Error = string.Empty;
             Data = string.Empty;
@@ -158,8 +164,8 @@ namespace Dynamo.UpdateManager
                 Error = string.Empty;
                 Data = string.Empty;
 
-                UpdateManager.Instance.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
-                UpdateManager.Instance.OnLog(new LogEventArgs(ex, LogLevel.File));
+                manager.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
+                manager.OnLog(new LogEventArgs(ex, LogLevel.File));
             }
 
             //regardless of the success of the above logic
@@ -230,7 +236,14 @@ namespace Dynamo.UpdateManager
             catch (Exception ex)
             {
                 if (null != updateManager)
-                    updateManager.OnLog(new LogEventArgs(string.Format("Failed to load {0}\n, Exception: {1}", filePath, ex.Message), LogLevel.Console));
+                    updateManager.OnLog(
+                        new LogEventArgs(
+                            string.Format(
+                                "Failed to load {0}\n, Exception: {1}",
+                                filePath,
+                                ex.Message),
+                            LogLevel.Console));
+                else throw;
             }
             return null;
         }
@@ -252,8 +265,15 @@ namespace Dynamo.UpdateManager
             }
             catch (Exception ex)
             {
-                if(null != updateManager)
-                    updateManager.OnLog(new LogEventArgs(string.Format("Failed to save {0}\n, Exception: {1}", filePath, ex.Message), LogLevel.Console));
+                if (null != updateManager)
+                    updateManager.OnLog(
+                        new LogEventArgs(
+                            string.Format(
+                                "Failed to save {0}\n, Exception: {1}",
+                                filePath,
+                                ex.Message),
+                            LogLevel.Console));
+                else throw;
             }
         }
 
@@ -403,7 +423,7 @@ namespace Dynamo.UpdateManager
             {
                 if (!Configuration.CheckNewerDailyBuild && value)
                 {
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath)));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.CheckNewerDailyBuild = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
@@ -422,7 +442,7 @@ namespace Dynamo.UpdateManager
                 if (!Configuration.ForceUpdate && value)
                 {
                     // do a check
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath)));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.ForceUpdate = value;
                 RaisePropertyChanged("ForceUpdate");
@@ -957,7 +977,7 @@ namespace Dynamo.UpdateManager
         {
             var self = Instance as UpdateManager;
             var downloadUri = new Uri(self.Configuration.DownloadSourcePath);
-            self.CheckForProductUpdate(new UpdateRequest(downloadUri));
+            self.CheckForProductUpdate(new UpdateRequest(downloadUri, self));
         }
     }
 }
