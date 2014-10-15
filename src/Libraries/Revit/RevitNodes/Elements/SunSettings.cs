@@ -21,6 +21,7 @@ namespace Revit.Elements
             InternalSunAndShadowSettings = settings;
             InternalElementId = settings.Id;
             InternalUniqueId = settings.UniqueId;
+            IsRevitOwned = true;
         }
 
         internal SunAndShadowSettings InternalSunAndShadowSettings { get; private set; }
