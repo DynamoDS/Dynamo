@@ -501,6 +501,7 @@ namespace ProtoCore.AssociativeEngine
 
         public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
+            bool entrypointSet = false;
             foreach (var node in fnodeList)
             {
                 var fnode = node as AST.AssociativeAST.FunctionDefinitionNode;
@@ -521,7 +522,11 @@ namespace ProtoCore.AssociativeEngine
                                 if (Constants.kInvalidIndex == exprId)
                                 {
                                     exprId = gnode.exprUID;
-                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    if (!entrypointSet)
+                                    {
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        entrypointSet = true;
+                                    }
                                 }
                                 gnode.isDirty = true;
                             }
@@ -572,6 +577,7 @@ namespace ProtoCore.AssociativeGraph
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
+        public bool isDeferred { get; set; }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }              // Function that this graph resides in
         public int classIndex { get; set; }             // Class index that this graph resides in
@@ -641,6 +647,7 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<UpdateNodeRef>();
             isDirty = true;
+            isDeferred = false;
             isReturn = false;
             procIndex = Constants.kGlobalScope;
             classIndex = Constants.kInvalidIndex;
@@ -1225,6 +1232,54 @@ namespace ProtoCore.AssociativeGraph
                 return graphList;
             }
         }
+
+        /// <summary>
+        /// Gets the graphnode of the given pc and scope
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetFirstDirtyGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {

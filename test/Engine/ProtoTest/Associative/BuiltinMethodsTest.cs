@@ -23,9 +23,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("c", true);
             thisTest.Verify("d", false);
             thisTest.Verify("f", true);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("e", 1);
         }
 
         [Test]
@@ -38,9 +35,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("w").Payload == 8);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 5);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 7);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -53,9 +47,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("e").Payload == 6);
             Assert.IsTrue((Int64)mirror.GetValue("f").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("g").Payload == 0);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -71,9 +62,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("g", false);
             thisTest.Verify("h", true);
             thisTest.Verify("i", false);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -88,11 +76,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("cc", true);
             thisTest.Verify("cd", false);
             thisTest.Verify("ce", true);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
-            thisTest.VerifyReferenceCount("e", 1);
         }
 
         [Test]
@@ -106,8 +89,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("y", 136);
             thisTest.Verify("z", 8.7);
             thisTest.Verify("s", 139.2);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
 
         }
 
@@ -124,9 +105,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("s", true);
             thisTest.Verify("t", false);
             thisTest.Verify("u", true);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -140,12 +118,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 20);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 4);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("rda", 1);
-            thisTest.VerifyReferenceCount("rdb", 1);
-            thisTest.VerifyReferenceCount("ra", 1);
-            thisTest.VerifyReferenceCount("rb", 1);
         }
 
         [Test]
@@ -157,10 +129,6 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 7);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
         }
 
         [Test]
@@ -174,11 +142,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("r", 2.0);
             thisTest.Verify("s", false);
             thisTest.Verify("t", 2);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
-            thisTest.VerifyReferenceCount("e", 1);
         }
 
         [Test]
@@ -190,10 +153,6 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue(Math.Round((Double)mirror.GetValue("x").Payload, 4) == 12.3000);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 3);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
         }
 
         [Test]
@@ -209,9 +168,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("u", true);
             thisTest.Verify("v", true);
             thisTest.Verify("w", true);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("x", 1);
         }
 
 
@@ -227,10 +183,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("t").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("u").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("v").Payload == -1);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
         }
 
         [Test]
@@ -246,12 +198,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("q", 9);
             thisTest.Verify("s", null);
             thisTest.Verify("t", 2.0);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("x", 1);
-            thisTest.VerifyReferenceCount("x1", 1);
-            thisTest.VerifyReferenceCount("x2", 1);
-            thisTest.VerifyReferenceCount("y", 1);
         }
 
         [Test]
@@ -267,12 +213,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("q", 4);
             // thisTest.Verify("s", 4); s could be 4 or 8 (for null value)
             // thisTest.Verify("t", 3); t could be multiple choices (for 2).
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("x", 1);
-            thisTest.VerifyReferenceCount("x1", 1);
-            thisTest.VerifyReferenceCount("x2", 1);
-            thisTest.VerifyReferenceCount("y", 1);
         }
 
         [Test]
@@ -286,14 +226,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("v", 1);
             thisTest.Verify("w", null);
             thisTest.Verify("x", 1);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
-            thisTest.VerifyReferenceCount("e", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
-            thisTest.VerifyReferenceCount("r", 1);
-            thisTest.VerifyReferenceCount("s", 1);
         }
 
         [Test]
@@ -307,12 +239,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 20);
             Assert.IsTrue((Int64)mirror.GetValue("r").Payload == 15);
             Assert.IsTrue((Int64)mirror.GetValue("s").Payload == 15);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
-            thisTest.VerifyReferenceCount("e", 1);
-            thisTest.VerifyReferenceCount("f", 1);
         }
 
         [Test]
@@ -325,9 +251,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 3);
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 4);
             Assert.IsTrue((Int64)mirror.GetValue("r").Payload == 1);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -341,10 +264,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("q", true);
             thisTest.Verify("r", true);
             thisTest.Verify("s", false);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
         }
 
         [Test]
@@ -358,11 +277,6 @@ namespace ProtoTest.Associative
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 1);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
-            thisTest.VerifyReferenceCount("r", 1);
-            thisTest.VerifyReferenceCount("s", 1);
         }
 
         [Test]
@@ -385,9 +299,6 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", null);
             thisTest.Verify("y", 7);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
         }
 
         [Test]
@@ -400,9 +311,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("x", 3.0);
             thisTest.Verify("y", 3.0);
             thisTest.Verify("z", 3.0);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("d", 1);
         }
 
         [Test]
@@ -415,9 +323,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("x", 4);
             thisTest.Verify("y", 1);
             thisTest.Verify("z", 4);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -430,9 +335,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("x", 2);
             thisTest.Verify("y", 5);
             thisTest.Verify("z", 3);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -446,12 +348,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("y", 2);
             thisTest.Verify("z", null);
             thisTest.Verify("s", "good");
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
-            thisTest.VerifyReferenceCount("p", 1);
-            thisTest.VerifyReferenceCount("q", 1);
-            thisTest.VerifyReferenceCount("r", 1);
         }
 
         [Test]
@@ -463,9 +359,6 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Theses are invalid cases not following the parameter requirements
             //But need error messages when executing.
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("t", 1);
         }
 
         [Test]
@@ -478,9 +371,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("x", false);
             thisTest.Verify("y", true);
             thisTest.Verify("z", false);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("c", 1);
         }
 
         [Test]
@@ -513,15 +403,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("res6", 0);
             thisTest.Verify("res7", 3);
             thisTest.Verify("rdg", 1);
-            thisTest.VerifyReferenceCount("a", 1);
-            thisTest.VerifyReferenceCount("b", 1);
-            thisTest.VerifyReferenceCount("rda", 1);
-            thisTest.VerifyReferenceCount("rdb", 1);
-            thisTest.VerifyReferenceCount("rdc", 1);
-            thisTest.VerifyReferenceCount("rdd", 1);
-            thisTest.VerifyReferenceCount("rde", 1);
-            thisTest.VerifyReferenceCount("rdf", 1);
-            thisTest.VerifyReferenceCount("rdh", 1);
         }
 
         [Test]

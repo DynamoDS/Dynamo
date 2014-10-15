@@ -35,7 +35,6 @@ namespace Dynamo.UI.Controls
         private DynamoViewModel dynamoViewModel;
         private CodeBlockNodeModel nodeModel = null;
         private CompletionWindow completionWindow = null;
-        private CodeCompletionParser codeParser = null;
         private CodeBlockMethodInsightWindow insightWindow = null;
 
         public CodeBlockEditor()
@@ -143,6 +142,11 @@ namespace Dynamo.UI.Controls
             return "";
         }
 
+        internal bool Focus()
+        {
+            return InternalEditor.Focus();
+        }
+
         #region Generic Properties
         internal TextEditor InternalEditor
         {
@@ -165,11 +169,6 @@ namespace Dynamo.UI.Controls
         }
         #endregion
 
-        internal bool Focus()
-        {
-            return InternalEditor.Focus();
-        }
-
         #region Dependency Property
         public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
             typeof(CodeBlockEditor), new PropertyMetadata((obj, args) =>
@@ -179,6 +178,60 @@ namespace Dynamo.UI.Controls
             })
         );
         #endregion
+
+        #region Syntax highlighting helper methods
+
+        private void InitializeSyntaxHighlighter()
+        {
+            var stream = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+
+            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(stream), HighlightingManager.Instance);
+
+            // Highlighting Digits
+            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
+
+            rules.Add(CodeBlockUtils.CreateDigitRule());
+            rules.Add(CreateClassHighlightRule());
+            rules.Add(CreateMethodHighlightRule());
+        }
+
+        private HighlightingRule CreateClassHighlightRule()
+        {
+            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
+            var classHighlightRule = new HighlightingRule();
+            classHighlightRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            var engineController = this.dynamoViewModel.Model.EngineController;
+            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.ClassName.Split('.').Last());
+            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
+            classHighlightRule.Regex = new Regex(regex);
+
+            return classHighlightRule;
+        }
+
+        private HighlightingRule CreateMethodHighlightRule()
+        {
+            Color color = (Color)ColorConverter.ConvertFromString("#417693");
+            var methodHighlightRule = new HighlightingRule();
+            methodHighlightRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            var engineController = this.dynamoViewModel.Model.EngineController;
+            var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
+            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
+            methodHighlightRule.Regex = new Regex(regex);
+
+            return methodHighlightRule;
+         }
+ 
+         #endregion
 
         #region Auto-complete event handlers
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
@@ -322,19 +375,7 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Helper Methods
-        private void InitializeSyntaxHighlighter()
-        {
-            var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
-
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(stream), HighlightingManager.Instance);
-
-            // Highlighting Digits
-            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
-            rules.Add(CodeBlockUtils.CreateDigitRule());
-        }
-
+        
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();

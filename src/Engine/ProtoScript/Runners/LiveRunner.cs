@@ -408,10 +408,7 @@ namespace ProtoScript.Runners
 
                 // Handle modified statements
                 var modifiedASTList = GetModifiedNodes(st);
-                if (null != modifiedASTList && modifiedASTList.Count > 0)
-                {
-                    deltaAstList.AddRange(modifiedASTList);
-                }
+                deltaAstList.AddRange(modifiedASTList);
 
                 var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
                                                      .Select(n => (n as BinaryExpressionNode).exprUID);
@@ -436,6 +433,11 @@ namespace ProtoScript.Runners
                     // DeactivateGraphnodes(). 
                     // Right now just simply remove all related warnings.
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+
+                    foreach (var ast in csData.RemovedBinaryNodesFromModification)
+                    {
+                        core.BuildStatus.ClearWarningsForAst(ast.ID);
+                    }
                 }
 
                 // Cache the modifed functions
@@ -487,7 +489,7 @@ namespace ProtoScript.Runners
                     }
                 }
 
-                foreach (AssociativeNode node in deltaAstList)
+                foreach (AssociativeNode node in modifiedASTList)
                 {
                     var bnode = node as BinaryExpressionNode;
                     if (bnode != null)
@@ -1532,6 +1534,16 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
+        private void ApplyUpdate()
+        {
+            if (runnerCore.DeferredUpdates > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                Execute();
+            }
+        }
+
         /// <summary>
         /// Resets few states in the core to prepare the core for a new
         /// delta code compilation and execution
@@ -1554,6 +1566,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(code);
+            ApplyUpdate();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1575,6 +1588,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
+            ApplyUpdate();
         }
 
 

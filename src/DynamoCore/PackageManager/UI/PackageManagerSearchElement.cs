@@ -45,8 +45,8 @@ namespace Dynamo.PackageManager
             this.Votes = header.votes;
             this.IsExpanded = false;
             this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+            this.UpvoteCommand = new DelegateCommand((Action) Upvote, CanUpvote);
+            this.DownvoteCommand = new DelegateCommand((Action) Downvote, CanDownvote);
         }
 
         public void Upvote()
@@ -63,6 +63,11 @@ namespace Dynamo.PackageManager
 
         }
 
+        private bool CanUpvote()
+        {
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+        }
+
         public void Downvote()
         {
             Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Downvote(this.Id))
@@ -73,6 +78,12 @@ namespace Dynamo.PackageManager
                         this.Votes -= 1;
                     }
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
+        }
+
+
+        private bool CanDownvote()
+        {
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
