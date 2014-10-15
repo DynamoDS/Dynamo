@@ -18,6 +18,7 @@ namespace Dynamo.Tests
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
+        protected DynamoModel Model;
 
         public override void Init()
         {
@@ -67,7 +68,7 @@ namespace Dynamo.Tests
 
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             
-            var model = DynamoModel.Start(
+            this.Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true
@@ -76,7 +77,7 @@ namespace Dynamo.Tests
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = model
+                    DynamoModel = this.Model
                 });
         }
 
