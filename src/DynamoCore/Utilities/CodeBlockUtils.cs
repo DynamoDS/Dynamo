@@ -502,7 +502,10 @@ namespace Dynamo.Utilities
                         // Auto-complete function signature  
                         // Class/Type and function name must be known at this point
                         functionName = GetMemberIdentifier();
-                        functionPrefix = GetFunctionPrefix();
+                        if(string.Equals(strPrefix, functionName))
+                            functionPrefix = string.Empty;
+                        else
+                            functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
 
                         expressionStack.Push(strPrefix + @"(");
                     }
@@ -554,17 +557,7 @@ namespace Dynamo.Utilities
         #region private utility methods
         private string GetMemberIdentifier()
         {
-            string[] idents = strPrefix.Split('.');
-            return idents[idents.Length - 1];
-        }
-
-        private string GetFunctionPrefix()
-        {
-            string[] idents = strPrefix.Split('.');
-            if (idents.Length > 1)
-                return idents[idents.Length - 2];
-            else
-                return string.Empty;
+            return strPrefix.Split('.').Last();
         }
 
         private string PopFromExpressionStack(char currentChar)

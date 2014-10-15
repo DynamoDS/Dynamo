@@ -796,39 +796,6 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
-        public void TestFunctionSignatureCompletion()
-        {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-
-            string libraryPath = "FFITarget.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
-            string ffiTargetClass = "CodeCompletionClass";
-
-            var engineController = ViewModel.Model.EngineController;
-            // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
-
-            Assert.IsTrue(type != null);
-            var members = type.GetInstanceMembers();
-
-            var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
-                "IntVal", "IsEqualTo", "OverloadedAdd" };
-            AssertCompletions(members, expected);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void TestCodeCompletionParser()
         {
             string code = @"x[y[z.foo()].goo()].bar";
@@ -856,6 +823,47 @@ b = c[w][x][y][z];";
             actual = CodeCompletionParser.GetStringToComplete(code);
             expected = "xyz.b.foo.Y";
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForFunctions()
+        {
+            string code = @"x[y[z.foo()].goo(";
+            string functionName;
+            string functionPrefix;
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("goo", functionName);
+            Assert.AreEqual("y[z.foo()]", functionPrefix);
+
+            code = @"abc.X[xyz.foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("xyz", functionPrefix);
+
+            code = @"pnt[9][0] = abc.X[{xyz.b.foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("xyz.b", functionPrefix);
+
+            code = @"foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("", functionPrefix);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForVariableType()
+        {
+            string code = "a : Point;";
+            string variableName = "a";
+
+            Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
+
+            code = @"a : Point = Point.ByCoordinates();";
+            Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
         }
 
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
