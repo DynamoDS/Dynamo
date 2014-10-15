@@ -7093,7 +7093,6 @@ namespace ProtoCore.DSASM
                     Properties.executingGraphNode.isDirty = false;
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
-                core.DeferredUpdates += reachableNodes;
             }
             GC();
             return;
