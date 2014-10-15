@@ -43,12 +43,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceSupport.cs" />
     <Compile Include="Validity.cs" />
-	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

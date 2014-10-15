@@ -55,12 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-  <Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="IronPythonEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -47,12 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-  <Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="DynamoCrypto.cs" />
     <Compile Include="DynamoCyptoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

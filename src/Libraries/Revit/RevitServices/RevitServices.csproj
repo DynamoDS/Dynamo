@@ -67,12 +67,6 @@ limitations under the License.
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-  <Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Elements\ElementMapping.cs" />
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />

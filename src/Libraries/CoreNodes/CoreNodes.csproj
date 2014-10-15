@@ -73,12 +73,6 @@
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-	<Compile Include="$(SolutionDir)\AssemblyVersionInfo.cs">
-		<Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="$(SolutionDir)\SharedAssemblyInfo.cs">
-		<Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Sorting.cs" />
     <Compile Include="String.cs" />
     <Compile Include="Thread.cs" />
