@@ -525,6 +525,7 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, HomeSpace))
             {
                 task.Completed += OnUpdateGraphCompleted;
+                RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
         }
@@ -582,6 +583,7 @@ namespace Dynamo.Models
             }
 
             // Notify listeners (optional) of completion.
+            RunEnabled = true; // Re-enable 'Run' button.
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
