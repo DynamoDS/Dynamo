@@ -75,7 +75,8 @@ namespace Dynamo.UI.Views
         // I.e. we are now at the last member button and we have to move to next member group.
         private void MemberGroupsKeyDown(object sender, KeyEventArgs e)
         {
-            if ((e.Key != Key.Down) && (e.Key != Key.Up)) return;
+            if ((e.Key != Key.Down) && (e.Key != Key.Up)) 
+                return;
 
             var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content;
             var memberGroups = (sender as ListBox).Items;
