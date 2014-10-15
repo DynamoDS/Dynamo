@@ -139,6 +139,7 @@
         <!--Converter that will be used, if number of found classes equals 0. 
             Then classes will be collapsed.-->
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
@@ -517,10 +518,6 @@
                           ItemsSource="{Binding Model.SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           SelectionMode="Single">
-                    <ListView.Visibility>
-                        <Binding Path="Model.SearchRootCategories.Count"
-                                 Converter="{StaticResource IntToVisibilityConverter}" />
-                    </ListView.Visibility>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Expander Header="{Binding Path=Name}"
@@ -656,17 +653,16 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
                 <uicontrols:AddonsTreeView Grid.Row="2"
-                                           DataContext="{Binding Model.AddonRootCategories}">
+                                           DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
-                        <Binding Path="Model.AddonRootCategories.Count"
-                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                        <Binding Path="SearchAddonsVisibility"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
 
         <Button Name="NoMatchFoundButton"
-                Grid.Row="2"
                 Height="20"
                 Click="OnNoMatchFoundButtonClick">
             <Button.Style>
