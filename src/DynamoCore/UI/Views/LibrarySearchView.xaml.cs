@@ -75,10 +75,12 @@ namespace Dynamo.UI.Views
         // I.e. we are now at the last member button and we have to move to next member group.
         private void MemberGroupsKeyDown(object sender, KeyEventArgs e)
         {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up)) return;
+
             var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content;
             var merberGroups = (sender as ListBox).Items;
 
-            int numberOfFocusedMemberGroup = 0;
+            int focusedMemberGroupIndex = 0;
 
             // Find out to which memberGroup focused member belong.
             for (int i = 0; i < merberGroups.Count; i++)
@@ -97,27 +99,27 @@ namespace Dynamo.UI.Views
 
                     if (memberGroupFound)
                     {
-                        numberOfFocusedMemberGroup = i;
+                        focusedMemberGroupIndex = i;
                         break;
                     }
                 }
             }
 
-            int nextFocusedMemberGroupNumber = numberOfFocusedMemberGroup;
+            int nextFocusedMemberGroupIndex = focusedMemberGroupIndex;
             // If user presses down, then we need to set focus to the next member group.
             // Otherwise to previous.
             if (e.Key == Key.Down)
-                nextFocusedMemberGroupNumber++;
+                nextFocusedMemberGroupIndex++;
             if (e.Key == Key.Up)
-                nextFocusedMemberGroupNumber--;
+                nextFocusedMemberGroupIndex--;
 
             // This case is raised, when we move out of list of member groups.
             // I.e. to class buttons list or to another category.
             // TODO: Create this functionality later.
-            if (nextFocusedMemberGroupNumber < 0 || nextFocusedMemberGroupNumber > merberGroups.Count - 1) return;
+            if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > merberGroups.Count - 1) return;
 
             var nextFocusedMemberGroup = (sender as ListBox).ItemContainerGenerator.
-                                            ContainerFromIndex(nextFocusedMemberGroupNumber) as ListBoxItem;
+                                            ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
 
             var nextFocusedMembers = WPF.FindChild<ListBox>(nextFocusedMemberGroup, "MembersListBox");
 
