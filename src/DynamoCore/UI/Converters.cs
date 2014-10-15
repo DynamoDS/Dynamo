@@ -219,7 +219,12 @@ namespace Dynamo.Controls
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
+            if (values.Length != 3)
+                return Visibility.Collapsed;
+
+            if (values[0] is int && (int)values[0] == 0 &&
+                values[1] is bool && (bool)values[1] == false &&
+                !string.IsNullOrEmpty(values[2] as string))
             {
                 return Visibility.Visible;
             }

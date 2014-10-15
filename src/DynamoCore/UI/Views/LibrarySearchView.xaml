@@ -141,6 +141,7 @@
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
 
         <!--EndRegion-->
 
@@ -485,6 +486,9 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel DataContext="{Binding TopResult}">
+                    <StackPanel.Visibility>
+                        <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
+                    </StackPanel.Visibility>
                     <TextBlock Text="{Binding Name}"
                                Margin="16,8,0,8"
                                Foreground="#989898"
@@ -513,6 +517,10 @@
                           ItemsSource="{Binding Model.SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           SelectionMode="Single">
+                    <ListView.Visibility>
+                        <Binding Path="Model.SearchRootCategories.Count"
+                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                    </ListView.Visibility>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Expander Header="{Binding Path=Name}"
@@ -696,6 +704,7 @@
                         <Setter.Value>
                             <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
                                 <Binding Path="Model.SearchRootCategories.Count" />
+                                <Binding Path="SearchAddonsVisibility" />
                                 <Binding Path="SearchText" />
                             </MultiBinding>
                         </Setter.Value>
