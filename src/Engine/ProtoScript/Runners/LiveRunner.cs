@@ -108,6 +108,7 @@ namespace ProtoScript.Runners
     public class ChangeSetData
     {
         public ChangeSetData() { }
+        public bool ContainsDeltaAST = false;
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
@@ -150,8 +151,20 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetForceExecute(ChangeSetData changeSet)
         {
-            // Mark all graphnodes dirty which are associated with the force exec ASTs
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+            // Check if there are nodes to force execute
+            if (changeSet.ForceExecuteASTList.Count > 0)
+            {
+                // Mark all graphnodes dirty which are associated with the force exec ASTs
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+                Validity.Assert(firstDirtyNode != null);
+
+                // If the only ASTs to execute are force exec, then set the entrypoint here.
+                // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
+                if (!changeSet.ContainsDeltaAST)
+                {
+                    core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
+                }
+            }
         }
 
 
@@ -512,7 +525,7 @@ namespace ProtoScript.Runners
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
-
+            csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
 
@@ -1535,7 +1548,7 @@ namespace ProtoScript.Runners
 
         private void ApplyUpdate()
         {
-            if (runnerCore.DeferredUpdates > 0)
+            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
