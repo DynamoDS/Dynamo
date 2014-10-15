@@ -1176,6 +1176,7 @@ namespace Dynamo.ViewModels
                 this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
             }
+            this.ShowStartPage = false;
         }
 
         private bool CanShowNewFunctionDialogCommand(object parameter)

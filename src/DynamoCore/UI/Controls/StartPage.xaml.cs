@@ -347,7 +347,6 @@ namespace Dynamo.UI.Controls
                     
                 case ButtonNames.NewCustomNodeWorkspace:
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
-                    dvm.ShowStartPage = false;
                     break;
 
                 default:
