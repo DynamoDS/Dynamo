@@ -1,5 +1,4 @@
-﻿using Dynamo.Core;
-using Dynamo.Core.Threading;
+﻿using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 
 using NUnit.Framework;
@@ -85,16 +84,16 @@ namespace Dynamo
             AddToResultList("PrioritizedAsyncTask: " + Priority);
         }
 
-        protected override int WeighAgainstCore(AsyncTask otherTask)
+        protected override int CompareCore(AsyncTask otherTask)
         {
             // PrioritizedAsyncTask always come before InconsequentialAsyncTask.
             if (otherTask is InconsequentialAsyncTask)
                 return -1;
 
-            // It is not weigh against another PrioritizedAsyncTask, fall back.
+            // It is not compared with another PrioritizedAsyncTask, fall back.
             var task = otherTask as PrioritizedAsyncTask;
             if (task == null)
-                return base.WeighAgainstCore(otherTask);
+                return base.CompareCore(otherTask);
 
             // Priority 1 tasks always come before priority 2 tasks.
             return Priority - task.Priority;
@@ -122,14 +121,17 @@ namespace Dynamo
             AddToResultList("InconsequentialAsyncTask: " + Punch);
         }
 
-        protected override Comparison CompareCore(AsyncTask otherTask)
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             var task = otherTask as InconsequentialAsyncTask;
             if (task == null)
-                return base.CompareCore(otherTask);
+                return base.CanMergeWithCore(otherTask);
 
             // The comparison only keeps the task that carries a bigger punch.
-            return Punch > task.Punch ? Comparison.KeepThis : Comparison.KeepOther;
+            if (Punch > task.Punch)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther;
         }
     }
 
@@ -269,8 +271,12 @@ namespace Dynamo
 
         #region Scheduler Related Test Cases
 
+        /// <summary>
+        /// Test scenario when various task types are interleaving one another.
+        /// </summary>
+        /// 
         [Test, Category("UnitTests")]
-        public void TestTaskQueuePreProcessing()
+        public void TestTaskQueuePreProcessing00()
         {
             var schedulerThread = new SampleSchedulerThread();
             var scheduler = new DynamoScheduler(schedulerThread);
@@ -308,6 +314,213 @@ namespace Dynamo
             Assert.AreEqual("PrioritizedAsyncTask: 5", results[3]);
             Assert.AreEqual("PrioritizedAsyncTask: 6", results[4]);
             Assert.AreEqual("InconsequentialAsyncTask: 700", results[5]);
+        }
+
+        /// <summary>
+        /// All prioritized tasks are already in correct sequence, with the 
+        /// last inconsequential task being the ultimate choice.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing01()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new PrioritizedAsyncTask(scheduler, 1), 
+                new PrioritizedAsyncTask(scheduler, 2), 
+                new PrioritizedAsyncTask(scheduler, 3),
+                new PrioritizedAsyncTask(scheduler, 5), 
+                new PrioritizedAsyncTask(scheduler, 6), 
+                new InconsequentialAsyncTask(scheduler, 100),
+                new InconsequentialAsyncTask(scheduler, 200),
+                new InconsequentialAsyncTask(scheduler, 300),
+                new InconsequentialAsyncTask(scheduler, 500),
+                new InconsequentialAsyncTask(scheduler, 700),
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+            Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
+            Assert.AreEqual("PrioritizedAsyncTask: 3", results[2]);
+            Assert.AreEqual("PrioritizedAsyncTask: 5", results[3]);
+            Assert.AreEqual("PrioritizedAsyncTask: 6", results[4]);
+            Assert.AreEqual("InconsequentialAsyncTask: 700", results[5]);
+        }
+
+        /// <summary>
+        /// All prioritized tasks are already in correct sequence, with the 
+        /// first inconsequential task being the ultimate choice.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing02()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new PrioritizedAsyncTask(scheduler, 1), 
+                new PrioritizedAsyncTask(scheduler, 2), 
+                new PrioritizedAsyncTask(scheduler, 3),
+                new PrioritizedAsyncTask(scheduler, 5), 
+                new PrioritizedAsyncTask(scheduler, 6), 
+                new InconsequentialAsyncTask(scheduler, 700),
+                new InconsequentialAsyncTask(scheduler, 500),
+                new InconsequentialAsyncTask(scheduler, 300),
+                new InconsequentialAsyncTask(scheduler, 200),
+                new InconsequentialAsyncTask(scheduler, 100),
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+            Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
+            Assert.AreEqual("PrioritizedAsyncTask: 3", results[2]);
+            Assert.AreEqual("PrioritizedAsyncTask: 5", results[3]);
+            Assert.AreEqual("PrioritizedAsyncTask: 6", results[4]);
+            Assert.AreEqual("InconsequentialAsyncTask: 700", results[5]);
+        }
+
+        /// <summary>
+        /// Test scenario when scheduler thread tries to 
+        /// pick up a task when there is only one scheduled.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing03()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new PrioritizedAsyncTask(scheduler, 1), 
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+        }
+
+        /// <summary>
+        /// Test scenario when scheduler thread tries to pick up a 
+        /// task when there are only two scheduled (in the wrong order).
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing04()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new InconsequentialAsyncTask(scheduler, 100),
+                new PrioritizedAsyncTask(scheduler, 1), 
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+            Assert.AreEqual("InconsequentialAsyncTask: 100", results[1]);
+        }
+
+        /// <summary>
+        /// Test scenario when scheduler thread tries to pick up a 
+        /// task when there are only two scheduled (in the right order).
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing05()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new PrioritizedAsyncTask(scheduler, 1), 
+                new InconsequentialAsyncTask(scheduler, 100),
+            };
+
+            var results = new List<string>();
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+            {
+                asyncTask.InitializeWithResultList(results);
+                scheduler.ScheduleForExecution(asyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
+            Assert.AreEqual("InconsequentialAsyncTask: 100", results[1]);
+        }
+
+        /// <summary>
+        /// Test scenario when scheduler thread tries to 
+        /// pick up a task when there is none scheduled.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskQueuePreProcessing06()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+
+            schedulerThread.GetSchedulerToProcessTasks();
+            Assert.Pass("Scheduler thread successfully exits");
         }
 
         #endregion

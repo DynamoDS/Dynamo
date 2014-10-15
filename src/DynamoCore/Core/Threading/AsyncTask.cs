@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Markup;
 
 namespace Dynamo.Core.Threading
 {
@@ -8,7 +7,7 @@ namespace Dynamo.Core.Threading
 
     /// <summary>
     /// DynamoScheduler makes use of this comparer class to sort its internal 
-    /// task queue. Refer to AsyncTask.WeighAgainst for details of comparison.
+    /// task queue. Refer to AsyncTask.Compare for ordering requirements.
     /// </summary>
     /// 
     internal class AsyncTaskComparer : IComparer<AsyncTask>
@@ -17,7 +16,7 @@ namespace Dynamo.Core.Threading
         {
             // This method will be called for the same element in the list, and
             // in this case ReferenceEquals will be true, return 0 for that case.
-            return ReferenceEquals(x, y) ? 0 : x.WeighAgainst(y);
+            return ReferenceEquals(x, y) ? 0 : x.Compare(y);
         }
     }
 
@@ -26,9 +25,9 @@ namespace Dynamo.Core.Threading
         #region Private Class Data Members
 
         /// <summary>
-        /// Comparison result obtained from a call to AsyncTask.Compare method.
+        /// Merge instruction obtained from a call to AsyncTask.CanMergeWith.
         /// </summary>
-        internal enum Comparison
+        internal enum TaskMergeInstruction
         {
             /// <summary>
             /// Both the AsyncTask objects in comparison should be kept.
@@ -107,31 +106,32 @@ namespace Dynamo.Core.Threading
         /// <returns>Returns the comparison result. See Comparison enumeration 
         /// for details of the possible values.</returns>
         /// 
-        internal Comparison Compare(AsyncTask otherTask)
+        internal TaskMergeInstruction CanMergeWith(AsyncTask otherTask)
         {
             if (ReferenceEquals(this, otherTask))
-                return Comparison.KeepBoth; // Both tasks are the same.
+                return TaskMergeInstruction.KeepBoth; // Both tasks are the same.
 
-            return CompareCore(otherTask);
+            return CanMergeWithCore(otherTask);
         }
 
         /// <summary>
-        /// Call this method to weigh two AsyncTask objects. DynamoScheduler 
-        /// makes use of this method to determine the order in which AsyncTask 
-        /// objects are sorted in its internal task queue.
+        /// Call this method to determine the relative priority of two AsyncTask
+        /// objects. DynamoScheduler makes use of this method to determine the 
+        /// order in which AsyncTask objects are sorted in its internal task queue.
         /// </summary>
-        /// <param name="otherTask">A task to weigh this task against.</param>
-        /// <returns>Returns -1 if this AsyncTask object should come before the 
-        /// other AsyncTask; returns 1 if this AsyncTask object should come after 
-        /// the other AsyncTask; or 0 if both AsyncTask objects have the same 
-        /// weightage.</returns>
+        /// <param name="otherTask">A task to compare this task with.</param>
+        /// <returns>Returns -1 if this AsyncTask object should be processed
+        /// before the other AsyncTask; returns 1 if this AsyncTask object should
+        /// be processed after the other AsyncTask; or 0 if both AsyncTask objects
+        /// have the same priority and can be processed in the current order.
+        /// </returns>
         /// 
-        internal int WeighAgainst(AsyncTask otherTask)
+        internal int Compare(AsyncTask otherTask)
         {
             if (ReferenceEquals(this, otherTask))
                 return 0; // Both tasks are the same.
 
-            return WeighAgainstCore(otherTask);
+            return CompareCore(otherTask);
         }
 
         /// <summary>
@@ -172,14 +172,14 @@ namespace Dynamo.Core.Threading
         protected abstract void ExecuteCore();
         protected abstract void HandleTaskCompletionCore();
 
-        protected virtual Comparison CompareCore(AsyncTask otherTask)
+        protected virtual TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
-            return Comparison.KeepBoth; // Keeping both tasks by default.
+            return TaskMergeInstruction.KeepBoth; // Keeping both tasks by default.
         }
 
-        protected virtual int WeighAgainstCore(AsyncTask otherTask)
+        protected virtual int CompareCore(AsyncTask otherTask)
         {
-            return 0; // Having the same weightage by default.
+            return 0; // Having the same priority by default.
         }
 
         #endregion
