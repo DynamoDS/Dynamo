@@ -156,11 +156,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (IsStartSelected)
-                    return true;
-                else if (IsEndSelected)
-                    return true;
-                return false;
+                return IsStartSelected || IsEndSelected;
             }
         }
 
