@@ -1123,8 +1123,6 @@ namespace ProtoCore
 
         public int newEntryPoint { get; private set; }
 
-        public int DeferredUpdates { get; set; }
-
         public void SetNewEntryPoint(int pc)
         {
             newEntryPoint = pc;
@@ -1282,7 +1280,6 @@ namespace ProtoCore
         public void ResetForDeltaExecution()
         {
             Options.ApplyUpdate = false;
-            DeferredUpdates = 0; 
 
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
