@@ -4,6 +4,8 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
+using Revit.GeometryConversion;
+
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.Elements
@@ -43,15 +45,16 @@ namespace Revit.Elements
                     InternalSunAndShadowSettings.GetFrameAltitude(
                         InternalSunAndShadowSettings.ActiveFrame);
                 var altitudeRotation = CoordinateSystem.Identity()
-                    .Rotate(Point.Origin(), Vector.XAxis(), altitude);
+                    .Rotate(Point.Origin(), Vector.XAxis(), altitude.ToDegrees());
                 var altitudeDirection = initialDirection.Transform(altitudeRotation);
 
                 var azimuth =
                     InternalSunAndShadowSettings.GetFrameAzimuth(
                         InternalSunAndShadowSettings.ActiveFrame);
                 var actualAzimuth = 2*Math.PI - azimuth;
+                
                 var azimuthRotation = CoordinateSystem.Identity()
-                    .Rotate(Point.Origin(), Vector.ZAxis(), actualAzimuth);
+                    .Rotate(Point.Origin(), Vector.ZAxis(), actualAzimuth.ToDegrees());
                 var sunDirection = altitudeDirection.Transform(azimuthRotation);
 
                 return sunDirection.Scale(100);
