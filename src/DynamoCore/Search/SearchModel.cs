@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
-using System.Collections.ObjectModel;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using Dynamo.UI;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search
 {
@@ -234,8 +234,11 @@ namespace Dynamo.Search
 
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
         {
-            foreach (var node in nodes)
+            foreach (NodeSearchElement node in nodes)
             {
+                if (node.ElementType != SearchModel.ElementType.Regular)
+                    continue;
+
                 var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
@@ -245,7 +248,7 @@ namespace Dynamo.Search
                     _searchRootCategories.Add(category);
                 }
 
-                category.AddMemberToGroup(node as NodeSearchElement);
+                category.AddMemberToGroup(node);
                 category.AddClassToGroup(node);
             }
         }
@@ -287,8 +290,8 @@ namespace Dynamo.Search
             if (item is CustomNodeSearchElement)
                 return ElementType.CustomNode;
 
-            if (item is DSFunctionNodeSearchElement)
-                return (item as DSFunctionNodeSearchElement).ElementType;
+            if (item is DSFunctionNodeSearchElement || item is NodeSearchElement)
+                return (item as NodeSearchElement).ElementType;
 
             return ElementType.Regular;
         }
@@ -480,16 +483,20 @@ namespace Dynamo.Search
             // Rootcategory has property IsPlaceholder, that indicates of 
             // which members category contains.
             // So, just add method in category and do nothing.
+            // This situation is true for Regular nodes. For other element types we work
+            // with all pieces of category.
+            var count = nodeType == ElementType.Regular ? splitCat.Count - 1 : splitCat.Count;
 
-            for (var i = 1; i < splitCat.Count-1; i++)
+            for (var i = 1; i < count; i++)
             {
                 // All next members are namespaces.
                 currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
 
             // We sure, that the last member is class.
-            if(nodeType == ElementType.Regular)
-            currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count-1], resourceAssembly);
+            if (nodeType == ElementType.Regular)
+                currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1],
+                    resourceAssembly);
 
             return currentCat;
         }
@@ -725,7 +732,7 @@ namespace Dynamo.Search
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="dynNode">A Dynamo node object</param>
-        public void Add(Type t)
+        public void Add(Type t, ElementType nodeType = ElementType.Regular)
         {
             // get name, category, attributes (this is terribly ugly...)
             var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
@@ -761,6 +768,7 @@ namespace Dynamo.Search
             var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,
                                                   t.Assembly.GetName().Name + ".dll");
             searchEle.Executed += this.OnExecuted;
+            searchEle.ElementType = nodeType;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -795,7 +803,7 @@ namespace Dynamo.Search
 
             if (!string.IsNullOrEmpty(cat))
             {
-                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+                SearchDictionary.Add(searchEle, cat + Configurations.CategoryDelimiter + searchEle.Name);
             }
 
             TryAddCategoryAndItem(cat, searchEle);
@@ -807,7 +815,6 @@ namespace Dynamo.Search
                 tags.ForEach(x => SearchDictionary.Add(searchEle, x + "++++++++"));
             }
             SearchDictionary.Add(searchEle, description);
-
         }
 
         public bool Add(CustomNodeInfo nodeInfo)

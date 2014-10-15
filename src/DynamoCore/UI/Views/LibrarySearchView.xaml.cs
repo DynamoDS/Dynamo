@@ -59,6 +59,18 @@ namespace Dynamo.UI.Views
             searchViewModel.SearchText = "";
         }
 
+        private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
+        {
+            ListBoxItem fromSender = sender as ListBoxItem;
+            libraryToolTipPopup.PlacementTarget = fromSender;
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+        }
+
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null);
+        }
+
         // This event is raised only, when we can't go down, to next member.
         // I.e. we are now at the last member button and we have to move to next member group.
         private void MemberGroupsKeyDown(object sender, KeyEventArgs e)
@@ -116,9 +128,8 @@ namespace Dynamo.UI.Views
                 (nextFocusedMembers.ItemContainerGenerator.ContainerFromIndex(0) as ListBoxItem).Focus();
             if (e.Key == Key.Up)
                 (nextFocusedMembers.ItemContainerGenerator.ContainerFromIndex(nextFocusedMembers.Items.Count - 1) as ListBoxItem).Focus();
-            
-            e.Handled = true;                                    
-        }
 
+            e.Handled = true;
+        }
     }
 }

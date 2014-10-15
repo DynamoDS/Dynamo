@@ -234,31 +234,18 @@ namespace Dynamo.ViewModels
 
             //sw.Start();
 
-            this.Model.Search(query);
-            this.SetTopResult();
-            
+            var foundNodes = this.Model.Search(query);
+            this.UpdateTopResult();
+
 
             //sw.Stop();
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
-            // Next code do not need for now. 
-            // But logic should be saved to restore original behavior for new design.
-            // Code will be removed as soon as Search functionality fully implemented. 
-#if false
-            // deselect the last selected item
-            if (visibleSearchResults.Count > SelectedIndex)
-            {
-                visibleSearchResults[SelectedIndex].IsSelected = false;
-            }
-
-            // clear visible results list
-            visibleSearchResults.Clear();
-
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
             {
-                foreach (var ele in this.Model.BrowserRootCategories)
+                foreach (var ele in this.Model.AddonRootCategories)
                 {
                     ele.CollapseToLeaves();
                     ele.SetVisibilityToLeaves(true);
@@ -268,38 +255,20 @@ namespace Dynamo.ViewModels
             }
 
             // otherwise, first collapse all
-            foreach (var root in this.Model.BrowserRootCategories)
+            foreach (var root in this.Model.AddonRootCategories)
             {
                 root.CollapseToLeaves();
                 root.SetVisibilityToLeaves(false);
             }
 
-            // for all of the other results, show them in their category
-            foreach (var ele in result)
+            foreach (NodeSearchElement ele in foundNodes)
             {
-                ele.Visibility = true;
+                if (ele.ElementType == SearchModel.ElementType.Regular)
+                    continue;
+
                 ele.ExpandToRoot();
+                ele.Visibility = true;
             }
-
-            // create an ordered list of visible search results
-            var baseBrowserItem = new BrowserRootElement("root");
-            foreach (var root in Model.BrowserRootCategories)
-            {
-                baseBrowserItem.Items.Add(root);
-            }
-
-            baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
-
-            if (visibleSearchResults.Any())
-            {
-                this.SelectedIndex = 0;
-                visibleSearchResults[0].IsSelected = true;
-            }
-
-            SearchResults.Clear();
-            visibleSearchResults.ToList()
-                .ForEach(x => SearchResults.Add((NodeSearchElement)x));
-#endif
         }
 
         internal static string ShortenCategoryName(string fullCategoryName)
@@ -327,7 +296,7 @@ namespace Dynamo.ViewModels
             return catName;
         }
 
-        private void SetTopResult()
+        private void UpdateTopResult()
         {
             if (!Model.SearchRootCategories.Any())
             {

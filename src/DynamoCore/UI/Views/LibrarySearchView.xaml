@@ -9,7 +9,6 @@
              d:DesignHeight="525"
              d:DesignWidth="350">
     <UserControl.Resources>
-
         <!-- Region Expander Templates -->
 
         <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
@@ -141,6 +140,7 @@
             Then classes will be collapsed.-->
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
+        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
 
         <!--EndRegion-->
 
@@ -281,6 +281,10 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
+            <EventSetter Event="MouseEnter"
+                         Handler="OnListBoxItemMouseEnter" />
+            <EventSetter Event="MouseLeave"
+                         Handler="OnPopupMouseLeave" />
         </Style>
 
         <!--Style for found MemberGroup-->
@@ -478,6 +482,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel DataContext="{Binding TopResult}">
                     <TextBlock Text="{Binding Name}"
@@ -598,6 +603,7 @@
                                              BorderThickness="0"
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
                                              ItemsSource="{Binding MemberGroups}"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                              KeyDown="MemberGroupsKeyDown">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -643,6 +649,13 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
+                <uicontrols:AddonsTreeView Grid.Row="2"
+                                           DataContext="{Binding Model.AddonRootCategories}">
+                    <uicontrols:AddonsTreeView.Visibility>
+                        <Binding Path="Model.AddonRootCategories.Count"
+                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                    </uicontrols:AddonsTreeView.Visibility>
+                </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
 
@@ -692,5 +705,18 @@
                 </Style>
             </Button.Style>
         </Button>
+
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        AttachmentSide="Right"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
     </Grid>
 </UserControl>

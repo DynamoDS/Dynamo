@@ -373,7 +373,7 @@ namespace GraphToDSCompiler
         /// to pre-populate class tables with imported classes and methods
         /// </summary>
         /// <param name="assemblies"></param>
-        public static void PreloadAssembly(List<string> assemblies)
+        public static void PreloadAssembly(IEnumerable<string> assemblies)
         {
             string expression = string.Empty;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
