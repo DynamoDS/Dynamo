@@ -737,7 +737,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            ///  Returns the list of function properties of the class only
+            ///  Returns the list of function of the class only
             /// </summary>
             /// <returns> function nodes </returns>
             public IEnumerable<MethodMirror> GetFunctions()
@@ -758,7 +758,6 @@ namespace ProtoCore
                         && !CoreUtils.IsGetter(pNode.name) && !CoreUtils.IsSetter(pNode.name)
                         && !CoreUtils.StartsWithDoubleUnderscores(pNode.name)
                         && !CoreUtils.IsGetTypeMethod(pNode.name))
-                        
                     {
                         methods.Add(new MethodMirror(pNode));
                     }

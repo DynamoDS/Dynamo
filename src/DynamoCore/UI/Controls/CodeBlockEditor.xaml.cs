@@ -32,7 +32,7 @@ namespace Dynamo.UI.Controls
     public partial class CodeBlockEditor : UserControl
     {
         private NodeViewModel nodeViewModel;
-        private DynamoViewModel dynamoViewModel;
+        internal DynamoViewModel dynamoViewModel;
         private CodeBlockNodeModel nodeModel = null;
         private CompletionWindow completionWindow = null;
         private CodeBlockMethodInsightWindow insightWindow = null;
@@ -100,7 +100,7 @@ namespace Dynamo.UI.Controls
             return completions;
         }
 
-        private IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             IEnumerable<MethodMirror> candidates = null;
             var engineController = this.dynamoViewModel.Model.EngineController;

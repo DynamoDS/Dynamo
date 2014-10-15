@@ -748,7 +748,7 @@ b = c[w][x][y][z];";
                 Assert.IsTrue(libraryLoaded);
             }
 
-            string ffiTargetClass = "ClassFunctionality";
+            string ffiTargetClass = "CodeCompletionClass";
 
             var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
@@ -757,7 +757,7 @@ b = c[w][x][y][z];";
             Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
-            var expected = new string[] { "ClassFunctionality", "StaticFunction", "StaticProp" };
+            var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
             AssertCompletions(members, expected);
         }
 
@@ -780,7 +780,40 @@ b = c[w][x][y][z];";
                 Assert.IsTrue(libraryLoaded);
             }
 
-            string ffiTargetClass = "ClassFunctionality";
+            string ffiTargetClass = "CodeCompletionClass";
+
+            var engineController = ViewModel.Model.EngineController;
+            // Assert that the class name is indeed a class
+            var type = engineController.GetClassType(ffiTargetClass);
+
+            Assert.IsTrue(type != null);
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
+                "IntVal", "IsEqualTo", "OverloadedAdd" };
+            AssertCompletions(members, expected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionSignatureCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            string ffiTargetClass = "CodeCompletionClass";
 
             var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
