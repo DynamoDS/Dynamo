@@ -263,7 +263,7 @@ namespace DSCore.File
 
         protected override Action WatchFileSystemObject(DirectoryInfo path)
         {
-            var watcher = new FileSystemWatcher(path.FullName);
+            var watcher = new FileSystemWatcher(path.FullName) { EnableRaisingEvents = true };
             watcher.Created += Modified;
             watcher.Renamed += Modified;
             watcher.Deleted += Modified;
