@@ -56,6 +56,15 @@ namespace Revit.Application
             get { return new Document(DocumentManager.Instance.CurrentDBDocument); }
         }
 
+
+        /// <summary>
+        /// Extracts Latitude and Longitude from Revit
+        /// </summary>
+        /// 
+        /// <returns name="Lat">Latitude</returns>
+        /// <returns name="Long">Longitude</returns>
+        /// <search>Latitude, Longitude</search>
+
         public DynamoUnits.Location Location
         {
             get
