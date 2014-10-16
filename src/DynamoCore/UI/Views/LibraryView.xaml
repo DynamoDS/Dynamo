@@ -88,6 +88,9 @@
                             <Setter Property="Source"
                                     TargetName="ExpandCollapseStateIcon"
                                     Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
                             <Setter Property="TextBlock.Foreground"
                                     TargetName="HeaderContent"
                                     Value="#bbbbbb" />
