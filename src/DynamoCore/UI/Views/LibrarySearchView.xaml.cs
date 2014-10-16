@@ -184,28 +184,8 @@ namespace Dynamo.UI.Views
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
             var searchCategory = sender as FrameworkElement;
 
-            // memberInFocus is class button.
-            if (memberInFocus is ListViewItem)
-            {
-                // User presses up, we have to move to previous category.
-                if (e.Key == Key.Up)
-                {
-                    e.Handled = false;
-                    return;
-                }
-
-                // Otherwise user pressed down, we have to move to first member button.
-                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategory, "MemberGroupsListBox");
-                var membersListBox = WPF.FindChild<ListBox>(memberGroupsListBox, "MembersListBox");
-                var generator = membersListBox.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
-
-                e.Handled = true;
-                return;
-            }
-
             // memberInFocus is method button.
-            if (memberInFocus is ListBoxItem)
+            if (memberInFocus.DataContext is NodeSearchElement)
             {
                 var searchCategoryContent = searchCategory.DataContext as SearchCategory;
 
@@ -228,6 +208,26 @@ namespace Dynamo.UI.Views
                 var subCategoryListView = WPF.FindChild<ListView>(searchCategory, "SubCategoryListView");
                 var generator = subCategoryListView.ItemContainerGenerator;
                 (generator.ContainerFromIndex(0) as ListViewItem).Focus();
+
+                e.Handled = true;
+                return;
+            }
+
+            // memberInFocus is class button.
+            if (memberInFocus.DataContext is BrowserInternalElement)
+            {
+                // User presses up, we have to move to previous category.
+                if (e.Key == Key.Up)
+                {
+                    e.Handled = false;
+                    return;
+                }
+
+                // Otherwise user pressed down, we have to move to first member button.
+                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategory, "MemberGroupsListBox");
+                var membersListBox = WPF.FindChild<ListBox>(memberGroupsListBox, "MembersListBox");
+                var generator = membersListBox.ItemContainerGenerator;
+                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
 
                 e.Handled = true;
                 return;
