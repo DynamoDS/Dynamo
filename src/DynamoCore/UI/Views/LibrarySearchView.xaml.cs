@@ -62,6 +62,8 @@ namespace Dynamo.UI.Views
             searchViewModel.SearchText = "";
         }
 
+        #region ToolTip methods
+
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
             ListBoxItem fromSender = sender as ListBoxItem;
@@ -74,11 +76,22 @@ namespace Dynamo.UI.Views
             libraryToolTipPopup.SetDataContext(null);
         }
 
+        #endregion
+
+        #region Key navigation
+
+        // Key navigation functions as bubbling scheme:
+        // Category(CategoryListView) <- CategoryContent(StackPanel) <- 
+        // <- SubClasses(SubCategoryListView) OR MemberGroups(MemberGroupsListBox)
+        // When element can't move further, it notifies its' parent about that.
+        // And then parent decides what to do with it.
+
+
         // This event is raised only, when we can't go down, to next member.
         // I.e. we are now at the last member button and we have to move to next member group.
         private void MemberGroupsKeyDown(object sender, KeyEventArgs e)
         {
-            if ((e.Key != Key.Down) && (e.Key != Key.Up)) 
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
             var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content as BrowserInternalElement;
@@ -135,40 +148,36 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private int GetIndexNextSelectedItem(Key key, int selectedIndex, int itemsPerRow)
+        // In classes we can move left, right, up, down.
+        private void OnSubClassesPanelKeyDown(object sender, KeyEventArgs e)
         {
-            int newIndex = -1;
-            int selectedRowIndex = selectedIndex / itemsPerRow + 1;
+            var classButton = Keyboard.FocusedElement as FrameworkElement;
 
-            switch (key)
+            var buttonsWrapPanel = sender as LibraryWrapPanel;
+            var listButtons = (sender as LibraryWrapPanel).Children;
+
+            var selectedIndex = listButtons.IndexOf(classButton);
+            int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
+
+            int newIndex = GetIndexNextSelectedItem(e.Key, selectedIndex, itemsPerRow);
+
+            // If index is out of range class list, that means we have to move to previous category
+            // or to next member group.
+            if ((newIndex < 0) || (newIndex > listButtons.Count))
             {
-                case Key.Right:
-                    {
-                        newIndex = selectedIndex + 1;
-                        int availableIndex = selectedRowIndex * itemsPerRow - 1;
-                        if (newIndex > availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Left:
-                    {
-                        newIndex = selectedIndex - 1;
-                        int availableIndex = (selectedRowIndex - 1) * itemsPerRow;
-                        if (newIndex < availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Down:
-                    {
-                        newIndex = selectedIndex + itemsPerRow + 1;
-                        // +1 because one of items is always ClassInformation.
-                        break;
-                    }
-                case Key.Up:
-                    {
-                        newIndex = selectedIndex - itemsPerRow;
-                        break;
-                    }
+                e.Handled = false;
+                return;
             }
-            return newIndex;
+
+            // Set focus on new item.
+            listButtons[newIndex].Focus();
+
+            // Somehow wpf sets not only focus, but also selects item. But we don't need selection.
+            // We have to find better way of unselecting items.
+            WPF.FindUpVisualTree<ListView>(buttonsWrapPanel).UnselectAll();
+
+            e.Handled = true;
+            return;
         }
 
         // This event is raised only, when we can't go down/up, to next member group.
@@ -235,37 +244,43 @@ namespace Dynamo.UI.Views
             }
         }
 
-        // In classes we can move left, right, up, down.
-        private void OnSubClassesPanelKeyDown(object sender, KeyEventArgs e)
+        private int GetIndexNextSelectedItem(Key key, int selectedIndex, int itemsPerRow)
         {
-            var classButton = Keyboard.FocusedElement as FrameworkElement;
+            int newIndex = -1;
+            int selectedRowIndex = selectedIndex / itemsPerRow + 1;
 
-            var buttonsWrapPanel = sender as LibraryWrapPanel;
-            var listButtons = (sender as LibraryWrapPanel).Children;
-
-            var selectedIndex = listButtons.IndexOf(classButton);
-            int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
-
-            int newIndex = GetIndexNextSelectedItem(e.Key, selectedIndex, itemsPerRow);
-
-            // If index is out of range class list, that means we have to move to previous category
-            // or to next member group.
-            if ((newIndex < 0) || (newIndex > listButtons.Count))
+            switch (key)
             {
-                e.Handled = false;
-                return;
+                case Key.Right:
+                    {
+                        newIndex = selectedIndex + 1;
+                        int availableIndex = selectedRowIndex * itemsPerRow - 1;
+                        if (newIndex > availableIndex) newIndex = selectedIndex;
+                        break;
+                    }
+                case Key.Left:
+                    {
+                        newIndex = selectedIndex - 1;
+                        int availableIndex = (selectedRowIndex - 1) * itemsPerRow;
+                        if (newIndex < availableIndex) newIndex = selectedIndex;
+                        break;
+                    }
+                case Key.Down:
+                    {
+                        newIndex = selectedIndex + itemsPerRow + 1;
+                        // +1 because one of items is always ClassInformation.
+                        break;
+                    }
+                case Key.Up:
+                    {
+                        newIndex = selectedIndex - itemsPerRow;
+                        break;
+                    }
             }
-
-            // Set focus on new item.
-            listButtons[newIndex].Focus();
-
-            // Somehow wpf sets not only focus, but also selects item. But we don't need selection.
-            // We have to find better way of unselecting items.
-            WPF.FindUpVisualTree<ListView>(buttonsWrapPanel).UnselectAll();
-
-            e.Handled = true;
-            return;
+            return newIndex;
         }
+
+        #endregion
 
     }
 }
