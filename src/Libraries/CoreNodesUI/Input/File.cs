@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
@@ -8,6 +13,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.AST.AssociativeAST;
+using VMDataBridge;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
@@ -28,7 +35,6 @@ namespace DSCore.File
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
-
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
@@ -42,22 +48,21 @@ namespace DSCore.File
             readFileButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = VerticalAlignment.Center;
 
-            var tb = new TextBox();
-            if (string.IsNullOrEmpty(Value))
-                Value = "No file selected.";
+            var tb = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false,
+                Margin = new Thickness(0, 5, 0, 5)
+            };
 
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-            tb.IsReadOnly = true;
-            tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate { 
                 tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
                 view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
             };
-            tb.Margin = new Thickness(0,5,0,5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
@@ -110,7 +115,6 @@ namespace DSCore.File
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    //MAGN -3382 [IsVisibleInDynamoLibrary(false)]
     public class Directory : FileSystemBrowser
     {
         public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
@@ -123,9 +127,158 @@ namespace DSCore.File
             };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
-            {
                 Value = openDialog.SelectedPath;
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+    }
+
+    public abstract class FileSystemObject<T> : NodeModel
+    {
+        private Action unregister = () => { };
+        private readonly Func<string, T> func;
+
+        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func) : base(workspaceModel)
+        {
+            this.func = func;
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            yield return
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall(func, inputAstNodes));
+
+            yield return
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), GetAstIdentifierForOutputIndex(0)));
+        }
+
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
+        }
+
+        private void DataBridgeCallback(object data)
+        {
+            ForceReExecuteOfNode = false;
+            unregister();
+            var newRegs = UpdateWatchedFiles(data).ToList();
+            unregister = delegate
+            {
+                foreach (var reg in newRegs)
+                    reg();
+            };
+        }
+
+        protected abstract Action WatchFileSystemObject(T obj);
+
+        private IEnumerable<Action> UpdateWatchedFiles(object data)
+        {
+            if (data is T)
+            {
+                try
+                {
+                    return Singleton(WatchFileSystemObject((T)data));
+                }
+                catch (Exception e)
+                {
+                    Warning(e.Message);
+                }
             }
+
+            if (data is ICollection)
+            {
+                var paths = data as IEnumerable;
+                return paths.Cast<object>().SelectMany(UpdateWatchedFiles);
+            }
+
+            return Enumerable.Empty<Action>();
+        }
+        
+        private static IEnumerable<TItem> Singleton<TItem>(TItem x)
+        {
+            yield return x;
+        }
+        
+        protected void Modified(object sender, FileSystemEventArgs e)
+        {
+            if (!ForceReExecuteOfNode)
+            {
+                ForceReExecuteOfNode = true;
+                RequiresRecalc = true;
+            }
+        }
+    }
+
+    [NodeName("File.FromPath")]
+    [NodeCategory(BuiltinNodeCategories.CORE_IO)]
+    [NodeDescription("Creates a file object from a path.")]
+    [SupressImportIntoVM]
+    [IsDesignScriptCompatible]
+    public class FileObject : FileSystemObject<FileInfo>
+    {
+        public FileObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.File.FromPath)
+        {
+            InPortData.Add(new PortData("path", "Path to the file."));
+            OutPortData.Add(new PortData("file", "File object"));
+            RegisterAllPorts();
+        }
+
+        protected override Action WatchFileSystemObject(FileInfo path)
+        {
+            var dir = 
+                path.Directory ?? new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
+
+            var watcher = new FileSystemWatcher(dir.FullName, path.Name) { EnableRaisingEvents = true };
+            watcher.Changed += Modified;
+            watcher.Renamed += Modified;
+            watcher.Deleted += Modified;
+
+            return () =>
+            {
+                watcher.Changed -= Modified;
+                watcher.Renamed -= Modified;
+                watcher.Deleted -= Modified;
+                watcher.Dispose();
+            };
+        }
+    }
+
+    [NodeName("Directory.FromPath")]
+    [NodeCategory(BuiltinNodeCategories.CORE_IO)]
+    [NodeDescription("Creates a directory object from a path.")]
+    [SupressImportIntoVM]
+    [IsDesignScriptCompatible]
+    public class DirectoryObject : FileSystemObject<DirectoryInfo>
+    {
+        public DirectoryObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.Directory.FromPath)
+        {
+            InPortData.Add(new PortData("path", "Path to the directory."));
+            OutPortData.Add(new PortData("directory", "Directory object."));
+            RegisterAllPorts();
+        }
+
+        protected override Action WatchFileSystemObject(DirectoryInfo path)
+        {
+            var watcher = new FileSystemWatcher(path.FullName);
+            watcher.Created += Modified;
+            watcher.Renamed += Modified;
+            watcher.Deleted += Modified;
+
+            return () =>
+            {
+                watcher.Created -= Modified;
+                watcher.Renamed -= Modified;
+                watcher.Deleted -= Modified;
+                watcher.Dispose();
+            };
         }
     }
 }
