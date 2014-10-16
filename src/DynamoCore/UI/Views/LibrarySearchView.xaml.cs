@@ -198,17 +198,17 @@ namespace Dynamo.UI.Views
             {
                 var searchCategoryContent = searchCategoryFrameworkEle.DataContext as SearchCategory;
 
-                // If there are no found classes, we have to move to next category.
-                // So, we handle it to next element - category.
-                if (searchCategoryContent.Classes.Count == 0)
+                if (e.Key == Key.Down)
                 {
+                    // We have to move to next category.
                     e.Handled = false;
                     return;
                 }
 
-                if (e.Key == Key.Down)
+                // If there are no found classes, we have to move to next category.
+                // So, we handle it to next element - category.
+                if (searchCategoryContent.Classes.Count == 0)
                 {
-                    // We have to move to next category.
                     e.Handled = false;
                     return;
                 }
