@@ -216,7 +216,8 @@ namespace Dynamo.UI.Views
             // memberInFocus is class button.
             if (memberInFocus.DataContext is BrowserInternalElement)
             {
-                // User presses up, we have to move to previous category.
+                // We are at the first row of class list. User presses up, we have to move to previous category.
+                // We handle it further.
                 if (e.Key == Key.Up)
                 {
                     e.Handled = false;
