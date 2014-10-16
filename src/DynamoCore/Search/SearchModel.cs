@@ -823,6 +823,7 @@ namespace Dynamo.Search
             nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
+            nodeEle.ElementType = ElementType.CustomNode;
             nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
