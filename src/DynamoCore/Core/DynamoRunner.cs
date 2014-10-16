@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 using DSNodeServices;
@@ -195,6 +196,16 @@ namespace Dynamo.Core
 
                 dynamoModel.Logger.Log(
                     string.Format("Evaluation completed in {0}", sw.Elapsed));
+            }
+
+            // When evaluation is completed, we mark all
+            // nodes as ForceReexecuteOfNode = false to prevent
+            // cyclical graph updates. It is therefore the responsibility 
+            // of the node implementor to mark this flag = true, if they
+            // want to require update.
+            foreach (var n in workspace.Nodes)
+            {
+                n.ForceReExecuteOfNode = false;
             }
 
             dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
