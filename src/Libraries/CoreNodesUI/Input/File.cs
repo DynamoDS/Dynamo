@@ -167,7 +167,6 @@ namespace DSCore.File
 
         private void DataBridgeCallback(object data)
         {
-            ForceReExecuteOfNode = false;
             unregister();
             var newRegs = UpdateWatchedFiles(data).ToList();
             unregister = delegate
@@ -209,11 +208,8 @@ namespace DSCore.File
         
         protected void Modified(object sender, FileSystemEventArgs e)
         {
-            if (!ForceReExecuteOfNode)
-            {
-                ForceReExecuteOfNode = true;
-                RequiresRecalc = true;
-            }
+            ForceReExecuteOfNode = true;
+            RequiresRecalc = true;
         }
     }
 
