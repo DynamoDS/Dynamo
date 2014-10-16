@@ -138,21 +138,21 @@ namespace Dynamo.UI.Views
         private int GetIndexNextSelectedItem(Key key, int selectedIndex, int itemsPerRow)
         {
             int newIndex = -1;
-            int numberOfSelectedRow = selectedIndex / itemsPerRow + 1;
+            int selectedRowIndex = selectedIndex / itemsPerRow + 1;
 
             switch (key)
             {
                 case Key.Right:
                     {
                         newIndex = selectedIndex + 1;
-                        int availableIndex = numberOfSelectedRow * itemsPerRow - 1;
+                        int availableIndex = selectedRowIndex * itemsPerRow - 1;
                         if (newIndex > availableIndex) newIndex = selectedIndex;
                         break;
                     }
                 case Key.Left:
                     {
                         newIndex = selectedIndex - 1;
-                        int availableIndex = (numberOfSelectedRow - 1) * itemsPerRow;
+                        int availableIndex = (selectedRowIndex - 1) * itemsPerRow;
                         if (newIndex < availableIndex) newIndex = selectedIndex;
                         break;
                     }
