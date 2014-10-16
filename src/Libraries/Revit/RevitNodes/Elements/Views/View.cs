@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using Autodesk.Revit.DB;
-using Revit.Elements;
 
 namespace Revit.Elements.Views
 {
@@ -34,7 +28,7 @@ namespace Revit.Elements.Views
         /// </summary>
         /// <param name="fullPath">A valid path for the image</param>
         /// <returns>The image</returns>
-        public System.Drawing.Image ExportAsImage(string fullPath)
+        public Bitmap ExportAsImage(string fullPath)
         {
             string pathName = fullPath;
             string extension = null;
@@ -73,7 +67,7 @@ namespace Revit.Elements.Views
                 ExportRange = ExportRange.SetOfViews,
                 FilePath = pathName,
                 HLRandWFViewsFileType = fileType,
-                ImageResolution = ImageResolution.DPI_72,
+                ImageResolution = ImageResolution.DPI_150,
                 ZoomType = ZoomFitType.Zoom,
                 ShadowViewsFileType = fileType
             };
@@ -92,11 +86,12 @@ namespace Revit.Elements.Views
             // rename the file
             if (File.Exists(destFn)) File.Delete(destFn);
             File.Move(actualFn, destFn);
-
-            return Image.FromFile(destFn);
+            
+            using (var fs = new FileStream(destFn, FileMode.Open))
+                return new Bitmap(Image.FromStream(fs));
         }
 
-        private string ViewTypeString(ViewType vt)
+        private static string ViewTypeString(ViewType vt)
         {
             switch (vt)
             {
@@ -119,7 +114,7 @@ namespace Revit.Elements.Views
 
         public override string ToString()
         {
-            return this.GetType().Name + "(Name = " + this.InternalView.ViewName + " )";
+            return GetType().Name + "(Name = " + InternalView.ViewName + " )";
         }
     }
 }
