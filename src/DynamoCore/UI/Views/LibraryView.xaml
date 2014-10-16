@@ -413,31 +413,35 @@
                             </Border>
                             <ControlTemplate.Triggers>
 
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
                                                    Value="True" />
-                                        <Condition Property="IsChecked"
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
                                                    Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
+                                    </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
                                         <Setter Property="Background"
                                                 TargetName="ExpanderButtonBorder"
                                                 Value="#222222" />
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
 
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
                                                    Value="True" />
-                                        <Condition Property="IsChecked"
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
                                                    Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
@@ -450,17 +454,19 @@
                                         <Setter Property="Background"
                                                 TargetName="ExpanderButtonBorder"
                                                 Value="#222222" />
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
 
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
                                                    Value="False" />
-                                        <Condition Property="IsChecked"
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
                                                    Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
@@ -470,8 +476,8 @@
                                         <Setter Property="TextBlock.Foreground"
                                                 TargetName="HeaderContent"
                                                 Value="#bbbbbb" />
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
 
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -602,8 +608,6 @@
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
                                                    Value="True" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsExpanded}"
-                                                   Value="False" />
                                         <Condition Value="False">
                                             <Condition.Binding>
                                                 <Binding RelativeSource="{RelativeSource Self}"
