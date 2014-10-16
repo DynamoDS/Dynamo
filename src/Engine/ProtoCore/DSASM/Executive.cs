@@ -1367,6 +1367,15 @@ namespace ProtoCore.DSASM
                             Properties.updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
                         }
 
+                        // Clear runtime warning for the first run in delta
+                        // execution.
+                        if (core.Options.IsDeltaExecution && 
+                            (Properties.executingGraphNode == null ||
+                             Properties.executingGraphNode.OriginalAstID != graphNode.OriginalAstID))
+                        {
+                            core.RuntimeStatus.ClearWarningsForAst(graphNode.OriginalAstID);
+                        }
+
                         // Set the current graphnode being executed
                         Properties.executingGraphNode = graphNode;
                         core.RuntimeExpressionUID= graphNode.exprUID;
@@ -1454,6 +1463,11 @@ namespace ProtoCore.DSASM
                         break;
                     }
                 }
+            }
+
+            if (core.Options.IsDeltaExecution)
+            {
+                core.RuntimeStatus.ClearWarningsForAst(Properties.executingGraphNode.OriginalAstID);
             }
         }
 

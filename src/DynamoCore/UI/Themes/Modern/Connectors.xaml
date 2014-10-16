@@ -32,10 +32,9 @@
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
         <Grid>
             <Grid.Resources>
-                <LinearGradientBrush x:Key="BConnectorSelection" StartPoint="0,.5" EndPoint="1,.5">
-                    <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
-                    <GradientStop Color="{Binding IsEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="1"></GradientStop>
-                </LinearGradientBrush>
+                <SolidColorBrush x:Key="BConnectorSelection"
+                                 Color="{Binding IsStartOrEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}">
+                </SolidColorBrush>
             </Grid.Resources>
 
             <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">

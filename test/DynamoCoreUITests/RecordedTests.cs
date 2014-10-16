@@ -2945,6 +2945,49 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4659()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4659
+
+            RunCommandsFromFile("Defect_MAGN_4659.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("1d8354e5-93e0-43be-916d-28dd8bdf85d4") as CodeBlockNodeModel;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and Warning should be there on CBN.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and now there should be warning.
+                    Assert.AreNotEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+
+            });
+
+        }
+
+
         #endregion
 
         #region Tests moved from FScheme
