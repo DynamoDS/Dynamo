@@ -265,16 +265,16 @@
                                               Content="{TemplateBinding Content}" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="True" />
-                                    <Condition Property="IsSelected"
-                                               Value="False" />
-                                </MultiTrigger.Conditions>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
                                 <Setter Property="Background"
                                         Value="#444444" />
-                            </MultiTrigger>
+                            </Trigger>
+                            <Trigger Property="IsFocused"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#444444" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -603,7 +603,8 @@
                                              BorderThickness="0"
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
                                              ItemsSource="{Binding MemberGroups}"
-                                             ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                             KeyDown="MemberGroupsKeyDown">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -615,7 +616,8 @@
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                                             ItemsSource="{Binding Members}">
+                                                             ItemsSource="{Binding Members}"
+                                                             Name="MembersListBox">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <ContentControl Template="{StaticResource MemberControlTemplate}" />

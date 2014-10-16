@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Nodes.Search;
+using System.Linq;
 
 namespace Dynamo.Search
 {
@@ -25,6 +26,11 @@ namespace Dynamo.Search
         internal void AddMember(BrowserInternalElement node)
         {
             members.Add(node);
+        }
+
+        public bool ContainsMember(BrowserInternalElement member)
+        {
+           return Members.Contains(member);
         }
     }
 }
