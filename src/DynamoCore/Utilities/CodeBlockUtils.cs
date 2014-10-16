@@ -347,6 +347,8 @@ namespace Dynamo.Utilities
     /// </summary>
     internal class CodeCompletionParser
     {
+        #region private members
+
         private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
         private static string spacesOrNonePattern = @"(\s*)";
         private static string colonPattern = ":";
@@ -361,16 +363,31 @@ namespace Dynamo.Utilities
         // y[z.foo()].
         // x[
         // So at any given time the top of the stack will contain the string to be completed
-        Stack<string> expressionStack = new Stack<string>();
+        private Stack<string> expressionStack = new Stack<string>();
 
-        string strPrefix = String.Empty;
-        public string StringPrefix
-        {
-            get { return strPrefix; }
-        }
+        /// <summary>
+        /// Expression to autocomplete on is on top of 'expressionStack'
+        /// </summary>
+        private string strPrefix = String.Empty;
 
-        string type = string.Empty;
-        int argCount = 0;
+        /// <summary>
+        /// Function call being currently typed
+        /// </summary>
+        private string functionName = String.Empty;
+
+        /// <summary>
+        /// Identifier or Class name on which function being typed currently is invoked
+        /// </summary>
+        private string functionPrefix = String.Empty;
+
+        private string type = string.Empty;
+        private int argCount = 0;
+
+        #endregion
+
+        #region public members
+
+        
 
         public static string GetVariableType(string code, string variableName)
         {
@@ -381,6 +398,43 @@ namespace Dynamo.Utilities
 
             return type;
         }
+
+        /// <summary>
+        /// Given the code that's currently being typed in a CBN,
+        /// this function extracts the expression that needs to be code-completed
+        /// </summary>
+        /// <param name="code"></param>
+        public static string GetStringToComplete(string code)
+        {
+            var codeParser = new CodeCompletionParser();
+            // TODO: Discard complete code statements terminated by ';'
+            // and extract only the current line being typed
+            for (int i = 0; i < code.Length; ++i)
+            {
+                codeParser.ParseStringToComplete(code[i]);
+            }
+            return codeParser.strPrefix;
+        }
+
+        /// <summary>
+        /// Given the code that's currently being typed in a CBN,
+        /// this function extracts the expression that needs to be code-completed
+        /// </summary>
+        /// <param name="code"></param>
+        public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
+        {
+            var codeParser = new CodeCompletionParser();
+            // TODO: Discard complete code statements terminated by ';'
+            // and extract only the current line being typed
+            for (int i = 0; i < code.Length; ++i)
+            {
+                codeParser.ParseStringToComplete(code[i]);
+            }
+            functionName = codeParser.functionName;
+            functionPrefix = codeParser.functionPrefix;
+        }
+
+        #endregion
 
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
@@ -407,23 +461,6 @@ namespace Dynamo.Utilities
             }
 
             return variableTypes;
-        }
-
-        /// <summary>
-        /// Given the code that's currently being typed in a CBN,
-        /// this function extracts the expression that needs to be code-completed
-        /// </summary>
-        /// <param name="code"></param>
-        public static string GetStringToComplete(string code)
-        {
-            var codeParser = new CodeCompletionParser();
-            // TODO: Discard complete code statements terminated by ';'
-            // and extract only the current line being typed
-            for (int i = 0; i < code.Length; ++i)
-            {
-                codeParser.ParseStringToComplete(code[i]);
-            }
-            return codeParser.strPrefix;
         }
 
         private string ParseStringToComplete(char currentChar)
@@ -462,10 +499,14 @@ namespace Dynamo.Utilities
                     if (!string.IsNullOrEmpty(strPrefix))
                     {
                         // function call
-                        // Auto-complete function signature for runtime type 
-                        // or static type if runtime type is not available
+                        // Auto-complete function signature  
                         // Class/Type and function name must be known at this point
-                        string functionName = GetMemberIdentifier(strPrefix);
+                        functionName = GetMemberIdentifier();
+                        if(string.Equals(strPrefix, functionName))
+                            functionPrefix = string.Empty;
+                        else
+                            functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
+
                         expressionStack.Push(strPrefix + @"(");
                     }
                     else
@@ -496,7 +537,7 @@ namespace Dynamo.Utilities
                         if (strPrefix.IndexOf('.') != -1)
                         {
                             // If type exists, extract string after previous '.'                            
-                            string identToComplete = GetMemberIdentifier(strPrefix);
+                            string identToComplete = GetMemberIdentifier();
                             // Auto-completion happens over type, search for identToComplete in type's auto-complete list
                         }
 
@@ -514,11 +555,9 @@ namespace Dynamo.Utilities
         }
 
         #region private utility methods
-        private string GetMemberIdentifier(string strPrefix)
+        private string GetMemberIdentifier()
         {
-            string[] idents = strPrefix.Split('.');
-            string identToComplete = idents[idents.Length - 1];
-            return identToComplete;
+            return strPrefix.Split('.').Last();
         }
 
         private string PopFromExpressionStack(char currentChar)
