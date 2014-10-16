@@ -21,6 +21,8 @@ namespace Dynamo.UI.Views
             InitializeComponent();
         }
 
+        #region MethodButton
+
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
@@ -37,6 +39,10 @@ namespace Dynamo.UI.Views
             // This item may get focus just by keyboard.
             listBoxItem.Focus();
         }
+        
+        #endregion
+
+        #region ClassButton
 
         private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -61,6 +67,8 @@ namespace Dynamo.UI.Views
 
             e.Handled = true;
         }
+
+        #endregion
 
         private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
