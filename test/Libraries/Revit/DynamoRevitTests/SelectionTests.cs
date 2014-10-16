@@ -355,7 +355,7 @@ namespace Dynamo.Tests
             using (var t = new Transaction(DocumentManager.Instance.CurrentDBDocument))
             {
                 t.Start("Delete wall test.");
-                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
+                DocumentManager.Instance.CurrentDBDocument.Delete(wall.Id);
                 t.Commit();
             }
 
