@@ -520,6 +520,11 @@ namespace Dynamo.Models
                     scheduler.ScheduleForExecution(setTraceDataTask);
             }
 
+            // If one or more custom node have been updated, make sure they
+            // are compiled first before the home workspace gets evaluated.
+            // 
+            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+
             var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
             {
