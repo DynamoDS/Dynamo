@@ -67,7 +67,7 @@
     <Compile Include="LocationControl.xaml.cs">
       <DependentUpon>LocationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProjectLocation.cs" />
+    <Compile Include="SiteLocation.cs" />
     <Compile Include="RevitDropDown.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Data;
 
 using Dynamo.Applications.Models;
 using Dynamo.Controls;
@@ -16,15 +14,16 @@ using RevitServices.Persistence;
 
 namespace DSRevitNodesUI
 {
-    [NodeName("Analyze.ProjectLocation"), NodeCategory(BuiltinNodeCategories.ANALYZE),
-     NodeDescription("Returns the current Revit project location."), IsDesignScriptCompatible]
-    public class ProjectLocation : RevitNodeModel, IWpfNode
+    [NodeName("Analyze.SiteLocation"), NodeCategory(BuiltinNodeCategories.ANALYZE),
+     NodeDescription("Returns the current Revit site location."), IsDesignScriptCompatible]
+    public class SiteLocation : RevitNodeModel, IWpfNode
     {
         private readonly RevitDynamoModel model;
 
         public DynamoUnits.Location Location { get; set; }
 
-        public ProjectLocation(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public SiteLocation(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             OutPortData.Add(new PortData("Location", "The location of the current Revit project."));
             RegisterAllPorts();
@@ -36,6 +35,8 @@ namespace DSRevitNodesUI
             model = (RevitDynamoModel)workspaceModel.DynamoModel;
             model.RevitDocumentChanged += model_RevitDocumentChanged;
             model.RevitServicesUpdater.ElementsModified += RevitServicesUpdater_ElementsModified;
+
+            Update();
         }
 
         #region public methods
