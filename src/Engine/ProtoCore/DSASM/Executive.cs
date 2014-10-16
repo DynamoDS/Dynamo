@@ -1608,6 +1608,12 @@ namespace ProtoCore.DSASM
             {
                 // Handle deactivated graphnodes
                 GCSymbols(gnode.symbolListWithinExpression);
+#if GC_MARK_AND_SWEEP
+                foreach (var symbol in gnode.symbolListWithinExpression)
+                {
+                    rmem.SetSymbolValue(symbol, StackValue.Null);
+                }
+#endif
                 gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
@@ -4030,10 +4036,6 @@ namespace ProtoCore.DSASM
             {
                 StackValue sv = rmem.GetSymbolValue(symbol);
                 GCRelease(sv);
-
-#if GC_MARK_AND_SWEEP
-                rmem.SetSymbolValue(symbol, StackValue.Null);
-#endif
             }
         }
 
