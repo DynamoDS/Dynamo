@@ -30,7 +30,7 @@ namespace Dynamo.Search
 
         public bool ContainsMember(BrowserInternalElement member)
         {
-           return Members.ToList().Contains(member);
+           return Members.Contains(member);
         }
     }
 }
