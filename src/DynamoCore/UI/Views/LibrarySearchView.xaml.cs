@@ -182,12 +182,12 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or first/last class button.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
-            var searchCategory = sender as FrameworkElement;
+            var searchCategoryFrameworkEle = sender as FrameworkElement;
 
             // memberInFocus is method button.
             if (memberInFocus.DataContext is NodeSearchElement)
             {
-                var searchCategoryContent = searchCategory.DataContext as SearchCategory;
+                var searchCategoryContent = searchCategoryFrameworkEle.DataContext as SearchCategory;
 
                 // If there are no found classes, we have to move to next category.
                 // So, we handle it to next element - category.
@@ -205,7 +205,7 @@ namespace Dynamo.UI.Views
                 }
 
                 // Otherwise, we move to first class button.
-                var subCategoryListView = WPF.FindChild<ListView>(searchCategory, "SubCategoryListView");
+                var subCategoryListView = WPF.FindChild<ListView>(searchCategoryFrameworkEle, "SubCategoryListView");
                 var generator = subCategoryListView.ItemContainerGenerator;
                 (generator.ContainerFromIndex(0) as ListViewItem).Focus();
 
@@ -225,7 +225,7 @@ namespace Dynamo.UI.Views
                 }
 
                 // Otherwise user pressed down, we have to move to first member button.
-                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategory, "MemberGroupsListBox");
+                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryFrameworkEle, "MemberGroupsListBox");
                 var membersListBox = WPF.FindChild<ListBox>(memberGroupsListBox, "MembersListBox");
                 var generator = membersListBox.ItemContainerGenerator;
                 (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
