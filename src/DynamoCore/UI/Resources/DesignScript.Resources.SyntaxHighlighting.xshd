@@ -19,7 +19,7 @@
   <Properties>
     <Property name="LineComment" value="//" />
   </Properties>
-  <Digits name="Digits" color="#2585E5" />
+  <!--<Digits name="Digits" color="#2585E5" />-->
   <RuleSets>
     <RuleSet ignorecase="false">
       <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>
@@ -34,7 +34,7 @@
         <Begin>"</Begin>
         <End>"</End>
       </Span>
-      <MarkPrevious color="#417693">(</MarkPrevious>
+      <!--<MarkPrevious color="#417693">(</MarkPrevious>-->
       <KeyWords name="BuiltInStatements" color="#8C5EAA">
         <Key word="local" />
         <Key word="static" />

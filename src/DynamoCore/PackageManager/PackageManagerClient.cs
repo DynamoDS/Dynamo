@@ -12,8 +12,6 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-    public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
-
     public class LoginStateEventArgs : EventArgs
     {
         public string Text { get; set; }
@@ -35,19 +33,29 @@ namespace Dynamo.PackageManager
 
         #region Events
 
-        internal delegate void RequestAuthenticationHandler();
+        internal delegate void RequestAuthenticationHandler(PackageManagerClient sender);
         internal event RequestAuthenticationHandler RequestAuthentication;
         private void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)
-                RequestAuthentication();
+            {
+                RequestAuthentication(this);
+            }
         }
 
         #endregion
 
         #region Properties/Fields
 
+        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+
         private readonly DynamoModel dynamoModel;
+
+        public bool HasAuthenticator
+        {
+            get { return RequestAuthentication != null; }
+        }
 
         /// <summary>
         ///     Client property
@@ -101,10 +109,12 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        private static readonly string serverUrl = "https://www.dynamopackages.com";
+
         public PackageManagerClient(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
-            Client = new Client(null, "http://www.dynamopackages.com"); 
+            Client = new Client(null, serverUrl); 
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -240,11 +250,15 @@ namespace Dynamo.PackageManager
                     if (isNewVersion)
                     {
                         var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle);
+
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
                         var pkg = PackageUploadBuilder.NewPackage(this.dynamoModel, l, files, packageUploadHandle);
+
+                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)

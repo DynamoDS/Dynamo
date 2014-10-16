@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,7 +58,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -139,6 +139,9 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
+    <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
+    <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
     <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
     <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
@@ -171,6 +174,7 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
+    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -317,14 +321,14 @@ limitations under the License.
     <Compile Include="UI\Views\InstalledPackagesView.xaml.cs">
       <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\PackageItemInternalViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
-      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+    <Compile Include="PackageManager\PackageItemInternalViewModel.cs" />
+    <Compile Include="PackageManager\PackageItemViewModel.cs" />
+    <Compile Include="PackageManager\PackageItemLeafViewModel.cs" />
+    <Compile Include="PackageManager\PackageItemRootViewModel.cs" />
+    <Compile Include="UI\Views\PublishPackageView.xaml.cs">
+      <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\PublishPackageViewModel.cs" />
+    <Compile Include="PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
@@ -633,7 +637,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\PackageManagerPublishView.xaml">
+    <Page Include="UI\Views\PublishPackageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -850,6 +854,13 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

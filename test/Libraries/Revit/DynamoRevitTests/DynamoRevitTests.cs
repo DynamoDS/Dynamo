@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+
+using DSCoreNodesUI.Logic;
+
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
+using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -23,6 +29,19 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
 {
+    public class TestSchedulerThread : ISchedulerThread
+    {
+        public void Initialize(DynamoScheduler owningScheduler)
+        {
+
+        }
+
+        public void Shutdown()
+        {
+
+        }
+    }
+
     [TestFixture]
     public abstract class DynamoRevitUnitTestBase
     {
@@ -106,23 +125,25 @@ namespace Dynamo.Tests
 
                 DynamoRevit.InitializeUnits();
 
-                var model = RevitDynamoModel.Start(
+                DynamoRevit.RevitDynamoModel = RevitDynamoModel.Start(
                     new RevitDynamoModel.StartConfiguration()
                     {
                         StartInTestMode = true,
-                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
+                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\"),
+                        Context = "Revit 2014",
+                        SchedulerThread = new TestSchedulerThread()
                     });
 
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {
-                        DynamoModel = model
+                        DynamoModel = DynamoRevit.RevitDynamoModel,
                     });
 
                 // Because the test framework does not work in the idle thread. 
                 // We need to trick Dynamo into believing that it's in the idle
                 // thread already.
-                IdlePromise.InIdleThread = true;
+                //IdlePromise.InIdleThread = true;
             }
             catch (Exception ex)
             {
@@ -255,14 +276,79 @@ namespace Dynamo.Tests
             return mirror.GetData().Data;
         }
 
+        /// <summary>
+        /// Get a collection from a node's mirror data.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns>A list of objects if the data is a collection, else null.</returns>
+        public List<object> GetPreviewCollection(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null)
+            {
+                Assert.Fail("The mirror has no data.");
+            }
+
+            var dataColl = mirror.GetData().GetElements();
+            if (dataColl == null)
+            {
+                return null;
+            }
+
+            var elements = dataColl.Select(x => x.Data).ToList();
+
+            return elements;
+        }
+
         public object GetPreviewValueAtIndex(string guid, int index)
         {
             string varname = GetVarName(guid);
             var mirror = GetRuntimeMirror(varname);
             Assert.IsNotNull(mirror);
-
-            return mirror.GetData().GetElements()[index].Data;
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection) return null;
+            var elements = data.GetElements();
+            return elements[index].Data;
         }
+
+        public List<object> GetFlattenedPreviewValues(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection)
+            {
+                return data.Data == null ? new List<object>() : new List<object>(){data.Data};
+            }
+            var elements = data.GetElements();
+
+            var objects = GetSublistItems(elements);
+
+            return objects;
+        }
+
+        private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
+        {
+            var objects = new List<object>();
+            foreach (var data in datas)
+            {
+                if (!data.IsCollection)
+                {
+                    objects.Add(data.Data);
+                }
+                else
+                {
+                    objects.AddRange(GetSublistItems(data.GetElements()));
+                }
+            }
+            return objects;
+        } 
 
         public void AssertClassName(string guid, string className)
         {

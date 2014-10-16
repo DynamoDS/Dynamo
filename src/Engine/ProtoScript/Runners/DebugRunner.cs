@@ -444,7 +444,7 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                core.Rmem.PushGlobFrame(core.GlobOffset);
+                core.Rmem.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)
@@ -544,12 +544,12 @@ namespace ProtoScript.Runners
 
             if (core.DebugProps.FirstStackFrame != null)
             {
-                core.DebugProps.FirstStackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kFramePointer, StackValue.BuildInt(core.GlobOffset));
+                core.DebugProps.FirstStackFrame.FramePointer = core.GlobOffset;
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                 // Register TX is used for this.
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                core.DebugProps.FirstStackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
+                core.DebugProps.FirstStackFrame.TX = svCallConvention;
             }
             core.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
 

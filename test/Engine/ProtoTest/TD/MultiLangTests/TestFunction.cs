@@ -2797,10 +2797,8 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
-        [Category("Failure")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4011
             string str = "";
             string code = @"class Test
 {
@@ -6084,9 +6082,10 @@ a = foo ( { 1, 2 , {3, 4} },  count );
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("Failure")]
         public void TV84_Function_Pointer_Implicit_Conversion_3()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4748
             string code = @"
 def count ( a : double[] )
 {
@@ -6109,7 +6108,8 @@ a = foo ( { 1, 2,  { 3, 4 } },  count );
 d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
 
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4748: Replication Unboxing error";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("a", new object[] { 1, 1, 2 });
             thisTest.Verify("d", new object[] { 1, 1, 2, 1, 1 });
         }

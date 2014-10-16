@@ -10,6 +10,8 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
@@ -752,7 +754,6 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void OnBuilt()
         {
-            
         }
 
         /// <summary>
@@ -1486,6 +1487,95 @@ namespace Dynamo.Models
         }
         #endregion
 
+        #region Visualization Related Methods
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for 
+        /// this node. This method accesses core properties of a NodeModel and 
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="maxTesselationDivisions">The maximum number of 
+        /// tessellation divisions to use for regenerating render packages.</param>
+        /// 
+        public void RequestVisualUpdate(int maxTesselationDivisions)
+        {
+            if (Workspace.DynamoModel == null)
+                return;
+
+            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
+            // called in quick succession from the UI thread -- the first task may 
+            // be updating '_renderPackages' when the second call gets here. In 
+            // this case '_renderPackages' should be protected against concurrent 
+            // accesses.
+            // 
+            lock (RenderPackagesMutex)
+            {
+                _renderPackages.Clear();
+                HasRenderPackages = false;
+            }
+
+            // If a node is in either of the following states, then it will not 
+            // produce any geometric output. Bail after clearing the render packages.
+            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
+                return;
+
+            RequestVisualUpdateCore(maxTesselationDivisions);
+        }
+
+        /// <summary>
+        /// When called, the base implementation of this method schedules an 
+        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
+        /// asynchronously. Derived classes can optionally override this method 
+        /// to prevent render packages to be generated if they do not require 
+        /// geometric preview.
+        /// </summary>
+        /// <param name="maxTesselationDivisions">The maximum number of 
+        /// tessellation divisions to use for regenerating render packages.</param>
+        /// 
+        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        {
+            var initParams = new UpdateRenderPackageParams()
+            {
+                Node = this,
+                MaxTesselationDivisions = maxTesselationDivisions,
+                EngineController = Workspace.DynamoModel.EngineController,
+                DrawableIds = GetDrawableIds(),
+                PreviewIdentifierName = AstIdentifierForPreview.Name
+            };
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new UpdateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(initParams))
+            {
+                task.Completed += OnRenderPackageUpdateCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        /// <summary>
+        /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
+        /// completed, at which point the render packages (specific to this node) 
+        /// become available. Since this handler is called off the UI thread, the 
+        /// '_renderPackages' must be guarded against concurrent access.
+        /// </summary>
+        /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
+        /// that was responsible of generating the render packages.</param>
+        /// 
+        private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
+        {
+            lock (RenderPackagesMutex)
+            {
+                var task = asyncTask as UpdateRenderPackageAsyncTask;
+                _renderPackages.Clear();
+                _renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = _renderPackages.Any();
+            }
+        }
+
+#else
+
         /// <summary>
         /// Updates the render package for this node by
         /// getting the MirrorData objects corresponding to
@@ -1507,7 +1597,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            List<string> drawableIds = GetDrawableIds().ToList();
+            var drawableIds = GetDrawableIds();
 
             int count = 0;
             var labelMap = new List<string>();
@@ -1562,7 +1652,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void ClearRenderPackages()
+        private void ClearRenderPackages()
         {
             lock (RenderPackagesMutex)
             {
@@ -1687,6 +1777,8 @@ namespace Dynamo.Models
             return size;
         }
 
+#endif
+
         /// <summary>
         /// Gets list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
@@ -1721,6 +1813,8 @@ namespace Dynamo.Models
 
             return output.ToString();
         }
+
+        #endregion
 
         #region Node Migration Helper Methods
 

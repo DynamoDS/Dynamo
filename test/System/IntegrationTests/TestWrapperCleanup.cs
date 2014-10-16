@@ -30,8 +30,8 @@ namespace IntegrationTests
 
 
         [Test]
-        [Category("failure")]
-        //[Category("Trace")] // Uncommnet this after removing Failure category.
+        [Category("Failure")]
+        //[Category("Trace")] // Uncomment this after removing Failure category.
         public void ExecTraceVMClassVerifyTLSCleared()
         {
             var mirror = thisTest.RunScriptSource(

@@ -307,19 +307,14 @@ namespace ProtoCore.Lang
                         int oldRunningBlockId = core.RunningBlock;
                         core.RunningBlock = blockId;
 
-                        int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
+                        int returnAddr = stackFrame.ReturnPC;
 
                         int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
                         int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
                         if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
                         {
-                            StackValue sci = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
-                            StackValue sfi = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunction);
-                            if (sci.IsInteger && sfi.IsInteger)
-                            {
-                                ci = (int)sci.opdata;
-                                fi = (int)sfi.opdata;
-                            }
+                            ci = stackFrame.ClassScope;
+                            fi = stackFrame.FunctionScope;
                         }
                         StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
                         // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
@@ -339,7 +334,7 @@ namespace ProtoCore.Lang
                         interpreter.runtime.SaveRegisters(registers);
 
                         // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
+                        StackFrameType callerType = stackFrame.StackFrameType;
 
                         if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
                         {
@@ -439,7 +434,7 @@ namespace ProtoCore.Lang
                             {
                                 GCUtils.GCRetain(key, core); 
                             }
-                            ret = HeapUtils.StoreArray(result, null, core);
+                            ret = core.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -457,7 +452,7 @@ namespace ProtoCore.Lang
                             {
                                 GCUtils.GCRetain(key, core);
                             }
-                            ret = HeapUtils.StoreArray(result.ToArray(), null, core);
+                            ret = core.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -555,9 +550,10 @@ namespace ProtoCore.Lang
             int functionArgs = (int)argumentCount.opdata;
 
             // Build the function arguments
-            HeapElement heapElem = rmem.Heap.Heaplist[(int)functionArguments.opdata];
+            HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
             var arguments = heapElem.VisibleItems.ToList();
 
+            bool removeFirstArgument = false;
             if (arguments.Count > 0)
             {
                 bool isReplicatingCall = arguments[0].IsDynamic && lhs.IsArray;
@@ -570,22 +566,24 @@ namespace ProtoCore.Lang
                 {
                     context.IsReplicating = false;
                     arguments.RemoveAt(0);
+                    removeFirstArgument = true;
                 }
-            }
-
-            // Any replication guides pushed in a dotarg->dot call must be 
-            // retrieved here from the core
-            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-            bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
-            if (doesDotCallFunctionHaveArgs)
-            {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
+
+            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            if (!CoreUtils.IsGetterSetter(functionName))
+            {
+                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                if (removeFirstArgument)
+                {
+                    replicationGuides.RemoveAt(0);
+                }
+            }
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
@@ -619,13 +617,12 @@ namespace ProtoCore.Lang
             {
                 int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunction.Name);
 
-                int thisPtr = (int)thisObject.opdata;
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
-                    StackValue svMemberPtr = rmem.Heap.Heaplist[thisPtr].Stack[memvarIndex];
+                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisObject).Stack[memvarIndex];
                     if (svMemberPtr.IsPointer)
                     {
-                        StackValue svFunctionPtr = rmem.Heap.Heaplist[(int)svMemberPtr.opdata].Stack[0];
+                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement(svMemberPtr).Stack[0];
                         if (svFunctionPtr.IsFunctionPointer)
                         {
                             // It is a function pointer
@@ -641,12 +638,12 @@ namespace ProtoCore.Lang
 
             // Build the stackframe
             var newStackFrame = new StackFrame(thisObject, 
-                                               stackFrame.GetCallerClassIndex(), 
+                                               stackFrame.ClassScope, 
                                                procIndex, 
-                                               stackFrame.GetReturnAddress(), 
-                                               stackFrame.GetFunctionBlock(), 
-                                               stackFrame.GetFunctionCallerBlock(), 
-                                               stackFrame.GetStackFrameType(),
+                                               stackFrame.ReturnPC, 
+                                               stackFrame.FunctionBlock, 
+                                               stackFrame.FunctionCallerBlock, 
+                                               stackFrame.StackFrameType,
                                                StackFrameType.kTypeFunction, 
                                                0,
                                                core.Rmem.FramePointer, 
@@ -664,7 +661,7 @@ namespace ProtoCore.Lang
                 core.DebugProps.SetUpCallrForDebug(core,
                                                    core.CurrentExecutive.CurrentDSASMExec,
                                                    procNode,
-                                                   stackFrame.GetReturnAddress() - 1,
+                                                   stackFrame.ReturnPC - 1,
                                                    false, callsite,
                                                    arguments,
                                                    replicationGuides,
@@ -768,8 +765,8 @@ namespace ProtoCore.Lang
 
             // Search for next breakable instruction in list of instructions and add to RegisteredBreakPoints
 
-            int pc = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int blockId = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+            int pc = stackFrame.ReturnPC;
+            int blockId = stackFrame.FunctionCallerBlock;
             List<Instruction> instructions = core.DSExecutable.instrStreamList[blockId].instrList;
 
             // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
@@ -871,43 +868,47 @@ namespace ProtoCore.Lang
             }
             //convert to 2-D array
             int rowNum = CSVdatalist.Count;
-            int result = runtime.runtime.rmem.Heap.Allocate(rowNum);
+            StackValue[] rows = new StackValue[rowNum];
+
             for (int i = 0; i < rowNum; i++)
             {
-                int eachRow = runtime.runtime.rmem.Heap.Allocate(colNum);
+                StackValue[] values = new StackValue[colNum];
+
                 for (int k = 0; k < colNum; k++)
                 {
                     if (CSVdatalist[i].Length <= k)
                     {
-                        runtime.runtime.rmem.Heap.Heaplist[eachRow].Stack[k] = DSASM.StackValue.Null;
+                        values[k] = StackValue.Null;
                     }
                     else if (null == CSVdatalist[i][k])
                     {
-                        runtime.runtime.rmem.Heap.Heaplist[eachRow].Stack[k] = DSASM.StackValue.Null;
+                        values[k] = StackValue.Null;
                     }
                     else if (CSVdatalist[i][k] is Double)
                     {
-                        runtime.runtime.rmem.Heap.Heaplist[eachRow].Stack[k] = DSASM.StackValue.BuildDouble((double)CSVdatalist[i][k]);
+                        values[k] = StackValue.BuildDouble((double)CSVdatalist[i][k]);
                     }
                     else if (CSVdatalist[i][k] is Int32)
                     {
-                        runtime.runtime.rmem.Heap.Heaplist[eachRow].Stack[k] = DSASM.StackValue.BuildInt((int)CSVdatalist[i][k]);
+                        values[k] = StackValue.BuildInt((int)CSVdatalist[i][k]);
                     }
                     else
                     {
-                        runtime.runtime.rmem.Heap.Heaplist[eachRow].Stack[k] = DSASM.StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
+                        values[k] = StackValue.BuildString((string)CSVdatalist[i][k], runtime.runtime.rmem.Heap);
                     }
                 }
-                runtime.runtime.rmem.Heap.Heaplist[result].Stack[i] = DSASM.StackValue.BuildArrayPointer(eachRow);
+
+                rows[i] = runtime.runtime.rmem.Heap.AllocateArray(values);
             }
+            StackValue result = runtime.runtime.rmem.Heap.AllocateArray(rows);
             //Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)
             if (trans.opdata == 1)
             {
-                return DSASM.StackValue.BuildArrayPointer(result);
+                return result; 
             }
             else
             {
-                return ArrayUtilsForBuiltIns.Transpose(DSASM.StackValue.BuildArrayPointer(result), runtime);
+                return ArrayUtilsForBuiltIns.Transpose(result, runtime);
             }
         }
         //Print(msg) & Print(msg, mode)
@@ -1150,7 +1151,7 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : HeapUtils.StoreArray(range, null, core);
+            return range == null ? StackValue.Null : core.Heap.AllocateArray(range, null);
         }
     }
     internal class ArrayUtilsForBuiltIns
@@ -1187,7 +1188,7 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return HeapUtils.StoreArray(newElements.ToArray(), null, runtime.runtime.Core);
+            return runtime.runtime.Core.Heap.AllocateArray(newElements, null);
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -1197,7 +1198,9 @@ namespace ProtoCore.Lang
 
             var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
-            return runtime.runtime.rmem.BuildArray(svArray1.Concat(svArray2).ToArray());
+            var values = svArray1.Concat(svArray2).ToList();
+            values.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(values);
         }
 
         private static void GetFlattenedArrayElements(StackValue sv, ProtoCore.DSASM.Interpreter runtime, ref List<StackValue> list)
@@ -1239,7 +1242,9 @@ namespace ProtoCore.Lang
 
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.BuildArray(svList.ToArray());
+                var heap = runtime.runtime.rmem.Heap;
+                svList.ForEach(sv => heap.IncRefCount(sv)); 
+                return heap.AllocateArray(svList);
             }
             //That means an empty array
             else return DSASM.StackValue.Null;
@@ -1279,7 +1284,9 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.BuildArray(svList.ToArray());
+                var heap = runtime.runtime.rmem.Heap;
+                svList.ForEach(sv => heap.IncRefCount(sv));
+                return heap.AllocateArray(svList);
             }
             //That means an empty array
             else return DSASM.StackValue.Null;
@@ -1523,7 +1530,8 @@ namespace ProtoCore.Lang
                 if (indexCount != indexToBeRemoved)
                     svList.Add(svArray[indexCount]);
             }
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
         //RemoveDuplicate
         internal static StackValue RemoveDuplicates(StackValue sv, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
@@ -1554,7 +1562,8 @@ namespace ProtoCore.Lang
                     svList.Insert(0, outOp);
                 }
             }
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
 
         internal static StackValue Equals(StackValue sv1, StackValue sv2, Interpreter runtime, ProtoCore.Runtime.Context context)
@@ -1594,7 +1603,8 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.BuildArray(svList.ToArray());
+                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+                return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -1628,7 +1638,8 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.BuildArray(svList.ToArray());
+                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+                return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -1643,8 +1654,9 @@ namespace ProtoCore.Lang
                 return DSASM.StackValue.Null;
             }
 
-            var reverseArray = ArrayUtils.GetValues(sv, runtime.runtime.Core).Reverse().ToArray();
-            return runtime.runtime.rmem.BuildArray(reverseArray);
+            var reverseArray = ArrayUtils.GetValues(sv, runtime.runtime.Core).Reverse().ToList();
+            reverseArray.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(reverseArray);
         }
         //Contains & ArrayContainsArray ::: sv1 contains sv2
         internal static bool Contains(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -1694,7 +1706,7 @@ namespace ProtoCore.Lang
             if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) 
                 return true;
 
-            var he = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata];
+            var he = runtime.runtime.rmem.Heap.GetHeapElement(sv1);
             foreach (var op in he.VisibleItems)
             {
                 if (!sv2.IsArray)
@@ -1787,7 +1799,8 @@ namespace ProtoCore.Lang
             var svList = ArrayUtils.GetValues(sv, runtime.runtime.Core).ToList();
             svList.Sort(new StackValueComparerForDouble(ascending));
 
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
 
         //SortIndexByValue & SortIndexByValueWithMode
@@ -1826,8 +1839,10 @@ namespace ProtoCore.Lang
             {
                 StackValue tsv = DSASM.StackValue.BuildInt(svList[n].Value);
                 sortedIndices[n] = tsv;
+                runtime.runtime.rmem.Heap.IncRefCount(tsv);
             }
-            return runtime.runtime.rmem.BuildArray(sortedIndices);
+            
+            return runtime.runtime.rmem.Heap.AllocateArray(sortedIndices);
         }
         //Reorder
         internal static StackValue Reorder(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -1843,8 +1858,8 @@ namespace ProtoCore.Lang
                 runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
-            int length1 = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata].Stack.Length;
-            int length2 = runtime.runtime.rmem.Heap.Heaplist[(int)sv2.opdata].Stack.Length;
+            int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).Stack.Length;
+            int length2 = runtime.runtime.rmem.Heap.GetHeapElement(sv2).Stack.Length;
             if (length2 == 0) return DSASM.StackValue.Null;
             if (length1 < length2)
             {
@@ -1872,7 +1887,8 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.BuildArray(svList.ToArray());
+                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+                return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -1932,7 +1948,8 @@ namespace ProtoCore.Lang
                 svList.AddRange(elements.ToList().GetRange(idxToBeInsert, length - idxToBeInsert));
             }
 
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
+            return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
         //IsUniformDepth
         internal static bool IsUniformDepth(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
@@ -2048,7 +2065,7 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return HeapUtils.StoreArray(svList.ToArray(), null, runtime.runtime.Core);
+                return runtime.runtime.Core.Heap.AllocateArray(svList, null);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2058,7 +2075,7 @@ namespace ProtoCore.Lang
             for (; countBraces > 0; countBraces--)
             {
                 GCUtils.GCRetain(sv, runtime.runtime.Core);
-                sv = HeapUtils.StoreArray(new StackValue[] { sv }, null, runtime.runtime.Core);
+                sv = runtime.runtime.Core.Heap.AllocateArray(new StackValue[] { sv }, null);
             }
             return sv;
         }
@@ -2066,13 +2083,13 @@ namespace ProtoCore.Lang
         internal static StackValue addBrace(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
             int newArray = runtime.runtime.rmem.Heap.Allocate(1);
-            runtime.runtime.rmem.Heap.Heaplist[newArray].Stack[0] = sv;
+            runtime.runtime.rmem.Heap.GetHeapElement(newArray).Stack[0] = sv;
             return DSASM.StackValue.BuildArrayPointer(newArray);
         }
         */
         //Transpose
         internal static StackValue Transpose(StackValue sv, ProtoCore.DSASM.Interpreter runtime){
-            List<HeapElement> HeapList = runtime.runtime.rmem.Heap.Heaplist;
+            Heap heap = runtime.runtime.rmem.Heap;
             if (!sv.IsArray)
             {
                 return sv;
@@ -2085,7 +2102,7 @@ namespace ProtoCore.Lang
                 if (element.IsArray)
                 {
                     is2DArray = true;
-                    numOfCols = Math.Max(HeapList[(int)element.opdata].Stack.Length, numOfCols);
+                    numOfCols = Math.Max(heap.GetHeapElement(element).VisibleSize, numOfCols);
                 }
             if (is2DArray == false)
                 return sv;
@@ -2094,15 +2111,16 @@ namespace ProtoCore.Lang
             for (int c1 = 0; c1 < numOfRows; c1++)
             {
                 int c2 = 1;
-                StackValue rowArray = HeapList[(int)sv.opdata].Stack[c1];
+                StackValue rowArray = heap.GetHeapElement(sv).Stack[c1];
                 if (!rowArray.IsArray)
                     original[c1, 0] = rowArray;
                 else
                 {
-                    for (c2 = 0; c2 < HeapList[(int)rowArray.opdata].Stack.Length; c2++)
+                    var heapElement = heap.GetHeapElement(rowArray);
+                    var items = heapElement.VisibleItems.ToList();
+                    for (c2 = 0; c2 < items.Count(); c2++)
                     {
-                        StackValue item = HeapList[(int)rowArray.opdata].Stack[c2];
-                        original[c1, c2] = item;
+                        original[c1, c2] = items[c2];
                     }
                 }
                 while(c2 < numOfCols)
@@ -2129,10 +2147,14 @@ namespace ProtoCore.Lang
                     StackValue element = transposed[count1, count2]; 
                     svList2.Add(element);
                 }
-                StackValue finalCol = runtime.runtime.rmem.BuildArray(svList2.ToArray());
+
+                svList2.ForEach(x => heap.IncRefCount(x));
+                StackValue finalCol = heap.AllocateArray(svList2);
                 svList1.Add(finalCol);
             }
-            return runtime.runtime.rmem.BuildArray(svList1.ToArray());
+
+            svList1.ForEach(x => heap.IncRefCount(x));
+            return heap.AllocateArray(svList1);
         }
 
         internal static StackValue SortPointers(StackValue svFunction, StackValue svArray, Interpreter runtime, StackFrame stackFrame)
@@ -2169,7 +2191,9 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            var heap = runtime.runtime.rmem.Heap;
+            svList.ForEach(sv => heap.IncRefCount(sv));
+            return heap.AllocateArray(svList);
         }
 
         internal static StackValue Evaluate(StackValue function, StackValue parameters, StackValue unpackParams, Interpreter runtime, StackFrame stackFrame)

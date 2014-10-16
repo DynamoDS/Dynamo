@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 using Revit.Elements;
 using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
 using RTF.Framework;
+using Revit.Elements.InternalUtilities;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitTestServices.Elements
 {
 
     [TestFixture]
@@ -44,6 +46,42 @@ namespace DSRevitNodesTests.Elements
             var elevation = 100;
 
             Assert.Throws(typeof(ArgumentNullException), () => Level.ByElevationAndName(elevation, null));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void ByElevationAndName_DuplicatedNames()
+        {
+            //Create a new level with the name of "Ham" and the
+            //elevation of 100
+            var elevation = 100;
+            var name = "Old Level";
+            var level = Level.ByElevationAndName(elevation, name);
+            Assert.NotNull(level);
+
+            Assert.AreEqual(elevation, level.Elevation);
+            Assert.AreEqual(name, level.Name);
+
+            //Create a new level with the same name and elevation
+            //Ensure there is a exception thrown
+            Assert.Throws(typeof(System.Exception), ()=>Level.ByElevationAndName(elevation, name));
+
+            //Create a new level with a name of lowercase letters
+            //and the same elevation
+            var name3 = "old level";
+            var level3 = Level.ByElevationAndName(elevation, name3);
+            Assert.IsNotNull(level3);
+
+            Assert.AreEqual(elevation, level3.Elevation);
+            Assert.AreEqual(name3, level3.Name);
+
+            //Create a new level with a totally different name
+            var name4 = "New level";
+            var level4 = Level.ByElevationAndName(elevation, name4);
+            Assert.NotNull(level4);
+
+            Assert.AreEqual(elevation, level4.Elevation);
+            Assert.AreEqual(name4, level4.Name);
         }
 
         [Test]
@@ -120,6 +158,14 @@ namespace DSRevitNodesTests.Elements
 
             Assert.Throws(typeof(ArgumentNullException), () => Level.ByLevelOffsetAndName(null, offset, name));
             Assert.Throws(typeof(ArgumentNullException), () => Level.ByLevelOffsetAndName(level, offset, null));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void GetAllLevels()
+        {
+            var levels = ElementQueries.GetAllLevels();
+            Assert.AreEqual(levels.Count(), 1.0);
         }
     }
 

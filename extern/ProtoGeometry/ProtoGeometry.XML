@@ -1086,6 +1086,11 @@
             Sweeps this closed Curve along the path Curve, creating a Solid
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>
+            Returns a new Curve approximated with the supplied tolerance
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
             <summary>
             The total arc length of the curve
@@ -1630,6 +1635,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>
+            Make PolyCurve by joining curves. Flips curve as needed for connectivity
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
@@ -1638,11 +1648,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Make PolyCurve by thickening a curve.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Make PolyCurve by joining curves. Flips curve as needed for connectivity
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
@@ -2183,12 +2188,12 @@
             Get a string representation of the Polygon
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>
             Construct a Polygon Curve by connecting Points.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>
             Construct a Polygon Curve by connecting Points.
             </summary>
@@ -2501,6 +2506,16 @@
             Create a non-axis-aligned BoundingBox around input Geometries, oriented in the X, Y, and Z axis of the CoordinateSystem.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Creates the an axis-aligned BoundingBox spanning between the minimum Point and the maximum Point.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
+            <summary>
+            Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box), to maximum coordinates (upper-right-front corner of the box). CoordinateSystem is the transform FROM the coordinate space of the box TO the model space. This method is designed to match Revit's API, allowing you to extract out the parameters from a Revit BoundingBox without any conversions.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
             <summary>
             Get the intersection of two BoundingBoxes
@@ -2541,6 +2556,11 @@
             The maximum point
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem">
+            <summary>
+            The CoordinateSystem that this BoundingBox is defined in
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>
             Get a string representation of the Cylinder
@@ -2574,6 +2594,16 @@
         <member name="P:Autodesk.DesignScript.Geometry.GeometrySettings.GeometryXmlProperties">
             <summary>
             Provides information about whether to dump XML property for ToString() method
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometrySettings.GeometryFactoryFilePath">
+            <summary>
+            Provides information about where to load the geometry factory file
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometrySettings.PersistenceManagerFilePath">
+            <summary>
+            Provides information about where to load the persistence manager file
             </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Properties.Resources">

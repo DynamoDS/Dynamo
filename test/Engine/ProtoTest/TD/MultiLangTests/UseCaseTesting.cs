@@ -198,7 +198,6 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
-        [Category("Failure")]
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
 

@@ -54,18 +54,15 @@ namespace ProtoCore.Lang
             //  
             lock (FFIHandlers)
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
-
-                StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
-                StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+                Interpreter interpreter = new Interpreter(core, true);
 
                 // Setup the stack frame data
-                //int thisPtr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr).opdata;
+                StackValue svThisPtr = stackFrame.ThisPtr;
                 int ci = activation.JILRecord.classIndex;
                 int fi = activation.JILRecord.funcIndex;
-                int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-                int blockDecl = (int)svBlockDecl.opdata;
-                int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+                int returnAddr = stackFrame.ReturnPC;
+                int blockDecl = stackFrame.FunctionBlock;
+                int blockCaller = stackFrame.FunctionCallerBlock;
                 int framePointer = core.Rmem.FramePointer;
                 int locals = activation.JILRecord.locals;
 
@@ -144,7 +141,7 @@ namespace ProtoCore.Lang
                     // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
                     // This is only incremented for every language block bounce
                     int depth = 0;
-                    StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kCallerStackFrameType).opdata;
+                    StackFrameType callerType = stackFrame.CallerStackFrameType;
 
                     // FFI calls do not have execution states
                     core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, ProtoCore.DSASM.StackFrameType.kTypeFunction, depth, framePointer, registers, locals, 0);

@@ -1,10 +1,14 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 
@@ -215,8 +219,8 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Call this method to format user codes in the following ways:
         /// 
-        /// 1. Heading and trailing whitespaces are removed from the original 
-        ///    string. Characters that quality as "whitespaces" are: '\n', '\t'
+        /// 1. Leading and trailing whitespaces are removed from the original 
+        ///    string. Characters that qualify as "whitespaces" are: '\n', '\t'
         ///    and ' '.
         /// 
         /// 2. Multiple statements on a single line will be broken down further 
@@ -224,7 +228,7 @@ namespace Dynamo.Utilities
         ///    broken down into two lines: "a = 1;\nb = 2;" (line break denoted 
         ///    by the new \n character).
         /// 
-        /// 3. Heading whitespaces will be removed ony for the first line. This 
+        /// 3. Leading whitespaces will be removed ony for the first line. This 
         ///    is to preserve the indentation for lines other than the first.
         /// 
         /// 4. If the resulting codes do not end with a closing curly bracket '}',
@@ -305,5 +309,257 @@ namespace Dynamo.Utilities
 
             return inputCode;
         }
+
+        public static HighlightingRule CreateDigitRule()
+        {
+            var digitRule = new HighlightingRule();
+
+            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            digitRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(color)
+            };
+
+            // These Regex's must match with the grammars in the DS ATG for digits
+            // Refer to the 'number' and 'float' tokens in Start.atg
+            //*******************************************************************************
+            // number = digit {digit} .
+            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+            //*******************************************************************************
+
+            string digit = @"(-?\b\d+)";
+            string floatingPoint = @"(\.[0-9]+)";
+            string numberWithOptionalDecimal = digit + floatingPoint + "?";
+
+            string exponent = @"([eE][+-]?[0-9]+)";
+            string numberWithExponent = digit + floatingPoint + exponent;
+
+            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
+
+            return digitRule;
+        }
     }
+
+    /// <summary>
+    /// This class exposes utility methods to:
+    /// 1. extract variable types from variable declarations such as 'Point' from a : Point;
+    /// 2. extract the string to autocomplete on from a block of code
+    /// </summary>
+    internal class CodeCompletionParser
+    {
+        private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+        private static string spacesOrNonePattern = @"(\s*)";
+        private static string colonPattern = ":";
+
+        // Maintains a stack of symbols in a nested expression being typed
+        // where the symbols are nested based on brackets, braces or parentheses
+        // An expression like: x[y[z.foo(). will be stacked up as follows:
+        // z.foo().
+        // y[
+        // x[
+        // The stack is then popped upon closing the brackets, and the popped value is transferred to the top:
+        // y[z.foo()].
+        // x[
+        // So at any given time the top of the stack will contain the string to be completed
+        Stack<string> expressionStack = new Stack<string>();
+
+        string strPrefix = String.Empty;
+        public string StringPrefix
+        {
+            get { return strPrefix; }
+        }
+
+        string type = string.Empty;
+        int argCount = 0;
+
+        public static string GetVariableType(string code, string variableName)
+        {
+            var symbolTable = FindVariableTypes(code);
+
+            string type = null;
+            symbolTable.TryGetValue(variableName, out type);
+
+            return type;
+        }
+
+        private static Dictionary<string, string> FindVariableTypes(string code)
+        {
+            // Contains pairs of variable names and their types
+            Dictionary<string, string> variableTypes = new Dictionary<string, string>();
+
+            // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
+            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + variableNamePattern;
+
+            var varDeclarations = Regex.Matches(code, pattern);
+            for (int i = 0; i < varDeclarations.Count; i++)
+            {
+                var match = varDeclarations[i].Value;
+                match = Regex.Replace(match, @"\s", "");
+                var groups = match.Split(':');
+
+                // Overwrite variable type for a redefinition
+                if (variableTypes.ContainsKey(groups[0]))
+                {
+                    variableTypes[groups[0]] = groups[1];
+                }
+                else
+                    variableTypes.Add(groups[0], groups[1]);
+            }
+
+            return variableTypes;
+        }
+
+        /// <summary>
+        /// Given the code that's currently being typed in a CBN,
+        /// this function extracts the expression that needs to be code-completed
+        /// </summary>
+        /// <param name="code"></param>
+        public static string GetStringToComplete(string code)
+        {
+            var codeParser = new CodeCompletionParser();
+            // TODO: Discard complete code statements terminated by ';'
+            // and extract only the current line being typed
+            for (int i = 0; i < code.Length; ++i)
+            {
+                codeParser.ParseStringToComplete(code[i]);
+            }
+            return codeParser.strPrefix;
+        }
+
+        private string ParseStringToComplete(char currentChar)
+        {
+            string prefix = string.Empty;
+            switch (currentChar)
+            {
+                case ']':
+                    strPrefix = PopFromExpressionStack(']');
+                    break;
+                case '[':
+                    if (!string.IsNullOrEmpty(strPrefix))
+                    {
+                        strPrefix += '[';
+                        expressionStack.Push(strPrefix);
+                        strPrefix = string.Empty;
+                    }
+                    break;
+                case '}':
+                    strPrefix = PopFromExpressionStack('}');
+                    break;
+                case '{':
+                    {
+                        strPrefix = string.Empty;
+                        strPrefix += '{';
+                        expressionStack.Push(strPrefix);
+                        strPrefix = string.Empty;
+                    }
+                    break;
+                case ')':
+                    argCount = 0;
+                    strPrefix = PopFromExpressionStack(')');
+                    break;
+                case '(':
+                    argCount = 1;
+                    if (!string.IsNullOrEmpty(strPrefix))
+                    {
+                        // function call
+                        // Auto-complete function signature for runtime type 
+                        // or static type if runtime type is not available
+                        // Class/Type and function name must be known at this point
+                        string functionName = GetMemberIdentifier(strPrefix);
+                        expressionStack.Push(strPrefix + @"(");
+                    }
+                    else
+                    {
+                        // simple expression
+                        expressionStack.Push(@"(");
+                    }
+                    strPrefix = string.Empty;
+                    break;
+                case '.':
+                    strPrefix += '.';
+                    break;
+                case ' ':
+                    break;
+                case '=':
+                    strPrefix = string.Empty;
+                    expressionStack.Clear();
+                    break;
+                case ';':
+                    strPrefix = string.Empty;
+                    expressionStack.Clear();
+                    break;
+                default:
+                    if (char.IsLetterOrDigit(currentChar))
+                    {
+                        strPrefix += currentChar;
+
+                        if (strPrefix.IndexOf('.') != -1)
+                        {
+                            // If type exists, extract string after previous '.'                            
+                            string identToComplete = GetMemberIdentifier(strPrefix);
+                            // Auto-completion happens over type, search for identToComplete in type's auto-complete list
+                        }
+
+                    }
+                    else
+                    {
+                        strPrefix = PopFromExpressionStack(currentChar);
+                        expressionStack.Push(strPrefix);
+
+                        strPrefix = string.Empty;
+                    }
+                    break;
+            }
+            return strPrefix;
+        }
+
+        #region private utility methods
+        private string GetMemberIdentifier(string strPrefix)
+        {
+            string[] idents = strPrefix.Split('.');
+            string identToComplete = idents[idents.Length - 1];
+            return identToComplete;
+        }
+
+        private string PopFromExpressionStack(char currentChar)
+        {
+            string prefix = string.Empty;
+            if (expressionStack.Count > 0)
+            {
+                prefix = expressionStack.Pop();
+            }
+            return prefix + strPrefix + currentChar;
+        }
+        #endregion
+
+    }
+
+    // Refer to link: 
+    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
+    internal sealed class CustomizedBrush : HighlightingBrush
+    {
+        private readonly SolidColorBrush brush;
+        public CustomizedBrush(Color color)
+        {
+            brush = CreateFrozenBrush(color);
+        }
+
+        public override Brush GetBrush(ITextRunConstructionContext context)
+        {
+            return brush;
+        }
+
+        public override string ToString()
+        {
+            return brush.ToString();
+        }
+
+        private static SolidColorBrush CreateFrozenBrush(Color color)
+        {
+            SolidColorBrush brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+    }
+
 }

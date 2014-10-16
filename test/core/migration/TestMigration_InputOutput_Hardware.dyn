@@ -1,12 +1,6 @@
-<Workspace Version="0.6.3.7993" X="128.169736115557" Y="-415.44847590464" zoom="0.954042924882813" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.7993" X="-169.240714608876" Y="-424.613879387006" zoom="0.827702570441191" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Arduino type="Dynamo.Nodes.Arduino" guid="0ac8ef3a-f3ba-4a71-9235-586652f2bfd0" nickname="Arduino" x="471.075210217995" y="607.461329360569" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="COM4" />
-    </Dynamo.Nodes.Arduino>
-    <Dynamo.Nodes.ArduinoRead type="Dynamo.Nodes.ArduinoRead" guid="77a11759-6499-47b0-abff-46ef26432546" nickname="Read Arduino" x="471.075210217995" y="742.151285806485" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.UdpListener type="Dynamo.Nodes.UdpListener" guid="62633d21-f77b-4267-ac63-a4caefb5cd6d" nickname="UDP Listener" x="471.075210217995" y="876.8412422524" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.WebRequest type="Dynamo.Nodes.WebRequest" guid="a1fba589-5a83-4d67-93b1-aad22dcf92c8" nickname="Web Request" x="471.075210217995" y="1011.53119869832" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.ArduinoWrite type="Dynamo.Nodes.ArduinoWrite" guid="28732d8c-d79b-434e-9a08-05bd7d84e88e" nickname="Write Arduino" x="471.075210217995" y="1146.22115514423" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors />
   <Notes />

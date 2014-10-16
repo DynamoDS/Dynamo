@@ -16,20 +16,23 @@ namespace Revit.GeometryObjects
         /// <returns></returns>
         public static object ByReferenceStableRepresentation(string referenceString)
         {
-            var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, referenceString);
-
-            var geob =
-                DocumentManager.Instance
-                    .CurrentDBDocument.GetElement(geometryReference)
-                    .GetGeometryObjectFromReference(geometryReference);
-
-            if (geob != null)
+            try
             {
-                return geob.Convert(geometryReference);
+                var doc = DocumentManager.Instance.CurrentDBDocument;
+                var elRef =
+                    Reference.ParseFromStableRepresentation(doc, referenceString);
+
+                var geob =
+                    DocumentManager.Instance
+                        .CurrentDBDocument.GetElement(elRef)
+                        .GetGeometryObjectFromReference(elRef);
+
+                return geob != null ? geob.Convert(elRef) : null;
             }
-
-            throw new Exception("Could not get a geometry object from the current document using the provided reference.");
+            catch
+            {
+                throw new Exception("Could not get a geometry object from the current document using the provided reference.");
+            }
         }
-
     }
 }

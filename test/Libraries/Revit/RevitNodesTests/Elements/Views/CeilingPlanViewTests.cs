@@ -5,7 +5,7 @@ using Revit.Elements.Views;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace DSRevitNodesTests
+namespace RevitTestServices
 {
     [TestFixture]
     class CeilingPlanViewTests : GeometricRevitNodeTest

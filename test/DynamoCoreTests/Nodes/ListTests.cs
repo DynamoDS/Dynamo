@@ -1451,13 +1451,12 @@ namespace Dynamo.Tests
 		}
         
         [Test]
-        [Category("Failure")]
         public void AddToList_EmptyList()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
             RunModel(openPath);
 
-            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new[] { 0 } });
+            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new object[] { string.Empty, 0 } });
         }
 
         [Test]
@@ -2471,5 +2470,23 @@ namespace Dynamo.Tests
             AssertPreviewValue("13f697db-85b8-4b93-859c-63f2b66c6b72", new object[] { 0.0, "no value", 2.0, "no value", "no value", 5.0 });
 	    }
 		#endregion
+
+        #region Regressions
+        [Test]
+        public void RegressMagn4838_01()
+        {
+	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_1.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("8dd745bf-220c-49f7-80e0-3f1783bb33a4", new object[] { null });
+        }
+
+        [Test]
+        public void RegressMagn4838_02()
+        {
+	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_2.dyn");
+            RunModel(openPath);
+        }
+        #endregion
     }
 }
