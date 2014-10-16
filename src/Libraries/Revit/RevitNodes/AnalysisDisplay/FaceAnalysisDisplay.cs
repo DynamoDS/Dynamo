@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Analysis;
@@ -100,7 +101,8 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         /// <param name="primitiveId"></param>
         /// <param name="data"></param>
-        private void InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, 
+        private void 
+            InternalSetSpatialFieldValues(int primitiveId, ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, 
             double> data, string schemaName, string description, Type unitType)
         {
             // Get the surface reference
@@ -113,11 +115,12 @@ namespace Revit.AnalysisDisplay
                 var face = el.GetGeometryObjectFromReference(reference) as Autodesk.Revit.DB.Face;
                 if (face != null)
                 {
-                    var bbox = face.GetBoundingBox();
-                    var uSpan = bbox.Max.U - bbox.Min.U;
-                    var vSpan = bbox.Max.V - bbox.Min.V;
-
-                    pointLocations.AddRange(data.CalculationLocations.Select(uv => new UV(bbox.Min.U + uv.U*uSpan, bbox.Min.V + uv.V*vSpan)));
+                    foreach (var loc in data.CalculationLocations)
+                    {
+                        var pt = data.Surface.PointAtParameter(loc.U, loc.V);
+                        var faceLoc = face.Project(pt.ToXyz()).UVPoint;
+                        pointLocations.Add(faceLoc);
+                    }
                 }
             }
 
