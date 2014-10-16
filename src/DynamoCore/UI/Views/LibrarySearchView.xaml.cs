@@ -39,7 +39,7 @@ namespace Dynamo.UI.Views
             // This item may get focus just by keyboard.
             listBoxItem.Focus();
         }
-        
+
         #endregion
 
         #region ClassButton
