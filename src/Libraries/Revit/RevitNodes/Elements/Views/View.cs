@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using Autodesk.Revit.DB;
@@ -30,14 +31,11 @@ namespace Revit.Elements.Views
         /// <returns>The image</returns>
         public Bitmap ExportAsImage(string fullPath)
         {
-            string pathName = fullPath;
-            string extension = null;
-
             var fileType = ImageFileType.PNG;
             if (Path.HasExtension(fullPath))
             {
-                extension = Path.GetExtension(fullPath).ToLower();
-                switch (extension)
+                string extension = Path.GetExtension(fullPath) ?? ".png";
+                switch (extension.ToLower())
                 {
                     case ".jpg":
                         fileType = ImageFileType.JPEGLossless;
@@ -55,61 +53,26 @@ namespace Revit.Elements.Views
                         fileType = ImageFileType.TIFF;
                         break;
                 }
-                pathName = Path.Combine(
-                    Path.GetDirectoryName(fullPath),
-                    Path.GetFileNameWithoutExtension(fullPath));
             }
-
-            extension = (extension ?? ".png");
-
+            
             var options = new ImageExportOptions
             {
-                ExportRange = ExportRange.SetOfViews,
-                FilePath = pathName,
+                ExportRange = ExportRange.VisibleRegionOfCurrentView,
+                FilePath = fullPath,
+                FitDirection = FitDirectionType.Horizontal,
                 HLRandWFViewsFileType = fileType,
                 ImageResolution = ImageResolution.DPI_150,
-                ZoomType = ZoomFitType.Zoom,
-                ShadowViewsFileType = fileType
+                ShadowViewsFileType = fileType,
+                ShouldCreateWebSite = false,
+                ViewName = Guid.NewGuid().ToString(),
+                Zoom = 100,
+                ZoomType = ZoomFitType.Zoom
             };
-
-            options.SetViewsAndSheets(new List<ElementId> { InternalView.Id });
 
             Document.ExportImage(options);
 
-            // Revit outputs file with a bunch of crap in the file name, let's construct that
-            var actualFn = string.Format("{0} - {1} - {2}{3}", pathName, ViewTypeString(InternalView.ViewType),
-                InternalView.ViewName, extension);
-
-            // and the intended destination
-            var destFn = pathName + extension;
-
-            // rename the file
-            if (File.Exists(destFn)) File.Delete(destFn);
-            File.Move(actualFn, destFn);
-            
-            using (var fs = new FileStream(destFn, FileMode.Open))
+            using (var fs = new FileStream(fullPath, FileMode.Open))
                 return new Bitmap(Image.FromStream(fs));
-        }
-
-        private static string ViewTypeString(ViewType vt)
-        {
-            switch (vt)
-            {
-                case ViewType.ThreeD:
-                    return "3D View";
-                case ViewType.AreaPlan:
-                    return "Area Plan";
-                case ViewType.CeilingPlan:
-                    return "Ceiling Plan";
-                case ViewType.EngineeringPlan:
-                    return "Engineering Plan";
-                case ViewType.FloorPlan:
-                    return "Floor Plan";
-                case ViewType.Elevation:
-                    return "Elevation";
-                default:
-                    return "Section View";
-            }
         }
 
         public override string ToString()
