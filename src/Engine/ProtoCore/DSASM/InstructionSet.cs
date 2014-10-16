@@ -98,7 +98,6 @@ namespace ProtoCore.DSASM
         ALLOC,
         ALLOCA,
         ALLOCC,
-        ALLOCM,
         POPM,
         CALLC,
         POPLIST,
