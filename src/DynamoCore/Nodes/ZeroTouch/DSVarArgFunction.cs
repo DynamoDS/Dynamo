@@ -106,7 +106,12 @@ namespace Dynamo.Nodes
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             var typedParameters = parameters as IList<TypedParameter> ?? parameters.ToList();
-            base.InitializeFunctionParameters(model, typedParameters.Take(typedParameters.Count() - 1));
+            var idx = typedParameters.Count() - 1;
+            base.InitializeFunctionParameters(model, typedParameters.Take(idx));
+            //Add 1 inport to the node as default.
+            var arg = parameters.LastOrDefault();
+            var argName = arg.Name.Remove(arg.Name.Length - 1) + idx.ToString(); ;
+            model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
         }
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
