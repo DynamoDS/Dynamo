@@ -754,7 +754,6 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void OnBuilt()
         {
-            
         }
 
         /// <summary>
