@@ -552,6 +552,8 @@
                                             <Style TargetType="{x:Type ListViewItem}">
                                                 <EventSetter Event="PreviewMouseLeftButtonDown"
                                                              Handler="OnClassButtonCollapse" />
+                                                <EventSetter Event="GotKeyboardFocus"
+                                                             Handler="OnClassButtonGotKeyboardFocus" />
 
                                                 <Setter Property="Template">
                                                     <Setter.Value>

@@ -47,6 +47,21 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        private void OnClassButtonGotKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            ListViewItem listViewItem = e.OriginalSource as ListViewItem;
+
+            // We select class only, when it was selected!
+            // But not, when it got focus.
+            if (listViewItem != null && listViewItem.IsSelected)
+            {
+                listViewItem.IsSelected = true;
+                return;
+            }
+
+            e.Handled = true;
+        }
+
         private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
@@ -171,10 +186,6 @@ namespace Dynamo.UI.Views
 
             // Set focus on new item.
             listButtons[newIndex].Focus();
-
-            // Somehow wpf sets not only focus, but also selects item. But we don't need selection.
-            // We have to find better way of unselecting items.
-            WPF.FindUpVisualTree<ListView>(buttonsWrapPanel).UnselectAll();
 
             e.Handled = true;
             return;
