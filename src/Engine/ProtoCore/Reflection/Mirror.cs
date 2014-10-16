@@ -520,7 +520,6 @@ namespace ProtoCore
                     }
                     return classNode;
                 }
-                set { classNode = value; }
             }
 
             public ClassMirror(ProtoCore.Type type, ProtoCore.Core core)
@@ -872,7 +871,7 @@ namespace ProtoCore
             }
 
             private Dictionary<string, string> argumentList = null;
-            public Dictionary<string, string> ArgumentList
+            public IEnumerable<KeyValuePair<string, string>> ArgumentList
             {
                 get
                 {
@@ -932,7 +931,7 @@ namespace ProtoCore
                 return procNode == null ? null : procNode.MethodAttribute;
             }
 
-            public string GetMethodSignature()
+            public override string ToString()
             {
                 StringBuilder sb = new StringBuilder();
                 Func<Compiler.AccessSpecifier, string> func =
