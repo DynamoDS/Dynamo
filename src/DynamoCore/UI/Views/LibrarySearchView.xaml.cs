@@ -219,12 +219,14 @@ namespace Dynamo.UI.Views
 
                 if (e.Key == Key.Down)
                 {
-                    // We have to move to next category.
+                    // Focused element is last method button. We have to move to next category.
                     e.Handled = false;
                     return;
                 }
 
-                // If there are no found classes, we have to move to next category.
+                // Otherwise, pressed Key is Up.
+
+                // If there are no found classes, we have to move to previous category.
                 // So, we handle it to next element - category.
                 if (searchCategoryContent.Classes.Count == 0)
                 {
