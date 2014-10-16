@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
 
             var hbitmap = bmp.GetHbitmap();
             var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-            image.Source =  imageSource;
+            image.Source = imageSource;
         }
 
         private System.Drawing.Bitmap GetImageFromMirror()

@@ -8,7 +8,7 @@ namespace DSCore
         private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
 
         // Exposed only for unit test purposes.
-        internal System.Drawing.Color InternalColor { get { return this.color; } }
+        internal System.Drawing.Color InternalColor { get { return color; } }
 
         /// <summary>
         ///     Find the red component of a color, 0 to 255.
@@ -46,9 +46,20 @@ namespace DSCore
             get { return color.A; }
         }
 
+        private Color(System.Drawing.Color color)
+        {
+            this.color = color;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color ByColor(System.Drawing.Color color)
+        {
+            return new Color(color);
+        }
+
         private Color(int a, int r, int g, int b)
         {
-            this.color = System.Drawing.Color.FromArgb(a, r, g, b);
+            color = System.Drawing.Color.FromArgb(a, r, g, b);
         }
 
         /// <summary>
@@ -107,7 +118,7 @@ namespace DSCore
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
         /// <search>alpha,red,green,blue</search>
-        [MultiReturn(new string[] {"a", "r", "g", "b"})]
+        [MultiReturn("a", "r", "g", "b")]
         public static Dictionary<string, byte> Components(Color c)
         {
             return new Dictionary<string, byte>
