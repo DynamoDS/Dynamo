@@ -16,6 +16,7 @@ using RTF.Framework;
 
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
+using ReferencePoint = Revit.Elements.ReferencePoint;
 
 namespace Dynamo.Tests
 {
@@ -55,7 +56,35 @@ namespace Dynamo.Tests
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
         }
+        
+        [Test, Category("SmokeTests"), TestModel(@".\empty.rfa")]
+        public void SelectionDocModificationSync()
+        {
+            string samplePath = Path.Combine(_testPath, @".\Selection\SelectAndUpdate.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
+            ViewModel.OpenCommand.Execute(testPath);
+            AssertNoDummyNodes();
+
+            var selectNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSModelElementSelection>();
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+
+            var refPt = ReferencePoint.ByCoordinates(0, 0, 0);
+            selectNode.UpdateSelection(new[] { refPt.InternalElement });
+
+            ViewModel.Model.RunExpression();
+
+            Assert.AreEqual(0, watchNode.CachedValue);
+
+            refPt.X = 10;
+
+            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
+
+            ViewModel.Model.RunExpression();
+
+            Assert.AreNotEqual(0, watchNode.CachedValue); //Actual value depends on units
+        }
+    
         [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
         public void EmptySingleSelectionReturnsNull()
         {
@@ -159,7 +188,7 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.Null(list);
+            Assert.AreEqual(0, list.Count);
         }
 
         [Test]
@@ -275,8 +304,82 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.Null(list);
+            Assert.AreEqual(0, list.Count);
         }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\SelectionSync.rvt")]
+        public void SelectionInSyncWithDocumentOperations_Elements()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectionSyncElements.dyn"));
+
+            const string selectNodeGuid = "3dbe16b8-e855-4229-a1cf-4643e69ba7b4";
+
+            var walls = fec.ToElements();
+            int remainingWallCount = walls.Count;
+            while (remainingWallCount > 1)
+            {
+                remainingWallCount = DeleteWallAndRun<Revit.Elements.Wall>(selectNodeGuid);
+            }
+        }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\SelectionSync.rvt")]
+        public void SelectionInSyncWithDocumentOperations_References()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectionSyncReferences.dyn"));
+
+            const string selectNodeGuid = "91fd4f06-dde2-449f-aff5-f6203e4777ed";
+            var walls = fec.ToElements();
+            int remainingWallCount = walls.Count;
+            while (remainingWallCount > 1)
+            {
+                remainingWallCount = DeleteWallAndRun<Surface>(selectNodeGuid);
+            }
+
+        }
+
+        private int DeleteWallAndRun<T>(string testGuid)
+        {
+            var walls = GetWalls();
+   
+            var wall = walls.FirstOrDefault();
+            if (walls.Count == 0)
+            {
+                Assert.Fail("No more walls could be found in the model.");
+            }
+            using (var t = new Transaction(DocumentManager.Instance.CurrentDBDocument))
+            {
+                t.Start("Delete wall test.");
+                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
+                t.Commit();
+            }
+
+            walls = GetWalls();
+
+            RunCurrentModel();
+
+            var values = GetFlattenedPreviewValues(testGuid);
+            Assert.AreEqual(values.Count, walls.Count);
+            Assert.IsInstanceOf<T>(values.First());
+
+            return walls.Count;
+        }
+
+        private List<Wall> GetWalls()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            return fec.ToElements().Cast<Wall>().ToList();
+        }
+
+        
+
 
         /// <summary>
         /// Find the first selection node in a graph, run the graph

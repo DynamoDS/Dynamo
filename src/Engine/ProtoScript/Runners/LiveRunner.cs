@@ -108,6 +108,7 @@ namespace ProtoScript.Runners
     public class ChangeSetData
     {
         public ChangeSetData() { }
+        public bool ContainsDeltaAST = false;
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
@@ -150,8 +151,20 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetForceExecute(ChangeSetData changeSet)
         {
-            // Mark all graphnodes dirty which are associated with the force exec ASTs
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+            // Check if there are nodes to force execute
+            if (changeSet.ForceExecuteASTList.Count > 0)
+            {
+                // Mark all graphnodes dirty which are associated with the force exec ASTs
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+                Validity.Assert(firstDirtyNode != null);
+
+                // If the only ASTs to execute are force exec, then set the entrypoint here.
+                // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
+                if (!changeSet.ContainsDeltaAST)
+                {
+                    core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
+                }
+            }
         }
 
 
@@ -373,6 +386,7 @@ namespace ProtoScript.Runners
                         }
                     }
 
+                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
@@ -488,10 +502,7 @@ namespace ProtoScript.Runners
 
                 // Handle modified statements
                 var modifiedASTList = GetModifiedNodes(st);
-                if (null != modifiedASTList && modifiedASTList.Count > 0)
-                {
-                    deltaAstList.AddRange(modifiedASTList);
-                }
+                deltaAstList.AddRange(modifiedASTList);
 
                 var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
                                                      .Select(n => (n as BinaryExpressionNode).exprUID);
@@ -511,11 +522,11 @@ namespace ProtoScript.Runners
                         csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                     }
 
-                    // There is a bug in DeactivateGraphNodes(), otherwise we
-                    // could remove all warnings generated from removedNodes in
-                    // DeactivateGraphnodes(). 
-                    // Right now just simply remove all related warnings.
-                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    foreach (var ast in csData.RemovedBinaryNodesFromModification)
+                    {
+                        core.BuildStatus.ClearWarningsForAst(ast.ID);
+                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
+                    }
                 }
 
                 // Cache the modifed functions
@@ -567,7 +578,7 @@ namespace ProtoScript.Runners
                     }
                 }
 
-                foreach (AssociativeNode node in deltaAstList)
+                foreach (AssociativeNode node in modifiedASTList)
                 {
                     var bnode = node as BinaryExpressionNode;
                     if (bnode != null)
@@ -589,7 +600,7 @@ namespace ProtoScript.Runners
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
-
+            csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
 
@@ -1576,6 +1587,16 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
+        private void ApplyUpdate()
+        {
+            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                Execute();
+            }
+        }
+
         /// <summary>
         /// Resets few states in the core to prepare the core for a new
         /// delta code compilation and execution
@@ -1598,6 +1619,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(code);
+            ApplyUpdate();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1619,6 +1641,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
+            ApplyUpdate();
         }
 
         private void PreviewInternal(GraphSyncData syncData)

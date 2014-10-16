@@ -2564,8 +2564,12 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")]
         public void Defect_MAGN_2290()
         {
+            //LC: This test is flaky - there is a race condition on the test for the warning state.
+            //This should be re-enabled once the scheduler is in place
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
 
             RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
@@ -2608,7 +2612,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
@@ -2831,7 +2835,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
@@ -2861,6 +2865,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
             RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", false, (commandTag) =>
@@ -2896,6 +2901,48 @@ namespace DynamoCoreUITests
             // For regression http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3917
             RunCommandsFromFile("Defect_MAGN_3917.xml");
             AssertPreviewValue("91fb442c-8e17-4a2f-8b0b-cf520b543c18", new object [] { 43} );
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4710()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4710
+
+            RunCommandsFromFile("Defect_MAGN_4710.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("1ded7b84-8cba-482b-81fd-6979650bb2a1") as CodeBlockNodeModel;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and Warning should be there on CBN.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(2, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and now there should be warning.
+                    Assert.AreNotEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+
+            });
+
         }
 
         #endregion
