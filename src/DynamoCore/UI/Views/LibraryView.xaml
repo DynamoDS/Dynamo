@@ -390,8 +390,7 @@
                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                             <Border x:Name="ExpanderButtonBorder">
                                 <Grid MinHeight="27"
-                                      MinWidth="66"
-                                      Margin="0,0,0,2">
+                                      MinWidth="66">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
@@ -529,8 +528,7 @@
                                                         Grid.ColumnSpan="2"
                                                         VerticalAlignment="Center"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        Padding="{TemplateBinding Padding}">
+                                                        BorderThickness="{TemplateBinding BorderThickness}">
                                                     <ContentPresenter Grid.Row="0"
                                                                       Grid.Column="1"
                                                                       Grid.ColumnSpan="2"
@@ -547,6 +545,10 @@
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
                                                                            Value="true" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource ElementTypeToBoolConverter}}"
+                                                                           Value="false" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
