@@ -205,7 +205,8 @@ namespace Dynamo.UI.Controls
                         SampleFileEntry subProperty = 
                             new SampleFileEntry(directory.Name, directory.FullName);
                         WalkDirectoryTree(directory, subProperty);
-                        rootProperty.AddChildSampleFile(subProperty);
+                        if(subProperty.FileName!="backup")
+                            rootProperty.AddChildSampleFile(subProperty);
                     }
                 }
 
