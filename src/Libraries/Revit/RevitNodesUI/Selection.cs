@@ -284,9 +284,20 @@ namespace Dynamo.Nodes
             {
                 var stableRef = GetIdentifierFromModelObject(results.First());
 
-                node = AstFactory.BuildFunctionCall(
+                // There are cases where Revit will fail to return a stable 
+                // identifier for a reference. Ex. the selection is a face on
+                // an Analysis Visualization. In this case, we want to return
+                // null instead of trying to pass that null into the BuildStringNode
+                if (stableRef == null)
+                {
+                    node = AstFactory.BuildNullNode();
+                }
+                else
+                {
+                    node = AstFactory.BuildFunctionCall(
                     func,
                     new List<AssociativeNode> { AstFactory.BuildStringNode(stableRef), });
+                }
             }
             else
             {
