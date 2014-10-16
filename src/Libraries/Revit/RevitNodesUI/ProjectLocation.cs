@@ -58,7 +58,7 @@ namespace DSRevitNodesUI
                     new Func<double, double,string, DynamoUnits.Location>(
                         DynamoUnits.Location.ByLatitudeAndLongitude), new List<AssociativeNode>() { latNode, longNode, nameNode });
 
-            return base.BuildOutputAst(new List<AssociativeNode>(){node});
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         public void SetupCustomUIElements(dynNodeView view)
@@ -75,6 +75,7 @@ namespace DSRevitNodesUI
                 Location.Latitude,
                 Location.Longitude);
         }
+        
         #endregion
 
         #region private methods
@@ -96,7 +97,8 @@ namespace DSRevitNodesUI
 
         private void Update()
         {
-            ForceReExecuteOfNode = true;
+            ForceReExecuteOfNode = true; 
+            RequiresRecalc = true;
 
             var location = DocumentManager.Instance.CurrentDBDocument.SiteLocation;
             Location.Name = location.PlaceName;
