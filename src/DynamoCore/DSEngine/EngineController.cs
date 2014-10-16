@@ -179,7 +179,15 @@ namespace Dynamo.DSEngine
             }
         }
 
+
 #if ENABLE_DYNAMO_SCHEDULER
+
+        private Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
+
+        internal IEnumerable<GraphSyncData> PendingCustomNodeSyncData
+        {
+            get { return pendingCustomNodeSyncData; }
+        }
 
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
@@ -256,11 +264,48 @@ namespace Dynamo.DSEngine
             IEnumerable<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
+#if !ENABLE_DYNAMO_SCHEDULER
+
             lock (MacroMutex)
             {
                 astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
                 return VerifyGraphSyncData();
             }
+
+#else
+
+            lock (MacroMutex)
+            {
+                // Any graph updates through the scheduler no longer store their 
+                // GraphSyncData in 'graphSyncDataQueue' (any such entry will be 
+                // withdrawn from the queue and get associated with an AsyncTask.
+                // This check is to ensure that such case does not exist.
+                // 
+                if (graphSyncDataQueue.Count > 0)
+                {
+                    throw new InvalidOperationException(
+                        "'graphSyncDataQueue' is not empty");
+                }
+
+                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
+                if (!VerifyGraphSyncData() || (graphSyncDataQueue.Count == 0))
+                    return false;
+
+                // GraphSyncData objects accumulated through the compilation above
+                // will be stored in 'pendingCustomNodeSyncData'. Entries in this 
+                // queue will be used to update custom node graph prior to updating
+                // the graph for the home workspace.
+                // 
+                while (graphSyncDataQueue.Count > 0)
+                {
+                    var graphSyncData = graphSyncDataQueue.Dequeue();
+                    pendingCustomNodeSyncData.Enqueue(graphSyncData);
+                }
+
+                return true;
+            }
+
+#endif
         }
 
         private bool VerifyGraphSyncData()
