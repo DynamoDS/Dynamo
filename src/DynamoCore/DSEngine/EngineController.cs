@@ -214,19 +214,6 @@ namespace Dynamo.DSEngine
             return graphSyncDataQueue.Dequeue();
         }
 
-        internal GraphSyncData ComputeSyncData(CompileCustomNodeParams initParams)
-        {
-            astBuilder.CompileCustomNodeDefinition(
-                initParams.Definition, 
-                initParams.Nodes,
-                initParams.Outputs,
-                initParams.Parameters);
-
-            if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
-                return null;
-
-            return graphSyncDataQueue.Dequeue();
-        }
 #endif
 
         /// <summary>
