@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Data;
 
 using Dynamo.Applications.Models;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
+
 using ProtoCore.AST.AssociativeAST;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
@@ -17,59 +20,93 @@ namespace DSRevitNodesUI
      NodeDescription("Returns the current Revit project location."), IsDesignScriptCompatible]
     public class ProjectLocation : RevitNodeModel, IWpfNode
     {
-        private RevitDynamoModel model;
+        private readonly RevitDynamoModel model;
+
+        public DynamoUnits.Location Location { get; set; }
 
         public ProjectLocation(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             OutPortData.Add(new PortData("Location", "The location of the current Revit project."));
+            RegisterAllPorts();
+
+            Location = DynamoUnits.Location.ByLatitudeAndLongitude(0.0, 0.0);
 
             ArgumentLacing = LacingStrategy.Disabled;
+
             model = (RevitDynamoModel)workspaceModel.DynamoModel;
             model.RevitDocumentChanged += model_RevitDocumentChanged;
             model.RevitServicesUpdater.ElementsModified += RevitServicesUpdater_ElementsModified;
         }
 
-        void RevitServicesUpdater_ElementsModified(IEnumerable<string> updated)
-        {
-            var locUuid = DocumentManager.Instance.CurrentDBDocument.SiteLocation.UniqueId;
-
-            if (updated.Contains(locUuid))
-            {
-                ForceReExecuteOfNode = true;
-            }
-        }
+        #region public methods
 
         public override void Destroy()
         {
             base.Destroy();
             model.RevitDocumentChanged -= model_RevitDocumentChanged;
+            model.RevitServicesUpdater.ElementsModified -= RevitServicesUpdater_ElementsModified;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var location = DocumentManager.Instance.CurrentDBDocument.SiteLocation;
-
-            var latNode = AstFactory.BuildDoubleNode(location.Latitude.ToDegrees());
-            var longNode = AstFactory.BuildDoubleNode(location.Longitude.ToDegrees());
+            var latNode = AstFactory.BuildDoubleNode(Location.Latitude);
+            var longNode = AstFactory.BuildDoubleNode(Location.Longitude);
+            var nameNode = AstFactory.BuildStringNode(Location.Name);
 
             var node =
                 AstFactory.BuildFunctionCall(
-                    new Func<double, double, DynamoUnits.Location>(
-                        DynamoUnits.Location.ByLatitudeAndLongitude), new List<AssociativeNode>(){latNode, longNode});
+                    new Func<double, double,string, DynamoUnits.Location>(
+                        DynamoUnits.Location.ByLatitudeAndLongitude), new List<AssociativeNode>() { latNode, longNode, nameNode });
 
             return base.BuildOutputAst(new List<AssociativeNode>(){node});
         }
 
-        void model_RevitDocumentChanged(object sender, System.EventArgs e)
-        {
-            // When the document changes, we frx to ensure that the 
-            // AST is rebuilt and the new project's location is reflected in the graph.
-            ForceReExecuteOfNode = true;
-        }
-
         public void SetupCustomUIElements(dynNodeView view)
         {
-            
+            var locCtrl = new LocationControl { DataContext = this };
+            view.inputGrid.Children.Add(locCtrl);
         }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Name: {0}, Lat: {1}, Lon: {2}",
+                Location.Name,
+                Location.Latitude,
+                Location.Longitude);
+        }
+        #endregion
+
+        #region private methods
+
+        private void RevitServicesUpdater_ElementsModified(IEnumerable<string> updated)
+        {
+            var locUuid = DocumentManager.Instance.CurrentDBDocument.SiteLocation.UniqueId;
+
+            if (updated.Contains(locUuid))
+            {
+                Update();
+            }
+        }
+
+        private void model_RevitDocumentChanged(object sender, System.EventArgs e)
+        {
+            Update();
+        }
+
+        private void Update()
+        {
+            ForceReExecuteOfNode = true;
+
+            var location = DocumentManager.Instance.CurrentDBDocument.SiteLocation;
+            Location.Name = location.PlaceName;
+            Location.Latitude = location.Latitude.ToDegrees();
+            Location.Longitude = location.Longitude.ToDegrees();
+
+            RaisePropertyChanged("Location");
+        }
+
+        #endregion
+
     }
 }
