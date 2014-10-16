@@ -296,12 +296,27 @@
             <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
-                <Border Height="30">
-                    <TextBlock Foreground="#989898"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
+                <!--<Border Height="30">-->
+                <TextBlock Foreground="#989898"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center"
+                           Name="CategoryName">
+                    <TextBlock.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded, 
+                                                               RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type TreeViewItem}}}"
+                                             Value="True">
+                                    <Setter Property="TextBlock.FontWeight"
+                                            Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <!--</Border>-->
             </HierarchicalDataTemplate>
 
             <!-- Used for categories that is full of memebers without classes. E.g. Operators.-->
@@ -523,18 +538,11 @@
                                                               ClickMode="Press"
                                                               IsChecked="{Binding IsExpanded, Mode=OneWay}" />
 
-                                                <Border Name="NodeName"
-                                                        Grid.Column="1"
-                                                        Grid.ColumnSpan="2"
-                                                        VerticalAlignment="Center"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}">
                                                     <ContentPresenter Grid.Row="0"
                                                                       Grid.Column="1"
                                                                       Grid.ColumnSpan="2"
                                                                       ContentSource="Header" />
-                                                </Border>
-
+                                                    
                                             </Grid>
                                             
                                             <Border.Style>
@@ -555,6 +563,7 @@
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
+
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
@@ -602,9 +611,6 @@
                                     <Setter Property="Visibility"
                                             TargetName="Expander"
                                             Value="Collapsed" />
-                                    <Setter Property="Margin"
-                                            TargetName="NodeName"
-                                            Value="-3,0,0,0" />
                                 </Trigger>
 
                                 <!--Highlight item just in case this item is root element, not selected and
