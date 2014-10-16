@@ -664,49 +664,32 @@
 
         <Button Name="NoMatchFoundButton"
                 Height="20"
+                Margin="0,10,0,0"
+                OverridesDefaultStyle="True"
+                FontSize="13"
+                BorderThickness="0"
+                Background="Transparent"
+                Foreground="#666"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Content="No matches found"
                 Click="OnNoMatchFoundButtonClick">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="OverridesDefaultStyle"
-                            Value="True" />
-                    <Setter Property="FontSize"
-                            Value="13" />
-                    <Setter Property="BorderThickness"
-                            Value="0" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="Foreground"
-                            Value="#666" />
-                    <Setter Property="VerticalAlignment"
-                            Value="Top" />
-                    <Setter Property="HorizontalAlignment"
-                            Value="Center" />
-                    <Setter Property="Margin"
-                            Value="0,10,0,0" />
-                    <Setter Property="Content"
-                            Value="No matches found" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border x:Name="Border"
-                                        Background="Transparent"
-                                        BorderThickness="0 0 0 0">
-                                    <ContentPresenter Margin="0 1 0 0" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Visibility">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
-                                <Binding Path="Model.SearchRootCategories.Count" />
-                                <Binding Path="SearchAddonsVisibility" />
-                                <Binding Path="SearchText" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Button.Style>
+            <Button.Visibility>
+                <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
+                    <Binding Path="Model.SearchRootCategories.Count" />
+                    <Binding Path="SearchAddonsVisibility" />
+                    <Binding Path="SearchText" />
+                </MultiBinding>
+            </Button.Visibility>
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Border"
+                            Background="Transparent"
+                            BorderThickness="0 0 0 0">
+                        <ContentPresenter Margin="0 1 0 0" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
         </Button>
 
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
