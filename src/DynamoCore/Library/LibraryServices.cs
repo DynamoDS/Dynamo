@@ -342,8 +342,13 @@ namespace Dynamo.DSEngine
 
         private void ParseLibraryMigrations(string library)
         {
-            string migrationsXMLFile = Path.Combine(new FileInfo(library).Directory.FullName, 
-                Path.GetFileNameWithoutExtension(library) + ".Migrations.xml");
+            string fullLibraryName = library;
+
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+                return;
+
+            string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
+                Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
 
             if (!File.Exists(migrationsXMLFile))
                 return;
