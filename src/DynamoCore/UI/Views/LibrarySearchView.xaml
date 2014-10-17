@@ -512,7 +512,8 @@
                           BorderThickness="0"
                           ItemsSource="{Binding Model.SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                          SelectionMode="Single">
+                          SelectionMode="Single"
+                          KeyDown="OnCategoryKeyDown">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Expander Header="{Binding Path=Name}"

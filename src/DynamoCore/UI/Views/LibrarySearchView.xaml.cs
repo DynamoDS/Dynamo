@@ -299,6 +299,15 @@ namespace Dynamo.UI.Views
             return newIndex;
         }
 
+        private void OnCategoryKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+
+            // Member in focus(in this scenario) can be only last member button or class button at first row.
+            var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+        }
+
         #endregion
 
     }
