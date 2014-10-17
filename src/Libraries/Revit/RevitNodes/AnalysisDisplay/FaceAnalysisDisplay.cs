@@ -223,7 +223,7 @@ namespace Revit.AnalysisDisplay
                 description = Resource1.AnalysisResultsDefaultDescription;
             }
 
-            var data = new SurfaceAnalysisData(surface, sampleLocations.ToList(), new List<string> { "Dynamo Data" }, new List<IList<double>>{samples});
+            var data = SurfaceAnalysisData.BySurfacePointsAndResults(surface, sampleLocations.ToList(), new List<string> { "Dynamo Data" }, new List<IList<double>>{samples});
 
             return new FaceAnalysisDisplay(view.InternalView, new ISurfaceAnalysisData<Autodesk.DesignScript.Geometry.UV, double>[] { data }, name, description, unitType);
         }

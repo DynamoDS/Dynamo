@@ -35,39 +35,48 @@ namespace Analysis.DataTypes
             return Results[key];
         }
 
-        /// <summary>
-        /// Create a SurfaceAnalysisData object.
-        /// </summary>
-        /// <param name="surface">The surface which contains the calculation locations.</param>
-        /// <param name="calculationLocations">A set of results keyed by the name of the result type.</param>
-        public SurfaceAnalysisData(Surface surface, IEnumerable<UV> calculationLocations)
+        private SurfaceAnalysisData(
+            Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string,IList<double>> results)
         {
             Surface = surface;
             CalculationLocations = CullCalculationLocations(surface, calculationLocations);
-            Results = new Dictionary<string, IList<double>>();
+            Results = results;
         }
 
         /// <summary>
         /// Create a SurfaceAnalysisData object.
         /// </summary>
         /// <param name="surface">The surface which contains the calculation locations.</param>
-        /// <param name="calculationLocations">UV coordinates on the surface.</param>
-        /// <param name="results">A set of results keyed by the name of the result type.</param>
-        public SurfaceAnalysisData(Surface surface, IList<UV> calculationLocations, IList<string> resultNames, IList<IList<double>> resultValues)
+        /// <param name="points">A list of UV calculation locations on the surface.</param>
+        public static SurfaceAnalysisData BySurfaceAndPoints(Surface surface, IEnumerable<UV> points)
         {
-            Surface = surface;
-            CalculationLocations = CullCalculationLocations(surface, calculationLocations);
+            return new SurfaceAnalysisData(
+                surface,
+                points,
+                new Dictionary<string, IList<double>>());
+        }
 
+        /// <summary>
+        /// Create a SurfaceAnalysisData object.
+        /// </summary>
+        /// <param name="surface">The surface which contains the calculation locations.</param>
+        /// <param name="points">A list of UV calculation locations on the surface.</param>
+        /// <param name="resultNames">A list of result names.</param>
+        /// <param name="resultValues">A list of lists of result values.</param>
+        public static SurfaceAnalysisData BySurfacePointsAndResults(Surface surface, IEnumerable<UV> points, IList<string> resultNames, IList<IList<double>> resultValues)
+        {
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
             }
 
-            Results = new Dictionary<string, IList<double>>();
+            var results = new Dictionary<string, IList<double>>();
             for (var i = 0; i < resultNames.Count; i++)
             {
-                Results.Add(resultNames[i], resultValues[i]);
+                results.Add(resultNames[i], resultValues[i]);
             }
+
+            return new SurfaceAnalysisData(surface, points, results);
         }
 
         #region private methods
@@ -111,35 +120,43 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<Vector>> Results { get; internal set; }
 
-        /// <summary>
-        /// Create a VectorAnalysisData object.
-        /// </summary>
-        /// <param name="points">A list of calculation locations.</param>
-        public VectorAnalysisData(IEnumerable<Point> points)
+        private VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
         {
             CalculationLocations = points;
-            Results = new Dictionary<string, IList<Vector>>();
+            Results = results;
         }
 
         /// <summary>
         /// Create a VectorAnalysisData object.
         /// </summary>
         /// <param name="points">A list of calculation locations.</param>
-        /// <param name="results">A set of results keyed by the name of the result type.</param>
-        public VectorAnalysisData(IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues)
+        public static VectorAnalysisData ByPoints(IEnumerable<Point> points)
         {
-            CalculationLocations = points;
-            
+            var results = new Dictionary<string, IList<Vector>>();
+            return new VectorAnalysisData(points, results);
+        }
+ 
+        /// <summary>
+        /// Create a VectorAnalysisData object.
+        /// </summary>
+        /// <param name="points">A list of calculation locations.</param>
+        /// <param name="resultNames">A list of result names.</param>
+        /// <param name="resultValues">A list of lists of result values.</param>
+        public static VectorAnalysisData ByPointsAndResults(
+            IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues)
+        {
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
             }
 
-            Results = new Dictionary<string, IList<Vector>>();
+            var results = new Dictionary<string, IList<Vector>>();
             for (var i = 0; i < resultNames.Count; i++)
             {
-                Results.Add(resultNames[i], resultValues[i]);
+                results.Add(resultNames[i], resultValues[i]);
             }
+
+            return new VectorAnalysisData(points, results);
         }
 
         public IList<Vector> GetResultByKey(string key)
@@ -168,14 +185,21 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; internal set; }
 
+        private PointAnalysisData(
+            IEnumerable<Point> points, Dictionary<string, IList<double>> results)
+        {
+            CalculationLocations = points;
+            Results = results;
+        }
+
         /// <summary>
         /// Create a PointAnalysisData object.
         /// </summary>
         /// <param name="points">A list of calculation locations.</param>
-        public PointAnalysisData(IEnumerable<Point> points)
+        public static PointAnalysisData ByPoints(IEnumerable<Point> points)
         {
-            CalculationLocations = points;
-            Results = new Dictionary<string, IList<double>>();
+            var results = new Dictionary<string, IList<double>>();
+            return new PointAnalysisData(points, results);
         }
 
         /// <summary>
@@ -183,20 +207,20 @@ namespace Analysis.DataTypes
         /// </summary>
         /// <param name="points">A list of calculation locations.</param>
         /// <param name="results">A set of resutls keyed by the name of the result type.</param>
-        public PointAnalysisData(IEnumerable<Point> points, IList<string> resultNames, IList<IList<double>> resultValues)
+        public static PointAnalysisData ByPointsAndResults(IEnumerable<Point> points, IList<string> resultNames, IList<IList<double>> resultValues)
         {
-            CalculationLocations = points;
-
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
             }
 
-            Results = new Dictionary<string, IList<double>>();
+            var results = new Dictionary<string, IList<double>>();
             for (var i = 0; i < resultNames.Count; i++)
             {
-                Results.Add(resultNames[i], resultValues[i]);
+                results.Add(resultNames[i], resultValues[i]);
             }
+
+            return new PointAnalysisData(points, results);
         }
 
         public IList<double> GetResultByKey(string key)

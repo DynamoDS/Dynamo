@@ -117,7 +117,7 @@ namespace RevitTestServices.AnalysisDisplay
                 -1
             };
 
-            var data = new SurfaceAnalysisData(surface, samplePoints, new List<string>(){"Sample Data"}, new IList<double>[]{sampleValues} );
+            var data = SurfaceAnalysisData.BySurfacePointsAndResults(surface, samplePoints, new List<string>(){"Sample Data"}, new IList<double>[]{sampleValues} );
 
             var doc = Document.Current;
             var grid = FaceAnalysisDisplay.ByViewAndFaceAnalysisData(doc.ActiveView, new []{data});
@@ -144,7 +144,7 @@ namespace RevitTestServices.AnalysisDisplay
                 -1
             };
 
-            var data = new SurfaceAnalysisData(surface, samplePoints, new List<string>() { "Sample Data" }, new IList<double>[] { sampleValues });
+            var data = SurfaceAnalysisData.BySurfacePointsAndResults(surface, samplePoints, new List<string>() { "Sample Data" }, new IList<double>[] { sampleValues });
             var doc = Document.Current;
 
             Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewAndFaceAnalysisData(null, new []{data}));

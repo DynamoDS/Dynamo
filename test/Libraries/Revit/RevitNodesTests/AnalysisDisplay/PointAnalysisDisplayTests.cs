@@ -79,7 +79,7 @@ namespace RevitTestServices.AnalysisDisplay
                 -1
             };
 
-            var data = new PointAnalysisData(
+            var data = PointAnalysisData.ByPointsAndResults(
                 samplePoints,
                 new List<string>() { "Test points." },
                 new IList<double>[] { sampleValues });
@@ -108,7 +108,7 @@ namespace RevitTestServices.AnalysisDisplay
                 -1
             };
 
-            var data = new PointAnalysisData(
+            var data = PointAnalysisData.ByPointsAndResults(
                 samplePoints,
                 new List<string>() { "Test points." },
                 new IList<double>[] { sampleValues });

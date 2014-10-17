@@ -80,7 +80,7 @@ namespace RevitTestServices.AnalysisDisplay
                 Vector.ByCoordinates(0, 19, 4)
             };
 
-            var data = new VectorAnalysisData(
+            var data = VectorAnalysisData.ByPointsAndResults(
                 samplePoints,
                 new List<string>() { "Test vector data." },
                 new List<IList<Vector>>() { sampleValues });
@@ -109,7 +109,7 @@ namespace RevitTestServices.AnalysisDisplay
                 Vector.ByCoordinates(0, 19, 4)
             };
 
-            var data = new VectorAnalysisData(
+            var data = VectorAnalysisData.ByPointsAndResults(
                 samplePoints,
                 new List<string>() { "Test vector data." },
                 new List<IList<Vector>>() { sampleValues });
