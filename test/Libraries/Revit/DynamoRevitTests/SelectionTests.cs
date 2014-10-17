@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 using RevitServices.Persistence;
 using RTF.Framework;
+using Dynamo.Models;
 
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
@@ -423,10 +424,12 @@ namespace Dynamo.Tests
         {
             var element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.NotNull(element);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             selectNode.ClearSelections();
             RunCurrentModel();
             element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.Null(element);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         /// <summary>
@@ -440,11 +443,13 @@ namespace Dynamo.Tests
         {
             var elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.NotNull(elements);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             Assert.Greater(elements.Count(), 0);
             selectNode.ClearSelections();
             RunCurrentModel();
             elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.Null(elements);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         private void OpenAndAssertNoDummyNodes(string samplePath)

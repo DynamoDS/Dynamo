@@ -463,7 +463,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in warningNodes)
             {
-                node.ClearError();
+                node.ClearRuntimeError();
             }
         }
 
