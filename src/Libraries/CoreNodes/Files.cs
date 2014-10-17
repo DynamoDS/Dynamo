@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using System.IO;
@@ -107,6 +110,49 @@ namespace DSCore.IO
                                      Color.ByColor(image.GetPixel(x * (image.Width / numX), y * (image.Height / numY))))
                                 .ToList())
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Constructs an image from a 2d list of pixels.
+        /// </summary>
+        /// <param name="colors">2d rectangular list of colors representing the pixels.</param>
+        public static Bitmap FromPixels(Color[][] colors)
+        {
+            var height = colors.Length;
+            var width = colors[0].Length;
+
+            var rgbVals =
+                colors.SelectMany(row => row.Select(color => Convert.ToByte(color.InternalColor.ToArgb())));
+
+            return FromPixelsHelper(rgbVals, width, height);
+        }
+
+        /// <summary>
+        ///     Constructs an image from a flat list of pixels, a width, and a height.
+        /// </summary>
+        /// <param name="colors">List of colors representing the pixels.</param>
+        /// <param name="width">Width of the new image, in pixels.</param>
+        /// <param name="height">Height of the new image, in pixels.</param>
+        public static Bitmap FromPixels(Color[] colors, int width, int height)
+        {
+            var rgbValues = colors.Select(color => Convert.ToByte(color.InternalColor.ToArgb()));
+            return FromPixelsHelper(rgbValues, width, height);
+        }
+
+        private static Bitmap FromPixelsHelper(IEnumerable<byte> colors, int width, int height)
+        {
+            var bitmap = new Bitmap(width, height);
+            var data = bitmap.LockBits(
+                new Rectangle(0, 0, width, height),
+                ImageLockMode.WriteOnly,
+                bitmap.PixelFormat);
+            
+            foreach (var pixel in colors.Select((pixel, idx) => new { pixel, idx }))
+                System.Runtime.InteropServices.Marshal.WriteByte(data.Scan0, pixel.idx, pixel.pixel);
+
+            bitmap.UnlockBits(data);
+
+            return bitmap;
         }
 
         /// <summary>
