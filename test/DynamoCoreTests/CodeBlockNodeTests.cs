@@ -738,7 +738,7 @@ b = c[w][x][y][z];";
             libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
                 new ProtoImperative.Executive(libraryServicesCore));
 
-           var  libraryServices = new LibraryServices(libraryServicesCore);
+            var libraryServices = new LibraryServices(libraryServicesCore);
 
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -755,9 +755,8 @@ b = c[w][x][y][z];";
 
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetMembers();
@@ -795,9 +794,8 @@ b = c[w][x][y][z];";
 
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
