@@ -9,6 +9,8 @@ using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using DynCmd = Dynamo.Models.DynamoModel;
+using ProtoCore.Mirror;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Tests
 {
@@ -728,7 +730,15 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            var libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+           var  libraryServices = new LibraryServices(libraryServicesCore);
 
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -760,7 +770,15 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            var libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            var libraryServices = new LibraryServices(libraryServicesCore);
 
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
