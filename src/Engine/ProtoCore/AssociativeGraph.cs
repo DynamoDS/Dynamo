@@ -16,6 +16,48 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Returns the VM Graphnodes associated with the input ASTs
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public static List<AssociativeGraph.GraphNode> GetGraphNodesFromAST(ProtoCore.DSASM.Executable exe, List<AST.AssociativeAST.AssociativeNode> astList)
+        {
+            List<AssociativeGraph.GraphNode> deltaGraphNodes = new List<AssociativeGraph.GraphNode>();
+
+            // Get nodes at global scope
+            int classIndex = Constants.kInvalidIndex;
+            int procIndex = Constants.kGlobalScope;
+            int blockScope = (int)Executable.OffsetConstants.kInstrStreamGlobalScope;
+            AssociativeGraph.DependencyGraph dependencyGraph = exe.instrStreamList[blockScope].dependencyGraph;
+            List<AssociativeGraph.GraphNode> graphNodesInScope= dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+
+
+            // Get a list of AST guids
+            List<Guid> astGuidList = new List<Guid>();
+            foreach (AST.AssociativeAST.AssociativeNode ast in astList)
+            {
+                AST.AssociativeAST.BinaryExpressionNode bnode = ast as AST.AssociativeAST.BinaryExpressionNode;
+                if (!astGuidList.Contains(bnode.guid))
+                {
+                    astGuidList.Add(bnode.guid);
+                }
+            }
+
+            foreach (AssociativeGraph.GraphNode graphNode in graphNodesInScope)
+            {
+                foreach (Guid guid in astGuidList)
+                {
+                    if (graphNode.guid == guid)
+                    {
+                        deltaGraphNodes.Add(graphNode);
+                    }
+                }
+            }
+            return deltaGraphNodes;
+        }
+
+        /// <summary>
         /// Gets the number of dirty VM graphnodes at the global scope
         /// </summary>
         /// <param name="exe"></param>

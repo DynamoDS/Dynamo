@@ -251,38 +251,6 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
-        /// <summary>
-        /// Compiles the list of ASTs and returns the VM graphnodes
-        /// This compilation phase is self-contained and does not refer to the live core
-        /// </summary>
-        /// <param name="astList"></param>
-        /// <returns></returns>
-        private List<GraphNode> CompileAndGenerateGraphNodes(List<AssociativeNode> astList, out int blockId)
-        {
-            List<GraphNode> deltaGraphNodeList = new List<GraphNode>();
-
-            // Build a static core used for compiling astList
-            Options coreOptions = new Options();
-            coreOptions.ExecutionMode = ExecutionMode.Serial;
-            Core compileCore = new ProtoCore.Core(coreOptions);
-            compileCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(compileCore));
-            compileCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(compileCore));
-
-            // Compile the astList
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            bool succeeded = runner.Compile(astList, compileCore, out blockId);
-            if (succeeded)
-            {
-                // Generate the DS executable
-                compileCore.GenerateExecutable();
-                Executable exe = compileCore.DSExecutable;
-
-                // Get the compiled graphnodes
-                DependencyGraph depGraph = exe.instrStreamList[(int)Executable.OffsetConstants.kInstrStreamGlobalScope].dependencyGraph;
-                deltaGraphNodeList = depGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope);
-            }
-            return deltaGraphNodeList;
-        }
 
         /// <summary>
         /// Get reachable graphnodes from the live core
@@ -318,9 +286,8 @@ namespace ProtoScript.Runners
 
             // For every delta graphnode 
             // Delta grapnodes are the VM graphnodes associated with the delta ASTs
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            List<GraphNode> deltaGraphNodeList = CompileAndGenerateGraphNodes(astList, out blockId);
-            List<GraphNode> reachableNodes = GetReachableGraphNodes(core, deltaGraphNodeList, blockId);
+            List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
+            List<GraphNode> reachableNodes = GetReachableGraphNodes(core, deltaGraphNodeList, 0);
 
             // Get the list of guid's of the ASTs
             foreach (GraphNode graphnode in reachableNodes)
