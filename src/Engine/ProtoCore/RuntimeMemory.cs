@@ -67,14 +67,13 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Reserve stack for global variables. It should be called once.
+            /// Reserve stack for global variables. 
             /// </summary>
             /// <param name="size"></param>
             public void PushFrameForGlobals(int size)
             {
-                Validity.Assert(startFramePointer == 0);
                 PushFrame(size);
-                startFramePointer = size;
+                startFramePointer = Stack.Count;
             }
 
             public void PopFrame(int size)
