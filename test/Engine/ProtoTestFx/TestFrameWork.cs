@@ -754,6 +754,30 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
+        /// <summary>
+        /// Verifies that expectedGuidList is contained within previewGuidList
+        /// Verifies the expected count of  expectedGuidList
+        /// </summary>
+        /// <param name="previewGuidList"></param>
+        /// <param name="expectedGuidList"></param>
+        /// <param name="expectedPreviewCount"></param>
+        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList, int expectedPreviewCount)
+        {
+            Assert.IsTrue(previewGuidList.Count == expectedPreviewCount);
+            foreach (Guid expectedGuid in expectedGuidList)
+            {
+                Assert.IsTrue(previewGuidList.Contains(expectedGuid));
+            }
+        }
+
+        public static Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            CodeBlockNode commentCode;
+            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
         public void CleanUp()
         {
             testCore.Cleanup();
