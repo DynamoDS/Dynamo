@@ -868,7 +868,7 @@ b = c[w][x][y][z];";
 
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
-            var actual = members.OrderBy(n => n.Name).Select(x => x.ToString()).ToArray();
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
             Assert.AreEqual(expected, actual);
         }
     }
