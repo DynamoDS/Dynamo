@@ -485,7 +485,7 @@ namespace Revit.Elements
                     .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>());
 
                 // The is the geometry with the correctly computed References, from GetSymbolGeometry
-                var refs = InternalGeometry<Autodesk.Revit.DB.Solid>()
+                var refs = InternalGeometry<Autodesk.Revit.DB.Solid>(true)
                     .SelectMany(x => x.Faces.OfType<Autodesk.Revit.DB.Face>())
                     .Select(x => x.Reference);
 
