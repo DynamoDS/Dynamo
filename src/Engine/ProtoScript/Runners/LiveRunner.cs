@@ -251,12 +251,11 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
-
         /// <summary>
         /// Get reachable graphnodes from the live core
         /// </summary>
+        /// <param name="liveCore"></param>
         /// <param name="deltaGraphNodes"></param>
-        /// <param name="blockId"></param>
         /// <returns></returns>
         private List<GraphNode> ComputeReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
         {
