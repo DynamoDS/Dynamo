@@ -265,6 +265,18 @@ namespace ProtoCore.Utils
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
 
+            return ParseWithCore(code, core);
+        }
+
+        /// <summary>
+        /// Parses desginscript code with specified core and returns a 
+        /// ProtoAST CodeBlockNode
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static ProtoCore.AST.Node ParseWithCore(string code, ProtoCore.Core core)
+        {
             System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
             ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
             ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);

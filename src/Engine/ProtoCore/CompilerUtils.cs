@@ -365,7 +365,11 @@ namespace ProtoCore.Utils
         {
             List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
-            ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.Parse(expression);
+            core.ResetForPrecompilation();
+            core.IsParsingCodeBlockNode = true;
+            core.ParsingMode = ParseMode.AllowNonAssignment;
+
+            ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(expression, core);
             parseSuccess = true;
             List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
             Validity.Assert(nodes != null);
@@ -477,7 +481,7 @@ namespace ProtoCore.Utils
 
             try
             {
-                ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.Parse(newCode.ToString());
+                ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(newCode.ToString(), core);
                 return ParserUtils.GetAstNodes(codeBlockNode);
             }
             catch (Exception)
