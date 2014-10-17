@@ -190,14 +190,6 @@ namespace Dynamo.UI
 
         #endregion
 
-#if DEBUG
-        public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
-        public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
-#else
-        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
-        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
-#endif
-
     }
 
     /// <summary>
