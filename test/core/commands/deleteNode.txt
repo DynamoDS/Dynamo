@@ -2,7 +2,7 @@
     "$type":"DynamoWebServer.Messages.RunCommandsMessage, DynamoWebServer",
     "commands":
     [{
-        "$type":"Dynamo.ViewModels.DynamoViewModel+DeleteModelCommand, DynamoCore",
+        "$type":"Dynamo.Models.DynamoModel+DeleteModelCommand, DynamoCore",
         "modelGuid":"b43c1f0e-d88f-bfd7-8dd8-dc5536c18390"
     }],
     "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
