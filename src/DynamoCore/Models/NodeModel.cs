@@ -935,7 +935,10 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        public void ClearError()
+        /// <summary>
+        /// Clears the errors/warnings that are generated when running the graph
+        /// </summary>
+        public virtual void ClearRuntimeError()
         {
             State = ElementState.Dead;
             ClearTooltipText();

@@ -193,7 +193,7 @@ namespace Dynamo.Nodes
 
                         EnableReporting();
 
-                        ClearError();
+                        ClearRuntimeError();
                         if (!string.IsNullOrEmpty(errorMessage))
                         {
                             Error(errorMessage);
@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
                 Workspace.Modified();
             }
 
-            ClearError();
+            ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
