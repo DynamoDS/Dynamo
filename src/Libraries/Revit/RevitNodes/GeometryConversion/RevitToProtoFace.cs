@@ -20,7 +20,7 @@ namespace Revit.GeometryConversion
     public static class RevitToProtoFace
     {
         public static IEnumerable<Surface> ToProtoType(this Autodesk.Revit.DB.Face revitFace,
-          bool performHostUnitConversion = true)
+          bool performHostUnitConversion = true, Reference referenceOverride = null)
         {
             if (revitFace == null) throw new ArgumentNullException("revitFace");
 
@@ -46,7 +46,7 @@ namespace Revit.GeometryConversion
                 converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
 
                 // if possible, apply revit reference
-                var revitRef = revitFace.Reference;
+                var revitRef = referenceOverride ?? revitFace.Reference;
                 if (revitRef != null) converted = ElementFaceReference.AddTag(converted, revitRef);
 
                 listSurface.Add(converted);
