@@ -175,7 +175,7 @@ namespace Dynamo.UI.Views
             var classButton = Keyboard.FocusedElement as FrameworkElement;
 
             var buttonsWrapPanel = sender as LibraryWrapPanel;
-            var listButtons = (sender as LibraryWrapPanel).Children;
+            var listButtons = buttonsWrapPanel.Children;
 
             var selectedIndex = listButtons.IndexOf(classButton);
             int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
