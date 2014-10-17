@@ -217,7 +217,9 @@ namespace Dynamo.Nodes
         protected override void Updater_ElementsDeleted(
             Document document, IEnumerable<ElementId> deleted)
         {
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner))
+            if (!SelectionResults.Any() || 
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any())
             {
                 return;
             }
@@ -229,6 +231,11 @@ namespace Dynamo.Nodes
             // objects and we remove those from the set.
 
             var validEls = Selection.Where(el => el.IsValidObject);
+            if (!validEls.Any())
+            {
+                return;
+            }
+
             UpdateSelection(validEls);
         }
 
@@ -357,13 +364,20 @@ namespace Dynamo.Nodes
             // If an element is deleted, ensure all references which refer
             // to that element are removed from the selection
 
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
+            if (!SelectionResults.Any() || 
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any()) return;
 
             UpdateSelection(SelectionResults.Where(x => !deleted.Contains(x.ElementId)));
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            if (!updated.Any())
+            {
+                return;
+            }
+
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
             // If this modification is being parsed as part of a document
