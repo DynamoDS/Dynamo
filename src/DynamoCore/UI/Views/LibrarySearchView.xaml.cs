@@ -199,7 +199,7 @@ namespace Dynamo.UI.Views
                     return;
 
                 // Otherwise, we move to first class button.
-                var listItem = FindFirstChildListItem<ListView>(searchCategoryElement, "SubCategoryListView");
+                var listItem = FindFirstChildListItem(searchCategoryElement, "SubCategoryListView");
                 if (listItem != null)
                     listItem.Focus();
 
@@ -217,7 +217,7 @@ namespace Dynamo.UI.Views
 
                 // Otherwise user pressed down, we have to move to first member button.
                 var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryElement, "MemberGroupsListBox");
-                var listItem = FindFirstChildListItem<ListBox>(memberGroupsListBox, "MembersListBox");
+                var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
                 if (listItem != null)
                     listItem.Focus();
 
@@ -227,15 +227,15 @@ namespace Dynamo.UI.Views
         }
 
 
-        private ListBoxItem FindFirstChildListItem<T>(FrameworkElement parent, string listName)
-            where T : ListBox
+        private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
         {
-            var list = WPF.FindChild<T>(parent, listName);
+            var list = WPF.FindChild<ListBox>(parent, listName);
             var generator = list.ItemContainerGenerator;
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
         #endregion
+
 
     }
 }

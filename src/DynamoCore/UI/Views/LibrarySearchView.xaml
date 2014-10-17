@@ -531,7 +531,8 @@
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                               ScrollViewer.CanContentScroll="False"
                                               ScrollViewer.IsDeferredScrollingEnabled="False"
-                                              ItemsSource="{Binding Path=Classes}">
+                                              ItemsSource="{Binding Path=Classes}"
+                                              Focusable="False">
                                         <ListView.Visibility>
                                             <Binding Path="Classes.Count"
                                                      Converter="{StaticResource IntToVisibilityConverter}" />
