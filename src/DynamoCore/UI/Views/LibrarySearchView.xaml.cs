@@ -166,10 +166,11 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        // This event is raised only, when we can't go down/up, to next member group.
-        // I.e. we are now at the first member button and we have to move to class list.
-        // OR we are at the first class item and have to move to previous category.
-        // OR we are at the last member and we have to move to next category.
+        // The 'StackPanel' that contains 'SubCategoryListView' and 'MemberGroupsListBox'
+        // handles this message. If none of these two list boxes are handling the key 
+        // message, that means the currently focused list box item is the first/last item
+        // in these two list boxes. When key message arrives here, it is then the 'StackPanel'
+        // responsibility to move the focus on to the adjacent list box.
         private void OnCategoryContentKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -177,34 +178,30 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or first/last class button.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
-            var searchCategoryFrameworkEle = sender as FrameworkElement;
+            var searchCategoryElement = sender as FrameworkElement;
 
             // memberInFocus is method button.
             if (memberInFocus.DataContext is NodeSearchElement)
             {
-                var searchCategoryContent = searchCategoryFrameworkEle.DataContext as SearchCategory;
+                var searchCategoryContent = searchCategoryElement.DataContext as SearchCategory;
 
+                // Gotten here because of last method being listed, pressing 'down' array cannot 
+                // move down further. Return here to allow higher level visual element to handle
+                // the navigation (to a separate category).
                 if (e.Key == Key.Down)
-                {
-                    // Focused element is last method button. We have to move to next category.
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise, pressed Key is Up.
 
-                // If there are no found classes, we have to move to previous category.
-                // So, we handle it to next element - category.
+                // No class is found in this 'SearchCategory', return from here so that higher level
+                // element gets to handle the navigational keys to move focus to the previous category.
                 if (searchCategoryContent.Classes.Count == 0)
-                {
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise, we move to first class button.
-                var subCategoryListView = WPF.FindChild<ListView>(searchCategoryFrameworkEle, "SubCategoryListView");
-                var generator = subCategoryListView.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListViewItem).Focus();
+                var listItem = FindFirstChildListItem<ListView>(searchCategoryElement, "SubCategoryListView");
+                if (listItem != null)
+                    listItem.Focus();
 
                 e.Handled = true;
                 return;
@@ -216,20 +213,26 @@ namespace Dynamo.UI.Views
                 // We are at the first row of class list. User presses up, we have to move to previous category.
                 // We handle it further.
                 if (e.Key == Key.Up)
-                {
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise user pressed down, we have to move to first member button.
-                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryFrameworkEle, "MemberGroupsListBox");
-                var membersListBox = WPF.FindChild<ListBox>(memberGroupsListBox, "MembersListBox");
-                var generator = membersListBox.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryElement, "MemberGroupsListBox");
+                var listItem = FindFirstChildListItem<ListBox>(memberGroupsListBox, "MembersListBox");
+                if (listItem != null)
+                    listItem.Focus();
 
                 e.Handled = true;
                 return;
             }
+        }
+
+
+        private ListBoxItem FindFirstChildListItem<T>(FrameworkElement parent, string listName)
+            where T : ListBox
+        {
+            var list = WPF.FindChild<T>(parent, listName);
+            var generator = list.ItemContainerGenerator;
+            return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
         #endregion
