@@ -60,10 +60,7 @@ namespace Dynamo.UI.Views
             // We select class only, when it was selected!
             // But not, when it got focus.
             if (listViewItem != null && listViewItem.IsSelected)
-            {
-                listViewItem.IsSelected = true;
                 return;
-            }
 
             e.Handled = true;
         }
