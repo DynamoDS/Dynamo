@@ -61,6 +61,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTimeTests.cs" />
     <Compile Include="ColorTests.cs" />
     <Compile Include="ComparisonTests.cs" />
     <Compile Include="FileTests.cs" />
