@@ -138,7 +138,7 @@
                                Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
                     <MenuItem  Header="_Publish This Custom Node..."
                                Name="Publish"
-                               Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand}"
+                               Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand }"
                                Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <Separator />
