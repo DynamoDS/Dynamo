@@ -194,6 +194,19 @@ namespace ProtoCore
                 MessageHandler.Write(outputMessage);
             }
 
+            AssociativeGraph.GraphNode executingGraphNode = null;
+            var executive = core.CurrentExecutive.CurrentDSASMExec;
+            if (executive != null)
+            {
+                executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the warning is from some
+                // internal graph node. 
+                if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = core.ExecutingGraphnode;
+                }
+            }
+
             var entry = new RuntimeData.WarningEntry
             {
                 ID = ID,
@@ -201,8 +214,8 @@ namespace ProtoCore
                 Column = col,
                 Line = line,
                 ExpressionID = core.RuntimeExpressionUID,
-                GraphNodeGuid = core.ExecutingGraphnode == null ? Guid.Empty : core.ExecutingGraphnode.guid,
-                AstID = core.ExecutingGraphnode == null ? Constants.kInvalidIndex : core.ExecutingGraphnode.OriginalAstID,
+                GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
+                AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
             warnings.Add(entry);
