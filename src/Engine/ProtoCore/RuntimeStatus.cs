@@ -199,6 +199,12 @@ namespace ProtoCore
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the warning is from some
+                // internal graph node. 
+                if (executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = core.ExecutingGraphnode;
+                }
             }
 
             var entry = new RuntimeData.WarningEntry
