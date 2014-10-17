@@ -52,8 +52,32 @@ namespace Dynamo.UpdateManager
         bool CheckNewerDailyBuilds { get; set; }
         bool ForceUpdate { get; set; }
         string UpdateFileLocation { get; }
+        IUpdateManagerConfiguration Configuration { get; }
         event LogEventHandler Log;
         void OnLog(LogEventArgs args);
+    }
+
+    public interface IUpdateManagerConfiguration
+    {
+        /// <summary>
+        /// Defines download location for new installer
+        /// </summary>
+        string DownloadSourcePath { get; set; }
+
+        /// <summary>
+        /// Defines location for signature file to validate the new installer.
+        /// </summary>
+        string SignatureSourcePath { get; set; }
+
+        /// <summary>
+        /// Defines whether to consider daily builds for update, default is false.
+        /// </summary>
+        bool CheckNewerDailyBuild { get; set; }
+
+        /// <summary>
+        /// Defines whether to force update, default vlaue is false.
+        /// </summary>
+        bool ForceUpdate { get; set; }
     }
 
     /// <summary>
@@ -177,7 +201,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Defines Update Manager Configuration settings.
     /// </summary>
-    public class UpdateManagerConfiguration
+    public class UpdateManagerConfiguration : IUpdateManagerConfiguration
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
@@ -463,7 +487,7 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Returns the configuration settings.
         /// </summary>
-        public UpdateManagerConfiguration Configuration
+        public IUpdateManagerConfiguration Configuration
         {
             get 
             {
@@ -975,9 +999,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         internal static void CheckForProductUpdate()
         {
-            var self = Instance as UpdateManager;
-            var downloadUri = new Uri(self.Configuration.DownloadSourcePath);
-            self.CheckForProductUpdate(new UpdateRequest(downloadUri, self));
+            var downloadUri = new Uri(Instance.Configuration.DownloadSourcePath);
+            Instance.CheckForProductUpdate(new UpdateRequest(downloadUri, Instance));
         }
     }
 }
