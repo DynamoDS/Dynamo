@@ -353,14 +353,15 @@ namespace Dynamo.Models
             InitializeCurrentWorkspace();
 
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
-            this.Loader = new DynamoLoader(this);
-
-            this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences, EngineController.LibraryServices);
 
             DisposeLogic.IsShuttingDown = false;
 
             this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+
+            this.Loader = new DynamoLoader(this);
+            this.Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences, EngineController.LibraryServices);
+
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             // Reset virtual machine to avoid a race condition by causing a 
