@@ -822,8 +822,7 @@ namespace Dynamo.Search
             var group = SearchElementGroup.None;
             nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
-            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
-            nodeEle.ElementType = ElementType.CustomNode;
+            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);            
             nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
