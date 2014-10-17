@@ -30,10 +30,10 @@ namespace ProtoCore.AssociativeEngine
             int procIndex = Constants.kGlobalScope;
             int blockScope = (int)Executable.OffsetConstants.kInstrStreamGlobalScope;
             AssociativeGraph.DependencyGraph dependencyGraph = exe.instrStreamList[blockScope].dependencyGraph;
-            List<AssociativeGraph.GraphNode> graphNodesInScope= dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+            List<AssociativeGraph.GraphNode> graphNodesInScope = dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
 
 
-            // Get a list of AST guids
+            // Get a list of AST guids 
             List<Guid> astGuidList = new List<Guid>();
             foreach (AST.AssociativeAST.AssociativeNode ast in astList)
             {
@@ -44,6 +44,7 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
 
+            // For every graphnode in scope, find the graphodes that have the same guid as the guids in astList
             foreach (AssociativeGraph.GraphNode graphNode in graphNodesInScope)
             {
                 foreach (Guid guid in astGuidList)
