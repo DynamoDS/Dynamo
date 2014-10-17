@@ -207,11 +207,15 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        // Resursive call for each subdirectory.
-                        SampleFileEntry subProperty = 
-                            new SampleFileEntry(directory.Name, directory.FullName);
-                        WalkDirectoryTree(directory, subProperty);
-                        rootProperty.AddChildSampleFile(subProperty);
+                        //Make sure the folder's name is not "backup" 
+                        if (!directory.Name.Equals(Configurations.BackupFolderName))
+                        {
+                            // Resursive call for each subdirectory.
+                            SampleFileEntry sampleFileEntry =
+                                new SampleFileEntry(directory.Name, directory.FullName);
+                            WalkDirectoryTree(directory, sampleFileEntry);
+                            rootProperty.AddChildSampleFile(sampleFileEntry);
+                        }
                     }
                 }
 
