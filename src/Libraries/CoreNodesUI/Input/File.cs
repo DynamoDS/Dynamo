@@ -136,14 +136,34 @@ namespace DSCore.File
         }
     }
 
+    /// <summary>
+    ///     Base class for nodes that instantiate a File System Object, that also watches the file
+    ///     system for changes.
+    /// </summary>
+    /// <typeparam name="T">
+    ///     Data returned from the node, to be used for watching for changes to the file system.
+    /// </typeparam>
+    [SupressImportIntoVM]
     public abstract class FileSystemObject<T> : NodeModel
     {
-        private Action unregister = () => { };
+        private IEnumerable<IDisposable> registrations;
         private readonly Func<string, T> func;
 
         protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func) : base(workspaceModel)
         {
             this.func = func;
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            StopWatching();
+        }
+
+        private void StopWatching()
+        {
+            foreach (var reg in registrations)
+                reg.Dispose();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -164,26 +184,45 @@ namespace DSCore.File
             base.OnBuilt();
             DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
-
+        
         private void DataBridgeCallback(object data)
         {
-            unregister();
-            var newRegs = UpdateWatchedFiles(data).ToList();
-            unregister = delegate
-            {
-                foreach (var reg in newRegs)
-                    reg();
-            };
+            StopWatching();
+            registrations = UpdateWatchedFiles(data).ToList();
         }
 
-        protected abstract Action WatchFileSystemObject(T obj);
+        /// <summary>
+        ///     Watches for changes on the file system, given some data.
+        /// </summary>
+        /// <param name="obj">Some data representing something to watch on the file system.</param>
+        /// <returns>An IDisposable used to stop watching for file system changes.</returns>
+        protected abstract IDisposable WatchFileSystemObject(T obj);
 
-        private IEnumerable<Action> UpdateWatchedFiles(object data)
+        protected abstract class FileSystemObjectDisposable : IDisposable
         {
-            if (data is T)
+            private readonly NodeModel node;
+
+            protected FileSystemObjectDisposable(NodeModel nodeModel)
+            {
+                node = nodeModel;
+            }
+
+            protected void Modified()
+            {
+                node.ForceReExecuteOfNode = true;
+                node.RequiresRecalc = true;
+            }
+
+            public abstract void Dispose();
+        }
+
+        private IEnumerable<IDisposable> UpdateWatchedFiles(object data)
+        {
+            if (data is T) //Single piece of data
             {
                 try
                 {
+                    //Initiate watching, return IDisposable.
                     return Singleton(WatchFileSystemObject((T)data));
                 }
                 catch (Exception e)
@@ -192,24 +231,19 @@ namespace DSCore.File
                 }
             }
 
-            if (data is ICollection)
+            if (data is ICollection) // Multiple pieces of data, recur
             {
                 var paths = data as IEnumerable;
                 return paths.Cast<object>().SelectMany(UpdateWatchedFiles);
             }
 
-            return Enumerable.Empty<Action>();
+            // Data does not match expected type, skip
+            return Enumerable.Empty<IDisposable>();
         }
         
         private static IEnumerable<TItem> Singleton<TItem>(TItem x)
         {
             yield return x;
-        }
-        
-        protected void Modified(object sender, FileSystemEventArgs e)
-        {
-            ForceReExecuteOfNode = true;
-            RequiresRecalc = true;
         }
     }
 
@@ -227,23 +261,41 @@ namespace DSCore.File
             RegisterAllPorts();
         }
 
-        protected override Action WatchFileSystemObject(FileInfo path)
+        protected override IDisposable WatchFileSystemObject(FileInfo path)
         {
             var dir = 
                 path.Directory ?? new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
 
             var watcher = new FileSystemWatcher(dir.FullName, path.Name) { EnableRaisingEvents = true };
-            watcher.Changed += Modified;
-            watcher.Renamed += Modified;
-            watcher.Deleted += Modified;
 
-            return () =>
+            return new FileObjectDisposable(watcher, this);
+        }
+
+        private class FileObjectDisposable : FileSystemObjectDisposable
+        {
+            private readonly FileSystemWatcher watcher;
+
+            public FileObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
             {
-                watcher.Changed -= Modified;
-                watcher.Renamed -= Modified;
-                watcher.Deleted -= Modified;
+                this.watcher = watcher;
+
+                watcher.Changed += watcher_Changed;
+                watcher.Renamed += watcher_Changed;
+                watcher.Deleted += watcher_Changed;
+            }
+
+            void watcher_Changed(object sender, FileSystemEventArgs e)
+            {
+                Modified();
+            }
+
+            public override void Dispose()
+            {
+                watcher.Changed -= watcher_Changed;
+                watcher.Renamed -= watcher_Changed;
+                watcher.Deleted -= watcher_Changed;
                 watcher.Dispose();
-            };
+            }
         }
     }
 
@@ -261,20 +313,37 @@ namespace DSCore.File
             RegisterAllPorts();
         }
 
-        protected override Action WatchFileSystemObject(DirectoryInfo path)
+        protected override IDisposable WatchFileSystemObject(DirectoryInfo path)
         {
             var watcher = new FileSystemWatcher(path.FullName) { EnableRaisingEvents = true };
-            watcher.Created += Modified;
-            watcher.Renamed += Modified;
-            watcher.Deleted += Modified;
+            return new DirectoryObjectDisposable(watcher, this);
+        }
 
-            return () =>
+        private class DirectoryObjectDisposable : FileSystemObjectDisposable
+        {
+            private readonly FileSystemWatcher watcher;
+
+            public DirectoryObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
             {
-                watcher.Created -= Modified;
-                watcher.Renamed -= Modified;
-                watcher.Deleted -= Modified;
+                this.watcher = watcher;
+
+                watcher.Created += watcher_Changed;
+                watcher.Renamed += watcher_Changed;
+                watcher.Deleted += watcher_Changed;
+            }
+
+            void watcher_Changed(object sender, FileSystemEventArgs e)
+            {
+                Modified();
+            }
+
+            public override void Dispose()
+            {
+                watcher.Created -= watcher_Changed;
+                watcher.Renamed -= watcher_Changed;
+                watcher.Deleted -= watcher_Changed;
                 watcher.Dispose();
-            };
+            }
         }
     }
 }
