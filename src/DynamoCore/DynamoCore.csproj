@@ -182,7 +182,6 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
-    <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />

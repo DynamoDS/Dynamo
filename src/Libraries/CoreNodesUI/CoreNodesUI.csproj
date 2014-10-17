@@ -86,6 +86,7 @@
       <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selection.cs" />
+    <Compile Include="WatchImage.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -31,14 +31,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0])
-            };
-
-            return resultAst;
+            yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
         public void SetupCustomUIElements(dynNodeView nodeUi)
