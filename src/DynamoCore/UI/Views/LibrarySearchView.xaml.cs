@@ -146,11 +146,9 @@ namespace Dynamo.UI.Views
             // has moved beyond its available list of member groups. In this case, the 
             // key event is considered not handled and will be left to the parent visual 
             // (e.g. class button or another category) to handle.
+            e.Handled = false;
             if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > memberGroups.Count - 1)
-            {
-                e.Handled = false;
                 return;
-            }
 
             var generator = memberGroupListBox.ItemContainerGenerator;
             var item = generator.ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
