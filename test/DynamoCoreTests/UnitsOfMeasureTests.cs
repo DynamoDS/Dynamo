@@ -661,8 +661,6 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void Location_InvalidArgs()
         {
-            var loc = Location.ByLatitudeAndLongitude(20.0, -20.0);
-
             Assert.Throws<Exception>(()=>Location.ByLatitudeAndLongitude(500.0, 10.0));
             Assert.Throws<Exception>(() => Location.ByLatitudeAndLongitude(10.0, 500.0));
         }
