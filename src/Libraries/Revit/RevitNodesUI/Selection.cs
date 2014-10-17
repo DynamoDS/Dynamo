@@ -245,6 +245,9 @@ namespace Dynamo.Nodes
             }
 
             UpdateSelection(Selection);
+
+            RequiresRecalc = true;
+            ForceReExecuteOfNode = true;
         }
 
         protected override IEnumerable<Element> ExtractSelectionResults(TSelection selection)
