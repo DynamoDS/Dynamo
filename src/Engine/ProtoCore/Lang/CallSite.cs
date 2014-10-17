@@ -1512,11 +1512,7 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-#if GC_MARK_AND_SWEEP
-                core.AddCallSiteGCRoot(callsiteID, ret);
-#else
                 GCUtils.GCRetain(ret, core);
-#endif
                 return ret;
             }
             else
@@ -1682,11 +1678,7 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-#if GC_MARK_AND_SWEEP
-                core.AddCallSiteGCRoot(callsiteID, ret);
-#else
                 GCUtils.GCRetain(ret, core);
-#endif
                 return ret;
 
             }
