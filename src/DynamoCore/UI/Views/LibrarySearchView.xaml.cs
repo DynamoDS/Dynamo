@@ -6,7 +6,6 @@ using Dynamo.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
-using System;
 using Dynamo.Controls;
 
 namespace Dynamo.UI.Views
