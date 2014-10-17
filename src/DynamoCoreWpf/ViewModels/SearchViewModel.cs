@@ -476,15 +476,15 @@ namespace Dynamo.ViewModels
         private void ExecuteElement(BrowserItem searchElement)
         {
             dynamic ele = searchElement;
-            ExecuteElement(ele);
+            ExecuteElementDynamically(ele);
         }
 
-        private void ExecuteElement(CategorySearchElement searchElement)
+        private void ExecuteElementDynamically(CategorySearchElement searchElement)
         {
             this.SearchText = searchElement.Name + ".";
         }
 
-        private void ExecuteElement(DSFunctionNodeSearchElement element)
+        private void ExecuteElementDynamically(DSFunctionNodeSearchElement element)
         {
             // create node
             var guid = Guid.NewGuid();
@@ -500,7 +500,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ExecuteElement(CustomNodeSearchElement element)
+        private void ExecuteElementDynamically(CustomNodeSearchElement element)
         {
             string name = element.Guid.ToString();
 
@@ -518,7 +518,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ExecuteElement(NodeSearchElement element)
+        private void ExecuteElementDynamically(NodeSearchElement element)
         {
             // create node
             var guid = Guid.NewGuid();

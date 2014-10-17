@@ -997,9 +997,16 @@ namespace Dynamo.Utilities
             return null;
         }
 
-        internal CustomNodeInfo GetNodeInfo(string name)
+        internal CustomNodeInfo? GetNodeInfo(string name)
         {
-            return NodeInfos.FirstOrDefault(x => x.Value.Name == name).Value;
+            try
+            {
+                return NodeInfos.First(x => x.Value.Name == name).Value;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         /// <summary>

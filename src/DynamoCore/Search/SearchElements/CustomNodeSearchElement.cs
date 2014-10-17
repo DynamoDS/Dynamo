@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Dynamo.Models;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
@@ -8,33 +10,39 @@ namespace Dynamo.Search.SearchElements
     {
         public Guid Guid { get; internal set; }
 
-        private string _path;
+        private string path;
         public string Path
         {
-            get { return _path; }
+            get { return path; }
             set
             {
-                _path = value;
+                path = value;
                 RaisePropertyChanged("Path");
             }
         }
 
         public override string Type { get { return "Custom Node"; } }
 
+        public override NodeModel GetSearchResult()
+        {
+            throw new NotImplementedException(
+                "TODO(Steve): Implement custom node instantiation here.");
+        }
+
         public CustomNodeSearchElement(CustomNodeInfo info)
             : base(info.Name, info.Description, new List<string>())
         {
-            this.Node = null;
-            this.FullCategoryName = info.Category;
-            this.Guid = info.Guid;
-            this._path = info.Path;
+            Node = null;
+            FullCategoryName = info.Category;
+            Guid = info.Guid;
+            path = info.Path;
         }
 
         public override NodeSearchElement Copy()
         {
             return
-                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-                                                               this.Description, this.Path));
+                new CustomNodeSearchElement(new CustomNodeInfo(Guid, Name, FullCategoryName,
+                                                               Description, Path));
         }
 
         public override bool Equals(object obj)
@@ -44,22 +52,22 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            return this.Equals(obj as NodeSearchElement);
+            return Equals(obj as NodeSearchElement);
         }
 
         public override int GetHashCode()
         {
-            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+            return Guid.GetHashCode() + Type.GetHashCode() + Name.GetHashCode() + Description.GetHashCode();
         }
 
         public bool Equals(CustomNodeSearchElement other)
         {
-            return other.Guid == this.Guid;
+            return other.Guid == Guid;
         }
 
         public new bool Equals(NodeSearchElement other)
         {
-            return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
+            return other is CustomNodeSearchElement && Equals(other as CustomNodeSearchElement);
         }
     }
 }

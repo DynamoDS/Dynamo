@@ -453,6 +453,7 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel();
+            SearchModel.NodeProduced += AddNodeToCurrentWorkspace;
             CurrentWorkspaceChanged += SearchModel.RevealWorkspaceSpecificNodes;
 
             InitializeCurrentWorkspace();
@@ -908,7 +909,7 @@ namespace Dynamo.Models
             Action modifiedHandler = () => OnWorkspaceSaved(workspace);
             workspace.Modified += modifiedHandler;
             
-            workspace.NodeAdded += OnNodeAdded;
+            //workspace.NodeAdded += OnNodeAdded;
             workspace.ConnectorAdded += OnConnectorAdded;
             workspace.MessageLogged += LogMessage;
 
@@ -916,14 +917,28 @@ namespace Dynamo.Models
                 () =>
                 {
                     workspace.Modified -= modifiedHandler;
-                    workspace.NodeAdded -= OnNodeAdded;
+                    //workspace.NodeAdded -= OnNodeAdded;
                     workspace.ConnectorAdded -= OnConnectorAdded;
                     workspace.MessageLogged -= LogMessage;
                 });
         }
 
         /// <summary>
-        /// Open a workspace from a path.
+        /// TODO
+        /// </summary>
+        /// <param name="node"></param>
+        public void AddNodeToCurrentWorkspace(NodeModel node)
+        {
+            CurrentWorkspace.AddNode(node);
+            OnNodeAdded(node);
+            
+            //TODO(Steve): This should be moved to WorkspaceModel.AddNode, when all workspaces have their own selection.
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node);
+        }
+
+        /// <summary>
+        ///     Open a workspace from a path.
         /// </summary>
         /// <param name="xmlPath">The path to the workspace.</param>
         [Obsolete("Use AddWorkspace(WorkspaceModel)", true)]

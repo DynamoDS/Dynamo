@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 using Dynamo.Search;
@@ -11,8 +8,6 @@ using Dynamo.Search.SearchElements;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-
-using ProtoCore.DesignScriptParser;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -24,16 +19,16 @@ namespace Dynamo.Wpf.ViewModels
 
         protected BrowserItemViewModel(BrowserItem model)
         {
-            this.Model = model;
-            this.ToggleIsExpandedCommand = new DelegateCommand((Action)Model.Execute);
-            this.Items = new ObservableCollection<BrowserItemViewModel>();
+            Model = model;
+            ToggleIsExpandedCommand = new DelegateCommand(Model.Execute);
+            Items = new ObservableCollection<BrowserItemViewModel>();
 
-            foreach (var item in this.Model.Items)
+            foreach (var item in Model.Items)
             {
                 Items.Add(Wrap(item));
             }
 
-            this.Model.Items.CollectionChanged += ItemsOnCollectionChanged;
+            Model.Items.CollectionChanged += ItemsOnCollectionChanged;
         }
 
         /// <summary>
@@ -41,8 +36,8 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         public void RecursivelySort()
         {
-            this.Items = new ObservableCollection<BrowserItemViewModel>(this.Items.OrderBy(x => x.Model.Name));
-            this.Items.ToList().ForEach(x => x.RecursivelySort());
+            Items = new ObservableCollection<BrowserItemViewModel>(Items.OrderBy(x => x.Model.Name));
+            Items.ToList().ForEach(x => x.RecursivelySort());
         }
 
         private void ItemsOnCollectionChanged(object sender, 
@@ -56,12 +51,14 @@ namespace Dynamo.Wpf.ViewModels
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    this.Items.Clear();
+                    Items.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
+                    foreach (
+                        var vm in
+                            from object item in e.OldItems
+                            select Items.First(x => x.Model == item))
                     {
-                        var vm = Items.First(x => x.Model == item);
                         Items.Remove(vm);
                     }
                     break;

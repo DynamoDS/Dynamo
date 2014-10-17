@@ -9,7 +9,7 @@ namespace Dynamo.Search.SearchElements
 
     /// <summary>
     /// A search element representing a local node </summary>
-    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
+    public abstract class NodeSearchElement : SearchElementBase<NodeModel>, IEquatable<NodeSearchElement>
     {
         internal readonly string FullName;
 
