@@ -104,44 +104,5 @@ namespace Dynamo.Tests
             AssertPreviewValue("0c9c34fa-236c-43c0-a5b1-44139c83cbb6", 3);
             AssertPreviewValue("3cb6f401-2811-4b66-9d46-83f2deb1dacb", 4);
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestLoadNoNamespaceClass()
-        {
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
-
-            string libraryPath = "FFITarget.dll";
-            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-            Assert.IsTrue(libraryLoaded);
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.Libraries.Any(x => x.EndsWith(libraryPath)))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
-            // Get function groups for global classes with no namespace
-            var functions = libraryServices.GetFunctionGroups(libraryPath)
-                                            .Where(x => x.Functions
-                                            .Where(y => string.IsNullOrEmpty(y.Namespace)).Any());
-
-            if (functions.Any())
-            {
-                var ctorfg = functions.Where(x => x.Functions.Where(y => y.Type == FunctionType.Constructor).Any());
-                Assert.IsTrue(ctorfg.Any());
-                foreach (var fg in ctorfg)
-                {
-                    foreach (var ctor in fg.Functions)
-                        Assert.IsTrue(ctor.ClassName == ctor.UnqualifedClassName);
-                }
-
-            }
-        }
     }
 }

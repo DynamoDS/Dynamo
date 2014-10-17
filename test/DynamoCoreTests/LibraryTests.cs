@@ -13,13 +13,24 @@ namespace Dynamo.Tests
     class LibraryTests : DSEvaluationViewModelUnitTest
     {
         protected static bool LibraryLoaded { get; set; }
+        private ProtoCore.Core libraryServicesCore = null;
         protected LibraryServices libraryServices;
 
         [SetUp]
         public override void Init()
         {
             base.Init();
-            libraryServices = LibraryServices.GetInstance();
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            libraryServices = new LibraryServices(libraryServicesCore);
+
             RegisterEvents();
         }
 
@@ -27,6 +38,8 @@ namespace Dynamo.Tests
         public override void Cleanup()
         {
             UnRegisterEvents();
+            libraryServicesCore.Cleanup();
+            libraryServicesCore = null;
             libraryServices = null;
             base.Cleanup();
         }
