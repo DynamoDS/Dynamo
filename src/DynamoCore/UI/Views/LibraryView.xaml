@@ -299,7 +299,6 @@
             <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
-                <!--<Border Height="30">-->
                 <TextBlock Foreground="#989898"
                            FontSize="13"
                            Text="{Binding Path=Name}"
@@ -319,7 +318,6 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <!--</Border>-->
             </HierarchicalDataTemplate>
 
             <!-- Used for categories that is full of memebers without classes. E.g. Operators.-->
