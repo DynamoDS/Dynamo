@@ -215,14 +215,31 @@ namespace Dynamo.Controls
         }
     }
 
+    // This converter expects the following properties to be bound through XAML 
+    // (these properties are also to be bound in the exact order as stated here):
+    // 
+    //      SearchViewModel.SearchRootCategories.Count (int)
+    //      SearchViewModel.SearchAddonsVisibility (bool)
+    //      SearchViewModel.SearchText (string)
+    //
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
-            {
+            const string message = "Wrong properties bound to SearchResultsToVisibilityConverter";
+
+            if (values.Length != 3)
+                throw new ArgumentException(message);
+
+            if (!(values[0] is int) || !(values[1] is bool) || !(values[2] is string))
+                return Visibility.Collapsed;
+
+            var count = (int)values[0];
+            var addOnVisible = (bool)values[1];
+            var text = (string)values[2];
+
+            if (count == 0 && (addOnVisible == false) && !string.IsNullOrEmpty(text))
                 return Visibility.Visible;
-            }
 
             return Visibility.Collapsed;
         }

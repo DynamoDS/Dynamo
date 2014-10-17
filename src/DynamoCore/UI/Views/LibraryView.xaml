@@ -764,10 +764,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TreeView Grid.Row="0"
-                          ItemsSource="{Binding Model.BrowserRootCategories}"
+                <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                           Name="CategoryTreeView">
@@ -777,21 +775,8 @@
                         </ControlTemplate>
                     </TreeView.Template>
                 </TreeView>
-                <Border Grid.Row="1"
-                        Background="#353535"
-                        Height="27">
-                    <Border.Visibility>
-                        <Binding Path="Model.AddonRootCategories.Count"
-                                 Converter="{StaticResource IntToVisibilityConverter}" />
-                    </Border.Visibility>
-                    <TextBlock Text="Add-ons"
-                               VerticalAlignment="Center"
-                               FontSize="13"
-                               Foreground="#989898"
-                               Margin="16,0,0,0" />
-                </Border>
-                <uicontrols:AddonsTreeView Grid.Row="2"
-                                           DataContext="{Binding Model.AddonRootCategories}">
+                <uicontrols:AddonsTreeView Grid.Row="1"
+                                           DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
                         <Binding Path="Model.AddonRootCategories.Count"
                                  Converter="{StaticResource IntToVisibilityConverter}" />
