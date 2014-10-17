@@ -166,34 +166,6 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        // In classes we can move left, right, up, down.
-        private void OnSubClassesPanelKeyDown(object sender, KeyEventArgs e)
-        {
-            var classButton = Keyboard.FocusedElement as FrameworkElement;
-
-            var buttonsWrapPanel = sender as LibraryWrapPanel;
-            var listButtons = buttonsWrapPanel.Children;
-
-            var selectedIndex = listButtons.IndexOf(classButton);
-            int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
-
-            int newIndex = GetIndexNextSelectedItem(e.Key, selectedIndex, itemsPerRow);
-
-            // If index is out of range class list, that means we have to move to previous category
-            // or to next member group.
-            if ((newIndex < 0) || (newIndex > listButtons.Count))
-            {
-                e.Handled = false;
-                return;
-            }
-
-            // Set focus on new item.
-            listButtons[newIndex].Focus();
-
-            e.Handled = true;
-            return;
-        }
-
         // This event is raised only, when we can't go down/up, to next member group.
         // I.e. we are now at the first member button and we have to move to class list.
         // OR we are at the first class item and have to move to previous category.
@@ -258,42 +230,6 @@ namespace Dynamo.UI.Views
                 e.Handled = true;
                 return;
             }
-        }
-
-        private int GetIndexNextSelectedItem(Key key, int selectedIndex, int itemsPerRow)
-        {
-            int newIndex = -1;
-            int selectedRowIndex = selectedIndex / itemsPerRow + 1;
-
-            switch (key)
-            {
-                case Key.Right:
-                    {
-                        newIndex = selectedIndex + 1;
-                        int availableIndex = selectedRowIndex * itemsPerRow - 1;
-                        if (newIndex > availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Left:
-                    {
-                        newIndex = selectedIndex - 1;
-                        int availableIndex = (selectedRowIndex - 1) * itemsPerRow;
-                        if (newIndex < availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Down:
-                    {
-                        newIndex = selectedIndex + itemsPerRow + 1;
-                        // +1 because one of items is always ClassInformation.
-                        break;
-                    }
-                case Key.Up:
-                    {
-                        newIndex = selectedIndex - itemsPerRow;
-                        break;
-                    }
-            }
-            return newIndex;
         }
 
         #endregion
