@@ -22,7 +22,7 @@ namespace Dynamo.DSEngine
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
-    public class EngineController: IAstNodeContainer, IDisposable
+    public class EngineController : IAstNodeContainer, IDisposable
     {
         public event AstBuiltEventHandler AstBuilt;
 
@@ -91,7 +91,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Return all function groups.
         /// </summary>
-        public IEnumerable<FunctionGroup> GetFunctionGroups() 
+        public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
             return libraryServices.BuiltinFunctionGroups.Union(
                        libraryServices.Libraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
                 return mirror;
             }
         }
-        
+
         /// <summary>
         /// Get string representation of the value of variable.
         /// </summary>
@@ -423,7 +423,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in warningNodes)
             {
-                node.ClearError();
+                node.ClearRuntimeError();
             }
         }
 
@@ -458,7 +458,7 @@ namespace Dynamo.DSEngine
                 }
             }
         }
-        
+
         /// <summary>
         /// Get function descriptor from managed function name.
         /// </summary>
@@ -479,7 +479,10 @@ namespace Dynamo.DSEngine
             return libraryServices.GetFunctionDescriptor(managledName);
         }
 
-        
+        internal ClassMirror GetClassType(string className)
+        {
+            return liveRunnerServices.GetClassType(className);
+        }
 
 
         /// <summary>
@@ -534,7 +537,7 @@ namespace Dynamo.DSEngine
         {
             foreach (var astNode in astNodes)
             {
-                syncDataManager.AddNode(nodeGuid, astNode); 
+                syncDataManager.AddNode(nodeGuid, astNode);
             }
 
             if (AstBuilt != null)
@@ -545,7 +548,7 @@ namespace Dynamo.DSEngine
                 }
             }
         }
-        
+
         #endregion
 
         /// <summary>

@@ -1510,11 +1510,15 @@ s1 = AbstractDerivedDisposeTracer2.DisposeCount;
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2,
-                "x = null;" +
-                "s2 = AbstractDerivedDisposeTracer2.DisposeCount; "));
+            added.Add(CreateSubTreeFromCode(guid2,"x = null;" ));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
 
 
+            // Simulate a new new CBN
+            Guid guid3 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid3, "s2 = AbstractDerivedDisposeTracer2.DisposeCount; "));
             syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 

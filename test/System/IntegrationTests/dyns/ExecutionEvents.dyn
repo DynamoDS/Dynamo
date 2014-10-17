@@ -1,0 +1,10 @@
+<Workspace Version="0.7.2.22974" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e737fcce-0a6a-4411-b7d5-7646a1e1d53e" nickname="ExecutionEventsObserver.MidExecNotify" x="198" y="148" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\..\bin\AnyCPU\Debug\IntegrationTests.dll" function="IntegrationTests.ExecutionEventsObserver.MidExecNotify@int" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="e0fe75fe-4ed7-4e56-96d2-f44dc66cb3e9" nickname="Code Block" x="54" y="143" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e0fe75fe-4ed7-4e56-96d2-f44dc66cb3e9" start_index="0" end="e737fcce-0a6a-4411-b7d5-7646a1e1d53e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

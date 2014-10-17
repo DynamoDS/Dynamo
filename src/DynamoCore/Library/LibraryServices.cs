@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
+using Dynamo.Models;
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -32,6 +36,9 @@ namespace Dynamo.DSEngine
         private List<string> libraries = new List<string>();
 
         private readonly ProtoCore.Core libraryManagementCore;
+
+        private Dictionary<string, string> priorNameHints =
+            new Dictionary<string, string>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
@@ -86,6 +93,45 @@ namespace Dynamo.DSEngine
             {
                 CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
             }
+        }
+
+        public string NicknameFromFunctionSignatureHint(string functionSignature)
+        {
+            string[] splitted = functionSignature.Split('@');
+
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            string newName = priorNameHints[qualifiedFunction];
+
+            splitted = newName.Split('.');
+
+            if (splitted.Length < 2)
+                return null;
+
+            return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
+        }
+
+        public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        {
+            string[] splitted = functionSignature.Split('@');
+
+            if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            string newName = priorNameHints[qualifiedFunction];
+
+            return newName + "@" + splitted[1];
         }
 
         /// <summary>
@@ -153,6 +199,17 @@ namespace Dynamo.DSEngine
                     groupMap => TryGetFunctionGroup(groupMap, qualifiedName, out functionGroup))
                     ? functionGroup.GetFunctionDescriptor(managledName)
                     : null;
+        }
+
+        /// <summary>
+        /// Checks if a given library is already loaded or not.
+        /// Only unique assembly names are allowed to be loaded
+        /// </summary>
+        /// <param name="library"> can be either the full path or the assembly name </param>
+        /// <returns> true even if the same library name is loaded from different paths </returns>
+        public bool IsLibraryLoaded(string library)
+        {
+            return importedFunctionGroups.ContainsKey(library);
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
@@ -259,10 +316,60 @@ namespace Dynamo.DSEngine
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
         }
 
+        private void ParseLibraryMigrations(string library)
+        {
+            string fullLibraryName = library;
+
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+                return;
+
+            string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
+                Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
+
+            if (!File.Exists(migrationsXMLFile))
+                return;
+
+            var foundPriorNameHints = new Dictionary<string, string>();
+
+            try
+            {
+                using (var reader = XmlReader.Create(migrationsXMLFile))
+                {
+                    while (reader.Read())
+                    {
+                        reader.ReadToFollowing("priorNameHint");
+
+                        if (!reader.Read())
+                            break;
+
+                        reader.ReadToFollowing("oldName");
+                        string oldName = reader.ReadElementContentAsString();
+                        reader.ReadToFollowing("newName");
+                        string newName = reader.ReadElementContentAsString();
+
+                        foundPriorNameHints[oldName] = newName;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return; // if the XML file is badly formatted, return like it doesn't exist
+            }
+
+            // if everything parsed correctly, then add these names to the priorNameHints
+
+            foreach (string key in foundPriorNameHints.Keys)
+            {
+                priorNameHints[key] = foundPriorNameHints[key];
+            }
+        }
+
         private void AddImportedFunctions(string library, IEnumerable<FunctionDescriptor> functions)
         {
             if (null == library || null == functions)
                 throw new ArgumentNullException();
+
+            ParseLibraryMigrations(library);
 
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
