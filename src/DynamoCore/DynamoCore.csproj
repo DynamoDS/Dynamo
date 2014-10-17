@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -870,6 +870,7 @@ limitations under the License.
     <Resource Include="UI\Images\assemblies.png" />
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
+    <Resource Include="UI\Images\StartPage\icon-customnode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

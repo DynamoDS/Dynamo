@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 using RevitServices.Persistence;
 using RTF.Framework;
+using Dynamo.Models;
 
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
@@ -180,7 +181,8 @@ namespace Dynamo.Tests
 
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, list.Count());
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
@@ -297,6 +299,7 @@ namespace Dynamo.Tests
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
             Assert.AreEqual(3, list.Count);
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
@@ -421,10 +424,12 @@ namespace Dynamo.Tests
         {
             var element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.NotNull(element);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             selectNode.ClearSelections();
             RunCurrentModel();
             element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.Null(element);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         /// <summary>
@@ -438,11 +443,13 @@ namespace Dynamo.Tests
         {
             var elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.NotNull(elements);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             Assert.Greater(elements.Count(), 0);
             selectNode.ClearSelections();
             RunCurrentModel();
             elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.Null(elements);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         private void OpenAndAssertNoDummyNodes(string samplePath)

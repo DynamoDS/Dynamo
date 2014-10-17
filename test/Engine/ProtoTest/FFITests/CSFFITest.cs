@@ -1442,8 +1442,16 @@ p11;
                             ";
             code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
                 "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "v", ExpectedValue = 10, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+
+            var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
+            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                ValidationData[] data = { new ValidationData { ValueName = "v", ExpectedValue = 10, BlockIndex = 0 } };
+                ExecuteAndVerify(code, data);
+            }
+            // For mark and sweep, the order of object dispose is not defined,
+            // so we are not sure if AClass objects or BClass objects will be
+            // disposed firstly, hence we can't verify the expected value.
         }
 
         [Test]
@@ -1465,9 +1473,9 @@ p11;
                             }
                             v1;
                             v2;
+                            dv = DisposeVerify.CreateObject();
                             [Imperative]
                             {
-                                dv = DisposeVerify.CreateObject();
                                 m = dv.SetValue(3);
                                 b1 = BClass.CreateObject(10);                            
                                 f = Foo.Foo(b1);
@@ -1480,12 +1488,25 @@ p11;
                                 m = f2.foo(b3);
                                 v2 = dv.GetValue();
                             }
+                            v3 = dv.GetValue();
                             ";
             code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
                 "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
+
+            var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
+            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
+            {
+                // For mark and sweep, it is straight, we only need to focus 
+                // on created objects. So the value = 3 + 10 + 20 + 30 = 63.
+                ValidationData[] data = { new ValidationData { ValueName = "v3", ExpectedValue = 63, BlockIndex = 0 } };
+                ExecuteAndVerify(code, data);
+            }
+            else
+            {
+                ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
                                      new ValidationData { ValueName = "v2", ExpectedValue = 23, BlockIndex = 0 }};
-            ExecuteAndVerify(code, data);
+                ExecuteAndVerify(code, data);
+            }
         }
 
         [Test]
@@ -1509,9 +1530,9 @@ p11;
                             v1;
                             v2;
                             v3;
+                            dv = DisposeVerify.CreateObject();
                             [Imperative]
                             {
-                                dv = DisposeVerify.CreateObject();
                                 m = dv.SetValue(3);
                                 a1 = AClass.CreateObject(3);
                                 b1 = BClass.CreateObject(13);
@@ -1529,13 +1550,27 @@ p11;
                                 f = f2;
                                 v3 = dv.GetValue();
                             }
+                            v4 = dv.GetValue();
                             ";
             code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
                 "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
+
+            var gcStrategy = thisTest.SetupTestCore().Heap.GCStrategy;
+            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
+            {
+                // For mark and sweep, the last object is a2, se the expected
+                // value = 4. But it is very fragile because the order of
+                // disposing is not defined. 
+                ValidationData[] data = { new ValidationData { ValueName = "v4", ExpectedValue = 4, BlockIndex = 0 } };
+                ExecuteAndVerify(code, data);
+            }
+            else
+            {
+                ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
                                     new ValidationData { ValueName = "v2", ExpectedValue = 3, BlockIndex = 0 }, 
                                     new ValidationData { ValueName = "v3", ExpectedValue = 16, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+                ExecuteAndVerify(code, data);
+            }
         }
 
         [Test]
