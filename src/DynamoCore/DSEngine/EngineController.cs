@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BuildWarning = ProtoCore.BuildData.WarningEntry;
+using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
 
 namespace Dynamo.DSEngine
 {
@@ -209,6 +211,7 @@ namespace Dynamo.DSEngine
             }
         }
 
+
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
@@ -236,19 +239,6 @@ namespace Dynamo.DSEngine
             return graphSyncDataQueue.Dequeue();
         }
 
-        internal GraphSyncData ComputeSyncData(CompileCustomNodeParams initParams)
-        {
-            astBuilder.CompileCustomNodeDefinition(
-                initParams.Definition, 
-                initParams.Nodes,
-                initParams.Outputs,
-                initParams.Parameters);
-
-            if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
-                return null;
-
-            return graphSyncDataQueue.Dequeue();
-        }
 #endif
 
         /// <summary>
@@ -271,6 +261,8 @@ namespace Dynamo.DSEngine
             }
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         /// <summary>
         /// Generate graph sync data based on the input Dynamo custom node information.
         /// Return false if all nodes are clean.
@@ -292,6 +284,85 @@ namespace Dynamo.DSEngine
                 return VerifyGraphSyncData();
             }
         }
+
+#else
+
+        private Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
+
+        /// <summary>
+        /// Generate graph sync data based on the input Dynamo custom node information.
+        /// Return false if all nodes are clean.
+        /// </summary>
+        /// <param name="def"></param>
+        /// <param name="nodes"></param>
+        /// <param name="outputs"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public bool GenerateGraphSyncDataForCustomNode(
+            CustomNodeDefinition def,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<AssociativeNode> outputs,
+            IEnumerable<string> parameters)
+        {
+            lock (macroMutex)
+            {
+                // Any graph updates through the scheduler no longer store their 
+                // GraphSyncData in 'graphSyncDataQueue' (any such entry will be 
+                // withdrawn from the queue and get associated with an AsyncTask.
+                // This check is to ensure that such case does not exist.
+                // 
+                if (graphSyncDataQueue.Count > 0)
+                {
+                    throw new InvalidOperationException(
+                        "'graphSyncDataQueue' is not empty");
+                }
+
+                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
+                if (!VerifyGraphSyncData() || (graphSyncDataQueue.Count == 0))
+                    return false;
+
+                // GraphSyncData objects accumulated through the compilation above
+                // will be stored in 'pendingCustomNodeSyncData'. Entries in this 
+                // queue will be used to update custom node graph prior to updating
+                // the graph for the home workspace.
+                // 
+                while (graphSyncDataQueue.Count > 0)
+                {
+                    var graphSyncData = graphSyncDataQueue.Dequeue();
+                    pendingCustomNodeSyncData.Enqueue(graphSyncData);
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// DynamoModel calls this method prior to scheduling a graph update for
+        /// the home workspace. This method is called to schedule custom node 
+        /// compilation since the home workspace update may depend on it. Any 
+        /// updates to a CustomNodeDefinition will cause GraphSyncData to be added 
+        /// to "pendingCustomNodeSyncData" queue.
+        /// </summary>
+        /// <param name="scheduler">The scheduler on which custom node compilation 
+        /// task can be scheduled.</param>
+        /// 
+        internal void ProcessPendingCustomNodeSyncData(DynamoScheduler scheduler)
+        {
+            while (pendingCustomNodeSyncData.Count > 0)
+            {
+                var initParams = new CompileCustomNodeParams()
+                {
+                    SyncData = pendingCustomNodeSyncData.Dequeue(),
+                    EngineController = this
+                };
+
+                var compileTask = new CompileCustomNodeAsyncTask(scheduler);
+                if (compileTask.Initialize(initParams))
+                    scheduler.ScheduleForExecution(compileTask);
+            }
+        }
+
+#endif
 
         private bool VerifyGraphSyncData()
         {
