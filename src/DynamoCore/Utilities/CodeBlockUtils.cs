@@ -388,7 +388,14 @@ namespace Dynamo.Utilities
         #region public members
 
         
-
+        /// <summary>
+        /// Parses given block of code and declared variable,
+        /// returns the type of the variable: e.g. in:
+        /// "a : Point;" returns 'Point'
+        /// </summary>
+        /// <param name="code"> block of code being parsed </param>
+        /// <param name="variableName">input declared variable: 'a' in example </param>
+        /// <returns> returns Point in example </returns>
         public static string GetVariableType(string code, string variableName)
         {
             var symbolTable = FindVariableTypes(code);
@@ -402,6 +409,8 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Given the code that's currently being typed in a CBN,
         /// this function extracts the expression that needs to be code-completed
+        /// e.g. given "abc.X[{xyz.b.foo((abc" it returns "abc"
+        /// which is the "thing" that needs to be queried for completions
         /// </summary>
         /// <param name="code"></param>
         public static string GetStringToComplete(string code)
@@ -417,10 +426,14 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Given the code that's currently being typed in a CBN,
-        /// this function extracts the expression that needs to be code-completed
+        /// Given a block of code that's currently being typed 
+        /// this returns the method name and the type name on which it is invoked
+        /// e.g. "Point.ByCoordinates" returns 'ByCoordinates' as the functionName and 'Point' as functionPrefix
+        /// "abc.X[{xyz.b.foo" returns 'foo' as the functionName and 'xyz.b' as the "functionPrefix" on which it is invoked
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="code"> input code block </param>
+        /// <param name="functionName"> output function name </param>
+        /// <param name="functionPrefix"> output type or variable on which fn is invoked </param>
         public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
         {
             var codeParser = new CodeCompletionParser();

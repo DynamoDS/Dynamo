@@ -255,7 +255,7 @@ namespace Dynamo.Nodes
 
         private string GenerateHeader()
         {
-            return Method.GetMethodSignature();
+            return Method.ToString();
         }
     }
 }

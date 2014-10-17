@@ -353,7 +353,7 @@ namespace DynamoCoreUITests
                 Assert.AreEqual(functionName, overload.Method.MethodName);
             }
             Assert.AreEqual(3, overloads.ElementAt(2).Method.ArgumentList.Count());
-            Assert.AreEqual("int", overloads.ElementAt(2).Method.ArgumentList["i1"]);
+            Assert.AreEqual("int", overloads.ElementAt(2).Method.ArgumentList.ElementAt(0).Value);
         }
 
         [Test]
@@ -393,7 +393,7 @@ namespace DynamoCoreUITests
                 Assert.AreEqual(functionName, overload.Method.MethodName);
             }
             Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
-            Assert.AreEqual("ClassFunctionality", overloads.ElementAt(0).Method.ArgumentList["cf"].Split('.').Last());
+            Assert.AreEqual("ClassFunctionality", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value.Split('.').Last());
         }
 
         [Test]
