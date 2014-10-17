@@ -1,0 +1,40 @@
+<Workspace Version="0.7.1.29946" X="241.018276449201" Y="-155.79177163964" zoom="2.33041206914125" Description="Remove 'null' values from a list." Category="LunchBox.Format" Name="LunchBox Remove Null Values" ID="7ee545fa-4856-4297-a5e7-99afcacd80a1">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6b83e5bd-6407-4bcd-b584-7b6b521067ab" nickname="Input" x="-16.3316539024578" y="120.687052925003" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2ce0420d-38bf-416c-97ea-61c11affa302" nickname="Output" x="250.14482389438" y="124.119922204189" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Cleaned" />
+    </Dynamo.Nodes.Output>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="79b81d24-fe76-4d66-9bba-9d44e1652f9e" nickname="Python Script" x="96.9653680755602" y="121.62510530276" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script># Copyright (c) 2014, Nathan Miller
+# The Proving Ground, http://TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+
+#The input to this node will be stored in the IN[0] variable.
+list = IN[0]
+
+cleanlist = []
+for i in list:
+	if hasattr(i, "__iter__"):
+		for ii in i:
+			if not (i is None):
+				cleanlist.append(i)	
+	else:
+		if not (i is None):
+			cleanlist.append(i)	
+
+#Assign your output to the OUT variable
+OUT = cleanlist</Script>
+    </DSIronPythonNode.PythonNode>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6b83e5bd-6407-4bcd-b584-7b6b521067ab" start_index="0" end="79b81d24-fe76-4d66-9bba-9d44e1652f9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="79b81d24-fe76-4d66-9bba-9d44e1652f9e" start_index="0" end="2ce0420d-38bf-416c-97ea-61c11affa302" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
