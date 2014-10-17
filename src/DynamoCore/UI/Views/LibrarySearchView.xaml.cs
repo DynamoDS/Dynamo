@@ -304,8 +304,22 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            // Member in focus(in this scenario) can be only last member button or class button at first row.
+            // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+
+            // First case, when memberInFocus is method button.
+            if (memberInFocus.DataContext is NodeSearchElement)
+            {
+                // We are at the last method button and have to move to next category.
+                if (e.Key == Key.Down)
+                {
+                }
+            }
+
+            // Second case, when memberInFocus is class button at the first row. 
+            if (memberInFocus.DataContext is BrowserInternalElement)
+            {
+            }
         }
 
         #endregion
