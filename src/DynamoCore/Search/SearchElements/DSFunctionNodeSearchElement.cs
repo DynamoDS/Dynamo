@@ -24,7 +24,10 @@ namespace Dynamo.Search.SearchElements
 
         public override NodeSearchElement Copy()
         {
-            return new DSFunctionNodeSearchElement(_displayString, FunctionDescriptor, Group);
+            var copiedNode = new DSFunctionNodeSearchElement(_displayString, FunctionDescriptor, Group);
+            copiedNode.ElementType = ElementType;
+
+            return copiedNode;
         }
 
         public override bool Equals(object obj)

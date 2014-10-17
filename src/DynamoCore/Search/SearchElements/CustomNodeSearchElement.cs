@@ -33,9 +33,11 @@ namespace Dynamo.Search.SearchElements
 
         public override NodeSearchElement Copy()
         {
-            return
-                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-                                                               this.Description, this.Path), Group);
+            var copiedNode = new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name,
+                this.FullCategoryName, this.Description, this.Path), Group);
+            copiedNode.ElementType = this.ElementType;
+
+            return copiedNode;
         }
 
         public override bool Equals(object obj)
