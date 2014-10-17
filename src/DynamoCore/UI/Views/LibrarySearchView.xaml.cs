@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
 using System;
 using Dynamo.Controls;
+using System.Linq;
 
 namespace Dynamo.UI.Views
 {
@@ -303,6 +304,7 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+            var categoryListView = sender as ListView;
 
             // First case, when memberInFocus is method button.
             if (memberInFocus.DataContext is NodeSearchElement)
@@ -310,6 +312,18 @@ namespace Dynamo.UI.Views
                 // We are at the last method button and have to move to next category.
                 if (e.Key == Key.Down)
                 {
+                    int categoryIndex = 0;
+                    for (int i = 0; i < categoryListView.Items.Count; i++)
+                    {
+                        var category = categoryListView.Items[i] as SearchCategory;
+                        if (category.ContainsMember(memberInFocus.DataContext as NodeSearchElement))
+                        {
+                            categoryIndex = i;
+                            break;
+                        }
+                    }
+
+
                 }
             }
 
