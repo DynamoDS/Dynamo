@@ -13,6 +13,8 @@ using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Dynamo.UI;
+using DynamoUtilities;
+using System.Reflection;
 
 namespace DynamoCoreUITests
 {
@@ -38,6 +40,10 @@ namespace DynamoCoreUITests
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.
+            DynamoPathManager.Instance.InitializeCore(
+              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
         }
 
         [SetUp]
