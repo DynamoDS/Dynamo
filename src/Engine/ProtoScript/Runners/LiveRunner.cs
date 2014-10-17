@@ -276,11 +276,12 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the list of guids affected by astList
+        /// Get the nodes that are affected by the changes in astList
+        /// Returns a list of guids that map to the affected nodes
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
-        public List<Guid> ComputeReachableNodeGuids(List<AssociativeNode> astList)
+        public List<Guid> ComputeNodesAffectedByASTList(List<AssociativeNode> astList)
         {
             List<Guid> cbnGuidList = new List<Guid>();
 
@@ -1618,7 +1619,7 @@ namespace ProtoScript.Runners
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
-            List<Guid> cbnGuidList = changeSetComputer.ComputeReachableNodeGuids(previewAstList);
+            List<Guid> cbnGuidList = changeSetComputer.ComputeNodesAffectedByASTList(previewAstList);
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)
