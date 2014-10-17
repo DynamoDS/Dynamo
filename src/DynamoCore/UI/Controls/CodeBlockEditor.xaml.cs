@@ -108,7 +108,9 @@ namespace Dynamo.UI.Controls
             // if function is global, search for function in Built-ins
             if (string.IsNullOrEmpty(functionPrefix))
             {
-                candidates = engineController.GetOverloadsOnBuiltIns(functionName);
+                // TODO: Make this independent of Core and query properties of LibraryServices instead
+                // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
+                candidates = StaticMirror.GetOverloadsOnBuiltIns(engineController.LiveRunnerCore, functionName);
                 return candidates.Select(x => new CodeBlockInsightItem(x));
             }
 
@@ -207,6 +209,9 @@ namespace Dynamo.UI.Controls
             };
 
             var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
             var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.ClassName.Split('.').Last());
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
@@ -224,6 +229,9 @@ namespace Dynamo.UI.Controls
             };
 
             var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
             var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);

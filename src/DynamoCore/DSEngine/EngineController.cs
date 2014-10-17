@@ -524,12 +524,6 @@ namespace Dynamo.DSEngine
             return liveRunnerServices.GetClassType(className);
         }
 
-        internal IEnumerable<MethodMirror> GetOverloadsOnBuiltIns(string methodName)
-        {
-            return liveRunnerServices.GetOverloadsOnBuiltIns(methodName);
-        }
-
-
         /// <summary>
         /// LibraryLoading event handler.
         /// </summary>

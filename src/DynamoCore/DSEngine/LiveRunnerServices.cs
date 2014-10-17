@@ -103,11 +103,6 @@ namespace Dynamo.DSEngine
             return liveRunner.GetClassType(className);
         }
 
-        internal IEnumerable<MethodMirror> GetOverloadsOnBuiltIns(string methodName)
-        {
-            return liveRunner.GetOverloadsOnBuiltIns(methodName);
-        }
-
         /// <summary>
         /// GraphUpdateReady event handler.
         /// </summary>
