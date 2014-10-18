@@ -13,6 +13,8 @@ using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Dynamo.UI;
+using DynamoUtilities;
+using System.Reflection;
 
 namespace DynamoCoreUITests
 {
@@ -38,6 +40,10 @@ namespace DynamoCoreUITests
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.
+            DynamoPathManager.Instance.InitializeCore(
+              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
         }
 
         [SetUp]
@@ -2916,7 +2922,7 @@ namespace DynamoCoreUITests
 
                 var cbn = GetNode("1ded7b84-8cba-482b-81fd-6979650bb2a1") as CodeBlockNodeModel;
 
-                if (commandTag == "WithWarning")
+                if (commandTag == "WithWarning1")
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
@@ -2928,14 +2934,14 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, cbn.InPorts.Count);
 
                 }
-                else if (commandTag == "WithoutWarning")
+                else if (commandTag == "WithWarning2")
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
                     Assert.AreEqual(0, workspace.Connectors.Count);
 
                     //Check the CBN for input/output ports and now there should be warning.
-                    Assert.AreNotEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
                     Assert.AreEqual(1, cbn.OutPorts.Count);
                     Assert.AreEqual(1, cbn.InPorts.Count);
 

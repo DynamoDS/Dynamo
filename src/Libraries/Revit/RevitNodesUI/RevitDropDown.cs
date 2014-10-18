@@ -394,7 +394,11 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class Categories : EnumBase<BuiltInCategory>
     {
-        public Categories(WorkspaceModel workspace) : base(workspace) { }
+        public Categories(WorkspaceModel workspace) : base(workspace)
+        {
+            OutPorts[0].PortName = "Category";
+            OutPortData[0].ToolTipString = "The selected Category.";
+        }
 
         protected override void PopulateItems()
         {

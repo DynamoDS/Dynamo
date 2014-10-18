@@ -7,9 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-
-using Autodesk.DesignScript.Geometry;
 
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
@@ -54,7 +51,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -111,7 +108,7 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -177,7 +174,7 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -239,7 +236,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -262,7 +259,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -285,7 +282,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -400,17 +397,27 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        /// <summary>
-        /// The class constructor. </summary>
-        public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
+        internal PublishPackageViewModel()
         {
             this.customNodeDefinitions = new List<CustomNodeDefinition>();
-            this.dynamoViewModel = dynamoViewModel;
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<Assembly>();
             this.PropertyChanged += this.ThisPropertyChanged;
+        }
+
+        private void BeginInvoke(Action action)
+        {
+            if (this.dynamoViewModel != null)
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(action);
+        }
+
+        /// <summary>
+        /// The class constructor. </summary>
+        public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
+        {
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -790,7 +797,7 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            if (!this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
+            if (this.dynamoViewModel == null || !this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
             {
                 this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
                 return false;

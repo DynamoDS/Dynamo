@@ -3,8 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI"
+        d:DataContext="{d:DesignData Source=./SampleData/PublishPackageViewModelSampleData.xaml}"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" 
              Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
     
@@ -191,8 +193,8 @@
                                                 </ControlTemplate>
                                             </Button.Template>
 
-                                            <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
-                                                <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" Background="Black">
+                                            <Border Name="ContainerLight" BorderThickness="0">
+                                                <Border Name="Bd" Background="Black">
                                                     <Grid MinHeight="{Binding Height}">
 
                                                         <Grid.ColumnDefinitions>
@@ -208,10 +210,8 @@
 
                                                         <ToggleButton VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
 
-                                                        <Rectangle Width="7" Height="7" x:Name="whiteRect" Margin="3,0" VerticalAlignment="Center" Fill="#FFFFFF" HorizontalAlignment="Center" Visibility="Collapsed" />
-
-                                                        <Border Name="C" VerticalAlignment="Center" SnapsToDevicePixels="true" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
+                                                        <Border Name="C" VerticalAlignment="Center" Grid.Row="0"  Grid.Column="1"  Grid.ColumnSpan="2" >
+                                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" x:Name="PART_Header" ContentSource="Header"/>
                                                         </Border>
 
                                                         <ItemsPresenter Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  x:Name="ItemsHost" />
@@ -231,7 +231,6 @@
 
                                             <Trigger Property="HasItems" Value="false">
                                                 <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                                                <Setter Property="Visibility" TargetName="whiteRect" Value="Visible"/>
                                             </Trigger>
 
                                             <Trigger Property="IsSelected" Value="true">
@@ -254,22 +253,52 @@
 
                         <TreeView.Resources>
 
-                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}" >
+                            <DataTemplate x:Key="sharedTemplate">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Name="Icon" Width="32" Height="32" />
+                                    <TextBlock Name="DepName" Padding="7" FontSize="13" Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                                </StackPanel>
 
-                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>File</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/files.png"/>
+                                    </DataTrigger>
 
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/assemblies.png"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/nodes.png"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}}"
+                                                 Value="true">
+                                        <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                                
+                            </DataTemplate>
+                            
+                            <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemInternalViewModel}" ItemsSource="{Binding Path=Items}">
-
-                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
-
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemLeafViewModel}">
-
-                                <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
-
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />                         
                             </HierarchicalDataTemplate>
 
                         </TreeView.Resources>

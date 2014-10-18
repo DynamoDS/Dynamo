@@ -1566,6 +1566,8 @@ namespace ProtoCore.DSASM.Mirror
                         return true;
                     }
                     return false;
+                case AddressType.Null:
+                    return dotNetObj == null;
                 default:
                     throw new NotImplementedException();
             }
