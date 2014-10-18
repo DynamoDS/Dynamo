@@ -51,7 +51,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -108,7 +108,7 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -174,7 +174,7 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -236,7 +236,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -259,7 +259,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -282,7 +282,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -342,7 +342,6 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                this.Name = CustomNodeDefinitions[0].WorkspaceModel.Name;
                 this.UpdateDependencies();
             }
         }
@@ -398,12 +397,9 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        /// <summary>
-        /// The class constructor. </summary>
-        public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
+        internal PublishPackageViewModel()
         {
             this.customNodeDefinitions = new List<CustomNodeDefinition>();
-            this.dynamoViewModel = dynamoViewModel;
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
@@ -411,9 +407,27 @@ namespace Dynamo.PackageManager
             this.PropertyChanged += this.ThisPropertyChanged;
         }
 
+        private void BeginInvoke(Action action)
+        {
+            if (this.dynamoViewModel != null)
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(action);
+        }
+
+        /// <summary>
+        /// The class constructor. </summary>
+        public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
+        {
+            this.dynamoViewModel = dynamoViewModel;
+        }
+
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PackageContents") this.CanSubmit();
+            if (e.PropertyName == "PackageContents")
+            {
+                this.CanSubmit();
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+            }
         }
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
@@ -427,7 +441,6 @@ namespace Dynamo.PackageManager
                     l.LoadedCustomNodes.Select(
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
-                Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 Package = l
             };
@@ -439,11 +452,8 @@ namespace Dynamo.PackageManager
                 vm.AdditionalFiles.Add(file.Model.FullName);
             }
 
-            // add unloaded assemblies, that are not yet loaded
-            var unloadedAssemblies =
-                l.EnumerateAssemblyFiles()
-                    .Where(x => !l.LoadedAssemblies.Select(a => a.Location).Contains(x));
-            foreach (var file in unloadedAssemblies)
+            // load assemblies into reflection only context
+            foreach (var file in l.EnumerateAssemblyFiles())
             {
                 vm.Assemblies.Add( Assembly.ReflectionOnlyLoadFrom(file) );
             }
@@ -606,38 +616,46 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private bool openFileDialogHasBeenShown = false;
+
         private void ShowAddFileDialogAndAdd()
         {
             // show file open dialog
-            FileDialog fDialog = null;
+            var fDialog = new OpenFileDialog()
+            {
+                Title = "Add File to Package...",
+                RestoreDirectory = true,
+                Multiselect = true,
+                CheckFileExists = true
+            };
 
-            if (fDialog == null)
+            // if we've shown the dialog, don't use this logic to determine the start directory
+            if (!openFileDialogHasBeenShown)
             {
-                fDialog = new OpenFileDialog()
+                // if you've got the current space path, use it as the inital dir
+                if (!string.IsNullOrEmpty(this.dynamoViewModel.Model.CurrentWorkspace.FileName))
                 {
-                    Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
-                    Title = "Add Custom Node, Library, or XML file to Package..."
-                };
-            }
-
-            // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(this.dynamoViewModel.Model.CurrentWorkspace.FileName))
-            {
-                var fi = new FileInfo(this.dynamoViewModel.Model.CurrentWorkspace.FileName);
-                fDialog.InitialDirectory = fi.DirectoryName;
-            }
-            else // use the definitions directory
-            {
-                if (Directory.Exists(DynamoPathManager.Instance.UserDefinitions))
+                    var fi = new FileInfo(this.dynamoViewModel.Model.CurrentWorkspace.FileName);
+                    fDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else // use the definitions directory
                 {
-                    fDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
+                    if (Directory.Exists(DynamoPathManager.Instance.UserDefinitions))
+                    {
+                        fDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
+                    }
                 }
             }
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-                this.AddFile(fDialog.FileName);
+                foreach (var fn in fDialog.FileNames)
+                {
+                    this.AddFile(fn);
+                }
             }
+
+            openFileDialogHasBeenShown = true;
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -649,9 +667,19 @@ namespace Dynamo.PackageManager
         {
             if (!File.Exists(filename)) return;
 
-            if (filename.ToLower().EndsWith(".xml")) this.AddXmlFile(filename);
-            if (filename.ToLower().EndsWith(".dll")) this.AddDllFile(filename);
-            if (filename.ToLower().EndsWith(".dyf")) this.AddCustomNodeFile(filename);
+            if (filename.ToLower().EndsWith(".dll"))
+            {
+                this.AddDllFile(filename);
+                return;
+            }
+
+            if (filename.ToLower().EndsWith(".dyf"))
+            {
+                this.AddCustomNodeFile(filename);
+                return;
+            }
+
+            this.AddOtherFile(filename);
         }
 
         private void AddCustomNodeFile(string filename)
@@ -673,7 +701,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void AddXmlFile(string filename)
+        private void AddOtherFile(string filename)
         {
             try
             {
@@ -705,7 +733,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var newpkg = Package == null;
+                var isNewPackage = Package == null;
 
                 Package = Package ?? new Package("", this.Name, this.FullVersion);
 
@@ -713,8 +741,6 @@ namespace Dynamo.PackageManager
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
-
-                var files = GetAllFiles().ToList();
 
                 Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
 
@@ -724,12 +750,14 @@ namespace Dynamo.PackageManager
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
-                if (newpkg) this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
+                var files = GetAllFiles().ToList();
+
+                if (isNewPackage)
+                {
+                    this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
+                }
 
                 var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);
-
-                if (handle == null)
-                    throw new Exception("Failed to authenticate.  Are you logged in?");
 
                 this.Uploading = true;
                 this.UploadHandle = handle;
@@ -767,9 +795,11 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element </summary>
         private bool CanSubmit()
         {
-            if (!this.PackageContents.Any())
+            // Typically, this code should never be seen as the publish package dialogs should not 
+            // be active when there is no authenticator
+            if (this.dynamoViewModel == null || !this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
             {
-                this.ErrorString = "Your package must contain at least one file.";
+                this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
                 return false;
             }
 
@@ -812,6 +842,12 @@ namespace Dynamo.PackageManager
             if ( Double.Parse( this.BuildVersion) + Double.Parse( this.MinorVersion) + Double.Parse( this.MajorVersion ) <= 0 )
             {
                 this.ErrorString = "At least one of your version values must be greater than 0.";
+                return false;
+            }
+
+            if (!this.PackageContents.Any())
+            {
+                this.ErrorString = "Your package must contain at least one file.";
                 return false;
             }
 

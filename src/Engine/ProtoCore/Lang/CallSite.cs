@@ -1237,8 +1237,6 @@ namespace ProtoCore
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);
 
             return ret;
-
-
         }
 
        

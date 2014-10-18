@@ -22,24 +22,13 @@ namespace DynamoCoreUITests
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
         }
 
-        protected string TempFolder;
+        protected string TempFolder { get; private set; }
 
         [SetUp]
         public virtual void Start()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            string tempPath = Path.GetTempPath();
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder(TempFolder);
-            }
+            CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
@@ -86,6 +75,16 @@ namespace DynamoCoreUITests
             Model = null;
 
             GC.Collect();
+
+            try
+            {
+                var directory = new DirectoryInfo(TempFolder);
+                directory.Delete(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         [TestFixtureTearDown]
@@ -98,17 +97,19 @@ namespace DynamoCoreUITests
 
         #region Utility functions
 
-        public static void EmptyTempFolder(string tempFolder)
-        {
-            var directory = new DirectoryInfo(tempFolder);
-            foreach (FileInfo file in directory.GetFiles()) file.Delete();
-            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-        }
-
         public static string GetTestDirectory(string executingDirectory)
         {
             var directory = new DirectoryInfo(executingDirectory);
             return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+        }
+
+        protected void CreateTemporaryFolder()
+        {
+            string tempPath = Path.GetTempPath();
+            TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
+
+            if (!Directory.Exists(TempFolder))
+                Directory.CreateDirectory(TempFolder);
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -57,7 +58,7 @@ namespace Dynamo.Utilities
         /// </summary>
         public event DefinitionLoadHandler DefinitionLoaded;
 
-        public Dictionary<Guid, CustomNodeDefinition> LoadedCustomNodes = new Dictionary<Guid, CustomNodeDefinition>();
+        public OrderedDictionary LoadedCustomNodes = new OrderedDictionary();
 
         /// <summary>
         /// NodeNames </summary>
@@ -106,7 +107,7 @@ namespace Dynamo.Utilities
         /// <returns>A list of the current loaded custom node defs</returns>
         public IEnumerable<CustomNodeDefinition> GetLoadedDefinitions()
         {
-            return LoadedCustomNodes.Values;
+            return LoadedCustomNodes.Values.Cast<CustomNodeDefinition>();
         }
 
         /// <summary>
@@ -115,7 +116,17 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public void AddFunctionDefinition(Guid id, CustomNodeDefinition def)
         {
-            LoadedCustomNodes[id] = def;
+            if (def.IsBeingLoaded)
+                return;
+
+            if (LoadedCustomNodes.Contains(id))
+            {
+                LoadedCustomNodes[id] = def;
+            }
+            else
+            {
+                LoadedCustomNodes.Add(id, def);
+            }
         }
 
         /// <summary>
@@ -177,7 +188,7 @@ namespace Dynamo.Utilities
         {
             var nodeInfo = GetNodeInfo(guid);
 
-            if (LoadedCustomNodes.ContainsKey(guid))
+            if (LoadedCustomNodes.Contains(guid))
                 LoadedCustomNodes.Remove(guid);
 
             if (NodeInfos.ContainsKey(guid))
@@ -238,7 +249,7 @@ namespace Dynamo.Utilities
         /// <param name="def">The definition for the function</param>
         public void SetFunctionDefinition(Guid guid, CustomNodeDefinition def)
         {
-            if (LoadedCustomNodes.ContainsKey(guid))
+            if (LoadedCustomNodes.Contains(guid))
             {
                 LoadedCustomNodes.Remove(guid);
             }
@@ -310,7 +321,7 @@ namespace Dynamo.Utilities
 
             if (IsInitialized(id))
             {
-                return LoadedCustomNodes[id];
+                return LoadedCustomNodes[id] as CustomNodeDefinition;
             }
             else
             {
@@ -375,12 +386,17 @@ namespace Dynamo.Utilities
         {
             var compiledNodes = new HashSet<Guid>();
 
-            foreach (
-                var idDefPair in
-                    LoadedCustomNodes.Where(idDefPair => !compiledNodes.Contains(idDefPair.Key)))
+            var enumerator =  LoadedCustomNodes.GetEnumerator();
+            while (enumerator.MoveNext())
             {
-                idDefPair.Value.Compile(this.dynamoModel, engine);
-                compiledNodes.Add(idDefPair.Key);
+                var guid = (Guid)enumerator.Key;
+                var def = enumerator.Value as CustomNodeDefinition;
+
+                if (!compiledNodes.Contains(guid))
+                {
+                    def.Compile(this.dynamoModel, engine);
+                    compiledNodes.Add(guid);
+                }
             }
         }
 
@@ -410,7 +426,7 @@ namespace Dynamo.Utilities
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
         {
-            return LoadedCustomNodes.ContainsKey(guid);
+            return LoadedCustomNodes.Contains(guid);
         }
 
         /// <summary>
@@ -465,7 +481,7 @@ namespace Dynamo.Utilities
             }
             else
             {
-                result = LoadedCustomNodes[guid];
+                result = LoadedCustomNodes[guid] as CustomNodeDefinition;
             }
 
             return true;
@@ -580,7 +596,7 @@ namespace Dynamo.Utilities
         /// <returns>A valid function definition if the CustomNodeDefinition is already loaded, otherwise null. </returns>
         public CustomNodeDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
         {
-            return LoadedCustomNodes.Values.FirstOrDefault((def) => def.WorkspaceModel == workspace);
+            return LoadedCustomNodes.Values.Cast<CustomNodeDefinition>().FirstOrDefault((def) => def.WorkspaceModel == workspace);
         }
 
         /// <summary>
@@ -710,9 +726,9 @@ namespace Dynamo.Utilities
                     IsBeingLoaded = true
                 };
 
-                // set the node as loaded
-                LoadedCustomNodes.Remove(def.FunctionId);
-                LoadedCustomNodes.Add(def.FunctionId, def);
+                // Add custom node definition firstly so that a recursive
+                // custom node won't recursively load itself.
+                SetFunctionDefinition(def.FunctionId, def);
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
@@ -922,6 +938,8 @@ namespace Dynamo.Utilities
                 def.IsBeingLoaded = false;
 
                 def.Compile(this.dynamoModel, this.dynamoModel.EngineController);
+
+                SetFunctionDefinition(def.FunctionId, def);
 
                 ws.WatchChanges = true;
 
