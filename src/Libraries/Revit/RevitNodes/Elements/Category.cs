@@ -16,6 +16,9 @@ namespace Revit.Elements
 
         #region public properties
 
+        /// <summary>
+        /// The name of the Category.
+        /// </summary>
         public string Name
         {
             get
@@ -24,6 +27,9 @@ namespace Revit.Elements
             }
         }
 
+        /// <summary>
+        /// The Id of the category.
+        /// </summary>
         public int Id
         {
             get
@@ -42,8 +48,18 @@ namespace Revit.Elements
 
         #region public static constructors
 
+        /// <summary>
+        /// Get a Revit category by by the built in category name.
+        /// </summary>
+        /// <param name="name">The built in category name.</param>
+        /// <returns></returns>
         public static Category ByName(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
             Settings documentSettings = DocumentManager.Instance.CurrentDBDocument.Settings;
             var groups = documentSettings.Categories;
             var builtInCat = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), name);
