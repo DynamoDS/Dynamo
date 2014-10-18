@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
     {
         private Caret caret;
         private CodeBlockInsightItem oldSelectedItem;
-		
+
         sealed class CodeBlockMethodOverloadProvider : IOverloadProvider
         {
             private readonly CodeBlockMethodInsightWindow insightWindow;
@@ -28,10 +28,10 @@ namespace Dynamo.Nodes
             public CodeBlockMethodOverloadProvider(CodeBlockMethodInsightWindow insightWindow)
             {
                 this.insightWindow = insightWindow;
-                insightWindow.items.CollectionChanged += insightWindow_items_CollectionChanged;
+                insightWindow.items.CollectionChanged += OnInsightWindowItemsChanged;
             }
-			
-            void insightWindow_items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+            void OnInsightWindowItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
                 OnPropertyChanged("Count");
                 OnPropertyChanged("CurrentHeader");
@@ -39,22 +39,24 @@ namespace Dynamo.Nodes
                 OnPropertyChanged("CurrentIndexText");
                 insightWindow.OnSelectedItemChanged(EventArgs.Empty);
             }
-			
+
             public event PropertyChangedEventHandler PropertyChanged;
 
             private int selectedIndex;
             /// <summary>
             /// Index of selected overload using the "down arrow" key
             /// </summary>
-            public int SelectedIndex 
+
+            public int SelectedIndex
             {
-                get 
+                get
                 {
                     return selectedIndex;
                 }
-                set 
+                set
                 {
-                    if (selectedIndex != value) {
+                    if (selectedIndex != value)
+                    {
                         selectedIndex = value;
                         OnPropertyChanged("SelectedIndex");
                         OnPropertyChanged("CurrentHeader");
@@ -63,48 +65,49 @@ namespace Dynamo.Nodes
                     }
                 }
             }
-			
+
             /// <summary>
             /// Count of the number of overloads for a function
             /// </summary>
-            public int Count 
+            public int Count
             {
                 get { return insightWindow.Items.Count; }
             }
-			
+
             /// <summary>
             /// Text display in tooltip indicating which index of overload is selected
             /// out of the total number of overloads
             /// </summary>
-            public string CurrentIndexText 
+
+            public string CurrentIndexText
             {
                 get { return (selectedIndex + 1).ToString() + " of " + this.Count.ToString(); }
             }
-			
+
             /// <summary>
             /// Header information comprising signature of overload selected
             /// </summary>
-            public object CurrentHeader 
+            public object CurrentHeader
             {
-                get 
+                get
                 {
                     CodeBlockInsightItem item = insightWindow.SelectedItem;
                     return item != null ? item.Header : null;
                 }
             }
-			
-            public object CurrentContent 
+
+            public object CurrentContent
             {
-                get 
+                get
                 {
                     CodeBlockInsightItem item = insightWindow.SelectedItem;
                     return item != null ? item.Content : null;
                 }
             }
-			
+
             internal void OnPropertyChanged(string propertyName)
             {
-                if (PropertyChanged != null) 
+                if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                 }
@@ -113,15 +116,15 @@ namespace Dynamo.Nodes
 
         public CodeBlockMethodInsightWindow(TextArea textArea)
             : base(textArea)
-		{
+        {
             this.Provider = new CodeBlockMethodOverloadProvider(this);
-			this.Provider.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e) 
+            this.Provider.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e)
             {
-				if (e.PropertyName == "SelectedIndex")
-					OnSelectedItemChanged(EventArgs.Empty);
-			};
-			AttachEvents();
-		}
+                if (e.PropertyName == "SelectedIndex")
+                    OnSelectedItemChanged(EventArgs.Empty);
+            };
+            AttachEvents();
+        }
 
         readonly ObservableCollection<CodeBlockInsightItem> items = new ObservableCollection<CodeBlockInsightItem>();
         /// <summary>
@@ -129,51 +132,54 @@ namespace Dynamo.Nodes
         /// </summary>
         public IList<CodeBlockInsightItem> Items
         {
-			get { return items; }
-		}
+
+            get { return items; }
+        }
 
         /// <summary>
         /// Selected overload item
         /// </summary>
         public CodeBlockInsightItem SelectedItem
         {
-			get 
+
+            get
             {
-				int index = this.Provider.SelectedIndex;
-				if (index < 0 || index >= items.Count)
-					return null;
-				else
-					return items[index];
-			}
-			set 
+                int index = this.Provider.SelectedIndex;
+                if (index < 0 || index >= items.Count)
+                    return null;
+                else
+                    return items[index];
+            }
+            set
             {
-				this.Provider.SelectedIndex = items.IndexOf(value);
-				OnSelectedItemChanged(EventArgs.Empty);
-			}
-		}
+                this.Provider.SelectedIndex = items.IndexOf(value);
+                OnSelectedItemChanged(EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         /// TODO: Implement this for highlighting of parameters in 
         /// function signature tooltip as you type
         /// </summary>
         public event EventHandler CaretPositionChanged;
-		
-		protected override void DetachEvents()
-		{
+
+
+        protected override void DetachEvents()
+        {
             if (caret != null)
-				caret.PositionChanged -= caret_PositionChanged;
-			base.DetachEvents();
-		}
-		
-		protected virtual void OnSelectedItemChanged(EventArgs e)
-		{
-			if (oldSelectedItem != null)
-				oldSelectedItem.PropertyChanged -= SelectedItemPropertyChanged;
-			oldSelectedItem = SelectedItem;
-			if (oldSelectedItem != null)
-				oldSelectedItem.PropertyChanged += SelectedItemPropertyChanged;
-		}
-		
+                caret.PositionChanged -= caret_PositionChanged;
+            base.DetachEvents();
+        }
+
+        protected virtual void OnSelectedItemChanged(EventArgs e)
+        {
+            if (oldSelectedItem != null)
+                oldSelectedItem.PropertyChanged -= SelectedItemPropertyChanged;
+            oldSelectedItem = SelectedItem;
+            if (oldSelectedItem != null)
+                oldSelectedItem.PropertyChanged += SelectedItemPropertyChanged;
+        }
+
         private void AttachEvents()
         {
             caret = this.TextArea.Caret;
@@ -213,27 +219,28 @@ namespace Dynamo.Nodes
     sealed class CodeBlockInsightItem : INotifyPropertyChanged
     {
         public readonly MethodMirror Method;
- 
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public CodeBlockInsightItem(MethodMirror method)
-		{
-			this.Method = method;
-		}
-		
-		string header;
-		public object Header 
         {
-			get 
+            this.Method = method;
+        }
+
+        string header;
+        public object Header
+        {
+            get
             {
-				if (header == null) 
+                if (header == null)
                 {
-					header = GenerateHeader();
-					OnPropertyChanged("Header");
-				}
-				return header;
-			}
-		}
+                    header = Method.ToString();
+                    OnPropertyChanged("Header");
+                }
+                return header;
+            }
+        }
 
         /// <summary>
         /// TODO: Implement this
@@ -246,7 +253,7 @@ namespace Dynamo.Nodes
                 return content;
             }
         }
-		
+
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
