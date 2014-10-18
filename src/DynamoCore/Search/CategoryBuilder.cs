@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -138,11 +135,12 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, Dynamo.Search.SearchModel.ElementType nodeType = ElementType.Regular, string resourceAssembly = "")
+        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "",
+            SearchModel.ElementType nodeType = SearchModel.ElementType.Regular)
         {
             if (string.IsNullOrEmpty(categoryName))
             {
-                return this.TryAddRootCategory("Uncategorized", nodeType);
+                return this.TryAddRootCategory("Uncategorized");
             }
 
             if (ContainsCategory(categoryName))
@@ -164,7 +162,7 @@ namespace Dynamo.Search
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                return this.TryAddRootCategory(categoryName, nodeType);
+                return this.TryAddRootCategory(categoryName);
             }
 
             if (splitCat.Count == 0)
@@ -173,7 +171,7 @@ namespace Dynamo.Search
             }
 
             // attempt to add root category
-            var currentCat = TryAddRootCategory(splitCat[0], nodeType);
+            var currentCat = TryAddRootCategory(splitCat[0]);
 
             // If splitCat.Count equals 2, then we try to add not class.
             // That means root category is full of methods, not classes.
@@ -183,7 +181,7 @@ namespace Dynamo.Search
             // So, just add method in category and do nothing.
             // This situation is true for Regular nodes. For other element types we work
             // with all pieces of category.
-            var count = nodeType == ElementType.Regular ? splitCat.Count - 1 : splitCat.Count;
+            var count = nodeType == SearchModel.ElementType.Regular ? splitCat.Count - 1 : splitCat.Count;
 
             for (var i = 1; i < count; i++)
             {
@@ -192,7 +190,7 @@ namespace Dynamo.Search
             }
 
             // We sure, that the last member is class.
-            if (nodeType == Dynamo.Search.SearchModel.ElementType.Regular)
+            if (nodeType == SearchModel.ElementType.Regular)
                 currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1],
                     resourceAssembly);
 
@@ -236,47 +234,11 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Add a single category as a child of a category.  If the category already exists, just return that one.
-        /// </summary>
-        /// <param name="parent">The parent category </param>
-        /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
-        /// <param name="assembly">Assembly, where icon for class button can be found</param>
-        /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName,
-                                                 string resourceAssembly = "")
-        {
-            var newCategoryName = parent.Name + Configurations.CategoryDelimiter + childCategoryName;
-
-            // support long nested categories like Math.Math.StaticMembers.Abs
-            var parentItem = parent as BrowserInternalElement;
-            while (parentItem != null)
-            {
-                var grandParent = parentItem.Parent;
-                if (null == grandParent)
-                    break;
-
-                newCategoryName = grandParent.Name + Configurations.CategoryDelimiter + newCategoryName;
-                parentItem = grandParent as BrowserInternalElement;
-            }
-
-            if (ContainsCategory(newCategoryName))
-            {
-                return GetCategoryByName(newCategoryName);
-            }
-
-            var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
-            tempCat.FullCategoryName = newCategoryName;
-            parent.AddChild(tempCat);
-
-            return tempCat;
-        }
-
-        /// <summary>
         ///  Add in browserInternalElementForClasses new class or gets this class, if it alredy exists.
         /// </summary>
         /// <param name="parent">Root category or namespace(nested class)</param>
         /// <param name="childCategoryName">Name of class</param>
-        /// <param name="resourceAssembly">Assembly, where icon for class button can be found.]</param>
+        /// <param name="resourceAssembly">Assembly, where icon for class button can be found.</param>
         /// <returns>Class, in which insert methods</returns>
         internal BrowserItem TryAddChildClass(BrowserItem parent, string childCategoryName,
                                                  string resourceAssembly = "")
@@ -298,9 +260,9 @@ namespace Dynamo.Search
         ///     
         /// </summary>
         /// <returns>The newly added category or the existing one.</returns>
-        internal BrowserItem TryAddRootCategory(string categoryName, SearchModel.ElementType nodeType = SearchModel.ElementType.Regular)
+        internal BrowserItem TryAddRootCategory(string categoryName)
         {
-            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName, nodeType);
+            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName);
         }
 
         /// <summary>
