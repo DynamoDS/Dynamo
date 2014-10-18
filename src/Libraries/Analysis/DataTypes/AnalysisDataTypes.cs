@@ -36,7 +36,7 @@ namespace Analysis.DataTypes
             return Results[key];
         }
 
-        private SurfaceAnalysisData(
+        protected SurfaceAnalysisData(
             Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string,IList<double>> results)
         {
             Surface = surface;
@@ -161,7 +161,7 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<Vector>> Results { get; internal set; }
 
-        private VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
+        protected VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
         {
             CalculationLocations = points;
             Results = results;
@@ -247,7 +247,7 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; internal set; }
 
-        private PointAnalysisData(
+        protected PointAnalysisData(
             IEnumerable<Point> points, Dictionary<string, IList<double>> results)
         {
             CalculationLocations = points;
