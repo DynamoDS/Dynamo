@@ -393,7 +393,75 @@ namespace DynamoCoreUITests
                 Assert.AreEqual(functionName, overload.Method.MethodName);
             }
             Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
-            Assert.AreEqual("ClassFunctionality", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value.Split('.').Last());
+            Assert.AreEqual("ClassFunctionality", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureReturnTypeCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor();
+            cbnEditor.dynamoViewModel = ViewModel;
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "AddWithValueContainer";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("ValueContainer", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+            Assert.AreEqual("ValueContainer[]", 
+                overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltInMethodSignatureCompletion()
+        {
+            var cbnEditor = new CodeBlockEditor();
+            cbnEditor.dynamoViewModel = ViewModel;
+
+            string functionPrefix = "";
+            string functionName = "Count";
+
+            string code = "";
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("[]", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+            Assert.AreEqual("int",
+                overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
         }
 
         [Test]
