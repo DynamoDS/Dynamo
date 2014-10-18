@@ -260,9 +260,5 @@ namespace Dynamo.Nodes
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string GenerateHeader()
-        {
-            return Method.ToString();
-        }
     }
 }
