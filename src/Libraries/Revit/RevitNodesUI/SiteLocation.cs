@@ -14,7 +14,7 @@ using RevitServices.Persistence;
 
 namespace DSRevitNodesUI
 {
-    [NodeName("Analyze.SiteLocation"), NodeCategory(BuiltinNodeCategories.ANALYZE),
+    [NodeName("SiteLocation"), NodeCategory(BuiltinNodeCategories.ANALYZE),
      NodeDescription("Returns the current Revit site location."), IsDesignScriptCompatible]
     public class SiteLocation : RevitNodeModel, IWpfNode
     {
