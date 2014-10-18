@@ -34,6 +34,9 @@ namespace Dynamo.Search
 
         #region Properties/Fields
 
+        private CategoryBuilder browserCategoriesBuilder;
+        private CategoryBuilder addonCategoriesBuilder;
+
         /// <summary>
         /// Leaves of the browser - used for navigation
         /// </summary>
@@ -57,7 +60,7 @@ namespace Dynamo.Search
         /// <value>
         ///     A set of categories
         /// </value>
-        public Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
+        internal Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
         /// <summary>
         /// Enum represents loading type of element.
@@ -142,20 +145,23 @@ namespace Dynamo.Search
 
         private void InitializeCore()
         {
+            browserCategoriesBuilder = new CategoryBuilder(this, _browserRootCategories, false);
+            addonCategoriesBuilder = new CategoryBuilder(this, _addonRootCategories, true);
+
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            this.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
-            this.AddRootCategory(LibraryServices.Categories.Operators);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.AddRootCategory("Units");
-            this.AddRootCategory("Office");
-            this.AddRootCategory("Migration");
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.CORE);
+            browserCategoriesBuilder.AddRootCategory(LibraryServices.Categories.BuiltIns);
+            browserCategoriesBuilder.AddRootCategory(LibraryServices.Categories.Operators);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.REVIT);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            browserCategoriesBuilder.AddRootCategory("Units");
+            browserCategoriesBuilder.AddRootCategory("Office");
+            browserCategoriesBuilder.AddRootCategory("Migration");
         }
 
         #endregion
@@ -269,10 +275,16 @@ namespace Dynamo.Search
         /// <param name="item">The item to add as a child of that category</param>
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
+            ElementType nodeType = GetElementType(item);
+
             // When create category, give not only category name, 
             // but also assembly, where icon for category could be found.
-            var cat = this.AddCategory(category, GetElementType(item),
-                (item as NodeSearchElement).Assembly);
+
+            BrowserItem cat;
+            if (nodeType == ElementType.Regular)
+                cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
+            else
+                cat = addonCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
 
             cat.AddChild(item);
 
@@ -281,7 +293,6 @@ namespace Dynamo.Search
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
-
         }
 
         internal ElementType GetElementType(BrowserInternalElement item)
@@ -320,6 +331,18 @@ namespace Dynamo.Search
             }
 
             return splitCat;
+        }
+
+        internal void RemoveEmptyCategories()
+        {
+            _browserRootCategories = browserCategoriesBuilder.RemoveEmptyCategories();
+            _addonRootCategories = addonCategoriesBuilder.RemoveEmptyCategories();
+        }
+
+        internal void SortCategoryChildren()
+        {
+            browserCategoriesBuilder.SortCategoryChildren();
+            addonCategoriesBuilder.SortCategoryChildren();
         }
 
         #endregion
@@ -559,9 +582,9 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(nodeName);
-                RemoveEmptyCategory(node);
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
+                browserCategoriesBuilder.RemoveEmptyCategory(node);
             }
-
         }
 
         /// <summary>
@@ -584,9 +607,8 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(node.Guid);
-                RemoveEmptyCategory(node);
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
-
         }
 
         #endregion

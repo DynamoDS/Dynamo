@@ -10,16 +10,19 @@ namespace Dynamo.Search
     {
         private ObservableCollection<BrowserRootElement> rootCategories;
         private SearchModel searchModel;
+        private bool isAddons;
 
-        internal CategoryBuilder(SearchModel searchModel, ObservableCollection<BrowserRootElement> rootCategories)
+        internal CategoryBuilder(SearchModel searchModel, ObservableCollection<BrowserRootElement> rootCategories, bool isAddons)
         {
             this.searchModel = searchModel;
             this.rootCategories = rootCategories;
+            this.isAddons = isAddons;
         }
 
-        internal void RemoveEmptyCategories()
+        internal ObservableCollection<BrowserRootElement> RemoveEmptyCategories()
         {
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
+            return rootCategories;
         }
 
         internal void SortCategoryChildren()
@@ -135,8 +138,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "",
-            SearchModel.ElementType nodeType = SearchModel.ElementType.Regular)
+        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -181,7 +183,7 @@ namespace Dynamo.Search
             // So, just add method in category and do nothing.
             // This situation is true for Regular nodes. For other element types we work
             // with all pieces of category.
-            var count = nodeType == SearchModel.ElementType.Regular ? splitCat.Count - 1 : splitCat.Count;
+            var count = isAddons ? splitCat.Count : splitCat.Count - 1;
 
             for (var i = 1; i < count; i++)
             {
@@ -190,7 +192,7 @@ namespace Dynamo.Search
             }
 
             // We sure, that the last member is class.
-            if (nodeType == SearchModel.ElementType.Regular)
+            if (!isAddons)
                 currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1],
                     resourceAssembly);
 
