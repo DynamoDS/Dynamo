@@ -32,8 +32,6 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
-#if true
-
         private void CompactTaskQueue()
         {
             if (taskQueue.Count < 2) // Cannot compact further.
@@ -72,56 +70,6 @@ namespace Dynamo.Core.Threading
                 }
             }
         }
-
-#else
-
-        private void CompactTaskQueue()
-        {
-            if (taskQueue.Count < 2) // Cannot compact further.
-                return;
-
-            var intermediate = new List<AsyncTask>();
-            while (taskQueue.Count > 0)
-            {
-                var incomingTask = taskQueue[0]; // Remove a task for comparison.
-                taskQueue.RemoveAt(0);
-
-                // Cross compare this incoming task with all existing ones in 
-                // the intermediate list before deciding if it should be kept.
-                // If the incoming task is discarded, then the loop ends, checks
-                // no further.
-                // 
-                int index = 0;
-                bool discardIncoming = false;
-                while (!discardIncoming && (index < intermediate.Count))
-                {
-                    switch (incomingTask.CanMergeWith(intermediate[index]))
-                    {
-                        case AsyncTask.TaskMergeInstruction.KeepBoth:
-                            index = index + 1;
-                            break; // Keeping both tasks, do nothing here.
-
-                        case AsyncTask.TaskMergeInstruction.KeepThis:
-                            // The task in the intermediate list needs to go.
-                            intermediate.RemoveAt(index);
-                            break;
-
-                        case AsyncTask.TaskMergeInstruction.KeepOther:
-                            // We are discarding the incoming task.
-                            discardIncoming = true;
-                            break;
-                    }
-                }
-
-                if (!discardIncoming)
-                    intermediate.Add(incomingTask);
-            }
-
-            // Finally, copy all tasks remaining to the task queue.
-            taskQueue.AddRange(intermediate);
-        }
-
-#endif
 
         private void ReprioritizeTasksInQueue()
         {
