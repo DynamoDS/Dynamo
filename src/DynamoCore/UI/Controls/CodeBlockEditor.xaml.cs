@@ -68,7 +68,7 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
+        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
             IEnumerable<CodeBlockCompletionData> completions = null;
             var engineController = this.dynamoViewModel.Model.EngineController;
@@ -212,7 +212,7 @@ namespace Dynamo.UI.Controls
 
             // TODO: Make this independent of Core and query properties of LibraryServices instead
             // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.ClassName.Split('.').Last());
+            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.Alias);
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -237,9 +237,9 @@ namespace Dynamo.UI.Controls
             methodHighlightRule.Regex = new Regex(regex);
 
             return methodHighlightRule;
-         }
- 
-         #endregion
+        }
+
+        #endregion
 
         #region Auto-complete event handlers
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
@@ -250,7 +250,7 @@ namespace Dynamo.UI.Controls
                 {
                     // If a completion item is highlighted and the user types
                     // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]))
+                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
                         completionWindow.CompletionList.RequestInsertion(e);
                 }
             }
@@ -266,13 +266,12 @@ namespace Dynamo.UI.Controls
         {
             try
             {
+                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
                 if (e.Text == ".")
                 {
-                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
-                    var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
+                    var completions = this.GetCompletionData(code, stringToComplete);
 
                     if (!completions.Any())
                         return;
@@ -282,12 +281,10 @@ namespace Dynamo.UI.Controls
                 // Complete function signatures
                 else if (e.Text == "(")
                 {
-                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-
                     string functionName;
                     string functionPrefix;
                     CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
-                    
+
                     var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
 
                     ShowInsightWindow(insightItems);
@@ -314,6 +311,7 @@ namespace Dynamo.UI.Controls
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+            completionWindow.AllowsTransparency = true;
             var data = completionWindow.CompletionList.CompletionData;
 
             foreach (var completion in completions)
@@ -353,7 +351,7 @@ namespace Dynamo.UI.Controls
             {
                 insightWindow = null;
             };
-           insightWindow.Show();
+            insightWindow.Show();
         }
 
         #endregion
@@ -383,7 +381,7 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Helper Methods
-        
+
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -391,6 +389,12 @@ namespace Dynamo.UI.Controls
 
         private void HandleEscape()
         {
+            if (completionWindow != null)
+            {
+                completionWindow.Close();
+                return;
+            }
+
             var text = this.InnerTextEditor.Text;
             var cb = DataContext as CodeBlockNodeModel;
 
