@@ -734,7 +734,7 @@ namespace ProtoTestFx.TD
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
-            return classMirror.GetOverloads(methodName);
+            return classMirror.GetOverloads(methodName).ToList();
         }
 
         private static void AssertCollection(MirrorData data, IEnumerable collection)
