@@ -971,8 +971,9 @@ namespace ProtoCore
                 //    };
                 //var access = func(procNode.access);
                 //var isStatic = this.IsStatic == true ? "static " : "";
-                var returnType = this.IsConstructor ==
-                    true ? "" : " : " + this.ReturnType.ToString().Split('.').Last();
+                var returnType = string.Empty;
+                if (!this.IsConstructor)
+                    returnType = " : " + this.ReturnType.ToString().Split('.').Last();
                 var methodName = this.MethodName;
                 var argList = this.ArgumentList.Select(x => x.Key + " : " + x.Value);
                 sb.AppendLine(methodName + returnType + " (" + 

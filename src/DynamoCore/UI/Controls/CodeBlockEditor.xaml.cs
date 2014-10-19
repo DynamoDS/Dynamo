@@ -32,10 +32,16 @@ namespace Dynamo.UI.Controls
     public partial class CodeBlockEditor : UserControl
     {
         private NodeViewModel nodeViewModel;
-        internal DynamoViewModel dynamoViewModel;
+        private DynamoViewModel dynamoViewModel;
         private CodeBlockNodeModel nodeModel = null;
         private CompletionWindow completionWindow = null;
         private CodeBlockMethodInsightWindow insightWindow = null;
+
+        internal CodeBlockEditor(DynamoViewModel dynamoViewModel)
+        {
+            this.dynamoViewModel = dynamoViewModel;
+            InitializeComponent();
+        }
 
         public CodeBlockEditor()
         {
