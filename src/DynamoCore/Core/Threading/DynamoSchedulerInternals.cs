@@ -76,7 +76,14 @@ namespace Dynamo.Core.Threading
             if (taskQueue.Count < 2) // Nothing to reprioritize here.
                 return;
 
-            taskQueue.Sort(new AsyncTaskComparer());
+            // "List.Sort" method performs an unstable sort, which means if two 
+            // entries have the same key value, the resulting order may not be 
+            // the same order they originally appear on the list. Use "OrderBy" 
+            // method here to perform stable sort.
+            // 
+            var temp = taskQueue.ToList(); // Duplicate the source list.
+            taskQueue.Clear(); // Then it's safe to clear the source list.
+            taskQueue.AddRange(temp.OrderBy(t => t, new AsyncTaskComparer()));
         }
 
         private static void ProcessTaskInternal(AsyncTask asyncTask)
