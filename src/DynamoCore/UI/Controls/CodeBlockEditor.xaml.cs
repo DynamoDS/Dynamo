@@ -117,7 +117,7 @@ namespace Dynamo.UI.Controls
         }
 
 
-        private IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
+        internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
             List<CodeBlockCompletionData> completions = new List<CodeBlockCompletionData>();
             var engineController = this.dynamoViewModel.Model.EngineController;
@@ -151,6 +151,7 @@ namespace Dynamo.UI.Controls
 
             // Add matching builtin methods
             completions.AddRange(StaticMirror.GetBuiltInMethods(engineController.LiveRunnerCore).
+                GroupBy(x => x.Name).Select(y => y.First()).
                 Where(x => x.MethodName.ToLower().Contains(stringToComplete.ToLower())).
                 Select(x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)));
 
