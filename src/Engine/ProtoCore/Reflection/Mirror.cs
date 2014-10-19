@@ -878,7 +878,7 @@ namespace ProtoCore
             public string MethodName { get; private set; }
             public bool IsConstructor { get; private set; }
             public bool IsStatic { get; private set; }
-            
+
             public ProtoCore.Type? ReturnType
             {
                 get
@@ -900,7 +900,8 @@ namespace ProtoCore
                         argumentList = new Dictionary<string, string>();
                         for (int i = 0; i < procNode.argInfoList.Count; ++i)
                         {
-                            argumentList.Add(procNode.argInfoList[i].Name, 
+
+                            argumentList.Add(procNode.argInfoList[i].Name,
                                 procNode.argTypeList[i].ToString().Split('.').Last());
                         }
                     }
@@ -914,7 +915,6 @@ namespace ProtoCore
                 this.Name = MethodName;
                 IsConstructor = procNode.isConstructor;
                 IsStatic = procNode.isStatic;
-            
                 this.procNode = procNode;
             }
 
@@ -972,11 +972,14 @@ namespace ProtoCore
                 //    };
                 //var access = func(procNode.access);
                 //var isStatic = this.IsStatic == true ? "static " : "";
-                var returnType = this.IsConstructor == 
-                    true ? "" : " : " + this.ReturnType.ToString().Split('.').Last();
+
+                var returnType = string.Empty;
+                if (!this.IsConstructor)
+                    returnType = " : " + this.ReturnType.ToString().Split('.').Last();
                 var methodName = this.MethodName;
                 var argList = this.ArgumentList.Select(x => x.Key + " : " + x.Value);
-                sb.AppendLine(methodName + returnType + " (" + string.Join(", ", argList.Select(p => p.ToString())) + ')');
+                sb.AppendLine(methodName + returnType + " (" + 
+                    string.Join(", ", argList.Select(p => p.ToString())) + ')');
 
                 return sb.ToString();
             }

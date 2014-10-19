@@ -339,8 +339,7 @@ namespace DynamoCoreUITests
 
             string ffiTargetClass = "CodeCompletionClass";
             string functionName = "CodeCompletionClass";
-            var cbnEditor = new CodeBlockEditor();
-            cbnEditor.dynamoViewModel = ViewModel;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
 
             string code = "";
             var overloads = cbnEditor.GetFunctionSignatures(code, functionName, ffiTargetClass);
@@ -375,13 +374,12 @@ namespace DynamoCoreUITests
                 Assert.IsTrue(libraryLoaded);
             }
 
-            var cbnEditor = new CodeBlockEditor();
-            cbnEditor.dynamoViewModel = ViewModel;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
 
             string functionPrefix = "a";
             string ffiTargetClass = "CodeCompletionClass";
             string functionName = "OverloadedAdd";
-            
+
             string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
             var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
 
@@ -415,8 +413,7 @@ namespace DynamoCoreUITests
                 Assert.IsTrue(libraryLoaded);
             }
 
-            var cbnEditor = new CodeBlockEditor();
-            cbnEditor.dynamoViewModel = ViewModel;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
 
             string functionPrefix = "a";
             string ffiTargetClass = "CodeCompletionClass";
@@ -434,7 +431,8 @@ namespace DynamoCoreUITests
             }
             Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
             Assert.AreEqual("ValueContainer", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
-            Assert.AreEqual("ValueContainer[]", 
+
+            Assert.AreEqual("ValueContainer[]",
                 overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
         }
 
@@ -442,8 +440,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestBuiltInMethodSignatureCompletion()
         {
-            var cbnEditor = new CodeBlockEditor();
-            cbnEditor.dynamoViewModel = ViewModel;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
 
             string functionPrefix = "";
             string functionName = "Count";
@@ -483,8 +480,7 @@ namespace DynamoCoreUITests
                 Assert.IsTrue(libraryLoaded);
             }
 
-            var cbnEditor = new CodeBlockEditor();
-            cbnEditor.dynamoViewModel = ViewModel;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
 
             string ffiTargetClass = "CodeCompletionClass";
             string functionName = "StaticFunction";
