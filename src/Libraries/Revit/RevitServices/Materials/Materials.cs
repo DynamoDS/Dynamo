@@ -10,8 +10,8 @@ namespace RevitServices.Materials
     {
         private static MaterialsManager instance;
 
-        public ElementId DynamoMaterialId { get; internal set; }
-        public ElementId DynamoGStyleId { get; internal set; }
+        public ElementId DynamoMaterialId { get; private set; }
+        public ElementId DynamoGStyleId { get; private set; }
 
         public static MaterialsManager Instance
         {
@@ -31,12 +31,13 @@ namespace RevitServices.Materials
         }
 
         /// <summary>
-        /// Finds or creates materials and graphics styles
-        /// required by the material manager in the active document.
+        /// Finds or creates materials and graphics styles required by the
+        /// material manager in the active document. Note that this method 
+        /// must be called from Revit idle thread.
         /// </summary>
-        public void InitializeForActiveDocument()
+        public void InitializeForActiveDocumentOnIdle()
         {
-            FindorCreateDynamoMaterial();
+            FindOrCreateDynamoMaterial();
             FindDynamoGraphicsStyle();
         }
 
@@ -46,7 +47,7 @@ namespace RevitServices.Materials
             instance = new MaterialsManager();
         }
 
-        private void FindorCreateDynamoMaterial()
+        private void FindOrCreateDynamoMaterial()
         {
             Dictionary<string, Material> materials
             = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument)
@@ -62,21 +63,15 @@ namespace RevitServices.Materials
                 return;
             }
 
-#if !ENABLE_DYNAMO_SCHEDULER
-            Threading.IdlePromise.ExecuteOnIdleAsync(
-            () =>
-            {
-                TransactionManager.Instance.EnsureInTransaction(
-                    DocumentManager.Instance.CurrentDBDocument);
+            TransactionManager.Instance.EnsureInTransaction(
+                DocumentManager.Instance.CurrentDBDocument);
 
-                var glass = materials["Glass"];
-                var dynamoMaterial = glass.Duplicate("Dynamo");
-                dynamoMaterial.Color = new Color(255,128,0);
-                DynamoMaterialId = dynamoMaterial.Id;
+            var glass = materials["Glass"];
+            var dynamoMaterial = glass.Duplicate("Dynamo");
+            dynamoMaterial.Color = new Color(255, 128, 0);
+            DynamoMaterialId = dynamoMaterial.Id;
 
-                TransactionManager.Instance.ForceCloseTransaction();
-            });
-#endif
+            TransactionManager.Instance.ForceCloseTransaction();
         }
 
         private void FindDynamoGraphicsStyle()
