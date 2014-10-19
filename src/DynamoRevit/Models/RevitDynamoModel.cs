@@ -128,7 +128,14 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+
+                InitializeMaterials();
             }
+        }
+
+        private void InitializeMaterials()
+        {
+            // This method is only implemented for Revit 2015 Dynamo build.
         }
 
         #endregion
@@ -250,7 +257,7 @@ namespace Dynamo.Applications.Models
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
         }
@@ -368,6 +375,7 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
+                InitializeMaterials();
                 this.RunEnabled = true;
             }
         }
