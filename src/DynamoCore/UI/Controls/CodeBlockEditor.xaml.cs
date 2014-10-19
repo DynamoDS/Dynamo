@@ -71,11 +71,12 @@ namespace Dynamo.UI.Controls
         // TODO: Only those DS keywords are exposed currently that are supported in CBN's
         public static string[] KeywordList = {Keyword.Def, 
                                         Keyword.If, Keyword.Elseif, Keyword.Else, 
-                                        Keyword.While, Keyword.For, Keyword.Continue,  
+                                        Keyword.While, Keyword.For, Keyword.In, Keyword.Continue,  
                                         Keyword.Int, Keyword.Double, Keyword.String, Keyword.Bool, Keyword.Char, 
                                         Keyword.Void, Keyword.Null, Keyword.Var, 
                                         Keyword.True, Keyword.False, 
-                                        Keyword.Return, Keyword.Static};
+                                        Keyword.Return, Keyword.Static,
+                                        Keyword.Associative, Keyword.Imperative};
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
@@ -378,6 +379,7 @@ namespace Dynamo.UI.Controls
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
+            completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
             
             if (completeWhenTyping)
             {
