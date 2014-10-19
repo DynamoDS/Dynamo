@@ -46,6 +46,7 @@ namespace Dynamo.Nodes
             /// <summary>
             /// Index of selected overload using the "down arrow" key
             /// </summary>
+
             public int SelectedIndex
             {
                 get
@@ -77,6 +78,7 @@ namespace Dynamo.Nodes
             /// Text display in tooltip indicating which index of overload is selected
             /// out of the total number of overloads
             /// </summary>
+
             public string CurrentIndexText
             {
                 get { return (selectedIndex + 1).ToString() + " of " + this.Count.ToString(); }
@@ -130,6 +132,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public IList<CodeBlockInsightItem> Items
         {
+
             get { return items; }
         }
 
@@ -138,6 +141,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public CodeBlockInsightItem SelectedItem
         {
+
             get
             {
                 int index = this.Provider.SelectedIndex;
@@ -158,6 +162,7 @@ namespace Dynamo.Nodes
         /// function signature tooltip as you type
         /// </summary>
         public event EventHandler CaretPositionChanged;
+
 
         protected override void DetachEvents()
         {
@@ -214,6 +219,7 @@ namespace Dynamo.Nodes
     sealed class CodeBlockInsightItem : INotifyPropertyChanged
     {
         public readonly MethodMirror Method;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
