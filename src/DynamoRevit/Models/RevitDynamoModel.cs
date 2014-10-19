@@ -128,7 +128,17 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+
+                InitializeMaterials();
             }
+        }
+
+        private void InitializeMaterials()
+        {
+            // Ensure that the current document has the needed materials
+            // and graphic styles to support visualization in Revit.
+            var mgr = MaterialsManager.Instance;
+            IdlePromise.ExecuteOnIdleAsync(mgr.InitializeForActiveDocumentOnIdle);
         }
 
         #endregion
@@ -250,7 +260,7 @@ namespace Dynamo.Applications.Models
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
         }
@@ -368,6 +378,7 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
+                InitializeMaterials();
                 this.RunEnabled = true;
             }
         }
