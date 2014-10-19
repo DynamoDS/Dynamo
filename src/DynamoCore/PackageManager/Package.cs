@@ -239,7 +239,7 @@ namespace Dynamo.PackageManager
 
         private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
         {
-            var assemblies = LoadAssembliesInBinDirectory();
+            var assemblies = LoadAssembliesInBinDirectory(logger);
 
             // filter the assemblies
             var zeroTouchAssemblies = new List<Assembly>();
@@ -271,14 +271,28 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
+        private IEnumerable<Assembly> LoadAssembliesInBinDirectory(ILogger logger)
         {
             if (!Directory.Exists(BinaryDirectory)) 
                 return new List<Assembly>();
 
-            var assemblies = (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+            var fileInfos = (new DirectoryInfo(BinaryDirectory))
+                    .EnumerateFiles("*.dll");
+
+            var assemblies = new List<Assembly>();
+
+            foreach (var fi in fileInfos)
+            {
+                try
+                {
+                    assemblies.Add(Assembly.LoadFrom(fi.FullName));
+                }
+                catch (BadImageFormatException ex)
+                {
+                    logger.Log(
+                        string.Format("The assembly, {0}, in your package, was not loaded. It is either an unmanaged assembly, is not the correct .net version, or is compiled for x86. If this assembly is an unmanaged assembly that is a dependency of another assembly in your package, then you can ignore this warning.",fi.Name));
+                }
+            }
 
             foreach (var assem in assemblies)
             {

@@ -21,6 +21,7 @@ using DynamoUtilities;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
@@ -143,7 +144,7 @@ namespace Dynamo.Tests
                 // Because the test framework does not work in the idle thread. 
                 // We need to trick Dynamo into believing that it's in the idle
                 // thread already.
-                //IdlePromise.InIdleThread = true;
+                IdlePromise.InIdleThread = true;
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
+
 using DSNodeServices;
 using DynamoUnits;
 using Revit.GeometryConversion;
@@ -14,6 +15,8 @@ using RevitServices.Transactions;
 using Color = DSCore.Color;
 using Area = DynamoUnits.Area;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
+using Face = Autodesk.Revit.DB.Face;
+using Solid = Autodesk.DesignScript.Geometry.Solid;
 
 namespace Revit.Elements
 {
@@ -45,7 +48,7 @@ namespace Revit.Elements
         {
             get
             {
-                var parms = this.InternalElement.Parameters;
+                var parms = InternalElement.Parameters;
                 return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new Parameter(x)).ToArray();
             }
         }
@@ -65,13 +68,13 @@ namespace Revit.Elements
         /// <summary>
         /// Get an Axis-aligned BoundingBox of the Element
         /// </summary>
-        public Autodesk.DesignScript.Geometry.BoundingBox BoundingBox
+        public BoundingBox BoundingBox
         {
             get
             {
                 TransactionManager.Instance.EnsureInTransaction(Document);
                 DocumentManager.Regenerate();
-                var bb = this.InternalElement.get_BoundingBox(null);
+                var bb = InternalElement.get_BoundingBox(null);
                 TransactionManager.Instance.TransactionTaskDone();
                 return bb.ToProtoType();
             }
@@ -84,7 +87,7 @@ namespace Revit.Elements
         {
             get
             {
-                return this.InternalElementId.IntegerValue;
+                return InternalElementId.IntegerValue;
             }
         }
 
@@ -96,7 +99,7 @@ namespace Revit.Elements
         {
             get
             {
-                return this.InternalUniqueId;
+                return InternalUniqueId;
             }
         }
 
@@ -117,12 +120,17 @@ namespace Revit.Elements
         /// </summary>
         protected ElementId InternalElementId
         {
-            get { return internalId; }
+            get
+            {
+                if (internalId == null)
+                    return InternalElement != null ? InternalElement.Id : null;
+                return internalId;
+            }
             set { 
                 internalId = value;
 
                 var elementManager = ElementIDLifecycleManager<int>.GetInstance();
-                elementManager.RegisterAsssociation(this.Id, this);
+                elementManager.RegisterAsssociation(Id, this);
 
             }
         }
@@ -144,15 +152,15 @@ namespace Revit.Elements
             if (DisposeLogic.IsShuttingDown)
                 return;
 
-            bool didRevitDelete = ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.Id);
+            bool didRevitDelete = ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(Id);
 
             var elementManager = ElementIDLifecycleManager<int>.GetInstance();
-            int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
+            int remainingBindings = elementManager.UnRegisterAssociation(Id, this);
 
             // Do not delete Revit owned elements
             if (!IsRevitOwned && remainingBindings == 0 && !didRevitDelete)
             {
-                DocumentManager.Instance.DeleteElement(new ElementUUID(this.InternalUniqueId));
+                DocumentManager.Instance.DeleteElement(new ElementUUID(InternalUniqueId));
             }
             else
             {
@@ -171,7 +179,7 @@ namespace Revit.Elements
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return this.GetType().Name;
+            return GetType().Name;
         }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
@@ -196,9 +204,9 @@ namespace Revit.Elements
         /// <returns></returns>
         public object GetParameterValueByName(string parameterName)
         {
-            object result = null;
+            object result;
 
-            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+            var param = InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
 
             if (param == null || !param.HasValue)
                 return string.Empty;
@@ -255,7 +263,7 @@ namespace Revit.Elements
 
             ogs.SetProjectionFillColor(new Autodesk.Revit.DB.Color(color.Red, color.Green, color.Blue));
             ogs.SetProjectionFillPatternId(solidFill.Id);
-            view.SetElementOverrides(this.InternalElementId, ogs);
+            view.SetElementOverrides(InternalElementId, ogs);
 
             TransactionManager.Instance.TransactionTaskDone();
             return this;
@@ -268,7 +276,7 @@ namespace Revit.Elements
         /// <param name="value">The value.</param>
         public Element SetParameterByName(string parameterName, object value)
         {
-            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+            var param = InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
 
             if (param == null)
                 throw new Exception("No parameter found by that name.");
@@ -285,7 +293,7 @@ namespace Revit.Elements
 
         #region dynamic parameter setting methods
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
         {
             if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
@@ -293,7 +301,7 @@ namespace Revit.Elements
             param.Set(value);
         }
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, Revit.Elements.Element value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, Element value)
         {
             if (param.StorageType != StorageType.ElementId)
                 throw new Exception("The parameter's storage type is not an Element.");
@@ -301,7 +309,7 @@ namespace Revit.Elements
             param.Set(value.InternalElementId);
         }
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
         {
             if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
@@ -309,7 +317,7 @@ namespace Revit.Elements
             param.Set(value);
         }
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, string value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, string value)
         {
             if (param.StorageType != StorageType.String)
                 throw new Exception("The parameter's storage type is not a string.");
@@ -317,7 +325,7 @@ namespace Revit.Elements
             param.Set(value);
         }
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, bool value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, bool value)
         {
             if (param.StorageType != StorageType.Integer)
                 throw new Exception("The parameter's storage type is not an integer.");
@@ -325,7 +333,7 @@ namespace Revit.Elements
             param.Set(value == false ? 0 : 1);
         }
 
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, SIUnit value)
+        private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, SIUnit value)
         {
             if(param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not an integer.");
@@ -371,8 +379,7 @@ namespace Revit.Elements
         {
             var thisElement = InternalElement;
 
-            var goptions0 = new Autodesk.Revit.DB.Options();
-            goptions0.ComputeReferences = true;
+            var goptions0 = new Options { ComputeReferences = true };
 
             var geomElement = thisElement.get_Geometry(goptions0);
 
@@ -382,9 +389,11 @@ namespace Revit.Elements
                 var gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    var goptions1 = new Autodesk.Revit.DB.Options();
-                    goptions1.IncludeNonVisibleObjects = true;
-                    goptions1.ComputeReferences = true;
+                    var goptions1 = new Options
+                    {
+                        IncludeNonVisibleObjects = true,
+                        ComputeReferences = true
+                    };
                     geomElement = thisElement.get_Geometry(goptions1);
                 }
             }
@@ -400,7 +409,7 @@ namespace Revit.Elements
         /// <returns></returns>
         private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement, bool useSymbolGeometry = false)
         {
-            var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
+            var instanceGeometryObjects = new List<GeometryObject>();
 
             if (geometryElement == null) return instanceGeometryObjects;
 
@@ -535,7 +544,7 @@ namespace Revit.Elements
         {
             get
             {
-                if (this.InternalElementId == null)
+                if (InternalElementId == null)
                 {
                     return false;
                 }
@@ -546,7 +555,7 @@ namespace Revit.Elements
                 if (null == InternalElementId)
                     return false;
 
-                return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
+                return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(InternalElementId.IntegerValue);
             }
         }
 

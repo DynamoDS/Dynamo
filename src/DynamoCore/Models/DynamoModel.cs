@@ -377,6 +377,8 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
+
             PackageManagerClient = new PackageManagerClient(this);
 
             this.Loader.ClearCachedAssemblies();

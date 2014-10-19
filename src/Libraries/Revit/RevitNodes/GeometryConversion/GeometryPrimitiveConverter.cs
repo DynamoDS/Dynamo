@@ -114,6 +114,25 @@ namespace Revit.GeometryConversion
             return uvs;
         }
 
+        internal static Autodesk.DesignScript.Geometry.UV[] ToDSUvs(this double[][] uvArr)
+        {
+            var uvs = new Autodesk.DesignScript.Geometry.UV[uvArr.Length];
+            var count = 0;
+            foreach (var row in uvArr)
+            {
+                if (row.Length != 2)
+                {
+                    throw new Exception("Each element of the input array should be length 2");
+                }
+                else
+                {
+                    uvs[count++] = Autodesk.DesignScript.Geometry.UV.ByCoordinates(row[0], row[1]);
+                }
+            }
+
+            return uvs;
+        }
+
         #endregion
 
         #region Revit -> Proto types
