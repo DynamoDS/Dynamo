@@ -133,6 +133,16 @@ namespace Dynamo
 
             return TaskMergeInstruction.KeepOther;
         }
+
+        protected override int CompareCore(AsyncTask otherTask)
+        {
+            // PrioritizedAsyncTask always come before InconsequentialAsyncTask.
+            if (otherTask is PrioritizedAsyncTask)
+                return 1;
+
+            // InconsequentialAsyncTask are always treated equal.
+            return base.CompareCore(otherTask);
+        }
     }
 
     class TimeStampGrabber
