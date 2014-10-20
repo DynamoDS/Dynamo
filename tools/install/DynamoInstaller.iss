@@ -154,18 +154,25 @@ begin
     MsgBox('RevitInstallDetective failed!' + #13#10 + SysErrorMessage(ResultCode), mbError, MB_OK);
 end;
 
-function InitializeSetup(): Boolean;
+function InitSetupFlags(): Integer;
 var
 j: Cardinal;
 begin
+  Result := 0;
   for j := 1 to ParamCount do
     begin
       if (CompareText(ParamStr(j),'/verysilent') = 0)  then
         silentFlag := '/VERYSILENT'
+      else if (CompareText(ParamStr(j),'/silent') = 0)  then
+        silentFlag := '/SILENT'
       else
         silentFlag := '';   
     end;
+end;
 
+function InitializeSetup(): Boolean;
+begin
+  InitSetupFlags();
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
@@ -181,6 +188,12 @@ begin
     MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015, Revit 2016, or Vasari Beta 3 in order to proceed!', mbCriticalError, MB_OK);
     result := false;
     end;
+end;
+
+function InitializeUninstall(): Boolean;
+begin
+  InitSetupFlags();
+  Result := True;
 end;
 
 /////////////////////////////////////////////////////////////////////
@@ -271,6 +284,15 @@ begin
     Result := 1
 end;
 
+function RemoveRegistryKeys(key : String) : Boolean;
+begin
+  Result := True;
+  if RegKeyExists(HKEY_CURRENT_USER, key) then
+    Result := RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, key);
+  else if RegKeyExists(HKEY_LOCAL_MACHINE, key) then
+    Result := RegDeleteKeyIncludingSubkeys(HKEY_LOCAL_MACHINE, key);
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var 
   sUninstallString: String;
@@ -295,6 +317,9 @@ begin
    if (CurUninstallStep=usPostUninstall) then
     begin
         UpdateAddins();
+        //If it's not a silent uninstall, Remove the instrumentation registry entry.
+        if(silentFlag = '') then
+          RemoveRegistryKeys('Software\DynamoUXG');
     end;
 end;
 
