@@ -431,6 +431,7 @@ namespace DynamoCoreUITests
             }
             Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
             Assert.AreEqual("ValueContainer", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+
             Assert.AreEqual("ValueContainer[]",
                 overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
         }
@@ -497,5 +498,60 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, overloads.ElementAt(0).Method.ArgumentList.Count());
             Assert.AreEqual("int", overloads.ElementAt(0).Method.ReturnType.ToString());
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionWhenTyping()
+        {
+            // Note this test may fail if another library with class names
+            // beginning with "poi" is imported by default or if there is a change
+            // to the classes "ProtoGeometry" or "FFITarget" libraries
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "Poi";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(5, completions.Count());
+
+            string[] expected = {"Autodesk.DesignScript.Geometry.Point", "FFITarget.DesignScript.Point",
+                                    "FFITarget.Dynamo.Point", "DummyPoint", "UnknownPoint"};
+            var actual = completions.Select(x => x.Text);
+            
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodKeywordCompletionWhenTyping()
+        {
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "im";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(4, completions.Count());
+
+            string[] expected = {"Imperative", "MinimumItemByKey",
+                                    "MaximumItemByKey", "ImportFromCSV"};
+            var actual = completions.Select(x => x.Text);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }
