@@ -449,7 +449,6 @@ namespace Dynamo.PackageManager
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFiles())
             {
-                // we tr
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
                 if (result)
@@ -458,8 +457,7 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    // if it's not a .NET assembly, we load it into a separate
-                    // location
+                    // if it's not a .NET assembly, we load it as an additional file
                     vm.AdditionalFiles.Add(file);
                 }
             }
