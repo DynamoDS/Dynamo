@@ -72,6 +72,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AnalysisDisplay\FaceAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\PointAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplay.cs" />
