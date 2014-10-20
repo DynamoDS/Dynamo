@@ -147,9 +147,7 @@ namespace Dynamo.UI.Views
             if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > memberGroups.Count - 1)
                 return;
 
-            var generator = memberGroupListBox.ItemContainerGenerator;
-            var item = generator.ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
-
+            var item = GetListItemByIndex(memberGroupListBox, nextFocusedMemberGroupIndex);
             var nextFocusedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
 
             // When moving on to the next member group list below (by pressing down arrow),
@@ -160,8 +158,7 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 itemIndex = nextFocusedMembers.Items.Count - 1;
 
-            generator = nextFocusedMembers.ItemContainerGenerator;
-            (generator.ContainerFromIndex(itemIndex) as ListBoxItem).Focus();
+            GetListItemByIndex(nextFocusedMembers, itemIndex).Focus();
 
             e.Handled = true;
         }
