@@ -175,6 +175,7 @@ limitations under the License.
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
     <Compile Include="Nodes\CodeBlockCompletionData.cs" />
+    <Compile Include="Nodes\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -676,6 +677,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\SampleData\PublishPackageViewModelSampleData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\WorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -861,6 +866,12 @@ limitations under the License.
     <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\assemblies.png" />
+    <Resource Include="UI\Images\files.png" />
+    <Resource Include="UI\Images\nodes.png" />
+    <Resource Include="UI\Images\StartPage\icon-customnode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

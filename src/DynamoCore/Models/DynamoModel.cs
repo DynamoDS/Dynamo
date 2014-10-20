@@ -346,7 +346,7 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
+            UpdateManager.UpdateManager.CheckForProductUpdate();
 
             SearchModel = new SearchModel(this);
 
@@ -355,8 +355,8 @@ namespace Dynamo.Models
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
-            this.Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
+            // do package uninstalls first
+            this.Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -375,12 +375,16 @@ namespace Dynamo.Models
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            this.Loader.ClearCachedAssemblies();
-            this.Loader.LoadNodeModels();
-
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             PackageManagerClient = new PackageManagerClient(this);
+
+            this.Loader.ClearCachedAssemblies();
+            this.Loader.LoadNodeModels();
+       
+            // load packages last
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
+
         }
 
         private void InitializeInstrumentationLogger()
@@ -519,6 +523,11 @@ namespace Dynamo.Models
                 if (setTraceDataTask.Initialize(EngineController, HomeSpace))
                     scheduler.ScheduleForExecution(setTraceDataTask);
             }
+
+            // If one or more custom node have been updated, make sure they
+            // are compiled first before the home workspace gets evaluated.
+            // 
+            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
 
             var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
