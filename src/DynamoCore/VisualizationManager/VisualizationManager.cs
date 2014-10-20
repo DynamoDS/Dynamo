@@ -551,10 +551,13 @@ namespace Dynamo
 #endif
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
         {
             OnRenderComplete(this, renderCompletionEventArgs);
         }
+#endif
 
         private void UnregisterEventListeners()
         {
@@ -586,6 +589,11 @@ namespace Dynamo
 
 #if ENABLE_DYNAMO_SCHEDULER
 
+        protected virtual void HandleRenderPackagesReadyCore()
+        {
+            // The base VisualizationManager does nothing here.
+        }
+
         private void RequestNodeVisualUpdate(NodeModel nodeModel)
         {
             if (nodeModel != null)
@@ -607,6 +615,17 @@ namespace Dynamo
                 task.Completed += OnRenderPackageAggregationCompleted;
                 scheduler.ScheduleForExecution(task);
             }
+        }
+
+        private void OnNodeModelRenderPackagesReady(AsyncTask asyncTask)
+        {
+            // By design the following method is invoked on the context of 
+            // ISchedulerThread, if access to any UI element is desired within
+            // the method, dispatch those actions on UI dispatcher *inside* the
+            // method, *do not* dispatch the following call here as derived 
+            // handler may need it to remain on the ISchedulerThread's context.
+            // 
+            HandleRenderPackagesReadyCore();
         }
 
         private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
