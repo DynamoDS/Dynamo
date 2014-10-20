@@ -59,7 +59,7 @@ namespace ProtoCore
             public const string kFunctionNotFound = "No candidate function could be found.";
             public const string kAmbigousMethodDispatch = "Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.";
             public const string kInvalidArguments = "Argument is invalid.";
-            public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either interger or double.";
+            public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either integer or double.";
             public const string kInvalidAmountInRangeExpression = "The amount in range expression should be an positive integer.";
             public const string kNoStepSizeInAmountRangeExpression = "No step size is specified in amount range expression.";
             public const string kFileNotFound = "'{0}' doesn't exist.";
@@ -199,6 +199,12 @@ namespace ProtoCore
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the warning is from some
+                // internal graph node. 
+                if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = core.ExecutingGraphnode;
+                }
             }
 
             var entry = new RuntimeData.WarningEntry

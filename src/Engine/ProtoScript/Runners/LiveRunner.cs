@@ -945,7 +945,7 @@ namespace ProtoScript.Runners
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         ClassMirror GetClassType(string className);
-
+        
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;
@@ -1489,7 +1489,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.PushFrame(newSymbols);
+                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
             }
 
             // Store the current number of global symbols

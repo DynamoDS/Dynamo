@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Dynamo.Interfaces;
 
@@ -32,12 +34,56 @@ namespace Dynamo.Core.Threading
 
         private void CompactTaskQueue()
         {
-            // TODO: Add queue compacting codes here.
+            if (taskQueue.Count < 2) // Cannot compact further.
+                return;
+
+            // Go through all the items in list, comparing each of them 
+            // with others that followed (cross checking each pair in list).
+            for (int start = 0; start < taskQueue.Count - 1; ++start)
+            {
+                var removeBaseTask = false;
+                var baseTask = taskQueue[start];
+
+                int index = start + 1;
+                while (index < taskQueue.Count && (removeBaseTask == false))
+                {
+                    switch (baseTask.CanMergeWith(taskQueue[index]))
+                    {
+                        case AsyncTask.TaskMergeInstruction.KeepBoth:
+                            index = index + 1;
+                            break; // Do nothing here.
+
+                        case AsyncTask.TaskMergeInstruction.KeepThis:
+                            taskQueue.RemoveAt(index);
+                            break; // Keep the base task.
+
+                        case AsyncTask.TaskMergeInstruction.KeepOther:
+                            removeBaseTask = true;
+                            break;
+                    }
+                }
+
+                if (removeBaseTask)
+                {
+                    taskQueue.RemoveAt(start);
+                    start = start - 1;
+                }
+            }
         }
 
         private void ReprioritizeTasksInQueue()
         {
-            // TODO: Add queue re-ordering codes here.
+            if (taskQueue.Count < 2) // Nothing to reprioritize here.
+                return;
+
+            // "List.Sort" method performs an unstable sort, which means if two 
+            // entries have the same key value, the resulting order may not be 
+            // the same order they originally appear on the list. Use "OrderBy" 
+            // method here to perform stable sort.
+            // 
+            var temp = taskQueue.ToList(); // Duplicate the source list.
+            taskQueue.Clear(); // Then it's safe to clear the source list.
+            taskQueue.AddRange(temp.OrderBy(t => t, new AsyncTaskComparer()));
         }
 
         private static void ProcessTaskInternal(AsyncTask asyncTask)
