@@ -15,6 +15,7 @@ VersionInfoDescription=Dynamo 0.7.3
 VersionInfoTextVersion=Dynamo 0.7.3
 VersionInfoCopyright=
 DefaultDirName={pf64}\Dynamo 0.7
+AppSettingsPath={userappdata}\Dynamo\0.7\DynamoSettings.xml
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.7.3
@@ -158,12 +159,14 @@ function InitializeSetup(): Boolean;
 var
 j: Cardinal;
 begin
+  silentFlag := '';
+
   for j := 1 to ParamCount do
     begin
       if (CompareText(ParamStr(j),'/verysilent') = 0)  then
         silentFlag := '/VERYSILENT'
-      else
-        silentFlag := '';   
+      else if (CompareText(ParamStr(j),'/silent') = 0)  then
+        updateFlag := '/SILENT' 
     end;
 
   // we'll need these files to check for a revit installation
@@ -295,6 +298,10 @@ begin
    if (CurUninstallStep=usPostUninstall) then
     begin
         UpdateAddins();
+
+		//If this was a manual uninstall we should discard the settings file
+		if (silentFlag = '') then
+		    DeleteFile(AppSettingsPath)
     end;
 end;
 

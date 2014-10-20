@@ -90,7 +90,7 @@ namespace InstallUpdate
             }
 
             // Run the installer
-            Process.Start(installerPath);
+            Process.Start(installerPath, "/silent");
         }
 
         private static void RequestManualReinstall()
