@@ -330,5 +330,12 @@ namespace Dynamo.Search
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
             }
         }
+
+        private void OnSearchTextBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Down) return;
+            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+            if (topResult != null) topResult.Focus();
+        }
     }
 }

@@ -313,6 +313,47 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        private void OnMainGridKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+            var librarySearchViewElement = sender as FrameworkElement;
+
+            // We are at the top result. If down was pressed, 
+            // that means we have to move to first class/method button.
+            if (e.Key == Key.Down)
+            {
+                var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+                var firstCategoryContent = firstCategory.Content as SearchCategory;
+                // If classes presented, set focus on the first class button.
+                if (firstCategoryContent.Classes.Count > 0)
+                {
+                    FindFirstChildListItem(firstCategory, "SubCategoryListView").Focus();
+                    e.Handled = true;
+                    return;
+                }
+
+                // Otherwise, set focus on the first method button.
+                var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
+                FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
+                e.Handled = true;
+                return;
+
+            }
+
+            if (e.Key == Key.Up)
+            {
+                var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+
+                // If TopResult has already been in focus, that means we have to set focus back to 
+                // searchTextBox.
+                if (topResult.IsFocused) return;
+
+                topResult.Focus();
+                e.Handled = true;
+                return;
+            }
+        }
 
     }
 }

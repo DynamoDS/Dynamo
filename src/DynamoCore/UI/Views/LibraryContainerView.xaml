@@ -157,6 +157,7 @@
                          TextChanged="OnSearchTextBoxTextChanged"
                          GotKeyboardFocus="TextBoxGotKeyboardFocus"
                          LostKeyboardFocus="TextBoxLostKeyboardFocus"
+                         KeyUp="OnSearchTextBoxKeyUp"
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"

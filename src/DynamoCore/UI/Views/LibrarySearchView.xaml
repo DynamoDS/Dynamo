@@ -232,6 +232,8 @@
                     Value="40" />
             <Setter Property="Background"
                     Value="#444444" />
+            <Setter Property="Focusable"
+                    Value="False" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -478,7 +480,7 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
-            <Grid>
+            <Grid KeyDown="OnMainGridKeyDown">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
