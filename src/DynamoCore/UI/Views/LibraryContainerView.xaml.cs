@@ -337,5 +337,12 @@ namespace Dynamo.Search
             var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
             if (topResult != null) topResult.Focus();
         }
+
+        private void OnLibraryContainerViewPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Up) return;
+            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+            if ((topResult != null) && (topResult.IsFocused)) SearchTextBox.Focus();
+        }
     }
 }

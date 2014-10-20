@@ -40,7 +40,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource DynamoWindowBrush}">
+    <Grid Background="{StaticResource DynamoWindowBrush}"
+          PreviewKeyDown="OnLibraryContainerViewPreviewKeyDown">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
