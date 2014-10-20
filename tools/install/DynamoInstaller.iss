@@ -15,7 +15,6 @@ VersionInfoDescription=Dynamo 0.7.2
 VersionInfoTextVersion=Dynamo 0.7.2
 VersionInfoCopyright=
 DefaultDirName={pf64}\Dynamo 0.7
-AppSettingsPath={userappdata}\Dynamo\0.7\DynamoSettings.xml
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.7.2
@@ -106,16 +105,12 @@ Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 [Code]
 var
 silentFlag : String;
+updateFlag : String;
 
 { HANDLE INSTALL PROCESS STEPS }
 
 // added custom uninstall trigger based on http://stackoverflow.com/questions/2000296/innosetup-how-to-automatically-uninstall-previous-installed-version
 /////////////////////////////////////////////////////////////////////
-
-function GetSilentParam(Param: String): String;
-begin
-  Result := silentFlag;
-end;
 
 function GetUninstallStringForEXE(): String;
 var
@@ -159,14 +154,16 @@ function InitializeSetup(): Boolean;
 var
 j: Cardinal;
 begin
-  silentFlag := '';
-
+  silentFlag := ''
+  updateFlag := ''
   for j := 1 to ParamCount do
     begin
       if (CompareText(ParamStr(j),'/verysilent') = 0)  then
         silentFlag := '/VERYSILENT'
       else if (CompareText(ParamStr(j),'/silent') = 0)  then
-        updateFlag := '/SILENT' 
+          silentFlag := '/SILENT'
+      else if (CompareText(ParamStr(j),'/UPDATE') = 0) then
+          updateFlag := '/UPDATE'
     end;
 
   // we'll need these files to check for a revit installation
@@ -201,6 +198,7 @@ end;
 function UnInstallOldEXE(sUnInstallString: String): Integer;
 var
   iResultCode: Integer;
+  installStr: String;
 begin
 // Return Values:
 // 1 - uninstall string is empty
@@ -212,7 +210,9 @@ begin
 
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+    installStr := '/SILENT /NORESTART /SUPPRESSMSGBOXES ';
+
+    if Exec(sUnInstallString, installStr + updateFlag,'', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
       Result := 3
     else
       Result := 2;
@@ -293,15 +293,30 @@ begin
     end;
 end;
 
+// Note this procedure is run in a different process and doesn't share
+// global state with the rest of this file.
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+    var
+    j: Cardinal;
+    updateFlag : String;
 begin
    if (CurUninstallStep=usPostUninstall) then
     begin
         UpdateAddins();
+        updateFlag := '';
+
 
 		//If this was a manual uninstall we should discard the settings file
-		if (silentFlag = '') then
-		    DeleteFile(AppSettingsPath)
+      for j := 1 to ParamCount do
+        begin
+          if (CompareText(ParamStr(j),'/UPDATE') = 0)  then
+            updateFlag := '/UPDATE'
+        end;
+
+		if (updateFlag = '') then
+        begin
+		      DeleteFile(ExpandConstant('{userappdata}\Dynamo\0.7\DynamoSettings.xml'));
+        end;
     end;
 end;
 
