@@ -223,7 +223,7 @@ namespace Revit.Elements
                     switch (param.Definition.ParameterType)
                     {
                         case ParameterType.Length:
-                            result = Length.FromFeet(param.AsDouble());
+                            result = Length.FromFeet(param.AsDouble()).ConvertToHostUnits();
                             break;
                         case ParameterType.Area:
                             result = Area.FromSquareFeet(param.AsDouble());
@@ -295,7 +295,10 @@ namespace Revit.Elements
             if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
 
-            param.Set(value);
+            if (param.Definition.ParameterType == ParameterType.Length)
+                param.Set(Length.FromDouble(value).ConvertToHostUnits());
+            else
+                param.Set(value);
         }
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, Revit.Elements.Element value)
