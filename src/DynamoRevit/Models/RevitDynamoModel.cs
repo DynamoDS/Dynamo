@@ -138,10 +138,7 @@ namespace Dynamo.Applications.Models
 
         private void InitializeMaterials()
         {
-            // Ensure that the current document has the needed materials
-            // and graphic styles to support visualization in Revit.
-            var mgr = MaterialsManager.Instance;
-            IdlePromise.ExecuteOnIdleAsync(mgr.InitializeForActiveDocumentOnIdle);
+            // Does nothing: MaterialsManager is Revit 2015 specific.
         }
 
         #endregion
