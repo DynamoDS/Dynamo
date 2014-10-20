@@ -95,6 +95,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AST.cs" />
     <Compile Include="AstCodeBlockTraverse.cs" />
     <Compile Include="GraphBuilder.cs" />
