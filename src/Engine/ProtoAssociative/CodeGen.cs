@@ -7503,26 +7503,42 @@ namespace ProtoAssociative
                     }
                 }
 
-
-                // For each property modified
-                foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
+                if (firstProc.classScope == Constants.kGlobalScope)
                 {
-                    int index = graphNode.firstProcRefIndex;
-
-
-                    // Is it a global function
-                    if (ProtoCore.DSASM.Constants.kGlobalScope == firstProc.classScope)
+                    graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
+                }
+                else
+                {
+                    // For each property modified
+                    foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
                     {
-                        graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
-                    }
-                    else if (ProtoCore.DSASM.Constants.kInvalidIndex != index && ProtoCore.DSASM.Constants.kGlobalScope != firstProc.classScope)
-                    {
-                        if (core.Options.GenerateSSA)
+                        int index = graphNode.firstProcRefIndex;
+
+                        // Is it a global function
+                        if (ProtoCore.DSASM.Constants.kInvalidIndex != index)
                         {
-                            foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                            if (core.Options.GenerateSSA)
+                            {
+                                foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                                {
+                                    // Do this only if first proc is a member function...
+                                    ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                    autogenRef = autogenRef.GetUntilFirstProc();
+
+                                    // ... and the first symbol is an instance of a user-defined type
+                                    int last = autogenRef.nodeList.Count - 1;
+                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
+                                    if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
+                                    {
+                                        autogenRef.PushUpdateNodeRef(updateRef);
+                                        graphNode.updateNodeRefList.Add(autogenRef);
+                                    }
+                                }
+                            }
+                            else
                             {
                                 // Do this only if first proc is a member function...
-                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
                                 autogenRef = autogenRef.GetUntilFirstProc();
 
                                 // ... and the first symbol is an instance of a user-defined type
@@ -7533,21 +7549,6 @@ namespace ProtoAssociative
                                     autogenRef.PushUpdateNodeRef(updateRef);
                                     graphNode.updateNodeRefList.Add(autogenRef);
                                 }
-                            }
-                        }
-                        else
-                        {
-                            // Do this only if first proc is a member function...
-                            ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
-                            autogenRef = autogenRef.GetUntilFirstProc();
-
-                            // ... and the first symbol is an instance of a user-defined type
-                            int last = autogenRef.nodeList.Count - 1;
-                            Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
-                            if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
-                            {
-                                autogenRef.PushUpdateNodeRef(updateRef);
-                                graphNode.updateNodeRefList.Add(autogenRef);
                             }
                         }
                     }
