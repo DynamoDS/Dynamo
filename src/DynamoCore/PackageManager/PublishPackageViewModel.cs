@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -448,7 +449,19 @@ namespace Dynamo.PackageManager
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFiles())
             {
-                vm.Assemblies.Add( Assembly.ReflectionOnlyLoadFrom(file) );
+                // we tr
+                Assembly assem;
+                var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+                if (result)
+                {
+                    vm.Assemblies.Add(assem);
+                }
+                else
+                {
+                    // if it's not a .NET assembly, we load it into a separate
+                    // location
+                    vm.AdditionalFiles.Add(file);
+                }
             }
 
             if (l.VersionName == null) return vm;
@@ -461,7 +474,7 @@ namespace Dynamo.PackageManager
             vm.BuildVersion = parts[2];
             return vm;
 
-        }        
+        }
 
         public void OnPublishSuccess()
         {
@@ -672,7 +685,7 @@ namespace Dynamo.PackageManager
                 return;
             }
 
-            this.AddOtherFile(filename);
+            this.AddAdditionalFile(filename);
         }
 
         private void AddCustomNodeFile(string filename)
@@ -694,7 +707,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void AddOtherFile(string filename)
+        private void AddAdditionalFile(string filename)
         {
             try
             {
@@ -711,8 +724,20 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                this.Assemblies.Add(Assembly.LoadFrom(filename));
-                this.RaisePropertyChanged("PackageContents");
+                Assembly assem;
+
+                // we're not sure if this is a managed assembly or not
+                // we try to load it, if it fails - we add it as an additional file
+                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                if (result)
+                {
+                    this.Assemblies.Add(assem);
+                    this.RaisePropertyChanged("PackageContents");
+                }
+                else
+                {
+                    AddAdditionalFile(filename);
+                }               
             }
             catch (Exception e)
             {
@@ -768,7 +793,8 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                 return this.Assemblies.Any();
+                return this.Assemblies.Any()
+                    || this.AdditionalFiles.Any(x => x.ToLower().EndsWith(".dll") || x.ToLower().EndsWith(".exe"));
             }
         }
 
@@ -781,7 +807,6 @@ namespace Dynamo.PackageManager
                         n => n.GetType().Name == "PythonNode" ||
                             n.GetType().Name == "PythonStringNode"));
             }
-                
         }
 
         /// <summary>
