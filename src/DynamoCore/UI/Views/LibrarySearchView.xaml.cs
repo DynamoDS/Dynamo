@@ -6,7 +6,6 @@ using Dynamo.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
-using System;
 using Dynamo.Controls;
 using System.Linq;
 
@@ -167,38 +166,11 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        // In classes we can move left, right, up, down.
-        private void OnSubClassesPanelKeyDown(object sender, KeyEventArgs e)
-        {
-            var classButton = Keyboard.FocusedElement as FrameworkElement;
-
-            var buttonsWrapPanel = sender as LibraryWrapPanel;
-            var listButtons = buttonsWrapPanel.Children;
-
-            var selectedIndex = listButtons.IndexOf(classButton);
-            int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
-
-            int newIndex = GetIndexNextSelectedItem(e.Key, selectedIndex, itemsPerRow);
-
-            // If index is out of range class list, that means we have to move to previous category
-            // or to next member group.
-            if ((newIndex < 0) || (newIndex > listButtons.Count))
-            {
-                e.Handled = false;
-                return;
-            }
-
-            // Set focus on new item.
-            listButtons[newIndex].Focus();
-
-            e.Handled = true;
-            return;
-        }
-
-        // This event is raised only, when we can't go down/up, to next member group.
-        // I.e. we are now at the first member button and we have to move to class list.
-        // OR we are at the first class item and have to move to previous category.
-        // OR we are at the last member and we have to move to next category.
+        // The 'StackPanel' that contains 'SubCategoryListView' and 'MemberGroupsListBox'
+        // handles this message. If none of these two list boxes are handling the key 
+        // message, that means the currently focused list box item is the first/last item
+        // in these two list boxes. When key message arrives here, it is then the 'StackPanel'
+        // responsibility to move the focus on to the adjacent list box.
         private void OnCategoryContentKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -206,34 +178,30 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or first/last class button.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
-            var searchCategoryFrameworkEle = sender as FrameworkElement;
+            var searchCategoryElement = sender as FrameworkElement;
 
             // memberInFocus is method button.
             if (memberInFocus.DataContext is NodeSearchElement)
             {
-                var searchCategoryContent = searchCategoryFrameworkEle.DataContext as SearchCategory;
+                var searchCategoryContent = searchCategoryElement.DataContext as SearchCategory;
 
+                // Gotten here because of last method being listed, pressing 'down' array cannot 
+                // move down further. Return here to allow higher level visual element to handle
+                // the navigation (to a separate category).
                 if (e.Key == Key.Down)
-                {
-                    // Focused element is last method button. We have to move to next category.
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise, pressed Key is Up.
 
-                // If there are no found classes, we have to move to previous category.
-                // So, we handle it to next element - category.
+                // No class is found in this 'SearchCategory', return from here so that higher level
+                // element gets to handle the navigational keys to move focus to the previous category.
                 if (searchCategoryContent.Classes.Count == 0)
-                {
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise, we move to first class button.
-                var subCategoryListView = WPF.FindChild<ListView>(searchCategoryFrameworkEle, "SubCategoryListView");
-                var generator = subCategoryListView.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListViewItem).Focus();
+                var listItem = FindFirstChildListItem(searchCategoryElement, "SubCategoryListView");
+                if (listItem != null)
+                    listItem.Focus();
 
                 e.Handled = true;
                 return;
@@ -245,56 +213,25 @@ namespace Dynamo.UI.Views
                 // We are at the first row of class list. User presses up, we have to move to previous category.
                 // We handle it further.
                 if (e.Key == Key.Up)
-                {
-                    e.Handled = false;
                     return;
-                }
 
                 // Otherwise user pressed down, we have to move to first member button.
-                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryFrameworkEle, "MemberGroupsListBox");
-                var membersListBox = WPF.FindChild<ListBox>(memberGroupsListBox, "MembersListBox");
-                var generator = membersListBox.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryElement, "MemberGroupsListBox");
+                var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
+                if (listItem != null)
+                    listItem.Focus();
 
                 e.Handled = true;
                 return;
             }
         }
 
-        private int GetIndexNextSelectedItem(Key key, int selectedIndex, int itemsPerRow)
-        {
-            int newIndex = -1;
-            int selectedRowIndex = selectedIndex / itemsPerRow + 1;
 
-            switch (key)
-            {
-                case Key.Right:
-                    {
-                        newIndex = selectedIndex + 1;
-                        int availableIndex = selectedRowIndex * itemsPerRow - 1;
-                        if (newIndex > availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Left:
-                    {
-                        newIndex = selectedIndex - 1;
-                        int availableIndex = (selectedRowIndex - 1) * itemsPerRow;
-                        if (newIndex < availableIndex) newIndex = selectedIndex;
-                        break;
-                    }
-                case Key.Down:
-                    {
-                        newIndex = selectedIndex + itemsPerRow + 1;
-                        // +1 because one of items is always ClassInformation.
-                        break;
-                    }
-                case Key.Up:
-                    {
-                        newIndex = selectedIndex - itemsPerRow;
-                        break;
-                    }
-            }
-            return newIndex;
+        private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
+        {
+            var list = WPF.FindChild<ListBox>(parent, listName);
+            var generator = list.ItemContainerGenerator;
+            return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
         private void OnCategoryKeyDown(object sender, KeyEventArgs e)
@@ -334,6 +271,7 @@ namespace Dynamo.UI.Views
         }
 
         #endregion
+
 
     }
 }
