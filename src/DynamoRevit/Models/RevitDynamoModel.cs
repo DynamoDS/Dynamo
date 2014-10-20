@@ -95,6 +95,11 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        internal void HandlePostInitialization()
+        {
+            InitializeMaterials(); // Initialize materials for preview.
+        }
+
         private bool setupPython;
         private void SetupPython()
         {
@@ -128,8 +133,6 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
-
-                InitializeMaterials();
             }
         }
 
