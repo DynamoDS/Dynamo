@@ -1368,6 +1368,15 @@ namespace ProtoCore.DSASM
                             Properties.updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
                         }
 
+                        // Clear runtime warning for the first run in delta
+                        // execution.
+                        if (core.Options.IsDeltaExecution && 
+                            (Properties.executingGraphNode == null ||
+                             Properties.executingGraphNode.OriginalAstID != graphNode.OriginalAstID))
+                        {
+                            core.RuntimeStatus.ClearWarningsForAst(graphNode.OriginalAstID);
+                        }
+
                         // Set the current graphnode being executed
                         Properties.executingGraphNode = graphNode;
                         core.RuntimeExpressionUID= graphNode.exprUID;
@@ -1455,6 +1464,11 @@ namespace ProtoCore.DSASM
                         break;
                     }
                 }
+            }
+
+            if (core.Options.IsDeltaExecution)
+            {
+                core.RuntimeStatus.ClearWarningsForAst(Properties.executingGraphNode.OriginalAstID);
             }
         }
 
@@ -1608,7 +1622,13 @@ namespace ProtoCore.DSASM
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
                 // Handle deactivated graphnodes
-                GCAnonymousSymbols(gnode.symbolListWithinExpression);
+                GCSymbols(gnode.symbolListWithinExpression);
+#if GC_MARK_AND_SWEEP
+                foreach (var symbol in gnode.symbolListWithinExpression)
+                {
+                    rmem.SetSymbolValue(symbol, StackValue.Null);
+                }
+#endif
                 gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
@@ -4025,37 +4045,13 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void GCAnonymousSymbols(List<SymbolNode> symbolList, bool isLastNodeSetter = false)
+        private void GCSymbols(List<SymbolNode> symbolList)
         {
-            //foreach (SymbolNode symbol in symbolList)
-            for(int i = 0; i < symbolList.Count; ++i)
+            foreach (var symbol in symbolList)
             {
-                //
-                // Comment Jun: We want to prevent GC of temp var if it is being assigned to a property
-                // This is a current issue of property setters where a GCRetain is not called on the RHS 
-                // i.e. 
-                //  a.b = p -> GCRetain is not called when p is popped to a.b
-                //
-                if (isLastNodeSetter && i == symbolList.Count - 1)
-                {
-                    break;
-                }
-
-                SymbolNode symbol = symbolList[i];
-
-                int offset = symbol.index;
-                int n = offset;
-                if (symbol.absoluteFunctionIndex != Constants.kGlobalScope)
-                {
-                    // Comment Jun: We only want the relative offset if a variable is in a function
-                    n = rmem.GetRelative(rmem.GetStackIndex(offset));
-                }
-
-                if (n >= 0)
-                {
-                    GCRelease(rmem.Stack[n]);
-                }
-           }
+                StackValue sv = rmem.GetSymbolValue(symbol);
+                GCRelease(sv);
+            }
         }
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
@@ -6472,7 +6468,7 @@ namespace ProtoCore.DSASM
                     // GC anonymous variables in the return stmt
                     if (null != Properties.executingGraphNode && !Properties.executingGraphNode.IsSSANode())
                     {
-                        GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression);
+                        GCSymbols(Properties.executingGraphNode.symbolListWithinExpression);
                         Properties.executingGraphNode.symbolListWithinExpression.Clear();
                     }
                 }
@@ -7040,8 +7036,18 @@ namespace ProtoCore.DSASM
                         if (!Properties.executingGraphNode.IsSSANode())
                         {
                             bool isSetter = Properties.executingGraphNode.updateNodeRefList[0].nodeList.Count > 1;
+                            var symbols = Properties.executingGraphNode.symbolListWithinExpression;
 
-                            GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression, isSetter);
+                            if (isSetter)
+                            {
+                                int count = symbols.Count;
+                                if (count > 0)
+                                {
+                                    symbols = symbols.Take(count - 1).ToList();
+                                }
+                            }
+
+                            GCSymbols(symbols);
                             Properties.executingGraphNode.symbolListWithinExpression.Clear();
                         }
                     }
@@ -7093,7 +7099,6 @@ namespace ProtoCore.DSASM
                     Properties.executingGraphNode.isDirty = false;
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
-                core.DeferredUpdates += reachableNodes;
             }
             GC();
             return;
@@ -7767,6 +7772,15 @@ namespace ProtoCore.DSASM
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
             var gcRoots = new List<StackValue>();
+
+            // Now garbage collection only happens on the top most block. 
+            // We will loose this limiation soon.
+            if (blockId != 0 || 
+                rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
+            {
+                return;
+            }
+
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
