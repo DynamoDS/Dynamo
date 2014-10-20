@@ -44,9 +44,9 @@ namespace FFITarget
             return this.IntVal == cf.IntVal;
         }
 
-        public int AddWithValueContainer(ValueContainer valueContainer)
+        public IEnumerable<ValueContainer> AddWithValueContainer(ValueContainer valueContainer)
         {
-            return IntVal + valueContainer.SomeValue;
+            return null;
         }
 
         private ValueContainer classProperty;
