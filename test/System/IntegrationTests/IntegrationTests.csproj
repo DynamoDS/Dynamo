@@ -108,6 +108,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="CallsiteRegen.cs" />
     <Compile Include="ExecutionEventsObserver.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
