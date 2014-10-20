@@ -102,6 +102,11 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        internal void HandlePostInitialization()
+        {
+            InitializeMaterials(); // Initialize materials for preview.
+        }
+
         private bool setupPython;
         private void SetupPython()
         {
@@ -135,9 +140,15 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
-
-                MaterialsManager.Instance.InitializeForActiveDocument();
             }
+        }
+
+        private void InitializeMaterials()
+        {
+            // Ensure that the current document has the needed materials
+            // and graphic styles to support visualization in Revit.
+            var mgr = MaterialsManager.Instance;
+            IdlePromise.ExecuteOnIdleAsync(mgr.InitializeForActiveDocumentOnIdle);
         }
 
         #endregion
@@ -263,7 +274,7 @@ namespace Dynamo.Applications.Models
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
         }
@@ -397,11 +408,7 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
-                // Ensure that the active document has the needed
-                // materials and graphic styles to support visualization
-                // in Revit.
-                MaterialsManager.Instance.InitializeForActiveDocument();
-
+                InitializeMaterials();
                 this.RunEnabled = true;
             }
         }
