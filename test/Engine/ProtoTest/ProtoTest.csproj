@@ -107,6 +107,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Assembler\MicroFeatureTests.cs" />
     <Compile Include="Associative\BuiltinMethodsTest.cs" />
     <Compile Include="Associative\FunctionObject.cs" />
