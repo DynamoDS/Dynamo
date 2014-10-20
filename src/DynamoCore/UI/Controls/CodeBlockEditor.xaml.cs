@@ -141,8 +141,7 @@ namespace Dynamo.UI.Controls
                 {
                     completions.AddRange(group.Select(x =>
                         {
-                            bool useFullyQualifiedName = true;
-                            return CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this, useFullyQualifiedName);
+                            return CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this, useFullyQualifiedName : true);
                         }));
                 }
                 else
@@ -150,6 +149,9 @@ namespace Dynamo.UI.Controls
             }
 
             // Add matching builtin methods
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
             completions.AddRange(StaticMirror.GetBuiltInMethods(engineController.LiveRunnerCore).
                 GroupBy(x => x.Name).Select(y => y.First()).
                 Where(x => x.MethodName.ToLower().Contains(stringToComplete.ToLower())).
@@ -353,7 +355,7 @@ namespace Dynamo.UI.Controls
                     if (insightWindow != null)
                         insightWindow.Close();
                 }
-                else if (completionWindow == null && char.IsLetterOrDigit(e.Text[0]))
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
                 {
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
@@ -364,8 +366,7 @@ namespace Dynamo.UI.Controls
                     if (!completions.Any())
                         return;
 
-                    bool completeWhenTyping = true;
-                    ShowCompletionWindow(completions, completeWhenTyping);
+                    ShowCompletionWindow(completions, completeWhenTyping : true);
                 }
             }
             catch (System.Exception ex)
