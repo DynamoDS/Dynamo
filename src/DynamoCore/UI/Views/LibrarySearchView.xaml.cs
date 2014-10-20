@@ -226,7 +226,6 @@ namespace Dynamo.UI.Views
             }
         }
 
-
         private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
         {
             var list = WPF.FindChild<ListBox>(parent, listName);
@@ -234,6 +233,11 @@ namespace Dynamo.UI.Views
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
+        // This event is raised, when we need to move through categories.
+        // They are several cases:
+        // 1) we are at the last member button. (pressed down)
+        // 2) we are at the first row of class buttons. (pressed up)
+        // 3) we are at the first member button, if classes are not presented. (pressed up)
         private void OnCategoryKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -261,37 +265,38 @@ namespace Dynamo.UI.Views
 
             // Need to move to top result.
             if (categoryIndex < 0) return;
-            // We are at the last member.
+            // We are at the last member and there is no way to move down.
             if (categoryIndex >= categoryListView.Items.Count)
             {
                 e.Handled = true;
                 return;
             }
 
-
-            // We are at the first/last method button and have to move to previous/next category.
             var nextFocusedCategory = GetListItemByIndex(categoryListView, categoryIndex);
             var nextFocusedCategoryContent = nextFocusedCategory.Content as SearchCategory;
 
-            // If key is up, then we have to select the last member.
+            // If key is up, then we have to select the last method button.
             if (e.Key == Key.Up)
             {
-                var nextFocusedMemberGroup = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
-                var lastMemberGroup = GetListItemByIndex(nextFocusedMemberGroup, nextFocusedMemberGroup.Items.Count - 1);
-                var nextFocusedMembers = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
-                GetListItemByIndex(nextFocusedMembers, nextFocusedMembers.Items.Count - 1).Focus();
+                var memberGroupsList = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
+                var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
+                var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
+                // Set focus to the last member.
+                GetListItemByIndex(membersList, membersList.Items.Count - 1).Focus();
                 e.Handled = true;
                 return;
             }
             // Otherwise, Down was pressed, and we have to select first class/method button.
             else
             {
+                // If classes are presented, then focus on first class.
                 if (nextFocusedCategoryContent.Classes.Count > 0)
                 {
                     FindFirstChildListItem(nextFocusedCategory, "SubCategoryListView").Focus();
                     e.Handled = true;
                     return;
                 }
+                // If there are no classes, then focus on first method.
                 else
                 {
                     FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox").Focus();
@@ -299,11 +304,6 @@ namespace Dynamo.UI.Views
                     return;
                 }
             }
-
-            //FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox").Focus();
-            //e.Handled = true;
-            //return;
-
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
