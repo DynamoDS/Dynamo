@@ -56,6 +56,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="GeometricRevitNodeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
