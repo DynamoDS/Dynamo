@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
 
         public double Priority { get { return 0; } }
 
-
+        // TODO: Add keyword type and icon
         public enum CompletionType
         {
             Namespace,
@@ -62,6 +62,7 @@ namespace Dynamo.Nodes
             Constructor,
             Class,
             Property,
+            Keyword,
         };
 
         #endregion
@@ -86,13 +87,21 @@ namespace Dynamo.Nodes
 
             this.Image = TypeToIcon[type];
         }
+
+        public CodeBlockCompletionData(string text, string stub, CompletionType type, CodeBlockEditor codeEditor)
+        {
+            this.Text = text;
+            this.Stub = stub;
+            this.codeEditor = codeEditor;
+        }
        
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, this.Text);
         }
 
-        internal static CodeBlockCompletionData ConvertMirrorToCompletionData(StaticMirror mirror, CodeBlockEditor codeEditor)
+        internal static CodeBlockCompletionData ConvertMirrorToCompletionData(StaticMirror mirror, 
+            CodeBlockEditor codeEditor, bool useFullyQualifiedName = false)
         {
             MethodMirror method = mirror as MethodMirror;
             if (method != null)
@@ -108,6 +117,18 @@ namespace Dynamo.Nodes
                 string propertyName = property.PropertyName;
                 string stub = "";
                 return new CodeBlockCompletionData(propertyName, stub, !property.IsStatic, CompletionType.Property, codeEditor);
+            }
+            ClassMirror classMirror = mirror as ClassMirror;
+            if (classMirror != null)
+            {
+                string className;
+                if (useFullyQualifiedName)
+                    className = classMirror.ClassName;
+                else
+                    className = classMirror.Alias;
+                string signature = "";
+                CompletionType type = CompletionType.Class;
+                return new CodeBlockCompletionData(className, signature, false, type, codeEditor);
             }
             return null;
         }
