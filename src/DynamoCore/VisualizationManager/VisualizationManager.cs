@@ -608,7 +608,18 @@ namespace Dynamo
                     node.RequestVisualUpdate(MaxTesselationDivisions);
             }
 
+            // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
+            // render packages of all the NodeModel objects are generated, the 
+            // VisualizationManager gets notified.
+            // 
             var scheduler = dynamoModel.Scheduler;
+            var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
+            notifyTask.Completed += OnNodeModelRenderPackagesReady;
+            scheduler.ScheduleForExecution(notifyTask);
+
+            // Schedule a AggregateRenderPackageAsyncTask here so that the 
+            // background geometry preview gets refreshed.
+            // 
             var task = new AggregateRenderPackageAsyncTask(scheduler);
             if (task.Initialize(dynamoModel.CurrentWorkspace, null))
             {
