@@ -40,22 +40,24 @@ namespace Revit.Elements
         {
             get
             {
+                // Rotations are + CW from Y (North)
+                // This contradicts the Revit API documentation
+                // but matches the Sun Path diagram in Revit.
                 var initialDirection = Vector.YAxis();
-                var altitude =
-                    InternalSunAndShadowSettings.GetFrameAltitude(
-                        InternalSunAndShadowSettings.ActiveFrame);
-                var altitudeRotation = CoordinateSystem.Identity()
-                    .Rotate(Point.Origin(), Vector.XAxis(), altitude.ToDegrees());
-                var altitudeDirection = initialDirection.Transform(altitudeRotation);
 
                 var azimuth =
                     InternalSunAndShadowSettings.GetFrameAzimuth(
                         InternalSunAndShadowSettings.ActiveFrame);
-                var actualAzimuth = 2*Math.PI - azimuth;
-                
-                var azimuthRotation = CoordinateSystem.Identity()
-                    .Rotate(Point.Origin(), Vector.ZAxis(), actualAzimuth.ToDegrees());
-                var sunDirection = altitudeDirection.Transform(azimuthRotation);
+
+                var altitude =
+                    InternalSunAndShadowSettings.GetFrameAltitude(
+                        InternalSunAndShadowSettings.ActiveFrame);
+
+                var cs = CoordinateSystem.Identity()
+                    .Rotate(Point.Origin(), Vector.ZAxis(), -azimuth.ToDegrees());
+
+                var sunDirection =
+                    initialDirection.Transform(cs.Rotate(cs.Origin, cs.XAxis, altitude.ToDegrees()));
 
                 return sunDirection.Scale(100);
             }
@@ -66,7 +68,7 @@ namespace Revit.Elements
         /// </summary>
         public double Altitude
         {
-            get { return InternalSunAndShadowSettings.Altitude; }
+            get { return InternalSunAndShadowSettings.GetFrameAltitude(InternalSunAndShadowSettings.ActiveFrame).ToDegrees(); }
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace Revit.Elements
         /// </summary>
         public double Azimuth
         {
-            get { return InternalSunAndShadowSettings.Azimuth; }
+            get { return InternalSunAndShadowSettings.GetFrameAzimuth(InternalSunAndShadowSettings.ActiveFrame).ToDegrees(); }
         }
 
         /// <summary>

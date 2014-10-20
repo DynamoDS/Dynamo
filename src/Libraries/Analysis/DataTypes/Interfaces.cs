@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
 {
-    internal enum AnalysisStatus
-    {
-        InProgress, // Analysis ongoing
-        Paused,     // Analysis paused and can continue
-        Stopped,    // Analysis stopped or has not started. There is no results to be shown
-        Completed   // Analysis completed. There is results to be shown.
-    }
-
     public interface IAnalysisData<TLocation, TResult>
     {
         /// <summary>

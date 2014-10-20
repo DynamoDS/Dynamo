@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 
@@ -35,7 +36,7 @@ namespace Analysis.DataTypes
             return Results[key];
         }
 
-        private SurfaceAnalysisData(
+        protected SurfaceAnalysisData(
             Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string,IList<double>> results)
         {
             Surface = surface;
@@ -50,6 +51,21 @@ namespace Analysis.DataTypes
         /// <param name="points">A list of UV calculation locations on the surface.</param>
         public static SurfaceAnalysisData BySurfaceAndPoints(Surface surface, IEnumerable<UV> points)
         {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (!points.Any())
+            {
+                throw new ArgumentException("The specified points list does not contain any points.");    
+            }
+
             return new SurfaceAnalysisData(
                 surface,
                 points,
@@ -65,6 +81,31 @@ namespace Analysis.DataTypes
         /// <param name="resultValues">A list of lists of result values.</param>
         public static SurfaceAnalysisData BySurfacePointsAndResults(Surface surface, IEnumerable<UV> points, IList<string> resultNames, IList<IList<double>> resultValues)
         {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (!points.Any())
+            {
+                throw new ArgumentException("The specified points list does not contain any points.");
+            }
+
+            if (resultNames == null)
+            {
+                throw new ArgumentNullException("resultNames");
+            }
+
+            if (resultValues == null)
+            {
+                throw new ArgumentNullException("resultValues");
+            }
+
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
@@ -120,7 +161,7 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<Vector>> Results { get; internal set; }
 
-        private VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
+        protected VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
         {
             CalculationLocations = points;
             Results = results;
@@ -132,6 +173,11 @@ namespace Analysis.DataTypes
         /// <param name="points">A list of calculation locations.</param>
         public static VectorAnalysisData ByPoints(IEnumerable<Point> points)
         {
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
             var results = new Dictionary<string, IList<Vector>>();
             return new VectorAnalysisData(points, results);
         }
@@ -145,6 +191,22 @@ namespace Analysis.DataTypes
         public static VectorAnalysisData ByPointsAndResults(
             IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues)
         {
+
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (resultNames == null)
+            {
+                throw new ArgumentNullException("resultNames");
+            }
+
+            if (resultValues == null)
+            {
+                throw new ArgumentNullException("resultValues");
+            }
+
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
@@ -185,7 +247,7 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; internal set; }
 
-        private PointAnalysisData(
+        protected PointAnalysisData(
             IEnumerable<Point> points, Dictionary<string, IList<double>> results)
         {
             CalculationLocations = points;
@@ -198,6 +260,11 @@ namespace Analysis.DataTypes
         /// <param name="points">A list of calculation locations.</param>
         public static PointAnalysisData ByPoints(IEnumerable<Point> points)
         {
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
             var results = new Dictionary<string, IList<double>>();
             return new PointAnalysisData(points, results);
         }
@@ -209,6 +276,21 @@ namespace Analysis.DataTypes
         /// <param name="results">A set of resutls keyed by the name of the result type.</param>
         public static PointAnalysisData ByPointsAndResults(IEnumerable<Point> points, IList<string> resultNames, IList<IList<double>> resultValues)
         {
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (resultNames == null)
+            {
+                throw new ArgumentNullException("resultNames");
+            }
+
+            if (resultValues == null)
+            {
+                throw new ArgumentNullException("resultValues");
+            }
+
             if (resultNames.Count != resultValues.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
