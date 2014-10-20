@@ -146,7 +146,7 @@ namespace DSCore.File
     [SupressImportIntoVM]
     public abstract class FileSystemObject<T> : NodeModel
     {
-        private IEnumerable<IDisposable> registrations;
+        private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
 
         protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func) : base(workspaceModel)

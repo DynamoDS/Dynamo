@@ -223,9 +223,9 @@ namespace DSCore.IO
         ///     Gets all of the contents of a given directory.
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
-        /// <param name="searchString">Search string used to filter results. Defaults to "*" (displays all contents).</param>
+        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
         [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString="*")
+        public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString="*.*")
         {
             return new Dictionary<string, IList>
             {

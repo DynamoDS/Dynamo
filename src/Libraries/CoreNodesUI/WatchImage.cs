@@ -76,13 +76,10 @@ namespace Dynamo.Nodes
         {
             if (this.InPorts[0].Connectors.Count == 0) return null;
 
-            var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            var data = this.CachedValue;
 
-            if (null == mirror)
-                return null;
-
-            var data = mirror.GetData();
-
+            //var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            
             if (data == null || data.IsNull) return null;
             if (data.Data is System.Drawing.Bitmap) return data.Data as System.Drawing.Bitmap;
             return null;
