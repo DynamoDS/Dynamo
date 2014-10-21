@@ -282,7 +282,7 @@ namespace DSCore.IO
         /// <param name="data">List of lists to write into CSV</param>
         /// <returns name="str">Contents of the text file.</returns>
         /// <search>write,text,file</search>
-        public static void ExportToCSV(string filePath, object[][] data)
+        public static void WriteCSV(string filePath, object[][] data)
         {
             using (var writer = new StreamWriter(filePath))
             {
