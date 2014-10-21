@@ -248,7 +248,7 @@ namespace Dynamo.UI.Views
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
                 var category = categoryListView.Items[i] as SearchCategory;
-                if (category.ContainsMember(memberInFocus.DataContext as BrowserInternalElement))
+                if (category.ContainsClassOrMember(memberInFocus.DataContext as BrowserInternalElement))
                 {
                     categoryIndex = i;
                     break;

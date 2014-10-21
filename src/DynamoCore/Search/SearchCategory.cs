@@ -67,7 +67,7 @@ namespace Dynamo.Search
                 classes.Add(parent);
         }
 
-        public bool ContainsMember(BrowserInternalElement member)
+        public bool ContainsClassOrMember(BrowserInternalElement member)
         {
             // Search among classes.
             for (int i = 0; i < Classes.Count(); i++)
