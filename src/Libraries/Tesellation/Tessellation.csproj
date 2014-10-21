@@ -61,6 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Adapters\Tetrahedron.cs" />
     <Compile Include="Adapters\Cell2.cs" />
     <Compile Include="Adapters\Cell3.cs" />

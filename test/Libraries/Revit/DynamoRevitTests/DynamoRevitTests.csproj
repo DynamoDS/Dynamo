@@ -77,6 +77,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
     <Compile Include="RenderingAsAServiceTests.cs" />

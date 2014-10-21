@@ -13,6 +13,7 @@ using NUnit.Framework;
 using System.Text.RegularExpressions;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
+using Dynamo.DSEngine;
 
 namespace DynamoCoreUITests
 {
@@ -313,5 +314,244 @@ namespace DynamoCoreUITests
         }
 
         #endregion
+    }
+
+    public class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
+    {
+        [Test]
+        [Category("UnitTests")]
+        public void TestCtorSignatureCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "CodeCompletionClass";
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+
+            string code = "";
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 3 "CodeCompletionClass" ctor overloads
+            Assert.AreEqual(3, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(3, overloads.ElementAt(2).Method.ArgumentList.Count());
+            Assert.AreEqual("int", overloads.ElementAt(2).Method.ArgumentList.ElementAt(0).Value);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "OverloadedAdd";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 2 "OverloadedAdd" method overloads
+            Assert.AreEqual(2, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("ClassFunctionality", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureReturnTypeCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "AddWithValueContainer";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("ValueContainer", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+
+            Assert.AreEqual("ValueContainer[]",
+                overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltInMethodSignatureCompletion()
+        {
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+
+            string functionPrefix = "";
+            string functionName = "Count";
+
+            string code = "";
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("[]", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+            Assert.AreEqual("int",
+                overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestStaticMethodSignatureCompletion()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "StaticFunction";
+
+            string code = "";
+            var overloads = cbnEditor.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 1 "StaticFunction" method overload
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Method.MethodName);
+            }
+            Assert.AreEqual(0, overloads.ElementAt(0).Method.ArgumentList.Count());
+            Assert.AreEqual("int", overloads.ElementAt(0).Method.ReturnType.ToString());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionWhenTyping()
+        {
+            // Note this test may fail if another library with class names
+            // beginning with "poi" is imported by default or if there is a change
+            // to the classes "ProtoGeometry" or "FFITarget" libraries
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "Poi";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(5, completions.Count());
+
+            string[] expected = {"Autodesk.DesignScript.Geometry.Point", "FFITarget.DesignScript.Point",
+                                    "FFITarget.Dynamo.Point", "DummyPoint", "UnknownPoint"};
+            var actual = completions.Select(x => x.Text);
+            
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodKeywordCompletionWhenTyping()
+        {
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "im";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(4, completions.Count());
+
+            string[] expected = {"Imperative", "MinimumItemByKey",
+                                    "MaximumItemByKey", "ImportFromCSV"};
+            var actual = completions.Select(x => x.Text);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }

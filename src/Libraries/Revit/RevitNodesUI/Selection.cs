@@ -15,6 +15,8 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Interactivity;
+
+using RevitServices.Elements;
 using RevitServices.Persistence;
 
 using DividedSurface = Autodesk.Revit.DB.DividedSurface;
@@ -215,14 +217,19 @@ namespace Dynamo.Nodes
         protected override void Updater_ElementsDeleted(
             Document document, IEnumerable<ElementId> deleted)
         {
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
+            if (!SelectionResults.Any() || !document.Equals(SelectionOwner))
+            {
+                return;
+            }
 
-            var uuids =
-                deleted.Select(document.GetElement)
-                    .Where(el => el != null)
-                    .Select(el => el.UniqueId);
+            // We are given a set of ElementIds, but because the elements
+            // have already been deleted from Revit, we can't get the 
+            // corresponding GUID. Instead, we just go through the collection of
+            // elements and attempt to find the ones which are no longer valid Revit
+            // objects and we remove those from the set.
 
-            UpdateSelection(Selection.Where(x => !uuids.Contains(x.UniqueId)));
+            var validEls = Selection.Where(el => el.IsValidObject);
+            UpdateSelection(validEls);
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
@@ -232,8 +239,10 @@ namespace Dynamo.Nodes
 
             var updatedSet = new HashSet<string>(updated);
 
-            if (!SelectionResults.Select(x => x.UniqueId).Any(updatedSet.Contains))
+            if (!SelectionResults.Where(x=>x.IsValidObject).Select(x => x.UniqueId).Any(updatedSet.Contains))
+            {
                 return;
+            }
 
             UpdateSelection(Selection);
         }
@@ -351,22 +360,27 @@ namespace Dynamo.Nodes
             if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
 
             UpdateSelection(SelectionResults.Where(x => !deleted.Contains(x.ElementId)));
-
-            RaisePropertyChanged("SelectionResults");
-            RaisePropertyChanged("Text");
-            RequiresRecalc = true;
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
-            // If an element is modified, require recalc
-            if (SelectionResults == null
-                || !SelectionResults.Select(r => doc.GetElement(r).UniqueId).Any(updated.Contains))
-                return;
+            // If this modification is being parsed as part of a document
+            // update that also contains a deletion, then we need to try to 
+            // get the elements first to see if they are valid. 
+            var validIds = SelectionResults.Select(doc.GetElement).Where(x=>x != null).Select(x=>x.UniqueId);
 
+            // If an element is modified, require recalc
+            if (SelectionResults == null || !validIds.Any(updated.Contains))
+            {
+                return;
+            }
+                
+            // We want this modification to trigger a graph reevaluation
+            // and we want the AST for this node to be regenerated.
             RequiresRecalc = true;
+            ForceReExecuteOfNode = true;
         }
 
         protected override IEnumerable<Reference> ExtractSelectionResults(Reference selection)

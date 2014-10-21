@@ -227,7 +227,6 @@ namespace Dynamo.UI
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
 #endif
-
     }
 
     /// <summary>
