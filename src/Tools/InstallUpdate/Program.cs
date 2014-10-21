@@ -90,7 +90,7 @@ namespace InstallUpdate
             }
 
             // Run the installer
-            Process.Start(installerPath);
+            Process.Start(installerPath, "/UPDATE");
         }
 
         private static void RequestManualReinstall()
