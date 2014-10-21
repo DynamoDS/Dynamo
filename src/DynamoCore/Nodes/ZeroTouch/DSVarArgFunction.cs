@@ -75,7 +75,15 @@ namespace Dynamo.Nodes
             {
                 nodeController = model.Controller;
             }
-
+            /// <summary>
+            /// This method is to get the index of the adding Input when we click +
+            /// nodeController.Definition.Parameters.Count() will return 
+            /// the number of inputs the node got by default. For example, String.Join
+            /// got separator+string0. when we click +, base.GetInputIndexFromModel() return 2,
+            /// (nodeController.Definition.Parameters.Count() -1) return 1. Then the new port will 
+            /// be string1
+            /// </summary>
+            /// <returns></returns>
             public override int GetInputIndexFromModel()
             {
                 return base.GetInputIndexFromModel() - (nodeController.Definition.Parameters.Count() -1);
