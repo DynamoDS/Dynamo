@@ -242,13 +242,14 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+            var memberInFocusContext = memberInFocus.DataContext as BrowserInternalElement;
             var categoryListView = sender as ListView;
 
             int categoryIndex = 0;
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
                 var category = categoryListView.Items[i] as SearchCategory;
-                if (category.ContainsClassOrMember(memberInFocus.DataContext as BrowserInternalElement))
+                if (category.ContainsClassOrMember(memberInFocusContext))
                 {
                     categoryIndex = i;
                     break;
