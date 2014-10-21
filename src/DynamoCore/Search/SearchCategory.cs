@@ -73,9 +73,7 @@ namespace Dynamo.Search
             if (Classes.Any(cl => cl.Equals(member))) return true;
 
             // Search among member groups.
-            if (MemberGroups.Any(group => group.ContainsMember(member))) return true;
-
-            return false;
+            return MemberGroups.Any(group => group.ContainsMember(member));
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)
