@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
-using Dynamo.Nodes.Search;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -50,8 +46,17 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("do");
             viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("dog", viewModel.SearchText);
-
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void ShortenCategoryNameTests()
+        {
+            var result = SearchViewModel.ShortenCategoryName("");
+            Assert.AreEqual(string.Empty, result);
+
+            result = SearchViewModel.ShortenCategoryName(null);
+            Assert.AreEqual(string.Empty, result);
+        }
     }
 }
