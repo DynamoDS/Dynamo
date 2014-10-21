@@ -407,6 +407,7 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
                     Select(x => new ClassMirror(core, x));
             }
 
