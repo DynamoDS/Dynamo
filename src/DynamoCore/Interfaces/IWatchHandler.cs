@@ -111,21 +111,23 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
-            
-            // MAGN-3494: If "data.Data" is null, then return a "null" string 
-            // representation instead of casting it as dynamic (that leads to 
-            // a crash).
-            if (data.IsNull || data.Data == null)
-                return new WatchViewModel(visualizationManager, NULL_STRING, tag);
 
-            //If the input data is an instance of a class, create a watch node
-            //with the class name and let WatchHandler process the underlying CLR data
-            var classMirror = data.Class;
-            if (null != classMirror)
+            if (data.Data == null)
             {
-                if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
-                    return ProcessThing(classMirror.ClassName, tag, showRawData, callback); //just show the class name.
-                return callback(data.Data, tag, showRawData);
+                // MAGN-3494: If "data.Data" is null, then return a "null" string 
+                // representation instead of casting it as dynamic (that leads to 
+                // a crash).
+                if (data.IsNull)
+                    return new WatchViewModel(visualizationManager, NULL_STRING, tag);
+                
+                //If the input data is an instance of a class, create a watch node
+                //with the class name and let WatchHandler process the underlying CLR data
+                var classMirror = data.Class;
+                if (null != classMirror)
+                {
+                    //just show the class name.
+                    return ProcessThing(classMirror.ClassName, tag, showRawData, callback);
+                }
             }
 
             //Finally for all else get the string representation of data as watch content.
