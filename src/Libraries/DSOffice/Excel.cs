@@ -19,7 +19,7 @@ namespace DSOffice
         public bool SaveWorkbooks { get; private set; }
     }
 
-    internal class ExcelInterop
+    internal static class ExcelInterop
     {
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
@@ -141,23 +141,17 @@ namespace DSOffice
         }
     }
 
-    public class Excel
+    public static class Excel
     {
-
-        private Excel()
-        {
-
-        }
-
         /// <summary>
         /// Reads the given Excel file and returns a workbook
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="file"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static WorkBook ReadExcelFile(string path)
+        public static WorkBook ReadExcelFile(FileInfo file)
         {
-            return WorkBook.ReadExcelFile(path);
+            return WorkBook.ReadExcelFile(file.FullName);
         }
 
         /// <summary>
@@ -253,13 +247,13 @@ namespace DSOffice
         ///     for example, the value in cell A1 will appear in the data list at [0,0].
         ///     This node requires Microsoft Excel to be installed.
         /// </summary>
-        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] Read(string filePath, string sheetName)
+        public static object[][] Read(FileInfo file, string sheetName)
         {
-            WorkBook wb = WorkBook.ReadExcelFile(filePath);
+            WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             return ws.Data;
         }
