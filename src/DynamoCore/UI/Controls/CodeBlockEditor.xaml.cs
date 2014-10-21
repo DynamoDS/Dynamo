@@ -5,8 +5,8 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ProtoCore.DSDefinitions;
 using ProtoCore.Mirror;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,14 @@ namespace Dynamo.UI.Controls
         private DynamoViewModel dynamoViewModel;
         private CodeBlockNodeModel nodeModel = null;
         private CompletionWindow completionWindow = null;
-        
+        private CodeBlockMethodInsightWindow insightWindow = null;
+
+        internal CodeBlockEditor(DynamoViewModel dynamoViewModel)
+        {
+            this.dynamoViewModel = dynamoViewModel;
+            InitializeComponent();
+        }
+
         public CodeBlockEditor()
         {
             InitializeComponent();
@@ -67,7 +74,17 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete, Guid codeBlockGuid)
+        // TODO: Only those DS keywords are exposed currently that are supported in CBN's
+        public static string[] KeywordList = {Keyword.Def, 
+                                        Keyword.If, Keyword.Elseif, Keyword.Else, 
+                                        Keyword.While, Keyword.For, Keyword.In, Keyword.Continue,  
+                                        Keyword.Int, Keyword.Double, Keyword.String, Keyword.Bool, Keyword.Char, 
+                                        Keyword.Void, Keyword.Null, Keyword.Var, 
+                                        Keyword.True, Keyword.False, 
+                                        Keyword.Return, Keyword.Static,
+                                        Keyword.Associative, Keyword.Imperative};
+
+        private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
             IEnumerable<CodeBlockCompletionData> completions = null;
             var engineController = this.dynamoViewModel.Model.EngineController;
@@ -95,8 +112,91 @@ namespace Dynamo.UI.Controls
                         x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
                 }
             }
-            
+
             return completions;
+        }
+
+
+        internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
+        {
+            List<CodeBlockCompletionData> completions = new List<CodeBlockCompletionData>();
+            var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // Add matching DS keywords
+            completions.AddRange(KeywordList.Where(x => x.ToLower().Contains(stringToComplete.ToLower())).
+                Select(x => new CodeBlockCompletionData(x, "", CodeBlockCompletionData.CompletionType.Keyword, this)));
+
+            // Add matching Classes
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
+            var groups = StaticMirror.GetClasses(engineController.LiveRunnerCore).
+                Where(x => x.Alias.ToLower().Contains(stringToComplete.ToLower())).
+                    GroupBy(x => x.Alias);
+
+            // For those class names that have collisions, list their fully qualified names in completion window
+            foreach (var group in groups)
+            {
+                if (group.Count() > 1)
+                {
+                    completions.AddRange(group.Select(x =>
+                        {
+                            return CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this, useFullyQualifiedName : true);
+                        }));
+                }
+                else
+                    completions.AddRange(group.Select(x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)));
+            }
+
+            // Add matching builtin methods
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
+            completions.AddRange(StaticMirror.GetBuiltInMethods(engineController.LiveRunnerCore).
+                GroupBy(x => x.Name).Select(y => y.First()).
+                Where(x => x.MethodName.ToLower().Contains(stringToComplete.ToLower())).
+                Select(x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)));
+
+            return completions;
+        }
+
+        internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        {
+            IEnumerable<MethodMirror> candidates = null;
+            var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // if function is global, search for function in Built-ins
+            if (string.IsNullOrEmpty(functionPrefix))
+            {
+                // TODO: Make this independent of Core and query properties of LibraryServices instead
+                // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
+                candidates = StaticMirror.GetOverloadsOnBuiltIns(engineController.LiveRunnerCore, functionName);
+                return candidates.Select(x => new CodeBlockInsightItem(x));
+            }
+
+            // Determine if the function prefix is a class name
+            var type = engineController.GetClassType(functionPrefix);
+            if (type != null)
+            {
+                candidates = type.GetOverloadsOnType(functionName);
+            }
+            // If not of class type
+            else
+            {
+                // Check if the function prefix is a declared identifier
+                string typeName = CodeCompletionParser.GetVariableType(code, functionPrefix);
+                if (typeName != null)
+                    type = engineController.GetClassType(typeName);
+
+                if (type != null)
+                {
+                    candidates = type.GetOverloadsOnInstance(functionName);
+                }
+            }
+            if (candidates != null)
+                return candidates.Select(x => new CodeBlockInsightItem(x));
+            else
+                return null;
         }
 
         internal string GetDescription()
@@ -169,7 +269,10 @@ namespace Dynamo.UI.Controls
             };
 
             var engineController = this.dynamoViewModel.Model.EngineController;
-            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.ClassName.Split('.').Last());
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
+            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.Alias);
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -186,16 +289,20 @@ namespace Dynamo.UI.Controls
             };
 
             var engineController = this.dynamoViewModel.Model.EngineController;
+
+            // TODO: Make this independent of Core and query properties of LibraryServices instead
+            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
             var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
             return methodHighlightRule;
-         }
- 
-         #endregion
+        }
+
+        #endregion
 
         #region Auto-complete event handlers
+
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
         {
             try
@@ -204,7 +311,7 @@ namespace Dynamo.UI.Controls
                 {
                     // If a completion item is highlighted and the user types
                     // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]))
+                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
                         completionWindow.CompletionList.RequestInsertion(e);
                 }
             }
@@ -220,33 +327,46 @@ namespace Dynamo.UI.Controls
         {
             try
             {
+                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
                 if (e.Text == ".")
                 {
-                    var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
-                    
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
-                    
-                    var completions = this.GetCompletionData(code, stringToComplete, nodeModel.GUID);
+
+                    var completions = this.GetCompletionData(code, stringToComplete);
 
                     if (!completions.Any())
                         return;
 
-                    // TODO: Need to make this more efficient by instantiating 'completionWindow'
-                    // just once and updating its contents each time
+                    ShowCompletionWindow(completions);
+                }
+                // Complete function signatures
+                else if (e.Text == "(")
+                {
+                    string functionName;
+                    string functionPrefix;
+                    CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
 
-                    // This implementation has been referenced from
-                    // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
-                    completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
-                    var data = completionWindow.CompletionList.CompletionData;
+                    var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
 
-                    foreach (var completion in completions)
-                        data.Add(completion);
+                    ShowInsightWindow(insightItems);
+                }
+                else if (e.Text == ")")
+                {
+                    if (insightWindow != null)
+                        insightWindow.Close();
+                }
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
+                {
+                    // Autocomplete as you type
+                    // complete global methods (builtins), all classes, symbols local to codeblock node
+                    string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
 
-                    completionWindow.Show();
-                    completionWindow.Closed += delegate
-                    {
-                        completionWindow = null;
-                    };
+                    var completions = this.SearchCompletions(stringToComplete, nodeModel.GUID);
+
+                    if (!completions.Any())
+                        return;
+
+                    ShowCompletionWindow(completions, completeWhenTyping : true);
                 }
             }
             catch (System.Exception ex)
@@ -256,6 +376,74 @@ namespace Dynamo.UI.Controls
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
+
+
+        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, bool completeWhenTyping = false)
+        {
+            // TODO: Need to make this more efficient by instantiating 'completionWindow'
+            // just once and updating its contents each time
+
+            // This implementation has been referenced from
+            // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+            completionWindow.AllowsTransparency = true;
+            completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            
+            if (completeWhenTyping)
+            {
+                // As opposed to complete on '.', in complete while typing mode 
+                // the first character typed should also be considered for matches
+                // while generating options in completion window
+                completionWindow.StartOffset--;
+
+                // As opposed to complete on '.', in complete while typing mode 
+                // erasing the first character of the string being completed
+                // should close the completion window
+                completionWindow.CloseWhenCaretAtBeginning = true;
+            }
+
+            var data = completionWindow.CompletionList.CompletionData;
+
+            foreach (var completion in completions)
+                data.Add(completion);
+
+            completionWindow.Show();
+            completionWindow.Closed += delegate
+            {
+                completionWindow = null;
+            };
+        }
+
+        private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)
+        {
+            if (items == null)
+                return;
+
+            if (insightWindow != null)
+            {
+                insightWindow.Close();
+            }
+            insightWindow = new CodeBlockMethodInsightWindow(this.InnerTextEditor.TextArea);
+            foreach (var item in items)
+            {
+                insightWindow.Items.Add(item);
+            }
+            if (insightWindow.Items.Count > 0)
+            {
+                insightWindow.SelectedItem = insightWindow.Items[0];
+            }
+            else
+            {
+                // don't open insight window when there are no items
+                return;
+            }
+            insightWindow.Closed += delegate
+            {
+                insightWindow = null;
+            };
+            insightWindow.Show();
+        }
+
         #endregion
 
         #region Generic Event Handlers
@@ -283,7 +471,7 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Helper Methods
-        
+
         private void OnRequestReturnFocusToSearch()
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -291,6 +479,12 @@ namespace Dynamo.UI.Controls
 
         private void HandleEscape()
         {
+            if (completionWindow != null)
+            {
+                completionWindow.Close();
+                return;
+            }
+
             var text = this.InnerTextEditor.Text;
             var cb = DataContext as CodeBlockNodeModel;
 

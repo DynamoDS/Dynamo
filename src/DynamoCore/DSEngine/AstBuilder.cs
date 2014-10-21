@@ -361,7 +361,7 @@ namespace Dynamo.DSEngine
         internal class StringConstants
         {
             public const string ParamPrefix = @"p_";
-            public const string FunctionPrefix = @"func_";
+            public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";

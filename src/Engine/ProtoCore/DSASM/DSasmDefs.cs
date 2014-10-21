@@ -451,6 +451,7 @@ namespace ProtoCore.DSASM
         public const string kImportData = "ImportData";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
+        public const string kSingleUnderscore = "_";
     }
 
     public enum MemoryRegion

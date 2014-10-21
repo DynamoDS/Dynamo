@@ -524,7 +524,6 @@ namespace Dynamo.DSEngine
             return liveRunnerServices.GetClassType(className);
         }
 
-
         /// <summary>
         /// LibraryLoading event handler.
         /// </summary>
