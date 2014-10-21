@@ -70,7 +70,7 @@ namespace Dynamo.Search
         public bool ContainsClassOrMember(BrowserInternalElement member)
         {
             // Search among classes.
-            if (Classes.Any(cl => cl.Equals(member))) return true; ;
+            if (Classes.Any(cl => cl.Equals(member))) return true;
 
             // Search among member groups.
             if (MemberGroups.Any(group => group.ContainsMember(member))) return true;
