@@ -63,6 +63,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AnalysisDisplay\FaceAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />

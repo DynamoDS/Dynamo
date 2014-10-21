@@ -65,6 +65,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Elements.cs" />
     <Compile Include="LocationControl.xaml.cs">
       <DependentUpon>LocationControl.xaml</DependentUpon>

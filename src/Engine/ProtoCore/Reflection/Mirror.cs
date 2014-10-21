@@ -407,6 +407,7 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -757,7 +758,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            ///  Returns the list of function of the class only
+            ///  Returns the list of functions of the class only
             /// </summary>
             /// <returns> function nodes </returns>
             public IEnumerable<MethodMirror> GetFunctions()
@@ -900,6 +901,7 @@ namespace ProtoCore
                         argumentList = new Dictionary<string, string>();
                         for (int i = 0; i < procNode.argInfoList.Count; ++i)
                         {
+
                             argumentList.Add(procNode.argInfoList[i].Name,
                                 procNode.argTypeList[i].ToString().Split('.').Last());
                         }
@@ -971,6 +973,7 @@ namespace ProtoCore
                 //    };
                 //var access = func(procNode.access);
                 //var isStatic = this.IsStatic == true ? "static " : "";
+
                 var returnType = string.Empty;
                 if (!this.IsConstructor)
                     returnType = " : " + this.ReturnType.ToString().Split('.').Last();
