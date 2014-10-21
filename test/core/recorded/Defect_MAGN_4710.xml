@@ -8,9 +8,9 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <UpdateModelValueCommand ModelGuid="1ded7b84-8cba-482b-81fd-6979650bb2a1" Name="Code" Value="a[i][i];" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
-  <PausePlaybackCommand Tag="WithWarning" PauseDurationInMs="20" />
+  <PausePlaybackCommand Tag="WithWarning1" PauseDurationInMs="20" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <UpdateModelValueCommand ModelGuid="1ded7b84-8cba-482b-81fd-6979650bb2a1" Name="Code" Value="a[0][0];" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
-  <PausePlaybackCommand Tag="WithoutWarning" PauseDurationInMs="20" />
+  <PausePlaybackCommand Tag="WithWarning2" PauseDurationInMs="20" />
 </Commands>
