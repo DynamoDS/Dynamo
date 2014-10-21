@@ -723,6 +723,7 @@ limitations under the License.
     <Page Include="UI\Views\ToolTipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Views\SampleData\PublishPackageViewModelSampleData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
