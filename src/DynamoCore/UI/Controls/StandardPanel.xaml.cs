@@ -30,6 +30,8 @@ namespace Dynamo.UI.Controls
         private bool areAllListsPresented;
         private ClassInformation castedDataContext;
 
+        public bool IsSearchActive { get; set; }
+
         public StandardPanel()
         {
             InitializeComponent();
@@ -73,6 +75,9 @@ namespace Dynamo.UI.Controls
                 searchElement.Execute();
                 e.Handled = true;
             }
+
+            if (IsSearchActive)
+                listBoxItem.Focus();
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)

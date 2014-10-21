@@ -196,7 +196,7 @@
         <!-- This data template is used to show StandardPanel
                  for some selected subcategory. -->
         <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <uicontrols:StandardPanel>
+            <uicontrols:StandardPanel IsSearchActive="True">
                 <uicontrols:StandardPanel.Width>
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
