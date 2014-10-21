@@ -102,6 +102,11 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        /// <summary>
+        /// This call is made during start-up sequence after RevitDynamoModel 
+        /// constructor returned. Virtual methods on DynamoModel that perform 
+        /// initialization steps should only be called from here.
+        /// </summary>
         internal void HandlePostInitialization()
         {
             InitializeMaterials(); // Initialize materials for preview.
