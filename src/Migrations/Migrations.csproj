@@ -33,14 +33,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamoMSOffice\Excel.cs" />
-    <Compile Include="DynamoPython\dynPython.cs" />
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
+    <Compile Include="DynamoMSOffice\Excel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DynamoPython\dynPython.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DynamoRaaS\Nodes.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
@@ -114,6 +128,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
