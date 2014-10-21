@@ -19,6 +19,7 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+        private static int cachedIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -45,6 +46,19 @@ namespace Dynamo.Controls
 
             var buttonsWrapPanel = sender as LibraryWrapPanel;
             var listButtons = buttonsWrapPanel.Children;
+
+            // If class is selected, we should move down to ClassDetails.
+            if ((e.Key == Key.Down) && classButton.IsSelected)
+            {
+                int classInfoIndex = GetClassInformationIndex();
+                var standardPanel = listButtons[classInfoIndex];
+                var firstMemberList = WPF.FindChild<ListBox>(standardPanel,"primaryMembers");
+                var generator = firstMemberList.ItemContainerGenerator;
+                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+                
+                e.Handled = true;
+                return;
+            }
 
             var selectedIndex = listButtons.IndexOf(classButton);
             int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
@@ -174,6 +188,9 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+            if (cachedIndex != index) cachedIndex = index;
+            else return;
+
             int classInfoIndex = GetClassInformationIndex();
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
@@ -193,6 +210,8 @@ namespace Dynamo.Controls
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
+
+            var focused = Keyboard.FocusedElement;
         }
 
         /// <summary>
