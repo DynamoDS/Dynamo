@@ -152,6 +152,9 @@ namespace Dynamo.Applications
             revitDynamoModel = InitializeCoreModel(extCommandData);
             dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
 
+            // handle initialization steps after RevitDynamoModel is created.
+            revitDynamoModel.HandlePostInitialization();
+
             // show the window
             InitializeCoreView().Show();
 
