@@ -76,6 +76,11 @@ namespace Dynamo.Nodes
                 nodeController = model.Controller;
             }
 
+            public override int GetInputIndexFromModel()
+            {
+                return base.GetInputIndexFromModel() - (nodeController.Definition.Parameters.Count() -1);
+            }
+
             protected override string GetInputName(int index)
             {
                 return nodeController.Definition.Parameters.Last().Name.TrimEnd('s') + index;
@@ -106,11 +111,9 @@ namespace Dynamo.Nodes
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             var typedParameters = parameters as IList<TypedParameter> ?? parameters.ToList();
-            var idx = typedParameters.Count() - 1;
-            base.InitializeFunctionParameters(model, typedParameters.Take(idx));
-            //Add 1 inport to the node as default.
+            base.InitializeFunctionParameters(model, typedParameters.Take(typedParameters.Count() - 1));
             var arg = parameters.LastOrDefault();
-            var argName = arg.Name.Remove(arg.Name.Length - 1) + idx.ToString(); ;
+            var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
             model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
         }
 
