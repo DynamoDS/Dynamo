@@ -61,6 +61,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="ColorTests.cs" />
     <Compile Include="ComparisonTests.cs" />
     <Compile Include="FileTests.cs" />
