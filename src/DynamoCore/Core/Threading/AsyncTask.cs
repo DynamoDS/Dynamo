@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+
+using Dynamo.Services;
 
 namespace Dynamo.Core.Threading
 {
@@ -47,6 +51,7 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
+        protected bool enableInstrumentation;
         private readonly DynamoScheduler scheduler;
 
         #endregion
@@ -158,6 +163,17 @@ namespace Dynamo.Core.Threading
         {
             ExecutionEndTime = scheduler.NextTimeStamp;
             Exception = exception;
+
+            // Record instrumentation data for this task.
+            if (enableInstrumentation)
+            {
+                long start = ExecutionStartTime.TickCount;
+                long end = ExecutionEndTime.TickCount;
+
+                InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                    this.GetType().Name, new TimeSpan(end - start));
+            }
+
             HandleTaskCompletionCore();
 
             // Notify registered event handlers of task completion.
