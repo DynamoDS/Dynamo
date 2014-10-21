@@ -34,10 +34,12 @@ namespace Dynamo.Controls
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var classButton = Keyboard.FocusedElement as FrameworkElement;
+            var classButton = Keyboard.FocusedElement as ListViewItem;
             if (e.Key == Key.Enter)
             {
-                (classButton as ListViewItem).IsSelected = true;
+                if (!classButton.IsSelected) classButton.IsSelected = true;
+                else classButton.IsSelected = false;
+                e.Handled = true;
                 return;
             }
 
