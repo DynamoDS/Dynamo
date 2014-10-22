@@ -44,10 +44,24 @@ namespace Dynamo.Core.Threading
             stateChangedHandler(this, e);
         }
 
-        private void CompactTaskQueue()
+        /// <summary>
+        /// This method is called when ISchedulerThread calls ProcessNextTask 
+        /// method to process next available task in queue. It is only called 
+        /// if the task queue was updated (one or more AsyncTask scheduled)
+        /// before ISchedulerThread picks up the next task.
+        /// </summary>
+        /// <returns>Returns a list of AsyncTask objects that were dropped, if
+        /// any, during task queue compact. The return list can be empty but it 
+        /// will never be null.
+        /// </returns>
+        /// 
+        private IEnumerable<AsyncTask> CompactTaskQueue()
         {
+            // This list keeps track of tasks before they are removed.
+            var droppedTasks = new List<AsyncTask>();
+
             if (taskQueue.Count < 2) // Cannot compact further.
-                return;
+                return droppedTasks;
 
             // Go through all the items in list, comparing each of them 
             // with others that followed (cross checking each pair in list).
@@ -66,6 +80,7 @@ namespace Dynamo.Core.Threading
                             break; // Do nothing here.
 
                         case AsyncTask.TaskMergeInstruction.KeepThis:
+                            droppedTasks.Add(taskQueue[index]);
                             taskQueue.RemoveAt(index);
                             break; // Keep the base task.
 
@@ -77,10 +92,13 @@ namespace Dynamo.Core.Threading
 
                 if (removeBaseTask)
                 {
+                    droppedTasks.Add(taskQueue[start]);
                     taskQueue.RemoveAt(start);
                     start = start - 1;
                 }
             }
+
+            return droppedTasks;
         }
 
         private void ReprioritizeTasksInQueue()
