@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Controls
 {
@@ -207,6 +208,43 @@ namespace Dynamo.UI.Controls
             // affects tooltip placement) needs to make its' width longer. So, we use additional
             // property HorizontalScrollOffset.
             libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
+        }
+
+        private void OnMainGridKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+
+            var methodButton = Keyboard.FocusedElement as ListBoxItem;
+            var methodButtonContent = methodButton.Content as BrowserInternalElement;
+
+            bool hasCreateMembers = castedDataContext.CreateMembers.Any();
+            bool hasActionMembers = castedDataContext.ActionMembers.Any();
+            bool hasQueryMembers = castedDataContext.QueryMembers.Any();
+
+            if ((hasActionMembers || hasQueryMembers) && (e.Key == Key.Down))
+            {
+                var generator = secondaryMembers.ItemContainerGenerator;
+                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+                e.Handled = true;
+            }
+
+            // We are at the first member of primary members, we have to move back to class button.
+            if (castedDataContext.CreateMembers.Contains(methodButtonContent) && (e.Key == Key.Up))
+                return;
+
+            // We are at the first member of secondary members, 
+            // we have to move to last member of primary members.
+            if ((castedDataContext.ActionMembers.Contains(methodButtonContent)
+                || castedDataContext.QueryMembers.Contains(methodButtonContent))
+                && (e.Key == Key.Up))
+            {
+                var generator = primaryMembers.ItemContainerGenerator;
+                (generator.ContainerFromIndex(primaryMembers.Items.Count-1) as ListBoxItem).Focus();
+                e.Handled = true;
+            }
+
+
         }
     }
 }
