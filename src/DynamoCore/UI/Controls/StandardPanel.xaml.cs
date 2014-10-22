@@ -218,29 +218,39 @@ namespace Dynamo.UI.Controls
             var methodButton = Keyboard.FocusedElement as ListBoxItem;
             var methodButtonContent = methodButton.Content as BrowserInternalElement;
 
-            bool hasCreateMembers = castedDataContext.CreateMembers.Any();
-            bool hasActionMembers = castedDataContext.ActionMembers.Any();
-            bool hasQueryMembers = castedDataContext.QueryMembers.Any();
+            bool hasPrimaryMembers = primaryMembers.Items.Cast<object>().Any();
+            bool hasSecondaryMembers = secondaryMembers.Items.Cast<object>().Any();
 
-            if ((hasActionMembers || hasQueryMembers) && (e.Key == Key.Down))
+            if (e.Key == Key.Down)
             {
+                if (!hasSecondaryMembers)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                if (secondaryMembers.Items.Contains(methodButtonContent))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 var generator = secondaryMembers.ItemContainerGenerator;
                 (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
                 e.Handled = true;
+                return;
             }
 
             // We are at the first member of primary members, we have to move back to class button.
-            if (castedDataContext.CreateMembers.Contains(methodButtonContent) && (e.Key == Key.Up))
+            if (primaryMembers.Items.Contains(methodButtonContent) && (e.Key == Key.Up))
                 return;
 
             // We are at the first member of secondary members, 
             // we have to move to last member of primary members.
-            if ((castedDataContext.ActionMembers.Contains(methodButtonContent)
-                || castedDataContext.QueryMembers.Contains(methodButtonContent))
-                && (e.Key == Key.Up))
+            if (secondaryMembers.Items.Contains(methodButtonContent) && (e.Key == Key.Up))
             {
                 var generator = primaryMembers.ItemContainerGenerator;
-                (generator.ContainerFromIndex(primaryMembers.Items.Count-1) as ListBoxItem).Focus();
+                (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
                 e.Handled = true;
             }
 

@@ -7,6 +7,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Controls
 {
@@ -35,7 +36,7 @@ namespace Dynamo.Controls
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var classButton = Keyboard.FocusedElement as ListViewItem;
+            var classButton = Keyboard.FocusedElement as ListBoxItem;
             if (e.Key == Key.Enter)
             {
                 if (!classButton.IsSelected) classButton.IsSelected = true;
@@ -46,6 +47,15 @@ namespace Dynamo.Controls
 
             var buttonsWrapPanel = sender as LibraryWrapPanel;
             var listButtons = buttonsWrapPanel.Children;
+
+            if ((classButton.DataContext is NodeSearchElement) && (e.Key == Key.Up))
+            {
+                var selectedClassButton= listButtons.OfType<ListViewItem>().
+                    Where<ListViewItem>(button => button.IsSelected).FirstOrDefault();
+                if (selectedClassButton != null) selectedClassButton.Focus();
+                e.Handled = true;
+                return;
+            }
 
             // If class is selected, we should move down to ClassDetails.
             if ((e.Key == Key.Down) && classButton.IsSelected)
