@@ -32,6 +32,17 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
+        private void NotifyTaskStateChanged(AsyncTask task,
+            TaskStateChangedEventArgs.State state)
+        {
+            var stateChangedHandler = TaskStateChanged;
+            if (stateChangedHandler == null)
+                return; // No event handler, bail.
+
+            var e = new TaskStateChangedEventArgs(task, state);
+            stateChangedHandler(this, e);
+        }
+
         private void CompactTaskQueue()
         {
             if (taskQueue.Count < 2) // Cannot compact further.
