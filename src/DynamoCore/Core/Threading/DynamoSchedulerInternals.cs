@@ -120,21 +120,12 @@ namespace Dynamo.Core.Threading
         {
             NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
 
-            try
-            {
-                asyncTask.Execute(); // Internally sets the ExecutionStartTime
-                NotifyTaskStateChanged(asyncTask, TaskState.ExecutionCompleted);
-                asyncTask.HandleTaskCompletion(null); // Completed successfully.
-            }
-            catch (Exception exception)
-            {
-                // HandleTaskCompletion internally sets the ExecutionEndTime time,
-                // it also invokes the registered callback Action if there is one.
-                // 
-                NotifyTaskStateChanged(asyncTask, TaskState.ExecutionFailed);
-                asyncTask.HandleTaskCompletion(exception);
-            }
+            var executionState = asyncTask.Execute()
+                ? TaskState.ExecutionCompleted
+                : TaskState.ExecutionFailed;
 
+            NotifyTaskStateChanged(asyncTask, executionState);
+            asyncTask.HandleTaskCompletion();
             NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
         }
 
