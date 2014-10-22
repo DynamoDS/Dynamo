@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 
 using Dynamo.Interfaces;
@@ -136,6 +138,7 @@ namespace Dynamo.Core.Threading
         public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;
+            IEnumerable<AsyncTask> droppedTasks = null;
 
             lock (taskQueue)
             {
@@ -143,7 +146,7 @@ namespace Dynamo.Core.Threading
                 {
                     // The task queue has been updated since the last time 
                     // a task was processed, it might need compacting.
-                    CompactTaskQueue();
+                    droppedTasks = CompactTaskQueue();
                     ReprioritizeTasksInQueue();
                     taskQueueUpdated = false;
                 }
@@ -158,6 +161,16 @@ namespace Dynamo.Core.Threading
                     // No more task in queue, reset wait handle.
                     waitHandles[(int)EventIndex.TaskAvailable].Reset();
                 }
+            }
+
+            if (droppedTasks != null)
+            {
+                // Only notify listeners of dropping tasks here instead of
+                // within CompactTaskQueue method. This way the lock on task
+                // queue will not be held up for a prolonged period of time.
+                // 
+                foreach (var droppedTask in droppedTasks)
+                    NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
             }
 
             if (nextTask != null)
