@@ -388,16 +388,26 @@
 
         <!--EndRegion-->
     </UserControl.Resources>
-    <TreeView ItemsSource="{Binding}"
-              Style="{StaticResource AddonsTreeView}"
-              BorderThickness="0"
-              VirtualizingStackPanel.IsVirtualizing="True"
-              VirtualizingStackPanel.VirtualizationMode="Recycling"
-              ItemContainerStyle="{StaticResource AddonsTreeViewItem}">
-        <TreeView.Template>
-            <ControlTemplate>
-                <ItemsPresenter />
-            </ControlTemplate>
-        </TreeView.Template>
-    </TreeView>
+    <StackPanel>
+        <Border Background="#353535"
+                Height="27">
+            <TextBlock Text="Add-ons"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       Foreground="#989898"
+                       Margin="16,0,0,0" />
+        </Border>
+        <TreeView ItemsSource="{Binding Model.AddonRootCategories}"
+                  Style="{StaticResource AddonsTreeView}"
+                  BorderThickness="0"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  ItemContainerStyle="{StaticResource AddonsTreeViewItem}">
+            <TreeView.Template>
+                <ControlTemplate>
+                    <ItemsPresenter />
+                </ControlTemplate>
+            </TreeView.Template>
+        </TreeView>
+    </StackPanel>
 </UserControl>

@@ -734,6 +734,18 @@ namespace ProtoAssociative
             updatePcDictionary(line, col);
         }
 
+
+        protected void EmitJumpDependency()
+        {
+            EmitInstrConsole(ProtoCore.DSASM.kw.jdep);
+
+            Instruction instr = new Instruction();
+            instr.opCode = ProtoCore.DSASM.OpCode.JDEP;
+
+            ++pc;
+            codeBlock.instrStream.instrList.Add(instr);
+        }
+
         //protected override void EmitDependency(int exprUID, bool isSSAAssign)
         protected void EmitDependency(int exprUID, int modBlkUID, bool isSSAAssign)
         {
@@ -753,6 +765,11 @@ namespace ProtoAssociative
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
             //AppendInstruction(instr);
+
+            if (!core.Options.IsDeltaExecution)
+            {
+                EmitJumpDependency();
+            }
         }
 
         private void InferDFSTraverse(AssociativeNode node, ref ProtoCore.Type inferedType)
@@ -4338,6 +4355,12 @@ namespace ProtoAssociative
                         //      warning is emitted during pre-execute phase, and at the ID is bound to null. (R1 - Feb)
 
                         int startpc = pc;
+
+                        // Set the first symbol that triggers the cycle to null
+                        ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode = new ProtoCore.AssociativeGraph.GraphNode();
+                        nullAssignGraphNode.updateBlock.startpc = pc;
+
+
                         EmitPushNull();
 
                         // Push the identifier local block  
@@ -4362,6 +4385,16 @@ namespace ProtoAssociative
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
                         EmitPopForSymbol(symnode);
+
+
+                        nullAssignGraphNode.PushSymbolReference(symbolnode);
+                        nullAssignGraphNode.procIndex = globalProcIndex;
+                        nullAssignGraphNode.classIndex = globalClassIndex;
+                        nullAssignGraphNode.updateBlock.endpc = pc - 1;
+
+                        PushGraphNode(nullAssignGraphNode);
+                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+
 
                         // Comment it out. It doesn't work for the following 
                         // case:
@@ -7470,26 +7503,42 @@ namespace ProtoAssociative
                     }
                 }
 
-
-                // For each property modified
-                foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
+                if (firstProc.classScope == Constants.kGlobalScope)
                 {
-                    int index = graphNode.firstProcRefIndex;
-
-
-                    // Is it a global function
-                    if (ProtoCore.DSASM.Constants.kGlobalScope == firstProc.classScope)
+                    graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
+                }
+                else
+                {
+                    // For each property modified
+                    foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
                     {
-                        graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
-                    }
-                    else if (ProtoCore.DSASM.Constants.kInvalidIndex != index && ProtoCore.DSASM.Constants.kGlobalScope != firstProc.classScope)
-                    {
-                        if (core.Options.GenerateSSA)
+                        int index = graphNode.firstProcRefIndex;
+
+                        // Is it a global function
+                        if (ProtoCore.DSASM.Constants.kInvalidIndex != index)
                         {
-                            foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                            if (core.Options.GenerateSSA)
+                            {
+                                foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                                {
+                                    // Do this only if first proc is a member function...
+                                    ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                    autogenRef = autogenRef.GetUntilFirstProc();
+
+                                    // ... and the first symbol is an instance of a user-defined type
+                                    int last = autogenRef.nodeList.Count - 1;
+                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
+                                    if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
+                                    {
+                                        autogenRef.PushUpdateNodeRef(updateRef);
+                                        graphNode.updateNodeRefList.Add(autogenRef);
+                                    }
+                                }
+                            }
+                            else
                             {
                                 // Do this only if first proc is a member function...
-                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
                                 autogenRef = autogenRef.GetUntilFirstProc();
 
                                 // ... and the first symbol is an instance of a user-defined type
@@ -7500,21 +7549,6 @@ namespace ProtoAssociative
                                     autogenRef.PushUpdateNodeRef(updateRef);
                                     graphNode.updateNodeRefList.Add(autogenRef);
                                 }
-                            }
-                        }
-                        else
-                        {
-                            // Do this only if first proc is a member function...
-                            ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
-                            autogenRef = autogenRef.GetUntilFirstProc();
-
-                            // ... and the first symbol is an instance of a user-defined type
-                            int last = autogenRef.nodeList.Count - 1;
-                            Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
-                            if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
-                            {
-                                autogenRef.PushUpdateNodeRef(updateRef);
-                                graphNode.updateNodeRefList.Add(autogenRef);
                             }
                         }
                     }

@@ -322,7 +322,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
             var data = mirror.GetData();
             if (data == null) return null;
-            if (!data.IsCollection) return null;
+            if (!data.IsCollection)
+            {
+                return data.Data == null ? new List<object>() : new List<object>(){data.Data};
+            }
             var elements = data.GetElements();
 
             var objects = GetSublistItems(elements);

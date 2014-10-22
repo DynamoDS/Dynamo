@@ -22,6 +22,28 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class UpdateManagerUITests : DynamoTestUIBase
     {
+        private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
+        private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
+
+        private static Mock<IUpdateManager> MockUpdateManager(string availableVersion, string productVersion)
+        {
+            var um_mock = new Mock<IUpdateManager>();
+            um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString(availableVersion));
+            um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString(productVersion));
+
+            var config = new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S
+            };
+            um_mock.Setup(um => um.Configuration).Returns(config);
+
+            var fieldInfo = typeof(UpdateManager).GetField("instance", BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(fieldInfo);
+            fieldInfo.SetValue(UpdateManager.Instance, um_mock.Object);
+            return um_mock;
+        }
+
         private void Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
@@ -60,12 +82,10 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void UpdateButtonNotCollapsedIfNotUpToDate()
         {
-            var um_mock = new Mock<IUpdateManager>();
-            um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
-            um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
-            var fieldInfo = typeof(UpdateManager).GetField("instance", BindingFlags.Static | BindingFlags.NonPublic);
-            fieldInfo.SetValue(UpdateManager.Instance, um_mock.Object);
-
+            const string availableVersion = "9.9.9.9";
+            const string productVersion = "1.1.1.1";
+            MockUpdateManager(availableVersion, productVersion);
+            
             Init();
 
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
@@ -78,11 +98,9 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void UpdateButtonCollapsedIfUpToDate()
         {
-            var um_mock = new Mock<IUpdateManager>();
-            um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
-            um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
-            var fieldInfo = typeof(UpdateManager).GetField("instance", BindingFlags.Static | BindingFlags.NonPublic);
-            fieldInfo.SetValue(UpdateManager.Instance, um_mock.Object);
+            const string availableVersion = "1.1.1.1";
+            const string productVersion = "9.9.9.9";
+            MockUpdateManager(availableVersion, productVersion);
 
             Init();
 
@@ -96,12 +114,10 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void UpdateButtonCollapsedIfNotConnected()
         {
-            var um_mock = new Mock<IUpdateManager>();
-            um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString(""));
-            um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
-            var fieldInfo = typeof(UpdateManager).GetField("instance", BindingFlags.Static | BindingFlags.NonPublic);
-            fieldInfo.SetValue(UpdateManager.Instance, um_mock.Object);
-            
+            const string availableVersion = "";
+            const string productVersion = "9.9.9.9";
+            MockUpdateManager(availableVersion, productVersion);
+
             Init();
 
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];

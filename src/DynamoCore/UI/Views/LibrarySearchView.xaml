@@ -139,8 +139,10 @@
         <!--Converter that will be used, if number of found classes equals 0. 
             Then classes will be collapsed.-->
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
 
         <!--EndRegion-->
 
@@ -485,6 +487,9 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel DataContext="{Binding TopResult}">
+                    <StackPanel.Visibility>
+                        <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
+                    </StackPanel.Visibility>
                     <TextBlock Text="{Binding Name}"
                                Margin="16,8,0,8"
                                Foreground="#989898"
@@ -656,60 +661,43 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
                 <uicontrols:AddonsTreeView Grid.Row="2"
-                                           DataContext="{Binding Model.AddonRootCategories}">
+                                           DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
-                        <Binding Path="Model.AddonRootCategories.Count"
-                                 Converter="{StaticResource IntToVisibilityConverter}" />
+                        <Binding Path="SearchAddonsVisibility"
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
 
         <Button Name="NoMatchFoundButton"
-                Grid.Row="2"
                 Height="20"
+                Margin="0,10,0,0"
+                OverridesDefaultStyle="True"
+                FontSize="13"
+                BorderThickness="0"
+                Background="Transparent"
+                Foreground="#666"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Content="No matches found"
                 Click="OnNoMatchFoundButtonClick">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="OverridesDefaultStyle"
-                            Value="True" />
-                    <Setter Property="FontSize"
-                            Value="13" />
-                    <Setter Property="BorderThickness"
-                            Value="0" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="Foreground"
-                            Value="#666" />
-                    <Setter Property="VerticalAlignment"
-                            Value="Top" />
-                    <Setter Property="HorizontalAlignment"
-                            Value="Center" />
-                    <Setter Property="Margin"
-                            Value="0,10,0,0" />
-                    <Setter Property="Content"
-                            Value="No matches found" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border x:Name="Border"
-                                        Background="Transparent"
-                                        BorderThickness="0 0 0 0">
-                                    <ContentPresenter Margin="0 1 0 0" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Visibility">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
-                                <Binding Path="Model.SearchRootCategories.Count" />
-                                <Binding Path="SearchText" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Button.Style>
+            <Button.Visibility>
+                <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
+                    <Binding Path="Model.SearchRootCategories.Count" />
+                    <Binding Path="SearchAddonsVisibility" />
+                    <Binding Path="SearchText" />
+                </MultiBinding>
+            </Button.Visibility>
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Border"
+                            Background="Transparent"
+                            BorderThickness="0 0 0 0">
+                        <ContentPresenter Margin="0 1 0 0" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
         </Button>
 
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
