@@ -149,6 +149,7 @@ namespace Dynamo.Search.SearchElements
                                           this._group, this._fullName, this.Assembly,
                                           this._inputParameters, this._outputParameters);
             f.FullCategoryName = this.FullCategoryName;
+            f.ElementType = this.ElementType;
             return f;
         }
 

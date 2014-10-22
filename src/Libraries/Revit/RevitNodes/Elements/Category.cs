@@ -1,4 +1,6 @@
-﻿using Autodesk.DesignScript.Runtime;
+﻿using System;
+
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
@@ -14,9 +16,26 @@ namespace Revit.Elements
 
         #region public properties
 
+        /// <summary>
+        /// The name of the Category.
+        /// </summary>
         public string Name
         {
-            get { return internalCategory.Name; }
+            get
+            {
+                return internalCategory.Name;
+            }
+        }
+
+        /// <summary>
+        /// The Id of the category.
+        /// </summary>
+        public int Id
+        {
+            get
+            {
+                return InternalCategory.Id.IntegerValue;
+            }
         }
 
         #endregion
@@ -29,12 +48,28 @@ namespace Revit.Elements
 
         #region public static constructors
 
+        /// <summary>
+        /// Get a Revit category by by the built in category name.
+        /// </summary>
+        /// <param name="name">The built in category name.</param>
+        /// <returns></returns>
         public static Category ByName(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
             Settings documentSettings = DocumentManager.Instance.CurrentDBDocument.Settings;
             var groups = documentSettings.Categories;
-            var builtInCat = (BuiltInCategory)System.Enum.Parse(typeof(BuiltInCategory), name);
+            var builtInCat = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), name);
             var category = groups.get_Item(builtInCat);
+
+            if (category == null)
+            {
+                throw new Exception("The selected category is not valid in this document.");
+            }
+
             return new Category(category);
         }
 

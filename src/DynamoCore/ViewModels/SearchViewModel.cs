@@ -132,6 +132,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool SearchAddonsVisibility
+        {
+            get 
+            {
+                return Model.AddonRootCategories.Any(cat => cat.Visibility);
+            }
+        }
+
         public enum ViewMode { LibraryView, LibrarySearchView };
 
         /// <summary>
@@ -269,6 +277,8 @@ namespace Dynamo.ViewModels
                 ele.ExpandToRoot();
                 ele.Visibility = true;
             }
+
+            RaisePropertyChanged("SearchAddonsVisibility");
         }
 
         internal static string ShortenCategoryName(string fullCategoryName)

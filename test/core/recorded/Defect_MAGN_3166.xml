@@ -16,6 +16,7 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <UpdateModelValueCommand ModelGuid="5f4dc764-760a-4f4c-b750-8a99c5c17195" Name="Code" Value="1..2" />
   <ModelEventCommand ModelGuid="3df462b5-d4e6-4c28-9d1c-9bf6099ba77a" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="3df462b5-d4e6-4c28-9d1c-9bf6099ba77a" EventName="AddInPort" />
   <MakeConnectionCommand NodeId="5f4dc764-760a-4f4c-b750-8a99c5c17195" PortIndex="0" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="3df462b5-d4e6-4c28-9d1c-9bf6099ba77a" PortIndex="0" Type="0" ConnectionMode="1" />
   <MakeConnectionCommand NodeId="5f4dc764-760a-4f4c-b750-8a99c5c17195" PortIndex="0" Type="1" ConnectionMode="0" />
