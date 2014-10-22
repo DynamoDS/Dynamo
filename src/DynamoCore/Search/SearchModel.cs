@@ -515,7 +515,7 @@ namespace Dynamo.Search
             var group = SearchElementGroup.None;
             nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
-            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);            
+            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
@@ -536,7 +536,7 @@ namespace Dynamo.Search
         #region Execution
 
         internal event SearchElementBase.SearchElementHandler Executed;
-        public void OnExecuted(SearchElementBase element)
+        internal void OnExecuted(SearchElementBase element)
         {
             if (Executed != null)
             {
