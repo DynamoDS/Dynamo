@@ -37,6 +37,8 @@ namespace Dynamo.Controls
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             var classButton = Keyboard.FocusedElement as ListBoxItem;
+
+            // Enter collapses and expands class button.
             if (e.Key == Key.Enter)
             {
                 if (!classButton.IsSelected) classButton.IsSelected = true;
@@ -48,6 +50,8 @@ namespace Dynamo.Controls
             var buttonsWrapPanel = sender as LibraryWrapPanel;
             var listButtons = buttonsWrapPanel.Children;
 
+            // If focused element is NodeSearchElement, that means focused element is inside expanded class.
+            // If user presses Up, we have to move back to selected class.
             if ((classButton.DataContext is NodeSearchElement) && (e.Key == Key.Up))
             {
                 var selectedClassButton= listButtons.OfType<ListViewItem>().

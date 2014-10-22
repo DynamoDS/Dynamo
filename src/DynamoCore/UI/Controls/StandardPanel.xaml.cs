@@ -223,12 +223,15 @@ namespace Dynamo.UI.Controls
 
             if (e.Key == Key.Down)
             {
+                // If there is no secondary members, we stay at the bottom of StandardPanel.
                 if (!hasSecondaryMembers)
                 {
                     e.Handled = true;
                     return;
                 }
 
+                // If focused element is already inside secondary members, that means we are at the last member.
+                // And there is no way to go further, so we stay here.
                 if (secondaryMembers.Items.Contains(methodButtonContent))
                 {
                     e.Handled = true;
