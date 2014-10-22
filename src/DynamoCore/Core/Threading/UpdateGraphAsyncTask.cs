@@ -24,7 +24,6 @@ namespace Dynamo.Core.Threading
         internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
-            enableInstrumentation = true;
         }
 
         /// <summary>
