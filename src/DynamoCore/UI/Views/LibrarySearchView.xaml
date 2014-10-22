@@ -524,7 +524,8 @@
                                       OverridesDefaultStyle="True"
                                       Template="{StaticResource CategoryExpanderTemplate}"
                                       IsExpanded="True">
-                                <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Vertical"
+                                            KeyDown="OnCategoryContentKeyDown">
 
                                     <!--Found classes-->
                                     <ListView Name="SubCategoryListView"
@@ -535,7 +536,8 @@
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                               ScrollViewer.CanContentScroll="False"
                                               ScrollViewer.IsDeferredScrollingEnabled="False"
-                                              ItemsSource="{Binding Path=Classes}">
+                                              ItemsSource="{Binding Path=Classes}"
+                                              Focusable="False">
                                         <ListView.Visibility>
                                             <Binding Path="Classes.Count"
                                                      Converter="{StaticResource IntToVisibilityConverter}" />
@@ -555,6 +557,8 @@
                                             <Style TargetType="{x:Type ListViewItem}">
                                                 <EventSetter Event="PreviewMouseLeftButtonDown"
                                                              Handler="OnClassButtonCollapse" />
+                                                <EventSetter Event="GotKeyboardFocus"
+                                                             Handler="OnClassButtonGotKeyboardFocus" />
 
                                                 <Setter Property="Template">
                                                     <Setter.Value>
@@ -609,7 +613,8 @@
                                              ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
                                              ItemsSource="{Binding MemberGroups}"
                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                             KeyDown="MemberGroupsKeyDown">
+                                             KeyDown="MemberGroupsKeyDown"
+                                             Name="MemberGroupsListBox">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
