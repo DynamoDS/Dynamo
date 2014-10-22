@@ -79,22 +79,18 @@ namespace Dynamo.Search
 
         /// <summary>
         /// The root elements for the browser
-        /// </summary>
-        private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
+        /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; }
-            set { _browserRootCategories = value; }
+            get { return browserCategoriesBuilder.RootCategories; }            
         }
 
         /// <summary>
         /// The root elements for custom nodes tree.
-        /// </summary>
-        private ObservableCollection<BrowserRootElement> _addonRootCategories = new ObservableCollection<BrowserRootElement>();
+        /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get { return _addonRootCategories; }
-            set { _addonRootCategories = value; }
+            get { return addonCategoriesBuilder.RootCategories; }            
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
@@ -145,8 +141,8 @@ namespace Dynamo.Search
 
         private void InitializeCore()
         {
-            browserCategoriesBuilder = new CategoryBuilder(this, _browserRootCategories, false);
-            addonCategoriesBuilder = new CategoryBuilder(this, _addonRootCategories, true);
+            browserCategoriesBuilder = new CategoryBuilder(this, false);
+            addonCategoriesBuilder = new CategoryBuilder(this, true);
 
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
@@ -335,8 +331,8 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyCategories()
         {
-            _browserRootCategories = browserCategoriesBuilder.RemoveEmptyCategories();
-            _addonRootCategories = addonCategoriesBuilder.RemoveEmptyCategories();
+            browserCategoriesBuilder.RemoveEmptyCategories();
+            addonCategoriesBuilder.RemoveEmptyCategories();
         }
 
         internal void SortCategoryChildren()
@@ -582,8 +578,8 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(nodeName);
-                addonCategoriesBuilder.RemoveEmptyCategory(node);
                 browserCategoriesBuilder.RemoveEmptyCategory(node);
+                addonCategoriesBuilder.RemoveEmptyCategory(node);                
             }
         }
 
@@ -607,6 +603,7 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(node.Guid);
+                browserCategoriesBuilder.RemoveEmptyCategory(node);
                 addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
         }

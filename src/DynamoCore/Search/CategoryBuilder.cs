@@ -12,11 +12,16 @@ namespace Dynamo.Search
         private SearchModel searchModel;
         private bool isAddons;
 
-        internal CategoryBuilder(SearchModel searchModel, ObservableCollection<BrowserRootElement> rootCategories, bool isAddons)
+        internal ObservableCollection<BrowserRootElement> RootCategories
+        {
+            get { return rootCategories; }
+        }
+
+        internal CategoryBuilder(SearchModel searchModel, bool isAddons)
         {
             this.searchModel = searchModel;
-            this.rootCategories = rootCategories;
             this.isAddons = isAddons;
+            this.rootCategories = new ObservableCollection<BrowserRootElement>();
         }
 
         internal ObservableCollection<BrowserRootElement> RemoveEmptyCategories()
