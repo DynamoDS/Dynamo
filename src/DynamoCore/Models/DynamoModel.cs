@@ -335,6 +335,7 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
             scheduler = new DynamoScheduler(thread);
+            scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 #endif
 
             if (preferences is PreferenceSettings)
@@ -593,6 +594,40 @@ namespace Dynamo.Models
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             OnEvaluationCompleted(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// This event handler is invoked when DynamoScheduler changes the state 
+        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
+        /// details of these state changes.
+        /// </summary>
+        /// <param name="sender">The scheduler which raised the event.</param>
+        /// <param name="e">Task state changed event argument.</param>
+        /// 
+        private void OnAsyncTaskStateChanged(
+            DynamoScheduler sender,
+            TaskStateChangedEventArgs e)
+        {
+            switch (e.CurrentState)
+            {
+                case TaskStateChangedEventArgs.State.ExecutionStarting:
+                    if (e.Task is UpdateGraphAsyncTask)
+                        ExecutionEvents.OnGraphPreExecution();
+                    break;
+
+                case TaskStateChangedEventArgs.State.ExecutionCompleted:
+                    if (e.Task is UpdateGraphAsyncTask)
+                    {
+                        // Record execution time for update graph task.
+                        long start = e.Task.ExecutionStartTime.TickCount;
+                        long end = e.Task.ExecutionEndTime.TickCount;
+                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                            e.Task.GetType().Name, new TimeSpan(end - start));
+
+                        ExecutionEvents.OnGraphPostExecution();
+                    }
+                    break;
+            }
         }
 
 #endif
