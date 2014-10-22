@@ -239,7 +239,7 @@ namespace Dynamo.PackageManager
 
         private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
         {
-            var assemblies = LoadAssembliesInBinDirectory();
+            var assemblies = LoadAssembliesInBinDirectory(logger);
 
             // filter the assemblies
             var zeroTouchAssemblies = new List<Assembly>();
@@ -271,7 +271,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
+        private IEnumerable<Assembly> LoadAssembliesInBinDirectory(ILogger logger)
         {
             var assemblies = new List<Assembly>();
 
