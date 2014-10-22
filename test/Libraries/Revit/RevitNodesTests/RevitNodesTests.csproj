@@ -94,6 +94,7 @@
     <Compile Include="Elements\FormTests.cs" />
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
+    <Compile Include="Elements\SunSettingsTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
     <Compile Include="Elements\StructuralFramingTests.cs" />
     <Compile Include="Elements\TopographyTests.cs" />
@@ -120,6 +121,11 @@
     <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\src\Libraries\Analysis\Analysis.csproj">
+      <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
+      <Name>Analysis</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
