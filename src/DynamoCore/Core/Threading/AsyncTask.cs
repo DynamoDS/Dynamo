@@ -145,24 +145,38 @@ namespace Dynamo.Core.Threading
         /// ExecuteCore method to perform relevant operations. This method is 
         /// invoked in the context of the SchedulerThread and not the main thread.
         /// </summary>
+        /// <returns>Returns true if execution was successful, or false if an 
+        /// exception was thrown.</returns>
         /// 
-        internal void Execute()
+        internal bool Execute()
         {
             ExecutionStartTime = scheduler.NextTimeStamp;
-            ExecuteCore();
+
+            try
+            {
+                ExecuteCore();
+            }
+            catch (Exception exception)
+            {
+                Exception = exception;
+            }
+            finally
+            {
+                ExecutionEndTime = scheduler.NextTimeStamp;
+            }
+
+            return Exception == null; // Exception thrown == execution failed.
         }
 
         /// <summary>
-        /// 
+        /// This method is called by DynamoScheduler after AsyncTask.Execute 
+        /// method returns. It is guaranteed to be called even when exception 
+        /// is thrown from within AsyncTask.Execute.
         /// </summary>
-        /// <param name="exception">The exception that is thrown from a prior 
-        /// call to Execute method will be caught and passed through this 
-        /// parameter. This value may be null if no exception was thrown.</param>
         /// 
-        internal void HandleTaskCompletion(Exception exception)
+        internal void HandleTaskCompletion()
         {
             ExecutionEndTime = scheduler.NextTimeStamp;
-            Exception = exception;
 
             // Record instrumentation data for this task.
             if (enableInstrumentation)
