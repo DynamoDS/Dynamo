@@ -34,7 +34,7 @@
         <Begin>"</Begin>
         <End>"</End>
       </Span>
-      <MarkPrevious color="#417693">(</MarkPrevious>
+      <!--<MarkPrevious color="#417693">(</MarkPrevious>-->
       <KeyWords name="BuiltInStatements" color="#8C5EAA">
         <Key word="local" />
         <Key word="static" />

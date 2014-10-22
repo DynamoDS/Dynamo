@@ -31,7 +31,7 @@ namespace Dynamo.ViewModels
     {
         #region Properties and Fields
 
-        internal readonly DynamoViewModel DynamoViewModel;
+        public DynamoViewModel DynamoViewModel { get; private set; }
         public readonly WorkspaceModel Model;
 
         private bool _canFindNodesFromElements = false;
