@@ -8,6 +8,8 @@ using Dynamo.Interfaces;
 
 namespace Dynamo.Core.Threading
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
     partial class DynamoScheduler
     {
         #region Private Class Data Members
@@ -32,8 +34,7 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
-        private void NotifyTaskStateChanged(AsyncTask task,
-            TaskStateChangedEventArgs.State state)
+        private void NotifyTaskStateChanged(AsyncTask task, TaskState state)
         {
             var stateChangedHandler = TaskStateChanged;
             if (stateChangedHandler == null)
@@ -97,11 +98,14 @@ namespace Dynamo.Core.Threading
             taskQueue.AddRange(temp.OrderBy(t => t, new AsyncTaskComparer()));
         }
 
-        private static void ProcessTaskInternal(AsyncTask asyncTask)
+        private void ProcessTaskInternal(AsyncTask asyncTask)
         {
+            NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
+
             try
             {
                 asyncTask.Execute(); // Internally sets the ExecutionStartTime
+                NotifyTaskStateChanged(asyncTask, TaskState.ExecutionCompleted);
                 asyncTask.HandleTaskCompletion(null); // Completed successfully.
             }
             catch (Exception exception)
@@ -109,8 +113,11 @@ namespace Dynamo.Core.Threading
                 // HandleTaskCompletion internally sets the ExecutionEndTime time,
                 // it also invokes the registered callback Action if there is one.
                 // 
+                NotifyTaskStateChanged(asyncTask, TaskState.ExecutionFailed);
                 asyncTask.HandleTaskCompletion(exception);
             }
+
+            NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
         }
 
         #endregion
