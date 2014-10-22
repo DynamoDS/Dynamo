@@ -19,7 +19,7 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
-        private static int cachedIndex = -2;
+        private int cachedIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -188,6 +188,11 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+
+            // Every time, when user moves inside class details, class button selects.
+            // As result class details repaints.
+            // So, we don't need to repaint it everytime, that's why we use cached index.
+            // If cached index equals current one, then we don't have to do anything.
             if (cachedIndex != index) cachedIndex = index;
             else return;
 
