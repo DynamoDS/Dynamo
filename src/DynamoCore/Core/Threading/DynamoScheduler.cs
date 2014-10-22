@@ -6,6 +6,8 @@ using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
     public class TaskStateChangedEventArgs : EventArgs
     {
         public enum State
@@ -13,7 +15,9 @@ namespace Dynamo.Core.Threading
             Scheduled,
             Discarded,
             ExecutionStarting,
-            ExecutionComplete
+            ExecutionFailed,
+            ExecutionCompleted,
+            CompletionHandled
         }
 
         internal AsyncTask Task { get; private set; }
@@ -93,6 +97,7 @@ namespace Dynamo.Core.Threading
             if (DynamoModel.IsTestMode)
             {
                 asyncTask.MarkTaskAsScheduled();
+                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
                 ProcessTaskInternal(asyncTask);
                 return;
             }
@@ -101,6 +106,7 @@ namespace Dynamo.Core.Threading
             {
                 taskQueue.Add(asyncTask); // Append new task to the end
                 asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
+                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
 
                 // Mark the queue as being updated. This causes the next call
                 // to "ProcessNextTask" method to post process the task queue.
