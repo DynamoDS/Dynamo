@@ -273,25 +273,18 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<Assembly> LoadAssembliesInBinDirectory(ILogger logger)
         {
-            if (!Directory.Exists(BinaryDirectory)) 
-                return new List<Assembly>();
-
-            var fileInfos = (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll");
-
             var assemblies = new List<Assembly>();
 
-            foreach (var fi in fileInfos)
+            if (!Directory.Exists(BinaryDirectory))
+                return assemblies;
+
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
-                try
-                {
-                    assemblies.Add(Assembly.LoadFrom(fi.FullName));
-                }
-                catch (BadImageFormatException ex)
-                {
-                    logger.Log(
-                        string.Format("The assembly, {0}, in your package, was not loaded. It is either an unmanaged assembly, is not the correct .net version, or is compiled for x86. If this assembly is an unmanaged assembly that is a dependency of another assembly in your package, then you can ignore this warning.",fi.Name));
-                }
+                Assembly assem;
+
+                // dll files may be un-managed, skip those
+                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                if (result) assemblies.Add(assem);
             }
 
             foreach (var assem in assemblies)
