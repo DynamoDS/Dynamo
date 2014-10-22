@@ -273,12 +273,19 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
         {
-            if (!Directory.Exists(BinaryDirectory)) 
-                return new List<Assembly>();
+            var assemblies = new List<Assembly>();
 
-            var assemblies = (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+            if (!Directory.Exists(BinaryDirectory))
+                return assemblies;
+
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            {
+                Assembly assem;
+
+                // dll files may be un-managed, skip those
+                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                if (result) assemblies.Add(assem);
+            }
 
             foreach (var assem in assemblies)
             {
