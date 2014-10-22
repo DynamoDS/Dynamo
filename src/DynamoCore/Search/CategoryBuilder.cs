@@ -38,21 +38,21 @@ namespace Dynamo.Search
                 return;
             }
 
-            var cat = GetCategoryByName(categoryName);
-            if (cat == null)
+            var category = GetCategoryByName(categoryName);
+            if (category == null)
             {
                 return;
             }
 
-            RemoveEmptyRootCategory((BrowserRootElement)cat);
+            RemoveEmptyRootCategory((BrowserRootElement)category);
         }
 
-        internal void RemoveEmptyRootCategory(BrowserRootElement rootEle)
+        internal void RemoveEmptyRootCategory(BrowserRootElement rootElement)
         {
-            if (!ContainsCategory(rootEle.Name))
+            if (!ContainsCategory(rootElement.Name))
                 return;
 
-            rootCategories.Remove(rootEle);
+            rootCategories.Remove(rootElement);
         }
 
         /// <summary>
@@ -61,33 +61,33 @@ namespace Dynamo.Search
         /// <param name="categoryName">The category name, including delimiters</param>
         internal void RemoveEmptyCategory(string categoryName)
         {
-            var currentCat = GetCategoryByName(categoryName);
-            if (currentCat == null)
+            var currentCategory = GetCategoryByName(categoryName);
+            if (currentCategory == null)
             {
                 return;
             }
 
-            RemoveEmptyCategory(currentCat);
+            RemoveEmptyCategory(currentCategory);
         }
 
         /// <summary>
         /// Remove an empty category from browser and search.  Useful when a single item is removed.
         /// </summary>
-        /// <param name="ele"></param>
-        internal void RemoveEmptyCategory(BrowserItem ele)
+        /// <param name="element"></param>
+        internal void RemoveEmptyCategory(BrowserItem element)
         {
-            if (ele is BrowserRootElement && ele.Items.Count == 0)
+            if (element is BrowserRootElement && element.Items.Count == 0)
             {
-                RemoveEmptyRootCategory(ele as BrowserRootElement);
+                RemoveEmptyRootCategory(element as BrowserRootElement);
                 return;
             }
 
-            if (ele is BrowserInternalElement && ele.Items.Count == 0)
+            if (element is BrowserInternalElement && element.Items.Count == 0)
             {
-                var internalEle = ele as BrowserInternalElement;
+                var internalElement = element as BrowserInternalElement;
 
-                internalEle.Parent.Items.Remove(internalEle);
-                RemoveEmptyCategory(internalEle.Parent);
+                internalElement.Parent.Items.Remove(internalElement);
+                RemoveEmptyCategory(internalElement.Parent);
             }
         }
 
@@ -98,10 +98,10 @@ namespace Dynamo.Search
         /// <param name="categoryName"></param>
         internal void RemoveCategory(string categoryName)
         {
-            var currentCat = GetCategoryByName(categoryName);
-            if (currentCat == null) return;
+            var currentCategory = GetCategoryByName(categoryName);
+            if (currentCategory == null) return;
 
-            RemoveCategory(currentCat);
+            RemoveCategory(currentCategory);
 
         }
 
@@ -109,27 +109,27 @@ namespace Dynamo.Search
         /// Remove a category and all its children from the browser and search.  The category does
         /// not have to be empty.
         /// </summary>
-        /// <param name="ele"></param>
-        internal void RemoveCategory(BrowserItem ele)
+        /// <param name="element"></param>
+        internal void RemoveCategory(BrowserItem element)
         {
-            var nodes = ele.Items.Where(x => x is NodeSearchElement)
+            var nodes = element.Items.Where(x => x is NodeSearchElement)
                            .Cast<NodeSearchElement>().ToList();
 
-            var cats = ele.Items.Where(x => x is BrowserInternalElement)
+            var cats = element.Items.Where(x => x is BrowserInternalElement)
                            .Cast<BrowserInternalElement>().ToList();
 
             nodes.Select(x => x.Name).ToList().ForEach(searchModel.RemoveNode);
             cats.ToList().ForEach(RemoveCategory);
 
-            ele.Items.Clear();
+            element.Items.Clear();
 
-            if (ele is BrowserRootElement)
+            if (element is BrowserRootElement)
             {
-                rootCategories.Remove(ele as BrowserRootElement);
+                rootCategories.Remove(element as BrowserRootElement);
             }
-            else if (ele is BrowserInternalElement)
+            else if (element is BrowserInternalElement)
             {
-                (ele as BrowserInternalElement).Parent.Items.Remove(ele);
+                (element as BrowserInternalElement).Parent.Items.Remove(element);
             }
         }
 
@@ -152,28 +152,28 @@ namespace Dynamo.Search
 
             if (!searchModel.NodeCategories.ContainsKey(categoryName))
             {
-                var cat = new CategorySearchElement(categoryName);
-                cat.Executed += searchModel.OnExecuted;
+                var category = new CategorySearchElement(categoryName);
+                category.Executed += searchModel.OnExecuted;
 
-                searchModel.NodeCategories.Add(categoryName, cat);
+                searchModel.NodeCategories.Add(categoryName, category);
             }
 
             // otherwise split the category name
-            var splitCat = SearchModel.SplitCategoryName(categoryName);
+            var splitCategory = SearchModel.SplitCategoryName(categoryName);
 
             // attempt to add root element
-            if (splitCat.Count == 1)
+            if (splitCategory.Count == 1)
             {
                 return this.TryAddRootCategory(categoryName);
             }
 
-            if (splitCat.Count == 0)
+            if (splitCategory.Count == 0)
             {
                 return null;
             }
 
             // attempt to add root category
-            var currentCat = TryAddRootCategory(splitCat[0]);
+            var currentCategory = TryAddRootCategory(splitCategory[0]);
 
             // If splitCat.Count equals 2, then we try to add not class.
             // That means root category is full of methods, not classes.
@@ -183,20 +183,20 @@ namespace Dynamo.Search
             // So, just add method in category and do nothing.
             // This situation is true for Regular nodes. For other element types we work
             // with all pieces of category.
-            var count = isAddons ? splitCat.Count : splitCat.Count - 1;
+            var count = isAddons ? splitCategory.Count : splitCategory.Count - 1;
 
             for (var i = 1; i < count; i++)
             {
                 // All next members are namespaces.
-                currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
+                currentCategory = TryAddChildCategory(currentCategory, splitCategory[i], resourceAssembly);
             }
 
             // We sure, that the last member is class.
             if (!isAddons)
-                currentCat = TryAddChildClass(currentCat, splitCat[splitCat.Count - 1],
+                currentCategory = TryAddChildClass(currentCategory, splitCategory[splitCategory.Count - 1],
                     resourceAssembly);
 
-            return currentCat;
+            return currentCategory;
         }
 
         /// <summary>
@@ -228,11 +228,11 @@ namespace Dynamo.Search
                 return GetCategoryByName(newCategoryName);
             }
 
-            var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
-            tempCat.FullCategoryName = newCategoryName;
-            parent.AddChild(tempCat);
+            var tempCategory = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
+            tempCategory.FullCategoryName = newCategoryName;
+            parent.AddChild(tempCategory);
 
-            return tempCat;
+            return tempCategory;
         }
 
         /// <summary>
@@ -274,10 +274,10 @@ namespace Dynamo.Search
         /// <returns></returns>
         internal BrowserRootElement AddRootCategory(string name)
         {
-            var ele = new BrowserRootElement(name, rootCategories);
-            rootCategories.Add(ele);
+            var element = new BrowserRootElement(name, rootCategories);
+            rootCategories.Add(element);
 
-            return ele;
+            return element;
         }
 
         /// <summary>
@@ -287,9 +287,9 @@ namespace Dynamo.Search
         /// <returns></returns>
         internal BrowserRootElement AddRootCategoryToStart(string name)
         {
-            var ele = new BrowserRootElement(name, rootCategories);
-            rootCategories.Insert(0, ele);
-            return ele;
+            var element = new BrowserRootElement(name, rootCategories);
+            rootCategories.Insert(0, element);
+            return element;
         }
 
         /// <summary>
@@ -308,15 +308,15 @@ namespace Dynamo.Search
             if (!split.Any())
                 return null;
 
-            var cat = (BrowserItem)rootCategories.FirstOrDefault(x => x.Name == split[0]);
+            var category = (BrowserItem)rootCategories.FirstOrDefault(x => x.Name == split[0]);
 
             foreach (var splitName in split.GetRange(1, split.Count - 1))
             {
-                if (cat == null)
-                    return cat;
-                cat = TryGetSubCategory(cat, splitName);
+                if (category == null)
+                    return category;
+                category = TryGetSubCategory(category, splitName);
             }
-            return cat;
+            return category;
         }
 
         internal BrowserItem TryGetSubCategory(BrowserItem category, string catName)
