@@ -1,18 +1,53 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
+    public class TaskStateChangedEventArgs : EventArgs
+    {
+        public enum State
+        {
+            Scheduled,
+            Discarded,
+            ExecutionStarting,
+            ExecutionComplete
+        }
+
+        internal AsyncTask Task { get; private set; }
+        internal State CurrentState { get; private set; }
+
+        internal TaskStateChangedEventArgs(AsyncTask task, State state)
+        {
+            Task = task;
+            CurrentState = state;
+        }
+    }
+
+    public delegate void TaskStateChangedEventHandler(
+        DynamoScheduler sender, TaskStateChangedEventArgs e);
+
     public partial class DynamoScheduler
     {
-        #region Public Class Operational Methods
+        #region Class Events, Properties
+
+        /// <summary>
+        /// Event that is raised when the state of an AsyncTask is changed.
+        /// The state of an AsyncTask changes when it is scheduled, discarded,
+        /// executed or completed.
+        /// </summary>
+        internal event TaskStateChangedEventHandler TaskStateChanged;
 
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
         internal TimeStamp NextTimeStamp { get { return generator.Next; } }
+
+        #endregion
+
+        #region Public Class Operational Methods
 
         internal DynamoScheduler(ISchedulerThread schedulerThread)
         {
