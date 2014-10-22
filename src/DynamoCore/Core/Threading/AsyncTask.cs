@@ -51,7 +51,6 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
-        protected bool enableInstrumentation;
         private readonly DynamoScheduler scheduler;
 
         #endregion
@@ -176,18 +175,6 @@ namespace Dynamo.Core.Threading
         /// 
         internal void HandleTaskCompletion()
         {
-            ExecutionEndTime = scheduler.NextTimeStamp;
-
-            // Record instrumentation data for this task.
-            if (enableInstrumentation)
-            {
-                long start = ExecutionStartTime.TickCount;
-                long end = ExecutionEndTime.TickCount;
-
-                InstrumentationLogger.LogAnonymousTimedEvent("Perf",
-                    this.GetType().Name, new TimeSpan(end - start));
-            }
-
             HandleTaskCompletionCore();
 
             // Notify registered event handlers of task completion.
