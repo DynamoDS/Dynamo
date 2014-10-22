@@ -24,10 +24,9 @@ namespace Dynamo.Search
             this.rootCategories = new ObservableCollection<BrowserRootElement>();
         }
 
-        internal ObservableCollection<BrowserRootElement> RemoveEmptyCategories()
+        internal void RemoveEmptyCategories()
         {
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
-            return rootCategories;
         }
 
         internal void SortCategoryChildren()
