@@ -1,5 +1,6 @@
 ﻿using System;
 using Dynamo.Search;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -52,11 +53,36 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ShortenCategoryNameTests()
         {
-            var result = SearchViewModel.ShortenCategoryName("");
+            var categoryName = "";
+            var result = SearchViewModel.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
 
-            result = SearchViewModel.ShortenCategoryName(null);
+            categoryName = null;
+            result = SearchViewModel.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
+
+            categoryName = "Category1";
+            result = SearchViewModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("Category1", result);
+
+            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiter + "Cat2 Cat" +
+                                    Configurations.CategoryDelimiter + "Cat3";
+            result = SearchViewModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("Cat1 Cat " + Configurations.ShortenedCategoryDelimiter + " Cat2 Cat " +
+                                      Configurations.ShortenedCategoryDelimiter + " Cat3", result);
+
+            categoryName = "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "MoreSymbols";
+            result = SearchViewModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " ... " + Configurations.ShortenedCategoryDelimiter +
+                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " MoreSymbols", result);
         }
     }
 }
