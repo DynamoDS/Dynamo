@@ -945,7 +945,7 @@ namespace ProtoScript.Runners
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         ClassMirror GetClassType(string className);
-
+        
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;

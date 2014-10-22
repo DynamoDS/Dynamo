@@ -10,6 +10,8 @@ namespace RevitTestServices
     /// </summary>
     public class RevitNodeTestBase
     {
+        public const string ANALYSIS_DISPLAY_TESTS = "AnalysisDisplayTests";
+
         public RevitNodeTestBase()
         {
             AssemblyResolver.Setup();

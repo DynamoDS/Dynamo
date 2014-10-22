@@ -152,6 +152,9 @@ namespace Dynamo.Applications
             revitDynamoModel = InitializeCoreModel(extCommandData);
             dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
 
+            // handle initialization steps after RevitDynamoModel is created.
+            revitDynamoModel.HandlePostInitialization();
+
             // show the window
             InitializeCoreView().Show();
 
@@ -276,9 +279,9 @@ namespace Dynamo.Applications
         public static void InitializeUnits()
         {
             // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
         }
 
         public static void InitializeAssemblies()

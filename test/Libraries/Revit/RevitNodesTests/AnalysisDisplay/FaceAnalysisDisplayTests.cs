@@ -1,29 +1,58 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using Analysis.DataTypes;
+
+using Autodesk.Revit.DB;
+
 using Revit.AnalysisDisplay;
-using Revit.Application;
 using Revit.Elements;
 using NUnit.Framework;
+
+using RevitServices.Persistence;
+
 using RTF.Framework;
+
+using Document = Revit.Application.Document;
+using UV = Autodesk.DesignScript.Geometry.UV;
+
 
 namespace RevitTestServices.AnalysisDisplay
 {
-    [TestFixture]
-    public class FaceAnalysisDisplayTests : RevitNodeTestBase
+    internal static class AnalysisDisplayHelpers
     {
-        [Test, Category("Failure")]
-        [TestModel(@".\ColumnFamilyInstance.rvt")]
+        internal static Autodesk.DesignScript.Geometry.Surface GetFirstSurfaceInInPlaceMass()
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+            var fec = new FilteredElementCollector(doc);
+            fec.OfClass(typeof(Autodesk.Revit.DB.FamilyInstance));
+
+            var fi = fec.ToElements().FirstOrDefault();
+            if (fi == null) return null;
+
+            var inst = (Revit.Elements.FamilyInstance)ElementSelector.ByElementId(fi.Id.IntegerValue);
+            var geom = inst.Geometry();
+            var solid = (Autodesk.DesignScript.Geometry.Solid)geom.FirstOrDefault(g => g is Autodesk.DesignScript.Geometry.Solid);
+
+            return solid.Faces.First().SurfaceGeometry();
+        }
+    }
+
+    [TestFixture]
+    public class FaceAnalysisDisplayTests : GeometricRevitNodeTest
+    {
+        [Test]
+        [TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
         public void ByViewFacePointsAndValues_ValidArgs()
         {
-            var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
-            var famInst = fams.First() as Revit.Elements.FamilyInstance;
-
-            var faceRef = famInst.ElementFaceReferences.First();
+            var surface = AnalysisDisplayHelpers.GetFirstSurfaceInInPlaceMass();
 
             var samplePoints = new[]
             {
-                new double[]{0,0},
-                new[]{0.1,0.2},
-                new[]{0,0.1}
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.1,0.2),
+                UV.ByCoordinates(0,0.1),
+                
             };
 
             var sampleValues = new[]
@@ -34,26 +63,23 @@ namespace RevitTestServices.AnalysisDisplay
             };
 
             var doc = Document.Current;
-            var grid = FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints,
+            var grid = FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, surface, samplePoints,
                 sampleValues);
 
             Assert.NotNull(grid);
         }
 
         [Test]
-        [TestModel(@".\ColumnFamilyInstance.rvt")]
+        [TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
         public void ByViewFacePointsAndValues_BadArgs()
         {
-            var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
-            var famInst = fams.First() as Revit.Elements.FamilyInstance;
-
-            var faceRef = famInst.ElementFaceReferences.First();
+            var surface = AnalysisDisplayHelpers.GetFirstSurfaceInInPlaceMass();
 
             var samplePoints = new[]
             {
-                new double[]{0,0},
-                new[]{0.5,0},
-                new[]{0,0.5}
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.5,0),
+                UV.ByCoordinates(0,0.5)
             };
 
             var sampleValues = new[]
@@ -65,11 +91,65 @@ namespace RevitTestServices.AnalysisDisplay
 
             var doc = Document.Current;
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(null, faceRef, samplePoints, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(null, surface, samplePoints, sampleValues));
             Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, null, samplePoints, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, null, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, surface, null, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, surface, samplePoints, null));
         }
 
+        [Test, TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
+        public void ByViewAndFaceAnalysisData_ValidArgs()
+        {
+            var surface = AnalysisDisplayHelpers.GetFirstSurfaceInInPlaceMass();
+
+            var samplePoints = new[]
+            {
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.1,0.2),
+                UV.ByCoordinates(0,0.1),
+                
+            };
+
+            var sampleValues = new[]
+            {
+                1.0,
+                1092,
+                -1
+            };
+
+            var data = SurfaceAnalysisData.BySurfacePointsAndResults(surface, samplePoints, new List<string>(){"Sample Data"}, new IList<double>[]{sampleValues} );
+
+            var doc = Document.Current;
+            var grid = FaceAnalysisDisplay.ByViewAndFaceAnalysisData(doc.ActiveView, new []{data});
+
+            Assert.NotNull(grid);
+        }
+
+        [Test, TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]
+        public void ByViewAndFaceAnalysisData_BadArgs()
+        {
+            var surface = AnalysisDisplayHelpers.GetFirstSurfaceInInPlaceMass();
+
+            var samplePoints = new[]
+            {
+                UV.ByCoordinates(0,0),
+                UV.ByCoordinates(0.5,0),
+                UV.ByCoordinates(0,0.5)
+            };
+
+            var sampleValues = new[]
+            {
+                1.0,
+                1092,
+                -1
+            };
+
+            var data = SurfaceAnalysisData.BySurfacePointsAndResults(surface, samplePoints, new List<string>() { "Sample Data" }, new IList<double>[] { sampleValues });
+            var doc = Document.Current;
+
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewAndFaceAnalysisData(null, new []{data}));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewAndFaceAnalysisData(doc.ActiveView, null));
+            Assert.Throws(typeof(System.Exception), () => FaceAnalysisDisplay.ByViewAndFaceAnalysisData(doc.ActiveView, new SurfaceAnalysisData[]{}));
+        }
     }
 }

@@ -189,7 +189,8 @@ namespace DynamoUtilities
                 "FunctionObject.ds",
                 "Optimize.ds",
                 "DynamoUnits.dll",
-                "Tessellation.dll"
+                "Tessellation.dll",
+                "Analysis.dll"
             };
 
             foreach (var lib in coreLibs)
