@@ -230,11 +230,19 @@ namespace Dynamo.UI.Views
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
-        // This event is raised, when we need to move through categories.
-        // They are several cases:
-        // 1) we are at the last member button. (pressed down)
-        // 2) we are at the first row of class buttons. (pressed up)
-        // 3) we are at the first member button, if classes are not presented. (pressed up)
+        /// <summary>
+        /// 'CategoryListView' element contains the following child elements (either 
+        /// directly, or indirectly nested): 'StackPanel', 'SubCategoryListView',
+        /// 'MemberGroupsListBox' and 'MembersListBox'. If none of these child elements 
+        /// choose to process the key event, it gets bubbled up here. This typically 
+        /// happens for the following scenarios:
+        /// 
+        /// 1. Down key is pressed when selection is on last entry of 'MembersListBox'
+        /// 2. Up key is pressed when selection is on item on first row of 'SubCategoryListView'
+        /// 3. Up key is pressed when selection is on the first entry of 'MembersListBox'
+        ///    and there are no classes.
+        /// 
+        /// </summary>
         private void OnCategoryKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -261,7 +269,8 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 categoryIndex--;
 
-            // Need to move to top result.
+            // The selection cannot be moved further up, returning here without handling the key event 
+            // so that parent visual element gets to handle it and move selection up to 'Top Result' list.
             if (categoryIndex < 0) return;
             // We are at the last member and there is no way to move down.
             if (categoryIndex >= categoryListView.Items.Count)
