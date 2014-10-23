@@ -197,15 +197,7 @@ namespace Dynamo.Search
 
                 case Key.Tab:
                     viewModel.PopulateSearchTextWithSelectedResult();
-                    break;
-
-                case Key.Down:
-                    viewModel.SelectNext();
-                    break;
-
-                case Key.Up:
-                    viewModel.SelectPrevious();
-                    break;
+                    break;                                    
             }
         }
 
