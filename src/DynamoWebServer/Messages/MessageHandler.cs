@@ -371,17 +371,25 @@ namespace DynamoWebServer.Messages
             }
             else
             {
-                data = "null";
-                if (node.CachedValue != null)
+                data = GetValue(node);
+            }
+
+            return data;
+        }
+
+        private string GetValue(NodeModel node)
+        {
+            string data;
+            data = "null";
+            if (node.CachedValue != null)
+            {
+                if (node.CachedValue.IsCollection)
                 {
-                    if (node.CachedValue.IsCollection)
-                    {
-                        data = "Array";
-                    }
-                    else if (node.CachedValue.Data != null)
-                    {
-                        data = node.CachedValue.Data.ToString();
-                    }
+                    data = "Array";
+                }
+                else if (node.CachedValue.Data != null)
+                {
+                    data = node.CachedValue.Data.ToString();
                 }
             }
 
@@ -398,16 +406,7 @@ namespace DynamoWebServer.Messages
                 // send only updated nodes back
                 if (node.IsUpdated)
                 {
-                    string data;
-                    if (node is CodeBlockNodeModel)
-                    {
-                        data = GetInOutPortsData(node);
-                    }
-                    else
-                    {
-                        data = GetData(node);
-                    }
-
+                    string data = GetData(node);
                     var execNode = new ExecutedNode(node, data);
                     result.Add(execNode);
                 }
@@ -450,7 +449,7 @@ namespace DynamoWebServer.Messages
             stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
             stringBuilder.Append("], \"OutPorts\": [");
             stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("]}");
+            stringBuilder.Append("], \"Data\": " + GetValue(node) + "}");
 
             return stringBuilder.ToString();
         }

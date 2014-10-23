@@ -51,13 +51,33 @@ namespace Dynamo.Models
 
         void CreateNodeImpl(CreateNodeCommand command)
         {
-            NodeModel nodeModel = CurrentWorkspace.AddNode(
+            NodeModel nodeModel;
+            // if we need to create a proxy custom node
+            // specify needed information for it from CreateProxyNodeCommand
+            if (command is CreateProxyNodeCommand)
+            {
+                var proxyCommand = command as CreateProxyNodeCommand;
+
+                nodeModel = CurrentWorkspace.AddNode(command.NodeId,
+                command.NodeName,
+                command.X,
+                command.Y,
+                command.DefaultPosition,
+                command.TransformCoordinates,
+                nickName: proxyCommand.NickName,
+                inputs: proxyCommand.Inputs,
+                outputs: proxyCommand.Outputs);
+            }
+            else
+            {
+                nodeModel = CurrentWorkspace.AddNode(
                 command.NodeId,
                 command.NodeName,
                 command.X,
                 command.Y,
                 command.DefaultPosition,
                 command.TransformCoordinates);
+            }
 
             CurrentWorkspace.RecordCreatedModel(nodeModel);
         }
