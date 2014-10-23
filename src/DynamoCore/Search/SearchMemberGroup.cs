@@ -8,7 +8,9 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup
     {
+        // Members, which were found during search.
         private readonly List<BrowserInternalElement> members;
+        // Members, which belong to the same group, but were not found during search.
         private List<NodeSearchElement> parentMembers;
 
         public string Name { get; private set; }

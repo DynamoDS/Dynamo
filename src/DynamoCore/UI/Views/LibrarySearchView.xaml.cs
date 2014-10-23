@@ -242,6 +242,7 @@ namespace Dynamo.UI.Views
             var memberGroup = sender as FrameworkElement;
             var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
 
+            // Show all members of this group.
             WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers;
  
             // Make textblock underlined.
