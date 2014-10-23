@@ -227,8 +227,11 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            libraryServicesCore.Cleanup();
-            libraryServicesCore = null;
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
             libraryServices = null;
 
             base.Cleanup();
