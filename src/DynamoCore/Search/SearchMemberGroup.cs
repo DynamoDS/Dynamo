@@ -17,6 +17,11 @@ namespace Dynamo.Search
             get { return members; }
         }
 
+        public IEnumerable<BrowserInternalElement> ParentMembers
+        {
+            get { return parentMembers; }
+        }
+
         internal SearchMemberGroup(string name)
         {
             Name = name;

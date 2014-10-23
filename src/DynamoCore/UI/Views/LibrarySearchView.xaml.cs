@@ -235,6 +235,16 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(e.OriginalSource is TextBlock)) return;
+
+            var memberGroup = sender as FrameworkElement;
+            var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
+
+            WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers; 
+        }
+
 
     }
 }

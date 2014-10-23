@@ -622,7 +622,7 @@
                                              Name="MemberGroupsListBox">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel>
+                                                <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
                                                     <TextBlock Text="{Binding Name}"
                                                                Margin="16,8,0,8"
                                                                Foreground="#989898"
