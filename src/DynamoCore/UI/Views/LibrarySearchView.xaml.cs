@@ -338,14 +338,9 @@ namespace Dynamo.UI.Views
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
                 FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
             }
-            else // Otherwise, Up was pressed. So, we have to move to top result or to search textbox.
+            else // Otherwise, Up was pressed. So, we have to move to top result.
             {
                 var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-
-                // If TopResult has already been in focus, that means we have to set focus back to 
-                // searchTextBox.
-                if (topResult.IsFocused) return;
-
                 topResult.Focus();
             }
 
