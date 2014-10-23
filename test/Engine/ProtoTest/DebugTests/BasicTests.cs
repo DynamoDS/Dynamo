@@ -13953,7 +13953,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            }
 
             fsr.StepOver();
             vms = fsr.StepOver();   // a = A.A();
@@ -13975,7 +13978,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -2);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -2);
+            }
 
             fsr.StepOver();
             fsr.StepOver();
@@ -14034,7 +14040,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            }
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
@@ -14096,7 +14105,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            }
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
@@ -14211,7 +14223,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            }
 
             vms = fsr.StepOver();   // end of script
             watchRunner = new ExpressionInterpreterRunner(core);
@@ -14267,7 +14282,10 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
+            {
+                Assert.IsTrue((Int64)objExecVal.Payload == -1);
+            }
 
             vms = fsr.StepOver();   // end of script
             watchRunner = new ExpressionInterpreterRunner(core);

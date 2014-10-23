@@ -96,6 +96,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="DebugService.cs" />
     <Compile Include="DebugTestFx.cs" />
     <Compile Include="GeometryTestFrame.cs" />

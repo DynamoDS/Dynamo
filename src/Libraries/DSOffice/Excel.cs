@@ -369,19 +369,22 @@ namespace DSOffice
         internal WorkSheet (WorkBook wbook, string sheetName)
         {
             wb = wbook;
+
+            // Look for an existing worksheet
             WorkSheet wSheet = wbook.WorkSheets.FirstOrDefault(n => n.ws.Name == sheetName);
-            
+
+            // If you find one, then use it.
             if (wSheet != null)
             {
-                // Overwrite sheet
-                DSOffice.ExcelInterop.App.DisplayAlerts = false;
-                wSheet.ws.Delete();
-                DSOffice.ExcelInterop.App.DisplayAlerts = true;
+                ws = wSheet.ws;
             }
-            ws = (Worksheet)wb.Add();
-            ws.Name = sheetName;
-
-            wb.Save();
+            // If you don't find one, create one.
+            else
+            {
+                ws = (Worksheet)wb.Add();
+                ws.Name = sheetName;
+                wb.Save();
+            }
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)
@@ -458,10 +461,23 @@ namespace DSOffice
             {
                 try
                 {
-                    Workbook workbook = ExcelInterop.App.Workbooks.Open(filePath);
-                    wb = workbook;
-                    wb.Save();
-                    
+                    // Look for an existing open workbook
+                    var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
+                        .FirstOrDefault(e => e.FullName == filePath);
+
+                    // Use the existing workbook.
+                    if (workbookOpen != null)
+                    {
+                        wb = workbookOpen;
+                    }
+                    // If you can't find an existing workbook at
+                    // the specified path, then create a new one.
+                    else
+                    {
+                        Workbook workbook = ExcelInterop.App.Workbooks.Open(filePath);
+                        wb = workbook;
+                        wb.Save();
+                    }
                 }
                 catch (Exception)
                 {

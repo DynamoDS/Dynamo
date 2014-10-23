@@ -96,6 +96,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Assembler\MicroFeatureTests.cs" />
     <Compile Include="Associative\BuiltinMethodsTest.cs" />
     <Compile Include="Associative\FunctionObject.cs" />
@@ -222,7 +225,7 @@
       <Name>ProtoScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\FFITarget\FFITarget.csproj">
-      <Project>{C70FE632-5500-4C57-B3D6-9B5574137551}</Project>
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
       <Name>FFITarget</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProtoTestFx\ProtoTestFx.csproj">
