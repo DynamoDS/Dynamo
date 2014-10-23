@@ -19,13 +19,13 @@ namespace Dynamo.Search
         {
             get
             {
-                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
                 // +2, because after ">" always stays space character.
+                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
                 return Name.Substring(0, startIndexOfGroupType);
             }
         }
 
-        public string GroupType
+        public string GroupName
         {
             get
             {

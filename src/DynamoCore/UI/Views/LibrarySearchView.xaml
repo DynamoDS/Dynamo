@@ -629,7 +629,7 @@
                                                                    Foreground="#989898"
                                                                    FontSize="12"
                                                                    MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
-                                                        <TextBlock Text="{Binding GroupType}"
+                                                        <TextBlock Text="{Binding GroupName}"
                                                                    FontSize="12">
                                                             <TextBlock.Style>
                                                                 <Style TargetType="{x:Type TextBlock}">
