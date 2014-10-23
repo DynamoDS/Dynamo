@@ -104,12 +104,7 @@ namespace Dynamo.ViewModels
             set
             {
                 if (selectedIndex != value)
-                {
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = false;
-                    selectedIndex = value;
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = true;
+                {   
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -161,12 +156,6 @@ namespace Dynamo.ViewModels
         ///     This property is observed by SearchView to see the search results
         /// </value>
         public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
-
-        /// <summary>
-        ///     An ordered list representing all of the visible items in the browser.
-        ///     This is used to manage up-down navigation through the menu.
-        /// </summary>
-        private List<BrowserItem> visibleSearchResults = new List<BrowserItem>();
 
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
