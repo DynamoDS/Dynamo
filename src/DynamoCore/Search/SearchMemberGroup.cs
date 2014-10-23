@@ -8,10 +8,7 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup
     {
-        // Members, which were found during search.
-        private readonly List<BrowserInternalElement> members;
-        // Members, which belong to the same group, but were not found during search.
-        private List<NodeSearchElement> parentMembers;
+        private List<BrowserInternalElement> members;
 
         public string Name { get; private set; }
 
@@ -39,16 +36,10 @@ namespace Dynamo.Search
             get { return members; }
         }
 
-        public IEnumerable<BrowserInternalElement> ParentMembers
-        {
-            get { return parentMembers; }
-        }
-
         internal SearchMemberGroup(string name)
         {
             Name = name;
             members = new List<BrowserInternalElement>();
-            parentMembers = new List<NodeSearchElement>();
         }
 
         //some UI properties which control style of one MemberGroup
@@ -56,14 +47,20 @@ namespace Dynamo.Search
         internal void AddMember(BrowserInternalElement node)
         {
             members.Add(node);
-            if (!parentMembers.Any()) 
-                parentMembers = node.Parent.Items.OfType<NodeSearchElement>().
-                    Where(parentNode => parentNode.Group == (node as NodeSearchElement).Group).ToList();
         }
 
         public bool ContainsMember(BrowserInternalElement member)
         {
            return Members.Contains(member);
+        }
+
+        public void ExpandAllMembers()
+        {
+            if (members.Count == 0) return;
+            var firstMember = members[0] as NodeSearchElement;
+
+            members = firstMember.Parent.Items.OfType<BrowserInternalElement>().
+                    Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group).ToList();
         }
     }
 }

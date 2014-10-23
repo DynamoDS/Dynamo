@@ -7,6 +7,7 @@ using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
 using Dynamo.Controls;
+using System.Windows.Data;
 
 namespace Dynamo.UI.Views
 {
@@ -243,7 +244,9 @@ namespace Dynamo.UI.Views
             var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
 
             // Show all members of this group.
-            WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers;
+            memberGroupContext.ExpandAllMembers();
+            var members = WPF.FindChild<ListBox>(memberGroup, "MembersListBox");
+            BindingOperations.GetBindingExpressionBase(members, ListBox.ItemsSourceProperty).UpdateTarget();
  
             // Make textblock underlined.
             var textBlock = e.OriginalSource as TextBlock;
