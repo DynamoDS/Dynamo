@@ -104,6 +104,7 @@
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />

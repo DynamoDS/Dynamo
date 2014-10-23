@@ -10,7 +10,29 @@ using System.Threading.Tasks;
 
 namespace Dynamo
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
     #region Mock Classes for Test Cases
+
+    class TaskEventObserver
+    {
+        readonly List<string> events = new List<string>();
+
+        internal IEnumerable<string> Results { get { return events; } }
+
+        internal void OnTaskStateChanged(
+            DynamoScheduler scheduler,
+            TaskStateChangedEventArgs e)
+        {
+            AddToResultList(e.Task.ToString(), e.CurrentState);
+        }
+
+        private void AddToResultList(string content, TaskState state)
+        {
+            var stateString = state.ToString();
+            events.Add(string.Format("{0}: {1}", stateString, content));
+        }
+    }
 
     class SampleSchedulerThread : ISchedulerThread
     {
@@ -36,7 +58,7 @@ namespace Dynamo
 
     class SampleAsyncTask : AsyncTask
     {
-        private List<string> results; 
+        private List<string> results;
 
         internal SampleAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
@@ -50,7 +72,8 @@ namespace Dynamo
 
         protected void AddToResultList(string result)
         {
-            results.Add(result);
+            if (results != null)
+                results.Add(result);
         }
 
         protected override void ExecuteCore()
@@ -78,10 +101,15 @@ namespace Dynamo
             Priority = priority; // Assign task priority.
         }
 
+        public override string ToString()
+        {
+            return "PrioritizedAsyncTask: " + Priority;
+        }
+
         protected override void ExecuteCore()
         {
             // Task execution results in string added to list.
-            AddToResultList("PrioritizedAsyncTask: " + Priority);
+            AddToResultList(ToString());
         }
 
         protected override int CompareCore(AsyncTask otherTask)
@@ -115,10 +143,15 @@ namespace Dynamo
             Punch = punch;
         }
 
+        public override string ToString()
+        {
+            return "InconsequentialAsyncTask: " + Punch;
+        }
+
         protected override void ExecuteCore()
         {
             // Task execution results in string added to list.
-            AddToResultList("InconsequentialAsyncTask: " + Punch);
+            AddToResultList(ToString());
         }
 
         protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
@@ -531,6 +564,61 @@ namespace Dynamo
 
             schedulerThread.GetSchedulerToProcessTasks();
             Assert.Pass("Scheduler thread successfully exits");
+        }
+
+        /// <summary>
+        /// Test scenario when various task types are interleaving one another.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskStateChangedEventHandling()
+        {
+            var observer = new TaskEventObserver();
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+            scheduler.TaskStateChanged += observer.OnTaskStateChanged;
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new InconsequentialAsyncTask(scheduler, 500),
+                new PrioritizedAsyncTask(scheduler, 3),
+                new InconsequentialAsyncTask(scheduler, 100),
+                new PrioritizedAsyncTask(scheduler, 5), 
+            };
+
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+                scheduler.ScheduleForExecution(asyncTask);
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            var expected = new List<string>
+            {
+                "Scheduled: InconsequentialAsyncTask: 500",
+                "Scheduled: PrioritizedAsyncTask: 3",
+                "Scheduled: InconsequentialAsyncTask: 100",
+                "Scheduled: PrioritizedAsyncTask: 5",
+                "Discarded: InconsequentialAsyncTask: 100",
+                "ExecutionStarting: PrioritizedAsyncTask: 3",
+                "ExecutionCompleted: PrioritizedAsyncTask: 3",
+                "CompletionHandled: PrioritizedAsyncTask: 3",
+                "ExecutionStarting: PrioritizedAsyncTask: 5",
+                "ExecutionCompleted: PrioritizedAsyncTask: 5",
+                "CompletionHandled: PrioritizedAsyncTask: 5",
+                "ExecutionStarting: InconsequentialAsyncTask: 500",
+                "ExecutionCompleted: InconsequentialAsyncTask: 500",
+                "CompletionHandled: InconsequentialAsyncTask: 500"
+            };
+
+            Assert.AreEqual(expected.Count, observer.Results.Count());
+
+            int index = 0;
+            foreach (var actual in observer.Results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
         }
 
         #endregion

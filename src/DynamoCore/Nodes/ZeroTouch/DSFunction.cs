@@ -191,8 +191,7 @@ namespace Dynamo.Nodes
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
-                    LibraryServices.GetInstance()
-                        .FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+                        this.engineController.LibraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
                 function = hintedSigniture == null ? xmlSignature : hintedSigniture;
             }
