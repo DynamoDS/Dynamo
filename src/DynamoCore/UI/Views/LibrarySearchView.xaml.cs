@@ -242,7 +242,11 @@ namespace Dynamo.UI.Views
             var memberGroup = sender as FrameworkElement;
             var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
 
-            WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers; 
+            WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers;
+ 
+            // Make textblock underlined.
+            var textBlock = e.OriginalSource as TextBlock;
+            textBlock.TextDecorations = TextDecorations.Underline;
         }
 
         private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)

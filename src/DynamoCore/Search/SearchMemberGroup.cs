@@ -17,7 +17,8 @@ namespace Dynamo.Search
         {
             get
             {
-                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 1;
+                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
+                // +2, because after ">" always stays space character.
                 return Name.Substring(0, startIndexOfGroupType);
             }
         }
@@ -26,7 +27,7 @@ namespace Dynamo.Search
         {
             get
             {
-                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 1;
+                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
                 return Name.Substring(startIndexOfGroupType);
             }
         }
