@@ -228,8 +228,6 @@ namespace Dynamo.Controls
             selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
-
-            var focused = Keyboard.FocusedElement;
         }
 
         /// <summary>
