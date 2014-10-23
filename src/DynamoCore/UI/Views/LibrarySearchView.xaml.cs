@@ -310,10 +310,13 @@ namespace Dynamo.UI.Views
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
         {
+            if (parent.Equals(null)) return null;
+
             var generator = parent.ItemContainerGenerator;
             if ((index >= 0) && (index < parent.Items.Count))
                 return generator.ContainerFromIndex(index) as ListBoxItem;
-            else return null;
+
+            return null;
         }
 
         #endregion
