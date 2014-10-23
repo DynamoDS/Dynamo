@@ -17,7 +17,7 @@ namespace Dynamo.Tests
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
         protected LibraryServices libraryServices = null;
-        private ProtoCore.Core libraryServicesCore = null;
+        protected ProtoCore.Core libraryServicesCore = null;
 
         public override void Init()
         {

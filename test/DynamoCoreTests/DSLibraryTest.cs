@@ -17,12 +17,6 @@ namespace Dynamo.Tests
             base.Init();
         }
 
-        [TearDown]
-        public override void Cleanup()
-        {
-            base.Cleanup();
-        }
-
         [Test]
         [Category("UnitTests")]
         public void TestPreLoadedLibrary()
