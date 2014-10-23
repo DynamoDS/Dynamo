@@ -359,15 +359,17 @@
             </Rectangle.Visibility>
         </Rectangle>
 
-        <Rectangle Name="ForceReexecBorder"
+        <!--DO NOT ERASE. THIS IS FOR DEBUGGING-->
+        <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#43F041"
+                   Stroke="#7E43F041"
                    StrokeThickness="8"
+                   StrokeLineJoin="Round"
                    IsHitTestVisible="False"
-                   Canvas.ZIndex="40"
+                   Canvas.ZIndex="20"
                    Margin="-10">
             <Rectangle.Visibility>
                 <Binding Path="WillForceReExecuteOfNode"
@@ -376,7 +378,7 @@
                          Converter="{StaticResource BooleanToVisibilityConverter}">
                 </Binding>
             </Rectangle.Visibility>
-        </Rectangle>
+        </Rectangle>-->
 
         <Canvas Name="expansionBay"
                 Grid.Row="4"
