@@ -312,6 +312,19 @@ namespace ProtoCore.AssociativeEngine
                                 reachableGraphNodes.Add(firstGraphNode);
                                 
                             }
+
+                            List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                                graphNode, 
+                                executive,
+                                graphNode.exprUID,
+                                graphNode.modBlkUID,
+                                graphNode.IsSSANode(), 
+                                executeSSA,
+                                graphNode.languageBlockId);
+                            if (subGraphNodes.Count > 0)
+                            {
+                                reachableGraphNodes.AddRange(subGraphNodes);
+                            }
                         }
                     }
                 }
