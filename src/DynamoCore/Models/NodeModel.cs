@@ -1486,6 +1486,7 @@ namespace Dynamo.Models
             set
             {
                 forceReExec = value;
+                RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
         #endregion

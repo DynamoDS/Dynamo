@@ -12,6 +12,8 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 
 using RevitServices.Persistence;
+using RevitServices.Transactions;
+
 using RTF.Framework;
 using Dynamo.Models;
 
@@ -78,6 +80,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, watchNode.CachedValue);
 
             refPt.X = 10;
+
+            TransactionManager.Instance.ForceCloseTransaction();
 
             Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
 
