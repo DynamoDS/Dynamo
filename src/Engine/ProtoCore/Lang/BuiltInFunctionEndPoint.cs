@@ -553,6 +553,7 @@ namespace ProtoCore.Lang
             HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
             var arguments = heapElem.VisibleItems.ToList();
 
+            bool removeFirstArgument = false;
             if (arguments.Count > 0)
             {
                 bool isReplicatingCall = arguments[0].IsDynamic && lhs.IsArray;
@@ -565,22 +566,24 @@ namespace ProtoCore.Lang
                 {
                     context.IsReplicating = false;
                     arguments.RemoveAt(0);
+                    removeFirstArgument = true;
                 }
-            }
-
-            // Any replication guides pushed in a dotarg->dot call must be 
-            // retrieved here from the core
-            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-            bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
-            if (doesDotCallFunctionHaveArgs)
-            {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
+
+            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            if (!CoreUtils.IsGetterSetter(functionName))
+            {
+                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                if (removeFirstArgument)
+                {
+                    replicationGuides.RemoveAt(0);
+                }
+            }
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];

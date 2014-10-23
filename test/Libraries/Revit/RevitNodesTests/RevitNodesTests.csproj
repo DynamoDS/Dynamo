@@ -64,12 +64,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AnalysisDisplay\FaceAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="ApproximateAssertExtensions.cs" />
     <Compile Include="Elements\AbstractElementTests.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
+    <Compile Include="Elements\CategoryTests.cs" />
     <Compile Include="Elements\CurveByPointsTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />

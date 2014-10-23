@@ -67,23 +67,13 @@ namespace Dynamo.Search
                 classes.Add(parent);
         }
 
-        public bool ContainsMember(BrowserInternalElement member)
+        public bool ContainsClassOrMember(BrowserInternalElement member)
         {
             // Search among classes.
-            for (int i = 0; i < Classes.Count(); i++)
-            {
-                var classElement = Classes.ElementAt(i);
-                if (classElement.Equals(member)) return true;
-            }
+            if (Classes.Any(cl => cl.Equals(member))) return true;
 
             // Search among member groups.
-            for (int i = 0; i < MemberGroups.Count(); i++)
-            {
-                var memberGroup = MemberGroups.ElementAt(i);
-                if (memberGroup.ContainsMember(member)) return true;
-            }
-
-            return false;
+            return MemberGroups.Any(group => group.ContainsMember(member));
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)

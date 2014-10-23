@@ -230,11 +230,19 @@ namespace Dynamo.UI.Views
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
-        // This event is raised, when we need to move through categories.
-        // They are several cases:
-        // 1) we are at the last member button. (pressed down)
-        // 2) we are at the first row of class buttons. (pressed up)
-        // 3) we are at the first member button, if classes are not presented. (pressed up)
+        /// <summary>
+        /// 'CategoryListView' element contains the following child elements (either 
+        /// directly, or indirectly nested): 'StackPanel', 'SubCategoryListView',
+        /// 'MemberGroupsListBox' and 'MembersListBox'. If none of these child elements 
+        /// choose to process the key event, it gets bubbled up here. This typically 
+        /// happens for the following scenarios:
+        /// 
+        /// 1. Down key is pressed when selection is on last entry of 'MembersListBox'
+        /// 2. Up key is pressed when selection is on item on first row of 'SubCategoryListView'
+        /// 3. Up key is pressed when selection is on the first entry of 'MembersListBox'
+        ///    and there are no classes.
+        /// 
+        /// </summary>
         private void OnCategoryKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -242,13 +250,14 @@ namespace Dynamo.UI.Views
 
             // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
             var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+            var memberInFocusContext = memberInFocus.DataContext as BrowserInternalElement;
             var categoryListView = sender as ListView;
 
             int categoryIndex = 0;
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
                 var category = categoryListView.Items[i] as SearchCategory;
-                if (category.ContainsMember(memberInFocus.DataContext as BrowserInternalElement))
+                if (category.ContainsClassOrMember(memberInFocusContext))
                 {
                     categoryIndex = i;
                     break;
@@ -260,7 +269,8 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 categoryIndex--;
 
-            // Need to move to top result.
+            // The selection cannot be moved further up, returning here without handling the key event 
+            // so that parent visual element gets to handle it and move selection up to 'Top Result' list.
             if (categoryIndex < 0) return;
             // We are at the last member and there is no way to move down.
             if (categoryIndex >= categoryListView.Items.Count)
@@ -272,43 +282,41 @@ namespace Dynamo.UI.Views
             var nextFocusedCategory = GetListItemByIndex(categoryListView, categoryIndex);
             var nextFocusedCategoryContent = nextFocusedCategory.Content as SearchCategory;
 
-            // If key is up, then we have to select the last method button.
             if (e.Key == Key.Up)
             {
                 var memberGroupsList = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
                 var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
                 var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
-                // Set focus to the last member.
+
+                // If key is up, then we have to select the last method button.
                 GetListItemByIndex(membersList, membersList.Items.Count - 1).Focus();
-                e.Handled = true;
-                return;
             }
-            // Otherwise, Down was pressed, and we have to select first class/method button.
-            else
+            else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
-                // If classes are presented, then focus on first class.
                 if (nextFocusedCategoryContent.Classes.Count > 0)
                 {
+                    // If classes are presented, then focus on first class.
                     FindFirstChildListItem(nextFocusedCategory, "SubCategoryListView").Focus();
-                    e.Handled = true;
-                    return;
                 }
-                // If there are no classes, then focus on first method.
                 else
                 {
-                    FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox").Focus();
-                    e.Handled = true;
-                    return;
+                    // If there are no classes, then focus on first method.
+                    var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                    FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
                 }
             }
+            e.Handled = true;
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
         {
+            if (parent.Equals(null)) return null;
+
             var generator = parent.ItemContainerGenerator;
             if ((index >= 0) && (index < parent.Items.Count))
                 return generator.ContainerFromIndex(index) as ListBoxItem;
-            else return null;
+
+            return null;
         }
 
         #endregion

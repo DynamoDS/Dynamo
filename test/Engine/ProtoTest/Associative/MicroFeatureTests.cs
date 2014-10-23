@@ -2089,7 +2089,6 @@ a = 2;                ";
         }
 
         [Test]
-        [Category("Failure")]
         public void TestXLangUpdate_AssociativeTriggersAssociative02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
