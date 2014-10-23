@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using GraphToDSCompiler;
 using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using ProtoCore.Utils;
@@ -939,7 +938,7 @@ namespace ProtoScript.Runners
         #endregion
 
         string GetCoreDump();
-        void ResetVMAndResyncGraph(List<string> libraries);
+        void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
@@ -1015,7 +1014,6 @@ namespace ProtoScript.Runners
 
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
-        private GraphToDSCompiler.GraphCompiler graphCompiler;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
         {
@@ -1053,9 +1051,6 @@ namespace ProtoScript.Runners
         public LiveRunner(Configuration configuration)
         {
             this.configuration = configuration;
-
-            graphCompiler = GraphCompiler.CreateInstance();
-            graphCompiler.SetCore(GraphUtilities.GetCore());
 
             runner = new ProtoScriptTestRunner();
 
@@ -1405,18 +1400,6 @@ namespace ProtoScript.Runners
 
         #region Internal Implementation
 
-        private ProtoCore.Mirror.RuntimeMirror GetWatchValue(string varname)
-        {
-            runnerCore.Options.IsDeltaCompile = true;
-            CompileAndExecuteForDeltaExecution(GraphUtilities.GetWatchExpression(varname));
-
-            const int blockID = 0;
-            ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(ProtoCore.DSASM.Constants.kWatchResultVar, blockID, runnerCore);
-            return runtimeMirror;
-
-        }
-
-
         /// <summary>
         /// This is being called currently as it uses the Expression interpreter which does not
         /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors
@@ -1442,8 +1425,6 @@ namespace ProtoScript.Runners
         private bool Compile(string code, out int blockId)
         {
             Dictionary<string, bool> execFlagList = null;
-            if (graphCompiler != null)
-                execFlagList = graphCompiler.ExecutionFlagList;
 
             staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
 
@@ -1497,9 +1478,6 @@ namespace ProtoScript.Runners
 
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
-            if (graphCompiler != null)
-                runtimeContext.execFlagList = graphCompiler.ExecutionFlagList;
 
             try
             {
@@ -1672,10 +1650,15 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="libraries"></param>
         /// <param name="syncData"></param>
-        public void ResetVMAndResyncGraph(List<string> libraries)
+        public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
             // Reset VM
             ReInitializeLiveRunner();
+
+            if (!libraries.Any())
+            {
+                return;
+            }
 
             // generate import node for each library in input list
             List<AssociativeNode> importNodes = new List<AssociativeNode>();

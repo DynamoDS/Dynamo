@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using DynCmd = Dynamo.Models.DynamoModel;
+using ProtoCore.Mirror;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Tests
 {
@@ -732,8 +729,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -749,9 +744,8 @@ b = c[w][x][y][z];";
 
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetMembers();
@@ -764,8 +758,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -781,9 +773,8 @@ b = c[w][x][y][z];";
 
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();

@@ -354,14 +354,16 @@ namespace Dynamo.Models
             InitializeCurrentWorkspace();
 
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
+
+            DisposeLogic.IsShuttingDown = false;
+
+            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+
             this.Loader = new DynamoLoader(this);
 
             // do package uninstalls first
             this.Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
 
-            DisposeLogic.IsShuttingDown = false;
-
-            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             // Reset virtual machine to avoid a race condition by causing a 
@@ -384,7 +386,7 @@ namespace Dynamo.Models
             this.Loader.LoadNodeModels();
        
             // load packages last
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences, EngineController.LibraryServices);
 
         }
 

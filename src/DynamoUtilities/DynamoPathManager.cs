@@ -66,10 +66,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
-        public List<string> PreloadLibraries
+        public IEnumerable<string> PreloadLibraries
         {
             get { return preloadLibaries; }
-            set { preloadLibaries = value; }
         }
 
         /// <summary>
