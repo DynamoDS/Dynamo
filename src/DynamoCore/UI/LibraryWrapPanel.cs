@@ -20,7 +20,7 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
-        private int cachedIndex = -2;
+        private int currentIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -206,7 +206,7 @@ namespace Dynamo.Controls
             // As result class details repaints.
             // So, we don't need to repaint it everytime, that's why we use cached index.
             // If cached index equals current one, then we don't have to do anything.
-            if (cachedIndex != index) cachedIndex = index;
+            if (currentIndex != index) currentIndex = index;
             else return;
 
             int classInfoIndex = GetClassInformationIndex();
