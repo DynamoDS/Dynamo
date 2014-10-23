@@ -33,7 +33,7 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private List<string> libraries = new List<string>();
+        private List<string> importedLibraries = new List<string>();
 
         private readonly ProtoCore.Core libraryManagementCore;
 
@@ -54,15 +54,15 @@ namespace Dynamo.DSEngine
         {
             builtinFunctionGroups.Clear();
             importedFunctionGroups.Clear();
-            libraries.Clear();
+            importedLibraries.Clear();
         }
 
         /// <summary>
         ///     Get a list of imported libraries.
         /// </summary>
-        public IEnumerable<string> Libraries
+        public IEnumerable<string> ImportedLibraries
         {
-            get { return libraries; }
+            get { return importedLibraries; }
         }
 
         /// <summary>
@@ -88,8 +88,9 @@ namespace Dynamo.DSEngine
 
         private void PreloadLibraries()
         {
-            libraries = DynamoPathManager.Instance.PreloadLibraries.ToList();
-            foreach (var library in libraries)
+            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+
+            foreach (var library in importedLibraries)
             {
                 CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
             }
@@ -649,7 +650,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            libraries.Add(e.LibraryPath);
+            importedLibraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)

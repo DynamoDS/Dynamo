@@ -44,7 +44,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestPreLoadedLibrary()
         {
-            var loadedLibs = libraryServices.Libraries;
+            var loadedLibs = libraryServices.ImportedLibraries;
             Assert.IsTrue(loadedLibs.Any());
         }
 

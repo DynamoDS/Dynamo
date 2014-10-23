@@ -57,7 +57,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
+            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
@@ -77,7 +77,7 @@ namespace Dynamo.DSEngine
             // TODO: Find a better way to save loaded libraries. 
             if (!DynamoModel.IsTestMode)
             {
-                foreach (var library in libraryServices.Libraries)
+                foreach (var library in libraryServices.ImportedLibraries)
                 {
                     DynamoPathManager.Instance.AddPreloadLibrary(library);
                 }
@@ -96,7 +96,7 @@ namespace Dynamo.DSEngine
         public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
             return libraryServices.BuiltinFunctionGroups.Union(
-                       libraryServices.Libraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
+                       libraryServices.ImportedLibraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
         }
 
         /// <summary>
@@ -586,7 +586,7 @@ namespace Dynamo.DSEngine
             dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries);
+            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
