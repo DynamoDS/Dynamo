@@ -730,16 +730,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            var libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
-
-            var libraryServices = new LibraryServices(libraryServicesCore);
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
