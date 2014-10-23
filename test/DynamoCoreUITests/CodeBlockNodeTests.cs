@@ -322,6 +322,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestCtorSignatureCompletion()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -357,6 +358,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureCompletion()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -394,6 +396,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureReturnTypeCompletion()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -459,6 +462,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestStaticMethodSignatureCompletion()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -495,6 +499,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestCompletionWhenTyping()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             // Note this test may fail if another library with class names
             // beginning with "poi" is imported by default or if there is a change
             // to the classes "ProtoGeometry" or "FFITarget" libraries
@@ -529,6 +534,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             var cbnEditor = new CodeBlockEditor(ViewModel);
             string code = "im";
             var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
