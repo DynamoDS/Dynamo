@@ -11,32 +11,15 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSLibraryTest : DSEvaluationViewModelUnitTest
     {
-        private LibraryServices libraryServices = null;
-        private ProtoCore.Core libraryServicesCore = null;
-
         [SetUp]
         public override void Init()
         {
             base.Init();
-
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative, 
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative, 
-                new ProtoImperative.Executive(libraryServicesCore));
-
-            libraryServices = new LibraryServices(libraryServicesCore);
         }
 
         [TearDown]
         public override void Cleanup()
         {
-            libraryServicesCore.Cleanup();
-            libraryServicesCore = null;
-            libraryServices = null;
-
             base.Cleanup();
         }
 

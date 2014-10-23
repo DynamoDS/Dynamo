@@ -318,33 +318,6 @@ namespace DynamoCoreUITests
 
     public class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
     {
-        private LibraryServices libraryServices = null;
-        private ProtoCore.Core libraryServicesCore = null;
-
-        [SetUp]
-        public void Start()
-        {
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
-
-            libraryServices = new LibraryServices(libraryServicesCore);
-        }
-
-        [TearDown]
-        public override void Cleanup()
-        {
-            libraryServicesCore.Cleanup();
-            libraryServicesCore = null;
-            libraryServices = null;
-
-            base.Cleanup();
-        }
-
         [Test]
         [Category("UnitTests")]
         public void TestCtorSignatureCompletion()
