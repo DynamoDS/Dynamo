@@ -245,10 +245,6 @@ namespace Dynamo.UI.Views
 
             // Show all members of this group.
             memberGroupContext.ExpandAllMembers();
-
-            // Refresh members.
-            var members = WPF.FindChild<ListBox>(memberGroup, "MembersListBox");
-            BindingOperations.GetBindingExpressionBase(members, ListBox.ItemsSourceProperty).UpdateTarget();
  
             // Make textblock underlined.
             var textBlock = e.OriginalSource as TextBlock;

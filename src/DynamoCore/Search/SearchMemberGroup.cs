@@ -3,10 +3,11 @@ using Dynamo.Nodes.Search;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {
-    public class SearchMemberGroup
+    public class SearchMemberGroup : NotificationObject
     {
         private List<BrowserInternalElement> members;
 
@@ -61,6 +62,7 @@ namespace Dynamo.Search
 
             members = firstMember.Parent.Items.OfType<BrowserInternalElement>().
                     Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group).ToList();
+            RaisePropertyChanged("Members");
         }
     }
 }
