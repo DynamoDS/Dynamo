@@ -29,7 +29,7 @@ namespace Dynamo.Tests
 
         [Test, Category("IntegrationTests")]
         [TestModel(@".\RayBounce\SunStudy.rvt")]
-        public void RayBounce_SunSutdy()
+        public void RayBounce_SunStudy()
         {
             var model = ViewModel.Model;
 
