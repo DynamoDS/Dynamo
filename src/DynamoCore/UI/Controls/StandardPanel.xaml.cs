@@ -210,13 +210,16 @@ namespace Dynamo.UI.Controls
             libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
         }
 
+        // Main grid in "StandardPanel" contains of 2 lists: primary members and secondary members.
+        // When, these is no way to move inside one of these lists, main grid decides where focus
+        // should move next.
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            var methodButton = Keyboard.FocusedElement as ListBoxItem;
-            var methodButtonContent = methodButton.Content as BrowserInternalElement;
+            var focusedMemberButton = Keyboard.FocusedElement as ListBoxItem;
+            var focusedButtonContent = focusedMemberButton.Content as BrowserInternalElement;
 
             bool hasPrimaryMembers = primaryMembers.Items.Cast<object>().Any();
             bool hasSecondaryMembers = secondaryMembers.Items.Cast<object>().Any();
@@ -232,7 +235,7 @@ namespace Dynamo.UI.Controls
 
                 // If focused element is already inside secondary members, that means we are at the last member.
                 // And there is no way to go further, so we stay here.
-                if (secondaryMembers.Items.Contains(methodButtonContent))
+                if (secondaryMembers.Items.Contains(focusedButtonContent))
                 {
                     e.Handled = true;
                     return;
@@ -245,12 +248,12 @@ namespace Dynamo.UI.Controls
             }
 
             // We are at the first member of primary members, we have to move back to class button.
-            if (primaryMembers.Items.Contains(methodButtonContent) && (e.Key == Key.Up))
+            if (primaryMembers.Items.Contains(focusedButtonContent) && (e.Key == Key.Up))
                 return;
 
             // We are at the first member of secondary members, 
             // we have to move to last member of primary members.
-            if (secondaryMembers.Items.Contains(methodButtonContent) && (e.Key == Key.Up))
+            if (secondaryMembers.Items.Contains(focusedButtonContent) && (e.Key == Key.Up))
             {
                 var generator = primaryMembers.ItemContainerGenerator;
                 (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
