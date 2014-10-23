@@ -92,7 +92,7 @@ namespace Dynamo.DSEngine
 
             foreach (var library in importedLibraries)
             {
-                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library); 
+                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library); 
             }
         }
 
@@ -280,7 +280,7 @@ namespace Dynamo.DSEngine
                 int functionNumber = functionTable.procList.Count;
                 int classNumber = classTable.ClassNodes.Count;
 
-                CompilerUtils.TryLoadAssemblyInCore(libraryManagementCore, library);
+                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
 
                 if (libraryManagementCore.BuildStatus.ErrorCount > 0)
                 {

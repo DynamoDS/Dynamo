@@ -227,7 +227,7 @@ namespace ProtoCore.Utils
             return core.BuildStatus;
         }
 
-        public static bool TryLoadAssemblyInCore(Core core, string assemblyPath)
+        public static bool TryLoadAssemblyIntoCore(Core core, string assemblyPath)
         {
             bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
             bool parsingCbnFlag = core.IsParsingCodeBlockNode;

@@ -217,7 +217,11 @@ namespace Dynamo.ViewModels
                             if (packageDownloadHandle.Extract(out dynPkg))
                             {
                                 var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model.Logger);
-                                downloadPkg.LoadIntoDynamo(this.dynamoViewModel.Model.Loader, this.dynamoViewModel.Model.Logger, dynamoViewModel.Model.EngineController.LibraryServices);
+
+                                var loader = dynamoViewModel.Model.Loader;
+                                var logger = dynamoViewModel.Model.Logger;
+                                var libraryServices = dynamoViewModel.Model.EngineController.LibraryServices;
+                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices);
 
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;

@@ -1653,13 +1653,13 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
+            // Reset VM
+            ReInitializeLiveRunner();
+
             if (!libraries.Any())
             {
                 return;
             }
-
-            // Reset VM
-            ReInitializeLiveRunner();
 
             // generate import node for each library in input list
             List<AssociativeNode> importNodes = new List<AssociativeNode>();

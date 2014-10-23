@@ -84,7 +84,8 @@ namespace Dynamo.Models
 
             if (!string.IsNullOrEmpty(signature))
             {
-                node.NickName = dynamoModel.EngineController.LibraryServices.NicknameFromFunctionSignatureHint(signature);
+                var libraryServices = dynamoModel.EngineController.LibraryServices;
+                node.NickName = libraryServices.NicknameFromFunctionSignatureHint(signature);
             }
             else if (!string.IsNullOrEmpty(nickName)) 
             {
