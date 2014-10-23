@@ -368,7 +368,8 @@ namespace Dynamo.Nodes
 
             if (!SelectionResults.Any() ||
                 !document.Equals(SelectionOwner) ||
-                !deleted.Any()) return;
+                !deleted.Any() ||
+                !SelectionResults.Any(x=>deleted.Contains(x.ElementId))) return;
 
             // The new selections is everything in the current selection
             // that is not in the deleted collection as well
