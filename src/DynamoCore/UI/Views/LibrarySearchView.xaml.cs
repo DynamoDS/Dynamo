@@ -308,19 +308,12 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private ListBoxItem GetListItemByIndex(ListBox parent, int index)
-        {
-            if (parent.Equals(null)) return null;
-
-            var generator = parent.ItemContainerGenerator;
-            if ((index >= 0) && (index < parent.Items.Count))
-                return generator.ContainerFromIndex(index) as ListBoxItem;
-
-            return null;
-        }
-
-        #endregion
-
+        // "MainGrid" contains in itself top result and list of found search categories.
+        // And main grid consider what element should be in focus, if none of them could handle focus.
+        // The following scenarios could happen:
+        // 1. Down key is pressed when focus is on top result.
+        // 2. Up key is pressed when focus is on top result.
+        // 3. Up key is pressed when focus is on first row of first category.
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
@@ -344,12 +337,8 @@ namespace Dynamo.UI.Views
                 // Otherwise, set focus on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
                 FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
-                e.Handled = true;
-                return;
-
             }
-
-            if (e.Key == Key.Up)
+            else // Otherwise, Up was pressed. So, we have to move to top result or to search textbox.
             {
                 var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
 
@@ -358,10 +347,23 @@ namespace Dynamo.UI.Views
                 if (topResult.IsFocused) return;
 
                 topResult.Focus();
-                e.Handled = true;
-                return;
             }
+
+            e.Handled = true;
         }
+
+        private ListBoxItem GetListItemByIndex(ListBox parent, int index)
+        {
+            if (parent.Equals(null)) return null;
+
+            var generator = parent.ItemContainerGenerator;
+            if ((index >= 0) && (index < parent.Items.Count))
+                return generator.ContainerFromIndex(index) as ListBoxItem;
+
+            return null;
+        }
+
+        #endregion
 
     }
 }
