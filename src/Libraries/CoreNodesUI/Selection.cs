@@ -271,6 +271,15 @@ namespace Dynamo.Nodes
 
         public virtual void UpdateSelection(IEnumerable<TSelection> newSelection)
         {
+            // Prevent the selection from being updated, and 
+            // subsequently calling ForceReexecute if the selection
+            // set has not actually changed.
+
+            var selHash = new HashSet<TSelection>(selection);
+
+            if (selHash.SetEquals(newSelection))
+                return;
+
             selection = newSelection.ToList();
             SelectionResults = selection.SelectMany(ExtractSelectionResults);
         }
