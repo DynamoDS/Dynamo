@@ -19,6 +19,17 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+###0.7.3 ###
+What's new
+- Stability: threading model refactor
+- Stability: reduced incidence of unresponsive graph
+- Stability: Better Error messages 
+- Stability: clearing and updating error messages
+- Package Manager can Distribute user created Libraries (.dll files) 
+- Package Manager can distribute sample content (Rvt, Rfa, dyn files, etc)
+- Autocomplete in Code Block Nodes
+- Many small geometry improvements/fixes
+
 ###0.7.2 ###
 ####Incremental Release with:####
 - Significant Stability Improvements
