@@ -35,7 +35,7 @@ namespace Dynamo.DSEngine
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
-        private readonly ProtoCore.Core parsingCore;
+        private readonly ProtoCore.Core libraryCore;
         private readonly Object macroMutex = new Object();
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
@@ -43,15 +43,15 @@ namespace Dynamo.DSEngine
             this.dynamoModel = dynamoModel;
 
             // Create a core which is used for parsing code and loading libraries
-            parsingCore = new ProtoCore.Core(new Options()
+            libraryCore = new ProtoCore.Core(new Options()
             {
                 RootCustomPropertyFilterPathName = string.Empty
             });
-            parsingCore.Executives.Add(Language.kAssociative,new ProtoAssociative.Executive(parsingCore));
-            parsingCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(parsingCore));
-            parsingCore.ParsingMode = ParseMode.AllowNonAssignment;
+            libraryCore.Executives.Add(Language.kAssociative,new ProtoAssociative.Executive(libraryCore));
+            libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            libraryServices = new LibraryServices(parsingCore);
+            libraryServices = new LibraryServices(libraryCore);
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
@@ -85,7 +85,7 @@ namespace Dynamo.DSEngine
 
             libraryServices.Dispose();
 
-            parsingCore.Cleanup();
+            libraryCore.Cleanup();
         }
 
         #region Function Groups
@@ -718,7 +718,7 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            var cbs = parsingCore.CodeBlockList;
+            var cbs = libraryCore.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
                 return false;
@@ -732,7 +732,7 @@ namespace Dynamo.DSEngine
 
         public bool TryParseCode(ref ParseParam parseParam)
         {
-            return CompilerUtils.PreCompileCodeBlock(parsingCore, ref parseParam);
+            return CompilerUtils.PreCompileCodeBlock(libraryCore, ref parseParam);
         }
     }
 }
