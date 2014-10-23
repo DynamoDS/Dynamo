@@ -76,6 +76,11 @@ namespace Dynamo
                 results.Add(result);
         }
 
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.Normal;
+        }
+
         protected override void ExecuteCore()
         {
         }
@@ -93,17 +98,22 @@ namespace Dynamo
     /// 
     class PrioritizedAsyncTask : SampleAsyncTask
     {
-        internal int Priority { get; private set; }
+        internal int CurrPriority { get; private set; }
 
         internal PrioritizedAsyncTask(DynamoScheduler scheduler, int priority)
             : base(scheduler)
         {
-            Priority = priority; // Assign task priority.
+            CurrPriority = priority; // Assign task priority.
         }
 
         public override string ToString()
         {
-            return "PrioritizedAsyncTask: " + Priority;
+            return "PrioritizedAsyncTask: " + CurrPriority;
+        }
+
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.AboveNormal;
         }
 
         protected override void ExecuteCore()
@@ -124,7 +134,7 @@ namespace Dynamo
                 return base.CompareCore(otherTask);
 
             // Priority 1 tasks always come before priority 2 tasks.
-            return Priority - task.Priority;
+            return CurrPriority - task.CurrPriority;
         }
     }
 
@@ -146,6 +156,11 @@ namespace Dynamo
         public override string ToString()
         {
             return "InconsequentialAsyncTask: " + Punch;
+        }
+
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.BelowNormal;
         }
 
         protected override void ExecuteCore()
@@ -175,6 +190,36 @@ namespace Dynamo
 
             // InconsequentialAsyncTask are always treated equal.
             return base.CompareCore(otherTask);
+        }
+    }
+
+    /// <summary>
+    /// This task, when executed by DynamoScheduler, throws an exception. It is 
+    /// used to verify that TaskStateChangedEventArgs.State.ExecutionFailed is 
+    /// promptly sent out to DynamoScheduler.TaskStateChanged event handler.
+    /// </summary>
+    /// 
+    class ErrorProneAsyncTask : SampleAsyncTask
+    {
+        internal ErrorProneAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
+        {
+        }
+
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.Normal;
+        }
+
+        public override string ToString()
+        {
+            return "ErrorProneAsyncTask";
+        }
+
+        protected override void ExecuteCore()
+        {
+            // Throws an exception when executed.
+            throw new InvalidOperationException();
         }
     }
 
@@ -583,6 +628,7 @@ namespace Dynamo
             {
                 new InconsequentialAsyncTask(scheduler, 500),
                 new PrioritizedAsyncTask(scheduler, 3),
+                new ErrorProneAsyncTask(scheduler), 
                 new InconsequentialAsyncTask(scheduler, 100),
                 new PrioritizedAsyncTask(scheduler, 5), 
             };
@@ -598,6 +644,7 @@ namespace Dynamo
             {
                 "Scheduled: InconsequentialAsyncTask: 500",
                 "Scheduled: PrioritizedAsyncTask: 3",
+                "Scheduled: ErrorProneAsyncTask",
                 "Scheduled: InconsequentialAsyncTask: 100",
                 "Scheduled: PrioritizedAsyncTask: 5",
                 "Discarded: InconsequentialAsyncTask: 100",
@@ -607,6 +654,9 @@ namespace Dynamo
                 "ExecutionStarting: PrioritizedAsyncTask: 5",
                 "ExecutionCompleted: PrioritizedAsyncTask: 5",
                 "CompletionHandled: PrioritizedAsyncTask: 5",
+                "ExecutionStarting: ErrorProneAsyncTask",
+                "ExecutionFailed: ErrorProneAsyncTask",
+                "CompletionHandled: ErrorProneAsyncTask",
                 "ExecutionStarting: InconsequentialAsyncTask: 500",
                 "ExecutionCompleted: InconsequentialAsyncTask: 500",
                 "CompletionHandled: InconsequentialAsyncTask: 500"
