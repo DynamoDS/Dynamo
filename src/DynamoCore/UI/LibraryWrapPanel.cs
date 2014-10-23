@@ -20,6 +20,10 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+
+        // For the first time we set current index to -2, because "-1" is used,
+        // when class button was clicked second time. And class button can also have "0" index.
+        // So, let's use "-2" as start value for currentIndex.
         private int currentIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
