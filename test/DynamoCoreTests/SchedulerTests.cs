@@ -201,19 +201,22 @@ namespace Dynamo
     /// 
     class ErrorProneAsyncTask : SampleAsyncTask
     {
-        internal ErrorProneAsyncTask(DynamoScheduler scheduler)
+        internal int Value { get; private set; }
+
+        internal ErrorProneAsyncTask(DynamoScheduler scheduler, int value)
             : base(scheduler)
         {
+            Value = value;
         }
 
         protected override TaskPriority GetPriorityCore()
         {
-            return TaskPriority.Normal;
+            return TaskPriority.AboveNormal; // Same as PrioritizedAsyncTask.
         }
 
         public override string ToString()
         {
-            return "ErrorProneAsyncTask";
+            return "ErrorProneAsyncTask: " + Value;
         }
 
         protected override void ExecuteCore()
@@ -626,11 +629,15 @@ namespace Dynamo
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
             {
-                new InconsequentialAsyncTask(scheduler, 500),
-                new PrioritizedAsyncTask(scheduler, 3),
-                new ErrorProneAsyncTask(scheduler), 
+                new ErrorProneAsyncTask(scheduler, 7), 
                 new InconsequentialAsyncTask(scheduler, 100),
-                new PrioritizedAsyncTask(scheduler, 5), 
+                new PrioritizedAsyncTask(scheduler, 1),
+                new PrioritizedAsyncTask(scheduler, 5),
+                new ErrorProneAsyncTask(scheduler, 3), 
+                new InconsequentialAsyncTask(scheduler, 500),
+                new InconsequentialAsyncTask(scheduler, 300),
+                new PrioritizedAsyncTask(scheduler, 3), 
+                new ErrorProneAsyncTask(scheduler, 5), 
             };
 
             foreach (SampleAsyncTask asyncTask in asyncTasks)
@@ -642,21 +649,51 @@ namespace Dynamo
             // Kept all PrioritizedAsyncTask instances and sorted them.
             var expected = new List<string>
             {
-                "Scheduled: InconsequentialAsyncTask: 500",
-                "Scheduled: PrioritizedAsyncTask: 3",
-                "Scheduled: ErrorProneAsyncTask",
+                // Scheduling notifications...
+
+                "Scheduled: ErrorProneAsyncTask: 7",
                 "Scheduled: InconsequentialAsyncTask: 100",
+                "Scheduled: PrioritizedAsyncTask: 1",
                 "Scheduled: PrioritizedAsyncTask: 5",
+                "Scheduled: ErrorProneAsyncTask: 3",
+                "Scheduled: InconsequentialAsyncTask: 500",
+                "Scheduled: InconsequentialAsyncTask: 300",
+                "Scheduled: PrioritizedAsyncTask: 3",
+                "Scheduled: ErrorProneAsyncTask: 5",
+
+                // Task discarded notifications...
+
                 "Discarded: InconsequentialAsyncTask: 100",
-                "ExecutionStarting: PrioritizedAsyncTask: 3",
-                "ExecutionCompleted: PrioritizedAsyncTask: 3",
-                "CompletionHandled: PrioritizedAsyncTask: 3",
+                "Discarded: InconsequentialAsyncTask: 300",
+
+                // Execution of remaining tasks...
+
+                "ExecutionStarting: ErrorProneAsyncTask: 7",
+                "ExecutionFailed: ErrorProneAsyncTask: 7",
+                "CompletionHandled: ErrorProneAsyncTask: 7",
+
+                "ExecutionStarting: PrioritizedAsyncTask: 1",
+                "ExecutionCompleted: PrioritizedAsyncTask: 1",
+                "CompletionHandled: PrioritizedAsyncTask: 1",
+
                 "ExecutionStarting: PrioritizedAsyncTask: 5",
                 "ExecutionCompleted: PrioritizedAsyncTask: 5",
                 "CompletionHandled: PrioritizedAsyncTask: 5",
-                "ExecutionStarting: ErrorProneAsyncTask",
-                "ExecutionFailed: ErrorProneAsyncTask",
-                "CompletionHandled: ErrorProneAsyncTask",
+
+                "ExecutionStarting: ErrorProneAsyncTask: 3",
+                "ExecutionFailed: ErrorProneAsyncTask: 3",
+                "CompletionHandled: ErrorProneAsyncTask: 3",
+
+                "ExecutionStarting: PrioritizedAsyncTask: 3",
+                "ExecutionCompleted: PrioritizedAsyncTask: 3",
+                "CompletionHandled: PrioritizedAsyncTask: 3",
+
+                "ExecutionStarting: ErrorProneAsyncTask: 5",
+                "ExecutionFailed: ErrorProneAsyncTask: 5",
+                "CompletionHandled: ErrorProneAsyncTask: 5",
+
+                // Execution of InconsequentialAsyncTask last...
+
                 "ExecutionStarting: InconsequentialAsyncTask: 500",
                 "ExecutionCompleted: InconsequentialAsyncTask: 500",
                 "CompletionHandled: InconsequentialAsyncTask: 500"
