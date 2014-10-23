@@ -214,7 +214,6 @@ b = c[w][x][y][z];";
         }
 
         [Test]
-        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
