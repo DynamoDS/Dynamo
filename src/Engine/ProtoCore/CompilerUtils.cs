@@ -243,7 +243,7 @@ namespace ProtoCore.Utils
             core.IsParsingPreloadedAssembly = parsingPreloadFlag;
             core.IsParsingCodeBlockNode = parsingCbnFlag;
 
-            return status == null || status.ErrorCount == 0;
+            return status.ErrorCount == 0;
         }
 
         /// <summary>
