@@ -41,8 +41,7 @@ namespace Dynamo.Controls
             // Enter collapses and expands class button.
             if (e.Key == Key.Enter)
             {
-                if (!classButton.IsSelected) classButton.IsSelected = true;
-                else classButton.IsSelected = false;
+                classButton.IsSelected = !classButton.IsSelected;
                 e.Handled = true;
                 return;
             }
