@@ -92,25 +92,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     SelectedIndex property
-        /// </summary>
-        /// <value>
-        ///     This is the currently selected element in the UI.
-        /// </value>
-        private int selectedIndex;
-        public int SelectedIndex
-        {
-            get { return selectedIndex; }
-            set
-            {
-                if (selectedIndex != value)
-                {   
-                    RaisePropertyChanged("SelectedIndex");
-                }
-            }
-        }
-
-        /// <summary>
         ///     Visible property
         /// </summary>
         /// <value>
@@ -180,8 +161,7 @@ namespace Dynamo.ViewModels
         }
 
         private void InitializeCore()
-        {
-            SelectedIndex = 0;
+        {   
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
