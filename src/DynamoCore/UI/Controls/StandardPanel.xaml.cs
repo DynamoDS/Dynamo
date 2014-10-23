@@ -221,8 +221,8 @@ namespace Dynamo.UI.Controls
             var focusedMemberButton = Keyboard.FocusedElement as ListBoxItem;
             var focusedButtonContent = focusedMemberButton.Content as BrowserInternalElement;
 
-            bool hasPrimaryMembers = primaryMembers.Items.Cast<object>().Any();
-            bool hasSecondaryMembers = secondaryMembers.Items.Cast<object>().Any();
+            bool hasPrimaryMembers = primaryMembers.Items.Count > 0;
+            bool hasSecondaryMembers = secondaryMembers.Items.Count > 0;
 
             if (e.Key == Key.Down)
             {
@@ -247,13 +247,15 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
+            // Next code assumes, that Up key was pressed.
+
             // We are at the first member of primary members, we have to move back to class button.
-            if (primaryMembers.Items.Contains(focusedButtonContent) && (e.Key == Key.Up))
+            if (primaryMembers.Items.Contains(focusedButtonContent))
                 return;
 
             // We are at the first member of secondary members, 
             // we have to move to last member of primary members.
-            if (secondaryMembers.Items.Contains(focusedButtonContent) && (e.Key == Key.Up))
+            if (secondaryMembers.Items.Contains(focusedButtonContent) )
             {
                 var generator = primaryMembers.ItemContainerGenerator;
                 (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
