@@ -54,7 +54,7 @@ namespace Dynamo.Controls
             if ((classButton.DataContext is NodeSearchElement) && (e.Key == Key.Up))
             {
                 var selectedClassButton= listButtons.OfType<ListViewItem>().
-                    Where<ListViewItem>(button => button.IsSelected).FirstOrDefault();
+                    Where(button => button.IsSelected).FirstOrDefault();
                 if (selectedClassButton != null) selectedClassButton.Focus();
                 e.Handled = true;
                 return;
