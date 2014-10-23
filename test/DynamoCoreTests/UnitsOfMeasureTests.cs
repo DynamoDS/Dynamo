@@ -8,6 +8,12 @@ namespace Dynamo.Tests
 {
     internal class UnitsOfMeasureTests : UnitTestBase
     {
+        [SetUp]
+        public void Setup()
+        {
+            BaseUnit.NumberFormat = "f4";
+        }
+
         [Test]
         [Category("UnitTests")]
         public void SetLengthsFromString()
