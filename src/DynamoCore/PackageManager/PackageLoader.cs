@@ -108,6 +108,46 @@ namespace Dynamo.PackageManager
 
         }
 
+        /// <summary>
+        ///     Attempt to load a managed assembly in to ReflectionOnlyLoadFrom context. 
+        /// </summary>
+        /// <param name="filename">The filename of a DLL</param>
+        /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
+        /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
+        internal static bool TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
+        {
+            try
+            {
+                assem = Assembly.ReflectionOnlyLoadFrom(filename);
+                return true;
+            }
+            catch (BadImageFormatException)
+            {
+                assem = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Attempt to load a managed assembly in to LoadFrom context. 
+        /// </summary>
+        /// <param name="filename">The filename of a DLL</param>
+        /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
+        /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
+        internal static bool TryLoadFrom(string filename, out Assembly assem)
+        {
+            try
+            {
+                assem = Assembly.LoadFrom(filename);
+                return true;
+            }
+            catch (BadImageFormatException)
+            {
+                assem = null;
+                return false;
+            }
+        }
+
         public bool IsUnderPackageControl(string path)
         {
             return LocalPackages.Any(ele => ele.ContainsFile(path));

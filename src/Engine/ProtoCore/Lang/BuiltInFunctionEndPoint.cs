@@ -1045,7 +1045,9 @@ namespace ProtoCore.Lang
         {
             if (!svStart.IsNumeric || !svEnd.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1056,29 +1058,67 @@ namespace ProtoCore.Lang
             {
                 if (!svEnd.IsNumeric)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kInvalidAmountInRangeExpression);
                     return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kNoStepSizeInAmountRangeExpression);
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kNoStepSizeInAmountRangeExpression);
                     return StackValue.Null;
                 }
             }
 
             if (svStep.IsNull && hasStep)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             else if (!svStep.IsNull && !svStep.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
-            decimal start = new decimal(svStart.ToDouble().RawDoubleValue);
-            decimal end = new decimal(svEnd.ToDouble().RawDoubleValue);
+            double startValue = svStart.ToDouble().RawDoubleValue;
+            if (double.IsInfinity(startValue) || double.IsNaN(startValue))
+            {
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
+                return StackValue.Null;
+            }
+            decimal start = new decimal(startValue);
+
+            double endValue = svEnd.ToDouble().RawDoubleValue;
+            if (double.IsInfinity(endValue) || double.IsNaN(endValue))
+            {
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
+                return StackValue.Null;
+            }
+            decimal end = new decimal(endValue);
+
+            if (svStep.IsDouble)
+            {
+                double stepValue = svStep.RawDoubleValue;
+                if (double.IsInfinity(stepValue) || double.IsNaN(stepValue))
+                {
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kInvalidArgumentsInRangeExpression);
+                    return StackValue.Null;
+                }
+            }
+ 
             bool isIntRange = svStart.IsInteger && svEnd.IsInteger;
 
             StackValue[] range = null;
@@ -1087,7 +1127,9 @@ namespace ProtoCore.Lang
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
-                   core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+                   core.RuntimeStatus.LogWarning(
+                       WarningID.kInvalidArguments, 
+                       WarningMessage.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
