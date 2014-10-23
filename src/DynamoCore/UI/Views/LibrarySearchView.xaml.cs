@@ -282,35 +282,30 @@ namespace Dynamo.UI.Views
             var nextFocusedCategory = GetListItemByIndex(categoryListView, categoryIndex);
             var nextFocusedCategoryContent = nextFocusedCategory.Content as SearchCategory;
 
-            // If key is up, then we have to select the last method button.
             if (e.Key == Key.Up)
             {
                 var memberGroupsList = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
                 var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
                 var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
-                // Set focus to the last member.
+
+                // If key is up, then we have to select the last method button.
                 GetListItemByIndex(membersList, membersList.Items.Count - 1).Focus();
-                e.Handled = true;
-                return;
             }
-            // Otherwise, Down was pressed, and we have to select first class/method button.
-            else
+            else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
-                // If classes are presented, then focus on first class.
                 if (nextFocusedCategoryContent.Classes.Count > 0)
                 {
+                    // If classes are presented, then focus on first class.
                     FindFirstChildListItem(nextFocusedCategory, "SubCategoryListView").Focus();
-                    e.Handled = true;
-                    return;
                 }
-                // If there are no classes, then focus on first method.
                 else
                 {
-                    FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox").Focus();
-                    e.Handled = true;
-                    return;
+                    // If there are no classes, then focus on first method.
+                    var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                    FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
                 }
             }
+            e.Handled = true;
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
