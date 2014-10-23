@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using ProtoCore.Utils;
 using System.Globalization;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace GraphToDSCompiler
 {
@@ -17,6 +19,9 @@ namespace GraphToDSCompiler
         List<SnapshotNode> nodesToModify;
         List<uint> nodesToRemove;
         public static Dictionary<string, uint> importNodesMapping = new Dictionary<string, uint>();
+        private static Dictionary<string, string> importedAssemblies = new Dictionary<string, string>();
+        private ProtoCore.Core core;
+        public static uint runningUID = Constants.UIDStart;
         //{ 
         //    {"Math.dll",100001 },
         //    {"ProtoGeometry.dll",100002}
@@ -46,6 +51,54 @@ namespace GraphToDSCompiler
         internal void AddNodesToAST()
         {
             AddNodesToAST(nodesToAdd);
+        }
+
+        /// Checks if the string in code block node is a literal or an identifier or has multiple lines of code.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static SnapshotNodeType AnalyzeString(string code)
+        {
+            SnapshotNodeType type = SnapshotNodeType.None;
+            if (!code.EndsWith(";")) code += ";";
+            List<ProtoCore.AST.Node> n = new List<ProtoCore.AST.Node>();
+
+            try
+            {
+                ProtoCore.Options options = new ProtoCore.Options();
+                options.RootModulePathName = string.Empty;
+
+                ProtoCore.Core core = new ProtoCore.Core(options);
+                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.IsParsingPreloadedAssembly = false;
+                core.IsParsingCodeBlockNode = true;
+                core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+
+                System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
+                ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+                ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+                p.Parse();
+                ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                n = p.GetParsedASTList(codeBlockNode);
+            }
+            catch (Exception)
+            {
+                //if syntax return SnapshotNodeType as None
+                return SnapshotNodeType.CodeBlock;
+            }
+
+            if (n.Count > 1 || n.Count == 0)
+                type = SnapshotNodeType.CodeBlock;
+            else if (n[0] is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
+                type = SnapshotNodeType.CodeBlock;
+            else if (n[0] is ProtoCore.AST.AssociativeAST.IdentifierNode)
+                type = SnapshotNodeType.Identifier;
+            else if (n[0] is ProtoCore.AST.AssociativeAST.IntNode || n[0] is ProtoCore.AST.AssociativeAST.DoubleNode || n[0] is ProtoCore.AST.AssociativeAST.StringNode || n[0] is ProtoCore.AST.AssociativeAST.FunctionCallNode || n[0] is ProtoCore.AST.AssociativeAST.RangeExprNode)
+                type = SnapshotNodeType.Literal;
+            else type = SnapshotNodeType.CodeBlock;
+            return type;
         }
 
         private void AddNodesToAST(List<SnapshotNode> nodesToAdd)
@@ -187,7 +240,7 @@ namespace GraphToDSCompiler
                     case SnapshotNodeType.CodeBlock:
                         {
                             string caption = node.Content;
-                            if (GraphUtilities.AnalyzeString(caption) == SnapshotNodeType.Literal)
+                            if (AnalyzeString(caption) == SnapshotNodeType.Literal)
                             {
                                 object parameter = null;
                                 int intResult = 0;
@@ -208,7 +261,7 @@ namespace GraphToDSCompiler
                                 // Aparajit: Temporarily importing all the imported libraries by default to be able to
                                 // call these functions from within a CodeBlock node 
 
-                                GraphUtilities.ForEachImportNodes((string hash, string path) => CreateImportNodeIfRequired(path, hash));
+                                ForEachImportNodes((string hash, string path) => CreateImportNodeIfRequired(path, hash));
 
                                 gc.CreateCodeblockNode(node);
                             }
@@ -223,11 +276,11 @@ namespace GraphToDSCompiler
             if (null == hashKey)
             {
                 string libraryPath = string.Empty;
-                if (GraphUtilities.TryGetImportLibraryPath(library, out libraryPath, out hashKey))
+                if (TryGetImportLibraryPath(library, out libraryPath, out hashKey))
                     library = libraryPath;
             }
             if (!importNodesMapping.ContainsKey(hashKey))
-                importNodesMapping.Add(hashKey, GraphUtilities.GenerateUID());
+                importNodesMapping.Add(hashKey, ++runningUID);
             gc.CreateImportNode(importNodesMapping[hashKey], library);
         }
 
@@ -636,5 +689,74 @@ namespace GraphToDSCompiler
                 }
             }
         }
+
+        /// <summary>
+        /// Temporary implementation for importing external libraries
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private string MD5Hash(string text)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+
+            //compute hash from the bytes of text
+            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
+
+            //get hash result after compute it
+            byte[] result = md5.Hash;
+
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < result.Length; i++)
+            {
+                //change it into 2 hexadecimal digits
+                //for each byte
+                strBuilder.Append(result[i].ToString("x2"));
+            }
+            return strBuilder.ToString();
+        }
+
+        /// <summary>
+        /// This method iterates over each imported assembly in the importedAssemblies
+        /// dictionary and performs the given action with the hash and path of the 
+        /// imported assembly.
+        /// </summary>
+        /// <param name="action">Action to perform with first argument as hash and the 
+        /// second as path</param>
+        private void ForEachImportNodes(Action<string, string> action)
+        {
+            foreach (var item in importedAssemblies)
+            {
+                action(item.Key, item.Value);
+            }
+        }
+
+        private bool TryGetImportLibraryPath(string library, out string path, out string hashKey)
+        {
+            hashKey = MD5Hash(library);
+            if (!importedAssemblies.TryGetValue(hashKey, out path))
+            {
+                if (!LocateAssembly(library, out path))
+                    return false;
+                importedAssemblies[hashKey] = path;
+            }
+
+            return true;
+        }
+
+        private bool LocateAssembly(string assembly, out string assemblyPath)
+        {
+            ProtoCore.Options options = null;
+            if (null == core)
+                options = new ProtoCore.Options() { RootModulePathName = String.Empty };
+            else
+                options = core.Options;
+
+            assemblyPath = FileUtils.GetDSFullPathName(assembly, options);
+            string dirName = Path.GetDirectoryName(assemblyPath);
+            if (!string.IsNullOrEmpty(dirName) && !core.Options.IncludeDirectories.Contains(dirName))
+                core.Options.IncludeDirectories.Add(dirName);
+
+            return File.Exists(assemblyPath);
+        } 
     }
 }
