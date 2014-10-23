@@ -245,6 +245,54 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("RegressionTests")]
+        public void Defect_MAGN_4946()
+        {
+            var model = ViewModel.Model;
+            string value = "10";
+            string codeInCBN = "a = " + value;
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            MirrorData mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data.ToString(), value);
+
+            // Copy and paste the code block node.
+            model.AddToSelection(codeBlockNodeOne);
+            model.Copy(null); // Copy the selected node.
+            model.Paste(null); // Paste the copied node.
+
+            // After pasting, we should have two nodes.
+            Assert.AreEqual(2, model.Nodes.Count());
+
+            // Make sure we are able to get the second code block node.
+            var codeBlockNodeTwo = model.Nodes[1] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNodeTwo);
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data.ToString(), value);
+
+        }
+
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
