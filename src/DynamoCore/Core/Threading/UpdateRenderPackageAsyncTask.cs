@@ -91,6 +91,11 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.Normal;
+        }
+
         protected override void ExecuteCore()
         {
             var data = from varName in drawableIds

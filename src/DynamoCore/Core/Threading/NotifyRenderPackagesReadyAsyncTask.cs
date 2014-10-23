@@ -18,6 +18,11 @@ namespace Dynamo.Core.Threading
         {
         }
 
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.Normal;
+        }
+
         protected override void ExecuteCore()
         {
             // Does nothing...
