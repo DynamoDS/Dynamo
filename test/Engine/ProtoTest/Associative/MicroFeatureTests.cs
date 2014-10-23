@@ -2605,16 +2605,14 @@ r = foo(3);";
             thisTest.Verify("r", new Object[] { 5.0, 6.0, 7.0 });
         }
 
-
         [Test]
         public void Test_Compare_Node_01()
         {
             string s1 = "a = 1;";
             string s2 = "a=(1);";
 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2624,9 +2622,8 @@ r = foo(3);";
         {
             string s1 = "a = 1; b=2;";
             string s2 = "a=(1) ; b = (2);";
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2636,9 +2633,8 @@ r = foo(3);";
         {
             string s1 = "a     =   1;  c = a+1;";
             string s2 = "a = 1; c=a +    1;";
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }

@@ -26,13 +26,12 @@ namespace ProtoTest.LiveRunner
         {
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
-            core = thisTest.SetupEmptyTestCore();
+            core = thisTest.CreateTestCore();
         }
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
