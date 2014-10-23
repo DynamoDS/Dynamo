@@ -62,6 +62,11 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.AboveNormal;
+        }
+
         protected override void ExecuteCore()
         {
             // Updating graph in the context of ISchedulerThread.

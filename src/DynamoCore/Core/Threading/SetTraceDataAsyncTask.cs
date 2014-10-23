@@ -47,6 +47,11 @@ namespace Dynamo.Core.Threading
             return ((traceData != null) && traceData.Any());
         }
 
+        protected override TaskPriority GetPriorityCore()
+        {
+            return TaskPriority.Highest;
+        }
+
         protected override void ExecuteCore()
         {
             engineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
