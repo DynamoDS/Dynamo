@@ -42,7 +42,10 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Event that is raised when the state of an AsyncTask is changed.
         /// The state of an AsyncTask changes when it is scheduled, discarded,
-        /// executed or completed.
+        /// executed or completed. Note that this event is raised in the context
+        /// of ISchedulerThread, any access to UI components or collections in 
+        /// WorkspaceModel (e.g. Nodes, Connectors, etc.) should be dispatched
+        /// for execution on the UI thread.
         /// </summary>
         internal event TaskStateChangedEventHandler TaskStateChanged;
 
