@@ -283,6 +283,9 @@ namespace Dynamo.ViewModels
 
         internal static string ShortenCategoryName(string fullCategoryName)
         {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
             var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
