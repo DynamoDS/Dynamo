@@ -623,10 +623,17 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               Margin="16,8,0,8"
-                                                               Foreground="#989898"
-                                                               FontSize="12" />
+                                                    <WrapPanel Orientation="Horizontal"
+                                                               Margin="16,8,0,8">
+                                                        <TextBlock Text="{Binding Prefix}"
+                                                                   Foreground="#989898"
+                                                                   FontSize="12"
+                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
+                                                        <TextBlock Text="{Binding GroupType}"
+                                                                   Foreground="#989898"
+                                                                   FontSize="12">
+                                                        </TextBlock>
+                                                    </WrapPanel>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"

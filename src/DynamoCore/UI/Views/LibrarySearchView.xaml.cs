@@ -245,6 +245,11 @@ namespace Dynamo.UI.Views
             WPF.FindChild<ListBox>(memberGroup, "MembersListBox").ItemsSource = memberGroupContext.ParentMembers; 
         }
 
+        private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
 
     }
 }

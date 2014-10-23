@@ -2,6 +2,7 @@
 using Dynamo.Nodes.Search;
 using System.Linq;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 
 namespace Dynamo.Search
 {
@@ -11,6 +12,24 @@ namespace Dynamo.Search
         private List<NodeSearchElement> parentMembers;
 
         public string Name { get; private set; }
+
+        public string Prefix
+        {
+            get
+            {
+                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 1;
+                return Name.Substring(0, startIndexOfGroupType);
+            }
+        }
+
+        public string GroupType
+        {
+            get
+            {
+                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 1;
+                return Name.Substring(startIndexOfGroupType);
+            }
+        }
 
         public IEnumerable<BrowserInternalElement> Members
         {
