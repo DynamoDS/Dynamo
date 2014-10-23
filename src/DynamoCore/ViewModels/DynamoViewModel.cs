@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
     {
         #region properties
 
-        public readonly DynamoModel model;
+        private readonly DynamoModel model;
 
         private Point transformOrigin;
         private bool runEnabled = true;

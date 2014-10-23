@@ -90,12 +90,9 @@ namespace Dynamo.DSEngine
         /// all libraries and reset VM.
         /// </summary>
         /// <param name="libraries"></param>
-        public void ReloadAllLibraries(List<string> libraries)
-        {
-            if (libraries.Count > 0)
-            {
-                liveRunner.ResetVMAndResyncGraph(libraries);
-            }
+        public void ReloadAllLibraries(IEnumerable<string> libraries)
+        { 
+            liveRunner.ResetVMAndResyncGraph(libraries);
         }
 
         internal ClassMirror GetClassType(string className)

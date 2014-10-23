@@ -108,7 +108,6 @@
     <Compile Include="GraphNodeToASTGenerator.cs" />
     <Compile Include="GraphTransform\GraphTransform.cs" />
     <Compile Include="GraphTransform\PatternRewrite.cs" />
-    <Compile Include="GraphUtilities.cs" />
     <Compile Include="HasCycleException.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="RPN.cs" />
