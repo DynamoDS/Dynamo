@@ -558,8 +558,11 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
+                    double placementTargetHorizontalOffset = this.PlacementTarget.TransformToAncestor(dynamoWindow)
+                              .Transform(new Point(0, 0)).X;
+                    if (placementTargetHorizontalOffset < 0) placementTargetHorizontalOffset -= gap*2;
                     x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                        + gap + HorizontalScrollOffset;
+                        + gap + Math.Abs(placementTargetHorizontalOffset);/* + HorizontalScrollOffset; */
 
                     var availableHeight = dynamoWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
