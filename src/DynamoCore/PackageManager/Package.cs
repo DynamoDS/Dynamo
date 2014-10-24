@@ -189,11 +189,11 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger )
+        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             try
             {
-                this.LoadAssembliesIntoDynamo( loader, logger );
+                this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
                 this.LoadCustomNodesIntoDynamo( loader );
                 this.EnumerateAdditionalFiles();
                 
@@ -237,7 +237,7 @@ namespace Dynamo.PackageManager
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
+        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             var assemblies = LoadAssembliesInBinDirectory(logger);
 
@@ -260,7 +260,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                LibraryServices.GetInstance().ImportLibrary( zeroTouchAssem.Location, logger );
+                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger);
             }
 
             // load the node model assemblies
