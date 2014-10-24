@@ -1,5 +1,12 @@
-﻿using Dynamo.Core.Threading;
+﻿using System.IO;
+using System.Reflection;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Tests;
+
+using DynamoUtilities;
 
 using NUnit.Framework;
 using System;
@@ -243,6 +250,52 @@ namespace Dynamo
         }
 
         internal TimeStamp TimeStampValue { get; private set; }
+    }
+
+    #endregion
+
+    #region Built-in AsyncTask Test Classes
+
+    class StubInitParams
+    {
+        private static int currentSerialNumber = 0;
+        private readonly int serialNumber = 0;
+        private readonly List<string> results;
+
+        internal DynamoScheduler Scheduler { get; private set; }
+
+        internal static void ResetSerialNumber()
+        {
+            currentSerialNumber = 0;
+        }
+
+        internal StubInitParams(DynamoScheduler scheduler, List<string> results)
+        {
+            serialNumber = currentSerialNumber++;
+            this.results = results;
+            this.Scheduler = scheduler;
+        }
+
+        internal void WriteResult(AsyncTask task)
+        {
+            results.Add(string.Format("{0}: {1}", task.GetType().Name, serialNumber));
+        }
+    }
+
+    class StubAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
+    {
+        private readonly StubInitParams initParams;
+
+        internal StubAggregateRenderPackageAsyncTask(StubInitParams initParams) :
+            base(initParams.Scheduler)
+        {
+            this.initParams = initParams;
+        }
+
+        protected override void ExecuteCore()
+        {
+            initParams.WriteResult(this);
+        }
     }
 
     #endregion
@@ -707,10 +760,6 @@ namespace Dynamo
                 Assert.AreEqual(expected[index++], actual);
             }
         }
-
-        #endregion
-
-        #region Private Test Helper Methods
 
         #endregion
     }
