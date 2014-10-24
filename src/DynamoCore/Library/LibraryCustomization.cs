@@ -111,13 +111,13 @@ namespace Dynamo.DSEngine
 
     public class LibraryCustomization
     {
-        private XDocument xmlDocument;
+        private readonly XDocument xmlDocument;
 
         private Dictionary<string, BitmapSource> cachedIcons = 
             new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
-        private string assemblyName;
-        private Assembly resourceAssembly;
+        private readonly string assemblyName;
+        private readonly Assembly resourceAssembly;
 
         private const string imagesSuffix = "Images";
 
