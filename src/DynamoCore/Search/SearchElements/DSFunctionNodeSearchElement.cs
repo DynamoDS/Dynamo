@@ -70,7 +70,19 @@ namespace Dynamo.Search.SearchElements
                         return name;
 
                     // Case for overloaded methods.
-                    return Utils.TypedParametersToString(this.FunctionDescriptor);
+                    if (name == FunctionDescriptor.QualifiedName)
+                    {
+                        return Utils.TypedParametersToString(FunctionDescriptor);
+                    }
+                    // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
+                    // Should be used FunctionDescriptor.Name property instead.
+                    // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
+                    else
+                    {
+                        string shortName = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+                        return Utils.TypedParametersToString
+                        (FunctionDescriptor, name + shortName);
+                    }
                 }
             }
 
