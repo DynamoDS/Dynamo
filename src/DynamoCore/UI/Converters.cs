@@ -1857,18 +1857,18 @@ namespace Dynamo.Controls
 
             var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
             if (index == -1)
-                return new Thickness(0);
+                return new Thickness(5, 10, textBlock.ActualWidth, textBlock.ActualHeight);
 
             double leftMargin, rightMargin;
 
-            var formattedText = new FormattedText(fullText.Substring(0, index),
+            var formattedText = new FormattedText(fullText.Substring(0, index + searchText.Length),
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
                 new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
                     textBlock.FontStretch),
                 textBlock.FontSize,
                 textBlock.Foreground);
-            leftMargin = 5 + formattedText.Width;
+            rightMargin = textBlock.ActualWidth - formattedText.Width;
 
             formattedText = new FormattedText(fullText.Substring(index, searchText.Length),
                 CultureInfo.CurrentUICulture,
@@ -1877,7 +1877,7 @@ namespace Dynamo.Controls
                     textBlock.FontStretch),
                 textBlock.FontSize,
                 textBlock.Foreground);
-            rightMargin = 5 + textBlock.ActualWidth - leftMargin - formattedText.Width;
+            leftMargin = 5 + textBlock.ActualWidth - rightMargin - formattedText.Width;
             return new Thickness(leftMargin, 10, rightMargin, 10);
         }
 
