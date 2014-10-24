@@ -532,7 +532,8 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type == (int)PrimitiveType.kTypeDouble)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
+                            core.ExecutionLog.WriteLine(ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
+                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
                         }
                         return sv.ToInteger();
                     }
