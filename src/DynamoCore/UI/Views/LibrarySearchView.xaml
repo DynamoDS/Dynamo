@@ -205,7 +205,11 @@
         </DataTemplate>
         <!-- This data template is used to show one member. -->
         <ControlTemplate x:Key="MemberControlTemplate">
-            <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Image HorizontalAlignment="Left"
                        Height="32"
                        Margin="16,0,16,0"
@@ -213,13 +217,19 @@
                        Width="32"
                        Source="{Binding SmallIcon}" />
 
-                <TextBlock HorizontalAlignment="Left"
+                <Rectangle Grid.Column="1"
+                           Height="16"
+                           Width="50"
+                           Margin="10,0,10,0"
+                           Fill="#3E464C" />
+                <TextBlock Grid.Column="1"
+                           HorizontalAlignment="Left"
                            Text="{Binding Name}"
                            VerticalAlignment="Top"
                            Margin="5,10,0,0"
                            Foreground="#CCCCCC"
                            FontSize="13" />
-            </StackPanel>
+            </Grid>
         </ControlTemplate>
         <!--EndRegion-->
 
