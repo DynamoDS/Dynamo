@@ -496,7 +496,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestCompletionWhenTyping()
         {
             var libraryServices = ViewModel.Model.EngineController.LibraryServices;
@@ -531,7 +531,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
             var libraryServices = ViewModel.Model.EngineController.LibraryServices;
