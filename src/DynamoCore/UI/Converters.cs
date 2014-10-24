@@ -1843,4 +1843,47 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class SearchHighlightMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length != 2)
+                return new ArgumentException();
+
+            var textBlock = values[0] as TextBlock;
+            var searchText = values[1] as string;
+            var fullText = textBlock.Text;
+
+            var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
+            if (index == -1)
+                return new Thickness(0);
+
+            double leftMargin, rightMargin;
+
+            var formattedText = new FormattedText(fullText.Substring(0, index),
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
+                    textBlock.FontStretch),
+                textBlock.FontSize,
+                textBlock.Foreground);
+            leftMargin = 5 + formattedText.Width;
+
+            formattedText = new FormattedText(fullText.Substring(index, searchText.Length),
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
+                    textBlock.FontStretch),
+                textBlock.FontSize,
+                textBlock.Foreground);
+            rightMargin = 5 + textBlock.ActualWidth - leftMargin - formattedText.Width;
+            return new Thickness(leftMargin, 10, rightMargin, 10);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

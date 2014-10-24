@@ -143,6 +143,7 @@
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+        <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 
         <!--EndRegion-->
 
@@ -217,18 +218,29 @@
                        Width="32"
                        Source="{Binding SmallIcon}" />
 
-                <Rectangle Grid.Column="1"
-                           Height="16"
-                           Width="50"
-                           Margin="10,0,10,0"
-                           Fill="#3E464C" />
                 <TextBlock Grid.Column="1"
+                           Panel.ZIndex="1"
+                           Name="memberName"
                            HorizontalAlignment="Left"
                            Text="{Binding Name}"
                            VerticalAlignment="Top"
                            Margin="5,10,0,0"
                            Foreground="#CCCCCC"
                            FontSize="13" />
+                <!--Margin="10,10,10,10"-->
+                <Rectangle Grid.Column="1"
+                           Panel.ZIndex="0"
+                           Fill="#3E464C"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch">
+                    <Rectangle.Margin>
+                        <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                            <Binding ElementName="memberName" />
+                            <Binding Path="DataContext.SearchText"
+                                     RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}" />
+                        </MultiBinding>
+                    </Rectangle.Margin>
+                </Rectangle>
             </Grid>
         </ControlTemplate>
         <!--EndRegion-->
