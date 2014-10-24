@@ -80,8 +80,7 @@ namespace Dynamo.Search.SearchElements
                     else
                     {
                         string shortName = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
-                        return Utils.TypedParametersToString
-                        (FunctionDescriptor, name + shortName);
+                        return Utils.TypedParametersToString(FunctionDescriptor, name + shortName);
                     }
                 }
             }
