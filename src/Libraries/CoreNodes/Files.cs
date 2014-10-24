@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Autodesk.DesignScript.Runtime;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
-using System.Linq;
-using Autodesk.DesignScript.Runtime;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+
+using Path = System.IO.Path;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace DSCore.IO
 {
@@ -148,7 +153,7 @@ namespace DSCore.IO
                 bitmap.PixelFormat);
             
             foreach (var pixel in colors.Select((pixel, idx) => new { pixel, idx }))
-                System.Runtime.InteropServices.Marshal.WriteByte(data.Scan0, pixel.idx, pixel.pixel);
+                Marshal.WriteByte(data.Scan0, pixel.idx, pixel.pixel);
 
             bitmap.UnlockBits(data);
 
@@ -245,6 +250,85 @@ namespace DSCore.IO
     }
 
     /// <summary>
+    ///     Methods for working with CSV (comma-separated values) files.
+    /// </summary>
+    public static class CSV
+    {
+        /// <summary>
+        ///     Write a list of lists into a file using a comma-separated values 
+        ///     format. Outer list represents rows, inner lists represent columns. 
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="data">List of lists to write into CSV</param>
+        /// <returns name="str">Contents of the text file.</returns>
+        /// <search>write,text,file</search>
+        public static void Write(string filePath, object[][] data)
+        {
+            using (var writer = new StreamWriter(filePath))
+            {
+                foreach (var line in data)
+                {
+                    int count = 0;
+                    foreach (var entry in line)
+                    {
+                        writer.Write(entry);
+                        if (++count < line.Length)
+                            writer.Write(", ");
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reads a text file containing comma-separated values into a two dimensional list.
+        /// Outer list represents rows, inner lists represent columns.
+        /// </summary>
+        /// <param name="file">File object to read from.</param>
+        /// <returns>CSV contents of the given file.</returns>
+        public static object[][] Read(FileInfo file)
+        {
+            var csvDataQuery = from line in System.IO.File.ReadLines(file.FullName)
+                               let elements = line.Split(',')
+                               let count = elements.Length
+                               let data = elements.Select(MarshalStringFromCSV)
+                               select new { count, data };
+
+            var csvDataList = csvDataQuery.ToList();
+            var numCols = csvDataList.Max(row => row.count);
+            var resultArray = 
+                csvDataList.Select(
+                    row => 
+                        row.data
+                            .Concat(Enumerable.Repeat(null as object, numCols - row.count))
+                            .ToArray())
+                    .ToArray();
+            return resultArray;
+        }
+
+        private static object MarshalStringFromCSV(string elementSt)
+        {
+            if (string.IsNullOrWhiteSpace(elementSt))
+                return null;
+
+            if (elementSt.Contains('.'))
+            {
+                double dbl;
+                if (double.TryParse(elementSt, NumberStyles.Float, CultureInfo.InvariantCulture, out dbl))
+                {
+                    return dbl;
+                }
+            }
+
+            int i;
+            if (int.TryParse(elementSt, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
+                return i;
+            
+            return elementSt;
+        }
+    }
+
+    /// <summary>
     ///     Methods for working with Files.
     /// </summary>
     public static class File
@@ -272,32 +356,6 @@ namespace DSCore.IO
         public static bool Exists(string path)
         {
             return System.IO.File.Exists(path);
-        }
-
-        /// <summary>
-        ///     Write a list of lists into a file using a comma-separated values 
-        ///     format. Outer list represents rows, inner lists represent column. 
-        /// </summary>
-        /// <param name="filePath">Path to write to</param>
-        /// <param name="data">List of lists to write into CSV</param>
-        /// <returns name="str">Contents of the text file.</returns>
-        /// <search>write,text,file</search>
-        public static void WriteCSV(string filePath, object[][] data)
-        {
-            using (var writer = new StreamWriter(filePath))
-            {
-                foreach (var line in data)
-                {
-                    int count = 0;
-                    foreach (var entry in line)
-                    {
-                        writer.Write(entry);
-                        if (++count < line.Length)
-                            writer.Write(", ");
-                    }
-                    writer.WriteLine();
-                }
-            }
         }
 
         /// <summary>
