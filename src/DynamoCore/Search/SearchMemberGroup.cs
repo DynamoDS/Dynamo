@@ -34,8 +34,20 @@ namespace Dynamo.Search
 
         public IEnumerable<BrowserInternalElement> Members
         {
-            get { return members; }
+            get 
+            {
+                if (!showAllMembers)
+                    return members;
+
+                if (members.Count == 0) return null;
+
+                var firstMember = members[0] as NodeSearchElement;
+                return firstMember.Parent.Items.OfType<BrowserInternalElement>().
+                        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group).ToList();
+            }
         }
+
+        private bool showAllMembers = false;
 
         internal SearchMemberGroup(string name)
         {
@@ -57,11 +69,7 @@ namespace Dynamo.Search
 
         public void ExpandAllMembers()
         {
-            if (members.Count == 0) return;
-            var firstMember = members[0] as NodeSearchElement;
-
-            members = firstMember.Parent.Items.OfType<BrowserInternalElement>().
-                    Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group).ToList();
+            showAllMembers = true;
             RaisePropertyChanged("Members");
         }
     }
