@@ -248,8 +248,8 @@ b = c[w][x][y][z];";
         public void Defect_MAGN_4946()
         {
             var model = ViewModel.Model;
-            string value = "10";
-            string codeInCBN = "a = " + value;
+            int value = 10;
+            string codeInCBN = "a = " + value.ToString();
 
             // Create the initial code block node.
             var codeBlockNodeOne = CreateCodeBlockNode();
@@ -266,7 +266,7 @@ b = c[w][x][y][z];";
             var core = ViewModel.Model.EngineController.LiveRunnerCore;
             RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
-            Assert.AreEqual(mirrorData.Data.ToString(), value);
+            Assert.AreEqual(mirrorData.Data, value);
 
             // Copy and paste the code block node.
             model.AddToSelection(codeBlockNodeOne);
@@ -287,7 +287,7 @@ b = c[w][x][y][z];";
             // Get preview data given AstIdentifierBase
             runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
             mirrorData = runtimeMirror.GetData();
-            Assert.AreEqual(mirrorData.Data.ToString(), value);
+            Assert.AreEqual(mirrorData.Data, value);
 
         }
 
