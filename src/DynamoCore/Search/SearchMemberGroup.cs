@@ -9,7 +9,7 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup : NotificationObject
     {
-        private List<BrowserInternalElement> members;
+        private readonly List<BrowserInternalElement> members;
 
         public string Name { get; private set; }
 
