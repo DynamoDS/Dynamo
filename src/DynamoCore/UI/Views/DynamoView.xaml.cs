@@ -1100,6 +1100,7 @@ namespace Dynamo.Controls
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                this.Activate();
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
