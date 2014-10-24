@@ -8,6 +8,12 @@ namespace Dynamo.Tests
 {
     internal class UnitsOfMeasureTests : UnitTestBase
     {
+        [SetUp]
+        public void Setup()
+        {
+            BaseUnit.NumberFormat = "f4";
+        }
+
         [Test]
         [Category("UnitTests")]
         public void SetLengthsFromString()
@@ -195,7 +201,7 @@ namespace Dynamo.Tests
         {
             var length = Length.FromDouble(0.03175); //1.25"
 
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalInch;
+            SIUnit.LengthUnit = LengthUnit.FractionalInch;
             Assert.AreEqual("1 1/4\"", length.ToString());
 
             length.Value = -0.03175;
@@ -232,7 +238,7 @@ namespace Dynamo.Tests
         {
             //test just the fractional case
             var length = Length.FromDouble(0.0762); //.25"
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
 
             Assert.AreEqual("3\"", length.ToString());
 
@@ -518,16 +524,16 @@ namespace Dynamo.Tests
             const double x = 5.0;
 
             var length = x.ToLength();
-            SIUnit.LengthUnit = DynamoLengthUnit.Meter;
-            Assert.AreEqual("5.000m", length.ToString());
+            SIUnit.LengthUnit = LengthUnit.Meter;
+            Assert.AreEqual("5.0000m", length.ToString());
 
             var area = x.ToArea();
-            SIUnit.AreaUnit = DynamoAreaUnit.SquareMeter;
-            Assert.AreEqual("5.000m²", area.ToString());
+            SIUnit.AreaUnit = AreaUnit.SquareMeter;
+            Assert.AreEqual("5.0000m²", area.ToString());
 
             var volume = x.ToVolume();
-            SIUnit.VolumeUnit = DynamoVolumeUnit.CubicMeter;
-            Assert.AreEqual("5.000m³", volume.ToString());
+            SIUnit.VolumeUnit = VolumeUnit.CubicMeter;
+            Assert.AreEqual("5.0000m³", volume.ToString());
 
         }
 
@@ -535,10 +541,10 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UiRounding()
         {
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
 
             var length = Length.FromFeet(1.5);
-            SIUnit.LengthUnit = DynamoLengthUnit.FractionalFoot;
+            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
             Assert.AreEqual("2' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
@@ -561,7 +567,7 @@ namespace Dynamo.Tests
             //this fails as explained here:
             //http://msdn.microsoft.com/en-us/library/wyk4d9cy(v=vs.110).aspx
             //length = Units.Length.FromFeet(.5);
-            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(LengthUnit.FractionalFoot));
         }
 
         [Test]
@@ -609,6 +615,60 @@ namespace Dynamo.Tests
             var mixedList = new List<SIUnit> {l2, a4, v4};
             Assert.Throws<InvalidOperationException>(mixedList.Sort);
 
+        }
+
+        [Test, Category("UnitTests")]
+        public void LengthConversions()
+        {
+            Assert.AreEqual(1.0, Length.Conversions[Length.METERS]);
+            Assert.AreEqual(Length.ToMillimeter, Length.Conversions[Length.MILLIMETERS]);
+            Assert.AreEqual(Length.ToCentimeter, Length.Conversions[Length.CENTIMETERS]);
+            Assert.AreEqual(Length.ToInch, Length.Conversions[Length.INCHES]);
+            Assert.AreEqual(Length.ToFoot, Length.Conversions[Length.FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void AreaConversions()
+        {
+            Assert.AreEqual(1.0, Area.Conversions[Area.SQUARE_METERS]);
+            Assert.AreEqual(Area.ToSquareMillimeters, Area.Conversions[Area.SQUARE_MILLIMETERS]);
+            Assert.AreEqual(Area.ToSquareCentimeters, Area.Conversions[Area.SQUARE_CENTIMETERS]);
+            Assert.AreEqual(Area.ToSquareInch, Area.Conversions[Area.SQUARE_INCHES]);
+            Assert.AreEqual(Area.ToSquareFoot, Area.Conversions[Area.SQUARE_FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void VolumeConversions()
+        {
+            Assert.AreEqual(1.0, Volume.Conversions[Volume.CUBIC_METERS]);
+            Assert.AreEqual(Volume.ToCubicMillimeter, Volume.Conversions[Volume.CUBIC_MILLIMETERS]);
+            Assert.AreEqual(Volume.ToCubicCentimeter, Volume.Conversions[Volume.CUBIC_CENTIMETERS]);
+            Assert.AreEqual(Volume.ToCubicInch, Volume.Conversions[Volume.CUBIC_INCHES]);
+            Assert.AreEqual(Volume.ToCubicFoot, Volume.Conversions[Volume.CUBIC_FEET]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void InsolationConversions()
+        {
+            Assert.AreEqual(1.0, Insolation.Conversions[Insolation.WATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToKwhMeter2, Insolation.Conversions[Insolation.KILLOWATT_HOURS_PER_SQUARE_METER]);
+            Assert.AreEqual(Insolation.ToBTUFoot2, Insolation.Conversions[Insolation.BTU_PER_SQUARE_FOOT]);
+        }
+
+        [Test, Category("UnitTests")]
+        public void Location_ValidArgs()
+        {
+            var loc = Location.ByLatitudeAndLongitude(20.0, -20.0);
+            Assert.NotNull(loc);
+            Assert.AreEqual(loc.Latitude, 20.0);
+            Assert.AreEqual(loc.Longitude, -20.0);
+        }
+
+        [Test, Category("UnitTests")]
+        public void Location_InvalidArgs()
+        {
+            Assert.Throws<Exception>(()=>Location.ByLatitudeAndLongitude(500.0, 10.0));
+            Assert.Throws<Exception>(() => Location.ByLatitudeAndLongitude(10.0, 500.0));
         }
     }
 

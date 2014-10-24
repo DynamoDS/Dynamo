@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
@@ -217,7 +218,9 @@ namespace Dynamo.Nodes
         protected override void Updater_ElementsDeleted(
             Document document, IEnumerable<ElementId> deleted)
         {
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner))
+            if (!SelectionResults.Any() || 
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any())
             {
                 return;
             }
@@ -225,21 +228,23 @@ namespace Dynamo.Nodes
             // We are given a set of ElementIds, but because the elements
             // have already been deleted from Revit, we can't get the 
             // corresponding GUID. Instead, we just go through the collection of
-            // elements and attempt to find the ones which are no longer valid Revit
-            // objects and we remove those from the set.
+            // elements and get the ones that are still valid.
 
-            var validEls = Selection.Where(el => el.IsValidObject);
+            var validEls = Selection.Where(el => el.IsValidObject).ToList();
+
             UpdateSelection(validEls);
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            // If nothing has been updated, then return
+
             if (!updated.Any())
                 return;
 
-            var updatedSet = new HashSet<string>(updated);
-
-            if (!SelectionResults.Where(x=>x.IsValidObject).Select(x => x.UniqueId).Any(updatedSet.Contains))
+            // If the updated list doesn't include any objects in the current selection
+            // then return;
+            if (!SelectionResults.Where(x => x.IsValidObject).Select(x => x.UniqueId).Any(updated.Contains))
             {
                 return;
             }
@@ -357,13 +362,31 @@ namespace Dynamo.Nodes
             // If an element is deleted, ensure all references which refer
             // to that element are removed from the selection
 
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
+            // If there is no selection, or the doc of the deleted
+            // elements is not this doc, or if there is nothing
+            // in the deleted set, then return
 
-            UpdateSelection(SelectionResults.Where(x => !deleted.Contains(x.ElementId)));
+            if (!SelectionResults.Any() ||
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any() ||
+                !SelectionResults.Any(x=>deleted.Contains(x.ElementId))) return;
+
+            // The new selections is everything in the current selection
+            // that is not in the deleted collection as well
+            var newSelection = SelectionResults.Where(x => !deleted.Contains(x.ElementId));
+
+            UpdateSelection(newSelection);
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            // If there is nothing modified or the SelectionResults
+            // collection is null, then return
+            if (!updated.Any() || SelectionResults == null)
+            {
+                return;
+            }
+
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
             // If this modification is being parsed as part of a document
@@ -371,8 +394,9 @@ namespace Dynamo.Nodes
             // get the elements first to see if they are valid. 
             var validIds = SelectionResults.Select(doc.GetElement).Where(x=>x != null).Select(x=>x.UniqueId);
 
-            // If an element is modified, require recalc
-            if (SelectionResults == null || !validIds.Any(updated.Contains))
+            // If none of the updated elements are included in the 
+            // list of valid ids in the selection, then return.
+            if (!validIds.Any(updated.Contains))
             {
                 return;
             }

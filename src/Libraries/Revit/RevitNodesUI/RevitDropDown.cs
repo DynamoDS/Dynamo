@@ -8,12 +8,22 @@ using DSCore;
 using DSCoreNodesUI;
 
 using Dynamo.Applications.Models;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+
+using Revit.Elements;
+
 using RevitServices.Persistence;
 using Category = Revit.Elements.Category;
+using Element = Autodesk.Revit.DB.Element;
+using Family = Autodesk.Revit.DB.Family;
+using FamilyInstance = Autodesk.Revit.DB.FamilyInstance;
+using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
+using Level = Autodesk.Revit.DB.Level;
+using Parameter = Autodesk.Revit.DB.Parameter;
 
 namespace DSRevitNodesUI
 {
@@ -554,6 +564,56 @@ namespace DSRevitNodesUI
             var assemblyName = AstFactory.BuildStringNode("RevitAPI");
             var functionCall = AstFactory.BuildFunctionCall(new Func<string,string,object>(Types.FindTypeByNameInAssembly) , new List<AssociativeNode>(){typeName, assemblyName});
             return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)};
+        }
+    }
+
+    [NodeName("Views")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All views available in the current document.")]
+    [IsDesignScriptCompatible]
+    public class Views : RevitDropDownBase
+    {
+        public Views(WorkspaceModel workspaceModel) : base(workspaceModel, "Views") { }
+
+        protected override void PopulateItems()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            var views = fec.OfClass(typeof(View)).ToElements();
+
+            foreach (var v in views)
+            {
+                Items.Add(new DynamoDropDownItem(v.Name, v));
+            }
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (SelectedIndex == -1)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var view = Items[SelectedIndex].Item as View;
+                if (view == null)
+                {
+                    node = AstFactory.BuildNullNode();
+                }
+                else
+                {
+                    var idNode = AstFactory.BuildStringNode(view.UniqueId);
+                    var falseNode = AstFactory.BuildBooleanNode(true);
+                    
+                    node =
+                        AstFactory.BuildFunctionCall(
+                            new Func<string, bool, object>(ElementSelector.ByUniqueId),
+                            new List<AssociativeNode>() { idNode, falseNode });
+                }
+            }
+
+            return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
     }
 }

@@ -12,6 +12,8 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 
 using RevitServices.Persistence;
+using RevitServices.Transactions;
+
 using RTF.Framework;
 using Dynamo.Models;
 
@@ -78,6 +80,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, watchNode.CachedValue);
 
             refPt.X = 10;
+
+            TransactionManager.Instance.ForceCloseTransaction();
 
             Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
 
@@ -201,7 +205,7 @@ namespace Dynamo.Tests
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            var selectionNode = ViewModel.model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
+            var selectionNode = ViewModel.Model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
             Assert.NotNull(selectionNode);
             var element = GetPreviewValue(selectionNode.GUID.ToString());
             Assert.IsInstanceOf<NurbsCurve>(element);
