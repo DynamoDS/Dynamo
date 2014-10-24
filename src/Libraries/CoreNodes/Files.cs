@@ -87,7 +87,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="file">File object to load image from.</param>
         /// <returns name="bitmap">Bitmap</returns>
-        public static Bitmap FromFile(FileInfo file)
+        public static Bitmap ReadFromFile(FileInfo file)
         {
             using (var fs = new FileStream(file.FullName, FileMode.Open))
                 return new Bitmap(System.Drawing.Image.FromStream(fs));
@@ -101,7 +101,7 @@ namespace DSCore.IO
         /// <param name="ySamples">Number of sample grid points in the Y direction.</param>
         /// <returns name="colors">Colors at the specified grid points.</returns>
         /// <search>read,image,bitmap,png,jpg,jpeg</search>
-        public static IList Pixels(Bitmap image, int? xSamples=null, int? ySamples=null)
+        public static Color[][] Pixels(Bitmap image, int? xSamples=null, int? ySamples=null)
         {
             var numX = xSamples ?? image.Width;
             var numY = ySamples ?? image.Height;
@@ -113,8 +113,8 @@ namespace DSCore.IO
                             Enumerable.Range(0, numX)
                                 .Select(x => 
                                      Color.ByColor(image.GetPixel(x * (image.Width / numX), y * (image.Height / numY))))
-                                .ToList())
-                    .ToList();
+                                .ToArray())
+                    .ToArray();
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace DSCore.IO
         /// <param name="data">List of lists to write into CSV</param>
         /// <returns name="str">Contents of the text file.</returns>
         /// <search>write,text,file</search>
-        public static void Write(string filePath, object[][] data)
+        public static void WriteToFile(string filePath, object[][] data)
         {
             using (var writer = new StreamWriter(filePath))
             {
@@ -286,7 +286,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="file">File object to read from.</param>
         /// <returns>CSV contents of the given file.</returns>
-        public static object[][] Read(FileInfo file)
+        public static object[][] ReadFromFile(FileInfo file)
         {
             var csvDataQuery = from line in System.IO.File.ReadLines(file.FullName)
                                let elements = line.Split(',')

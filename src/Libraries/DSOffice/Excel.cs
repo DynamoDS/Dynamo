@@ -251,7 +251,7 @@ namespace DSOffice
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] Read(FileInfo file, string sheetName)
+        public static object[][] ReadFromFile(FileInfo file, string sheetName)
         {
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
@@ -274,7 +274,7 @@ namespace DSOffice
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] Write(string filePath, string sheetName, int startRow, int startCol, object[][] data)
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data)
         {
             WorkBook wb = new WorkBook(filePath);
             WorkSheet ws = new WorkSheet (wb, sheetName);
