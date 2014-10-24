@@ -4241,5 +4241,25 @@ t = A.a;
             });
         }
 
+        [Test]
+        public void TestDefaultArgInConstructor01()
+        {
+            string code = @"
+class Test{	x : int;	constructor Test(m:int = 1)	{		x = m;	}}p = Test.Test(2); i = p.x;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestDefaultArgInConstructor02()
+        {
+            string code = @"
+class Test{	x : int;	y : int;	constructor Test(m:int, n:int = 2)	{		x = m;		y = n;	}}p = Test.Test(1); i = p.y;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
+        }
+
     }
 }

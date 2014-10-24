@@ -11,8 +11,8 @@ namespace Dynamo.DSEngine
             var astBuilder = new AstBuilder(dynamoModel, null);
             var astNodes = astBuilder.CompileToAstNodes(nodeList, false);
 
-            string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
-            return code;
+            var codeGen = new ProtoCore.CodeGenDS(astNodes);
+            return codeGen.GenerateCode();
         }
     }
 }

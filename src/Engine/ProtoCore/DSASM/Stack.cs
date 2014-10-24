@@ -513,7 +513,7 @@ namespace ProtoCore.DSASM
             //Pop the addtional stack elements added
             int newStackCount = mRmem.Stack.Count;
             if (newStackCount > mRestorePoint)
-                mRmem.Pop(newStackCount - mRestorePoint);
+                mRmem.PopFrame(newStackCount - mRestorePoint);
 
             //Restore the old stack elements that is above the frame pointer
             int count = mStack.Count;
@@ -526,3 +526,4 @@ namespace ProtoCore.DSASM
         }
     }
 }
+

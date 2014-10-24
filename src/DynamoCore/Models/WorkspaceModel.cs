@@ -516,6 +516,19 @@ namespace Dynamo.Models
             NodeModel node, Guid nodeId, double x, double y,
             bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
         {
+            // Fix for: 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5045
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4767
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4946
+            // 
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -526,9 +539,6 @@ namespace Dynamo.Models
 
             if (null != xmlNode)
                 node.Load(xmlNode);
-
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
 
             ModelEventArgs args = null;
             if (!useDefaultPos)
@@ -599,6 +609,20 @@ namespace Dynamo.Models
         public virtual bool Save()
         {
             return SaveAs(FileName);
+        }
+
+        internal void ResetWorkspace()
+        {
+            ResetWorkspaceCore();
+        }
+
+        /// <summary>
+        /// Derived workspace classes can choose to override 
+        /// this method to perform clean-up specific to them.
+        /// </summary>
+        /// 
+        protected virtual void ResetWorkspaceCore()
+        {
         }
 
         //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes

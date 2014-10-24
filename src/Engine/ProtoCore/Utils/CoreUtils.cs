@@ -349,6 +349,12 @@ namespace ProtoCore.Utils
             return propertyName.StartsWith(ProtoCore.DSASM.Constants.kSetterPrefix);
         }
 
+        public static bool StartsWithSingleUnderscore(string name)
+        {
+            Validity.Assert(null != name);
+            return name.StartsWith(ProtoCore.DSASM.Constants.kSingleUnderscore);
+        }
+
         public static bool StartsWithDoubleUnderscores(string name)
         {
             Validity.Assert(null != name);
@@ -489,6 +495,12 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
+        }
+
+        public static bool IsDefaultArgTemp(string varname)
+        {
+            Validity.Assert(null != varname);
+            return varname.StartsWith(ProtoCore.DSASM.Constants.kTempDefaultArg);
         }
 
         public static ProtoCore.AST.AssociativeAST.FunctionDotCallNode GenerateCallDotNode(ProtoCore.AST.AssociativeAST.AssociativeNode lhs, 
@@ -779,7 +791,7 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != core);
             List<AssociativeNode> astList = new List<AssociativeNode>();
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             astList.AddRange(cbn.Body);
             return astList;
         }

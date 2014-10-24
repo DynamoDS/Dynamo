@@ -59,7 +59,7 @@ namespace ProtoCore
             public const string kFunctionNotFound = "No candidate function could be found.";
             public const string kAmbigousMethodDispatch = "Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.";
             public const string kInvalidArguments = "Argument is invalid.";
-            public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either interger or double.";
+            public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either integer or double.";
             public const string kInvalidAmountInRangeExpression = "The amount in range expression should be an positive integer.";
             public const string kNoStepSizeInAmountRangeExpression = "No step size is specified in amount range expression.";
             public const string kFileNotFound = "'{0}' doesn't exist.";
@@ -67,9 +67,13 @@ namespace ProtoCore
             public const string kPropertyOfClassNotFound = "Class '{0}' does not have a property '{1}'.";
             public const string kPropertyInaccessible = "Property '{0}' is inaccessible.";
             public const string kMethodResolutionFailure = "Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.";
-            public const string kMethodResolutionFailureWithTypes = "Couldn't find a version of {0} that takes arguments of type {1}";
+            public const string kMethodResolutionFailureWithTypes = "One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}.";
             public const string kMethodResolutionFailureForOperator = "Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.";
             public const string kConsoleWarningMessage = "> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>";
+
+            public const string FUNCTION_GROUP_RESOLUTION_FAILURE =
+                "No function called {0} could be found. Please check the name of the function.";
+
         }
 
         public struct WarningEntry
@@ -80,6 +84,7 @@ namespace ProtoCore
             public int Column;
             public int ExpressionID;
             public Guid GraphNodeGuid;
+            public int AstID;
             public string Filename;
         }
     }
@@ -126,10 +131,15 @@ namespace ProtoCore
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
         }
-
+        
         public void ClearWarningsForGraph(Guid guid)
         {
             warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+        }
+
+        public void ClearWarningsForAst(int astID)
+        {
+            warnings.RemoveAll(w => w.AstID.Equals(astID));
         }
 
         public RuntimeStatus(Core core, 
@@ -184,6 +194,19 @@ namespace ProtoCore
                 MessageHandler.Write(outputMessage);
             }
 
+            AssociativeGraph.GraphNode executingGraphNode = null;
+            var executive = core.CurrentExecutive.CurrentDSASMExec;
+            if (executive != null)
+            {
+                executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the warning is from some
+                // internal graph node. 
+                if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = core.ExecutingGraphnode;
+                }
+            }
+
             var entry = new RuntimeData.WarningEntry
             {
                 ID = ID,
@@ -191,7 +214,8 @@ namespace ProtoCore
                 Column = col,
                 Line = line,
                 ExpressionID = core.RuntimeExpressionUID,
-                GraphNodeGuid = core.ExecutingGraphnode == null ? Guid.Empty : core.ExecutingGraphnode.guid,
+                GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
+                AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
             warnings.Add(entry);
@@ -205,6 +229,18 @@ namespace ProtoCore
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
+
+        /// <summary>
+        /// Report that a function group couldn't be found
+        /// </summary>
+        /// <param name="methodName">The method that can't be found</param>
+        public void LogFunctionGroupNotFoundWarning(
+            string methodName)
+        {
+            String message = string.Format(WarningMessage.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
+            LogWarning(WarningID.kMethodResolutionFailure, message);
+        }
+
 
         public void LogMethodResolutionWarning(string methodName,
                                                int classScope = Constants.kGlobalScope, 

@@ -553,6 +553,7 @@ namespace ProtoCore.Lang
             HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
             var arguments = heapElem.VisibleItems.ToList();
 
+            bool removeFirstArgument = false;
             if (arguments.Count > 0)
             {
                 bool isReplicatingCall = arguments[0].IsDynamic && lhs.IsArray;
@@ -565,22 +566,24 @@ namespace ProtoCore.Lang
                 {
                     context.IsReplicating = false;
                     arguments.RemoveAt(0);
+                    removeFirstArgument = true;
                 }
-            }
-
-            // Any replication guides pushed in a dotarg->dot call must be 
-            // retrieved here from the core
-            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-            bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
-            if (doesDotCallFunctionHaveArgs)
-            {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
             }
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
             var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
+
+            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            if (!CoreUtils.IsGetterSetter(functionName))
+            {
+                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                if (removeFirstArgument)
+                {
+                    replicationGuides.RemoveAt(0);
+                }
+            }
 
             int thisObjectType = thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
@@ -1042,7 +1045,9 @@ namespace ProtoCore.Lang
         {
             if (!svStart.IsNumeric || !svEnd.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1053,29 +1058,67 @@ namespace ProtoCore.Lang
             {
                 if (!svEnd.IsNumeric)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kInvalidAmountInRangeExpression);
                     return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kNoStepSizeInAmountRangeExpression);
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kNoStepSizeInAmountRangeExpression);
                     return StackValue.Null;
                 }
             }
 
             if (svStep.IsNull && hasStep)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             else if (!svStep.IsNull && !svStep.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
-            decimal start = new decimal(svStart.ToDouble().RawDoubleValue);
-            decimal end = new decimal(svEnd.ToDouble().RawDoubleValue);
+            double startValue = svStart.ToDouble().RawDoubleValue;
+            if (double.IsInfinity(startValue) || double.IsNaN(startValue))
+            {
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
+                return StackValue.Null;
+            }
+            decimal start = new decimal(startValue);
+
+            double endValue = svEnd.ToDouble().RawDoubleValue;
+            if (double.IsInfinity(endValue) || double.IsNaN(endValue))
+            {
+                core.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments, 
+                    WarningMessage.kInvalidArgumentsInRangeExpression);
+                return StackValue.Null;
+            }
+            decimal end = new decimal(endValue);
+
+            if (svStep.IsDouble)
+            {
+                double stepValue = svStep.RawDoubleValue;
+                if (double.IsInfinity(stepValue) || double.IsNaN(stepValue))
+                {
+                    core.RuntimeStatus.LogWarning(
+                        WarningID.kInvalidArguments, 
+                        WarningMessage.kInvalidArgumentsInRangeExpression);
+                    return StackValue.Null;
+                }
+            }
+ 
             bool isIntRange = svStart.IsInteger && svEnd.IsInteger;
 
             StackValue[] range = null;
@@ -1084,7 +1127,9 @@ namespace ProtoCore.Lang
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
-                   core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+                   core.RuntimeStatus.LogWarning(
+                       WarningID.kInvalidArguments, 
+                       WarningMessage.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);

@@ -15,6 +15,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 using RTF.Framework;
+using Dynamo.Models;
 
 using Family = Autodesk.Revit.DB.Family;
 using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
@@ -58,7 +59,7 @@ namespace Dynamo.Tests
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
         }
-
+        
         [Test, Category("SmokeTests"), TestModel(@".\empty.rfa")]
         public void SelectionDocModificationSync()
         {
@@ -80,8 +81,9 @@ namespace Dynamo.Tests
 
             refPt.X = 10;
 
-            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
+            TransactionManager.Instance.ForceCloseTransaction();
 
+            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
             ViewModel.Model.RunExpression();
 
             Assert.AreNotEqual(0, watchNode.CachedValue); //Actual value depends on units
@@ -182,7 +184,8 @@ namespace Dynamo.Tests
 
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual(1, list.Count());
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
@@ -190,7 +193,7 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.Null(list);
+            Assert.AreEqual(0, list.Count);
         }
 
         [Test]
@@ -201,7 +204,7 @@ namespace Dynamo.Tests
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            var selectionNode = ViewModel.model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
+            var selectionNode = ViewModel.Model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
             Assert.NotNull(selectionNode);
             var element = GetPreviewValue(selectionNode.GUID.ToString());
             Assert.IsInstanceOf<NurbsCurve>(element);
@@ -299,6 +302,7 @@ namespace Dynamo.Tests
             // The select faces node returns a list of lists
             var list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
             Assert.AreEqual(3, list.Count);
+            Assert.IsInstanceOf<Surface>(list[0]);
 
             // Clear the selection
             selectNode.ClearSelections();
@@ -306,8 +310,82 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             list = GetFlattenedPreviewValues(selectNode.GUID.ToString());
-            Assert.Null(list);
+            Assert.AreEqual(0, list.Count);
         }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\SelectionSync.rvt")]
+        public void SelectionInSyncWithDocumentOperations_Elements()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectionSyncElements.dyn"));
+
+            const string selectNodeGuid = "3dbe16b8-e855-4229-a1cf-4643e69ba7b4";
+
+            var walls = fec.ToElements();
+            int remainingWallCount = walls.Count;
+            while (remainingWallCount > 1)
+            {
+                remainingWallCount = DeleteWallAndRun<Revit.Elements.Wall>(selectNodeGuid);
+            }
+        }
+
+        [Test, Category("SmokeTests"), TestModel(@".\Selection\SelectionSync.rvt")]
+        public void SelectionInSyncWithDocumentOperations_References()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectionSyncReferences.dyn"));
+
+            const string selectNodeGuid = "91fd4f06-dde2-449f-aff5-f6203e4777ed";
+            var walls = fec.ToElements();
+            int remainingWallCount = walls.Count;
+            while (remainingWallCount > 1)
+            {
+                remainingWallCount = DeleteWallAndRun<Surface>(selectNodeGuid);
+            }
+
+        }
+
+        private int DeleteWallAndRun<T>(string testGuid)
+        {
+            var walls = GetWalls();
+   
+            var wall = walls.FirstOrDefault();
+            if (walls.Count == 0)
+            {
+                Assert.Fail("No more walls could be found in the model.");
+            }
+            using (var t = new Transaction(DocumentManager.Instance.CurrentDBDocument))
+            {
+                t.Start("Delete wall test.");
+                DocumentManager.Instance.CurrentDBDocument.Delete(wall.Id);
+                t.Commit();
+            }
+
+            walls = GetWalls();
+
+            RunCurrentModel();
+
+            var values = GetFlattenedPreviewValues(testGuid);
+            Assert.AreEqual(values.Count, walls.Count);
+            Assert.IsInstanceOf<T>(values.First());
+
+            return walls.Count;
+        }
+
+        private List<Wall> GetWalls()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Wall));
+
+            return fec.ToElements().Cast<Wall>().ToList();
+        }
+
+        
+
 
         /// <summary>
         /// Find the first selection node in a graph, run the graph
@@ -349,10 +427,12 @@ namespace Dynamo.Tests
         {
             var element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.NotNull(element);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             selectNode.ClearSelections();
             RunCurrentModel();
             element = GetPreviewValue(selectNode.GUID.ToString());
             Assert.Null(element);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         /// <summary>
@@ -366,11 +446,13 @@ namespace Dynamo.Tests
         {
             var elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.NotNull(elements);
+            Assert.IsTrue(selectNode.State != ElementState.Warning);
             Assert.Greater(elements.Count(), 0);
             selectNode.ClearSelections();
             RunCurrentModel();
             elements = GetPreviewCollection(selectNode.GUID.ToString());
             Assert.Null(elements);
+            Assert.IsTrue(selectNode.State == ElementState.Warning);
         }
 
         private void OpenAndAssertNoDummyNodes(string samplePath)

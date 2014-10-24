@@ -122,12 +122,19 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-        internal static RevitDynamoModel RevitDynamoModel
+        public static RevitDynamoModel RevitDynamoModel
         {
-            get { return revitDynamoModel; }
+            get
+            {
+                return revitDynamoModel;
+            }
+            set
+            {
+                revitDynamoModel = value;
+            }
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
@@ -144,6 +151,9 @@ namespace Dynamo.Applications
             // create core data models
             revitDynamoModel = InitializeCoreModel(extCommandData);
             dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
+
+            // handle initialization steps after RevitDynamoModel is created.
+            revitDynamoModel.HandlePostInitialization();
 
             // show the window
             InitializeCoreView().Show();
@@ -200,7 +210,7 @@ namespace Dynamo.Applications
                         new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings)
                 });
 
-            viewModel.RequestAuthentication +=
+            revitDynamoModel.PackageManagerClient.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
 #if ENABLE_DYNAMO_SCHEDULER
@@ -269,9 +279,9 @@ namespace Dynamo.Applications
         public static void InitializeUnits()
         {
             // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
         }
 
         public static void InitializeAssemblies()

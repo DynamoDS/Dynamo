@@ -6,11 +6,15 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-using DSCoreNodesUI.Logic;
-
 using Dynamo.Applications;
+using Dynamo.Applications.Models;
+using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.Applications.Models;
+using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
@@ -26,6 +30,19 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
 {
+    public class TestSchedulerThread : ISchedulerThread
+    {
+        public void Initialize(DynamoScheduler owningScheduler)
+        {
+
+        }
+
+        public void Shutdown()
+        {
+
+        }
+    }
+
     [TestFixture]
     public abstract class DynamoRevitUnitTestBase
     {
@@ -109,17 +126,19 @@ namespace Dynamo.Tests
 
                 DynamoRevit.InitializeUnits();
 
-                var model = RevitDynamoModel.Start(
+                DynamoRevit.RevitDynamoModel = RevitDynamoModel.Start(
                     new RevitDynamoModel.StartConfiguration()
                     {
                         StartInTestMode = true,
-                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
+                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\"),
+                        Context = "Revit 2015",
+                        SchedulerThread = new TestSchedulerThread()
                     });
 
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {
-                        DynamoModel = model
+                        DynamoModel = DynamoRevit.RevitDynamoModel,
                     });
 
                 // Because the test framework does not work in the idle thread. 
@@ -316,7 +335,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
             var data = mirror.GetData();
             if (data == null) return null;
-            if (!data.IsCollection) return null;
+            if (!data.IsCollection)
+            {
+                return data.Data == null ? new List<object>() : new List<object>(){data.Data};
+            }
             var elements = data.GetElements();
 
             var objects = GetSublistItems(elements);

@@ -1841,5 +1841,31 @@ d1;d2;d3;d4;d5;
             thisTest.VerifyBuildWarningCount(1);
         }
 
+        [Test]
+        public void RegressMagn5111()
+        {
+            string code = @"x = 0..0..360/0;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", null);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
+
+        [Test]
+        public void RegressMagn5111_02()
+        {
+            string code = @"x = 360/0..0..0;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", null);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
+
+        [Test]
+        public void RegressMagn5111_03()
+        {
+            string code = @"x = 0..360/0..0;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", null);
+            thisTest.VerifyRuntimeWarningCount(1);
+        }
     }
 }

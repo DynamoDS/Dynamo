@@ -134,7 +134,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            return true;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void Undeprecate()
@@ -147,7 +147,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            return true;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void PublishNewPackageVersion()
@@ -161,7 +161,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
-            return true;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void PublishNewPackage()
@@ -175,7 +175,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
-            return true;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void GetLatestVersion()
