@@ -256,45 +256,72 @@ namespace Dynamo
 
     #region Built-in AsyncTask Test Classes
 
-    class StubInitParams
+    class StubAsyncTaskParams
+    {
+        internal DynamoScheduler Scheduler { get; set; }
+        internal List<string> Results { get; set; }
+        internal AsyncTask WrappedTask { get; set; }
+    }
+
+    /// <summary>
+    /// This is a class that internally wraps an actual AsyncTask class. It 
+    /// internally redirects method calls like GetPriorityCore, CanMergeWithCore 
+    /// and CompareCore to the internallly wrapped AsyncTask object. This allows
+    /// the task ordering and merging logic around these actual AsyncTask classes
+    /// to be tested.
+    /// </summary>
+    /// 
+    internal class StubAsyncTask : AsyncTask
     {
         private static int currentSerialNumber = 0;
-        private readonly int serialNumber = 0;
-        private readonly List<string> results;
-
-        internal DynamoScheduler Scheduler { get; private set; }
-
         internal static void ResetSerialNumber()
         {
             currentSerialNumber = 0;
         }
 
-        internal StubInitParams(DynamoScheduler scheduler, List<string> results)
+        private readonly int serialNumber;
+        private readonly AsyncTask wrappedAsyncTask;
+        private readonly List<string> results;
+
+        internal StubAsyncTask(StubAsyncTaskParams param)
+            : base(param.Scheduler)
         {
+            if (param.WrappedTask == null)
+            {
+                throw new ArgumentNullException("param",
+                    "Invalid wrapped AsyncTask type");
+            }
+
             serialNumber = currentSerialNumber++;
-            this.results = results;
-            this.Scheduler = scheduler;
+            wrappedAsyncTask = param.WrappedTask;
+            results = param.Results;
         }
 
-        internal void WriteResult(AsyncTask task)
+        protected override AsyncTask.TaskPriority GetPriorityCore()
         {
-            results.Add(string.Format("{0}: {1}", task.GetType().Name, serialNumber));
-        }
-    }
-
-    class StubAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
-    {
-        private readonly StubInitParams initParams;
-
-        internal StubAggregateRenderPackageAsyncTask(StubInitParams initParams) :
-            base(initParams.Scheduler)
-        {
-            this.initParams = initParams;
+            return wrappedAsyncTask.Priority;
         }
 
         protected override void ExecuteCore()
         {
-            initParams.WriteResult(this);
+            var name = wrappedAsyncTask.GetType().Name;
+            results.Add(string.Format("{0}: {1}", name, serialNumber));
+        }
+
+        protected override void HandleTaskCompletionCore()
+        {
+        }
+
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var stubAsyncTask = otherTask as StubAsyncTask;
+            return wrappedAsyncTask.CanMergeWith(stubAsyncTask.wrappedAsyncTask);
+        }
+
+        protected override int CompareCore(AsyncTask otherTask)
+        {
+            var stubAsyncTask = otherTask as StubAsyncTask;
+            return wrappedAsyncTask.Compare(stubAsyncTask.wrappedAsyncTask);
         }
     }
 
