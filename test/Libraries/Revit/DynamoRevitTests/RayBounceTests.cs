@@ -41,14 +41,14 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(23, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(25, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(24, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(26, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
 
             // Validation for Reference Points.
             var modelCurve = "64b62b8e-a07e-477e-ba5d-9e33eb03debf";
-            AssertPreviewCount(modelCurve, 43);
+            AssertPreviewCount(modelCurve, 45);
 
             for (int i = 0; i <= 42; i++)
             {
