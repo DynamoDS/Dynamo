@@ -325,6 +325,19 @@ namespace Dynamo
         }
     }
 
+    internal class UpdateRenderPackageAsyncTaskExt : UpdateRenderPackageAsyncTask
+    {
+        internal UpdateRenderPackageAsyncTaskExt(DynamoScheduler scheduler)
+            : base(scheduler)
+        {
+        }
+
+        internal Guid NodeGuid
+        {
+            set { nodeGuid = value; }
+        }
+    }
+
     #endregion
 
     public class SchedulerTests
@@ -802,7 +815,68 @@ namespace Dynamo
     public class SchedulerIntegrationTests : UnitTestBase
     {
         private DynamoModel dynamoModel;
+        private SampleSchedulerThread schedulerThread;
         private List<string> results;
+
+        #region Integration Test Cases
+
+        [Test]
+        public void TestTaskQueuePreProcessing00()
+        {
+            var nodes = CreateBaseNodes().ToArray();
+            var tasksToSchedule = new List<StubAsyncTask>()
+            {
+                // This older task is kept because it wasn't re-scheduled.
+                WrapUpdateRenderPackageAsyncTask(nodes[0].GUID),
+
+                // These older tasks are to be dropped.
+                WrapUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                WrapUpdateRenderPackageAsyncTask(nodes[2].GUID),
+
+                // These older tasks are to be dropped.
+                WrapNotifyRenderPackagesReadyAsyncTask(),
+                WrapAggregateRenderPackageAsyncTask(),
+
+                // This higher priority task moves to the front.
+                WrapUpdateGraphAsyncTask(),
+
+                // These newer tasks will be kept.
+                WrapUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                WrapUpdateRenderPackageAsyncTask(nodes[2].GUID),
+
+                // These newer tasks will be kept.
+                WrapNotifyRenderPackagesReadyAsyncTask(),
+                WrapAggregateRenderPackageAsyncTask(),
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "UpdateGraphAsyncTask: 5",
+                "UpdateRenderPackageAsyncTaskExt: 0",
+                "UpdateRenderPackageAsyncTaskExt: 6",
+                "UpdateRenderPackageAsyncTaskExt: 7",
+                "NotifyRenderPackagesReadyAsyncTask: 8",
+                "AggregateRenderPackageAsyncTask: 9",
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        #endregion
 
         #region Test Setup, TearDown, Helper Methods
 
@@ -833,12 +907,13 @@ namespace Dynamo
 
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
+            schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    // See documentation for 'SchedulerWithDynamoModel' above.
+                    // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = new SampleSchedulerThread()
+                    SchedulerThread = schedulerThread
                 });
         }
 
@@ -894,10 +969,13 @@ namespace Dynamo
             return Wrap(new UpdateGraphAsyncTask(scheduler));
         }
 
-        private StubAsyncTask WrapUpdateRenderPackageAsyncTask()
+        private StubAsyncTask WrapUpdateRenderPackageAsyncTask(Guid nodeGuid)
         {
             var scheduler = dynamoModel.Scheduler;
-            return Wrap(new UpdateRenderPackageAsyncTask(scheduler));
+            return Wrap(new UpdateRenderPackageAsyncTaskExt(scheduler)
+            {
+                NodeGuid = nodeGuid
+            });
         }
 
         private StubAsyncTask Wrap(AsyncTask asyncTask)
