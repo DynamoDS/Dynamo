@@ -802,6 +802,7 @@ namespace Dynamo
     public class SchedulerIntegrationTests : UnitTestBase
     {
         private DynamoModel dynamoModel;
+        private List<string> results;
 
         #region Test Setup, TearDown, Helper Methods
 
@@ -809,6 +810,9 @@ namespace Dynamo
         {
             base.Init();
             StartDynamo();
+
+            StubAsyncTask.ResetSerialNumber();
+            results = new List<string>();
         }
 
         public override void Cleanup()
@@ -848,6 +852,62 @@ namespace Dynamo
             nodes.Add(workspace.AddNode(0, 0, "Add"));
             Assert.AreEqual(3, workspace.Nodes.Count);
             return nodes;
+        }
+
+        #endregion
+
+        #region AsyncTask Class Wrapper Methods
+
+        private StubAsyncTask WrapAggregateRenderPackageAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new AggregateRenderPackageAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapCompileCustomNodeAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new CompileCustomNodeAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapDelegateBasedAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new DelegateBasedAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapNotifyRenderPackagesReadyAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new NotifyRenderPackagesReadyAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapSetTraceDataAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new SetTraceDataAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapUpdateGraphAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new UpdateGraphAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask WrapUpdateRenderPackageAsyncTask()
+        {
+            var scheduler = dynamoModel.Scheduler;
+            return Wrap(new UpdateRenderPackageAsyncTask(scheduler));
+        }
+
+        private StubAsyncTask Wrap(AsyncTask asyncTask)
+        {
+            return new StubAsyncTask(new StubAsyncTaskParams()
+            {
+                Results = results,
+                Scheduler = dynamoModel.Scheduler,
+                WrappedTask = asyncTask
+            });
         }
 
         #endregion
