@@ -256,85 +256,150 @@ namespace Dynamo
 
     #region Built-in AsyncTask Test Classes
 
-    class StubAsyncTaskParams
-    {
-        internal DynamoScheduler Scheduler { get; set; }
-        internal List<string> Results { get; set; }
-        internal AsyncTask WrappedTask { get; set; }
-    }
-
-    /// <summary>
-    /// This is a class that internally wraps an actual AsyncTask class. It 
-    /// internally redirects method calls like GetPriorityCore, CanMergeWithCore 
-    /// and CompareCore to the internallly wrapped AsyncTask object. This allows
-    /// the task ordering and merging logic around these actual AsyncTask classes
-    /// to be tested.
-    /// </summary>
-    /// 
-    internal class StubAsyncTask : AsyncTask
+    class ExtensionData
     {
         private static int currentSerialNumber = 0;
+        private readonly int serialNumber;
+
+        internal DynamoScheduler Scheduler { get; set; }
+        internal List<string> Results { get; set; }
+
         internal static void ResetSerialNumber()
         {
             currentSerialNumber = 0;
         }
 
-        private readonly int serialNumber;
-        private readonly AsyncTask wrappedAsyncTask;
-        private readonly List<string> results;
-
-        internal StubAsyncTask(StubAsyncTaskParams param)
-            : base(param.Scheduler)
+        internal ExtensionData()
         {
-            if (param.WrappedTask == null)
-            {
-                throw new ArgumentNullException("param",
-                    "Invalid wrapped AsyncTask type");
-            }
-
             serialNumber = currentSerialNumber++;
-            wrappedAsyncTask = param.WrappedTask;
-            results = param.Results;
         }
 
-        protected override AsyncTask.TaskPriority GetPriorityCore()
+        internal void WriteExecutionLog(AsyncTask asyncTask)
         {
-            return wrappedAsyncTask.Priority;
+            var name = asyncTask.GetType().Name;
+            Results.Add(string.Format("{0}: {1}", name, serialNumber));
+        }
+    }
+
+    internal class AggregateRenderPackageAsyncTaskExt : AggregateRenderPackageAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal AggregateRenderPackageAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
         }
 
         protected override void ExecuteCore()
         {
-            var name = wrappedAsyncTask.GetType().Name;
-            results.Add(string.Format("{0}: {1}", name, serialNumber));
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class CompileCustomNodeAsyncTaskExt : CompileCustomNodeAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal CompileCustomNodeAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class DelegateBasedAsyncTaskExt : DelegateBasedAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal DelegateBasedAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class NotifyRenderPackagesReadyAsyncTaskExt : NotifyRenderPackagesReadyAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal NotifyRenderPackagesReadyAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class SetTraceDataAsyncTaskExt : SetTraceDataAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal SetTraceDataAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class UpdateGraphAsyncTaskExt : UpdateGraphAsyncTask
+    {
+        private readonly ExtensionData data;
+
+        internal UpdateGraphAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
         }
 
         protected override void HandleTaskCompletionCore()
         {
-        }
-
-        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
-        {
-            var stubAsyncTask = otherTask as StubAsyncTask;
-            return wrappedAsyncTask.CanMergeWith(stubAsyncTask.wrappedAsyncTask);
-        }
-
-        protected override int CompareCore(AsyncTask otherTask)
-        {
-            var stubAsyncTask = otherTask as StubAsyncTask;
-            return wrappedAsyncTask.Compare(stubAsyncTask.wrappedAsyncTask);
+            // Avoid base method which access EngineController.
         }
     }
 
     internal class UpdateRenderPackageAsyncTaskExt : UpdateRenderPackageAsyncTask
     {
-        internal UpdateRenderPackageAsyncTaskExt(DynamoScheduler scheduler)
-            : base(scheduler)
+        private readonly ExtensionData data;
+
+        internal UpdateRenderPackageAsyncTaskExt(ExtensionData data)
+            : base(data.Scheduler)
         {
+            this.data = data;
         }
 
         internal Guid NodeGuid
         {
             set { nodeGuid = value; }
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
         }
     }
 
@@ -824,32 +889,32 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing00()
         {
             var nodes = CreateBaseNodes().ToArray();
-            var tasksToSchedule = new List<StubAsyncTask>()
+            var tasksToSchedule = new List<AsyncTask>()
             {
                 // This older task is kept because it wasn't re-scheduled.
-                WrapUpdateRenderPackageAsyncTask(nodes[0].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID),
 
                 // These older tasks are to be dropped.
-                WrapUpdateRenderPackageAsyncTask(nodes[1].GUID),
-                WrapUpdateRenderPackageAsyncTask(nodes[2].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
 
                 // These older tasks are to be dropped.
-                WrapNotifyRenderPackagesReadyAsyncTask(),
-                WrapAggregateRenderPackageAsyncTask(),
+                MakeNotifyRenderPackagesReadyAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(),
 
                 // This higher priority task moves to the front.
-                WrapUpdateGraphAsyncTask(),
+                MakeUpdateGraphAsyncTask(),
 
                 // These newer tasks will be kept.
-                WrapUpdateRenderPackageAsyncTask(nodes[1].GUID),
-                WrapUpdateRenderPackageAsyncTask(nodes[2].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
 
                 // This higher priority task moves to the front.
-                WrapUpdateGraphAsyncTask(),
+                MakeUpdateGraphAsyncTask(),
 
                 // These newer tasks will be kept.
-                WrapNotifyRenderPackagesReadyAsyncTask(),
-                WrapAggregateRenderPackageAsyncTask(),
+                MakeNotifyRenderPackagesReadyAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(),
             };
 
             var scheduler = dynamoModel.Scheduler;
@@ -862,13 +927,13 @@ namespace Dynamo
 
             var expected = new List<string>
             {
-                "UpdateGraphAsyncTask: 5",
-                "UpdateGraphAsyncTask: 8",
+                "UpdateGraphAsyncTaskExt: 5",
+                "UpdateGraphAsyncTaskExt: 8",
                 "UpdateRenderPackageAsyncTaskExt: 0",
                 "UpdateRenderPackageAsyncTaskExt: 6",
                 "UpdateRenderPackageAsyncTaskExt: 7",
-                "NotifyRenderPackagesReadyAsyncTask: 9",
-                "AggregateRenderPackageAsyncTask: 10",
+                "NotifyRenderPackagesReadyAsyncTaskExt: 9",
+                "AggregateRenderPackageAsyncTaskExt: 10",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -889,7 +954,7 @@ namespace Dynamo
             base.Init();
             StartDynamo();
 
-            StubAsyncTask.ResetSerialNumber();
+            ExtensionData.ResetSerialNumber();
             results = new List<string>();
         }
 
@@ -935,61 +1000,53 @@ namespace Dynamo
 
         #endregion
 
-        #region AsyncTask Class Wrapper Methods
+        #region AsyncTask Class Creation Methods
 
-        private StubAsyncTask WrapAggregateRenderPackageAsyncTask()
+        private AsyncTask MakeAggregateRenderPackageAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new AggregateRenderPackageAsyncTask(scheduler));
+            return new AggregateRenderPackageAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapCompileCustomNodeAsyncTask()
+        private AsyncTask MakeCompileCustomNodeAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new CompileCustomNodeAsyncTask(scheduler));
+            return new CompileCustomNodeAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapDelegateBasedAsyncTask()
+        private AsyncTask MakeDelegateBasedAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new DelegateBasedAsyncTask(scheduler));
+            return new DelegateBasedAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapNotifyRenderPackagesReadyAsyncTask()
+        private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new NotifyRenderPackagesReadyAsyncTask(scheduler));
+            return new NotifyRenderPackagesReadyAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapSetTraceDataAsyncTask()
+        private AsyncTask MakeSetTraceDataAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new SetTraceDataAsyncTask(scheduler));
+            return new SetTraceDataAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapUpdateGraphAsyncTask()
+        private AsyncTask MakeUpdateGraphAsyncTask()
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new UpdateGraphAsyncTask(scheduler));
+            return new UpdateGraphAsyncTaskExt(MakeExtensionData());
         }
 
-        private StubAsyncTask WrapUpdateRenderPackageAsyncTask(Guid nodeGuid)
+        private AsyncTask MakeUpdateRenderPackageAsyncTask(Guid nodeGuid)
         {
-            var scheduler = dynamoModel.Scheduler;
-            return Wrap(new UpdateRenderPackageAsyncTaskExt(scheduler)
+            return new UpdateRenderPackageAsyncTaskExt(MakeExtensionData())
             {
                 NodeGuid = nodeGuid
-            });
+            };
         }
 
-        private StubAsyncTask Wrap(AsyncTask asyncTask)
+        private ExtensionData MakeExtensionData()
         {
-            return new StubAsyncTask(new StubAsyncTaskParams()
+            return new ExtensionData()
             {
-                Results = results,
                 Scheduler = dynamoModel.Scheduler,
-                WrappedTask = asyncTask
-            });
+                Results = results
+            };
         }
 
         #endregion
