@@ -37,6 +37,8 @@ namespace Dynamo.Core.Threading
     {
         #region Class Data Members and Properties
 
+        protected Guid nodeGuid;
+
         private int maxTesselationDivisions;
         private bool displayLabels;
         private bool isNodeSelected;
@@ -57,6 +59,7 @@ namespace Dynamo.Core.Threading
         internal UpdateRenderPackageAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
+            nodeGuid = Guid.Empty;
             renderPackages = new List<IRenderPackage>();
         }
 
@@ -84,6 +87,8 @@ namespace Dynamo.Core.Threading
             maxTesselationDivisions = initParams.MaxTesselationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
+
+            nodeGuid = nodeModel.GUID;
             return true;
         }
 
@@ -98,6 +103,12 @@ namespace Dynamo.Core.Threading
 
         protected override void ExecuteCore()
         {
+            if (nodeGuid == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "UpdateRenderPackageAsyncTask.Initialize not called");
+            }
+
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
                        into mirror
