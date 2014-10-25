@@ -2,10 +2,10 @@
 
 using NUnit.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class PythonTests : IntegrationTest
+    class PythonTests : SystemTest
     {
         [Test]
         public void CanAddTwoInputsWithPython()

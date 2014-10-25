@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    public class XYZTests : IntegrationTest
+    public class XYZTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

@@ -15,10 +15,10 @@ using RTF.Framework;
 using Location = DynamoUnits.Location;
 using SiteLocation = DSRevitNodesUI.SiteLocation;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class SiteLocationTests : IntegrationTest
+    class SiteLocationTests : SystemTest
     {
         [Test, TestModel(@".\SiteLocation\SiteLocation.rvt")]
         public void SiteLocation_ValidArgs()

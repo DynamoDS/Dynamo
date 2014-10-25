@@ -11,10 +11,10 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class DividedSurfaceTests : IntegrationTest
+    class DividedSurfaceTests : SystemTest
     {
         [Test, Category("Failure")]
         [TestModel(@".\DividedSurface\DividedSurface.rfa")]

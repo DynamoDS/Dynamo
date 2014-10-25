@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class IntersectionTests : IntegrationTest
+    class IntersectionTests : SystemTest
     {
         [Test]
         [TestModel(@".\Intersect\CurveCurveIntersection.rfa")]

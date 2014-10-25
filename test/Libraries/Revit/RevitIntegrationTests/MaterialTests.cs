@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class MaterialTests : IntegrationTest
+    class MaterialTests : SystemTest
     {
         [Test]
         [TestModel(@".\Material\GetMaterialByName.rfa")]

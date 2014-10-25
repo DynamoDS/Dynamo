@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class DividedCurveTests : IntegrationTest
+    class DividedCurveTests : SystemTest
     {
         [Test]
         [TestModel(@".\DividedCurve\DividedCurve.rfa")]

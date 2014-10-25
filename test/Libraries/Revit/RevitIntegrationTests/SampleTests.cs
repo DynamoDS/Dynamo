@@ -17,10 +17,10 @@ using Revit.Elements;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class SampleTests : IntegrationTest
+    class SampleTests : SystemTest
     {
         #region OLD Sample Tests
 

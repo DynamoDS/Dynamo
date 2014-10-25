@@ -22,10 +22,10 @@ using RTF.Framework;
 
 using ReferencePoint = Revit.Elements.ReferencePoint;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class SelectionTests : IntegrationTest
+    class SelectionTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

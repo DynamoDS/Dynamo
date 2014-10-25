@@ -194,7 +194,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Libraries\Analy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisTests", "..\test\Libraries\AnalysisTests\AnalysisTests.csproj", "{4A707244-154B-428F-B589-D65361F24401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitIntegrationTests", "..\test\Libraries\Revit\RevitIntegrationTests\RevitIntegrationTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitSystemTests", "..\test\Libraries\Revit\RevitIntegrationTests\RevitSystemTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

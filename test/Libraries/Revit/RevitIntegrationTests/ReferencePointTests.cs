@@ -9,10 +9,10 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    public class ReferencePointTests : IntegrationTest
+    public class ReferencePointTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

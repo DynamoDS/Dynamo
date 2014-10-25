@@ -16,10 +16,10 @@ using RevitServices.Transactions;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class CoreTests : IntegrationTest
+    class CoreTests : SystemTest
     {
         /// <summary>
         /// Sanity Check graph should always have nodes that error.

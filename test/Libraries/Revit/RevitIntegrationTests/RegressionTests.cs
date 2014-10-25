@@ -19,7 +19,7 @@ using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
     public class RegressionTest

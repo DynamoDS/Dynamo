@@ -14,10 +14,10 @@ using ProtoCore.Mirror;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class TransformTest : IntegrationTest
+    class TransformTest : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rvt")]

@@ -5,7 +5,7 @@ using Autodesk.Revit.DB;
 
 using RevitServices.Persistence;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     class TestUtils
     {

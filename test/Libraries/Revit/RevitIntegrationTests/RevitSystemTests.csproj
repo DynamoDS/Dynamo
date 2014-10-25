@@ -11,8 +11,8 @@
     <ProjectGuid>{9ADADC68-36A3-4A21-9B54-298154A88720}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RevitIntegrationTests</RootNamespace>
-    <AssemblyName>RevitIntegrationTests</AssemblyName>
+    <RootNamespace>RevitSystemTests</RootNamespace>
+    <AssemblyName>RevitSystemTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -82,7 +82,7 @@
     </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
-    <Compile Include="IntegrationTest.cs" />
+    <Compile Include="SystemTest.cs" />
     <Compile Include="SiteLocationTests.cs" />
     <Compile Include="RenderingAsAServiceTests.cs" />
     <Compile Include="DividedCurveTests.cs" />

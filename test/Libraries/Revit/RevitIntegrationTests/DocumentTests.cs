@@ -8,10 +8,10 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class DocumentTests : IntegrationTest
+    class DocumentTests : SystemTest
     {
         [Test]
         [TestModel(@"./empty.rfa")]

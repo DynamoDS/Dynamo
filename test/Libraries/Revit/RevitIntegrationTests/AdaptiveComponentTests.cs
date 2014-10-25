@@ -8,10 +8,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class AdaptiveComponentTests : IntegrationTest
+    class AdaptiveComponentTests : SystemTest
     {
         [Test, Category("Failure")]
         [TestModel(@".\AdaptiveComponent\AdaptiveComponentByFace.rfa")]

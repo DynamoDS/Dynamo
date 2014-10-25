@@ -2,10 +2,10 @@
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    public class ModelCurveTests : IntegrationTest
+    public class ModelCurveTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

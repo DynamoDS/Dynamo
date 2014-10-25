@@ -8,10 +8,10 @@ using RevitServices.Transactions;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class AnalysisDisplayTests : IntegrationTest
+    class AnalysisDisplayTests : SystemTest
     {
         [Test]
         [TestModel(@".\AnalysisDisplay\Surfaces.rvt")]

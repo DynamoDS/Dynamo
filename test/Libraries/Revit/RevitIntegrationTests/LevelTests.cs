@@ -2,10 +2,10 @@
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class LevelTests : IntegrationTest
+    class LevelTests : SystemTest
     {
         [Test]
         [TestModel(@".\Level\Level.rvt")]

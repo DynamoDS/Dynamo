@@ -9,10 +9,10 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class RayBounceTests : IntegrationTest
+    class RayBounceTests : SystemTest
     {
         [Test, Category("Failure")]
         [TestModel(@".\RayBounce\RayBounce.rvt")]

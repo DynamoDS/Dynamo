@@ -5,9 +5,9 @@ using DynamoUtilities;
 
 using RevitServices.Persistence;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
-    public class IntegrationTest : RevitTestServices.IntegrationTestBase
+    public class SystemTest : RevitTestServices.SystemTestBase
     {
         protected string _samplesPath;
         protected string _defsPath;

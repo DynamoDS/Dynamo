@@ -11,10 +11,10 @@ using RevitServices.Persistence;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class CurveTests : IntegrationTest
+    class CurveTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

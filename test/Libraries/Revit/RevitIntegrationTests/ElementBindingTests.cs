@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-using RevitIntegrationTests;
+using RevitSystemTests;
 
 using RevitTestServices;
 
@@ -20,7 +20,7 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class ElementBindingTests : IntegrationTest
+    internal class ElementBindingTests : SystemTest
     {
         /// <summary>
         /// This function gets all the reference points in the current Revit document

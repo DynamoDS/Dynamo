@@ -7,10 +7,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    public class MigrationTest : IntegrationTest
+    public class MigrationTest : SystemTest
     {
         private void TestMigration(string filename)
         {

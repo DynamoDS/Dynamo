@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class ViewTests : IntegrationTest
+    class ViewTests : SystemTest
     {
 
         [Test]

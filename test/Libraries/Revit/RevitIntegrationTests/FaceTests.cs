@@ -2,14 +2,14 @@
 
 using NUnit.Framework;
 
-using RevitIntegrationTests;
+using RevitSystemTests;
 
 using RTF.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class FaceTests : IntegrationTest
+    internal class FaceTests : SystemTest
     {
         [Test]
         [TestModel(@".\Face\GetSurfaceDomain.rvt")]

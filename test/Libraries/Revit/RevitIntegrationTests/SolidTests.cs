@@ -2,9 +2,9 @@
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
-    class SolidTests : IntegrationTest
+    class SolidTests : SystemTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]

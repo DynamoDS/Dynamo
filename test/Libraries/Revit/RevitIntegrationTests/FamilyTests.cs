@@ -2,14 +2,14 @@
 
 using NUnit.Framework;
 
-using RevitIntegrationTests;
+using RevitSystemTests;
 
 using RTF.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class FamilyTests : IntegrationTest
+    class FamilyTests : SystemTest
     {   
         [Test]
         [TestModel(@".\Family\GetFamilyInstancesByType.rvt")]

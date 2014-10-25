@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class ModelTextTests : IntegrationTest
+    class ModelTextTests : SystemTest
     {
         [Test]
         [TestModel(@".\ModelText\ModelText.rfa")]

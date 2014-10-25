@@ -40,7 +40,7 @@ namespace RevitTestServices
     }
 
     [TestFixture]
-    public abstract class IntegrationTestBase
+    public abstract class SystemTestBase
     {
         protected DynamoViewModel ViewModel;
         protected string workingDirectory;

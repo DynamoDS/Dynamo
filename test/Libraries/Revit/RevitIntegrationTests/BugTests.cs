@@ -14,10 +14,10 @@ using RevitNodesTests;
 
 using RTF.Framework;
 
-namespace RevitIntegrationTests
+namespace RevitSystemTests
 {
     [TestFixture]
-    class BugTests : IntegrationTest
+    class BugTests : SystemTest
     {
         [Test]
         [Category("RegressionTests")]
