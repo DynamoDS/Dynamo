@@ -844,6 +844,9 @@ namespace Dynamo
                 WrapUpdateRenderPackageAsyncTask(nodes[1].GUID),
                 WrapUpdateRenderPackageAsyncTask(nodes[2].GUID),
 
+                // This higher priority task moves to the front.
+                WrapUpdateGraphAsyncTask(),
+
                 // These newer tasks will be kept.
                 WrapNotifyRenderPackagesReadyAsyncTask(),
                 WrapAggregateRenderPackageAsyncTask(),
@@ -860,11 +863,12 @@ namespace Dynamo
             var expected = new List<string>
             {
                 "UpdateGraphAsyncTask: 5",
+                "UpdateGraphAsyncTask: 8",
                 "UpdateRenderPackageAsyncTaskExt: 0",
                 "UpdateRenderPackageAsyncTaskExt: 6",
                 "UpdateRenderPackageAsyncTaskExt: 7",
-                "NotifyRenderPackagesReadyAsyncTask: 8",
-                "AggregateRenderPackageAsyncTask: 9",
+                "NotifyRenderPackagesReadyAsyncTask: 9",
+                "AggregateRenderPackageAsyncTask: 10",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
