@@ -1844,6 +1844,12 @@ namespace Dynamo.Controls
         }
     }
 
+    // Converter is used to specify Margin of highlight rectangle. 
+    // This rectangle highlights first instance of search phrase.
+    //
+    // Input parameters:
+    //     values[0] (TextBlock) - name of member. Part of this text rectangle should highlight.
+    //     values[1] (string) - search phrase which should be highlighted.
     public class SearchHighlightMarginConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -1861,6 +1867,7 @@ namespace Dynamo.Controls
 
             double leftMargin, rightMargin;
 
+            // Here is right margin counted.
             var formattedText = new FormattedText(fullText.Substring(0, index + searchText.Length),
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
@@ -1870,6 +1877,7 @@ namespace Dynamo.Controls
                 textBlock.Foreground);
             rightMargin = textBlock.ActualWidth - formattedText.Width;
 
+            // Here is left margin counted.
             formattedText = new FormattedText(fullText.Substring(index, searchText.Length),
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
@@ -1878,6 +1886,7 @@ namespace Dynamo.Controls
                 textBlock.FontSize,
                 textBlock.Foreground);
             leftMargin = 5 + textBlock.ActualWidth - rightMargin - formattedText.Width;
+
             return new Thickness(leftMargin, 10, rightMargin, 10);
         }
 
