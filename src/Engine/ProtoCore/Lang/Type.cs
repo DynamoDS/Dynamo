@@ -532,7 +532,8 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type == (int)PrimitiveType.kTypeDouble)
                         {
-                            core.ExecutionLog.WriteLine(ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
+                            //TODO(lukechurch): Once the API is improved (MAGN-5174)
+                            //Replace this with a log entry notification
                             //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
                         }
                         return sv.ToInteger();
