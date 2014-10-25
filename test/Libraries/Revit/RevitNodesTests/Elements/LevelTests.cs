@@ -8,7 +8,7 @@ using Revit.GeometryConversion;
 using RTF.Framework;
 using Revit.Elements.InternalUtilities;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
 
     [TestFixture]

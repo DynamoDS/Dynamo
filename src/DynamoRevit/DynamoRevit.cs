@@ -351,7 +351,7 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
+        public static void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
             revitDynamoModel.SetRunEnabledBasedOnContext(e.NewActiveView);
         }

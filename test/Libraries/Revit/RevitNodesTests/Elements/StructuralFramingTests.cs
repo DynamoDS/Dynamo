@@ -3,12 +3,15 @@ using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class StructuralFramingTests : GeometricRevitNodeTest
+    public class StructuralFramingTests : GeometricNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

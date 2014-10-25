@@ -5,19 +5,21 @@ using Analysis.DataTypes;
 
 using Autodesk.Revit.DB;
 
-using Revit.AnalysisDisplay;
-using Revit.Elements;
 using NUnit.Framework;
 
+using Revit.AnalysisDisplay;
+using Revit.Elements;
+
 using RevitServices.Persistence;
+
+using RevitTestServices;
 
 using RTF.Framework;
 
 using Document = Revit.Application.Document;
 using UV = Autodesk.DesignScript.Geometry.UV;
 
-
-namespace RevitTestServices.AnalysisDisplay
+namespace RevitNodesTests.AnalysisDisplay
 {
     internal static class AnalysisDisplayHelpers
     {
@@ -39,7 +41,7 @@ namespace RevitTestServices.AnalysisDisplay
     }
 
     [TestFixture]
-    public class FaceAnalysisDisplayTests : GeometricRevitNodeTest
+    public class FaceAnalysisDisplayTests : GeometricNodeTestBase
     {
         [Test]
         [TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]

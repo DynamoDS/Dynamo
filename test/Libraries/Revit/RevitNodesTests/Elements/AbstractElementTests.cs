@@ -1,11 +1,17 @@
 ﻿using NUnit.Framework;
+
 using RevitServices.Persistence;
+
+using RevitNodesTests;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class AbstractElementTests : GeometricRevitNodeTest
+    public class AbstractElementTests : GeometricNodeTestBase
     {
         [Test, Ignore, Category("Failure")]
         [TestModel(@".\empty.rfa")]
