@@ -790,4 +790,66 @@ namespace Dynamo
 
         #endregion
     }
+
+    /// <summary>
+    /// Most AsyncTask derived classes require NodeModel, WorkspaceModel or 
+    /// DynamoModel to work. For these cases, a DynamoModel is created to 
+    /// facilitate the creation of such model classes. Note that however, in 
+    /// order to allow actual task scheduling in "DynamoModel.scheduler", 
+    /// "DynamoModel.IsTestMode" is set to "false".
+    /// </summary>
+    /// 
+    public class SchedulerIntegrationTests : UnitTestBase
+    {
+        private DynamoModel dynamoModel;
+
+        #region Test Setup, TearDown, Helper Methods
+
+        public override void Init()
+        {
+            base.Init();
+            StartDynamo();
+        }
+
+        public override void Cleanup()
+        {
+            if (dynamoModel != null)
+            {
+                dynamoModel.ShutDown(false);
+                dynamoModel = null;
+            }
+
+            base.Cleanup();
+        }
+
+        protected void StartDynamo()
+        {
+            DynamoPathManager.Instance.InitializeCore(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+
+            dynamoModel = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    // See documentation for 'SchedulerWithDynamoModel' above.
+                    StartInTestMode = false,
+                    SchedulerThread = new SampleSchedulerThread()
+                });
+        }
+
+        private IEnumerable<NodeModel> CreateBaseNodes()
+        {
+            var nodes = new List<NodeModel>();
+
+            var workspace = dynamoModel.CurrentWorkspace;
+            nodes.Add(workspace.AddNode(0, 0, "Number"));
+            nodes.Add(workspace.AddNode(0, 0, "Number"));
+            nodes.Add(workspace.AddNode(0, 0, "Add"));
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            return nodes;
+        }
+
+        #endregion
+    }
 }
