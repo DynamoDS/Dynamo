@@ -122,6 +122,22 @@ namespace Dynamo.Core.Threading
         {
         }
 
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as AggregateRenderPackageAsyncTask;
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            // Comparing to another AggregateRenderPackageAsyncTask, the one 
+            // that gets scheduled more recently stay, while the earlier one 
+            // gets dropped. If this task has a higher tick count, keep this.
+            // 
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
+        }
+
         #endregion
 
         #region Private Class Helper Methods
