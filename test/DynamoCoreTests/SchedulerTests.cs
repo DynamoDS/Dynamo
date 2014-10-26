@@ -945,6 +945,92 @@ namespace Dynamo
             }
         }
 
+        [Test]
+        public void TestTaskQueuePreProcessing01()
+        {
+            // Everything is scheduled in order of priority.
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                MakeSetTraceDataAsyncTask(),                        // Highest
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal
+                MakeUpdateGraphAsyncTask(),                         // Above normal
+                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeDelegateBasedAsyncTask(),                       // Normal
+                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "SetTraceDataAsyncTaskExt: 0",
+                "CompileCustomNodeAsyncTaskExt: 1",
+                "UpdateGraphAsyncTaskExt: 2",
+                "AggregateRenderPackageAsyncTaskExt: 3",
+                "DelegateBasedAsyncTaskExt: 4",
+                "NotifyRenderPackagesReadyAsyncTaskExt: 5",
+                "UpdateRenderPackageAsyncTaskExt: 6"
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        [Test]
+        public void TestTaskQueuePreProcessing02()
+        {
+            // Everything is scheduled in reversed order of priority.
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
+                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
+                MakeDelegateBasedAsyncTask(),                       // Normal
+                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeUpdateGraphAsyncTask(),                         // Above normal
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal
+                MakeSetTraceDataAsyncTask(),                        // Highest
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "SetTraceDataAsyncTaskExt: 6",
+                "UpdateGraphAsyncTaskExt: 4",
+                "CompileCustomNodeAsyncTaskExt: 5",
+                "UpdateRenderPackageAsyncTaskExt: 0",
+                "NotifyRenderPackagesReadyAsyncTaskExt: 1",
+                "DelegateBasedAsyncTaskExt: 2",
+                "AggregateRenderPackageAsyncTaskExt: 3",
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
         #endregion
 
         #region Test Setup, TearDown, Helper Methods
