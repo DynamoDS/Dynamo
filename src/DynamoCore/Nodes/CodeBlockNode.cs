@@ -256,7 +256,7 @@ namespace Dynamo.Nodes
                     {
                         this.Workspace.UndoRecorder.PopFromUndoGroup();
                         Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                        this.Workspace.Nodes.Remove(this);
+                        //this.Workspace.Nodes.Remove(this);
                     }
                     else
                     {
