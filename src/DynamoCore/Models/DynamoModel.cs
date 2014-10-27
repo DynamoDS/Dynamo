@@ -472,6 +472,7 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
             if (scheduler != null)
             {
+                scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler.Shutdown();
                 scheduler = null;
             }
@@ -1255,13 +1256,17 @@ namespace Dynamo.Models
                     e.EnableReporting();
 
                 // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                Dispatcher.CurrentDispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        sw.Stop();
-                        Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                    }));
+
+                if (!IsTestMode)
+                {
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
+                        DispatcherPriority.Background,
+                        new Action(() =>
+                        {
+                            sw.Stop();
+                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                        }));
+                }
 
                 #endregion
 
