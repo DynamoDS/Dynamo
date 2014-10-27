@@ -209,10 +209,12 @@ namespace Dynamo.Nodes
             var inputVar = IsPartiallyApplied
                 ? AstIdentifierForPreview.Name
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
-            
+
+            var core = Workspace.DynamoModel.EngineController.LiveRunnerCore;
+
             return Root != null
-                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar, Root.ShowRawData)
-                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar);
+                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar, Root.ShowRawData)
+                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
 #if ENABLE_DYNAMO_SCHEDULER
