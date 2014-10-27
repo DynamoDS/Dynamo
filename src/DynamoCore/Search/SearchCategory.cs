@@ -67,6 +67,15 @@ namespace Dynamo.Search
                 classes.Add(parent);
         }
 
+        public bool ContainsClassOrMember(BrowserInternalElement member)
+        {
+            // Search among classes.
+            if (Classes.Any(cl => cl.Equals(member))) return true;
+
+            // Search among member groups.
+            return MemberGroups.Any(group => group.ContainsMember(member));
+        }
+
         private string AddGroupToCategory(string category, SearchElementGroup group)
         {
             switch (group)
