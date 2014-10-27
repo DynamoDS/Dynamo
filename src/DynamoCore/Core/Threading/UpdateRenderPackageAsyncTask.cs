@@ -57,7 +57,7 @@ namespace Dynamo.Core.Threading
         #region Public Class Operational Methods
 
         internal UpdateRenderPackageAsyncTask(DynamoScheduler scheduler)
-            : base(scheduler)
+            : base(scheduler, true)
         {
             nodeGuid = Guid.Empty;
             renderPackages = new List<IRenderPackage>();

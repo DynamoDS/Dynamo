@@ -148,6 +148,9 @@ namespace Dynamo.Core.Threading
                 return tasks;
             }
 
+            if (!EnableTaskParallelization) // Task parallelism is disabled.
+                return tasks;
+
             // The first task in queue is parallelizable, scan forward for 
             // immediate AsyncTask objects which are also parallelizable.
             // 

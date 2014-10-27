@@ -55,12 +55,21 @@ namespace Dynamo.Core.Threading
         /// </summary>
         internal TimeStamp NextTimeStamp { get { return generator.Next; } }
 
+        /// <summary>
+        /// When this property is set to true, AsyncTask types that support 
+        /// parallel execution (i.e. AsyncTask.Parallelizable = true) will be 
+        /// executed in parallel. Set this property to false to disable task 
+        /// parallelism. This property is set to true by default.
+        /// </summary>
+        internal bool EnableTaskParallelization { get; set; }
+
         #endregion
 
         #region Public Class Operational Methods
 
         internal DynamoScheduler(ISchedulerThread schedulerThread)
         {
+            EnableTaskParallelization = true;
             this.schedulerThread = schedulerThread;
 
             // The host implementation of ISchedulerThread can begin access the 
