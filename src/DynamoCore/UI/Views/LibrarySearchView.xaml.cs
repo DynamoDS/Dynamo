@@ -308,6 +308,45 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        // "MainGrid" contains in itself top result and list of found search categories.
+        // And main grid consider what element should be in focus, if none of them could handle focus.
+        // The following scenarios could happen:
+        // 1. Down key is pressed when focus is on top result.
+        // 2. Up key is pressed when focus is on top result.
+        // 3. Up key is pressed when focus is on first row of first category.
+        private void OnMainGridKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+            var librarySearchViewElement = sender as FrameworkElement;
+
+            // We are at the top result. If down was pressed, 
+            // that means we have to move to first class/method button.
+            if (e.Key == Key.Down)
+            {
+                var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+                var firstCategoryContent = firstCategory.Content as SearchCategory;
+                // If classes presented, set focus on the first class button.
+                if (firstCategoryContent.Classes.Count > 0)
+                {
+                    FindFirstChildListItem(firstCategory, "SubCategoryListView").Focus();
+                    e.Handled = true;
+                    return;
+                }
+
+                // Otherwise, set focus on the first method button.
+                var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
+                FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
+            }
+            else // Otherwise, Up was pressed. So, we have to move to top result.
+            {
+                var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+                topResult.Focus();
+            }
+
+            e.Handled = true;
+        }
+
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
         {
             if (parent.Equals(null)) return null;
@@ -320,7 +359,6 @@ namespace Dynamo.UI.Views
         }
 
         #endregion
-
 
     }
 }
