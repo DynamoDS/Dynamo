@@ -1849,7 +1849,7 @@ namespace Dynamo.Controls
     //
     // Input parameters:
     //     values[0] (TextBlock) - name of member. Part of this text rectangle should highlight.
-    //     values[1] (string) - search phrase which should be highlighted.
+    //     values[1] (SearchViewModel) - properties SearchText and RegularTypeface are used.
     public class SearchHighlightMarginConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -1858,7 +1858,9 @@ namespace Dynamo.Controls
                 return new ArgumentException();
 
             var textBlock = values[0] as TextBlock;
-            var searchText = values[1] as string;
+            var viewModel = values[1] as SearchViewModel;
+            var searchText = viewModel.SearchText;
+            var typeface = viewModel.RegularTypeface;
             var fullText = textBlock.Text;
 
             var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
@@ -1871,8 +1873,7 @@ namespace Dynamo.Controls
             var formattedText = new FormattedText(fullText.Substring(0, index + searchText.Length),
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
-                new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
-                    textBlock.FontStretch),
+                typeface,
                 textBlock.FontSize,
                 textBlock.Foreground);
             rightMargin = textBlock.ActualWidth - formattedText.Width;
@@ -1881,8 +1882,7 @@ namespace Dynamo.Controls
             formattedText = new FormattedText(fullText.Substring(index, searchText.Length),
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
-                new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
-                    textBlock.FontStretch),
+                typeface,
                 textBlock.FontSize,
                 textBlock.Foreground);
             leftMargin = textBlock.ActualWidth - rightMargin - formattedText.Width;

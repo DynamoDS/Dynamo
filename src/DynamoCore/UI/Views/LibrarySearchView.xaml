@@ -225,7 +225,7 @@
                         <Rectangle.Margin>
                             <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
                                 <Binding ElementName="memberName" />
-                                <Binding Path="DataContext.SearchText"
+                                <Binding Path="DataContext"
                                          RelativeSource="{RelativeSource Mode=FindAncestor, 
                                                                      AncestorType={x:Type UserControl}}" />
                             </MultiBinding>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Media;
 using Dynamo.Models;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
@@ -175,6 +177,8 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
+        public Typeface RegularTypeface { get; private set; }
+
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
@@ -197,6 +201,11 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
+
+            var uri = new Uri("file:///" + Environment.CurrentDirectory + "/UI/Themes/Modern/DynamoModern.xaml");
+            var fontFamily = new FontFamily(uri, "../../Fonts/#Open Sans");
+            RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
+                FontStretches.Normal);
 
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
