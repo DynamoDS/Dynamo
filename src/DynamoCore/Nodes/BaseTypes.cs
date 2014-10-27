@@ -47,7 +47,6 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Core.Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
 
