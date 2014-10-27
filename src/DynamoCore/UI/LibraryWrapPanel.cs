@@ -215,10 +215,11 @@ namespace Dynamo.Controls
         {
             var index = ((sender as ListView).SelectedIndex);
 
-            // Every time, when user moves inside class details, class button selects.
-            // As result class details repaints.
-            // So, we don't need to repaint it everytime, that's why we use cached index.
-            // If cached index equals current one, then we don't have to do anything.
+            // As focus moves within the class details, class button gets selected which 
+            // triggers a selection change. During a selection change the items in the 
+            // wrap panel gets reordered through "OrderListItems", but this is not always 
+            // necessary. Here we determine if the "ListView.SelectedIndex" is the same 
+            // as "currentSelectedIndex", if so simply returns to avoid a repainting.
             if (currentIndex != index) currentIndex = index;
             else return;
 
