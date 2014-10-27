@@ -232,7 +232,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="def"></param>
         /// <param name="funcBody"></param>
-        /// <param name="outputs"></param>
+        /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         public void CompileCustomNodeDefinition(
             CustomNodeDefinition def,
