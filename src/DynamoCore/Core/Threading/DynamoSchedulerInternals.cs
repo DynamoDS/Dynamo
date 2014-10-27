@@ -120,6 +120,49 @@ namespace Dynamo.Core.Threading
                 .ThenBy(t => t, new AsyncTaskComparer()));
         }
 
+        /// <summary>
+        /// Call this method to dequeue one or more AsyncTask from task queue. 
+        /// If the task at the front of task queue (one that will immediately be 
+        /// processed) can be parallelized alongside the next set of tasks, then
+        /// the group of parallelizable tasks will be returned.
+        /// </summary>
+        /// <returns>Returns zero or more AsyncTask that are dequeued from the 
+        /// task queue.</returns>
+        /// 
+        private IEnumerable<AsyncTask> DequeueTasks()
+        {
+            var tasks = new List<AsyncTask>();
+            if (taskQueue.Count <= 0)
+                return tasks;
+
+            // Remove one task from queue...
+            var firstTask = taskQueue[0];
+            taskQueue.RemoveAt(0);
+
+            if (!firstTask.Parallelizable)
+            {
+                // The first task in the queue is not 
+                // parallelizable, take it up on its own.
+                tasks.Add(firstTask);
+                return tasks;
+            }
+
+            // The first task in queue is parallelizable, scan forward for 
+            // immediate AsyncTask objects which are also parallelizable.
+            // 
+            while (tasks.Count > 0)
+            {
+                var nextTask = taskQueue[0];
+                if (!nextTask.Parallelizable)
+                    break; // No more parallelizable tasks for this round.
+
+                taskQueue.RemoveAt(0); // Remove another parallelizable task.
+                tasks.Add(nextTask);
+            }
+
+            return tasks;
+        }
+
         private void ProcessTaskInternal(AsyncTask asyncTask)
         {
             NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
