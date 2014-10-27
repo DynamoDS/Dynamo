@@ -223,8 +223,21 @@ namespace Dynamo.Models
         public event EventHandler EvaluationCompleted;
         public virtual void OnEvaluationCompleted(object sender, EventArgs e)
         {
+            this.ComputeVisualData();
+
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
+        }
+
+        /// <summary>
+        /// An event is triggered when RenderPackages are computed 
+        /// for all graphical nodes.
+        /// </summary>
+        public event EventHandler NodesRenderPackagesUpdated;
+        public virtual void OnNodesRenderPackagesUpdated(object sender, EventArgs e)
+        {
+            if (NodesRenderPackagesUpdated != null)
+                NodesRenderPackagesUpdated(sender, e);
         }
 
         #endregion

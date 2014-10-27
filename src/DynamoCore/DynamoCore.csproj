@@ -154,6 +154,7 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
+    <Compile Include="Core\Threading\NotifyRenderDataReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />

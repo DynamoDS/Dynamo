@@ -137,6 +137,7 @@ namespace Dynamo.Models
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
         public bool ShutdownRequested { get; internal set; }
+        public int MaxTesselationDivisions { get; private set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -316,6 +317,7 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            this.MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -605,6 +607,19 @@ namespace Dynamo.Models
                 Logger.Log("Reset complete");
 
                 RunExpression();
+            }
+        }
+
+        public void ComputeVisualData()
+        {
+            // Get each node in workspace to update their visuals.
+            foreach (var node in CurrentWorkspace.Nodes)
+                node.RequestVisualUpdate(MaxTesselationDivisions);
+
+            var task = new NotifyRenderDataReadyAsyncTask(scheduler);
+            if (task.Initialize(this))
+            {
+                scheduler.ScheduleForExecution(task);
             }
         }
 

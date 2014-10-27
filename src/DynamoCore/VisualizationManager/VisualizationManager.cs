@@ -223,7 +223,7 @@ namespace Dynamo
 
         public VisualizationManager(DynamoModel dynamoModel)
         {
-            MaxTesselationDivisions = 128;
+            MaxTesselationDivisions = dynamoModel.MaxTesselationDivisions;
 
             this.dynamoModel = dynamoModel;
 
@@ -494,7 +494,7 @@ namespace Dynamo
                 renderManager.RequestRenderAsync(new RenderTask());
 #else
             if (updateVisualization)
-                RequestNodeVisualUpdate(null);
+                RequestNodeVisualUpdate();
 #endif
         }
 
@@ -540,7 +540,7 @@ namespace Dynamo
         private void RegisterEventListeners()
         {
             dynamoModel.EvaluationCompleted += Update;
-            dynamoModel.RequestsRedraw += Update;
+            dynamoModel.RequestsRedraw += ComputeAndUpdate;
             dynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
@@ -559,7 +559,7 @@ namespace Dynamo
         private void UnregisterEventListeners()
         {
             dynamoModel.EvaluationCompleted -= Update;
-            dynamoModel.RequestsRedraw -= Update;
+            dynamoModel.RequestsRedraw -= ComputeAndUpdate;
             dynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
@@ -571,7 +571,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Handler for the RequestRedraw event.
+        /// Handler for the EvaluationCompleted event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -580,26 +580,29 @@ namespace Dynamo
 #if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
 #else
-            RequestNodeVisualUpdate(null);
+            RequestNodeVisualUpdate();
+#endif
+        }
+
+        /// <summary>
+        /// Handler for the RequestRedraw event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComputeAndUpdate(object sender, EventArgs e)
+        {
+#if !ENABLE_DYNAMO_SCHEDULER
+            renderManager.RequestRenderAsync(new RenderTask());
+#else
+            dynamoModel.ComputeVisualData();
+            RequestNodeVisualUpdate();
 #endif
         }
 
 #if ENABLE_DYNAMO_SCHEDULER
 
-        private void RequestNodeVisualUpdate(NodeModel nodeModel)
+        private void RequestNodeVisualUpdate()
         {
-            if (nodeModel != null)
-            {
-                // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
-            }
-            else
-            {
-                // Get each node in workspace to update their visuals.
-                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdate(MaxTesselationDivisions);
-            }
-
             var scheduler = dynamoModel.Scheduler;
             var task = new AggregateRenderPackageAsyncTask(scheduler);
             if (task.Initialize(dynamoModel.CurrentWorkspace, null))

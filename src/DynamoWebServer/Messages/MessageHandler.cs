@@ -24,8 +24,7 @@ namespace DynamoWebServer.Messages
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
-        private RenderCompleteEventHandler RenderCompleteHandler;
-
+        
         public MessageHandler(DynamoModel dynamoModel)
         {
             jsonSettings = new JsonSerializerSettings
@@ -35,6 +34,23 @@ namespace DynamoWebServer.Messages
             };
 
             this.dynamoModel = dynamoModel;
+            uploader = new FileUploader();
+            this.dynamoModel.NodesRenderPackagesUpdated += RunCommandCompleted;
+        }
+
+        /// <summary>
+        /// It's called after all computations are done and Dynamo is ready
+        /// to send ComputationResponse
+        /// </summary>
+        void RunCommandCompleted(object sender, EventArgs e)
+        {
+            lock (uploader)
+            {
+                if (uploader.IsUpload)
+                    NodesDataCreated(SessionId);
+                else
+                    NodesDataModified(SessionId);
+            }
         }
 
         /// <summary>
@@ -132,16 +148,9 @@ namespace DynamoWebServer.Messages
 
         private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
         {
-            if (uploader == null)
-                uploader = new FileUploader();
-
             if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
             {
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-
-                WaitWhileRunning();
-
-                NodesDataCreated(sessionId);
             }
             else
             {
@@ -150,16 +159,6 @@ namespace DynamoWebServer.Messages
                     Status = ResponceStatuses.Error,
                     StatusMessage = "Bad file request"
                 }, sessionId));
-            }
-        }
-
-        private void WaitWhileRunning()
-        {
-            Thread.Sleep(10);
-
-            while (dynamoModel.Runner.Running)
-            {
-                Thread.Sleep(10);
             }
         }
 
@@ -243,13 +242,6 @@ namespace DynamoWebServer.Messages
             foreach (var command in recordableCommandMsg.Commands)
             {
                 dynamo.ExecuteCommand(command);
-
-                //TO DO: Find a better way to determine end of computations
-                if (command is DynamoModel.RunCancelCommand)
-                {
-                    WaitWhileRunning();
-                    NodesDataModified(sessionId);
-                }
             }
         }
 
@@ -360,6 +352,8 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
             }
+
+            uploader.IsUpload = false;
         }
 
         private string GetData(NodeModel node)
@@ -379,8 +373,7 @@ namespace DynamoWebServer.Messages
 
         private string GetValue(NodeModel node)
         {
-            string data;
-            data = "null";
+            string data = "null";
             if (node.CachedValue != null)
             {
                 if (node.CachedValue.IsCollection)
@@ -449,7 +442,7 @@ namespace DynamoWebServer.Messages
             stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
             stringBuilder.Append("], \"OutPorts\": [");
             stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("], \"Data\": " + GetValue(node) + "}");
+            stringBuilder.Append("], \"Data\": \"" + GetValue(node) + "\"}");
 
             return stringBuilder.ToString();
         }
