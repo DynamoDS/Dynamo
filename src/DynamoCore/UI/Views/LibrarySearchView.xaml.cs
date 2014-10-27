@@ -308,12 +308,17 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        // "MainGrid" contains in itself top result and list of found search categories.
-        // And main grid consider what element should be in focus, if none of them could handle focus.
-        // The following scenarios could happen:
-        // 1. Down key is pressed when focus is on top result.
-        // 2. Up key is pressed when focus is on top result.
-        // 3. Up key is pressed when focus is on first row of first category.
+        ///<summary>
+
+        /// <summary>
+        /// "MainGrid" contains both "topResultListBox" and "CategoryListView". When 
+        /// "KeyDown" event bubbles up to the level of "MainGrid", it will then decide 
+        /// on which element should the focus go (depending on the navigational key).
+        /// This typically happens during the following scenarios:
+        /// 
+        /// 1. Up/down key is pressed when focus in on "topResultListBox"
+        /// 2. Up key is pressed when focus is on first row of first category
+        /// </summary>
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
