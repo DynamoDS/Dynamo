@@ -551,6 +551,13 @@ namespace Dynamo.Views
                 wvm.HandleMouseMove(this.WorkBench, e);
         }
 
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            this.snappedPort = null;
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleFocusChanged(sender, false);
+        }
+
         private PortViewModel GetSnappedPort(Point mouseCursor)
         {
             if (this.FindNearestPorts(mouseCursor).Count <= 0)
