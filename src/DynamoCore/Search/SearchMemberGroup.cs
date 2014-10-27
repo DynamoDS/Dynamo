@@ -41,7 +41,7 @@ namespace Dynamo.Search
                 if (!showAllMembers)
                     return members;
 
-                if (members.Count == 0) return null;
+                if (members.Count == 0) return new List<BrowserInternalElement>();
 
                 var firstMember = members[0] as NodeSearchElement;
                 return firstMember.Parent.Items.OfType<BrowserInternalElement>().
