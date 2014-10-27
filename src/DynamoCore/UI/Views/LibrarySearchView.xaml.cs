@@ -308,8 +308,6 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        ///<summary>
-
         /// <summary>
         /// "MainGrid" contains both "topResultListBox" and "CategoryListView". When 
         /// "KeyDown" event bubbles up to the level of "MainGrid", it will then decide 
