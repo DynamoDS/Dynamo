@@ -29,14 +29,14 @@ namespace Dynamo.Tests
         {
             try
             {
-                var vm = ViewModel;
-                ViewModel = null;
                 DynamoSelection.Instance.ClearSelection();
 
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
                     shutdownHost: false, allowCancellation: false);
 
-                vm.PerformShutdownSequence(shutdownParams);
+                ViewModel.PerformShutdownSequence(shutdownParams);
+                ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
+                ViewModel = null;
             }
             catch (Exception ex)
             {
@@ -46,6 +46,11 @@ namespace Dynamo.Tests
             base.Cleanup();
 
             GC.Collect();
+        }
+
+        private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
+        {
+            e.Success = true;
         }
 
         protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
@@ -78,6 +83,8 @@ namespace Dynamo.Tests
                 {
                     DynamoModel = model
                 });
+
+            this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
         }
 
         /// <summary>
