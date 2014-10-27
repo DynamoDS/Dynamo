@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -174,6 +175,52 @@ namespace Dynamo.Core.Threading
             NotifyTaskStateChanged(asyncTask, executionState);
             asyncTask.HandleTaskCompletion();
             NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
+        }
+
+        /// <summary>
+        /// This method executes input list of AsyncTask in parallel, if there
+        /// are more than one task. If there is only one, it falls back to call
+        /// ProcessTaskInternal. This method notifies event handler when the
+        /// state of a given AsyncTask changes. Note that even task executions 
+        /// take place in parallel, the notifications are only sent to handler 
+        /// from the context of ISchedulerThread, before and after the actual 
+        /// task execution.
+        /// </summary>
+        /// <param name="asyncTasks">A list of AsyncTask objects to execute.
+        /// </param>
+        /// 
+        private void ProcessTasksInternal(IEnumerable<AsyncTask> asyncTasks)
+        {
+            if (!asyncTasks.Any())
+                return;
+
+            if (asyncTasks.Count() == 1) // There is only one task in list.
+            {
+                ProcessTaskInternal(asyncTasks.First());
+                return;
+            }
+
+            foreach (var asyncTask in asyncTasks)
+                NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
+
+            var executionStates = new ConcurrentDictionary<AsyncTask, TaskState>();
+
+            Parallel.ForEach(asyncTasks, asyncTask =>
+            {
+                var executionState = asyncTask.Execute()
+                    ? TaskState.ExecutionCompleted
+                    : TaskState.ExecutionFailed;
+
+                // Store result for notification at a later time.
+                executionStates.TryAdd(asyncTask, executionState);
+            });
+
+            foreach (var asyncTask in asyncTasks)
+            {
+                NotifyTaskStateChanged(asyncTask, executionStates[asyncTask]);
+                asyncTask.HandleTaskCompletion();
+                NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
+            }
         }
 
         #endregion

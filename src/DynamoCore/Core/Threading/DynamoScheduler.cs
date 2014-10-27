@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 using Dynamo.Interfaces;
@@ -140,7 +141,7 @@ namespace Dynamo.Core.Threading
         /// 
         public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
-            AsyncTask nextTask = null;
+            IEnumerable<AsyncTask> availableTasks = null;
             IEnumerable<AsyncTask> droppedTasks = null;
 
             lock (taskQueue)
@@ -156,8 +157,7 @@ namespace Dynamo.Core.Threading
 
                 if (taskQueue.Count > 0)
                 {
-                    nextTask = taskQueue[0];
-                    taskQueue.RemoveAt(0);
+                    availableTasks = DequeueTasks();
                 }
                 else
                 {
@@ -176,9 +176,9 @@ namespace Dynamo.Core.Threading
                     NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
             }
 
-            if (nextTask != null)
+            if ((availableTasks != null) && availableTasks.Any())
             {
-                ProcessTaskInternal(nextTask);
+                ProcessTasksInternal(availableTasks);
                 return true; // This method should be called again.
             }
 
