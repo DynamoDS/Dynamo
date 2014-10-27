@@ -755,14 +755,6 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
-        public static Subtree CreateSubTreeFromCode(Guid guid, string code)
-        {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
-        }
-
         public void CleanUp()
         {
             testCore.Cleanup();
