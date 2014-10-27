@@ -11,15 +11,15 @@ namespace Dynamo.Search
     {
         private readonly List<BrowserInternalElement> members;
 
-        public string Name { get; private set; }
+        public string FullyQualifiedName { get; private set; }
 
         public string Prefix
         {
             get
             {
                 // +2, because after ">" always stays space character.
-                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
-                return Name.Substring(0, startIndexOfGroupType);
+                int startIndexOfGroupType = FullyQualifiedName.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
+                return FullyQualifiedName.Substring(0, startIndexOfGroupType);
             }
         }
 
@@ -27,8 +27,8 @@ namespace Dynamo.Search
         {
             get
             {
-                int startIndexOfGroupType = Name.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
-                return Name.Substring(startIndexOfGroupType);
+                int startIndexOfGroupType = FullyQualifiedName.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
+                return FullyQualifiedName.Substring(startIndexOfGroupType);
             }
         }
 
@@ -49,9 +49,9 @@ namespace Dynamo.Search
 
         private bool showAllMembers = false;
 
-        internal SearchMemberGroup(string name)
+        internal SearchMemberGroup(string fullyQualifiedName)
         {
-            Name = name;
+            FullyQualifiedName = fullyQualifiedName;
             members = new List<BrowserInternalElement>();
         }
 
