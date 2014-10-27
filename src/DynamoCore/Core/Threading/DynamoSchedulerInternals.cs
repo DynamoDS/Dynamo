@@ -154,7 +154,7 @@ namespace Dynamo.Core.Threading
             // The first task in queue is parallelizable, scan forward for 
             // immediate AsyncTask objects which are also parallelizable.
             // 
-            while (tasks.Count > 0)
+            while (taskQueue.Count > 0)
             {
                 var nextTask = taskQueue[0];
                 if (!nextTask.Parallelizable)
