@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
-using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Controls
@@ -30,7 +29,7 @@ namespace Dynamo.UI.Controls
         private bool areAllListsPresented;
         private ClassInformation castedDataContext;
 
-        public bool IsSearchActive { get; set; }
+        public bool FocusItemOnSelection { get; set; }
 
         public StandardPanel()
         {
@@ -76,7 +75,7 @@ namespace Dynamo.UI.Controls
                 e.Handled = true;
             }
 
-            if (IsSearchActive)
+            if (FocusItemOnSelection)
                 listBoxItem.Focus();
         }
 
