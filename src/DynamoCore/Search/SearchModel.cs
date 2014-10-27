@@ -207,8 +207,7 @@ namespace Dynamo.Search
         #region Search
 
         /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
+        ///     Performs a search using the given string as query.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
