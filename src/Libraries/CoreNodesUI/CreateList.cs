@@ -42,7 +42,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (HasUnconnectedInput())
+            if (IsPartiallyApplied)
             {
                 var connectedInput = Enumerable.Range(0, InPortData.Count)
                                                .Where(HasConnectedInput)
