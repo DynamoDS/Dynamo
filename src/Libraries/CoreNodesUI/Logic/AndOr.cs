@@ -64,7 +64,7 @@ namespace DSCore.Logic
     /// Short-circuiting Logical AND
     /// </summary>
     [NodeName("And")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
@@ -76,7 +76,7 @@ namespace DSCore.Logic
     /// Short-circuiting Logical OR
     /// </summary>
     [NodeName("Or")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
