@@ -140,16 +140,14 @@ namespace Dynamo.Core.Threading
             var firstTask = taskQueue[0];
             taskQueue.RemoveAt(0);
 
-            if (!firstTask.Parallelizable)
+            // If task parallelism is disabled, or if the first task in the 
+            // queue is not parallelizable, take single task up on its own.
+            // 
+            if (!EnableTaskParallelization || !firstTask.Parallelizable)
             {
-                // The first task in the queue is not 
-                // parallelizable, take it up on its own.
                 tasks.Add(firstTask);
                 return tasks;
             }
-
-            if (!EnableTaskParallelization) // Task parallelism is disabled.
-                return tasks;
 
             // The first task in queue is parallelizable, scan forward for 
             // immediate AsyncTask objects which are also parallelizable.

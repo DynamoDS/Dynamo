@@ -1070,6 +1070,9 @@ namespace Dynamo
                     StartInTestMode = false,
                     SchedulerThread = schedulerThread
                 });
+
+            // Disable task parallelism for this set of test cases.
+            dynamoModel.Scheduler.EnableTaskParallelization = false;
         }
 
         private IEnumerable<NodeModel> CreateBaseNodes()
