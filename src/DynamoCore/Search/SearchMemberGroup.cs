@@ -36,7 +36,7 @@ namespace Dynamo.Search
 
         public IEnumerable<BrowserInternalElement> Members
         {
-            get 
+            get
             {
                 if (!showAllMembers)
                     return members;
@@ -44,8 +44,13 @@ namespace Dynamo.Search
                 if (members.Count == 0) return new List<BrowserInternalElement>();
 
                 var firstMember = members[0] as NodeSearchElement;
-                return firstMember.Parent.Items.OfType<BrowserInternalElement>().
+
+                // Parent items can contain 3 type of groups all together: create, action and query.
+                // We have to show only those elements, that are in the same group.
+                var siblings = firstMember.Parent.Items.OfType<BrowserInternalElement>().
                         Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group);
+
+                return siblings;
             }
         }
 
