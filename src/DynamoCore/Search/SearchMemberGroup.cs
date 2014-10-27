@@ -45,7 +45,7 @@ namespace Dynamo.Search
 
                 var firstMember = members[0] as NodeSearchElement;
                 return firstMember.Parent.Items.OfType<BrowserInternalElement>().
-                        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group).ToList();
+                        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group);
             }
         }
 
