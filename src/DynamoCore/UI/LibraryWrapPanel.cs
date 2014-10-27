@@ -21,9 +21,12 @@ namespace Dynamo.Controls
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
 
-        // For the first time we set current index to -2, because "-1" is used,
-        // when class button was clicked second time. And class button can also have "0" index.
-        // So, let's use "-2" as start value for currentIndex.
+        // This index is used to keep track of the selection index before selection 
+        // changes. It is also used to guard against unnecessary "OrderListItems" 
+        // calls which repaints the UI. Here its value is set to "-2" to ensure that 
+        // "OrderListItems" method gets called at least once at the beginning (i.e. 
+        // when "ListView.SelectedIndex" is "-1", which would have avoided the first
+        // "OrderListItems" if "currentSelectedIndex" is set to "-1").
         private int currentIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
