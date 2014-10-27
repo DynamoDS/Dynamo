@@ -74,11 +74,11 @@ namespace Dynamo.Search.SearchElements
                     {
                         return Utils.TypedParametersToString(FunctionDescriptor);
                     }
-                    // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
-                    // Should be used FunctionDescriptor.Name property instead.
-                    // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
                     else
                     {
+                        // Some nodes contain names with invalid symbols like %, <, >, etc. In this 
+                        // case the value of "FunctionDescriptor.Name" property should be used. For 
+                        // an example, "DynamoUnits.SUnit.%" to be renamed as "DynamoUnits.SUnit.mod".
                         string shortName = Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
                         return Utils.TypedParametersToString(FunctionDescriptor, name + shortName);
                     }
