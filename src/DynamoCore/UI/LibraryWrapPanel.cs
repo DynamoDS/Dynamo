@@ -58,26 +58,32 @@ namespace Dynamo.Controls
 
             // If focused element is NodeSearchElement, that means focused element is inside expanded class.
             // If user presses Up, we have to move back to selected class.
-            if ((classButton.DataContext is NodeSearchElement) && (e.Key == Key.Up))
+            if (e.Key == Key.Up)
             {
-                var selectedClassButton= listButtons.OfType<ListViewItem>().
-                    Where(button => button.IsSelected).FirstOrDefault();
-                if (selectedClassButton != null) selectedClassButton.Focus();
-                e.Handled = true;
-                return;
+                if (classButton.DataContext is NodeSearchElement)
+                {
+                    var selectedClassButton = listButtons.OfType<ListViewItem>().
+                        Where(button => button.IsSelected).FirstOrDefault();
+                    if (selectedClassButton != null) selectedClassButton.Focus();
+                    e.Handled = true;
+                    return;
+                }
             }
 
             // If class is selected, we should move down to ClassDetails.
-            if ((e.Key == Key.Down) && classButton.IsSelected)
+            else if (e.Key == Key.Down)
             {
-                int classInfoIndex = GetClassInformationIndex();
-                var standardPanel = listButtons[classInfoIndex];
-                var firstMemberList = WPF.FindChild<ListBox>(standardPanel,"primaryMembers");
-                var generator = firstMemberList.ItemContainerGenerator;
-                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
-                
-                e.Handled = true;
-                return;
+                if (classButton.IsSelected)
+                {
+                    int classInfoIndex = GetClassInformationIndex();
+                    var standardPanel = listButtons[classInfoIndex];
+                    var firstMemberList = WPF.FindChild<ListBox>(standardPanel, "primaryMembers");
+                    var generator = firstMemberList.ItemContainerGenerator;
+                    (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+
+                    e.Handled = true;
+                    return;
+                }
             }
 
             var selectedIndex = listButtons.IndexOf(classButton);
