@@ -87,12 +87,13 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <returns></returns>
         
-        public ProtoCore.Core SetupEmptyTestCore()
+        public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
             return core;
@@ -752,22 +753,6 @@ namespace ProtoTestFx.TD
         {
             RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
             Assert.IsTrue(mirror.GetData().IsPointer);
-        }
-
-        /// <summary>
-        /// Verifies that expectedGuidList is contained within previewGuidList
-        /// Verifies the expected count of  expectedGuidList
-        /// </summary>
-        /// <param name="previewGuidList"></param>
-        /// <param name="expectedGuidList"></param>
-        /// <param name="expectedPreviewCount"></param>
-        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList, int expectedPreviewCount)
-        {
-            Assert.IsTrue(previewGuidList.Count == expectedPreviewCount);
-            foreach (Guid expectedGuid in expectedGuidList)
-            {
-                Assert.IsTrue(previewGuidList.Contains(expectedGuid));
-            }
         }
 
         public static Subtree CreateSubTreeFromCode(Guid guid, string code)

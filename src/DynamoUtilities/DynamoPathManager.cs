@@ -66,10 +66,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
-        public List<string> PreloadLibraries
+        public IEnumerable<string> PreloadLibraries
         {
             get { return preloadLibaries; }
-            set { preloadLibaries = value; }
         }
 
         /// <summary>
@@ -406,9 +405,9 @@ namespace DynamoUtilities
         /// </summary>
         public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
         {
-            if (PreloadAsmVersion("220", pathManager)) return true;
             if (PreloadAsmVersion("219", pathManager)) return true;
-
+            if (PreloadAsmVersion("220", pathManager)) return true;
+            
             return false;
         }
     }

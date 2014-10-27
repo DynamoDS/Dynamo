@@ -10,12 +10,27 @@ using ProtoCore.Utils;
 
 namespace GraphToDSCompiler
 {
+    public struct kw
+    {
+        public const string tempPrefix = "temp";
+    }
+
+    public struct Constants
+    {
+        public const uint TempMask = 0x80000000;
+        public const uint UIDStart = 10000;
+        public const char ReplicationGuideDelimiter = '¡';
+
+        public const string kwTempNull = "temp_NULL";
+    }
+
     public class GraphCompiler
     {
         AST graph = new AST();
         private ProtoCore.Core core = null;
         public GraphCompilationStatus gcs = new GraphCompilationStatus();
         static uint tguid = 20000;
+        private static uint runningUID = Constants.UIDStart;
 
         public List<uint> ModifiedStmtGuidList { get; private set; }
         public Dictionary<string, uint> mapModifiedName { get; private set; }
@@ -1956,6 +1971,29 @@ namespace GraphToDSCompiler
             return newBlockList;
         }*/
 
+        private List<ProtoCore.AST.Node> ParseCodeBlock(string code)
+        {
+            Validity.Assert(code != null);
+
+            if (string.IsNullOrEmpty(code))
+                return null;
+
+            ProtoCore.Options options = new ProtoCore.Options();
+            ProtoCore.Core core = new ProtoCore.Core(options);
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
+            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+            p.Parse();
+            ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+
+            Validity.Assert(cbn != null);
+            return p.GetParsedASTList(cbn);
+        }
+
         private List<Block> RewriteCodeBlock(Block codeblock)
         {
             Validity.Assert(codeblock != null);
@@ -1976,7 +2014,7 @@ namespace GraphToDSCompiler
             //if (!codeblock.Name.EndsWith(";"))
               //  codeblock.Name += ";";
 
-            List<ProtoCore.AST.Node> nodes = GraphUtilities.ParseCodeBlock(codeblock.Name);
+            List<ProtoCore.AST.Node> nodes = ParseCodeBlock(codeblock.Name);
             if (nodes.Count <= 1)
             {
                 // Single line codeblocks need not be split
@@ -1999,7 +2037,7 @@ namespace GraphToDSCompiler
                 string code = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(codeblock.Name, node);
                 if (code.Length > 0)
                 {
-                    uint newGuid = GraphUtilities.GenerateUID();
+                    uint newGuid = ++runningUID; 
 
                     List<AssignmentStatement> assignmentData = new List<AssignmentStatement>();
                     if (codeblock.assignmentData.Count > 0)
