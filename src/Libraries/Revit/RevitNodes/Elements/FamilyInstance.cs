@@ -45,11 +45,19 @@ namespace Revit.Elements
             //There was a point, rebind to that, and adjust its position
             if (oldFam != null)
             {
-                InternalSetFamilyInstance(oldFam);
-                InternalSetLevel(level);
-                InternalSetFamilySymbol(fs);
-                InternalSetPosition(pos);
-                return;
+                try
+                {
+                    InternalSetFamilyInstance(oldFam);
+                    InternalSetLevel(level);
+                    InternalSetFamilySymbol(fs);
+                    InternalSetPosition(pos);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+                    elementManager.UnRegisterAssociation(Id, this);
+                }
             }
 
             //Phase 2- There was no existing point, create one
