@@ -212,9 +212,16 @@ namespace Dynamo.Nodes
 
             var core = Workspace.DynamoModel.EngineController.LiveRunnerCore;
 
-            return Root != null
-                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar, Root.ShowRawData)
-                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
+            if (Root != null)
+            {
+                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    CachedValue,
+                    core,
+                    inputVar,
+                    Root.ShowRawData);
+            }
+            else
+                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
 #if ENABLE_DYNAMO_SCHEDULER
