@@ -76,6 +76,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="dynPython.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

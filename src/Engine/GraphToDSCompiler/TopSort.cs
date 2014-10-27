@@ -75,7 +75,6 @@ namespace GraphToDSCompiler
             list.Add(node);
         }
 
-
         //
         // TODO Jun: Re-evaluate the topsort implementation
         //
@@ -99,7 +98,7 @@ namespace GraphToDSCompiler
                 else if (node is IdentNode && nodeI is Block)
                 {
                     Block blocknode = (Block)nodeI;
-                    if (GraphUtilities.AnalyzeString(blocknode.Name) == SnapshotNodeType.Literal)
+                    if (GraphBuilder.AnalyzeString(blocknode.Name) == SnapshotNodeType.Literal)
                     {
                         LiteralNode literal = new LiteralNode(blocknode.content, nodeI.Guid);
                         BuildIdentToLiteralStatement(node, literal, statementList);

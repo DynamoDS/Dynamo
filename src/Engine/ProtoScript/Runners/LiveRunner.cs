@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using GraphToDSCompiler;
 using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using ProtoCore.Utils;
@@ -108,6 +107,7 @@ namespace ProtoScript.Runners
     public class ChangeSetData
     {
         public ChangeSetData() { }
+        public bool ContainsDeltaAST = false;
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
@@ -150,8 +150,20 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetForceExecute(ChangeSetData changeSet)
         {
-            // Mark all graphnodes dirty which are associated with the force exec ASTs
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+            // Check if there are nodes to force execute
+            if (changeSet.ForceExecuteASTList.Count > 0)
+            {
+                // Mark all graphnodes dirty which are associated with the force exec ASTs
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+                Validity.Assert(firstDirtyNode != null);
+
+                // If the only ASTs to execute are force exec, then set the entrypoint here.
+                // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
+                if (!changeSet.ContainsDeltaAST)
+                {
+                    core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
+                }
+            }
         }
 
 
@@ -293,6 +305,7 @@ namespace ProtoScript.Runners
                         }
                     }
 
+                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
@@ -428,15 +441,10 @@ namespace ProtoScript.Runners
                         csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                     }
 
-                    // There is a bug in DeactivateGraphNodes(), otherwise we
-                    // could remove all warnings generated from removedNodes in
-                    // DeactivateGraphnodes(). 
-                    // Right now just simply remove all related warnings.
-                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
-
                     foreach (var ast in csData.RemovedBinaryNodesFromModification)
                     {
                         core.BuildStatus.ClearWarningsForAst(ast.ID);
+                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
                     }
                 }
 
@@ -512,7 +520,7 @@ namespace ProtoScript.Runners
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
-
+            csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
 
@@ -930,13 +938,13 @@ namespace ProtoScript.Runners
         #endregion
 
         string GetCoreDump();
-        void ResetVMAndResyncGraph(List<string> libraries);
+        void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         ClassMirror GetClassType(string className);
-
+        
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;
@@ -1006,7 +1014,6 @@ namespace ProtoScript.Runners
 
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
-        private GraphToDSCompiler.GraphCompiler graphCompiler;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
         {
@@ -1044,9 +1051,6 @@ namespace ProtoScript.Runners
         public LiveRunner(Configuration configuration)
         {
             this.configuration = configuration;
-
-            graphCompiler = GraphCompiler.CreateInstance();
-            graphCompiler.SetCore(GraphUtilities.GetCore());
 
             runner = new ProtoScriptTestRunner();
 
@@ -1396,18 +1400,6 @@ namespace ProtoScript.Runners
 
         #region Internal Implementation
 
-        private ProtoCore.Mirror.RuntimeMirror GetWatchValue(string varname)
-        {
-            runnerCore.Options.IsDeltaCompile = true;
-            CompileAndExecuteForDeltaExecution(GraphUtilities.GetWatchExpression(varname));
-
-            const int blockID = 0;
-            ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(ProtoCore.DSASM.Constants.kWatchResultVar, blockID, runnerCore);
-            return runtimeMirror;
-
-        }
-
-
         /// <summary>
         /// This is being called currently as it uses the Expression interpreter which does not
         /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors
@@ -1433,8 +1425,6 @@ namespace ProtoScript.Runners
         private bool Compile(string code, out int blockId)
         {
             Dictionary<string, bool> execFlagList = null;
-            if (graphCompiler != null)
-                execFlagList = graphCompiler.ExecutionFlagList;
 
             staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
 
@@ -1480,7 +1470,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.PushFrame(newSymbols);
+                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
             }
 
             // Store the current number of global symbols
@@ -1488,9 +1478,6 @@ namespace ProtoScript.Runners
 
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
-            if (graphCompiler != null)
-                runtimeContext.execFlagList = graphCompiler.ExecutionFlagList;
 
             try
             {
@@ -1535,7 +1522,7 @@ namespace ProtoScript.Runners
 
         private void ApplyUpdate()
         {
-            if (runnerCore.DeferredUpdates > 0)
+            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
@@ -1663,10 +1650,15 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="libraries"></param>
         /// <param name="syncData"></param>
-        public void ResetVMAndResyncGraph(List<string> libraries)
+        public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
             // Reset VM
             ReInitializeLiveRunner();
+
+            if (!libraries.Any())
+            {
+                return;
+            }
 
             // generate import node for each library in input list
             List<AssociativeNode> importNodes = new List<AssociativeNode>();

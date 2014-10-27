@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using DynCmd = Dynamo.Models.DynamoModel;
+using ProtoCore.Mirror;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Tests
 {
@@ -214,7 +211,6 @@ b = c[w][x][y][z];";
         }
 
         [Test]
-        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
@@ -245,6 +241,54 @@ b = c[w][x][y][z];";
             var guid = codeBlockNodeTwo.GUID.ToString();
             var expectedIdentifier = "arr_" + guid.Replace("-", string.Empty);
             Assert.AreEqual(expectedIdentifier, codeBlockNodeTwo.AstIdentifierBase);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4946()
+        {
+            var model = ViewModel.Model;
+            int value = 10;
+            string codeInCBN = "a = " + value.ToString();
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            MirrorData mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
+            // Copy and paste the code block node.
+            model.AddToSelection(codeBlockNodeOne);
+            model.Copy(null); // Copy the selected node.
+            model.Paste(null); // Paste the copied node.
+
+            // After pasting, we should have two nodes.
+            Assert.AreEqual(2, model.Nodes.Count());
+
+            // Make sure we are able to get the second code block node.
+            var codeBlockNodeTwo = model.Nodes[1] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNodeTwo);
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
         }
 
         [Test]
@@ -733,8 +777,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -748,16 +790,15 @@ b = c[w][x][y][z];";
                 Assert.IsTrue(libraryLoaded);
             }
 
-            string ffiTargetClass = "ClassFunctionality";
+            string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
-            var expected = new string[] { "ClassFunctionality", "StaticFunction", "StaticProp" };
+            var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
             AssertCompletions(members, expected);
         }
 
@@ -765,8 +806,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -780,11 +819,10 @@ b = c[w][x][y][z];";
                 Assert.IsTrue(libraryLoaded);
             }
 
-            string ffiTargetClass = "ClassFunctionality";
+            string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
 
             Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
@@ -825,9 +863,50 @@ b = c[w][x][y][z];";
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForFunctions()
+        {
+            string code = @"x[y[z.foo()].goo(";
+            string functionName;
+            string functionPrefix;
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("goo", functionName);
+            Assert.AreEqual("y[z.foo()]", functionPrefix);
+
+            code = @"abc.X[xyz.foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("xyz", functionPrefix);
+
+            code = @"pnt[9][0] = abc.X[{xyz.b.foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("xyz.b", functionPrefix);
+
+            code = @"foo(";
+            CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
+            Assert.AreEqual("foo", functionName);
+            Assert.AreEqual("", functionPrefix);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForVariableType()
+        {
+            string code = "a : Point;";
+            string variableName = "a";
+
+            Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
+
+            code = @"a : Point = Point.ByCoordinates();";
+            Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
+        }
+
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
-            var actual = members.OrderBy(n => n.Name).Select(x => x.ToString()).ToArray();
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
             Assert.AreEqual(expected, actual);
         }
     }

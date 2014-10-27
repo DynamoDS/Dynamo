@@ -28,7 +28,6 @@ namespace ProtoTest.LiveRunner
         [SetUp]
         public void Setup()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "ProtoGeometry.dll" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
         }
@@ -36,7 +35,6 @@ namespace ProtoTest.LiveRunner
         [TearDown]
         public void CleanUp()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
         }
 
         [Test]
@@ -773,8 +771,7 @@ namespace ProtoTest.LiveRunner
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
@@ -1964,8 +1961,6 @@ r = Equals(x, {41, 42});
         [Test]
         public void TestFunctionObjectInApply()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "FunctionObject.ds" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
@@ -5171,6 +5166,56 @@ a = p.UpdateCount;
             Subtree subtree = CreateSubTreeFromCode(guid2, codes[4]);
             List<Subtree> modified = new List<Subtree>();
             modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestTransactionUpdate04()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
+                "x = 1;",
+                "p = TestUpdateCount.Ctor(x,0);",
+                "a = p.UpdateCount;",
+                "x = 10;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN1 for import
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create CBN1 for import
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            // Create CBN2 for x and y
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            // Create CBN3 for TestCount constructor
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            // Create CBN4 for UpdateCount
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+
+            // Verify that UpateCount is only called once
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+
+            // Modify CBN2 
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[4]);
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(subtree);
+
+            // Modify CBN3 with same contents with ForceExecution flag set
+            subtree = CreateSubTreeFromCode(guid3, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);

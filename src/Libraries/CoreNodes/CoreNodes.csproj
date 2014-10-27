@@ -64,8 +64,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
+    <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="Logic.cs" />

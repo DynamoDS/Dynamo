@@ -118,8 +118,8 @@ namespace RevitServices.Elements
             IEnumerable<ElementId> deleted, IEnumerable<string> added, 
             IEnumerable<ElementId> addedIds )
         {
-            OnElementsModified(modified.Distinct());
             OnElementsDeleted(doc, deleted.Distinct());
+            OnElementsModified(modified.Distinct());
             OnElementsAdded(added.Distinct());
             OnElementsAdded(doc, addedIds);
         }

@@ -87,12 +87,13 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <returns></returns>
         
-        public ProtoCore.Core SetupEmptyTestCore()
+        public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
             return core;
@@ -734,7 +735,7 @@ namespace ProtoTestFx.TD
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
-            return classMirror.GetOverloads(methodName);
+            return classMirror.GetOverloads(methodName).ToList();
         }
 
         private static void AssertCollection(MirrorData data, IEnumerable collection)

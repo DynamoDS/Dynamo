@@ -92,9 +92,9 @@ namespace RevitTestServices
 
         private void SetUpHostUnits()
         {
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
         }
 
         [TearDown]

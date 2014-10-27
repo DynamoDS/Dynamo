@@ -4,15 +4,14 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
-using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
-
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using ProtoCore.Utils;
 using Dynamo.UI;
 
 namespace Dynamo.Nodes
@@ -193,7 +192,7 @@ namespace Dynamo.Nodes
 
                         EnableReporting();
 
-                        ClearError();
+                        ClearRuntimeError();
                         if (!string.IsNullOrEmpty(errorMessage))
                         {
                             Error(errorMessage);
@@ -388,7 +387,7 @@ namespace Dynamo.Nodes
                 Workspace.Modified();
             }
 
-            ClearError();
+            ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
@@ -410,7 +409,7 @@ namespace Dynamo.Nodes
             try
             {
                 ParseParam parseParam = new ParseParam(this.GUID, code);
-                if (GraphToDSCompiler.GraphUtilities.PreCompileCodeBlock(parseParam))
+                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

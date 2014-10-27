@@ -88,7 +88,7 @@ namespace Dynamo.Core.Threading
             {
                 modifiedNode.IsUpdated = true;
                 if (modifiedNode.State == ElementState.Warning)
-                    modifiedNode.ClearError();
+                    modifiedNode.ClearRuntimeError();
             }
         }
 

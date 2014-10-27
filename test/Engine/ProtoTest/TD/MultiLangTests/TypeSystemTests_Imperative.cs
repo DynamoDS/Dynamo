@@ -2508,7 +2508,7 @@ myRangeExpressionResult ;
 }";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(2);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0, 1, 2 });
         }
 

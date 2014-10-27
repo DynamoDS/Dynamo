@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-
-using Autodesk.DesignScript.Geometry;
 
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
@@ -54,7 +52,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -111,7 +109,7 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -177,7 +175,7 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -239,7 +237,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -262,7 +260,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -285,7 +283,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
+                    this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -400,17 +398,27 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        /// <summary>
-        /// The class constructor. </summary>
-        public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
+        internal PublishPackageViewModel()
         {
             this.customNodeDefinitions = new List<CustomNodeDefinition>();
-            this.dynamoViewModel = dynamoViewModel;
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<Assembly>();
             this.PropertyChanged += this.ThisPropertyChanged;
+        }
+
+        private void BeginInvoke(Action action)
+        {
+            if (this.dynamoViewModel != null)
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(action);
+        }
+
+        /// <summary>
+        /// The class constructor. </summary>
+        public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
+        {
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -448,7 +456,17 @@ namespace Dynamo.PackageManager
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFiles())
             {
-                vm.Assemblies.Add( Assembly.ReflectionOnlyLoadFrom(file) );
+                Assembly assem;
+                var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+                if (result)
+                {
+                    vm.Assemblies.Add(assem);
+                }
+                else
+                {
+                    // if it's not a .NET assembly, we load it as an additional file
+                    vm.AdditionalFiles.Add(file);
+                }
             }
 
             if (l.VersionName == null) return vm;
@@ -461,7 +479,7 @@ namespace Dynamo.PackageManager
             vm.BuildVersion = parts[2];
             return vm;
 
-        }        
+        }
 
         public void OnPublishSuccess()
         {
@@ -672,7 +690,7 @@ namespace Dynamo.PackageManager
                 return;
             }
 
-            this.AddOtherFile(filename);
+            this.AddAdditionalFile(filename);
         }
 
         private void AddCustomNodeFile(string filename)
@@ -694,7 +712,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void AddOtherFile(string filename)
+        private void AddAdditionalFile(string filename)
         {
             try
             {
@@ -711,8 +729,20 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                this.Assemblies.Add(Assembly.LoadFrom(filename));
-                this.RaisePropertyChanged("PackageContents");
+                Assembly assem;
+
+                // we're not sure if this is a managed assembly or not
+                // we try to load it, if it fails - we add it as an additional file
+                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                if (result)
+                {
+                    this.Assemblies.Add(assem);
+                    this.RaisePropertyChanged("PackageContents");
+                }
+                else
+                {
+                    AddAdditionalFile(filename);
+                }               
             }
             catch (Exception e)
             {
@@ -768,7 +798,8 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                 return this.Assemblies.Any();
+                return this.Assemblies.Any()
+                    || this.AdditionalFiles.Any(x => x.ToLower().EndsWith(".dll") || x.ToLower().EndsWith(".exe"));
             }
         }
 
@@ -781,7 +812,6 @@ namespace Dynamo.PackageManager
                         n => n.GetType().Name == "PythonNode" ||
                             n.GetType().Name == "PythonStringNode"));
             }
-                
         }
 
         /// <summary>
@@ -790,7 +820,7 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            if (!this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
+            if (this.dynamoViewModel == null || !this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
             {
                 this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
                 return false;
