@@ -99,6 +99,7 @@ namespace ProtoCore.AssociativeEngine
             bool isSSAAssign,
             bool executeSSA,
             int languageBlockID,
+            bool recursiveSearch,
             bool propertyChanged = false)
         {
             InterpreterProperties Properties = executive.Properties;
@@ -167,7 +168,7 @@ namespace ProtoCore.AssociativeEngine
                     if (graphNode.isLanguageBlock)
                     {
                         List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId);
+                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
                         if (subGraphNodes.Count > 0)
                         {
                             reachableGraphNodes.Add(graphNode);
@@ -313,17 +314,23 @@ namespace ProtoCore.AssociativeEngine
                                 
                             }
 
-                            List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                                graphNode, 
-                                executive,
-                                graphNode.exprUID,
-                                graphNode.modBlkUID,
-                                graphNode.IsSSANode(), 
-                                executeSSA,
-                                graphNode.languageBlockId);
-                            if (subGraphNodes.Count > 0)
+                            // When a graphnode is dirty, recursively search of other graphnodes that may be affected
+                            // Recursive search is only done statically 
+                            if (recursiveSearch)
                             {
-                                reachableGraphNodes.AddRange(subGraphNodes);
+                                List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                                    graphNode,
+                                    executive,
+                                    graphNode.exprUID,
+                                    graphNode.modBlkUID,
+                                    graphNode.IsSSANode(),
+                                    executeSSA,
+                                    graphNode.languageBlockId,
+                                    recursiveSearch);
+                                if (subGraphNodes.Count > 0)
+                                {
+                                    reachableGraphNodes.AddRange(subGraphNodes);
+                                }
                             }
                         }
                     }

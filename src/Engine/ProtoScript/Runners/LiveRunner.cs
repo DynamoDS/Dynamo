@@ -268,7 +268,8 @@ namespace ProtoScript.Runners
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
                     true,
-                    0));
+                    0,
+                    true));
             }
             return reachableNodes;
         }
