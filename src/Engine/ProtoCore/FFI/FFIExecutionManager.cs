@@ -95,13 +95,10 @@ namespace ProtoFFI
             {
                 lock (mSessions)
                 {
-                    if (!mSessions.TryGetValue(core, out session))
-                    {
-                        session = new FFIExecutionSession(core);
-                        core.ExecutionEvent += OnExecutionEvent;
-                        core.Dispose += OnDispose;
-                        mSessions.Add(core, session);
-                    }
+                    session = new FFIExecutionSession(core);
+                    core.ExecutionEvent += OnExecutionEvent;
+                    core.Dispose += OnDispose;
+                    mSessions.Add(core, session);
                 }
             }
 
@@ -120,8 +117,8 @@ namespace ProtoFFI
                 {
                     mSessions.Remove(sender);
                 }
-                mSessions.Remove(sender);
                 session.Dispose();
+                sender.Dispose -= OnDispose;
                 sender.ExecutionEvent -= OnExecutionEvent;
             }
         }
