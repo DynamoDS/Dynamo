@@ -2,7 +2,11 @@
 using System.Windows;
 
 using Dynamo.Controls;
+using Dynamo.PackageManager.UI;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Dynamo.PackageManager
 {
