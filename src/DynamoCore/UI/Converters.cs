@@ -1863,7 +1863,7 @@ namespace Dynamo.Controls
 
             var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
             if (index == -1)
-                return new Thickness(5, 10, textBlock.ActualWidth, textBlock.ActualHeight);
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
 
             double leftMargin, rightMargin;
 
@@ -1885,9 +1885,9 @@ namespace Dynamo.Controls
                     textBlock.FontStretch),
                 textBlock.FontSize,
                 textBlock.Foreground);
-            leftMargin = 5 + textBlock.ActualWidth - rightMargin - formattedText.Width;
+            leftMargin = textBlock.ActualWidth - rightMargin - formattedText.Width;
 
-            return new Thickness(leftMargin, 10, rightMargin, 10);
+            return new Thickness(leftMargin, 0, rightMargin, 0);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

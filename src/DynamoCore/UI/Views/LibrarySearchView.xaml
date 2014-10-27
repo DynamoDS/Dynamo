@@ -217,19 +217,21 @@
                        VerticalAlignment="Center"
                        Width="32"
                        Source="{Binding SmallIcon}" />
-                <Rectangle Grid.Column="1"
-                           Fill="#3E464C"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch">
-                    <Rectangle.Margin>
-                        <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
-                            <Binding ElementName="memberName" />
-                            <Binding Path="DataContext.SearchText"
-                                     RelativeSource="{RelativeSource Mode=FindAncestor, 
+                <Border Grid.Column="1"
+                        Margin="5,10,0,10">
+                    <Rectangle Fill="#3E464C"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch">
+                        <Rectangle.Margin>
+                            <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                <Binding ElementName="memberName" />
+                                <Binding Path="DataContext.SearchText"
+                                         RelativeSource="{RelativeSource Mode=FindAncestor, 
                                                                      AncestorType={x:Type UserControl}}" />
-                        </MultiBinding>
-                    </Rectangle.Margin>
-                </Rectangle>
+                            </MultiBinding>
+                        </Rectangle.Margin>
+                    </Rectangle>
+                </Border>
                 <TextBlock Grid.Column="1"
                            Name="memberName"
                            HorizontalAlignment="Left"
