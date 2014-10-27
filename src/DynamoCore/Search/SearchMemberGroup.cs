@@ -17,9 +17,11 @@ namespace Dynamo.Search
         {
             get
             {
-                // +2, because after ">" always stays space character.
-                int startIndexOfGroupType = FullyQualifiedName.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
-                return FullyQualifiedName.Substring(0, startIndexOfGroupType);
+                var fullName = FullyQualifiedName;
+
+                // Skip past the last delimiter and get the group name.
+                var delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
+                return fullName.Substring(0, fullName.LastIndexOf(delimiter) + delimiter.Length);
             }
         }
 
