@@ -40,7 +40,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource DynamoWindowBrush}">
+    <Grid Background="{StaticResource DynamoWindowBrush}"
+          PreviewKeyDown="OnLibraryContainerViewPreviewKeyDown">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -157,6 +158,7 @@
                          TextChanged="OnSearchTextBoxTextChanged"
                          GotKeyboardFocus="TextBoxGotKeyboardFocus"
                          LostKeyboardFocus="TextBoxLostKeyboardFocus"
+                         KeyUp="OnSearchTextBoxKeyUp"
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"

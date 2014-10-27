@@ -133,20 +133,6 @@ namespace Dynamo.Nodes.Search
         }
 
         /// <summary>
-        /// Whether the item is selected or not
-        /// </summary>
-        private bool _isSelected = false;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                RaisePropertyChanged("IsSelected");
-            }
-        }
-
-        /// <summary>
         /// Is the element expanded in the browser
         /// </summary>
         private bool _isExpanded = false;

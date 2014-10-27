@@ -92,30 +92,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     SelectedIndex property
-        /// </summary>
-        /// <value>
-        ///     This is the currently selected element in the UI.
-        /// </value>
-        private int selectedIndex;
-        public int SelectedIndex
-        {
-            get { return selectedIndex; }
-            set
-            {
-                if (selectedIndex != value)
-                {
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = false;
-                    selectedIndex = value;
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = true;
-                    RaisePropertyChanged("SelectedIndex");
-                }
-            }
-        }
-
-        /// <summary>
         ///     Visible property
         /// </summary>
         /// <value>
@@ -162,12 +138,6 @@ namespace Dynamo.ViewModels
         /// </value>
         public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
 
-        /// <summary>
-        ///     An ordered list representing all of the visible items in the browser.
-        ///     This is used to manage up-down navigation through the menu.
-        /// </summary>
-        private List<BrowserItem> visibleSearchResults = new List<BrowserItem>();
-
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
         {
@@ -191,8 +161,7 @@ namespace Dynamo.ViewModels
         }
 
         private void InitializeCore()
-        {
-            SelectedIndex = 0;
+        {   
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
@@ -221,8 +190,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
-        ///     updates the observable SearchResults property.
+        ///     Performs a search using the internal SearcText as the query.
         /// </summary>
         internal void SearchAndUpdateResults()
         {
@@ -279,6 +247,10 @@ namespace Dynamo.ViewModels
             }
 
             RaisePropertyChanged("SearchAddonsVisibility");
+
+            // SearchResults doesn't used everywhere.
+            // It is populated for making connected tests as successful.
+            SearchResults = new ObservableCollection<SearchElementBase>(foundNodes);
         }
 
         internal static string ShortenCategoryName(string fullCategoryName)
@@ -327,33 +299,6 @@ namespace Dynamo.ViewModels
             TopResult = topMemberGroup;
         }
         
-        #endregion
-
-        #region Selection
-
-        /// <summary>
-        ///     Increments the selected element by 1, unless it is the last element already
-        /// </summary>
-        public void SelectNext()
-        {
-            if (SelectedIndex == SearchResults.Count - 1
-                || SelectedIndex == -1)
-                return;
-
-            SelectedIndex = SelectedIndex + 1;
-        }
-
-        /// <summary>
-        ///     Decrements the selected element by 1, unless it is the first element already
-        /// </summary>
-        public void SelectPrevious()
-        {
-            if (SelectedIndex <= 0)
-                return;
-
-            SelectedIndex = SelectedIndex - 1;
-        }
-
         #endregion
 
         #region Search field manipulation
@@ -405,13 +350,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void PopulateSearchTextWithSelectedResult()
         {
-            if (SearchResults.Count == 0) return;
-
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
-
-            SearchText = SearchResults[SelectedIndex].Name;
+            // TODO: implement it for new navigation system
         }
 
         #endregion
@@ -419,21 +358,11 @@ namespace Dynamo.ViewModels
         #region Execution
 
         /// <summary>
-        ///     Runs the Execute() method of the current selected SearchElementBase object
-        ///     amongst the SearchResults.
+        ///     Runs the Execute() method of the current selected SearchElementBase object.
         /// </summary>
         public void Execute()
         {
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
-
-            if (visibleSearchResults.Count <= SelectedIndex)
-                return;
-
-            if (!(visibleSearchResults[SelectedIndex] is SearchElementBase)) return;
-
-            ExecuteElement(visibleSearchResults[SelectedIndex] as SearchElementBase);
+            // TODO: implement it for new navigation system
         }
 
         private void ExecuteElement(SearchElementBase searchElement)
