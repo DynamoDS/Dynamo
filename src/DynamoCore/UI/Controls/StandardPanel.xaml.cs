@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
-using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
@@ -30,6 +29,8 @@ namespace Dynamo.UI.Controls
         // and should be presented on StandardPanel.
         private bool areAllListsPresented;
         private ClassInformation castedDataContext;
+
+        public bool FocusItemOnSelection { get; set; }
 
         public StandardPanel()
         {
@@ -74,6 +75,9 @@ namespace Dynamo.UI.Controls
                 searchElement.Execute();
                 e.Handled = true;
             }
+
+            if (FocusItemOnSelection)
+                listBoxItem.Focus();
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)

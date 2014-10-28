@@ -45,16 +45,16 @@
                                               Content="{TemplateBinding Content}" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="True" />
-                                    <Condition Property="IsSelected"
-                                               Value="False" />
-                                </MultiTrigger.Conditions>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
                                 <Setter Property="Background"
                                         Value="#444444" />
-                            </MultiTrigger>
+                            </Trigger>
+                            <Trigger Property="IsFocused"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#444444" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -215,7 +215,7 @@
                             <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                 <Binding Path="IsSecondaryHeaderRightVisible" />
                                 <Binding Path="IsSecondaryHeaderLeftVisible" />
-                            </MultiBinding> 
+                            </MultiBinding>
                         </Ellipse.Visibility>
                     </Ellipse>
                     <TextBlock x:Name="secondaryHeaderRight"
