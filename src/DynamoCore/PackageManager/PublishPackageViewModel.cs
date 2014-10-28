@@ -27,8 +27,8 @@ namespace Dynamo.PackageManager
 
     public struct PackageAssembly
     {
-        public bool IsNodeLibrary;
-        public Assembly Assembly;
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
     }
 
     /// <summary>

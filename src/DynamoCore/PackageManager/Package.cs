@@ -121,7 +121,6 @@ namespace Dynamo.PackageManager
 
         public ObservableCollection<Type> LoadedTypes { get; private set; }
         public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
-        public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; private set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
@@ -136,22 +135,9 @@ namespace Dynamo.PackageManager
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
             this.LoadedAssemblies = new ObservableCollection<PackageAssembly>();
-            this.LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             this.AdditionalFiles = new ObservableCollection<PackageFileInfo>();
-
-            this.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
-
-        }
-
-        private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            this.LoadedAssemblyNames.Clear();
-            foreach (var ass in LoadedAssemblies)
-            {
-                this.LoadedAssemblyNames.Add(ass.Assembly.GetName());
-            }
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
