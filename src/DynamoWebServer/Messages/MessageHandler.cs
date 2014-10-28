@@ -24,6 +24,8 @@ namespace DynamoWebServer.Messages
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
+        private AutoResetEvent nextRunAllowed = new AutoResetEvent(true);
+        private int maxMsToWait = 20000;
         
         public MessageHandler(DynamoModel dynamoModel)
         {
@@ -44,13 +46,7 @@ namespace DynamoWebServer.Messages
         /// </summary>
         void RunCommandCompleted(object sender, EventArgs e)
         {
-            lock (uploader)
-            {
-                if (uploader.IsUpload)
-                    NodesDataCreated(SessionId);
-                else
-                    NodesDataModified(SessionId);
-            }
+            nextRunAllowed.Set();
         }
 
         /// <summary>
@@ -150,7 +146,10 @@ namespace DynamoWebServer.Messages
         {
             if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
             {
+                nextRunAllowed.Reset();
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+                WaitWhileRunCompletes();
+                NodesDataCreated(sessionId);
             }
             else
             {
@@ -241,8 +240,23 @@ namespace DynamoWebServer.Messages
 
             foreach (var command in recordableCommandMsg.Commands)
             {
-                dynamo.ExecuteCommand(command);
+                if (command is DynamoModel.RunCancelCommand)
+                {
+                    nextRunAllowed.Reset();
+                    dynamo.ExecuteCommand(command);
+                    WaitWhileRunCompletes();
+                    NodesDataModified(sessionId);
+                }
+                else
+                {
+                    dynamo.ExecuteCommand(command);
+                }
             }
+        }
+
+        private void WaitWhileRunCompletes()
+        {
+            nextRunAllowed.WaitOne(maxMsToWait);
         }
 
         private void SelectTabByGuid(DynamoModel dynamo, Guid guid)
@@ -384,6 +398,10 @@ namespace DynamoWebServer.Messages
                 {
                     data = node.CachedValue.Data.ToString();
                 }
+            }
+            else if (node is DoubleInput)
+            {
+                data = (node as DoubleInput).Value;
             }
 
             return data;
