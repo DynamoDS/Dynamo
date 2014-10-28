@@ -93,6 +93,8 @@ namespace Dynamo.Utilities
                 if (fn == null)
                     continue;
 
+                Console.WriteLine("Neal was here!");
+
                 // if the assembly has already been loaded, then
                 // skip it, otherwise cache it.
                 if (LoadedAssemblyNames.Contains(fn))
