@@ -202,8 +202,7 @@ namespace Dynamo.ViewModels
             searchText = "";
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
-            var uri = new Uri("file:///" + Environment.CurrentDirectory + "/UI/Themes/Modern/DynamoModern.xaml");
-            var fontFamily = new FontFamily(uri, "../../Fonts/#Open Sans");
+            var fontFamily = new FontFamily(SharedDictionaryManager.DynamoModernDictionaryUri, "../../Fonts/#Open Sans");
             RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
                 FontStretches.Normal);
 
