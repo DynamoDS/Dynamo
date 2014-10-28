@@ -8,8 +8,13 @@ using System.Text;
 
 namespace Dynamo.DSEngine
 {
+    /// <summary>
+    /// Interacts with the VM core to provide code completion data to the UI
+    /// </summary>
     public class CodeCompletionServices
     {
+        private readonly ProtoCore.Core core = null;
+
         // TODO: Only those DS keywords are exposed currently that are supported in CBN's
         public static string[] KeywordList = {Keyword.Def, 
                                         Keyword.If, Keyword.Elseif, Keyword.Else, 
@@ -20,6 +25,9 @@ namespace Dynamo.DSEngine
                                         Keyword.Return, Keyword.Static,
                                         Keyword.Associative, Keyword.Imperative};
 
+        /// <summary>
+        /// Represents the code completion data displayed in the UI 
+        /// </summary>
         public struct CompletionData
         {
             private readonly string text;
@@ -27,15 +35,6 @@ namespace Dynamo.DSEngine
             private readonly string description;
             private readonly double priority;
             private readonly CompletionType type;
-
-            internal CompletionData(string text, string stub, CompletionType type, string description = "", double priority = 0)
-            {
-                this.text = text;
-                this.stub = stub;
-                this.description = description;
-                this.type = type;
-                this.priority = priority;
-            }
 
             public enum CompletionType
             {
@@ -47,11 +46,43 @@ namespace Dynamo.DSEngine
                 Keyword,
             };
 
+            /// <summary>
+            /// Displayed text in completion list
+            /// Class name or fully qualified name
+            /// Method or property name
+            /// </summary>
             public string Text { get { return text; } }
+
+            /// <summary>
+            /// Method signatures
+            /// </summary>
             public string Stub { get { return stub; } }
+
+            /// <summary>
+            /// Description of completion item - class, method or property
+            /// </summary>
             public string Description { get { return description; } }
+
+            /// <summary>
+            /// This property can be used in the selection logic. You can use it to
+            /// prefer selecting those items which the user is accessing most frequently
+            /// </summary>
             public double Priority { get { return priority; } }
+
+            /// <summary>
+            /// Type of completion item
+            /// </summary>
             public CompletionType Type { get { return type; } }
+
+            internal CompletionData(string text, string stub, CompletionType type, string description = "", double priority = 0)
+            {
+                this.text = text;
+                this.stub = stub;
+                this.description = description;
+                this.type = type;
+                this.priority = priority;
+            }
+
 
             internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false)
             {
@@ -85,9 +116,6 @@ namespace Dynamo.DSEngine
                     throw new ArgumentException("Invalid argument");
             }
         }
-
-
-        private readonly ProtoCore.Core core = null;
 
         public CodeCompletionServices(ProtoCore.Core core)
         {
