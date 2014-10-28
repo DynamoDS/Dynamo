@@ -13,14 +13,14 @@ namespace Dynamo.Core.Threading
     /// 
     class NotifyRenderPackagesReadyAsyncTask : AsyncTask
     {
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         internal NotifyRenderPackagesReadyAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
-        }
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.Normal;
         }
 
         protected override void ExecuteCore()
