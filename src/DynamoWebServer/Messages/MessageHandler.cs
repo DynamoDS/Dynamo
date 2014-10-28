@@ -366,8 +366,6 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
             }
-
-            uploader.IsUpload = false;
         }
 
         private string GetData(NodeModel node)
