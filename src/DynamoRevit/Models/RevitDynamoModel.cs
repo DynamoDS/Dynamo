@@ -399,7 +399,7 @@ namespace Dynamo.Applications.Models
         private void ResetForNewDocument()
         {
             foreach (var node in this.Nodes)
-                node.ResetOldValue();
+                node.RequiresRecalc = true;
 
             foreach (var node in this.Nodes)
             {

@@ -37,7 +37,7 @@ namespace DSCoreNodesUI.Logic
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
-            if (HasUnconnectedInput())
+            if (IsPartiallyApplied)
             {
                 var connectedInputs = Enumerable.Range(0, InPortData.Count)
                                             .Where(HasConnectedInput)
