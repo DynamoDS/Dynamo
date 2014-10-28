@@ -19,6 +19,11 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
+
         #region Public Class Operational Methods
 
         internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
@@ -61,11 +66,6 @@ namespace Dynamo.Core.Threading
         #endregion
 
         #region Protected Overridable Methods
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.AboveNormal;
-        }
 
         protected override void ExecuteCore()
         {

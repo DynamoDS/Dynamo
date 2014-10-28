@@ -84,7 +84,7 @@ namespace Dynamo.Core.Threading
         /// tasks having the same priority.
         /// </summary>
         /// 
-        internal TaskPriority Priority { get { return GetPriorityCore(); } }
+        internal abstract TaskPriority Priority { get; }
 
         /// <summary>
         /// This event is raised when the AsyncTask is completed. The event is 
@@ -210,7 +210,6 @@ namespace Dynamo.Core.Threading
 
         #region Protected/Private Class Helper Methods
 
-        protected abstract TaskPriority GetPriorityCore();
         protected abstract void ExecuteCore();
         protected abstract void HandleTaskCompletionCore();
 
