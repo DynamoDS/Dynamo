@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -30,7 +31,7 @@ namespace Dynamo.DSEngine
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
-        private readonly CodeCompletionServices codeCompletionServices; 
+        private CodeCompletionServices codeCompletionServices; 
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
@@ -87,6 +88,7 @@ namespace Dynamo.DSEngine
             }
 
             libraryServices.Dispose();
+            codeCompletionServices = null;
 
             libraryCore.Cleanup();
         }

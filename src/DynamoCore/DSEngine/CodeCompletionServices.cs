@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.DSEngine.CodeCompletion
 {
     /// <summary>
     /// Interacts with the VM core to provide code completion data to the UI
@@ -25,97 +25,6 @@ namespace Dynamo.DSEngine
                                         Keyword.Return, Keyword.Static,
                                         Keyword.Associative, Keyword.Imperative};
 
-        /// <summary>
-        /// Represents the code completion data displayed in the UI 
-        /// </summary>
-        public struct CompletionData
-        {
-            private readonly string text;
-            private readonly string stub;
-            private readonly string description;
-            private readonly double priority;
-            private readonly CompletionType type;
-
-            public enum CompletionType
-            {
-                Namespace,
-                Method,
-                Constructor,
-                Class,
-                Property,
-                Keyword,
-            };
-
-            /// <summary>
-            /// Displayed text in completion list
-            /// Class name or fully qualified name
-            /// Method or property name
-            /// </summary>
-            public string Text { get { return text; } }
-
-            /// <summary>
-            /// Method signatures
-            /// </summary>
-            public string Stub { get { return stub; } }
-
-            /// <summary>
-            /// Description of completion item - class, method or property
-            /// </summary>
-            public string Description { get { return description; } }
-
-            /// <summary>
-            /// This property can be used in the selection logic. You can use it to
-            /// prefer selecting those items which the user is accessing most frequently
-            /// </summary>
-            public double Priority { get { return priority; } }
-
-            /// <summary>
-            /// Type of completion item
-            /// </summary>
-            public CompletionType Type { get { return type; } }
-
-            internal CompletionData(string text, string stub, CompletionType type, string description = "", double priority = 0)
-            {
-                this.text = text;
-                this.stub = stub;
-                this.description = description;
-                this.type = type;
-                this.priority = priority;
-            }
-
-
-            internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false)
-            {
-                MethodMirror method = mirror as MethodMirror;
-                if (method != null)
-                {
-                    string methodName = method.MethodName;
-                    string signature = method.ToString();
-                    CompletionType type = method.IsConstructor ? CompletionType.Constructor : CompletionType.Method;
-                    return new CompletionData(methodName, signature, type);
-                }
-                PropertyMirror property = mirror as PropertyMirror;
-                if (property != null)
-                {
-                    string propertyName = property.PropertyName;
-                    string stub = "";
-                    return new CompletionData(propertyName, stub, CompletionType.Property);
-                }
-                ClassMirror classMirror = mirror as ClassMirror;
-                if (classMirror != null)
-                {
-                    string className;
-                    if (useFullyQualifiedName)
-                        className = classMirror.ClassName;
-                    else
-                        className = classMirror.Alias;
-                    string signature = "";
-                    return new CompletionData(className, signature, CompletionType.Class);
-                }
-                else
-                    throw new ArgumentException("Invalid argument");
-            }
-        }
 
         public CodeCompletionServices(ProtoCore.Core core)
         {
@@ -155,7 +64,7 @@ namespace Dynamo.DSEngine
 
             // Add matching DS keywords
             completions.AddRange(KeywordList.Where(x => x.ToLower().Contains(stringToComplete.ToLower())).
-                Select(x => new CompletionData(x, "", CompletionData.CompletionType.Keyword)));
+                Select(x => new CompletionData(x, CompletionData.CompletionType.Keyword)));
 
             // Add matching Classes
             var groups = StaticMirror.GetClasses(core).
@@ -193,7 +102,13 @@ namespace Dynamo.DSEngine
             if (string.IsNullOrEmpty(functionPrefix))
             {
                 return StaticMirror.GetOverloadsOnBuiltIns(core, functionName).
-                    Select(x => new CompletionData(x.MethodName, x.ToString(), CompletionData.CompletionType.Method));
+                    Select(x =>
+                    {
+                        return new CompletionData(x.MethodName, CompletionData.CompletionType.Method)
+                        {
+                            Stub = x.ToString()
+                        };
+                    });
             }
 
             // Determine if the function prefix is a class name
@@ -228,6 +143,85 @@ namespace Dynamo.DSEngine
             {
                 return null;
             }
+        }
+    }
+
+    /// <summary>
+    /// Code completion data that typically gets displayed on a list as part of 
+    /// the auto-completion feature. This class represents a common currency that
+    /// is view-independent. 
+    /// </summary>
+    public class CompletionData
+    {
+        private readonly string text;
+        private readonly CompletionType type;
+
+        public enum CompletionType
+        {
+            Namespace,
+            Method,
+            Constructor,
+            Class,
+            Property,
+            Keyword,
+        };
+
+        /// <summary>
+        /// Displayed text in completion list
+        /// Class name or fully qualified name
+        /// Method, property name or keyword
+        /// </summary>
+        public string Text { get { return text; } }
+
+        /// <summary>
+        /// Method signatures or any stub description for classes etc.
+        /// </summary>
+        public string Stub { get; set; }
+
+        /// <summary>
+        /// Description of completion item - class, method or property
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Type of completion item
+        /// </summary>
+        public CompletionType Type { get { return type; } }
+
+        internal CompletionData(string text, CompletionType type)
+        {
+            this.text = text;
+            this.type = type;
+        }
+
+
+        internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false)
+        {
+            MethodMirror method = mirror as MethodMirror;
+            if (method != null)
+            {
+                string methodName = method.MethodName;
+                string signature = method.ToString();
+                CompletionType type = method.IsConstructor ? CompletionType.Constructor : CompletionType.Method;
+                return new CompletionData(methodName, type)
+                {
+                    Stub = signature
+                };
+            }
+            PropertyMirror property = mirror as PropertyMirror;
+            if (property != null)
+            {
+                string propertyName = property.PropertyName;
+                return new CompletionData(propertyName, CompletionType.Property);
+            }
+            ClassMirror classMirror = mirror as ClassMirror;
+            if (classMirror != null)
+            {
+                string className = useFullyQualifiedName ? classMirror.ClassName : classMirror.Alias;
+                return new CompletionData(className, CompletionType.Class);
+            }
+            else
+                throw new ArgumentException("Invalid argument");
         }
     }
 }
