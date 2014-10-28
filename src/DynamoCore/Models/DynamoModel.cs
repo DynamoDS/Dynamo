@@ -472,8 +472,8 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
             if (scheduler != null)
             {
-                scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler.Shutdown();
+                scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler = null;
             }
 #endif
