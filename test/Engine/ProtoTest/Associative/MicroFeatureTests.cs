@@ -86,7 +86,7 @@ namespace ProtoTest.Associative
         [Category("Failure")]
         public void TestDuplicateFunctionParams()
         {
-            string code = @"
+            const string code = @"
 def test : int(a : int, a : int)
 {
     return = a + a;
@@ -94,8 +94,8 @@ def test : int(a : int, a : int)
 
 temp = test(1, 2);
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.Inconclusive("Assert that an error is thrown when defining duplicate function params.");
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("temp", null);
         }
 
         [Test]
