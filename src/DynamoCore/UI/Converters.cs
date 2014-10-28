@@ -1867,25 +1867,11 @@ namespace Dynamo.Controls
             if (index == -1)
                 return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
 
-            double leftMargin, rightMargin;
+            double rightMargin = textBlock.ActualWidth -
+                ComputeTextWidth(fullText.Substring(0, index + searchText.Length), typeface, textBlock);
 
-            // Here is right margin counted.
-            var formattedText = new FormattedText(fullText.Substring(0, index + searchText.Length),
-                CultureInfo.CurrentUICulture,
-                FlowDirection.LeftToRight,
-                typeface,
-                textBlock.FontSize,
-                textBlock.Foreground);
-            rightMargin = textBlock.ActualWidth - formattedText.Width;
-
-            // Here is left margin counted.
-            formattedText = new FormattedText(fullText.Substring(index, searchText.Length),
-                CultureInfo.CurrentUICulture,
-                FlowDirection.LeftToRight,
-                typeface,
-                textBlock.FontSize,
-                textBlock.Foreground);
-            leftMargin = textBlock.ActualWidth - rightMargin - formattedText.Width;
+            double leftMargin = textBlock.ActualWidth - rightMargin -
+                ComputeTextWidth(fullText.Substring(index, searchText.Length), typeface, textBlock);
 
             return new Thickness(leftMargin, 0, rightMargin, 0);
         }
@@ -1893,6 +1879,18 @@ namespace Dynamo.Controls
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private double ComputeTextWidth(string text, Typeface typeface, TextBlock textBlock)
+        {
+            var formattedText = new FormattedText(text,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                typeface,
+                textBlock.FontSize,
+                textBlock.Foreground);
+
+            return formattedText.Width;
         }
     }
 }
