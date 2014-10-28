@@ -77,7 +77,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid>{guid2};
@@ -132,7 +132,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
@@ -196,7 +196,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid> { guid3, guid4 };
@@ -266,7 +266,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid> { guid3, guid4, guid5 };
@@ -319,7 +319,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
@@ -379,7 +379,7 @@ namespace ProtoTest.LiveRunner
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
-            List<Guid> reachableGuidList = changeSetState.ComputeNodesAffectedByASTList(astList);
+            List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
             List<Guid> expectedGuid = new List<Guid> { guid2, guid3, guid4 };

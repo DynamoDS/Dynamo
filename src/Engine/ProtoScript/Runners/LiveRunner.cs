@@ -251,12 +251,12 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get reachable graphnodes from the live core
+        /// Given deltaGraphNodes, estimate the reachable graphnodes from the live core
         /// </summary>
         /// <param name="liveCore"></param>
         /// <param name="deltaGraphNodes"></param>
         /// <returns></returns>
-        private List<GraphNode> ComputeReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
+        private List<GraphNode> EstimateReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
         {
             List<GraphNode> reachableNodes = new List<GraphNode>();
             foreach (GraphNode executingNode in deltaGraphNodes)
@@ -275,12 +275,12 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the nodes that are affected by the changes in astList
+        /// Estimate the nodes that are affected by the changes in astList
         /// Returns a list of guids that map to the affected nodes
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
-        public List<Guid> ComputeNodesAffectedByASTList(List<AssociativeNode> astList)
+        public List<Guid> EstimateNodesAffectedByASTList(List<AssociativeNode> astList)
         {
             List<Guid> cbnGuidList = new List<Guid>();
 
@@ -288,7 +288,7 @@ namespace ProtoScript.Runners
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
 
             // Get the reachable VM graphnodes  given the modified graphnode list
-            List<GraphNode> reachableNodes = ComputeReachableGraphNodes(core, deltaGraphNodeList);
+            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
 
             // Get the list of guid's of the ASTs
             foreach (GraphNode graphnode in reachableNodes)
@@ -1597,7 +1597,7 @@ namespace ProtoScript.Runners
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
-            List<Guid> cbnGuidList = changeSetComputer.ComputeNodesAffectedByASTList(previewAstList);
+            List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)
