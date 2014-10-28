@@ -242,10 +242,10 @@ namespace Revit.Elements
         /// <param name="upVector">The up vector for the element - this is required to determine the orientation of the element</param>
         /// <param name="level">The level on which the member should appear</param>
         /// <param name="structuralType">The type of the structural element - a beam, column, etc</param>
-        /// <param name="structuralFamilySymbol">The FamilySymbol representing the structural type</param>
+        /// <param name="structuralFramingType">The structural framing type representing the structural type</param>
         /// <returns></returns>
         public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, 
-            Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFamilySymbol)
+            Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFramingType)
         {
             if (curve == null)
             {
@@ -262,13 +262,13 @@ namespace Revit.Elements
                 throw new System.ArgumentNullException("upVector");
             }
 
-            if (structuralFamilySymbol == null)
+            if (structuralFramingType == null)
             {
                 throw new System.ArgumentNullException("structuralFamilySymbol");
             }            
 
             return new StructuralFraming(curve.ToRevitType(), upVector.ToXyz(), level.InternalLevel,
-                structuralType.ToRevitType(), structuralFamilySymbol.InternalFamilySymbol);
+                structuralType.ToRevitType(), structuralFramingType.InternalFamilySymbol);
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curve">The curve which defines the center line of the beam.</param>
         /// <param name="level">The level with which you'd like the beam to be associated.</param>
-        /// <param name="familyType">The family type representing the beam.</param>
+        /// <param name="structuralFramingType">The structural framing type representing the beam.</param>
         /// <returns></returns>
-        public static StructuralFraming BeamByCurve(Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol familyType)
+        public static StructuralFraming BeamByCurve(Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol structuralFramingType)
         {
             if (curve == null)
             {
@@ -290,12 +290,12 @@ namespace Revit.Elements
                 throw new System.ArgumentNullException("level");
             }
 
-            if (familyType == null)
+            if (structuralFramingType == null)
             {
                 throw new System.ArgumentNullException("familyType");
-            }  
-  
-            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Beam, familyType.InternalFamilySymbol);
+            }
+
+            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Beam, structuralFramingType.InternalFamilySymbol);
         }
 
         /// <summary>
@@ -303,9 +303,9 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curve">The cruve which defines the center line of the brace.</param>
         /// <param name="level">The level with which you'd like the brace to be associated.</param>
-        /// <param name="familyType">The family type representing the brace.</param>
+        /// <param name="structuralFramingType">The structural framing type representing the brace.</param>
         /// <returns></returns>
-        public static StructuralFraming BraceByCurve(Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol familyType)
+        public static StructuralFraming BraceByCurve(Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol structuralFramingType)
         {
             if (curve == null)
             {
@@ -317,12 +317,12 @@ namespace Revit.Elements
                 throw new System.ArgumentNullException("level");
             }
 
-            if (familyType == null)
+            if (structuralFramingType == null)
             {
                 throw new System.ArgumentNullException("familyType");
             }
 
-            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Brace, familyType.InternalFamilySymbol);
+            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Brace, structuralFramingType.InternalFamilySymbol);
         }
 
         /// <summary>
@@ -330,10 +330,10 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curve">The curve which defines the center line of the column.</param>
         /// <param name="level">The level with which you'd like the column to be associated.</param>
-        /// <param name="familyType">The family type representing the column.</param>
+        /// <param name="structuralColumnType">The structural column type representing the column.</param>
         /// <returns></returns>
         public static StructuralFraming ColumnByCurve(
-            Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol familyType)
+            Autodesk.DesignScript.Geometry.Curve curve, Revit.Elements.Level level, Revit.Elements.FamilySymbol structuralColumnType)
         {
             if (curve == null)
             {
@@ -345,9 +345,9 @@ namespace Revit.Elements
                 throw new System.ArgumentNullException("level");
             }
 
-            if (familyType == null)
+            if (structuralColumnType == null)
             {
-                throw new System.ArgumentNullException("familyType");
+                throw new System.ArgumentNullException("structuralColumnType");
             }
 
             var start = curve.PointAtParameter(0);
@@ -360,7 +360,7 @@ namespace Revit.Elements
                 throw new Exception("The end of the curve for creating a column should be above the start of the curve.");
             }
 
-            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Column, familyType.InternalFamilySymbol);
+            return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Column, structuralColumnType.InternalFamilySymbol);
         }
 
         #endregion
