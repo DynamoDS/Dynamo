@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using RTF.Framework;
 
@@ -16,6 +11,10 @@ namespace Dynamo.Tests
         public void StructuralFraming_Beam()
         {
             OpenAndRun(@".\StructuralFraming\Beam.dyn");
+
+            // Change type of elements
+
+            // Change number of elements
         }
 
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
