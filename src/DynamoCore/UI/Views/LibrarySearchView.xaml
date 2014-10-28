@@ -253,8 +253,6 @@
                     Value="Transparent" />
             <Setter Property="Height"
                     Value="40" />
-            <Setter Property="Background"
-                    Value="#444444" />
             <Setter Property="Focusable"
                     Value="False" />
 
@@ -268,8 +266,17 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
+
+            <Style.Triggers>
+                <Trigger Property="IsSelected"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#444444" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!--Style for every member in found MemberGroup-->
@@ -515,16 +522,14 @@
                     <StackPanel.Visibility>
                         <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
                     </StackPanel.Visibility>
-                    <TextBlock Text="{Binding Name}"
-                               Margin="16,8,0,8"
-                               Foreground="#989898"
-                               FontSize="12" />
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
                              BorderBrush="Transparent"
                              ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ItemsSource="{Binding Members}">
+                             ItemsSource="{Binding Members}"
+                             SelectedIndex="0"
+                             GotFocus="OnTopResultGotFocus">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
@@ -533,6 +538,12 @@
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.Style>
+                            <Style TargetType="{x:Type ListBox}">
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
+                            </Style>
+                        </ListBox.Style>
                     </ListBox>
                 </StackPanel>
                 <ListView Name="CategoryListView"

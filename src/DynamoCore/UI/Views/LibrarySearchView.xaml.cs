@@ -346,6 +346,10 @@ namespace Dynamo.UI.Views
             // that means we have to move to first class/method button.
             if (e.Key == Key.Down)
             {
+                //Unselect top result.
+                var topResultElement = e.OriginalSource as ListBox;
+                topResultElement.UnselectAll();
+
                 var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
                 var firstCategoryContent = firstCategory.Content as SearchCategory;
                 // If classes presented, set focus on the first class button.
@@ -378,6 +382,13 @@ namespace Dynamo.UI.Views
                 return generator.ContainerFromIndex(index) as ListBoxItem;
 
             return null;
+        }
+
+        // Everytime, when top result gets focus, we have to select one first item.
+        private void OnTopResultGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is ListBox)
+                (sender as ListBox).SelectedIndex = 0;
         }
 
         #endregion
