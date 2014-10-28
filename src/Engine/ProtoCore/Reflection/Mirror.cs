@@ -982,7 +982,7 @@ namespace ProtoCore
                 sb.AppendLine(methodName + returnType + " (" + 
                     string.Join(", ", argList.Select(p => p.ToString())) + ')');
 
-                return sb.ToString();
+                return sb.ToString().Trim();
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using ICSharpCode.AvalonEdit.CodeCompletion;
+﻿using Dynamo.DSEngine.CodeCompletion;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ProtoCore.Mirror;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 
-namespace Dynamo.Nodes
+namespace Dynamo.UI
 {
     /// <summary>
     /// This class represents the tooltip for completion of function signatures
@@ -218,14 +219,17 @@ namespace Dynamo.Nodes
     /// </summary>
     sealed class CodeBlockInsightItem : INotifyPropertyChanged
     {
-        public readonly MethodMirror Method;
+        //public readonly MethodMirror Method;
+        public readonly string Signature;
 
+        public readonly string MethodName;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public CodeBlockInsightItem(MethodMirror method)
+        public CodeBlockInsightItem(CompletionData completionData)
         {
-            this.Method = method;
+            this.Signature = completionData.Stub;
+            this.MethodName = completionData.Text;
         }
 
         string header;
@@ -235,7 +239,7 @@ namespace Dynamo.Nodes
             {
                 if (header == null)
                 {
-                    header = Method.ToString();
+                    header = Signature;
                     OnPropertyChanged("Header");
                 }
                 return header;
