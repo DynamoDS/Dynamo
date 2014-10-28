@@ -1,6 +1,19 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Linq;
+
+using Autodesk.Revit.DB;
+
+using DSRevitNodesUI;
+
+using Dynamo.Nodes;
+
+using NUnit.Framework;
+
+using RevitServices.Persistence;
 
 using RTF.Framework;
+
+using FamilySymbol = Revit.Elements.FamilySymbol;
 
 namespace Dynamo.Tests
 {
@@ -12,21 +25,73 @@ namespace Dynamo.Tests
         {
             OpenAndRun(@".\StructuralFraming\Beam.dyn");
 
-            // Change type of elements
-
-            // Change number of elements
+            CompareStructuralTypeAgainstElements<StructuralFramingTypes>();
+            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
         }
 
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
         public void StructuralFraming_Brace()
         {
             OpenAndRun(@".\StructuralFraming\Brace.dyn");
+
+            CompareStructuralTypeAgainstElements<StructuralFramingTypes>();
+            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
         }
 
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
         public void StructuralFraming_Column()
         {
             OpenAndRun(@".\StructuralFraming\Column.dyn");
+
+            CompareStructuralTypeAgainstElements<StructuralColumnTypes>();
+            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralColumns);
+        }
+
+        private void CompareStructuralTypeAgainstElements<T>() where T : AllElementsInBuiltInCategory
+        {
+            AssertTypeAndCountWhenSelectingFromDropDown<T>(0);
+            AssertTypeAndCountWhenSelectingFromDropDown<T>(1);
+        }
+
+        private void AssertTypeAndCountWhenSelectingFromDropDown<T>(int selectedIndex)
+            where T : AllElementsInBuiltInCategory
+        {
+            var slider = ViewModel.Model.AllNodes.FirstOrDefault(x => x is IntegerSlider) as IntegerSlider;
+
+            var typeSelector = ViewModel.Model.AllNodes.FirstOrDefault(x => x is T) as RevitDropDownBase;
+            typeSelector.SelectedIndex = selectedIndex;
+
+            RunCurrentModel();
+
+            var dynamoSymbol = typeSelector.GetValue(0).Data as FamilySymbol;
+            var revitSymbol = dynamoSymbol.InternalElement;
+
+            Console.WriteLine("Family type is now set to {0}", revitSymbol);
+
+            var symbolFilter = new FamilyInstanceFilter(
+                DocumentManager.Instance.CurrentDBDocument,
+                revitSymbol.Id);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.WherePasses(symbolFilter);
+
+            Assert.Equals(fec.ToElements().Count, slider.Value);
+        }
+
+        private void CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory cat)
+        {
+            var slider = ViewModel.Model.AllNodes.FirstOrDefault(x => x is IntegerSlider) as IntegerSlider;
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfCategory(cat);
+
+            Assert.AreEqual(slider.Value, fec.ToElements().Count);
+
+            slider.Value = 5;
+            RunCurrentModel();
+
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfCategory(BuiltInCategory.OST_StructuralFraming);
+
+            Assert.AreEqual(slider.Value, fec.ToElements().Count);
         }
     }
 }
