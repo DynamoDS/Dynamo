@@ -30,6 +30,7 @@ namespace Dynamo.DSEngine
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
+        private readonly CodeCompletionServices codeCompletionServices; 
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
@@ -58,6 +59,8 @@ namespace Dynamo.DSEngine
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
@@ -128,6 +131,11 @@ namespace Dynamo.DSEngine
         public LibraryServices LibraryServices
         {
             get { return libraryServices; }
+        }
+
+        public CodeCompletionServices CodeCompletionServices
+        {
+            get { return codeCompletionServices; }
         }
 
         #region Value queries
