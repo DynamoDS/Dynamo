@@ -623,9 +623,12 @@ namespace Dynamo.Models
                         // Record execution time for update graph task.
                         long start = e.Task.ExecutionStartTime.TickCount;
                         long end = e.Task.ExecutionEndTime.TickCount;
-                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
-                            e.Task.GetType().Name, new TimeSpan(end - start));
+                        var executionTimeSpan = new TimeSpan(end - start);
 
+                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                            e.Task.GetType().Name, executionTimeSpan);
+
+                        Logger.Log("Evaluation completed in " + executionTimeSpan);
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
