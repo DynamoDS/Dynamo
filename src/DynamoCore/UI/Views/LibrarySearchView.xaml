@@ -631,6 +631,18 @@
                                                                     Value="#404040" />
                                                         </MultiTrigger.Setters>
                                                     </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected"
+                                                                       Value="False" />
+                                                            <Condition Property="IsFocused"
+                                                                       Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter Property="Background"
+                                                                    Value="#404040" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ListView.ItemContainerStyle>
