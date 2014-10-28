@@ -104,6 +104,7 @@
     <Compile Include="ModelTextTests.cs" />
     <Compile Include="ReferenceCurveTests.cs" />
     <Compile Include="SelectionTests.cs" />
+    <Compile Include="StructuralFramingTests.cs" />
     <Compile Include="TopographyTests.cs" />
     <Compile Include="TransformTest.cs" />
     <Compile Include="XYZTests.cs" />
