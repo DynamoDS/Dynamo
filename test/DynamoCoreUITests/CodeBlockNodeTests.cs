@@ -322,8 +322,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestCtorSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -359,8 +358,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -398,8 +396,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureReturnTypeCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -431,6 +428,7 @@ namespace DynamoCoreUITests
             }
             Assert.AreEqual(1, overloads.ElementAt(0).Method.ArgumentList.Count());
             Assert.AreEqual("ValueContainer", overloads.ElementAt(0).Method.ArgumentList.ElementAt(0).Value);
+
             Assert.AreEqual("ValueContainer[]",
                 overloads.ElementAt(0).Method.ReturnType.ToString().Split('.').Last());
         }
@@ -464,8 +462,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestStaticMethodSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -497,5 +494,60 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, overloads.ElementAt(0).Method.ArgumentList.Count());
             Assert.AreEqual("int", overloads.ElementAt(0).Method.ReturnType.ToString());
         }
+
+        [Test]
+        [Category("UnitTests"), Category("Failure")]
+        public void TestCompletionWhenTyping()
+        {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
+            // Note this test may fail if another library with class names
+            // beginning with "poi" is imported by default or if there is a change
+            // to the classes "ProtoGeometry" or "FFITarget" libraries
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(libraryLoaded);
+            }
+
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "Poi";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(5, completions.Count());
+
+            string[] expected = {"Autodesk.DesignScript.Geometry.Point", "FFITarget.DesignScript.Point",
+                                    "FFITarget.Dynamo.Point", "DummyPoint", "UnknownPoint"};
+            var actual = completions.Select(x => x.Text);
+            
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests"), Category("Failure")]
+        public void TestMethodKeywordCompletionWhenTyping()
+        {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
+            var cbnEditor = new CodeBlockEditor(ViewModel);
+            string code = "im";
+            var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(4, completions.Count());
+
+            string[] expected = {"Imperative", "MinimumItemByKey",
+                                    "MaximumItemByKey", "ImportFromCSV"};
+            var actual = completions.Select(x => x.Text);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }

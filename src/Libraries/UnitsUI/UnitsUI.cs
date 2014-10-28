@@ -6,6 +6,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+
+using DSCore;
+
+using DSCoreNodesUI;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -183,7 +188,7 @@ namespace UnitsUI
                     if (child.Attributes != null && child.Attributes.Count > 0)
                     {
                         var valueAttrib = child.Attributes["value"];
-                        valueAttrib.Value = (double.Parse(valueAttrib.Value) / SIUnit.ToFoot).ToString(CultureInfo.InvariantCulture);
+                        valueAttrib.Value = (double.Parse(valueAttrib.Value) / Length.ToFoot).ToString(CultureInfo.InvariantCulture);
                     }
                 }
             }
@@ -237,6 +242,24 @@ namespace UnitsUI
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
             var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDouble), new List<AssociativeNode> { doubleNode });
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
+    }
+
+    [NodeName("Unit Types")]
+    [NodeCategory("Units")]
+    [NodeDescription("Select a unit of measurement.")]
+    [NodeSearchTags("units")]
+    [IsDesignScriptCompatible]
+    public class UnitTypes : AllChildrenOfType<SIUnit>
+    {
+        public UnitTypes(WorkspaceModel workspace) : base(workspace) { }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
+            var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
+            var functionCall = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }

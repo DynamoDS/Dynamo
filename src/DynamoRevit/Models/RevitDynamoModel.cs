@@ -95,6 +95,16 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        /// <summary>
+        /// This call is made during start-up sequence after RevitDynamoModel 
+        /// constructor returned. Virtual methods on DynamoModel that perform 
+        /// initialization steps should only be called from here.
+        /// </summary>
+        internal void HandlePostInitialization()
+        {
+            InitializeMaterials(); // Initialize materials for preview.
+        }
+
         private bool setupPython;
         private void SetupPython()
         {
@@ -131,21 +141,22 @@ namespace Dynamo.Applications.Models
             }
         }
 
+        private void InitializeMaterials()
+        {
+            // Does nothing: MaterialsManager is Revit 2015 specific.
+        }
+
         #endregion
 
         #region Event subscribe/unsubscribe
 
         private void SubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
         }
 
@@ -250,7 +261,7 @@ namespace Dynamo.Applications.Models
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
         }
@@ -368,6 +379,7 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
+                InitializeMaterials();
                 this.RunEnabled = true;
             }
         }
@@ -387,7 +399,7 @@ namespace Dynamo.Applications.Models
         private void ResetForNewDocument()
         {
             foreach (var node in this.Nodes)
-                node.ResetOldValue();
+                node.RequiresRecalc = true;
 
             foreach (var node in this.Nodes)
             {

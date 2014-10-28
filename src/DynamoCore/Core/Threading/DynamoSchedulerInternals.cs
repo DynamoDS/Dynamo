@@ -8,6 +8,8 @@ using Dynamo.Interfaces;
 
 namespace Dynamo.Core.Threading
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
     partial class DynamoScheduler
     {
         #region Private Class Data Members
@@ -32,10 +34,34 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
-        private void CompactTaskQueue()
+        private void NotifyTaskStateChanged(AsyncTask task, TaskState state)
         {
+            var stateChangedHandler = TaskStateChanged;
+            if (stateChangedHandler == null)
+                return; // No event handler, bail.
+
+            var e = new TaskStateChangedEventArgs(task, state);
+            stateChangedHandler(this, e);
+        }
+
+        /// <summary>
+        /// This method is called when ISchedulerThread calls ProcessNextTask 
+        /// method to process next available task in queue. It is only called 
+        /// if the task queue was updated (one or more AsyncTask scheduled)
+        /// before ISchedulerThread picks up the next task.
+        /// </summary>
+        /// <returns>Returns a list of AsyncTask objects that were dropped, if
+        /// any, during task queue compact. The return list can be empty but it 
+        /// will never be null.
+        /// </returns>
+        /// 
+        private IEnumerable<AsyncTask> CompactTaskQueue()
+        {
+            // This list keeps track of tasks before they are removed.
+            var droppedTasks = new List<AsyncTask>();
+
             if (taskQueue.Count < 2) // Cannot compact further.
-                return;
+                return droppedTasks;
 
             // Go through all the items in list, comparing each of them 
             // with others that followed (cross checking each pair in list).
@@ -54,6 +80,7 @@ namespace Dynamo.Core.Threading
                             break; // Do nothing here.
 
                         case AsyncTask.TaskMergeInstruction.KeepThis:
+                            droppedTasks.Add(taskQueue[index]);
                             taskQueue.RemoveAt(index);
                             break; // Keep the base task.
 
@@ -65,10 +92,13 @@ namespace Dynamo.Core.Threading
 
                 if (removeBaseTask)
                 {
+                    droppedTasks.Add(taskQueue[start]);
                     taskQueue.RemoveAt(start);
                     start = start - 1;
                 }
             }
+
+            return droppedTasks;
         }
 
         private void ReprioritizeTasksInQueue()
@@ -83,23 +113,24 @@ namespace Dynamo.Core.Threading
             // 
             var temp = taskQueue.ToList(); // Duplicate the source list.
             taskQueue.Clear(); // Then it's safe to clear the source list.
-            taskQueue.AddRange(temp.OrderBy(t => t, new AsyncTaskComparer()));
+
+            // First sort tasks by AsyncTask.Priority property, then sort them 
+            // by calling AsyncTask.Compare method for relative importance.
+            taskQueue.AddRange(temp.OrderBy(t => t.Priority)
+                .ThenBy(t => t, new AsyncTaskComparer()));
         }
 
-        private static void ProcessTaskInternal(AsyncTask asyncTask)
+        private void ProcessTaskInternal(AsyncTask asyncTask)
         {
-            try
-            {
-                asyncTask.Execute(); // Internally sets the ExecutionStartTime
-                asyncTask.HandleTaskCompletion(null); // Completed successfully.
-            }
-            catch (Exception exception)
-            {
-                // HandleTaskCompletion internally sets the ExecutionEndTime time,
-                // it also invokes the registered callback Action if there is one.
-                // 
-                asyncTask.HandleTaskCompletion(exception);
-            }
+            NotifyTaskStateChanged(asyncTask, TaskState.ExecutionStarting);
+
+            var executionState = asyncTask.Execute()
+                ? TaskState.ExecutionCompleted
+                : TaskState.ExecutionFailed;
+
+            NotifyTaskStateChanged(asyncTask, executionState);
+            asyncTask.HandleTaskCompletion();
+            NotifyTaskStateChanged(asyncTask, TaskState.CompletionHandled);
         }
 
         #endregion

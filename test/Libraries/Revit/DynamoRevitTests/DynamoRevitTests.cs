@@ -143,7 +143,7 @@ namespace Dynamo.Tests
                 // Because the test framework does not work in the idle thread. 
                 // We need to trick Dynamo into believing that it's in the idle
                 // thread already.
-                //IdlePromise.InIdleThread = true;
+                IdlePromise.InIdleThread = true;
             }
             catch (Exception ex)
             {

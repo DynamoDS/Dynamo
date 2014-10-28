@@ -28,7 +28,6 @@ namespace ProtoTest.LiveRunner
         [SetUp]
         public void Setup()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "ProtoGeometry.dll" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
         }
@@ -36,7 +35,6 @@ namespace ProtoTest.LiveRunner
         [TearDown]
         public void CleanUp()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
         }
 
         [Test]
@@ -773,8 +771,7 @@ namespace ProtoTest.LiveRunner
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
@@ -1964,8 +1961,6 @@ r = Equals(x, {41, 42});
         [Test]
         public void TestFunctionObjectInApply()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "FunctionObject.ds" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
