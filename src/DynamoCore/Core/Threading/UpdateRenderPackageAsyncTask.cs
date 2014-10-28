@@ -52,6 +52,11 @@ namespace Dynamo.Core.Threading
             get { return renderPackages; }
         }
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         #endregion
 
         #region Public Class Operational Methods
@@ -95,11 +100,6 @@ namespace Dynamo.Core.Threading
         #endregion
 
         #region Protected Overridable Methods
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.Normal;
-        }
 
         protected override void ExecuteCore()
         {

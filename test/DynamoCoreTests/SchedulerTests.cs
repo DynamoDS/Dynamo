@@ -67,6 +67,11 @@ namespace Dynamo
     {
         private List<string> results;
 
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         internal SampleAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
@@ -81,11 +86,6 @@ namespace Dynamo
         {
             if (results != null)
                 results.Add(result);
-        }
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.Normal;
         }
 
         protected override void ExecuteCore()
@@ -107,6 +107,11 @@ namespace Dynamo
     {
         internal int CurrPriority { get; private set; }
 
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
+
         internal PrioritizedAsyncTask(DynamoScheduler scheduler, int priority)
             : base(scheduler)
         {
@@ -116,11 +121,6 @@ namespace Dynamo
         public override string ToString()
         {
             return "PrioritizedAsyncTask: " + CurrPriority;
-        }
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.AboveNormal;
         }
 
         protected override void ExecuteCore()
@@ -154,6 +154,11 @@ namespace Dynamo
     {
         internal int Punch { get; private set; }
 
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.BelowNormal; }
+        }
+
         internal InconsequentialAsyncTask(DynamoScheduler scheduler, int punch)
             : base(scheduler)
         {
@@ -163,11 +168,6 @@ namespace Dynamo
         public override string ToString()
         {
             return "InconsequentialAsyncTask: " + Punch;
-        }
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.BelowNormal;
         }
 
         protected override void ExecuteCore()
@@ -210,15 +210,16 @@ namespace Dynamo
     {
         internal int Value { get; private set; }
 
+        override internal TaskPriority Priority
+        {
+            // Same as PrioritizedAsyncTask.
+            get { return TaskPriority.AboveNormal; }
+        }
+
         internal ErrorProneAsyncTask(DynamoScheduler scheduler, int value)
             : base(scheduler)
         {
             Value = value;
-        }
-
-        protected override TaskPriority GetPriorityCore()
-        {
-            return TaskPriority.AboveNormal; // Same as PrioritizedAsyncTask.
         }
 
         public override string ToString()
@@ -256,7 +257,7 @@ namespace Dynamo
 
     #region Built-in AsyncTask Test Classes
 
-    class ExtensionData
+    class FakeAsyncTaskData
     {
         private static int currentSerialNumber = 0;
         private readonly int serialNumber;
@@ -269,7 +270,7 @@ namespace Dynamo
             currentSerialNumber = 0;
         }
 
-        internal ExtensionData()
+        internal FakeAsyncTaskData()
         {
             serialNumber = currentSerialNumber++;
         }
@@ -281,11 +282,11 @@ namespace Dynamo
         }
     }
 
-    internal class AggregateRenderPackageAsyncTaskExt : AggregateRenderPackageAsyncTask
+    internal class FakeAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal AggregateRenderPackageAsyncTaskExt(ExtensionData data)
+        internal FakeAggregateRenderPackageAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -297,11 +298,11 @@ namespace Dynamo
         }
     }
 
-    internal class CompileCustomNodeAsyncTaskExt : CompileCustomNodeAsyncTask
+    internal class FakeCompileCustomNodeAsyncTask : CompileCustomNodeAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal CompileCustomNodeAsyncTaskExt(ExtensionData data)
+        internal FakeCompileCustomNodeAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -313,11 +314,11 @@ namespace Dynamo
         }
     }
 
-    internal class DelegateBasedAsyncTaskExt : DelegateBasedAsyncTask
+    internal class FakeDelegateBasedAsyncTask : DelegateBasedAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal DelegateBasedAsyncTaskExt(ExtensionData data)
+        internal FakeDelegateBasedAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -329,11 +330,11 @@ namespace Dynamo
         }
     }
 
-    internal class NotifyRenderPackagesReadyAsyncTaskExt : NotifyRenderPackagesReadyAsyncTask
+    internal class FakeNotifyRenderPackagesReadyAsyncTask : NotifyRenderPackagesReadyAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal NotifyRenderPackagesReadyAsyncTaskExt(ExtensionData data)
+        internal FakeNotifyRenderPackagesReadyAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -345,11 +346,11 @@ namespace Dynamo
         }
     }
 
-    internal class SetTraceDataAsyncTaskExt : SetTraceDataAsyncTask
+    internal class FakeSetTraceDataAsyncTask : SetTraceDataAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal SetTraceDataAsyncTaskExt(ExtensionData data)
+        internal FakeSetTraceDataAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -361,11 +362,11 @@ namespace Dynamo
         }
     }
 
-    internal class UpdateGraphAsyncTaskExt : UpdateGraphAsyncTask
+    internal class FakeUpdateGraphAsyncTask : UpdateGraphAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal UpdateGraphAsyncTaskExt(ExtensionData data)
+        internal FakeUpdateGraphAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -382,11 +383,11 @@ namespace Dynamo
         }
     }
 
-    internal class UpdateRenderPackageAsyncTaskExt : UpdateRenderPackageAsyncTask
+    internal class FakeUpdateRenderPackageAsyncTask : UpdateRenderPackageAsyncTask
     {
-        private readonly ExtensionData data;
+        private readonly FakeAsyncTaskData data;
 
-        internal UpdateRenderPackageAsyncTaskExt(ExtensionData data)
+        internal FakeUpdateRenderPackageAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -927,13 +928,13 @@ namespace Dynamo
 
             var expected = new List<string>
             {
-                "UpdateGraphAsyncTaskExt: 5",
-                "UpdateGraphAsyncTaskExt: 8",
-                "UpdateRenderPackageAsyncTaskExt: 0",
-                "UpdateRenderPackageAsyncTaskExt: 6",
-                "UpdateRenderPackageAsyncTaskExt: 7",
-                "NotifyRenderPackagesReadyAsyncTaskExt: 9",
-                "AggregateRenderPackageAsyncTaskExt: 10",
+                "FakeUpdateGraphAsyncTask: 5",
+                "FakeUpdateGraphAsyncTask: 8",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeUpdateRenderPackageAsyncTask: 6",
+                "FakeUpdateRenderPackageAsyncTask: 7",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 9",
+                "FakeAggregateRenderPackageAsyncTask: 10",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -970,13 +971,13 @@ namespace Dynamo
 
             var expected = new List<string>
             {
-                "SetTraceDataAsyncTaskExt: 0",
-                "CompileCustomNodeAsyncTaskExt: 1",
-                "UpdateGraphAsyncTaskExt: 2",
-                "AggregateRenderPackageAsyncTaskExt: 3",
-                "DelegateBasedAsyncTaskExt: 4",
-                "NotifyRenderPackagesReadyAsyncTaskExt: 5",
-                "UpdateRenderPackageAsyncTaskExt: 6"
+                "FakeSetTraceDataAsyncTask: 0",
+                "FakeCompileCustomNodeAsyncTask: 1",
+                "FakeUpdateGraphAsyncTask: 2",
+                "FakeAggregateRenderPackageAsyncTask: 3",
+                "FakeDelegateBasedAsyncTask: 4",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 5",
+                "FakeUpdateRenderPackageAsyncTask: 6"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1013,13 +1014,13 @@ namespace Dynamo
 
             var expected = new List<string>
             {
-                "SetTraceDataAsyncTaskExt: 6",
-                "UpdateGraphAsyncTaskExt: 4",
-                "CompileCustomNodeAsyncTaskExt: 5",
-                "UpdateRenderPackageAsyncTaskExt: 0",
-                "NotifyRenderPackagesReadyAsyncTaskExt: 1",
-                "DelegateBasedAsyncTaskExt: 2",
-                "AggregateRenderPackageAsyncTaskExt: 3",
+                "FakeSetTraceDataAsyncTask: 6",
+                "FakeUpdateGraphAsyncTask: 4",
+                "FakeCompileCustomNodeAsyncTask: 5",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
+                "FakeDelegateBasedAsyncTask: 2",
+                "FakeAggregateRenderPackageAsyncTask: 3",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1040,7 +1041,7 @@ namespace Dynamo
             base.Init();
             StartDynamo();
 
-            ExtensionData.ResetSerialNumber();
+            FakeAsyncTaskData.ResetSerialNumber();
             results = new List<string>();
         }
 
@@ -1093,45 +1094,45 @@ namespace Dynamo
 
         private AsyncTask MakeAggregateRenderPackageAsyncTask()
         {
-            return new AggregateRenderPackageAsyncTaskExt(MakeExtensionData());
+            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeCompileCustomNodeAsyncTask()
         {
-            return new CompileCustomNodeAsyncTaskExt(MakeExtensionData());
+            return new FakeCompileCustomNodeAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeDelegateBasedAsyncTask()
         {
-            return new DelegateBasedAsyncTaskExt(MakeExtensionData());
+            return new FakeDelegateBasedAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()
         {
-            return new NotifyRenderPackagesReadyAsyncTaskExt(MakeExtensionData());
+            return new FakeNotifyRenderPackagesReadyAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeSetTraceDataAsyncTask()
         {
-            return new SetTraceDataAsyncTaskExt(MakeExtensionData());
+            return new FakeSetTraceDataAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeUpdateGraphAsyncTask()
         {
-            return new UpdateGraphAsyncTaskExt(MakeExtensionData());
+            return new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeUpdateRenderPackageAsyncTask(Guid nodeGuid)
         {
-            return new UpdateRenderPackageAsyncTaskExt(MakeExtensionData())
+            return new FakeUpdateRenderPackageAsyncTask(MakeAsyncTaskData())
             {
                 NodeGuid = nodeGuid
             };
         }
 
-        private ExtensionData MakeExtensionData()
+        private FakeAsyncTaskData MakeAsyncTaskData()
         {
-            return new ExtensionData()
+            return new FakeAsyncTaskData()
             {
                 Scheduler = dynamoModel.Scheduler,
                 Results = results
