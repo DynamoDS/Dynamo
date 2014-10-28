@@ -626,11 +626,30 @@
                                              Name="MemberGroupsListBox">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Name}"
-                                                               Margin="16,8,0,8"
-                                                               Foreground="#989898"
-                                                               FontSize="12" />
+                                                <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
+                                                    <WrapPanel Orientation="Horizontal"
+                                                               Margin="16,8,0,8">
+                                                        <TextBlock Text="{Binding Prefix}"
+                                                                   Foreground="#989898"
+                                                                   FontSize="12"
+                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
+                                                        <TextBlock Text="{Binding GroupName}"
+                                                                   FontSize="12">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="{x:Type TextBlock}">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="#989898" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver"
+                                                                                 Value="true">
+                                                                            <Setter Property="Foreground"
+                                                                                    Value="#aaaaaa" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </WrapPanel>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"

@@ -293,7 +293,7 @@ namespace Dynamo.ViewModels
             var firstMemberGroup = Model.SearchRootCategories.First().
                 MemberGroups.First();
 
-            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.Name);
+            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
             topMemberGroup.AddMember(firstMemberGroup.Members.First());
 
             TopResult = topMemberGroup;

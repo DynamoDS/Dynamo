@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
 using Dynamo.Controls;
 using System.Linq;
+using System.Windows.Data;
 
 namespace Dynamo.UI.Views
 {
@@ -80,6 +81,26 @@ namespace Dynamo.UI.Views
 
             // Clear SearchText in ViewModel, as result search textbox clears as well.
             searchViewModel.SearchText = "";
+        }
+
+        private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(e.OriginalSource is TextBlock)) return;
+
+            var memberGroup = sender as FrameworkElement;
+            var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
+
+            // Show all members of this group.
+            memberGroupContext.ExpandAllMembers();
+
+            // Make textblock underlined.
+            var textBlock = e.OriginalSource as TextBlock;
+            textBlock.TextDecorations = TextDecorations.Underline;
+        }
+
+        private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
 
         #region ToolTip methods

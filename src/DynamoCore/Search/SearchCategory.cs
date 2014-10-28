@@ -38,7 +38,7 @@ namespace Dynamo.Search
                 memberNode.Group);
             string shortenedCategory = SearchViewModel.ShortenCategoryName(categoryWithGroup);
 
-            var group = memberGroups.FirstOrDefault(mg => mg.Name == shortenedCategory);
+            var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
             {
                 group = new SearchMemberGroup(shortenedCategory);
