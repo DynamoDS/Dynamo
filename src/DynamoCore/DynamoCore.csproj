@@ -193,6 +193,7 @@ limitations under the License.
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
+    <Compile Include="Search\CategoryBuilder.cs" />
     <Compile Include="Search\SearchCategory.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="PackageManager\PackageViewModel.cs" />
