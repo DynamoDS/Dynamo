@@ -50,6 +50,19 @@ namespace Dynamo.Tests
 
         private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
+            // Some test cases may create nodes or modify nodes, so when Dynamo
+            // is shutting down, Dynamo will fire RequestUserSaveWorkflow event 
+            // to save the change, if there is no a corresponding event handler, 
+            // or the event handler fails to save the change, shut down process 
+            // will be aborted and a lot of resource will not be released 
+            // (details refer to DynamoViewModel.PerformShutdownSequence()).
+            //
+            // As this test fixture is UIless, DynamoView, which implements 
+            // event handler for DynamoViewModel.RequestUserSaveWorkflow event, 
+            // won't be created. To ensure resource be released properly, we 
+            // implement event handler here and simply mark the save event's 
+            // susccess status to true to notify Dynamo to continue the shut
+            // down process.
             e.Success = true;
         }
 
