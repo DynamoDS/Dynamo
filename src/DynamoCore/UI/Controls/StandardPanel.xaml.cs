@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Controls
 {
@@ -207,6 +208,61 @@ namespace Dynamo.UI.Controls
             // affects tooltip placement) needs to make its' width longer. So, we use additional
             // property HorizontalScrollOffset.
             libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
+        }
+
+        // Main grid in "StandardPanel" contains of 2 lists: primary members and secondary members.
+        // When, these is no way to move inside one of these lists, main grid decides where focus
+        // should move next.
+        private void OnMainGridKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+
+            var focusedMemberButton = Keyboard.FocusedElement as ListBoxItem;
+            var focusedButtonContent = focusedMemberButton.Content as BrowserInternalElement;
+
+            bool hasPrimaryMembers = primaryMembers.Items.Count > 0;
+            bool hasSecondaryMembers = secondaryMembers.Items.Count > 0;
+
+            if (e.Key == Key.Down)
+            {
+                // If there is no secondary members, we stay at the bottom of StandardPanel.
+                if (!hasSecondaryMembers)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                // If focused element is already inside secondary members, that means we are at the last member.
+                // And there is no way to go further, so we stay here.
+                if (secondaryMembers.Items.Contains(focusedButtonContent))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                var generator = secondaryMembers.ItemContainerGenerator;
+                (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+                e.Handled = true;
+                return;
+            }
+
+            // Next code assumes, that Up key was pressed.
+
+            // We are at the first member of primary members, we have to move back to class button.
+            if (primaryMembers.Items.Contains(focusedButtonContent))
+                return;
+
+            // We are at the first member of secondary members, 
+            // we have to move to last member of primary members.
+            if (secondaryMembers.Items.Contains(focusedButtonContent) )
+            {
+                var generator = primaryMembers.ItemContainerGenerator;
+                (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
+                e.Handled = true;
+            }
+
+
         }
     }
 }

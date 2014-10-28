@@ -7,6 +7,7 @@ using Dynamo.Nodes.Search;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Controls
 {
@@ -19,6 +20,14 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+
+        // This index is used to keep track of the selection index before selection 
+        // changes. It is also used to guard against unnecessary "OrderListItems" 
+        // calls which repaints the UI. Here its value is set to "-2" to ensure that 
+        // "OrderListItems" method gets called at least once at the beginning (i.e. 
+        // when "ListView.SelectedIndex" is "-1", which would have avoided the first
+        // "OrderListItems" if "currentSelectedIndex" is set to "-1").
+        private int currentIndex = -2;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -34,10 +43,48 @@ namespace Dynamo.Controls
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var classButton = Keyboard.FocusedElement as FrameworkElement;
+            var classButton = Keyboard.FocusedElement as ListBoxItem;
+
+            // Enter collapses and expands class button.
+            if (e.Key == Key.Enter)
+            {
+                classButton.IsSelected = !classButton.IsSelected;
+                e.Handled = true;
+                return;
+            }
 
             var buttonsWrapPanel = sender as LibraryWrapPanel;
             var listButtons = buttonsWrapPanel.Children;
+
+            // If focused element is NodeSearchElement, that means focused element is inside expanded class.
+            // If user presses Up, we have to move back to selected class.
+            if (e.Key == Key.Up)
+            {
+                if (classButton.DataContext is NodeSearchElement)
+                {
+                    var selectedClassButton = listButtons.OfType<ListViewItem>().
+                        Where(button => button.IsSelected).FirstOrDefault();
+                    if (selectedClassButton != null) selectedClassButton.Focus();
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // If class is selected, we should move down to ClassDetails.
+            else if (e.Key == Key.Down)
+            {
+                if (classButton.IsSelected)
+                {
+                    int classInfoIndex = GetClassInformationIndex();
+                    var standardPanel = listButtons[classInfoIndex];
+                    var firstMemberList = WPF.FindChild<ListBox>(standardPanel, "primaryMembers");
+                    var generator = firstMemberList.ItemContainerGenerator;
+                    (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
+
+                    e.Handled = true;
+                    return;
+                }
+            }
 
             var selectedIndex = listButtons.IndexOf(classButton);
             int itemsPerRow = (int)Math.Floor(buttonsWrapPanel.ActualWidth / classButton.ActualWidth);
@@ -167,6 +214,15 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
+
+            // As focus moves within the class details, class button gets selected which 
+            // triggers a selection change. During a selection change the items in the 
+            // wrap panel gets reordered through "OrderListItems", but this is not always 
+            // necessary. Here we determine if the "ListView.SelectedIndex" is the same 
+            // as "currentSelectedIndex", if so simply returns to avoid a repainting.
+            if (currentIndex != index) currentIndex = index;
+            else return;
+
             int classInfoIndex = GetClassInformationIndex();
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'

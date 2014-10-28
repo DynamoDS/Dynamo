@@ -119,7 +119,8 @@
             <Binding Path="IsRootCategoryDetails"
                      Converter="{StaticResource BooleanToBrushConverter}" />
         </Border.Background>
-        <Grid DataContextChanged="GridDataContextChanged">
+        <Grid DataContextChanged="GridDataContextChanged"
+              KeyDown="OnMainGridKeyDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
