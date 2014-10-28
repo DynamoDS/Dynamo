@@ -83,6 +83,22 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
+        public void TestDuplicateFunctionParams()
+        {
+            string code = @"
+def test : int(a : int, a : int)
+{
+    return = a + a;
+}
+
+temp = test(1, 2);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.Inconclusive("Assert that an error is thrown when defining duplicate function params.");
+        }
+
+        [Test]
         public void TestFunctionsOverload01()
         {
             String code =
