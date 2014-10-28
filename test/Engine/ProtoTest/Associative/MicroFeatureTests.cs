@@ -95,6 +95,7 @@ def test : int(a : int, a : int)
 temp = test(1, 2);
 ";
             thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(1);
             thisTest.Verify("temp", null);
         }
 
