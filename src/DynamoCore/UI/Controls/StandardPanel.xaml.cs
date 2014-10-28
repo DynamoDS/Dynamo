@@ -69,12 +69,8 @@ namespace Dynamo.UI.Controls
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
 
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
-            if (searchElement != null)
-            {
-                searchElement.Execute();
-                e.Handled = true;
-            }
+            CreateNode(listBoxItem);
+            e.Handled = true;
 
             if (FocusItemOnSelection)
                 listBoxItem.Focus();
@@ -87,12 +83,15 @@ namespace Dynamo.UI.Controls
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
 
+            CreateNode(listBoxItem);
+            e.Handled = true;
+        }
+
+        private void CreateNode(ListBoxItem listBoxItem)
+        {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
-            {
                 searchElement.Execute();
-                e.Handled = true;
-            }
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)

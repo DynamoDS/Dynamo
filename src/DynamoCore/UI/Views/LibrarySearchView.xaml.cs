@@ -28,13 +28,8 @@ namespace Dynamo.UI.Views
         {
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
-
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
-            if (searchElement != null)
-            {
-                searchElement.Execute();
-                e.Handled = true;
-            }
+            CreateNode(listBoxItem);
+            e.Handled = true;
         }
 
         private void OnMemberButtonKeyDown(object sender, KeyEventArgs e)
@@ -50,12 +45,15 @@ namespace Dynamo.UI.Views
                 if (listBoxItem == null) return;
             }
 
+            CreateNode(listBoxItem);
+            e.Handled = true;
+        }
+
+        private void CreateNode(ListBoxItem listBoxItem)
+        {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
-            {
                 searchElement.Execute();
-                e.Handled = true;
-            }
         }
 
         #endregion
