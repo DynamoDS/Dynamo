@@ -598,6 +598,10 @@ namespace Dynamo.DSEngine
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
+            // The LiveRunner core is newly instantiated whenever a new library is imported
+            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
             foreach (var node in dynamoModel.HomeSpace.Nodes)
