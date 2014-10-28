@@ -7,6 +7,8 @@ using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes.Search;
 using Dynamo.Controls;
+using System.Linq;
+using System.Windows.Data;
 
 namespace Dynamo.UI.Views
 {
@@ -34,8 +36,6 @@ namespace Dynamo.UI.Views
                 e.Handled = true;
             }
 
-            // TODO: this focus setter should be removed in future.
-            // This item may get focus just by keyboard.
             listBoxItem.Focus();
         }
 
@@ -79,6 +79,26 @@ namespace Dynamo.UI.Views
 
             // Clear SearchText in ViewModel, as result search textbox clears as well.
             searchViewModel.SearchText = "";
+        }
+
+        private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(e.OriginalSource is TextBlock)) return;
+
+            var memberGroup = sender as FrameworkElement;
+            var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
+
+            // Show all members of this group.
+            memberGroupContext.ExpandAllMembers();
+
+            // Make textblock underlined.
+            var textBlock = e.OriginalSource as TextBlock;
+            textBlock.TextDecorations = TextDecorations.Underline;
+        }
+
+        private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
 
         #region ToolTip methods
@@ -146,9 +166,7 @@ namespace Dynamo.UI.Views
             if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > memberGroups.Count - 1)
                 return;
 
-            var generator = memberGroupListBox.ItemContainerGenerator;
-            var item = generator.ContainerFromIndex(nextFocusedMemberGroupIndex) as ListBoxItem;
-
+            var item = GetListItemByIndex(memberGroupListBox, nextFocusedMemberGroupIndex);
             var nextFocusedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
 
             // When moving on to the next member group list below (by pressing down arrow),
@@ -159,8 +177,7 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 itemIndex = nextFocusedMembers.Items.Count - 1;
 
-            generator = nextFocusedMembers.ItemContainerGenerator;
-            (generator.ContainerFromIndex(itemIndex) as ListBoxItem).Focus();
+            GetListItemByIndex(nextFocusedMembers, itemIndex).Focus();
 
             e.Handled = true;
         }
@@ -225,7 +242,6 @@ namespace Dynamo.UI.Views
             }
         }
 
-
         private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
         {
             var list = WPF.FindChild<ListBox>(parent, listName);
@@ -233,8 +249,138 @@ namespace Dynamo.UI.Views
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
 
-        #endregion
+        /// <summary>
+        /// 'CategoryListView' element contains the following child elements (either 
+        /// directly, or indirectly nested): 'StackPanel', 'SubCategoryListView',
+        /// 'MemberGroupsListBox' and 'MembersListBox'. If none of these child elements 
+        /// choose to process the key event, it gets bubbled up here. This typically 
+        /// happens for the following scenarios:
+        /// 
+        /// 1. Down key is pressed when selection is on last entry of 'MembersListBox'
+        /// 2. Up key is pressed when selection is on item on first row of 'SubCategoryListView'
+        /// 3. Up key is pressed when selection is on the first entry of 'MembersListBox'
+        ///    and there are no classes.
+        /// 
+        /// </summary>
+        private void OnCategoryKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
 
+            // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
+            var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+            var memberInFocusContext = memberInFocus.DataContext as BrowserInternalElement;
+            var categoryListView = sender as ListView;
+
+            int categoryIndex = 0;
+            for (int i = 0; i < categoryListView.Items.Count; i++)
+            {
+                var category = categoryListView.Items[i] as SearchCategory;
+                if (category.ContainsClassOrMember(memberInFocusContext))
+                {
+                    categoryIndex = i;
+                    break;
+                }
+            }
+
+            if (e.Key == Key.Down)
+                categoryIndex++;
+            if (e.Key == Key.Up)
+                categoryIndex--;
+
+            // The selection cannot be moved further up, returning here without handling the key event 
+            // so that parent visual element gets to handle it and move selection up to 'Top Result' list.
+            if (categoryIndex < 0) return;
+            // We are at the last member and there is no way to move down.
+            if (categoryIndex >= categoryListView.Items.Count)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            var nextFocusedCategory = GetListItemByIndex(categoryListView, categoryIndex);
+            var nextFocusedCategoryContent = nextFocusedCategory.Content as SearchCategory;
+
+            if (e.Key == Key.Up)
+            {
+                var memberGroupsList = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
+                var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
+                var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
+
+                // If key is up, then we have to select the last method button.
+                GetListItemByIndex(membersList, membersList.Items.Count - 1).Focus();
+            }
+            else // Otherwise, Down was pressed, and we have to select first class/method button.
+            {
+                if (nextFocusedCategoryContent.Classes.Count > 0)
+                {
+                    // If classes are presented, then focus on first class.
+                    FindFirstChildListItem(nextFocusedCategory, "SubCategoryListView").Focus();
+                }
+                else
+                {
+                    // If there are no classes, then focus on first method.
+                    var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                    FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
+                }
+            }
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// "MainGrid" contains both "topResultListBox" and "CategoryListView". When 
+        /// "KeyDown" event bubbles up to the level of "MainGrid", it will then decide 
+        /// on which element should the focus go (depending on the navigational key).
+        /// This typically happens during the following scenarios:
+        /// 
+        /// 1. Up/down key is pressed when focus in on "topResultListBox"
+        /// 2. Up key is pressed when focus is on first row of first category
+        /// </summary>
+        private void OnMainGridKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Key != Key.Down) && (e.Key != Key.Up))
+                return;
+            var librarySearchViewElement = sender as FrameworkElement;
+
+            // We are at the top result. If down was pressed, 
+            // that means we have to move to first class/method button.
+            if (e.Key == Key.Down)
+            {
+                var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+                var firstCategoryContent = firstCategory.Content as SearchCategory;
+                // If classes presented, set focus on the first class button.
+                if (firstCategoryContent.Classes.Count > 0)
+                {
+                    FindFirstChildListItem(firstCategory, "SubCategoryListView").Focus();
+                    e.Handled = true;
+                    return;
+                }
+
+                // Otherwise, set focus on the first method button.
+                var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
+                FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
+            }
+            else // Otherwise, Up was pressed. So, we have to move to top result.
+            {
+                var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+                topResult.Focus();
+            }
+
+            e.Handled = true;
+        }
+
+        private ListBoxItem GetListItemByIndex(ListBox parent, int index)
+        {
+            if (parent.Equals(null)) return null;
+
+            var generator = parent.ItemContainerGenerator;
+            if ((index >= 0) && (index < parent.Items.Count))
+                return generator.ContainerFromIndex(index) as ListBoxItem;
+
+            return null;
+        }
+
+        #endregion
 
     }
 }

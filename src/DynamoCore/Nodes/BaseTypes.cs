@@ -144,11 +144,15 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// This method returns a name for the icon based on type of this icon.
+        /// This method returns a name for the icon based on name of the node.
         /// </summary>
-        /// <param name="descriptor"></param>
-        /// <returns></returns>
-        public static string TypedParametersToString(FunctionDescriptor descriptor)
+        /// <param name="descriptor">Function descriptor, that contains all info about node.</param>
+        /// <param name="overridePrefix">
+        /// overridePrefix is used as default value for generating node icon name.
+        /// If overridePrefix is empty, it uses QualifiedName property.
+        /// e.g. Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin
+        /// </param>
+        public static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
         {
             var builder = new StringBuilder();
 
@@ -186,12 +190,9 @@ namespace Dynamo.Nodes
                 builder.Append(typeOfParameter);
             }
 
-            string overridePrefix = Nodes.Utilities.NormalizeAsResourceName(descriptor.QualifiedName);
-            // Case for nodes which have in name forbidden symbols e.g. %, <, >, etc.
-            // Should be used FunctionDescriptor.Name property instead.
-            // For example: we have DynamoUnits.SUnit.%, but we want to have DynamoUnits.SUnit.mod
-            if (overridePrefix != descriptor.QualifiedName)
-                overridePrefix += Nodes.Utilities.NormalizeAsResourceName(descriptor.Name);
+            // If the caller does not supply a prefix, use default logic to generate one.
+            if (string.IsNullOrEmpty(overridePrefix))
+                overridePrefix = NormalizeAsResourceName(descriptor.QualifiedName);
 
             return overridePrefix + "." + builder.ToString();
         }

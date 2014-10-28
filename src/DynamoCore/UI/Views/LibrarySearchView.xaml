@@ -143,6 +143,7 @@
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+        <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 
         <!--EndRegion-->
 
@@ -196,7 +197,7 @@
         <!-- This data template is used to show StandardPanel
                  for some selected subcategory. -->
         <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <uicontrols:StandardPanel>
+            <uicontrols:StandardPanel FocusItemOnSelection="True">
                 <uicontrols:StandardPanel.Width>
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -205,21 +206,41 @@
         </DataTemplate>
         <!-- This data template is used to show one member. -->
         <ControlTemplate x:Key="MemberControlTemplate">
-            <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Image HorizontalAlignment="Left"
                        Height="32"
                        Margin="16,0,16,0"
                        VerticalAlignment="Center"
                        Width="32"
                        Source="{Binding SmallIcon}" />
-
-                <TextBlock HorizontalAlignment="Left"
+                <Border Grid.Column="1"
+                        Margin="5,10,0,10">
+                    <Rectangle Fill="#3E464C"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch">
+                        <Rectangle.Margin>
+                            <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                <Binding ElementName="memberName" />
+                                <Binding Path="DataContext"
+                                         RelativeSource="{RelativeSource Mode=FindAncestor, 
+                                                                     AncestorType={x:Type UserControl}}" />
+                            </MultiBinding>
+                        </Rectangle.Margin>
+                    </Rectangle>
+                </Border>
+                <TextBlock Grid.Column="1"
+                           Name="memberName"
+                           HorizontalAlignment="Left"
                            Text="{Binding Name}"
                            VerticalAlignment="Top"
                            Margin="5,10,0,0"
                            Foreground="#CCCCCC"
                            FontSize="13" />
-            </StackPanel>
+            </Grid>
         </ControlTemplate>
         <!--EndRegion-->
 
@@ -234,6 +255,8 @@
                     Value="40" />
             <Setter Property="Background"
                     Value="#444444" />
+            <Setter Property="Focusable"
+                    Value="False" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -482,7 +505,7 @@
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource ScrollViewerControlTemplate}"
                       Style="{StaticResource ScrollLibraryViewerStyle}">
-            <Grid>
+            <Grid KeyDown="OnMainGridKeyDown">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -519,7 +542,8 @@
                           BorderThickness="0"
                           ItemsSource="{Binding Model.SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                          SelectionMode="Single">
+                          SelectionMode="Single"
+                          KeyDown="OnCategoryKeyDown">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Expander Header="{Binding Path=Name}"
@@ -539,7 +563,8 @@
                                               ScrollViewer.CanContentScroll="False"
                                               ScrollViewer.IsDeferredScrollingEnabled="False"
                                               ItemsSource="{Binding Path=Classes}"
-                                              Focusable="False">
+                                              Focusable="False"
+                                              SelectionMode="Single">
                                         <ListView.Visibility>
                                             <Binding Path="Classes.Count"
                                                      Converter="{StaticResource IntToVisibilityConverter}" />
@@ -622,11 +647,30 @@
                                              Name="MemberGroupsListBox">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Name}"
-                                                               Margin="16,8,0,8"
-                                                               Foreground="#989898"
-                                                               FontSize="12" />
+                                                <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
+                                                    <WrapPanel Orientation="Horizontal"
+                                                               Margin="16,8,0,8">
+                                                        <TextBlock Text="{Binding Prefix}"
+                                                                   Foreground="#989898"
+                                                                   FontSize="12"
+                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
+                                                        <TextBlock Text="{Binding GroupName}"
+                                                                   FontSize="12">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="{x:Type TextBlock}">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="#989898" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver"
+                                                                                 Value="true">
+                                                                            <Setter Property="Foreground"
+                                                                                    Value="#aaaaaa" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </WrapPanel>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"

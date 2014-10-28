@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DynamoUnitsImages.resx" />
+    <EmbeddedResource Include="RevitNodesImages.resx" />
+    <EmbeddedResource Include="DSRevitNodesUIImages.resx" />
     <EmbeddedResource Include="UnitsUIImages.resx" />
     <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="DynamoWatch3DImages.resx" />
@@ -79,6 +81,10 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.resources.dll" />
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.resources.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)RevitNodesImages.resx" OutputResources="$(ProjectDir)RevitNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)RevitNodesImages.resources" OutputAssembly="$(OutDir)RevitNodes.resources.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSRevitNodesUIImages.resx" OutputResources="$(ProjectDir)DSRevitNodesUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DSRevitNodesUIImages.resources" OutputAssembly="$(OutDir)DSRevitNodesUI.resources.dll" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.  

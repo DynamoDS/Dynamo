@@ -156,7 +156,7 @@ namespace Dynamo.Tests
         }
 
         #endregion
-
+#if false
         #region Obtaining Stored Categories
 
         [Test]
@@ -782,5 +782,6 @@ namespace Dynamo.Tests
         }
 
         #endregion
+#endif
     }
 }

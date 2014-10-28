@@ -38,7 +38,7 @@ namespace Dynamo.Search
                 memberNode.Group);
             string shortenedCategory = SearchViewModel.ShortenCategoryName(categoryWithGroup);
 
-            var group = memberGroups.FirstOrDefault(mg => mg.Name == shortenedCategory);
+            var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
             {
                 group = new SearchMemberGroup(shortenedCategory);
@@ -65,6 +65,15 @@ namespace Dynamo.Search
 
             if (!classes.Any(cl => cl.Name == parent.Name))
                 classes.Add(parent);
+        }
+
+        public bool ContainsClassOrMember(BrowserInternalElement member)
+        {
+            // Search among classes.
+            if (Classes.Any(cl => cl.Equals(member))) return true;
+
+            // Search among member groups.
+            return MemberGroups.Any(group => group.ContainsMember(member));
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)

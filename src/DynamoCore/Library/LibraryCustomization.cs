@@ -111,19 +111,19 @@ namespace Dynamo.DSEngine
 
     public class LibraryCustomization
     {
-        private XDocument XmlDocument;
+        private readonly XDocument xmlDocument;
 
         private Dictionary<string, BitmapSource> cachedIcons = 
             new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
-        private string assemblyName;
-        private Assembly resourceAssembly;
+        private readonly string assemblyName;
+        private readonly Assembly resourceAssembly;
 
         private const string imagesSuffix = "Images";
 
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {
-            this.XmlDocument = document;
+            this.xmlDocument = document;
             if (resAssembly != null)
             {
                 resourceAssembly = resAssembly;
@@ -135,8 +135,8 @@ namespace Dynamo.DSEngine
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
             object obj = String.Empty;
-            if (XmlDocument != null)
-                obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            if (xmlDocument != null)
+                obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
         }
 
@@ -145,15 +145,14 @@ namespace Dynamo.DSEngine
 
         internal BitmapSource LoadIconInternal(string iconKey)
         {
-            if (cachedIcons.ContainsKey(iconKey))
-                return cachedIcons[iconKey];
-
             if (resourceAssembly == null)
             {
                 cachedIcons.Add(iconKey, null);
                 return null;
             }
 
+            if (cachedIcons.ContainsKey(iconKey))
+                return cachedIcons[iconKey];
 
             ResourceManager rm = new ResourceManager(assemblyName + imagesSuffix, resourceAssembly);
 
