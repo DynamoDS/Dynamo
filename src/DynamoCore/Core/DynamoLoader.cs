@@ -96,6 +96,8 @@ namespace Dynamo.Utilities
                     continue;
 
                 //a comment
+                Console.WriteLine("Neal was here!");
+                Console.WriteLine("So was Steve.");
 
                 // if the assembly has already been loaded, then
                 // skip it, otherwise cache it.
