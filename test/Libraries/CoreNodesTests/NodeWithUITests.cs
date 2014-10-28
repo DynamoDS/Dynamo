@@ -34,5 +34,22 @@ namespace DSCoreNodesTests
                 10,
                 ((DoubleNode)((BinaryExpressionNode)buildOutput.First()).RightNode).Value);
         }
+
+        [Test]
+        public void SliderMaxValue()
+        {
+            var sliderNode = new DoubleSlider(null) { Value = 500 };
+            sliderNode.UpdateValue("Value", "1000");
+
+            Assert.AreEqual(
+                 1000,
+                 sliderNode.Max);
+
+            sliderNode.UpdateValue("Value", "-1");
+
+            Assert.AreEqual(
+                 -1,
+                 sliderNode.Min);
+        }
     }
 }
