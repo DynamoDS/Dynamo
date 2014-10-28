@@ -5,6 +5,9 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.UI.WebControls;
 
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -117,7 +120,7 @@ namespace Dynamo.PackageManager
         public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
         public ObservableCollection<Type> LoadedTypes { get; private set; }
-        public ObservableCollection<Assembly> LoadedAssemblies { get; private set; }
+        public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
         public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; private set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
@@ -132,7 +135,7 @@ namespace Dynamo.PackageManager
             this.Name = name;
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
-            this.LoadedAssemblies = new ObservableCollection<Assembly>();
+            this.LoadedAssemblies = new ObservableCollection<PackageAssembly>();
             this.LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
@@ -147,7 +150,7 @@ namespace Dynamo.PackageManager
             this.LoadedAssemblyNames.Clear();
             foreach (var ass in LoadedAssemblies)
             {
-                this.LoadedAssemblyNames.Add(ass.GetName());
+                this.LoadedAssemblyNames.Add(ass.Assembly.GetName());
             }
         }
 
@@ -239,13 +242,14 @@ namespace Dynamo.PackageManager
 
         private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
-            var assemblies = LoadAssembliesInBinDirectory(logger);
+            var assemblies = LoadAssembliesInBinDirectory();
 
             // filter the assemblies
             var zeroTouchAssemblies = new List<Assembly>();
             var nodeModelAssemblies = new List<Assembly>();
 
-            foreach (var assem in assemblies)
+            // categorize the assemblies to load, skipping the ones that are not identified as node libraries
+            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
             {
                 if (loader.ContainsNodeModelSubType(assem))
                 {
@@ -271,12 +275,18 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<Assembly> LoadAssembliesInBinDirectory(ILogger logger)
+        /// <summary>
+        /// Loads all possible assemblies in node library and returns the list of loaded node library assemblies
+        /// </summary>
+        /// <returns>The list of all node library assemblies</returns>
+        private IEnumerable<PackageAssembly> LoadAssembliesInBinDirectory()
         {
-            var assemblies = new List<Assembly>();
+            var assemblies = new List<PackageAssembly>();
 
             if (!Directory.Exists(BinaryDirectory))
                 return assemblies;
+
+            var nodeLibraries = this.EnumerateNodeLibraryNames();
 
             foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
@@ -284,12 +294,19 @@ namespace Dynamo.PackageManager
 
                 // dll files may be un-managed, skip those
                 var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
-                if (result) assemblies.Add(assem);
+                if (result)
+                {
+                    assemblies.Add(new PackageAssembly()
+                    {
+                        Assembly = assem,
+                        IsNodeLibrary = (nodeLibraries == null || nodeLibraries.Contains(assem.FullName))
+                    });
+                }
             }
 
             foreach (var assem in assemblies)
             {
-                this.LoadedAssemblies.Add(assem);
+                this.LoadedAssemblies.Add( assem );
             }
 
             return assemblies;
@@ -378,6 +395,57 @@ namespace Dynamo.PackageManager
                         .ToList()
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
+
+        /// <summary>
+        /// These are the assembly names that should be interpreted as node libraries and loaded at startup
+        /// </summary>
+        /// <returns>Null if the node libraries are not assigned, otherwise a list of assembly names, obtained from the FullName property of the loaded assembly</returns>
+        internal IEnumerable<string> EnumerateNodeLibraryNames()
+        {
+            return ParseNodeLibraryNames(this.Contents);
+        }
+
+        internal string SerializeNodeLibraryNames()
+        {
+            return
+                SerializeNodeLibraryNames(
+                    this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly));
+        }
+
+        internal static readonly string NodeLibraryKey = "|NodeLibraries(1665818F-5F18-4CE3-BB02-E9D90900C7F0)";
+        private static string escapedNodeLibraryKey;
+
+        internal static string SerializeNodeLibraryNames(IEnumerable<Assembly> nodeLibraryNames)
+        {
+            if (nodeLibraryNames == null) throw new ArgumentNullException("nodeLibraryNames");
+
+            // NodeLibraryDeclaration{Assembly.FullName;...;Assembly.FullName}
+            var sb = new StringBuilder();
+            sb.Append(NodeLibraryKey);
+            sb.Append("{");
+            sb.Append(String.Join(";", nodeLibraryNames.Select(x => x.FullName)));
+            sb.Append("}");
+            return sb.ToString();
+        } 
+
+        internal static string[] ParseNodeLibraryNames(string packageContentsString)
+        {
+            if (packageContentsString == null) return null;
+
+            // cache the escaped node library key
+            escapedNodeLibraryKey = escapedNodeLibraryKey ?? NodeLibraryKey.Replace("|", @"\|").Replace("(", @"\(").Replace(")", @"\)");
+
+            // do the match
+            var match = Regex.Match(packageContentsString, escapedNodeLibraryKey + @"\{(.*)\}");
+
+            // return null if nothing is found
+            if (!match.Success) return null;
+
+            var captures = match.Groups[1].Value;
+
+            // the assembly names are separated by semicolons
+            return captures.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        } 
 
     }
 }

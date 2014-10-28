@@ -249,7 +249,7 @@ namespace Dynamo.PackageManager
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle);
+                        var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle); 
 
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
