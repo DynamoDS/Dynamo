@@ -533,6 +533,7 @@ namespace Dynamo.ViewModels
 
         private void UnsubscribeModelChangedEvents()
         {
+            model.WorkspaceSaved -= ModelWorkspaceSaved;
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
