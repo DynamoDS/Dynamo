@@ -35,8 +35,27 @@ namespace Dynamo.UI.Views
                 searchElement.Execute();
                 e.Handled = true;
             }
+        }
 
-            listBoxItem.Focus();
+        private void OnMemberButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+
+            var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null)
+            {
+                // Case for top result.
+                // Top result can have just one selected item.
+                listBoxItem = GetListItemByIndex(sender as ListBox, 0);
+                if (listBoxItem == null) return;
+            }
+
+            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            if (searchElement != null)
+            {
+                searchElement.Execute();
+                e.Handled = true;
+            }
         }
 
         #endregion
