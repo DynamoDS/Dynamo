@@ -307,7 +307,7 @@ namespace Dynamo.Utilities
             loadedNodes.ForEach(x => searchModel.Add(x));
 
             // update search view
-            searchModel.OnRequestSync();
+            searchModel.OnLibraryUpdated();
 
             return loadedNodes;
         }
@@ -330,7 +330,7 @@ namespace Dynamo.Utilities
             loadedNodes.ForEach(x => searchModel.Add(x));
 
             // update search view
-            searchModel.OnRequestSync();
+            searchModel.OnLibraryUpdated();
 
             return loadedNodes;
         }

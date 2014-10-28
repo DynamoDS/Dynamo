@@ -543,7 +543,17 @@ namespace Dynamo.Models
             //IsReportingModifications = true;
         }
 
-        public virtual void Dispose() { }
+        public virtual void Dispose()
+        {
+            var handler = Disposed;
+            if (handler != null)
+                handler();
+        }
+
+        /// <summary>
+        ///     Fired when this NodeModel is disposed.
+        /// </summary>
+        public event Action Disposed;
 
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {

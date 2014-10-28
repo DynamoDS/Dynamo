@@ -21,14 +21,13 @@ namespace Dynamo.Search
         /// Can be invoked in order to signify that the UI should be updated after
         /// the search elements have been modified
         /// </summary>
-        public event EventHandler RequestSync;
-        public virtual void OnRequestSync(object sender = null, EventArgs e = null)
+        public event EventHandler LibraryUpdated;
+        protected virtual void OnLibraryUpdated()
         {
-            if (RequestSync != null)
-            {
-                RequestSync(sender ?? this, e ?? new EventArgs());
-            }
+            if (LibraryUpdated != null)
+                LibraryUpdated(this, EventArgs.Empty);
         }
+        //TODO(Steve): Invoke this internally inside of any modification methods.
 
         #endregion
 
@@ -137,7 +136,7 @@ namespace Dynamo.Search
                 ele.SetSearchable(!isCustomNodeWorkspace);
             }
 
-            if (updateSearch) OnRequestSync();
+            if (updateSearch) OnLibraryUpdated();
         }
 
         #endregion
@@ -636,6 +635,8 @@ namespace Dynamo.Search
 
             TryAddCategoryAndItem(nodeInfo.Category, nodeEle);
 
+            OnLibraryUpdated();
+
             return true;
         }
 
@@ -690,25 +691,18 @@ namespace Dynamo.Search
                 RemoveNode(nodeName);
                 RemoveEmptyCategory(node);
             }
-
         }
 
         /// <summary>
         /// Removes a node from search and all empty parent categories
         /// </summary>
-        /// <param name="nodeName">The name of the node</param>
         public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
-            var nodes = SearchElements
-                .Where(x => x is CustomNodeSearchElement)
-                .Cast<CustomNodeSearchElement>()
-                .Where(x => x.Guid == customNodeFunctionId)
-                .ToList();
+            var nodes =
+                SearchElements.OfType<CustomNodeSearchElement>().Where(x => x.Guid == customNodeFunctionId);
 
             if (!nodes.Any())
-            {
                 return;
-            }
 
             foreach (var node in nodes)
             {
@@ -716,12 +710,19 @@ namespace Dynamo.Search
                 RemoveEmptyCategory(node);
             }
 
+            OnLibraryUpdated();
         }
 
         #endregion
 
         #region Refactoring
 
+        /// <summary>
+        ///  TODO
+        /// </summary>
+        /// <param name="nodeInfo"></param>
+        /// <returns></returns>
+        //TODO(Steve): Remove all custom-node-specific stuff from Search.
         internal bool Refactor(CustomNodeInfo nodeInfo)
         {
             RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);

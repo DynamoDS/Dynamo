@@ -15,13 +15,11 @@ namespace Dynamo.Nodes
     /// </summary>
     public class CustomNodeController : FunctionCallNodeController<CustomNodeDefinition>
     {
-        private readonly CustomNodeManager customNodeManager;
         private bool watchingDefForChanges;
 
-        public CustomNodeController(CustomNodeManager manager, CustomNodeDefinition def)
+        public CustomNodeController(CustomNodeDefinition def)
             : base(def)
         {
-            customNodeManager = manager;
         }
 
         /// <summary>
@@ -145,6 +143,8 @@ namespace Dynamo.Nodes
 
         public override void LoadNode(XmlNode nodeElement)
         {
+            //TODO(Steve): Handle loading through custom node manager. First load definition, then dispatch to custom node instance for remainder of load.
+
             XmlNode idNode =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .LastOrDefault(subNode => subNode.Name.Equals("ID"));
@@ -163,7 +163,6 @@ namespace Dynamo.Nodes
 
             if (!VerifyFuncId(ref funcId, nickname))
                 LoadProxyCustomNode(funcId, nickname);
-            
             Definition = customNodeManager.GetFunctionDefinition(funcId);
         }
 

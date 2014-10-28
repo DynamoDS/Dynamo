@@ -160,7 +160,7 @@ namespace Dynamo.ViewModels
                 BrowserItemViewModel.Wrap(this.Model.AddRootCategoryToStart("Top Result")) as
                     BrowserRootElementViewModel;
             
-            this.Model.RequestSync += ModelOnRequestSync;
+            this.Model.LibraryUpdated += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
 
             this.Model.RemoveEmptyCategories();
@@ -209,7 +209,7 @@ namespace Dynamo.ViewModels
 
         ~SearchViewModel()
         {
-            this.Model.RequestSync -= this.ModelOnRequestSync;
+            this.Model.LibraryUpdated -= this.ModelOnRequestSync;
         }
 
         #endregion

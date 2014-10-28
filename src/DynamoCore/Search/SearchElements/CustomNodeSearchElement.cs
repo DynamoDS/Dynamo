@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -8,6 +8,8 @@ namespace Dynamo.Search.SearchElements
 {
     public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
     {
+        private readonly ICustomNodeSource nodeSource;
+
         public Guid Guid { get; internal set; }
 
         private string path;
@@ -25,13 +27,13 @@ namespace Dynamo.Search.SearchElements
 
         public override NodeModel GetSearchResult()
         {
-            throw new NotImplementedException(
-                "TODO(Steve): Implement custom node instantiation here.");
+            return nodeSource.NewInstance();
         }
 
-        public CustomNodeSearchElement(CustomNodeInfo info)
+        public CustomNodeSearchElement(CustomNodeInfo info, ICustomNodeSource nodeSource)
             : base(info.Name, info.Description, new List<string>())
         {
+            this.nodeSource = nodeSource;
             Node = null;
             FullCategoryName = info.Category;
             Guid = info.Guid;

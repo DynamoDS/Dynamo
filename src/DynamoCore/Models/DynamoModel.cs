@@ -603,7 +603,7 @@ namespace Dynamo.Models
             }
 
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            EngineController = new EngineController(this, geomFactory);
+            EngineController = new EngineController(geomFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
@@ -613,7 +613,7 @@ namespace Dynamo.Models
         [Obsolete("Running is now handled on HomeWorkspaceModel", true)]
         public void RunExpression()
         {
-            Runner.RunExpression(HomeSpace, EngineController, IsTestMode, Logger);
+            Runner.RunExpression(HomeSpace, EngineController, IsTestMode);
         }
 
         [Obsolete("Running is now handled on HomeWorksapceModel", true)]
@@ -726,6 +726,8 @@ namespace Dynamo.Models
             }
 
             var vm = Workspaces.First(x => x == ws);
+
+            //TODO(Steve): Do this on VM layer?
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
             CurrentWorkspace = ws;
@@ -803,7 +805,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Notes.Clear();
 
             CurrentWorkspace.ClearUndoRecorder();
-            currentWorkspace.ResetWorkspace();
+            CurrentWorkspace.ResetWorkspace();
 
             ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
@@ -850,6 +852,12 @@ namespace Dynamo.Models
 
         #region public methods
 
+        public void RemoveCustomNode(Guid guid)
+        {
+            CustomNodeManager.RemoveFromDynamo(guid);
+            SearchModel.RemoveNodeAndEmptyParentCategory(guid);
+        }
+
         /// <summary>
         ///     TODO
         /// </summary>
@@ -857,9 +865,7 @@ namespace Dynamo.Models
             Guid id, string name = null, string category = null, string description = null)
         {
             CustomNodeManager.Refactor(id, name, category, description);
-            SearchModel.RemoveNodeAndEmptyParentCategory(id);
-            SearchModel.Add(info); //TODO(Steve): Figure out a better way to implement
-            SearchModel.OnRequestSync();
+            SearchModel.Refactor();
         }
 
         [Obsolete("Remove concept of hiding workspaces alltogether", true)]

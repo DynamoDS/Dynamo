@@ -23,9 +23,9 @@ namespace Dynamo.Utilities
     /// <summary>
     /// A simple class to keep track of custom nodes.
     /// </summary>
-    public struct CustomNodeInfo
+    public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path) : this()
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
         {
             Guid = guid;
             Name = name;
@@ -42,7 +42,7 @@ namespace Dynamo.Utilities
     }
 
     public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
-
+    
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
@@ -50,7 +50,6 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeManager : LogSourceBase
     {
-
         #region Fields and properties
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace Dynamo.Utilities
         #endregion
 
         /// <summary>
-        ///     Class Constructor
+        ///     Constructs a new CustomNodeManager instance with the given definition search path.
         /// </summary>
         /// <param name="searchPath">The path to search for definitions</param>
         public CustomNodeManager(string searchPath)
@@ -86,6 +85,55 @@ namespace Dynamo.Utilities
             SearchPath = new ObservableCollection<string> { searchPath };
             NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
             AddDirectoryToSearchPath(DynamoPathManager.Instance.CommonDefinitions);
+        }
+
+        private class CustomNodeSource : ICustomNodeSource
+        {
+            private readonly CustomNodeManager manager;
+            private readonly Guid customNodeId;
+
+            public CustomNodeSource(CustomNodeManager manager, Guid customNodeId)
+            {
+                this.manager = manager;
+                this.customNodeId = customNodeId;
+            }
+
+            public NodeModel NewInstance()
+            {
+                return manager.CreateCustomNodeInstance(customNodeId);
+            }
+        }
+
+        /// <summary>
+        ///     Creates a new Custom Node Instance.
+        /// </summary>
+        /// <param name="id">Identifier referring to a custom node definition.</param>
+        public Function CreateCustomNodeInstance(Guid id)
+        {
+            CustomNodeDefinition def;
+            if (!GetDefinition(id, out def))
+            {
+                Log("Unable to create instance of custom node with id: \"" + id + "\"", WarningLevel.Error);
+                return null;   
+            }
+
+            var node = new Function(def);
+            Action<Guid, CustomNodeDefinition> defUpdatedHandler = (guid, definition) =>
+            {
+                if (guid == id)
+                    node.ResyncWithDefinition(definition);
+            };
+            DefinitionUpdated += defUpdatedHandler;
+            node.Disposed += () => { DefinitionUpdated -= defUpdatedHandler; };
+
+            return node;
+        }
+
+        public event Action<Guid, CustomNodeDefinition> DefinitionUpdated;
+        protected virtual void OnDefinitionUpdated(Guid arg1, CustomNodeDefinition arg2)
+        {
+            var handler = DefinitionUpdated;
+            if (handler != null) handler(arg1, arg2);
         }
 
         /// <summary> 
@@ -167,32 +215,13 @@ namespace Dynamo.Utilities
 
         } 
 
-        ///// <summary>
-        /////     Removes the custom nodes loaded from a particular folder.
-        ///// </summary>
-        ///// <param name="path"></param>
-        ///// <returns></returns>
-        //public bool RemoveTypesLoadedFromFolder(string path)
-        //{
-
-        //    var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
-        //    guidsToRemove.ToList().ForEach(RemoveFromDynamo);
-
-        //    return guidsToRemove.Any();
-
-        //}
-
-        public CustomNodeInfo Remove(Guid guid)
+        public void Remove(Guid guid)
         {
-            var nodeInfo = GetNodeInfo(guid);
-
             if (LoadedCustomNodes.Contains(guid))
                 LoadedCustomNodes.Remove(guid);
 
             if (NodeInfos.ContainsKey(guid))
                 NodeInfos.Remove(guid);
-
-            return nodeInfo;
         }
 
         /// <summary>
@@ -202,14 +231,7 @@ namespace Dynamo.Utilities
         //TODO(Steve): This belongs primarily on DynamoModel
         public void RemoveFromDynamo(Guid guid)
         {
-            var nodeInfo = Remove(guid);
-
-            // remove from search
-            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            dynamoModel.SearchModel.OnRequestSync();
-
-            // remove from fscheme environment
-            //dynamoModel.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+            Remove(guid);
         }
 
         /// <summary>
@@ -259,8 +281,6 @@ namespace Dynamo.Utilities
         /// Stores the path and function definition without initializing a node.  Overwrites
         /// the existing NodeInfo if necessary
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="path">The path for the node.</param>
         public void SetNodeInfo(CustomNodeInfo newInfo)
         {
             var nodeInfo = GetNodeInfo(newInfo.Guid);
@@ -277,7 +297,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Stores the path and function definition without initializing node
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="id">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
         public void SetNodePath(Guid id, string path)
         {
@@ -322,15 +342,8 @@ namespace Dynamo.Utilities
             {
                 return LoadedCustomNodes[id] as CustomNodeDefinition;
             }
-            else
-            {
-                CustomNodeDefinition def;
-                if (GetDefinitionFromPath(id, out def))
-                {
-                    return def;
-                }
-            }
-            return null;
+            CustomNodeDefinition def;
+            return GetDefinitionFromPath(id, out def) ? def : null;
         }
 
         /// <summary>
@@ -512,7 +525,6 @@ namespace Dynamo.Utilities
         /// <returns>Whether we successfully obtained the guid or not.  </returns>
         public bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category, out string description)
         {
-
             try
             {
                 var funName = "";
@@ -989,7 +1001,7 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        internal CustomNodeInfo? GetNodeInfo(Guid x)
+        internal CustomNodeInfo GetNodeInfo(Guid x)
         {
             CustomNodeInfo info;
             if (NodeInfos.TryGetValue(x, out info))
@@ -997,7 +1009,7 @@ namespace Dynamo.Utilities
             return null;
         }
 
-        internal CustomNodeInfo? GetNodeInfo(string name)
+        internal CustomNodeInfo GetNodeInfo(string name)
         {
             try
             {
@@ -1015,7 +1027,7 @@ namespace Dynamo.Utilities
         /// <returns> Returns false if it fails.</returns>
         public bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
         {
-            CustomNodeInfo? nodeInfo = GetNodeInfo(guid);
+            CustomNodeInfo nodeInfo = GetNodeInfo(guid);
 
             if (nodeInfo == null) return false;
 

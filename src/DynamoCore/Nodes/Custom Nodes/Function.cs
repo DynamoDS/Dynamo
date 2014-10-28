@@ -18,12 +18,10 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public partial class Function : FunctionCallBase<CustomNodeDefinition>
+    public class Function : FunctionCallBase<CustomNodeDefinition>
     {
-        public Function(CustomNodeManager manager) : this(manager, null) { }
-
-        protected internal Function(CustomNodeManager manager, CustomNodeDefinition def)
-            : base(new CustomNodeController(manager, def))
+        protected internal Function(CustomNodeDefinition def)
+            : base(new CustomNodeController(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
             Controller.DefinitionChanged += ResyncWithDefinition;
@@ -340,7 +338,7 @@ namespace Dynamo.Nodes
             set
             {
                 inputSymbol = value;
-                ReportModification();
+                OnModified();
                 RaisePropertyChanged("InputSymbol");
             }
         }
@@ -410,7 +408,7 @@ namespace Dynamo.Nodes
             set
             {
                 symbol = value;
-                ReportModification();
+                OnModified();
                 RaisePropertyChanged("Symbol");
             }
         }
