@@ -153,11 +153,13 @@ namespace Dynamo.Applications.Models
         private void SubscribeRevitServicesUpdaterEvents()
         {
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified += RevitServicesUpdater_ElementsModified;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified -= RevitServicesUpdater_ElementsModified;
         }
 
         private void SubscribeTransactionManagerEvents()
@@ -449,29 +451,75 @@ namespace Dynamo.Applications.Models
             if (!deleted.Any())
                 return;
 
-            var workspace = this.CurrentWorkspace;
+            var nodes = GetNodesFromElementIds(deleted);
+            foreach (var node in nodes)
+            {
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
+            }
+        }
+
+        private void RevitServicesUpdater_ElementsModified(IEnumerable<string> updated)
+        {
+            var updatedIds = updated.Select(x =>
+            {
+                Element ret;
+                ElementUtils.TryGetElement(DocumentManager.Instance.CurrentDBDocument, x, out ret);
+                return ret;
+            }).Select(x => x.Id);
+
+            if (!updatedIds.Any())
+                return;
+
+            var nodes = GetNodesFromElementIds(updatedIds);
+            foreach (var node in nodes)
+            {
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
+            }
+        }
+
+        #endregion
+
+
+        #region Utilities
+        /// <summary>
+        /// This function gets the nodes which have created the elements with the
+        /// given element IDs
+        /// </summary>
+        /// <param name="ids">The given element IDs</param>
+        /// <returns>the related nodes</returns>
+        private IEnumerable<NodeModel> GetNodesFromElementIds(IEnumerable<ElementId> ids)
+        {
+            List<NodeModel> nodes = new List<NodeModel>();
+            if (!ids.Any())
+                return nodes.AsEnumerable();
+
+            var workspace = CurrentWorkspace;
 
             ProtoCore.Core core = null;
-            var engine = this.EngineController;
+            var engine = EngineController;
             if (engine != null && (engine.LiveRunnerCore != null))
                 core = engine.LiveRunnerCore;
 
-            if (core == null) // No execution yet as of this point.
-                return;
+            if (core == null)
+                return null;
 
             // Selecting all nodes that are either a DSFunction,
             // a DSVarArgFunction or a CodeBlockNodeModel into a list.
             var nodeGuids = workspace.Nodes.Where((n) =>
             {
                 return (n is DSFunction
-                    || (n is DSVarArgFunction)
-                    || (n is CodeBlockNodeModel));
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
             }).Select((n) => n.GUID);
 
-            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
 
+            bool areElementsFoundForThisNode;
             foreach (Guid guid in nodeTraceDataList.Keys)
             {
+                areElementsFoundForThisNode = false;
                 foreach (CallSite cs in nodeTraceDataList[guid])
                 {
                     foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
@@ -482,32 +530,38 @@ namespace Dynamo.Applications.Models
                         {
                             SerializableId sid = thingy as SerializableId;
 
-                            foreach (ElementId eid in deleted)
+                            if (sid != null)
                             {
-
-                                if (sid != null)
+                                foreach (var id in ids)
                                 {
-                                    if (sid.IntID == eid.IntegerValue)
+                                    if (sid.IntID == id.IntegerValue)
                                     {
-                                        NodeModel inm =
-                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-
-                                        Validity.Assert(inm != null, "The bound node has disappeared");
-
-                                        inm.RequiresRecalc = true;
-                                        inm.ForceReExecuteOfNode = true;
-
-                                        //FOUND IT!
+                                        areElementsFoundForThisNode = true;
+                                        break;
                                     }
+                                }
+
+                                if (areElementsFoundForThisNode)
+                                {
+                                    NodeModel inm =
+                                        workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                                    nodes.Add(inm);
+                                    break;
                                 }
                             }
                         }
+
+                        if (areElementsFoundForThisNode)
+                            break;
                     }
+
+                    if (areElementsFoundForThisNode)
+                        break;
                 }
             }
+
+            return nodes.AsEnumerable();
         }
-
         #endregion
-
     }
 }

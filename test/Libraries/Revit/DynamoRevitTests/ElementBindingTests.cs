@@ -99,6 +99,65 @@ namespace Dynamo.Tests
             return new ElementId(id.IntID);
         }
 
+        [Test, Ignore]
+        [TestModel(@".\empty.rfa")]
+        public void CreateInDynamoModifyInRevit()
+        {
+            //Create a wall in Dynamo
+            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateWallInDynamo.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            //Modify the wall in Revit
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "DeleteInRevit"))
+            {
+                trans.Start();
+
+                IList<Element> rps = GetAllWallElements(false);
+                Assert.AreEqual(1, rps.Count);
+                Wall wall = rps.First() as Wall;
+                //Modify the wall to cause a failure
+                Assert.Inconclusive("TO DO");
+                wall.Flip();
+                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
+
+                trans.Commit();
+            }
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void CreateInDynamoModifyInRevitReRun()
+        {
+            //Create a reference point at (0.0, 0.0, 0.0);
+            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateOneReferencePoint.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            //Change the position of the reference point
+            var points = GetAllReferencePointElements(true);
+            Assert.AreEqual(1, points.Count);
+            ReferencePoint pnt = points[0] as ReferencePoint;
+            Assert.IsNotNull(pnt);
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "ModifyInRevit"))
+            {
+                trans.Start();
+                pnt.Position = new XYZ(10.0, 0.0, 0.0);
+                trans.Commit();
+            }
+
+            //Run the graph once again
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            points = GetAllReferencePointElements(true);
+            Assert.AreEqual(1, points.Count);
+            pnt = points[0] as ReferencePoint;
+            Assert.IsTrue(pnt.Position.IsAlmostEqualTo(new XYZ(0.0, 0.0, 0.0)));
+        }
+
         [Test]
         [TestModel(@".\empty.rfa")]
         public void CreateInDynamoDeleteInRevit()
@@ -156,34 +215,6 @@ namespace Dynamo.Tests
 
             //Undo the creation of a reference point in Revit
             Assert.Inconclusive("TO DO");
-        }
-
-        [Test, Ignore]
-        [TestModel(@".\empty.rfa")]
-        public void CreateInDynamoModifyInRevit()
-        {
-            //Create a wall in Dynamo
-            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateWallInDynamo.dyn");
-            string testPath = Path.GetFullPath(dynFilePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
-
-            //Modify the wall in Revit
-            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "DeleteInRevit"))
-            {
-                trans.Start();
-
-                IList<Element> rps = GetAllWallElements(false);
-                Assert.AreEqual(1, rps.Count);
-                Wall wall = rps.First() as Wall;
-                //Modify the wall to cause a failure
-                Assert.Inconclusive("TO DO");
-                wall.Flip();
-                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
-
-                trans.Commit();
-            }
         }
 
         [Test, Ignore]
