@@ -41,7 +41,7 @@ namespace Dynamo.Core.Threading
 
         protected override void ExecuteCore()
         {
-            dynamoModel.OnNodesRenderPackagesUpdated(null, null);
+            dynamoModel.OnFullRunCompleted(null, new FullRunCompletedEventArgs(true));
         }
     }
 }

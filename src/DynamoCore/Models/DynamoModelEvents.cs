@@ -233,11 +233,11 @@ namespace Dynamo.Models
         /// An event is triggered when RenderPackages are computed 
         /// for all graphical nodes.
         /// </summary>
-        public event EventHandler NodesRenderPackagesUpdated;
-        public virtual void OnNodesRenderPackagesUpdated(object sender, EventArgs e)
+        public event EventHandler<FullRunCompletedEventArgs> FullRunCompleted;
+        public virtual void OnFullRunCompleted(object sender, FullRunCompletedEventArgs e)
         {
-            if (NodesRenderPackagesUpdated != null)
-                NodesRenderPackagesUpdated(sender, e);
+            if (FullRunCompleted != null)
+                FullRunCompleted(sender, e);
         }
 
         #endregion

@@ -13,6 +13,7 @@ using DynamoWebServer.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
+using Dynamo.Core;
 
 namespace DynamoWebServer.Messages
 {
@@ -25,6 +26,7 @@ namespace DynamoWebServer.Messages
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
         private AutoResetEvent nextRunAllowed = new AutoResetEvent(true);
+        private bool wasRun = false;
         private int maxMsToWait = 20000;
         
         public MessageHandler(DynamoModel dynamoModel)
@@ -37,15 +39,16 @@ namespace DynamoWebServer.Messages
 
             this.dynamoModel = dynamoModel;
             uploader = new FileUploader();
-            this.dynamoModel.NodesRenderPackagesUpdated += RunCommandCompleted;
+            this.dynamoModel.FullRunCompleted += RunCommandCompleted;
         }
 
         /// <summary>
         /// It's called after all computations are done and Dynamo is ready
         /// to send ComputationResponse
         /// </summary>
-        void RunCommandCompleted(object sender, EventArgs e)
+        void RunCommandCompleted(object sender, FullRunCompletedEventArgs e)
         {
+            wasRun = e.WasRun;
             nextRunAllowed.Set();
         }
 
@@ -119,6 +122,9 @@ namespace DynamoWebServer.Messages
         /// <param name="e">Event args</param>
         internal void NodesDataModified(string sessionId)
         {
+            if (!wasRun)
+                return;
+
             var nodes = GetExecutedNodes();
             if (nodes == null || !nodes.Any())
                 return;
@@ -286,6 +292,9 @@ namespace DynamoWebServer.Messages
 
         private void NodesDataCreated(string sessionId)
         {
+            if (!wasRun)
+                return;
+
             var nodes = GetExecutedNodes();
 
             var currentWorkspace = dynamoModel.CurrentWorkspace;

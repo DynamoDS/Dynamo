@@ -528,6 +528,8 @@ namespace Dynamo.Models
                 task.Completed += OnUpdateGraphCompleted;
                 scheduler.ScheduleForExecution(task);
             }
+            else
+                OnFullRunCompleted(false, null);
         }
 
         /// <summary>
