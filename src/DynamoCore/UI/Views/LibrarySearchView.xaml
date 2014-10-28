@@ -523,6 +523,10 @@
                     <StackPanel.Visibility>
                         <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
                     </StackPanel.Visibility>
+                    <TextBlock Text="{Binding FullyQualifiedName}"
+                               Margin="16,8,0,8"
+                               Foreground="#989898"
+                               FontSize="12" />
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
                              BorderBrush="Transparent"
