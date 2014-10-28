@@ -486,7 +486,6 @@ namespace Dynamo.UI.Controls
             set { SetValue(AttachmentSidePopupProperty, value); }
         }
 
-        public double HorizontalScrollOffset = 0;
 
         public LibraryToolTipPopup()
         {
@@ -558,11 +557,9 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    double placementTargetHorizontalOffset = this.PlacementTarget.TransformToAncestor(dynamoWindow)
-                              .Transform(new Point(0, 0)).X;
-                    if (placementTargetHorizontalOffset < 0) placementTargetHorizontalOffset -= gap*2;
+                    if (targetLocation.X < 0) targetLocation.X -= gap * 2;
                     x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                        + gap + Math.Abs(placementTargetHorizontalOffset);/* + HorizontalScrollOffset; */
+                        + gap + Math.Abs(targetLocation.X);
 
                     var availableHeight = dynamoWindow.ActualHeight - popup.Height
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
