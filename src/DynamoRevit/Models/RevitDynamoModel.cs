@@ -157,15 +157,11 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
         }
 
