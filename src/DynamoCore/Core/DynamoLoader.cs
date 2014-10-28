@@ -90,8 +90,14 @@ namespace Dynamo.Utilities
             {
                 var fn = Path.GetFileName(assemblyPath);
 
+                //another comment
+
                 if (fn == null)
                     continue;
+
+                //a comment
+                Console.WriteLine("Neal was here!");
+                Console.WriteLine("So was Steve.");
 
                 // if the assembly has already been loaded, then
                 // skip it, otherwise cache it.
