@@ -36,6 +36,8 @@
                     Value="40" />
             <Setter Property="ScrollViewer.CanContentScroll"
                     Value="True" />
+            <Setter Property="FocusVisualStyle"
+                    Value="{x:Null}" />
 
             <Setter Property="Template">
                 <Setter.Value>
