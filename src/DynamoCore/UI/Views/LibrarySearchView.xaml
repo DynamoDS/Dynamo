@@ -143,6 +143,7 @@
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+        <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 
         <!--EndRegion-->
 
@@ -205,21 +206,41 @@
         </DataTemplate>
         <!-- This data template is used to show one member. -->
         <ControlTemplate x:Key="MemberControlTemplate">
-            <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Image HorizontalAlignment="Left"
                        Height="32"
                        Margin="16,0,16,0"
                        VerticalAlignment="Center"
                        Width="32"
                        Source="{Binding SmallIcon}" />
-
-                <TextBlock HorizontalAlignment="Left"
+                <Border Grid.Column="1"
+                        Margin="5,10,0,10">
+                    <Rectangle Fill="#3E464C"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch">
+                        <Rectangle.Margin>
+                            <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                <Binding ElementName="memberName" />
+                                <Binding Path="DataContext"
+                                         RelativeSource="{RelativeSource Mode=FindAncestor, 
+                                                                     AncestorType={x:Type UserControl}}" />
+                            </MultiBinding>
+                        </Rectangle.Margin>
+                    </Rectangle>
+                </Border>
+                <TextBlock Grid.Column="1"
+                           Name="memberName"
+                           HorizontalAlignment="Left"
                            Text="{Binding Name}"
                            VerticalAlignment="Top"
                            Margin="5,10,0,0"
                            Foreground="#CCCCCC"
                            FontSize="13" />
-            </StackPanel>
+            </Grid>
         </ControlTemplate>
         <!--EndRegion-->
 
