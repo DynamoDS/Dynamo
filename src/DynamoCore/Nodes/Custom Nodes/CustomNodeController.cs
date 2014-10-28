@@ -163,6 +163,7 @@ namespace Dynamo.Nodes
 
             if (!VerifyFuncId(ref funcId, nickname))
                 LoadProxyCustomNode(funcId, nickname);
+
             Definition = customNodeManager.GetFunctionDefinition(funcId);
         }
 

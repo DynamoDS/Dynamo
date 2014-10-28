@@ -2,19 +2,16 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
-
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
     public class WorkspaceHeader
     {
-        private WorkspaceHeader()
-        {
+        private WorkspaceHeader() { }
 
-        }
-
-        public static WorkspaceHeader FromPath(DynamoModel dynamoModel, string path)
+        public static bool FromPath(string path, bool isTestMode, ILogger logger, out WorkspaceHeader workspaceInfo)
         {
             try
             {
@@ -63,32 +60,42 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
-
+                workspaceInfo = new WorkspaceHeader
+                {
+                    ID = id,
+                    Name = funName,
+                    X = cx,
+                    Y = cy,
+                    Zoom = zoom,
+                    FileName = path
+                };
+                return true;
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log("There was an error opening the workbench.");
-                dynamoModel.Logger.Log(ex);
+                logger.Log("There was an error opening the workbench.");
+                logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (DynamoModel.IsTestMode)
+                //TODO(Steve): Need a better way to handle this kind of thing...
+                if (isTestMode)
                     throw ex; // Rethrow for NUnit.
 
-                return null;
+                workspaceInfo = null;
+                return false;
             }
         }
 
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Zoom { get; set; }
-        public string Name { get; set; }
-        public string ID { get; set; }
-        public string FileName { get; set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double Zoom { get; private set; }
+        public string Name { get; private set; }
+        public string ID { get; private set; }
+        public string FileName { get; private set; }
 
         public bool IsCustomNodeWorkspace()
         {
-            return !String.IsNullOrEmpty(ID);
+            return !string.IsNullOrEmpty(ID);
         }
     }
 }

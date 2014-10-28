@@ -192,6 +192,7 @@ namespace Dynamo.Utilities
 
             // the node has already been loaded
             // from somewhere else
+            //TODO(Steve): Analyze if we want to simply ignore the new info
             if (Contains(guid))
             {
                 var nodeInfo = GetNodeInfo(guid);
@@ -241,8 +242,7 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public List<CustomNodeInfo> UpdateSearchPath()
         {
-            return SearchPath.Select(ScanNodeHeadersInDirectory)
-                             .SelectMany(x => x).ToList();
+            return SearchPath.SelectMany(ScanNodeHeadersInDirectory).ToList();
         }
 
         /// <summary>
@@ -270,6 +270,7 @@ namespace Dynamo.Utilities
         /// <param name="def">The definition for the function</param>
         public void SetFunctionDefinition(Guid guid, CustomNodeDefinition def)
         {
+            //TODO(Steve)
             if (LoadedCustomNodes.Contains(guid))
             {
                 LoadedCustomNodes.Remove(guid);
@@ -356,7 +357,7 @@ namespace Dynamo.Utilities
         public CustomNodeDefinition ReloadFunctionDefintion(Guid id)
         {
             CustomNodeDefinition def;
-            if (!GetDefinitionFromPath(id, out def))
+            if (!GetDefinitionFromPath(id, out def)) //TODO(Steve): This is where we actually load and set the new definition
                 return null;
 
             if (def == null)
@@ -544,6 +545,7 @@ namespace Dynamo.Utilities
                 if (workspaceNodes.Count == 0)
                     workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
 
+                //TODO(Steve): Get this info when we call WorkspaceHeader.FromPath in DynamoModel
                 foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
@@ -614,9 +616,10 @@ namespace Dynamo.Utilities
         ///     the node is added to the dictionary of loadedNodes.  
         /// </summary>
         /// <param name="funcDefGuid">The function guid we're currently loading</param>
+        /// <param name="isTestMode"></param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(Guid funcDefGuid, out CustomNodeDefinition def)
+        private bool GetDefinitionFromPath(Guid funcDefGuid, bool isTestMode, out CustomNodeDefinition def)
         {
             try
             {
@@ -960,14 +963,13 @@ namespace Dynamo.Utilities
                 ws.WatchChanges = true;
 
                 OnGetDefinitionFromPath(def);
-
             }
             catch (Exception ex)
             {
                 Log("There was an error opening the workbench.");
                 Log(ex);
 
-                if (DynamoModel.IsTestMode)
+                if (isTestMode)
                     throw ex; // Rethrow for NUnit.
 
                 def = null;

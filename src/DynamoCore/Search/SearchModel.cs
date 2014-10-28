@@ -572,7 +572,7 @@ namespace Dynamo.Search
             }
 
             var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
-            searchEle.Executed += OnExecuted;
+            searchEle.Executed += OnNodeProduced;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;

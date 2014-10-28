@@ -17,33 +17,31 @@ namespace Dynamo.Nodes
     /// </summary>
     public abstract class FunctionCallNodeController<T> : LogSourceBase where T : IFunctionDescriptor
     {
-        private T definition;
+        //private T definition;
 
         /// <summary>
         ///     A FunctionDescriptor describing the function that this controller will call.
         /// </summary>
-        public T Definition
-        {
-            get { return definition; }
-            protected set
-            {
-                OnDefinitionChanging();
-                definition = value;
-                OnDefinitionChanged();
-            }
+        public T Definition { get; set; //get { return definition; }
+            //protected set
+            //{
+            //    OnDefinitionChanging();
+            //    definition = value;
+            //    OnDefinitionChanged();
+            //}
         }
 
-        public event Action DefinitionChanged;
-        protected virtual void OnDefinitionChanged()
-        {
-            var handler = DefinitionChanged;
-            if (handler != null) handler();
-        }
+        //public event Action DefinitionChanged;
+        //protected virtual void OnDefinitionChanged()
+        //{
+        //    var handler = DefinitionChanged;
+        //    if (handler != null) handler();
+        //}
 
-        protected virtual void OnDefinitionChanging()
-        {
+        //protected virtual void OnDefinitionChanging()
+        //{
             
-        }
+        //}
 
         /// <summary>
         ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.

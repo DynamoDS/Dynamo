@@ -24,23 +24,6 @@ namespace Dynamo.Nodes
             : base(new CustomNodeController(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            Controller.DefinitionChanged += ResyncWithDefinition;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            Controller.DefinitionChanged -= ResyncWithDefinition;
-        }
-
-        public new string Name
-        {
-            get { return Definition.WorkspaceModel.Name; }
-            set
-            {
-                Definition.WorkspaceModel.Name = value;
-                RaisePropertyChanged("Name");
-            }
         }
 
         public override string Description
@@ -53,23 +36,14 @@ namespace Dynamo.Nodes
             }
         }
 
-        [Obsolete("Use Definition.FunctionId.ToString()")]
+        [Obsolete("Use Definition.FunctionId.ToString()", true)]
         public string Symbol
         {
             get { return Definition.FunctionId.ToString(); }
         }
 
-        public new string Category
-        {
-            get
-            {
-                return  this.Workspace.DynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? this.Workspace.DynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
-                    : "Custom Nodes";
-            }
-        }
-
         /// <summary>
+        /// TODO
         /// </summary>
         public new CustomNodeController Controller
         {
@@ -300,15 +274,11 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        private void ResyncWithDefinition()
-        {
-            Controller.SyncNodeWithDefinition(this);
-        }
-
+        
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             Controller.Definition = def;
+            Controller.SyncNodeWithDefinition(this);
         }
     }
 
@@ -319,11 +289,11 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
-    public partial class Symbol : NodeModel
+    public class Symbol : NodeModel
     {
         private string inputSymbol = "";
 
-        public Symbol(WorkspaceModel workspace) : base()
+        public Symbol()
         {
             OutPortData.Add(new PortData("", "Symbol"));
 
@@ -389,11 +359,11 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
-    public partial class Output : NodeModel
+    public class Output : NodeModel
     {
         private string symbol = "";
 
-        public Output(WorkspaceModel workspace) : base()
+        public Output()
         {
             InPortData.Add(new PortData("", ""));
 

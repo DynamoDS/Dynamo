@@ -684,7 +684,29 @@ namespace Dynamo.Models
 
         #region save/load
 
-        [Obsolete("Use AddWorkspace(WorkspaceModel)", true)]
+        public void OpenFileFromPath(string xmlPath)
+        {
+            WorkspaceModel ws;
+            if (OpenFile(xmlPath, out ws))
+                AddWorkspace(ws);
+        }
+
+        private bool OpenFile(string xmlPath, out WorkspaceModel model)
+        {
+            WorkspaceHeader workspaceInfo;
+            if (!WorkspaceHeader.FromPath(xmlPath, IsTestMode, Logger, out workspaceInfo))
+            {
+                model = null;
+                return false;
+            }
+
+            if (workspaceInfo.IsCustomNodeWorkspace())
+            {
+                model = 
+            }
+        }
+
+        [Obsolete("Use OpenFileFromPath()", true)]
         internal void OpenInternal(string xmlPath)
         {
             if (!OpenDefinition(xmlPath))
@@ -700,10 +722,28 @@ namespace Dynamo.Models
             // load custom node
             var manager = CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
-            var funcDef = manager.GetFunctionDefinition(info.Guid);
+
+            //TODO(Steve): This is where the custom node workspace is actually "loaded"
+            var funcDef = manager.GetFunctionDefinition(info.Guid); 
 
             if (funcDef == null) // Fail to load custom function.
                 return;
+
+            //TODO(Steve): Current logic -
+            //  File with custom node instance is loaded
+            //  No custom node definition for instance can be found
+            //  CustomNodeManager stores a proxy definition
+            //  Here, we check if the new custom node definition is the
+            //  missing one that is currently a proxy.
+
+            // New logic:
+            //  Load a custom node instance, check for definition
+            //      Either sync w/ def OR make proxy
+            //      No need to store definition as a proxy
+            //  Register event on custom node instance that checks for 
+            //  loaded definitions
+            //      If loaded def's guid == custom node instance's, resync
+            //      This works for proxy nodes AND regular ones
 
             if (funcDef.IsProxy)
             {
@@ -716,6 +756,7 @@ namespace Dynamo.Models
 
             funcDef.AddToSearch(SearchModel);
 
+            //TODO(Steve): Handle at load time?
             var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
             ws.HasUnsavedChanges = false;
@@ -736,9 +777,8 @@ namespace Dynamo.Models
         [Obsolete("Use AddWorkspace(WorkspaceModel)", true)]
         internal bool OpenDefinition(string xmlPath)
         {
-            var workspaceInfo = WorkspaceHeader.FromPath(this, xmlPath);
-
-            if (workspaceInfo == null)
+            WorkspaceHeader workspaceInfo; 
+            if (WorkspaceHeader.FromPath(xmlPath, IsTestMode, Logger, out workspaceInfo))
             {
                 return false;
             }
@@ -753,6 +793,7 @@ namespace Dynamo.Models
                 ViewHomeWorkspace();
 
             // add custom nodes in dyn directory to path
+            //TODO(Steve): It only searches for dyfs in the same directory if we're opening a dyn
             var dirName = Path.GetDirectoryName(xmlPath);
             CustomNodeManager.AddDirectoryToSearchPath(dirName);
             CustomNodeManager.UpdateSearchPath();
