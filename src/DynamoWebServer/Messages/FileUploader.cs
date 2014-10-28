@@ -17,7 +17,6 @@ namespace DynamoWebServer.Messages
         List<ConnectorToCreate> connectorsToCreate;
 
         public bool IsCustomNode { get; private set; }
-        public bool IsUpload { get; set; }
         public IEnumerable<NodeToCreate> NodesToCreate { get { return nodesToCreate; } }
         public IEnumerable<ConnectorToCreate> ConnectorsToCreate { get { return connectorsToCreate; } }
 
@@ -36,8 +35,6 @@ namespace DynamoWebServer.Messages
                 IsCustomNode = uploadFileMessage.IsCustomNode;
                 
                 File.WriteAllBytes(filePath, content);
-
-                IsUpload = true;
 
                 dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
                 
