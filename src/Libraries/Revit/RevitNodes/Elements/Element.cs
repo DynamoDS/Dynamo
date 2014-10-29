@@ -30,7 +30,7 @@ namespace Revit.Elements
         /// A reference to the current Document.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public static Document Document
+        internal static Document Document
         {
             get { return DocumentManager.Instance.CurrentDBDocument; }
         }
@@ -57,7 +57,7 @@ namespace Revit.Elements
         /// Get the Name of the Element
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public string Name
+        internal string Name
         {
             get
             {
@@ -95,7 +95,7 @@ namespace Revit.Elements
         /// Get the Element Unique Id for this element
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public string UniqueId
+        internal string UniqueId
         {
             get
             {

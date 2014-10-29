@@ -8,7 +8,7 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
-    //[SupressImportIntoVM]
+    [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
     public class ElementSelector
     {

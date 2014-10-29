@@ -9,9 +9,9 @@ namespace Revit.GeometryConversion
 {
     [IsVisibleInDynamoLibrary(false)]
     [SupressImportIntoVM]
-    public static class RevitToProtoMesh
+    internal static class RevitToProtoMesh
     {
-        public static Autodesk.DesignScript.Geometry.Mesh ToProtoType(this Autodesk.Revit.DB.Mesh mesh, 
+        internal static Autodesk.DesignScript.Geometry.Mesh ToProtoType(this Autodesk.Revit.DB.Mesh mesh, 
             bool performHostUnitConversion = true)
         {
             var pts = mesh.Vertices.Select(x => x.ToPoint(performHostUnitConversion));
@@ -24,7 +24,7 @@ namespace Revit.GeometryConversion
 
         }
 
-        public static Autodesk.DesignScript.Geometry.Mesh[] ToProtoType(this Autodesk.Revit.DB.MeshArray meshArray,
+        internal static Autodesk.DesignScript.Geometry.Mesh[] ToProtoType(this Autodesk.Revit.DB.MeshArray meshArray,
             bool performHostUnitConversion = true)
         {
             return meshArray.Cast<Autodesk.Revit.DB.Mesh>().Select(x => x.ToProtoType(performHostUnitConversion)).ToArray();

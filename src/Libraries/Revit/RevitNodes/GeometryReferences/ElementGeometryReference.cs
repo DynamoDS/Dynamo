@@ -15,6 +15,7 @@ namespace Revit.GeometryReferences
     /// </summary>
     //[SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public abstract class ElementGeometryReference
     {
         public static Document Document

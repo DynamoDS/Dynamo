@@ -16,6 +16,7 @@ namespace Revit.Elements
     /// in their associated Revit.Elements.Element wrapper
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public static class ElementWrapper
     {
         /// <summary>
