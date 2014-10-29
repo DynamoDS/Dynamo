@@ -524,7 +524,6 @@ namespace Dynamo.UI.Controls
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
         {
-            double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
             var dynamoWindow = WPF.FindUpVisualTree<DynamoView>(this.PlacementTarget);
@@ -536,23 +535,25 @@ namespace Dynamo.UI.Controls
             // So, we add some gap, and use abs of this negative value to locate tooltip.
             if (targetLocation.X < 0) targetLocation.X -= gap * 2;
 
+            // Count width.
+            double x = 0;
             x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
                 + gap + Math.Abs(targetLocation.X);
 
+            // Count height.
             var availableHeight = dynamoWindow.ActualHeight - popup.Height
                 - (targetLocation.Y + Configurations.NodeButtonHeight);
+
+            double y = 0;
             if (availableHeight < Configurations.BottomPanelHeight)
                 y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
-            primaryAxis = PopupPrimaryAxis.Horizontal;
-
-
 
             return new CustomPopupPlacement[]
             {
                 new CustomPopupPlacement()
                 {
                     Point = new Point(x, y),
-                    PrimaryAxis = primaryAxis
+                    PrimaryAxis = PopupPrimaryAxis.Horizontal
                 }
             };
         }
