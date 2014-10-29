@@ -126,7 +126,7 @@ begin
   Result := sUnInstallString;
 end;
 
-function GetUninstallStringForMSI() : String;
+function GetUninstallStringForPre073MSI() : String;
 var 
   sUnInstPath: String;
   sUnInstallString: String;
@@ -134,6 +134,20 @@ begin
   sUnInstallString := '';
 
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}')
+  if not RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU64, sUnInstPath, 'UninstallString', sUnInstallString);
+
+  Result := sUnInstallString;
+end;
+
+function GetUninstallStringForMSI() : String;
+var 
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstallString := '';
+
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}')
   if not RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU64, sUnInstPath, 'UninstallString', sUnInstallString);
 
@@ -189,11 +203,15 @@ begin
   Result := (GetUninstallStringForEXE() <> '');
 end;
 
+function IsPre073MSIInstalled(): Boolean;
+begin
+  Result := (GetUninstallStringForPre073MSI() <> '');
+end;
+
 function IsMSIInstalled(): Boolean;
 begin
   Result := (GetUninstallStringForMSI() <> '');
 end;
-
 /////////////////////////////////////////////////////////////////////
 function UnInstallOldEXE(sUnInstallString: String): Integer;
 var
@@ -284,6 +302,11 @@ begin
         begin
           sUninstallString := GetUninstallStringForEXE()
           UnInstallOldEXE(sUninstallString)
+        end;
+      if (IsPre073MSIInstalled()) then
+        begin
+          sUninstallString := GetUninstallStringForPre073MSI()
+          UnInstallOldMSI(sUninstallString)
         end;
       if (IsMSIInstalled()) then
         begin
