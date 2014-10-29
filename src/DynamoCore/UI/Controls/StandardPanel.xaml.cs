@@ -69,15 +69,29 @@ namespace Dynamo.UI.Controls
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
 
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
-            if (searchElement != null)
-            {
-                searchElement.Execute();
-                e.Handled = true;
-            }
+            ExecuteSearchElement(listBoxItem);
+            e.Handled = true;
 
             if (FocusItemOnSelection)
                 listBoxItem.Focus();
+        }
+
+        private void OnMemberButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+
+            var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null) return;
+
+            ExecuteSearchElement(listBoxItem);
+            e.Handled = true;
+        }
+
+        private void ExecuteSearchElement(ListBoxItem listBoxItem)
+        {
+            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            if (searchElement != null)
+                searchElement.Execute();
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)

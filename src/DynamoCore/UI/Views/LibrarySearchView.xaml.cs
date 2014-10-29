@@ -28,15 +28,32 @@ namespace Dynamo.UI.Views
         {
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
+            ExecuteSearchElement(listBoxItem);
+            e.Handled = true;
+        }
 
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
-            if (searchElement != null)
+        private void OnMemberButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+
+            var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null)
             {
-                searchElement.Execute();
-                e.Handled = true;
+                // Case for top result.
+                // Top result can have just one selected item.
+                listBoxItem = GetListItemByIndex(sender as ListBox, 0);
+                if (listBoxItem == null) return;
             }
 
-            listBoxItem.Focus();
+            ExecuteSearchElement(listBoxItem);
+            e.Handled = true;
+        }
+
+        private void ExecuteSearchElement(ListBoxItem listBoxItem)
+        {
+            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            if (searchElement != null)
+                searchElement.Execute();
         }
 
         #endregion

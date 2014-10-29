@@ -314,6 +314,8 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
+            <EventSetter Event="KeyDown"
+                         Handler="OnMemberButtonKeyDown" />
             <EventSetter Event="MouseEnter"
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
@@ -532,7 +534,8 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members}"
                              SelectedIndex="0"
-                             GotFocus="OnTopResultGotFocus">
+                             GotFocus="OnTopResultGotFocus"
+                             KeyDown="OnMemberButtonKeyDown">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"

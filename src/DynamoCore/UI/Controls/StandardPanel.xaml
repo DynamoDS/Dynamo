@@ -63,6 +63,8 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
+            <EventSetter Event="KeyDown"
+                         Handler="OnMemberButtonKeyDown" />
             <EventSetter Event="MouseEnter"
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
