@@ -134,7 +134,7 @@
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                   OverridesDefaultStyle="True"
                                   Height="27"
-                                  BorderBrush="#555555"
+                                  BorderBrush="#353535"
                                   BorderThickness="0,0,0,1" />
                     
                     <ContentPresenter x:Name="ExpanderContent"
@@ -516,7 +516,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Border BorderBrush="#555555">
+                                        <Border BorderBrush="#353535">
                                             <Grid Background="Transparent"
                                                   Grid.Row="0">
                                                 <Grid.ColumnDefinitions>

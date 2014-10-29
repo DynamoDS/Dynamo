@@ -14,14 +14,13 @@
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
 
         <!-- Region DataTemplates -->
 
         <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
                                   ItemsSource="{Binding Path=Items}">
-            <Border Height="30"
-                    BorderThickness="0,0,0,1"
-                    BorderBrush="#555555">
+            <Border Height="30">
                 <TextBlock Foreground="#DDD"
                            FontSize="13"
                            Text="{Binding Path=Name}"
@@ -253,8 +252,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="#444444">
                                 <Border Name="Bd"
-                                        BorderThickness="0,2,0,0"
-                                        BorderBrush="Transparent">
+                                        BorderBrush="#353535">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -305,6 +303,24 @@
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
                                     </Grid>
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Style.Triggers>
+
+                                                <DataTrigger Value="true">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="BorderThickness"
+                                                            Value="0,0,0,1" />
+                                                    <!--<Setter Property="Background"
+                                                            Value="#282828" />-->
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                 </Border>
                             </Border>
                         </Button>
