@@ -13,11 +13,6 @@ using NUnit.Framework;
 using System.Text.RegularExpressions;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
-using DynamoUtilities;
-using System.Reflection;
-using ProtoCore.Utils;
-using Dynamo.DSEngine.CodeCompletion;
 
 namespace DynamoCoreUITests
 {
