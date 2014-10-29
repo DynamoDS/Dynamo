@@ -218,14 +218,6 @@ namespace Dynamo.UI.Controls
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
-
-            // Update property scv.HorizontalOffset.
-            scv.UpdateLayout();
-
-            // Scrollviewer moves button to the left side, so PlacementTarget(it's thing that
-            // affects tooltip placement) needs to make its' width longer. So, we use additional
-            // property HorizontalScrollOffset.
-            libraryToolTipPopup.HorizontalScrollOffset = scv.HorizontalOffset;
         }
 
         // Main grid in "StandardPanel" contains of 2 lists: primary members and secondary members.

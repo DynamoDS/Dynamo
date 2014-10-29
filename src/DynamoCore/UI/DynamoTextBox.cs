@@ -470,23 +470,6 @@ namespace Dynamo.UI.Controls
         private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
 
-        public static readonly DependencyProperty AttachmentSidePopupProperty =
-            DependencyProperty.Register("AttachmentSidePopup",
-            typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
-            new PropertyMetadata(LibraryToolTipPopup.Side.Left));
-
-        public enum Side
-        {
-            Left, Top, Right, Bottom
-        }
-
-        public Side AttachmentSide
-        {
-            get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
-            set { SetValue(AttachmentSidePopupProperty, value); }
-        }
-
-        public double HorizontalScrollOffset = 0;
 
         public LibraryToolTipPopup()
         {
@@ -541,7 +524,6 @@ namespace Dynamo.UI.Controls
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
         {
-            double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
             var dynamoWindow = WPF.FindUpVisualTree<DynamoView>(this.PlacementTarget);
@@ -549,44 +531,29 @@ namespace Dynamo.UI.Controls
                 .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
 
-            switch (this.AttachmentSide)
-            {
-                case Side.Left:
-                    x = -(popup.Width + gap);
-                    y = (target.Height - popup.Height) * 0.5;
-                    primaryAxis = PopupPrimaryAxis.Horizontal;
-                    break;
+            // If target location in less then 0, that means target item was scrolled to th left side.
+            // So, we add some gap, and use abs of this negative value to locate tooltip.
+            if (targetLocation.X < 0) targetLocation.X -= gap * 2;
 
-                case Side.Right:
-                    x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                        + gap + HorizontalScrollOffset;
+            // Count width.
+            double x = 0;
+            x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+                + gap + Math.Abs(targetLocation.X);
 
-                    var availableHeight = dynamoWindow.ActualHeight - popup.Height
-                        - (targetLocation.Y + Configurations.NodeButtonHeight);
-                    if (availableHeight < Configurations.BottomPanelHeight)
-                        y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
-                    primaryAxis = PopupPrimaryAxis.Horizontal;
-                    break;
+            // Count height.
+            var availableHeight = dynamoWindow.ActualHeight - popup.Height
+                - (targetLocation.Y + Configurations.NodeButtonHeight);
 
-                case Side.Top:
-                    x = (target.Width - popup.Width) * 0.5;
-                    y = -(popup.Height + gap);
-                    primaryAxis = PopupPrimaryAxis.Vertical;
-                    break;
-
-                case Side.Bottom:
-                    x = (target.Width - popup.Width) * 0.5;
-                    y = target.Height + gap;
-                    primaryAxis = PopupPrimaryAxis.Vertical;
-                    break;
-            }
+            double y = 0;
+            if (availableHeight < Configurations.BottomPanelHeight)
+                y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
 
             return new CustomPopupPlacement[]
             {
                 new CustomPopupPlacement()
                 {
                     Point = new Point(x, y),
-                    PrimaryAxis = primaryAxis
+                    PrimaryAxis = PopupPrimaryAxis.Horizontal
                 }
             };
         }
