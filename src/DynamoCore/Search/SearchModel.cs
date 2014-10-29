@@ -378,8 +378,8 @@ namespace Dynamo.Search
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
                     var group = SearchElementGroup.None;
-                    
-					string category;
+
+                    string category;
                     if (functionGroup.ElementType == ElementType.Regular)
                     {
                         category = ProcessNodeCategory(function.Category, ref group);
@@ -390,7 +390,7 @@ namespace Dynamo.Search
                         ProcessNodeCategory(function.Category, ref group);
                         category = function.Category;
                     }
-                    
+
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
                     {
@@ -420,11 +420,8 @@ namespace Dynamo.Search
 
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
-
-
                 }
             }
-
         }
 
         /// <summary>
@@ -528,7 +525,7 @@ namespace Dynamo.Search
         {
             var group = SearchElementGroup.None;
             ProcessNodeCategory(nodeInfo.Category, ref group);
-            
+
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
 
