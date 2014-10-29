@@ -1797,6 +1797,25 @@ namespace Dynamo.Controls
         }
     }
 
+    public class HasParentRootElement : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserRootElement) return true;
+            if (value is BrowserInternalElement)
+            {
+                return (value as BrowserInternalElement).Parent is BrowserRootElement; 
+            }
+            else return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class MultiBoolToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)

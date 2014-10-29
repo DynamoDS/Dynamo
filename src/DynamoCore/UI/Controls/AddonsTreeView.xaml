@@ -15,6 +15,7 @@
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
+        <controls:HasParentRootElement x:Key="HasParentRootElement" />
 
         <!-- Region DataTemplates -->
 
@@ -248,53 +249,71 @@
                                 </ControlTemplate>
                             </Button.Template>
 
-                            <Border Name="ContainerLight"
-                                    BorderThickness="1,0,0,0"
-                                    BorderBrush="#444444">
-                                <Border Name="Bd"
-                                        BorderBrush="#353535">
+                            <Border Name="ContainerLight">
+                                <Border Name="Bd">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Grid Background="Transparent"
-                                              Grid.Row="0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
+                                        <Border Name="ToggleButtonAndNodeName"
+                                                Grid.Row="0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
 
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
 
-                                            <ToggleButton Margin="5,0,0,0"
-                                                          Grid.Row="0"
-                                                          VerticalAlignment="Center"
-                                                          x:Name="Expander"
-                                                          Background="Transparent"
-                                                          IsHitTestVisible="False"
-                                                          Style="{StaticResource AddonsExpandCollapseToggleStyle}"
-                                                          ClickMode="Press"
-                                                          IsChecked="{Binding IsExpanded, Mode=OneWay}" />
-                                            <Border Margin="5,0,5,0"
-                                                    Name="NodeName"
-                                                    Grid.Column="1"
-                                                    Grid.ColumnSpan="2"
-                                                    VerticalAlignment="Center"
-                                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter Grid.Row="0"
-                                                                  Grid.Column="1"
-                                                                  Grid.ColumnSpan="2"
-                                                                  ContentSource="Header" />
-                                            </Border>
-                                        </Grid>
+                                                <ToggleButton Margin="5,0,0,0"
+                                                              Grid.Row="0"
+                                                              VerticalAlignment="Center"
+                                                              x:Name="Expander"
+                                                              Background="Transparent"
+                                                              IsHitTestVisible="False"
+                                                              Style="{StaticResource AddonsExpandCollapseToggleStyle}"
+                                                              ClickMode="Press"
+                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}" />
+                                                <Border Margin="5,0,5,0"
+                                                        Name="NodeName"
+                                                        Grid.Column="1"
+                                                        Grid.ColumnSpan="2"
+                                                        VerticalAlignment="Center"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter Grid.Row="0"
+                                                                      Grid.Column="1"
+                                                                      Grid.ColumnSpan="2"
+                                                                      ContentSource="Header" />
+                                                </Border>
+                                            </Grid>
+
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Setter Property="Background"
+                                                            Value="#353535" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Value="true">
+                                                            <DataTrigger.Binding>
+                                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                                         Path="DataContext"
+                                                                         Converter="{StaticResource RootElementToBoolConverter}" />
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="BorderThickness"
+                                                                    Value="0,0,0,1" />
+                                                            <Setter Property="Background"
+                                                                    Value="#282828" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
 
                                         <Border Grid.Column="0"
                                                 Grid.ColumnSpan="1"
@@ -303,25 +322,55 @@
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
                                     </Grid>
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Style.Triggers>
-
-                                                <DataTrigger Value="true">
-                                                    <DataTrigger.Binding>
-                                                        <Binding RelativeSource="{RelativeSource Self}"
-                                                                 Path="DataContext"
-                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
-                                                    </DataTrigger.Binding>
-                                                    <Setter Property="BorderThickness"
-                                                            Value="0,0,0,1" />
-                                                    <!--<Setter Property="Background"
-                                                            Value="#282828" />-->
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
                                 </Border>
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderThickness"
+                                                Value="1,0,0,0" />
+                                        <Setter Property="Padding"
+                                                Value="0,0,0,5" />
+                                        <Setter Property="BorderBrush">
+                                            <Setter.Value>
+                                                <DrawingBrush Viewport="0,0,8,8"
+                                                              ViewportUnits="Absolute"
+                                                              TileMode="Tile">
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <GeometryDrawing Brush="#49494b">
+                                                                <GeometryDrawing.Geometry>
+                                                                    <GeometryGroup>
+                                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                                    </GeometryGroup>
+                                                                </GeometryDrawing.Geometry>
+                                                            </GeometryDrawing>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="true">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource HasParentRootElement}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="BorderThickness"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
+                                            <DataTrigger Value="true">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource RootElementToBoolConverter}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Padding"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                             </Border>
                         </Button>
 
@@ -342,37 +391,6 @@
                                         TargetName="NodeName"
                                         Value="40,0,5,0" />
                             </Trigger>
-
-                            <Trigger Property="IsSelected"
-                                     Value="true">
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#444" />
-                            </Trigger>
-
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="true" />
-                                    <Condition Property="IsExpanded"
-                                               Value="false" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#2e2e2e" />
-                            </MultiTrigger>
-
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="true" />
-                                    <Condition Property="HasItems"
-                                               Value="false" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#444" />
-                            </MultiTrigger>
 
                             <Trigger Property="IsEnabled"
                                      Value="false">
