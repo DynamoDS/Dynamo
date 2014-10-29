@@ -11,7 +11,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class WallTests : GeometricRevitNodeTest
+    public class WallTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

@@ -13,7 +13,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitTestServices
 {
     [TestFixture]
-    public class FamilyInstanceTests : GeometricRevitNodeTest
+    public class FamilyInstanceTests : RevitNodeTestBase
     {
         public Autodesk.Revit.DB.XYZ InternalLocation(Autodesk.Revit.DB.FamilyInstance instance)
         {

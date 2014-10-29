@@ -10,7 +10,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitTestServices
 {
     [TestFixture]
-    class AxonometricViewTests : GeometricRevitNodeTest
+    class AxonometricViewTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

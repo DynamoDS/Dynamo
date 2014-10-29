@@ -11,7 +11,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class ModelCurveTests : GeometricRevitNodeTest
+    public class ModelCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

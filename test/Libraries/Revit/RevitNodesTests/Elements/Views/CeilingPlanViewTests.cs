@@ -8,7 +8,7 @@ using RTF.Framework;
 namespace RevitTestServices
 {
     [TestFixture]
-    class CeilingPlanViewTests : GeometricRevitNodeTest
+    class CeilingPlanViewTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

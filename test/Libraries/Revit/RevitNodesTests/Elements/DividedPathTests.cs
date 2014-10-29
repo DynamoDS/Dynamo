@@ -13,7 +13,7 @@ using RTF.Framework;
 namespace RevitTestServices
 {
     [TestFixture]
-    class DividedPathTests : GeometricRevitNodeTest
+    class DividedPathTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

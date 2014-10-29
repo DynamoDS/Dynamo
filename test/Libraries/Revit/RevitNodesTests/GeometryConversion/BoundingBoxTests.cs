@@ -14,7 +14,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitTestServices.Conversion
 {
     [TestFixture]
-    public class BoundingBoxTests : GeometricRevitNodeTest
+    public class BoundingBoxTests : RevitNodeTestBase
     {
 
         public static double BoundingBoxVolume(BoundingBox bb)

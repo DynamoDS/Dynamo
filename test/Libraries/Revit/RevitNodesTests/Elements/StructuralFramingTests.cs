@@ -10,7 +10,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class StructuralFramingTests : GeometricRevitNodeTest
+    public class StructuralFramingTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

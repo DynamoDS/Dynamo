@@ -8,7 +8,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSCoreNodesTests
 {
     [TestFixture]
-    class GeometrySanityCheck : GeometricRevitNodeTest
+    class GeometrySanityCheck : RevitNodeTestBase
     {
         /// <summary>
         /// Example of calling ProtoGeometry methods from C#

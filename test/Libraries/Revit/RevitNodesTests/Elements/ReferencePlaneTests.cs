@@ -6,7 +6,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class ReferencePlaneTests : GeometricRevitNodeTest
+    public class ReferencePlaneTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

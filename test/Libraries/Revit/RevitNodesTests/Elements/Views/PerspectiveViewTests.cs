@@ -10,7 +10,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitTestServices
 {
     [TestFixture]
-    class PerspectiveViewTests : GeometricRevitNodeTest
+    class PerspectiveViewTests : RevitNodeTestBase
     {
 
         [Test]

@@ -39,7 +39,7 @@ namespace RevitTestServices.AnalysisDisplay
     }
 
     [TestFixture]
-    public class FaceAnalysisDisplayTests : GeometricRevitNodeTest
+    public class FaceAnalysisDisplayTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\AnalysisDisplay\Surfaces.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]

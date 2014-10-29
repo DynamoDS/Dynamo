@@ -7,7 +7,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    class TopographyTests : GeometricRevitNodeTest
+    class TopographyTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rvt")]

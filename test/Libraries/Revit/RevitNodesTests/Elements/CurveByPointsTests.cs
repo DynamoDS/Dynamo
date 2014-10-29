@@ -7,7 +7,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class CurveByPointsTests : GeometricRevitNodeTest
+    public class CurveByPointsTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

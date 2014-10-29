@@ -13,7 +13,7 @@ using SketchPlane = Revit.Elements.SketchPlane;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    public class ModelTextTests : GeometricRevitNodeTest
+    public class ModelTextTests : RevitNodeTestBase
     {
         internal double InternalDepth(Revit.Elements.ModelText text)
         {

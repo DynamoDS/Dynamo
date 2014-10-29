@@ -18,7 +18,7 @@ using RTF.Framework;
 namespace RevitTestServices.Elements
 {
     [TestFixture]
-    class ElementTests : GeometricRevitNodeTest
+    class ElementTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\materials.rvt")]

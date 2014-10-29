@@ -11,7 +11,7 @@ using RTF.Framework;
 namespace RevitTestServices.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests : GeometricRevitNodeTest
+    public class RevitToProtoCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]
