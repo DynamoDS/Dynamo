@@ -8,7 +8,6 @@ using RevitServices.Persistence;
 namespace Revit.Elements.InternalUtilities
 {
     [IsVisibleInDynamoLibrary(false)]
-    [SupressImportIntoVM]
     public static class ElementQueries
     {
         public static IList<Element> OfFamilyType(FamilySymbol familyType)
@@ -73,7 +72,7 @@ namespace Revit.Elements.InternalUtilities
             return instances;
         }
 
-        public static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
+        internal static IEnumerable<Autodesk.Revit.DB.Level> GetAllLevels()
         {
             var collector = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             collector.OfClass(typeof(Autodesk.Revit.DB.Level));

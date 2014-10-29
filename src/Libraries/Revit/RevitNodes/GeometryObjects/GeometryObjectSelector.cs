@@ -7,7 +7,6 @@ using RevitServices.Persistence;
 namespace Revit.GeometryObjects
 {
     [IsVisibleInDynamoLibrary(false)]
-    [SupressImportIntoVM]
     public static class GeometryObjectSelector
     {
         /// <summary>

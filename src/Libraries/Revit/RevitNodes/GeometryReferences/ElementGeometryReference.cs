@@ -18,7 +18,7 @@ namespace Revit.GeometryReferences
     [SupressImportIntoVM]
     public abstract class ElementGeometryReference
     {
-        public static Document Document
+        internal static Document Document
         {
             get { return DocumentManager.Instance.CurrentDBDocument; }
         }
