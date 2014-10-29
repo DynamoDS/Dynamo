@@ -28,7 +28,7 @@ namespace Dynamo.UI.Views
         {
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
-            CreateNode(listBoxItem);
+            ExecuteSearchElement(listBoxItem);
             e.Handled = true;
         }
 
@@ -45,11 +45,11 @@ namespace Dynamo.UI.Views
                 if (listBoxItem == null) return;
             }
 
-            CreateNode(listBoxItem);
+            ExecuteSearchElement(listBoxItem);
             e.Handled = true;
         }
 
-        private void CreateNode(ListBoxItem listBoxItem)
+        private void ExecuteSearchElement(ListBoxItem listBoxItem)
         {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
