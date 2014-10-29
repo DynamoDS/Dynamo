@@ -24,7 +24,7 @@ namespace DynamoCoreUITests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
             var viz = ViewModel.VisualizationManager;
@@ -88,7 +88,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(0, renderables.Count());
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreview()
         {
             var model = ViewModel.Model;
@@ -164,41 +164,35 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-
-            var watch = model.Nodes.First(x => x.GetType().Name == "Watch3D");
-            var watchView = watch.GetType().GetProperty("View").GetValue(watch, null);
-            var points = watchView.GetType().GetProperty("Points").GetValue(watchView, null) as Point3DCollection;
-            Assert.AreEqual(0, points.Count);
+            Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizePoints()
         {
-            //var model = ViewModel.Model;
-            //var viz = ViewModel.VisualizationManager;
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            // run the expression
+            ViewModel.Model.RunExpression();
 
-            //// run the expression
-            //ViewModel.Model.RunExpression();
+            //ensure that the number of visualizations matches the 
+            //number of pieces of geometry in the collection
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
 
-            ////ensure that the number of visualizations matches the 
-            ////number of pieces of geometry in the collection
-            //Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
+            //adjust the number node's value - currently set to 0..5 (6 elements)
+            var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
+            numNode.Value = "0..10";
+            ViewModel.Model.RunExpression();
 
-            ////adjust the number node's value - currently set to 0..5 (6 elements)
-            //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
-            //numNode.Value = "0..10";
-            //ViewModel.Model.RunExpression();
-
-            //Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
-
-            Assert.Inconclusive("Porting : DoubleInput");
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
         }
 
         [Test, Category("Failure")]
@@ -377,7 +371,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanDrawNodeLabels()
         {
             var model = ViewModel.Model;
@@ -418,16 +412,16 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Text.Count());
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanDrawNodeLabelsOnCurves()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -436,12 +430,11 @@ namespace DynamoCoreUITests
             // run the expression
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            //10 lines segments in this file
-            Assert.AreEqual(60, BackgroundPreview.Lines.Count());
+            Assert.AreEqual(6, BackgroundPreview.Lines.Count()/2);
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
-            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "e9e53fe0-a0b0-4cf7-93d5-5eea8f0428f2");
+            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
