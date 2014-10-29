@@ -147,6 +147,7 @@
     <Compile Include="Imperative\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />
     <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
+    <Compile Include="LiveRunnerTests\PreviewChangeSetTests.cs" />
     <Compile Include="MinimalClassTests.cs" />
     <Compile Include="ModifierStack.cs" />
     <Compile Include="MultiLangTests\AssociativeToImperative.cs" />

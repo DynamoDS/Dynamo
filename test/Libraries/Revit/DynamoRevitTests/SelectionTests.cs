@@ -84,12 +84,11 @@ namespace Dynamo.Tests
             TransactionManager.Instance.ForceCloseTransaction();
 
             Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
-
             ViewModel.Model.RunExpression();
 
             Assert.AreNotEqual(0, watchNode.CachedValue); //Actual value depends on units
         }
-    
+
         [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
         public void EmptySingleSelectionReturnsNull()
         {

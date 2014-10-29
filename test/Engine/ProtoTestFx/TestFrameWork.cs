@@ -697,7 +697,7 @@ namespace ProtoTestFx.TD
         {
             if (value == null)
             {
-                Assert.IsTrue(data.IsNull);
+                Assert.IsTrue(data.IsNull, "data is null");
             }
             else if (value is int)
             {
