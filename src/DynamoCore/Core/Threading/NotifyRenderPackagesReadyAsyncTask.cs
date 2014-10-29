@@ -13,6 +13,11 @@ namespace Dynamo.Core.Threading
     /// 
     class NotifyRenderPackagesReadyAsyncTask : AsyncTask
     {
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         internal NotifyRenderPackagesReadyAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
@@ -25,6 +30,22 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskCompletionCore()
         {
+        }
+
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as NotifyRenderPackagesReadyAsyncTask;
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            // Comparing to another NotifyRenderPackagesReadyAsyncTask, the one 
+            // that gets scheduled more recently stay, while the earlier one 
+            // gets dropped. If this task has a higher tick count, keep this.
+            // 
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
         }
     }
 }

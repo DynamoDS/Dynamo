@@ -127,18 +127,6 @@ namespace Dynamo.Search
 
         #endregion
 
-        #region Destructor
-
-        ~SearchModel()
-        {
-            if (DynamoModel != null)
-            {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
-            }
-        }
-
-        #endregion
-
         #region Context-specific hiding
 
         private List<NodeSearchElement> NodesHiddenInHomeWorkspace = new List<NodeSearchElement>();

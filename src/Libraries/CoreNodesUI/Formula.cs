@@ -275,7 +275,7 @@ namespace DSCoreNodesUI
                     }
             };
 
-            if (HasUnconnectedInput())
+            if (IsPartiallyApplied)
             {
                 return new AssociativeNode[]
                 {

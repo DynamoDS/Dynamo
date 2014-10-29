@@ -14,7 +14,8 @@ namespace ProtoFFI
         {
         }
 
-        private static Dictionary<string, byte[]> GACGeometryKeyTokens = new Dictionary<string, byte[]>() {
+        private static Dictionary<string, byte[]> GACGeometryKeyTokens = new Dictionary<string, byte[]>()
+        {
             /* {"ProtoGeometry", new byte[] { 0xD5, 0x24, 0x30, 0x4D, 0xAF, 0x1F, 0x8B, 0x35}}, */
         };
 
@@ -25,14 +26,14 @@ namespace ProtoFFI
 
         static FFIExecutionManager mSelf;
 
-        public static FFIExecutionManager Instance 
-        { 
-            get 
-            { 
-                if (null == mSelf) 
-                    mSelf = new FFIExecutionManager(); 
-                return mSelf; 
-            } 
+        public static FFIExecutionManager Instance
+        {
+            get
+            {
+                if (null == mSelf)
+                    mSelf = new FFIExecutionManager();
+                return mSelf;
+            }
         }
 
         public Assembly LoadAssembly(string name)
@@ -91,17 +92,14 @@ namespace ProtoFFI
         private FFIExecutionSession GetSession(Core core, bool createIfNone)
         {
             FFIExecutionSession session = null;
-            if(!mSessions.TryGetValue(core, out session) && createIfNone)
+            lock (mSessions)
             {
-                lock (mSessions)
+                if (!mSessions.TryGetValue(core, out session) && createIfNone)
                 {
-                    if (!mSessions.TryGetValue(core, out session))
-                    {
-                        session = new FFIExecutionSession(core);
-                        core.ExecutionEvent += OnExecutionEvent;
-                        core.Dispose += OnDispose;
-                        mSessions.Add(core, session);
-                    }
+                    session = new FFIExecutionSession(core);
+                    core.ExecutionEvent += OnExecutionEvent;
+                    core.Dispose += OnDispose;
+                    mSessions.Add(core, session);
                 }
             }
 
@@ -114,15 +112,15 @@ namespace ProtoFFI
                 return;
 
             FFIExecutionSession session = null;
-            if (mSessions.TryGetValue(sender, out session))
+            lock (mSessions)
             {
-                lock (mSessions)
+                if (mSessions.TryGetValue(sender, out session))
                 {
                     mSessions.Remove(sender);
+                    session.Dispose();
+                    sender.Dispose -= OnDispose;
+                    sender.ExecutionEvent -= OnExecutionEvent;
                 }
-                mSessions.Remove(sender);
-                session.Dispose();
-                sender.ExecutionEvent -= OnExecutionEvent;
             }
         }
 

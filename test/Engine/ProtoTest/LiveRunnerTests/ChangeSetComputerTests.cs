@@ -29,6 +29,11 @@ namespace ProtoTest.LiveRunner
             core = thisTest.CreateTestCore();
         }
 
+        private ProtoScript.Runners.LiveRunner CreateLiveRunner()
+        {
+            return new ProtoScript.Runners.LiveRunner();
+        }
+
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
@@ -272,7 +277,5 @@ namespace ProtoTest.LiveRunner
                 Assert.IsTrue(isEqual);
             }
         }
-
     }
-
 }

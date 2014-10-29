@@ -411,7 +411,7 @@ namespace ProtoCore
                     Select(x => new ClassMirror(core, x));
             }
 
-            public static IEnumerable<StaticMirror> GetAllMembers(Core core)
+            public static IEnumerable<StaticMirror> GetGlobals(Core core)
             {
                 List<StaticMirror> members = new List<StaticMirror>();
                 members.AddRange(GetBuiltInMethods(core));
