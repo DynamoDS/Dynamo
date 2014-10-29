@@ -77,10 +77,10 @@ namespace Dynamo.Views
             DataContextChanged += dynWorkspaceView_DataContextChanged;
 
             Loaded += dynWorkspaceView_Loaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += dynWorkspaceView_Unloaded;
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        void dynWorkspaceView_Unloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Workspace view unloaded.");
 

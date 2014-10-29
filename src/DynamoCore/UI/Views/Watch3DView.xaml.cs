@@ -184,7 +184,7 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += OnViewUnloaded;
         }
 
         public Watch3DView(string id)
@@ -192,7 +192,7 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += OnViewUnloaded;
 
             _id = id;
         }
@@ -201,7 +201,7 @@ namespace Dynamo.Controls
 
         #region event handlers
 
-        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Watch 3D view unloaded.");
 

@@ -28,10 +28,10 @@ namespace Dynamo.Nodes
             noteText.PreviewMouseDown += noteText_PreviewMouseDown;
 
             Loaded += dynNoteView_Loaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += dynNoteView_Unloaded;
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        void dynNoteView_Unloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Note view unloaded.");
 
