@@ -7,7 +7,7 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.DebugTests
 {
-    public class NamespaceConflictTest
+    class NamespaceConflictTest
     {
         public TestFrameWork thisTest = new TestFrameWork();
 
