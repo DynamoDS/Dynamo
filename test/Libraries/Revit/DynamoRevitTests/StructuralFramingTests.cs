@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         {
             OpenAndRun(@".\StructuralFraming\Beam.dyn");
 
-            CompareStructuralTypeAgainstElements<StructuralFramingTypes>();
+            CompareStructuralTypeAgainstElements();
             CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
         }
 
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
         {
             OpenAndRun(@".\StructuralFraming\Brace.dyn");
 
-            CompareStructuralTypeAgainstElements<StructuralFramingTypes>();
+            CompareStructuralTypeAgainstElements();
             CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
         }
 
@@ -43,22 +43,21 @@ namespace Dynamo.Tests
         {
             OpenAndRun(@".\StructuralFraming\Column.dyn");
 
-            CompareStructuralTypeAgainstElements<StructuralColumnTypes>();
+            CompareStructuralTypeAgainstElements();
             CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralColumns);
         }
 
-        private void CompareStructuralTypeAgainstElements<T>() where T : AllElementsInBuiltInCategory
+        private void CompareStructuralTypeAgainstElements()
         {
-            AssertTypeAndCountWhenSelectingFromDropDown<T>(0);
-            AssertTypeAndCountWhenSelectingFromDropDown<T>(1);
+            AssertTypeAndCountWhenSelectingFromDropDown(0);
+            AssertTypeAndCountWhenSelectingFromDropDown(1);
         }
 
-        private void AssertTypeAndCountWhenSelectingFromDropDown<T>(int selectedIndex)
-            where T : AllElementsInBuiltInCategory
+        private void AssertTypeAndCountWhenSelectingFromDropDown(int selectedIndex)
         {
             var slider = ViewModel.Model.AllNodes.FirstOrDefault(x => x is IntegerSlider) as IntegerSlider;
 
-            var typeSelector = ViewModel.Model.AllNodes.FirstOrDefault(x => x is T) as RevitDropDownBase;
+            var typeSelector = ViewModel.Model.AllNodes.FirstOrDefault(x => x is AllElementsInBuiltInCategory) as RevitDropDownBase;
             typeSelector.SelectedIndex = selectedIndex;
 
             RunCurrentModel();
