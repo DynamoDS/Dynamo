@@ -529,7 +529,7 @@ namespace Dynamo.Models
                 scheduler.ScheduleForExecution(task);
             }
             else
-                OnFullRunCompleted(false, null);
+                OnFullRunCompleted(null, new FullRunCompletedEventArgs(false));
         }
 
         /// <summary>
