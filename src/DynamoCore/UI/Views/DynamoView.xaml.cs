@@ -623,6 +623,7 @@ namespace Dynamo.Controls
             Debug.WriteLine("Dynamo window closed.");
 
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
+            dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
             //PACKAGE MANAGER
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
