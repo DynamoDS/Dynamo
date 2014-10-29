@@ -378,8 +378,19 @@ namespace Dynamo.Search
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
                     var group = SearchElementGroup.None;
-                    var category = ProcessNodeCategory(function.Category, ref group);
-
+                    
+					string category;
+                    if (functionGroup.ElementType == ElementType.Regular)
+                    {
+                        category = ProcessNodeCategory(function.Category, ref group);
+                    }
+                    else
+                    {
+                        // Do not remove grouping information for not Regular node.
+                        ProcessNodeCategory(function.Category, ref group);
+                        category = function.Category;
+                    }
+                    
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
                     {
@@ -436,7 +447,15 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                cat = ProcessNodeCategory(cat, ref group);
+                if (nodeType == ElementType.Regular)
+                {
+                    cat = ProcessNodeCategory(cat, ref group);
+                }
+                else
+                {
+                    // Do not remove grouping information for not Regular node.
+                    ProcessNodeCategory(cat, ref group);
+                }
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -510,8 +529,6 @@ namespace Dynamo.Search
             var group = SearchElementGroup.None;
             ProcessNodeCategory(nodeInfo.Category, ref group);
             
-            nodeInfo.Category = nodeInfo.Category;
-
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
 
