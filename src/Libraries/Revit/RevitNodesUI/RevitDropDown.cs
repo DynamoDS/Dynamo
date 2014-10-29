@@ -498,6 +498,7 @@ namespace DSRevitNodesUI
         {
             this.category = category;
             this.noTypesMessage = noTypesMessage;
+            PopulateItems();
         }
 
         protected override void PopulateItems()

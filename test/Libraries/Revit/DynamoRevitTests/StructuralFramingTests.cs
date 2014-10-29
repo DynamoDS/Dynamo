@@ -26,7 +26,8 @@ namespace Dynamo.Tests
             OpenAndRun(@".\StructuralFraming\Beam.dyn");
 
             CompareStructuralTypeAgainstElements();
-            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming,10);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming, 5);
         }
 
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
@@ -35,7 +36,8 @@ namespace Dynamo.Tests
             OpenAndRun(@".\StructuralFraming\Brace.dyn");
 
             CompareStructuralTypeAgainstElements();
-            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralFraming);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming, 10);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming, 5);
         }
 
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
@@ -44,7 +46,8 @@ namespace Dynamo.Tests
             OpenAndRun(@".\StructuralFraming\Column.dyn");
 
             CompareStructuralTypeAgainstElements();
-            CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory.OST_StructuralColumns);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralColumns, 10);
+            CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralColumns, 5);
         }
 
         private void CompareStructuralTypeAgainstElements()
@@ -61,7 +64,7 @@ namespace Dynamo.Tests
             typeSelector.SelectedIndex = selectedIndex;
 
             RunCurrentModel();
-
+            
             var dynamoSymbol = typeSelector.GetValue(0).Data as FamilySymbol;
             var revitSymbol = dynamoSymbol.InternalElement;
 
@@ -73,22 +76,18 @@ namespace Dynamo.Tests
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.WherePasses(symbolFilter);
 
-            Assert.Equals(fec.ToElements().Count, slider.Value);
+            Assert.AreEqual(fec.ToElements().Count, slider.Value);
         }
 
-        private void CompareCountAgainstObjectsOfBuiltInCategory(BuiltInCategory cat)
+        private void CompareSliderCountAndMemberCount(BuiltInCategory cat, int sliderCount)
         {
             var slider = ViewModel.Model.AllNodes.FirstOrDefault(x => x is IntegerSlider) as IntegerSlider;
-            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            fec.OfCategory(cat);
+            slider.Value = sliderCount;
 
-            Assert.AreEqual(slider.Value, fec.ToElements().Count);
-
-            slider.Value = 5;
             RunCurrentModel();
 
-            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            fec.OfCategory(BuiltInCategory.OST_StructuralFraming);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(FamilyInstance)).OfCategory(cat);
 
             Assert.AreEqual(slider.Value, fec.ToElements().Count);
         }
