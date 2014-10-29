@@ -132,7 +132,10 @@
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                   OverridesDefaultStyle="True"
-                                  Height="27" />
+                                  Height="27"
+                                  BorderBrush="#555555"
+                                  BorderThickness="0,0,0,1" />
+                    
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -512,7 +515,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Border>
+                                        <Border BorderBrush="#555555">
                                             <Grid Background="Transparent"
                                                   Grid.Row="0">
                                                 <Grid.ColumnDefinitions>
@@ -565,7 +568,16 @@
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-
+                                                        
+                                                        <DataTrigger Value="false">
+                                                            <DataTrigger.Binding>
+                                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                                         Path="DataContext"
+                                                                         Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="BorderThickness"
+                                                                    Value="0,0,0,1" />
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
@@ -591,8 +603,6 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
-                                                    <Setter Property="Padding"
-                                                            Value="0,0,0,10" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
