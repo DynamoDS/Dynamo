@@ -21,6 +21,7 @@
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -603,6 +604,15 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
+                                                </DataTrigger>
+                                                <DataTrigger Value="false">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Padding"
+                                                            Value="0,0,0,10" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
