@@ -164,7 +164,7 @@
                                                             <TextBlock Name="Label" Text="{Binding Path=Name}" Foreground="White" />
 
                                                             <DataTemplate.Triggers>
-                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="false">
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="true">
                                                                     <Setter TargetName="Label" Property="Visibility" Value="Collapsed"></Setter>
                                                                 </DataTrigger>
                                                             </DataTemplate.Triggers>

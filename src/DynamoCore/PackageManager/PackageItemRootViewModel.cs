@@ -25,12 +25,11 @@ namespace Dynamo.PackageManager.UI
             this.BuildDependencies(new HashSet<object>());
         }
 
-        public PackageItemRootViewModel(Assembly assembly, bool isNodeLibrary)
+        public PackageItemRootViewModel(PackageAssembly assembly)
         {
             this.Height = 32;
             this.DependencyType = DependencyType.Assembly;
             this.Assembly = assembly;
-            this.IsNodeLibrary = isNodeLibrary;
             this.BuildDependencies(new HashSet<object>());
         }
 

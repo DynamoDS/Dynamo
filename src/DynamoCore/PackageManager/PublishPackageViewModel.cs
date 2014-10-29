@@ -25,10 +25,15 @@ namespace Dynamo.PackageManager
 {
     public delegate void PublishSuccessHandler(PublishPackageViewModel sender);
 
-    public struct PackageAssembly
+    public class PackageAssembly
     {
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
+
+        public string Name
+        {
+            get { return Assembly.GetName().Name; }
+        }
     }
 
     /// <summary>
@@ -331,7 +336,7 @@ namespace Dynamo.PackageManager
             {
                 _packageContents = CustomNodeDefinitions.Select(
                     (def) => new PackageItemRootViewModel(def))
-                    .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa.Assembly, pa.IsNodeLibrary)))
+                    .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                     .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                     .ToList();
                 return _packageContents;
@@ -467,7 +472,7 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
                 if (result)
                 {
-                    var isNodeLibrary = nodeLibraryNames.Contains(assem.FullName);
+                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
                     vm.Assemblies.Add(new  PackageAssembly()
                     {
                         IsNodeLibrary = isNodeLibrary,

@@ -405,7 +405,7 @@ namespace Dynamo.PackageManager
         {
             if (nodeLibraryNames == null) throw new ArgumentNullException("nodeLibraryNames");
 
-            // NodeLibraryDeclaration{Assembly.FullName;...;Assembly.FullName}
+            // NodeLibraries(guid){Assembly.FullName;...;Assembly.FullName}
             var sb = new StringBuilder();
             sb.Append(NodeLibraryKey);
             sb.Append("{");

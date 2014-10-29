@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager.UI
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {
-                    return Assembly.GetName().Name + ".dll";
+                    return Assembly.Name + ".dll";
                 }
                 else
                 {
@@ -184,18 +184,17 @@ namespace Dynamo.PackageManager.UI
         public FileInfo FileInfo { get; protected set; }
         public CustomNodeDefinition Definition { get; protected set; }
 
-        public Assembly Assembly { get; protected set; }
-
-        private bool isNodeLibrary;         
+        public PackageAssembly Assembly { get; protected set; }
+      
         public bool IsNodeLibrary         
         {
             get
             {
-                return isNodeLibrary;
+                return Assembly.IsNodeLibrary;
             }
             set
             {
-                isNodeLibrary = value;
+                this.Assembly.IsNodeLibrary = value;
                 RaisePropertyChanged("IsNodeLibrary");
             }
         }
