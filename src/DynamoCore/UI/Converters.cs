@@ -1797,6 +1797,7 @@ namespace Dynamo.Controls
         }
     }
 
+    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
     public class HasParentRootElement : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
