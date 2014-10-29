@@ -120,7 +120,7 @@ namespace RevitTestServices.Elements
             var level = Level.ByElevation(3);
             var famSym = FamilySymbol.ByName("W12X26");
 
-            var structure = StructuralFraming.BeamByCurve(line, level, famSym);
+            var structure = StructuralFraming.BraceByCurve(line, level, famSym);
 
             Assert.NotNull(structure);
             Assert.NotNull(structure.InternalElement);

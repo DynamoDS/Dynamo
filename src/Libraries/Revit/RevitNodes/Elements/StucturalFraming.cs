@@ -97,7 +97,7 @@ namespace Revit.Elements
             var oldFam =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
 
-            //There was a point, rebind to that, and adjust its position
+            //There's an existing structural framing element, rebind to that, and adjust its position
             if (oldFam != null)
             {
                 InternalSetFamilyInstance(oldFam);
@@ -106,46 +106,40 @@ namespace Revit.Elements
                 return;
             }
 
-            //Phase 2- There was no existing point, create one
+            //Phase 2- There was no existing structural framing element, create one
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             var creationData = GetCreationData(curve, level, structuralType, symbol);
 
             Autodesk.Revit.DB.FamilyInstance fi;
 
-            try
+            if (Document.IsFamilyDocument)
             {
-                if (Document.IsFamilyDocument)
+                var elementIds =
+                    Document.FamilyCreate.NewFamilyInstances2(
+                        new List<FamilyInstanceCreationData>() { creationData });
+
+                if (elementIds.Count == 0)
                 {
-                    var elementIds =
-                        Document.FamilyCreate.NewFamilyInstances2(
-                            new List<FamilyInstanceCreationData>() { creationData });
-
-                    if (elementIds.Count == 0)
-                    {
-                        throw new Exception("Could not create the FamilyInstance");
-                    }
-
-                    fi = (Autodesk.Revit.DB.FamilyInstance)Document.GetElement(elementIds.First());
+                    throw new Exception("Could not create the FamilyInstance");
                 }
-                else
-                {
-                    var elementIds =
-                        Document.Create.NewFamilyInstances2(
-                            new List<FamilyInstanceCreationData>() { creationData });
 
-                    if (elementIds.Count == 0)
-                    {
-                        throw new Exception("Could not create the FamilyInstance");
-                    }
-
-                    fi = (Autodesk.Revit.DB.FamilyInstance)Document.GetElement(elementIds.First());
-                }
+                fi = (Autodesk.Revit.DB.FamilyInstance)Document.GetElement(elementIds.First());
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                var elementIds =
+                    Document.Create.NewFamilyInstances2(
+                        new List<FamilyInstanceCreationData>() { creationData });
+
+                if (elementIds.Count == 0)
+                {
+                    throw new Exception("Could not create the FamilyInstance");
+                }
+
+                fi = (Autodesk.Revit.DB.FamilyInstance)Document.GetElement(elementIds.First());
             }
+
 
             InternalSetFamilyInstance(fi);
 
@@ -264,7 +258,7 @@ namespace Revit.Elements
 
             if (structuralFramingType == null)
             {
-                throw new System.ArgumentNullException("structuralFamilySymbol");
+                throw new System.ArgumentNullException("structuralFramingType");
             }            
 
             return new StructuralFraming(curve.ToRevitType(), upVector.ToXyz(), level.InternalLevel,
@@ -292,7 +286,7 @@ namespace Revit.Elements
 
             if (structuralFramingType == null)
             {
-                throw new System.ArgumentNullException("familyType");
+                throw new System.ArgumentNullException("structuralFramingType");
             }
 
             return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Beam, structuralFramingType.InternalFamilySymbol);
@@ -319,7 +313,7 @@ namespace Revit.Elements
 
             if (structuralFramingType == null)
             {
-                throw new System.ArgumentNullException("familyType");
+                throw new System.ArgumentNullException("structuralFramingType");
             }
 
             return new StructuralFraming(curve.ToRevitType(), level.InternalLevel, Autodesk.Revit.DB.Structure.StructuralType.Brace, structuralFramingType.InternalFamilySymbol);
