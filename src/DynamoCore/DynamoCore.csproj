@@ -290,7 +290,6 @@ limitations under the License.
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
-    <Compile Include="DSEngine\CodeCompletionServices.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />

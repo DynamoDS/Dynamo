@@ -169,9 +169,7 @@ namespace Dynamo.UI.Controls
 
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.Alias);
+            var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -189,9 +187,7 @@ namespace Dynamo.UI.Controls
 
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
+            var wordList = engineController.CodeCompletionServices.GetGlobals();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
