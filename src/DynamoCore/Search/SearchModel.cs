@@ -508,7 +508,9 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var group = SearchElementGroup.None;
-            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
+            ProcessNodeCategory(nodeInfo.Category, ref group);
+            
+            nodeInfo.Category = nodeInfo.Category;
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
