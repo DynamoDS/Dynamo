@@ -16,20 +16,21 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             // Create nodes
-            var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
-                "Vector.AsPoint", "Vector.AsPoint");
-            migrationData.AppendNode(vectorAsPoint);
 
             XmlElement sunPathNode = MigrationManager.CloneAndChangeName(
                 oldNode, "DSRevitNodesUI.SunPathDirection", "SunPath Direction");
             sunPathNode.SetAttribute("guid", Guid.NewGuid().ToString());
             sunPathNode.SetAttribute("x", (Convert.ToDouble(oldNode.GetAttribute("x")) - 230).ToString());
+
+            var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
+                "Vector.AsPoint", "Vector.AsPoint");
             
             migrationData.AppendNode(sunPathNode);
+            migrationData.AppendNode(vectorAsPoint);
 
             // Update connectors
-            data.CreateConnector(sunPathNode, 0, vectorAsPoint, 0);
+            migrationData.CreateConnector(sunPathNode, 0, vectorAsPoint, 0);
 
             return migrationData;
         }
@@ -63,7 +64,7 @@ namespace Dynamo.Nodes
 
             if (oldConnector != null)
             {
-                data.ReconnectToPort(
+                migrationData.ReconnectToPort(
                     oldConnector,
                     new PortId(
                         MigrationManager.GetGuidFromXmlElement(sunPathNode),
@@ -71,7 +72,7 @@ namespace Dynamo.Nodes
                         PortType.OUTPUT));
             }
 
-            return data;
+            return migrationData;
         }
     }
 }

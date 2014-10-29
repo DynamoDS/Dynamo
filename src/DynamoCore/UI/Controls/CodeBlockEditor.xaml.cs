@@ -191,7 +191,7 @@ namespace Dynamo.UI.Controls
 
             // TODO: Make this independent of Core and query properties of LibraryServices instead
             // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
+            var wordList = StaticMirror.GetGlobals(engineController.LiveRunnerCore).Select(x => x.Name);
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 

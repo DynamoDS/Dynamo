@@ -31,6 +31,13 @@ namespace Dynamo.DSEngine.CodeCompletion
             this.core = core;
         }
 
+        /// <summary>
+        /// Determines if the completion string is a valid type and 
+        /// enumerates the list of completion members on the type
+        /// </summary>
+        /// <param name="code"> code typed in the code block </param>
+        /// <param name="stringToComplete"> Class name or declared variable </param>
+        /// <returns> list of method and property members of the type </returns>
         internal IEnumerable<CompletionData> GetCompletionsOnType(string code, string stringToComplete)
         {
             IEnumerable<StaticMirror> members = null;
@@ -58,6 +65,31 @@ namespace Dynamo.DSEngine.CodeCompletion
             return members.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
+        /// <summary>
+        /// Returns the list of names of classes loaded in the Core
+        /// </summary>
+        /// <returns> list of class names </returns>
+        internal IEnumerable<string> GetClasses()
+        {
+            return StaticMirror.GetClasses(core).Select(x => x.Alias);
+        }
+
+        /// <summary>
+        /// Returns the list of names of global methods and properties in Core
+        /// </summary>
+        /// <returns> list of names of global methods and properties </returns>
+        internal IEnumerable<string> GetGlobals()
+        {
+            return StaticMirror.GetGlobals(core).Select(x => x.Name);
+        }
+
+        /// <summary>
+        /// Matches the completion string with classes and
+        /// global methods and properties loaded in the session
+        /// </summary>
+        /// <param name="stringToComplete"> current string being typed which is to be completed </param>
+        /// <param name="guid"> code block node guid to identify current node being typed </param>
+        /// <returns> list of classes, global methods and properties that match with string being completed </returns>
         internal IEnumerable<CompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
             List<CompletionData> completions = new List<CompletionData>();
@@ -94,6 +126,14 @@ namespace Dynamo.DSEngine.CodeCompletion
             return completions;
         }
 
+        /// <summary>
+        /// Returns the list of function signatures of all overloads of a given method
+        /// </summary>
+        /// <param name="code"> code being typed in code block </param>
+        /// <param name="functionName"> given method name for which signature is queried </param>
+        /// <param name="functionPrefix"> class name in case of constructor or static method, OR
+        /// declared instance variable on which method is invoked </param>
+        /// <returns> list of method overload signatures </returns>
         internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             IEnumerable<MethodMirror> candidates = null;
