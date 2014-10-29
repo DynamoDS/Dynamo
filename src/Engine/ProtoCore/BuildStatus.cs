@@ -47,6 +47,7 @@ namespace ProtoCore
             kFileNotFound,
             kAlreadyImported,
             kMultipleSymbolFound,
+            kMultipleSymbolFoundFromName,
             kWarnMax
         }
 
@@ -84,7 +85,8 @@ namespace ProtoCore
             public const string kUsingNonStaticMemberInStaticContext = "'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.";
             public const string kFileNotFound = "File : '{0}' not found";
             public const string kAlreadyImported = "File : '{0}' is already imported";
-            public const string kMultipleSymbolFound = "Multiple definitions for '{0}' are found as {1}";
+            public const string kMultipleSymbolFound = "Multiple definitions for '{0}' are found as {1}";   // This is used to warn all namespace conflict
+            public const string kMultipleSymbolFoundFromName = "Multiple definitions for '{0}' are found as {1}";   // This is used to warn namespaces conflicting when using a name
         }
 
         public struct ErrorEntry
@@ -550,6 +552,24 @@ namespace ProtoCore
                     throw new BuildHaltException(msg);
             }
             throw new BuildHaltException(msg);
+        }
+
+        /// <summary>
+        /// Logs the warning where the usage of a class (className) cannot be resolved because it collides with multiple classes(collidingClassNames) 
+        /// </summary>
+        /// <param name="symbolUsage"></param>
+        /// <param name="duplicateSymbolNames"></param>
+        public void LogNamespaceConflictWarning(string className, string[] collidingClassNames)
+        {
+            if (collidingClassNames.Length > 1)
+            {
+                string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFoundFromName, className, "");
+                foreach (var symbolName in collidingClassNames)
+                {
+                    message += ", " + symbolName;
+                }
+                LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
+            }
         }
 
         public void LogWarning(BuildData.WarningID warningID, 

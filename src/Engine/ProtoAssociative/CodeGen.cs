@@ -2228,19 +2228,37 @@ namespace ProtoAssociative
                 string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
                 if (classNames.Length > 1)
                 {
-                    string message = string.Format(WarningMessage.kMultipleSymbolFound, identList.LeftNode.ToString(), classNames[0]);
-                    for(int i = 1; i < classNames.Length; ++i)
-                        message += ", " + classNames[i];
-                    this.core.BuildStatus.LogWarning(WarningID.kMultipleSymbolFound, message);
+                    // TODO Jun: Move this warning handler to after the SSA transform
+                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                    buildStatus.LogNamespaceConflictWarning(identList.LeftNode.ToString(), classNames);
                 }
 
+                // Check if a classname is found
                 if(classNames.Length == 1)
                 {
+                    // A matching class has been found
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
                     SSAIdentList(leftNode, ref ssaStack, ref astlist);
                 }
                 else
                 {
+                    // Continue traversing the identlist
+
+                    // Check if the lhs is an identifier and if it has any namespace conflicts
+                    // We want to handle this here because we know ident lists can potentially contain namespace resolving
+                    if (identList.LeftNode is IdentifierNode)
+                    {
+                        // TODO Jun: Move this warning handler to after the SSA transform
+                        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+
+                        string name = (identList.LeftNode as IdentifierNode).Value;
+                        classNames = core.ClassTable.GetAllMatchingClasses(name);
+                        if (classNames.Length > 1)
+                        {
+                            buildStatus.LogNamespaceConflictWarning(name, classNames);
+                        }
+                    }
+
                     // Recursively traversse the left of the ident list
                     SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
                 }
