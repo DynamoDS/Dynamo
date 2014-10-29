@@ -72,9 +72,10 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Call this method to properly shutdown the scheduler and its associated
         /// ISchedulerThread. This call will be blocked until the ISchedulerThread
-        /// terminates. Note that if the task queue is not empty at the time this 
-        /// call is made, all the tasks in queue will be executed before shutdown 
-        /// can proceed.
+        /// terminates. Note that the implementation of ISchedulerThread may or may 
+        /// not choose to handle all the remaining AsyncTask in queue when shutdown 
+        /// happens -- DynamoScheduler ensures the tasks in queue are cleared when 
+        /// this call returns.
         /// </summary>
         internal void Shutdown()
         {
