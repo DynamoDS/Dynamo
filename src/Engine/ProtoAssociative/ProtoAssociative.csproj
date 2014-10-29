@@ -82,8 +82,6 @@
     </Compile>
     <Compile Include="CodeGen.cs" />
     <Compile Include="Executive.cs" />
-    <Compile Include="DependencyPass\GraphOptimiser.cs" />
-    <Compile Include="DependencyPass\Analyser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

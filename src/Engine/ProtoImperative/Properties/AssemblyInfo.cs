@@ -7,5 +7,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ProtoImperative")]
 [assembly: AssemblyCulture("")]
 [assembly: Guid("EBEFF5BA-FEAE-4240-91F9-D176D54F6C9A")]
-// [assembly: AssemblyKeyFile("ProtoImperative.snk")]
 
