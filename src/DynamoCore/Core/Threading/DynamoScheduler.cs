@@ -83,6 +83,12 @@ namespace Dynamo.Core.Threading
             // return value to properly exit its loop.
             waitHandles[(int)EventIndex.Shutdown].Set();
 
+            lock (taskQueue)
+            {
+                taskQueue.Clear();
+                taskQueueUpdated = false;
+            }
+
             schedulerThread.Shutdown(); // Wait for scheduler thread to end.
         }
 
