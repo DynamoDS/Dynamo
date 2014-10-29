@@ -133,7 +133,7 @@
             <Setter Property="Padding"
                     Value="0" />
             <Setter Property="Margin"
-                    Value="0" />
+                    Value="-9,0,0,0" />
             <Setter Property="VerticalAlignment"
                     Value="Center" />
             <Setter Property="Template">
@@ -157,8 +157,7 @@
                                                   ContentSource="Content"
                                                   VerticalAlignment="Center"
                                                   TextBlock.FontSize="13"
-                                                  TextBlock.Foreground="#989898"
-                                                  Margin="8,0,0,0" />
+                                                  TextBlock.Foreground="#989898" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -215,6 +214,18 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            
+            <Style.Triggers>
+                <DataTrigger Value="true">
+                    <DataTrigger.Binding>
+                        <Binding RelativeSource="{RelativeSource Self}"
+                                 Path="DataContext"
+                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                    </DataTrigger.Binding>
+                    <Setter Property="Margin"
+                            Value="5,0,0,0" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="AddonsTreeViewItem"
@@ -266,16 +277,15 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton Margin="5,0,0,0"
-                                                              Grid.Row="0"
+                                                <ToggleButton Grid.Row="0"
                                                               x:Name="Expander"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
                                                               Style="{StaticResource AddonsExpandCollapseToggleStyle}"
                                                               ClickMode="Press"
-                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}" />
-                                                <Border Margin="0,0,5,0"
-                                                        Name="NodeName"
+                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}">
+                                                </ToggleButton>
+                                                <Border Name="NodeName"
                                                         Grid.Column="1"
                                                         Grid.ColumnSpan="2"
                                                         VerticalAlignment="Center"
@@ -326,8 +336,7 @@
 
                                         <Border Grid.Column="0"
                                                 Grid.ColumnSpan="1"
-                                                Grid.Row="1"
-                                                Margin="15 0 0 0">
+                                                Grid.Row="1">
                                             <ItemsPresenter x:Name="ItemsHost" />
                                         </Border>
                                     </Grid>
@@ -337,7 +346,7 @@
                                         <Setter Property="BorderThickness"
                                                 Value="1,0,0,0" />
                                         <Setter Property="Padding"
-                                                Value="0,0,0,5" />
+                                                Value="35,0,0,5" />
                                         <Setter Property="BorderBrush">
                                             <Setter.Value>
                                                 <DrawingBrush Viewport="0,0,8,8"
@@ -398,7 +407,7 @@
                                         Value="Collapsed" />
                                 <Setter Property="Margin"
                                         TargetName="NodeName"
-                                        Value="40,0,5,0" />
+                                        Value="15,0,0,0" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
