@@ -749,7 +749,6 @@
         </Button>
 
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
-                                        AttachmentSide="Right"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
                                         MouseLeave="OnPopupMouseLeave">
