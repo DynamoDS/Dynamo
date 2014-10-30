@@ -5,7 +5,7 @@ namespace DSCore
 {
     public class Color
     {
-        private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
+        private readonly System.Drawing.Color color;
 
         // Exposed only for unit test purposes.
         internal System.Drawing.Color InternalColor { get { return color; } }
@@ -51,12 +51,6 @@ namespace DSCore
             this.color = color;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public static Color ByColor(System.Drawing.Color color)
-        {
-            return new Color(color);
-        }
-
         private Color(int a, int r, int g, int b)
         {
             color = System.Drawing.Color.FromArgb(a, r, g, b);
@@ -74,6 +68,12 @@ namespace DSCore
         public static Color ByARGB(int a=255, int r=0, int g=0, int b=0)
         {
             return new Color(a, r, g, b);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color ByColor(System.Drawing.Color color)
+        {
+            return new Color(color);
         }
 
         // This fails "GraphUtilities.PreloadAssembly", fix later.
@@ -151,6 +151,25 @@ namespace DSCore
         public override string ToString()
         {
             return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        protected bool Equals(Color other)
+        {
+            return color.Equals(other.color);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Color)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return color.GetHashCode();
         }
     }
 
