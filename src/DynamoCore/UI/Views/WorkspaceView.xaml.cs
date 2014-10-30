@@ -83,27 +83,6 @@ namespace Dynamo.Views
 
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
-            /*
-            // Add EndlessGrid
-            endlessGrid = new EndlessGrid(outerCanvas);
-            selectionCanvas.Children.Add(endlessGrid);
-            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
-
-            // Binding for grid lines HitTest and Visibility
-            var binding = new Binding()
-            {
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);*/
-
-            //============
-            //LoadCursorState();
-            //============
-
-            Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
 
             ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
@@ -112,8 +91,6 @@ namespace Dynamo.Views
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Workspace view unloaded.");
-
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
 
             if (ViewModel != null)
