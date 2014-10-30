@@ -60,7 +60,7 @@ namespace Dynamo.UI.Controls
             // Register text editing events
             this.InnerTextEditor.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
-            //this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
+            this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
            
 
             // the code block should not be in focus upon undo/redo actions on node
@@ -329,6 +329,7 @@ namespace Dynamo.UI.Controls
         {
             try
             {
+                
                 var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
                 if (e.Text == ".")
                 {
@@ -458,10 +459,12 @@ namespace Dynamo.UI.Controls
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             this.InnerTextEditor.TextArea.ClearSelection();
-            
-            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
+            if (this.InnerTextEditor.Text != "")
+            {
+                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
+            }
         }
 
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
@@ -477,7 +480,8 @@ namespace Dynamo.UI.Controls
             {
                 this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "Code", "esc"));
+                    this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
+               
             }
         }
         #endregion
