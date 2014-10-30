@@ -143,11 +143,8 @@ namespace DynamoCoreUITests
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            ViewModel.Model.OnRequestLayoutUpdate(this, EventArgs.Empty);
-
             // run the expression
             ViewModel.Model.RunExpression();
-            Thread.Sleep(1000);
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -164,7 +161,10 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-            Assert.AreEqual(0, BackgroundPreview.Points.Count);
+            var watch3D =
+                model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
+            var watchView = watch3D.View;
+            Assert.AreEqual(0, watchView.Points.Count);
         }
 
         [Test]

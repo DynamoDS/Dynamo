@@ -670,7 +670,7 @@ namespace Dynamo
         private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
-            QueueRenderTask();
+            //QueueRenderTask();
             Cleanup();
         }
 

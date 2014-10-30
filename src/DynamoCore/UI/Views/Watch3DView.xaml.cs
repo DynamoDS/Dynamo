@@ -205,10 +205,9 @@ namespace Dynamo.Controls
         {
             Debug.WriteLine("Watch 3D view unloaded.");
 
-            //check this for null so the designer can load the preview
-            if (DataContext is DynamoViewModel)
+            var vm = DataContext as IWatchViewModel;
+            if (vm != null)
             {
-                var vm = DataContext as DynamoViewModel;
                 vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
