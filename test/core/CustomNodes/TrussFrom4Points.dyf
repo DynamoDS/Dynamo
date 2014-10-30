@@ -1,0 +1,28 @@
+<Workspace Version="0.7.2.26219" X="296.131762184389" Y="-103.261642580906" zoom="1.24901302469024" Description="Creates a truss from 4 points, points must be ordered 1,2,3,4. right left top down" Category="ComputationForum" Name="TrussFrom4Points" ID="2b59b1a2-bb54-40c5-83fd-528ec9abc36b">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8ea78a47-0b24-43a4-a3e7-fc9066e2cbb9" nickname="Input" x="-2.70698698657077" y="193.883022843431" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="4points" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="834e008c-1c58-4f06-ac0e-c1a205b906ea" nickname="Output" x="419.905097047854" y="322.542945628445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="asdasdasd" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5ccd62b8-60a4-4ea8-99bf-dce64a4f0d7f" nickname="testnode" x="151.810193580017" y="285.227221380287" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a7c1ac96-e359-4097-a9a1-62e56a4c7336" />
+      <Name value="testnode" />
+      <Description value="testcustomnode nest&#xD;&#xA;" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="ddddd" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <DSCore.Map type="DSCore.Map" guid="0f4714af-bade-43c0-ab5c-d5c595849dc6" nickname="List.Map" x="151.693322328304" y="400.204265472611" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8ea78a47-0b24-43a4-a3e7-fc9066e2cbb9" start_index="0" end="0f4714af-bade-43c0-ab5c-d5c595849dc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ccd62b8-60a4-4ea8-99bf-dce64a4f0d7f" start_index="0" end="0f4714af-bade-43c0-ab5c-d5c595849dc6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0f4714af-bade-43c0-ab5c-d5c595849dc6" start_index="0" end="834e008c-1c58-4f06-ac0e-c1a205b906ea" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
