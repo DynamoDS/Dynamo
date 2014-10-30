@@ -185,6 +185,18 @@ namespace Dynamo.Controls
 
         #region Overrides
 
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            e.Handled = true;
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+            e.Handled = true;
+        }
+
         protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             // If the focus falls on a node's text box, or a slider's thumb, 
