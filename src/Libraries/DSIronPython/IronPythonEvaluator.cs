@@ -23,7 +23,6 @@ namespace DSIronPython
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    [SupressImportIntoVM]
     public static class IronPythonEvaluator
     {
         /// <summary>
