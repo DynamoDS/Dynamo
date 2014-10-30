@@ -15,6 +15,8 @@ namespace Dynamo.Core.Threading
 {
     class UpdateGraphAsyncTask : AsyncTask
     {
+        #region Class Data Members and Properties
+
         private GraphSyncData graphSyncData;
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
@@ -23,6 +25,8 @@ namespace Dynamo.Core.Threading
         {
             get { return TaskPriority.AboveNormal; }
         }
+
+        #endregion
 
         #region Public Class Operational Methods
 
