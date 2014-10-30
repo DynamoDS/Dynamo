@@ -575,9 +575,9 @@ namespace Dynamo.Views
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
-            this.snappedPort = null;
-            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleFocusChanged(sender, false);
+            //this.snappedPort = null;
+            //WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            //wvm.HandleFocusChanged(sender, false);
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)
