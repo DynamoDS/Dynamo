@@ -78,6 +78,36 @@ namespace Dynamo.Tests
         }
 
         /// <summary>
+        /// This function gets all the family instances in the current Revit document
+        /// </summary>
+        /// <param name="startNewTransaction">whether do the filtering in a new transaction</param>
+        /// <returns>the family instances</returns>
+        private static IList<Element> GetAllFamilyInstances(bool startNewTransaction)
+        {
+            if (startNewTransaction)
+            {
+                using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "FilteringElements"))
+                {
+                    trans.Start();
+
+                    ElementClassFilter ef = new ElementClassFilter(typeof(FamilyInstance));
+                    FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+                    fec.WherePasses(ef);
+
+                    trans.Commit();
+                    return fec.ToElements();
+                }
+            }
+            else
+            {
+                ElementClassFilter ef = new ElementClassFilter(typeof(FamilyInstance));
+                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+                fec.WherePasses(ef);
+                return fec.ToElements();
+            }
+        }
+
+        /// <summary>
         /// Given a node guid, this function will return the ElementId of the binding element.
         /// This function will work if only one element is created by the node.
         /// </summary>
@@ -375,6 +405,45 @@ namespace Dynamo.Tests
             //Check the number of the refrence points
             points = GetAllReferencePointElements(true);
             Assert.AreEqual(4, points.Count);
+        }
+
+        [Test]
+        [Category("Failure")]
+        [TestModel(@".\ElementBinding\magn-2523.rfa")]
+        public void Rebinding_ExceptionIsThrown()
+        {
+            //This is to test that in the process of rebinding, when an exception is thrown, the related
+            //Revit element will be cleaned.
+
+            //Create 8 family instances
+            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\magn-2523.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            //Check the number of the family instances
+            var instances = GetAllFamilyInstances(true);
+            Assert.AreEqual(8, instances.Count);
+
+            var model = ViewModel.Model;
+            var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "2411be0e-abff-4d32-804c-5e5025a92257"));
+            Assert.IsTrue(selNodes.Any());
+            var node = selNodes.First();
+            var slider = node as DoubleSlider;
+            
+            //Change the value of the slider from 19.89 to 18.0
+            slider.Value = 18.0;
+            //Run the graph again
+            ViewModel.Model.RunExpression();
+            //Change the value of the slider from 18.0 to 16.0
+            slider.Value = 16.0;
+            //Run the graph again
+            ViewModel.Model.RunExpression();
+
+            //Check the number of family instances
+            instances = GetAllFamilyInstances(true);
+            Assert.AreEqual(8, instances.Count);
         }
     }
 }
