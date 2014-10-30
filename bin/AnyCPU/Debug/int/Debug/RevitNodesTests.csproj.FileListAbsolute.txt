@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitNodesTests.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\RevitNodesTests.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\RevitNodesTests.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitNodesTests.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitNodesTests.pdb

@@ -1,0 +1,2891 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RevitNodes</name>
+    </assembly>
+    <members>
+        <member name="T:Revit.AnalysisDisplay.FaceAnalysisDisplay">
+            <summary>
+            A Revit Point Analysis Display 
+            </summary>
+        </member>
+        <member name="T:Revit.AnalysisDisplay.AbstractAnalysisDisplay">
+            <summary>
+            Superclass for all Revit Analysis Display types
+            
+            Note: We're using the user facing name from Revit (Analysis Display), rather than the same name that the Revit API
+            uses (Spatial Field)
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.InternalSetPrimitiveId(System.Int32)">
+            <summary>
+            Set the SpatialFieldPrimitiveId
+            </summary>
+            <param name="primitiveId"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.InternalSetSpatialFieldManager(Autodesk.Revit.DB.Analysis.SpatialFieldManager)">
+            <summary>
+            Set the SpatialFieldManager
+            </summary>
+            <param name="manager"></param>
+        </member>
+        <member name="F:Revit.AnalysisDisplay.AbstractAnalysisDisplay.ResultsSchemaName">
+            <summary>
+            The unique name for Dynamo's Analysis Results.  Used to identify
+            the results scheme.
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.GetAnalysisResultSchemaIndex">
+            <summary>
+            Get the AnalysisResultsSchemaIndex for the SpatialFieldManager
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.GetSpatialFieldManagerFromView(Autodesk.Revit.DB.View,System.UInt32)">
+            <summary>
+            Get the SpatialFieldManager for a particular view.  This is a singleton for every view.  Note that the 
+            number of values per analysis point is ignored if the SpatialFieldManager has already been obtained
+            for this view.  This field cannot be mutated once the SpatialFieldManager is set for a partiular 
+            view.
+            </summary>
+            <param name="view"></param>
+            <param name="numValuesPerAnalysisPoint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.System#IDisposable#Dispose">
+            <summary>
+            Destroy
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.GetElementAndPrimitiveIdFromTrace">
+            <summary>
+            Set the SpatialFieldManager PrimitiveId from Thread Local Storage
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.SetElementAndPrimitiveIdForTrace(Autodesk.Revit.DB.Analysis.SpatialFieldManager,System.Int32)">
+            <summary>
+            Set the SpatialFieldManager and PrimitiveId in Thread Local Storage
+            </summary>
+            <param name="manager"></param>
+            <param name="primitiveId"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.AbstractAnalysisDisplay.SetElementAndPrimitiveIdForTrace">
+            <summary>
+            Set the current SpatialFieldManager and PrimitiveId in Thread Local Storage
+            </summary>
+        </member>
+        <member name="P:Revit.AnalysisDisplay.AbstractAnalysisDisplay.Document">
+            <summary>
+            A reference to the current document
+            </summary>
+        </member>
+        <member name="P:Revit.AnalysisDisplay.AbstractAnalysisDisplay.SpatialFieldManager">
+            <summary>
+            The SpatialFieldManager governing this SpatialFieldPrimitive
+            </summary>
+        </member>
+        <member name="P:Revit.AnalysisDisplay.AbstractAnalysisDisplay.SpatialFieldPrimitiveId">
+            <summary>
+            The Id for this SpatialFieldPrimitive
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.FaceAnalysisDisplay.#ctor(Autodesk.Revit.DB.View,Autodesk.Revit.DB.Reference,System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.UV},System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Create a Point Analysis Display in the current view
+            </summary>
+            <param name="view"></param>
+            <param name="faceReference"></param>
+            <param name="sampleLocations"></param>
+            <param name="samples"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.FaceAnalysisDisplay.InternalSetSpatialFieldValues(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.UV},System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Set the spatial field values for the current spatial field primitive.  The two 
+            input sequences should be of the same length.
+            </summary>
+            <param name="pointLocations"></param>
+            <param name="values"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.FaceAnalysisDisplay.ByViewFacePointsAndValues(Revit.Elements.Views.View,System.Object,System.Double[][],System.Double[])">
+            <summary>
+            Show a colored Face Analysis Display in the Revit View
+            </summary>
+            <param name="view"></param>
+            <param name="elementFaceReference"></param>
+            <param name="sampleUvPoints"></param>
+            <param name="samples"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.AnalysisDisplay.PointAnalysisDisplay">
+            <summary>
+            A Revit Point Analysis Display 
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.PointAnalysisDisplay.#ctor(Autodesk.Revit.DB.View,System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ},System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Create a Point Analysis Display in the current view
+            </summary>
+            <param name="view"></param>
+            <param name="sampleLocations"></param>
+            <param name="samples"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.PointAnalysisDisplay.InternalSetSpatialFieldValues(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ},System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Set the spatial field values for the current spatial field primitive.  The two 
+            input sequences should be of the same length.
+            </summary>
+            <param name="pointLocations"></param>
+            <param name="values"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.PointAnalysisDisplay.ByViewPointsAndValues(Revit.Elements.Views.View,Autodesk.DesignScript.Geometry.Point[],System.Double[])">
+            <summary>
+            Show a colored Point Analysis Display in the Revit view
+            </summary>
+            <param name="view"></param>
+            <param name="samplePoints"></param>
+            <param name="samples"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.AnalysisDisplay.VectorAnalysisDisplay">
+            <summary>
+            A Revit Vector Analysis Display 
+            </summary>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.VectorAnalysisDisplay.#ctor(Autodesk.Revit.DB.View,System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ},System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ})">
+            <summary>
+            Create a Point Analysis Display in the current view
+            </summary>
+            <param name="view"></param>
+            <param name="sampleLocations"></param>
+            <param name="samples"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.VectorAnalysisDisplay.InternalSetSpatialFieldValues(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ},System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.XYZ})">
+            <summary>
+            Set the spatial field values for the current spatial field primitive.  The two 
+            input sequences should be of the same length.
+            </summary>
+            <param name="sampleLocations"></param>
+            <param name="samples"></param>
+        </member>
+        <member name="M:Revit.AnalysisDisplay.VectorAnalysisDisplay.ByViewPointsAndVectorValues(Revit.Elements.Views.View,Autodesk.DesignScript.Geometry.Point[],Autodesk.DesignScript.Geometry.Vector[])">
+            <summary>
+            Show a colored Vector Analysis Display in the Revit view
+            </summary>
+            <param name="view"></param>
+            <param name="samplePoints"></param>
+            <param name="samples"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Application.Document">
+            <summary>
+            A Revit Document
+            </summary>
+        </member>
+        <member name="P:Revit.Application.Document.InternalDocument">
+            <summary>
+            Internal reference to the Document
+            </summary>
+        </member>
+        <member name="P:Revit.Application.Document.ActiveView">
+            <summary>
+            Get the active view for the document
+            </summary>
+        </member>
+        <member name="P:Revit.Application.Document.IsFamilyDocument">
+            <summary>
+            Is the Document a Family?
+            </summary>
+        </member>
+        <member name="P:Revit.Application.Document.Current">
+            <summary>
+            Get the current document
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.CurtainGrid">
+            <summary>
+            A Revit CurtainGrid
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Element">
+            <summary>
+            Superclass of all Revit element wrappers
+            </summary>
+        </member>
+        <member name="F:Revit.Elements.Element.IsRevitOwned">
+            <summary>
+            Indicates whether the element is owned by Revit or not.  If the element
+            is Revit owned, it should not be deleted by Dispose().
+            </summary>
+        </member>
+        <member name="F:Revit.Elements.Element.InternalUniqueId">
+            <summary>
+            The unique id for this element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Element.Dispose">
+            <summary>
+            Default implementation of dispose that removes the element from the
+            document
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Element.ToString">
+            <summary>
+            A basic implementation of ToString for Elements
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Element.GetParameterValueByName(System.String)">
+            <summary>
+            Get the value of one of the element's parameters.
+            </summary>
+            <param name="parameterName">The name of the parameter whose value you want to obtain.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Element.OverrideColorInView(DSCore.Color)">
+            <summary>
+            Override the element's color in the active view.
+            </summary>
+            <param name="color">The color to apply to a solid fill on the element.</param>
+        </member>
+        <member name="M:Revit.Elements.Element.SetParameterByName(System.String,System.Object)">
+            <summary>
+            Set one of the element's parameters.
+            </summary>
+            <param name="parameterName">The name of the parameter to set.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Revit.Elements.Element.Geometry">
+            <summary>
+            Get all of the Geometry associated with this object
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Element.GetCurves(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.GeometryObject},Autodesk.Revit.DB.CurveArray@)">
+            <summary>
+            Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+            </summary>
+            <param name="geomElem"></param>
+            <param name="curves"></param>
+        </member>
+        <member name="M:Revit.Elements.Element.GetFaces(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.GeometryObject},Autodesk.Revit.DB.FaceArray@)">
+            <summary>
+            Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+            </summary>
+            <param name="geomElement"></param>
+            <param name="faces"></param>
+        </member>
+        <member name="P:Revit.Elements.Element.Document">
+            <summary>
+            A reference to the current Document.
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.Parameters">
+            <summary>
+            Obtain all of the Parameters from an Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.Name">
+            <summary>
+            Get the Name of the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.BoundingBox">
+            <summary>
+            Get an Axis-aligned BoundingBox of the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.Id">
+            <summary>
+            Get the Element Id for this element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.UniqueId">
+            <summary>
+            Get the Element Unique Id for this element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.InternalElement">
+            <summary>
+            A reference to the element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.InternalElementId">
+            <summary>
+            The element id for this element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Element.IsAlive">
+            <summary>
+            Is this element still alive in Revit, and good to be drawn, queried etc.
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.CurtainGrid.#ctor(Autodesk.Revit.DB.Element)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="curtainHolderElement"></param>
+        </member>
+        <member name="M:Revit.Elements.CurtainGrid.ByElementAndReference(Revit.Elements.Element,Revit.GeometryReferences.ElementFaceReference)">
+             <summary>
+            get curtain grid from element with curtain grid or grids
+             </summary>
+             <param name="curtainHolderElement"></param>
+             <param name="elementFaceReference"></param>
+        </member>
+        <member name="M:Revit.Elements.CurtainGrid.ByElement(Revit.Elements.Element)">
+             <summary>
+            get curtain grid from element with curtain grid or grids
+             </summary>
+             <param name="curtainHolderElement"></param>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.InternalCurtainHolderElement">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.NumberOfULines">
+            <summary>
+            number of U lines
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.NumberOfVLines">
+            <summary>
+            number of V lines
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.NumberOfPanels">
+            <summary>
+            number of V lines
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurtainGrid.NumberOfMullions">
+            <summary>
+            number of V lines
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.CurtainPanel">
+            <summary>
+            A Revit CurtainPanel
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.AbstractFamilyInstance">
+            <summary>
+            An abstract Revit FamilyInstance - implementors include FamilyInstance, AdaptiveComponent, StructuralFraming
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.AbstractFamilyInstance.InternalFamilyInstance">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.AbstractFamilyInstance.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.CurtainPanel.#ctor(Autodesk.Revit.DB.Panel)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="panelElement"></param>
+        </member>
+        <member name="M:Revit.Elements.CurtainPanel.ByElement(Revit.Elements.CurtainPanel)">
+             <summary>
+            get curtain panel from element  
+             </summary>
+             <param name="panelElement"></param>
+        </member>
+        <member name="M:Revit.Elements.CurtainPanel.ByElement(Revit.Elements.Element)">
+             <summary>
+            get all panels of curtain wall, system or slope galzing roof
+             </summary>
+             <param name="hostingElement"></param>
+        </member>
+        <member name="M:Revit.Elements.CurtainPanel.FromExisting(Autodesk.Revit.DB.Panel,System.Boolean)">
+            <summary>
+            Construct this type from an existing Revit element.
+            </summary>
+            <param name="panel"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.CurveByPoints">
+            <summary>
+            A Revit Curve By Points
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.CurveElement.InternalSetCurve(Autodesk.Revit.DB.Curve)">
+            <summary>
+            Set the geometry curve used by the ModelCurve
+            </summary>
+            <param name="c"></param>
+        </member>
+        <member name="M:Revit.Elements.CurveElement.InternalSetCurveElement(Autodesk.Revit.DB.CurveElement)">
+            <summary>
+            Set the internal model curve along with its id's
+            </summary>
+            <param name="curveElement"></param>
+        </member>
+        <member name="P:Revit.Elements.CurveElement.InternalCurveElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurveElement.ElementCurveReference">
+            <summary>
+            Obtain the reference curve for this ModelCurve
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.CurveElement.Curve">
+            <summary>
+            Obtain the geometry curve for this geometry curve
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.CurveByPoints.#ctor(Autodesk.Revit.DB.CurveByPoints)">
+            <summary>
+            Construct a model curve from the document.  The result is Dynamo owned
+            </summary>
+            <param name="curveByPoints"></param>
+        </member>
+        <member name="M:Revit.Elements.CurveByPoints.ByReferencePoints(Revit.Elements.ReferencePoint[],System.Boolean)">
+            <summary>
+            Construct a Revit CurveByPoints Element (a CurveElement) from a collection of ReferencePoint's
+            </summary>
+            <param name="points"></param>
+            <param name="isReferenceLine"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.CurveByPoints.FromExisting(Autodesk.Revit.DB.CurveByPoints,System.Boolean)">
+            <summary>
+            Construct a Revit ModelCurve element from an existing element.
+            </summary>
+            <param name="curveByPoints"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Mullion">
+            <summary>
+            A Revit Mullion
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Mullion.#ctor(Autodesk.Revit.DB.Mullion)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="mullionElement"></param>
+        </member>
+        <member name="M:Revit.Elements.Mullion.ByElement(Revit.Elements.Mullion)">
+             <summary>
+            get curtain panel from element  
+             </summary>
+             <param name="mullionElement"></param>
+        </member>
+        <member name="M:Revit.Elements.Mullion.ByElement(Revit.Elements.Element)">
+             <summary>
+            get all mullions of curtain wall, system or slope galzing roof
+             </summary>
+             <param name="hostingElement"></param>
+        </member>
+        <member name="M:Revit.Elements.Mullion.FromExisting(Autodesk.Revit.DB.Mullion,System.Boolean)">
+            <summary>
+            Construct this type from an existing Revit element.
+            </summary>
+            <param name="mullion"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.UnknownElement">
+            <summary>
+            A Revit Element of an unknown type.  This allows an arbitrary element
+            to be passed around in the graph.
+            </summary>
+        </member>
+        <member name="F:Revit.Elements.UnknownElement._element">
+            <summary>
+            A reference to the Revit Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.UnknownElement.#ctor(Autodesk.Revit.DB.Element)">
+            <summary>
+            Private constructor
+            </summary>
+            <param name="element"></param>
+        </member>
+        <member name="M:Revit.Elements.UnknownElement.FromExisting(Autodesk.Revit.DB.Element)">
+            <summary>
+            Wrap an element.  By default, this element is owned by Revit.  You must
+            set this value manually if that's not what you want.
+            </summary>
+            <param name="element"></param>
+        </member>
+        <member name="T:Revit.Elements.FloorType">
+            <summary>
+            A Revit FloorType
+            </summary>
+            http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/b6fd8c08-7eea-1ab4-b7ab-096778b46e8f.htm
+        </member>
+        <member name="M:Revit.Elements.FloorType.#ctor(Autodesk.Revit.DB.FloorType)">
+            <summary>
+            Private constructor for the Element
+            </summary>
+            <param name="floorType"></param>
+        </member>
+        <member name="M:Revit.Elements.FloorType.InternalSetFloorType(Autodesk.Revit.DB.FloorType)">
+            <summary>
+            Set the FloorType property, element id, and unique id
+            </summary>
+            <param name="floorType"></param>
+        </member>
+        <member name="M:Revit.Elements.FloorType.ByName(System.String)">
+            <summary>
+            Select a FloorType from the document given 
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FloorType.FromExisting(Autodesk.Revit.DB.FloorType,System.Boolean)">
+            <summary>
+            Create a FloorType from a user selected Element.
+            </summary>
+            <param name="floorType"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.FloorType.InternalFloorType">
+            <summary>
+            An internal reference to the FloorType
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FloorType.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FloorType.Name">
+            <summary>
+            The name of the FloorType
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.ImportInstance">
+            <summary>
+            A Revit ImportInstance Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ImportInstance.BySATFile(System.String)">
+            <summary>
+            Import Geometry from a SAT file.  The SAT file is assumed to be in Feet.
+            </summary>
+            <param name="pathToFile">The path to the SAT file</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ImportInstance.ByGeometries(Autodesk.DesignScript.Geometry.Geometry[])">
+            <summary>
+            Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.  This variant is much faster than
+            ImportInstance.ByGeometry as it uses a batch method.
+            </summary>
+            <param name="geometries">A collection of Geometry</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ImportInstance.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.
+            </summary>
+            <param name="geometry">A single piece of geometry</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ImportInstance.Robustify(Autodesk.DesignScript.Geometry.Geometry@,Autodesk.DesignScript.Geometry.Vector@)">
+            <summary>
+            This method contains workarounds for increasing the robustness of input geometry
+            </summary>
+            <param name="geometry"></param>
+            <param name="translation"></param>
+        </member>
+        <member name="M:Revit.Elements.ImportInstance.Robustify(Autodesk.DesignScript.Geometry.Geometry[]@,Autodesk.DesignScript.Geometry.Vector@)">
+            <summary>
+            This method contains workarounds for increasing the robustness of input geometry
+            </summary>
+            <param name="geometry"></param>
+            <param name="translation"></param>
+        </member>
+        <member name="T:Revit.Elements.ModelText">
+            <summary>
+            A Revit ModelText Element Point
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ModelText.#ctor(Autodesk.Revit.DB.ModelText)">
+            <summary>
+            Internal constructor for wrapping a ModelText. 
+            </summary>
+            <param name="element"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.#ctor(System.String,Autodesk.Revit.DB.SketchPlane,System.Double,System.Double,System.Double,Autodesk.Revit.DB.ModelTextType)">
+            <summary>
+            Internal constructor for the ModelText
+            </summary>
+            <param name="text"></param>
+            <param name="sketchPlane"></param>
+            <param name="xCoordinateInPlane"></param>
+            <param name="yCoordinateInPlane"></param>
+            <param name="textDepth"></param>
+            <param name="modelTextType"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.InternalSetDepth(System.Double)">
+            <summary>
+            Set the Depth of the ModelText
+            </summary>
+            <param name="depth"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.InternalSetText(System.String)">
+            <summary>
+            Set the Text of the ModelText
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.InternalSetModelTextType(Autodesk.Revit.DB.ModelTextType)">
+            <summary>
+            Set the ModelTextType of the text
+            </summary>
+            <param name="modelTextType"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.InternalSetModelText(Autodesk.Revit.DB.ModelText)">
+            <summary>
+            Set the Element, ElementId, and UniqueId
+            </summary>
+            <param name="p"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelText.PositionUnchanged(Autodesk.Revit.DB.ModelText,Autodesk.Revit.DB.SketchPlane,System.Double,System.Double)">
+            <summary>
+            Check if the position of a ModelText has changed, given the original ModelText Element
+            and the new position in the SketchPlane
+            </summary>
+            <param name="oldModelText"></param>
+            <param name="newSketchPlane"></param>
+            <param name="xCoordinateInPlane"></param>
+            <param name="yCoordinateInPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelText.CreateModelText(System.String,Autodesk.Revit.DB.SketchPlane,System.Double,System.Double,System.Double,Autodesk.Revit.DB.ModelTextType)">
+            <summary>
+            Create a ModelText element in the current Family Document
+            </summary>
+            <param name="text"></param>
+            <param name="sketchPlane"></param>
+            <param name="xCoordinateInPlane"></param>
+            <param name="yCoordinateInPlane"></param>
+            <param name="textDepth"></param>
+            <param name="modelTextType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelText.ByTextSketchPlaneAndPosition(System.String,Revit.Elements.SketchPlane,System.Double,System.Double,System.Double,Revit.Elements.ModelTextType)">
+            <summary>
+            Create a ModelText Element in the Family Document by providing the text, SketchPlane Element host, coordinates (within the plane of the SketchPlane),
+            the depth of the text, and the text type name
+            </summary>
+            <param name="text"></param>
+            <param name="sketchPlane"></param>
+            <param name="xCoordinateInPlane"></param>
+            <param name="yCoordinateInPlane"></param>
+            <param name="textDepth"></param>
+            <param name="modelTextType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelText.FromExisting(Autodesk.Revit.DB.ModelText,System.Boolean)">
+            <summary>
+            Create a ModelText Element from a user selected Element.
+            </summary>
+            <param name="pt"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.ModelText.InternalModelText">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ModelText.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ModelText.Text">
+            <summary>
+            The Text of the ModelText Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ModelText.Depth">
+            <summary>
+            The Depth of the ModelText Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ModelText.Position">
+            <summary>
+            The Position of the ModelText Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.ModelTextType">
+            <summary>
+            A Revit ModelTextType
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ModelTextType.#ctor(Autodesk.Revit.DB.ModelTextType)">
+            <summary>
+            Construct from an existing Revit Element
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelTextType.InternalSetModelTextType(Autodesk.Revit.DB.ModelTextType)">
+            <summary>
+            Set the internal Element, ElementId, and UniqueId
+            </summary>
+            <param name="modelTextType"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelTextType.ByName(System.String)">
+            <summary>
+            Select a ModelTextType from the current document by name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelTextType.FromExisting(Autodesk.Revit.DB.ModelTextType,System.Boolean)">
+            <summary>
+            Create from an existing Revit element
+            </summary>
+            <param name="modelTextType"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.ModelTextType.InternalModelTextType">
+            <summary>
+            Internal reference to the Revit Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ModelTextType.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.DSStructuralTypeExtensions">
+            <summary>
+            Convert to Revit enum
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.ElementWrapper">
+            <summary>
+            Element wrapper supplies tools for wrapping Autodesk.Revit.DB.Element types
+            in their associated Revit.Elements.Element wrapper
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ElementWrapper.ToDSType(Autodesk.Revit.DB.Element,System.Boolean)">
+            <summary>
+            If possible, wrap the element in a DS type
+            </summary>
+            <param name="ele"></param>
+            <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Topography.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>
+            Create a topography surface from a list of points.
+            </summary>
+            <param name="points">The points which define the topography surface.</param>
+            <returns>A topography surface through the specified points.</returns>
+        </member>
+        <member name="P:Revit.Elements.Topography.InternalTopographySurface">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Topography.Points">
+            <summary>
+            The set of points from which this TopographySurface is constructed.
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Topography.Mesh">
+            <summary>
+            Get the underlying triangular Mesh from the Topography
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.PlanView">
+            <summary>
+            Base class for Revit Plan views
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Views.View">
+            <summary>
+            An abstract Revit View - All view types inherit from this type
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.View.ExportAsImage(System.String)">
+            <summary>
+            Export the view as an image to the given path - defaults to png, but you can override 
+            the file type but supplying a path with the appropriate extension
+            </summary>
+            <param name="fullPath">A valid path for the image</param>
+            <returns>The image</returns>
+        </member>
+        <member name="P:Revit.Elements.Views.View.InternalView">
+            <summary>
+            Obtain the reference Element as a View
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.PlanView.InternalSetPlanView(Autodesk.Revit.DB.ViewPlan)">
+            <summary>
+            Set the InternalViewPlan property and the associated element id and unique id
+            </summary>
+            <param name="plan"></param>
+        </member>
+        <member name="P:Revit.Elements.PlanView.InternalViewPlan">
+            <summary>
+            An internal handle on the Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.PlanView.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Nuclex.Game.Packing.CygonRectanglePacker">
+            <summary>Packer using a custom algorithm by Markus 'Cygon' Ewald</summary>
+            <remarks>
+              <para>
+                Algorithm conceived by Markus Ewald (cygon at nuclex dot org), though
+                I'm quite sure I'm not the first one to come up with it :)
+              </para>
+              <para>
+                The algorithm always places rectangles as low as possible in the packing
+                area. So, for any new rectangle that is to be added, the packer has to
+                determine the X coordinate at which the rectangle can have the lowest
+                overall height without intersecting any other rectangles.
+              </para>
+              <para>
+                To quickly discover these locations, the packer uses a sophisticated
+                data structure that stores the upper silhouette of the packing area. When
+                a new rectangle needs to be added, only the silouette edges need to be
+                analyzed to find the position where the rectangle would achieve the lowest
+                placement possible in the packing area.
+              </para>
+            </remarks>
+        </member>
+        <member name="T:Nuclex.Game.Packing.RectanglePacker">
+            <summary>Base class for rectangle packing algorithms</summary>
+            <remarks>
+              <para>
+                By uniting all rectangle packers under this common base class, you can
+                easily switch between different algorithms to find the most efficient or
+                performant one for a given job.
+              </para>
+              <para>
+                An almost exhaustive list of packing algorithms can be found here:
+                http://www.csc.liv.ac.uk/~epa/surveyhtml.html
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Nuclex.Game.Packing.RectanglePacker.#ctor(System.Double,System.Double)">
+            <summary>Initializes a new rectangle packer</summary>
+            <param name="packingAreaWidth">Width of the packing area</param>
+            <param name="packingAreaHeight">Height of the packing area</param>
+        </member>
+        <member name="M:Nuclex.Game.Packing.RectanglePacker.Pack(System.Double,System.Double)">
+            <summary>Allocates space for a rectangle in the packing area</summary>
+            <param name="rectangleWidth">Width of the rectangle to allocate</param>
+            <param name="rectangleHeight">Height of the rectangle to allocate</param>
+            <returns>The location at which the rectangle has been placed</returns>
+        </member>
+        <member name="M:Nuclex.Game.Packing.RectanglePacker.TryPack(System.Double,System.Double,Autodesk.Revit.DB.UV@)">
+            <summary>Tries to allocate space for a rectangle in the packing area</summary>
+            <param name="rectangleWidth">Width of the rectangle to allocate</param>
+            <param name="rectangleHeight">Height of the rectangle to allocate</param>
+            <param name="placement">Output parameter receiving the rectangle's placement</param>
+            <returns>True if space for the rectangle could be allocated</returns>
+        </member>
+        <member name="F:Nuclex.Game.Packing.RectanglePacker.packingAreaWidth">
+            <summary>Maximum allowed width of the packing area</summary>
+        </member>
+        <member name="F:Nuclex.Game.Packing.RectanglePacker.packingAreaHeight">
+            <summary>Maximum allowed height of the packing area</summary>
+        </member>
+        <member name="P:Nuclex.Game.Packing.RectanglePacker.PackingAreaWidth">
+            <summary>Maximum width the packing area is allowed to have</summary>
+        </member>
+        <member name="P:Nuclex.Game.Packing.RectanglePacker.PackingAreaHeight">
+            <summary>Maximum height the packing area is allowed to have</summary>
+        </member>
+        <member name="M:Nuclex.Game.Packing.CygonRectanglePacker.#ctor(System.Double,System.Double)">
+            <summary>Initializes a new rectangle packer</summary>
+            <param name="packingAreaWidth">Maximum width of the packing area</param>
+            <param name="packingAreaHeight">Maximum height of the packing area</param>
+        </member>
+        <member name="M:Nuclex.Game.Packing.CygonRectanglePacker.TryPack(System.Double,System.Double,Autodesk.Revit.DB.UV@)">
+            <summary>Tries to allocate space for a rectangle in the packing area</summary>
+            <param name="rectangleWidth">Width of the rectangle to allocate</param>
+            <param name="rectangleHeight">Height of the rectangle to allocate</param>
+            <param name="placement">Output parameter receiving the rectangle's placement</param>
+            <returns>True if space for the rectangle could be allocated</returns>
+        </member>
+        <member name="M:Nuclex.Game.Packing.CygonRectanglePacker.tryFindBestPlacement(System.Double,System.Double,Autodesk.Revit.DB.UV@)">
+            <summary>Finds the best position for a rectangle of the given dimensions</summary>
+            <param name="rectangleWidth">Width of the rectangle to find a position for</param>
+            <param name="rectangleHeight">Height of the rectangle to find a position for</param>
+            <param name="placement">Receives the best placement found for the rectangle</param>
+            <returns>True if a valid placement for the rectangle could be found</returns>
+        </member>
+        <member name="M:Nuclex.Game.Packing.CygonRectanglePacker.integrateRectangle(System.Double,System.Double,System.Double)">
+            <summary>Integrates a new rectangle into the height slice table</summary>
+            <param name="left">Position of the rectangle's left side</param>
+            <param name="width">Width of the rectangle</param>
+            <param name="bottom">Position of the rectangle's lower side</param>
+        </member>
+        <member name="F:Nuclex.Game.Packing.CygonRectanglePacker.heightSlices">
+            <summary>Stores the height silhouette of the rectangles</summary>
+        </member>
+        <member name="T:Nuclex.Game.Packing.CygonRectanglePacker.SliceStartComparer">
+            <summary>Compares the starting position of height slices</summary>
+        </member>
+        <member name="F:Nuclex.Game.Packing.CygonRectanglePacker.SliceStartComparer.Default">
+            <summary>Provides a default instance for the anchor rank comparer</summary>
+        </member>
+        <member name="M:Nuclex.Game.Packing.CygonRectanglePacker.SliceStartComparer.Compare(Autodesk.Revit.DB.UV,Autodesk.Revit.DB.UV)">
+            <summary>Compares the starting position of two height slices</summary>
+            <param name="left">Left slice start that will be compared</param>
+            <param name="right">Right slice start that will be compared</param>
+            <returns>The relation of the two slice starts ranks to each other</returns>
+        </member>
+        <member name="T:Revit.Elements.Views.AxonometricView">
+            <summary>
+            A Revit View3D
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.BuildOrientation3D(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ)">
+            <summary>
+            Build Orientation3D object for eye point and a target point 
+            </summary>
+            <param name="eyePoint"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.GetPointCloud(Autodesk.Revit.DB.Element,System.Collections.Generic.List{Autodesk.Revit.DB.XYZ})">
+            <summary>
+            Obtain a sparse point collection outlining a Revit element bt traversing it's
+            GeometryObject representation
+            </summary>
+            <param name="e"></param>
+            <param name="pts"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.GetPointCloud(Autodesk.Revit.DB.GeometryInstance,System.Collections.Generic.List{Autodesk.Revit.DB.XYZ})">
+            <summary>
+            Obtain a point collection outlining a GeometryObject
+            </summary>
+            <param name="geomInst"></param>
+            <param name="pts"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.GetPointCloud(Autodesk.Revit.DB.Solid,System.Collections.Generic.List{Autodesk.Revit.DB.XYZ})">
+            <summary>
+            Obtain a point collection outlining a Solid GeometryObject
+            </summary>
+            <param name="solid"></param>
+            <param name="pts"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.IsolateInView(Autodesk.Revit.DB.View3D,Autodesk.Revit.DB.Element)">
+            <summary>
+            Make a single element appear in a particular view
+            </summary>
+            <param name="view"></param>
+            <param name="element"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.IsolateInView(Autodesk.Revit.DB.View3D,Autodesk.Revit.DB.BoundingBoxXYZ)">
+            <summary>
+            Set the cropping for the current view
+            </summary>
+            <param name="view3D"></param>
+            <param name="bbox"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.Create3DView(Autodesk.Revit.DB.ViewOrientation3D,System.String,System.Boolean)">
+            <summary>
+            Create a Revit 3D View
+            </summary>
+            <param name="orient"></param>
+            <param name="name"></param>
+            <param name="isPerspective"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.CreateUniqueViewName(System.String)">
+            <summary>
+            Determines whether a view with the provided name already exists.
+            If a view exists with the provided name, and new view is created with
+            an incremented name. Otherwise, the original view name is returned.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.GetVisibleElementFilter">
+            <summary>
+            Utility method to create a filtered element collector which collects all elements in a view
+            which Dynamo would like to view or on which Dynamo would like to operate.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalSetName(System.String)">
+            <summary>
+            Set the name of the current view
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalSetOrientation(Autodesk.Revit.DB.ViewOrientation3D)">
+            <summary>
+            Set the orientation of the view
+            </summary>
+            <param name="orient"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalIsolateInView(Autodesk.Revit.DB.Element)">
+            <summary>
+            Isolate the element in the current view by creating a mininum size crop box around it
+            </summary>
+            <param name="element"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalIsolateInView(Autodesk.Revit.DB.BoundingBoxXYZ)">
+            <summary>
+            Isolate the bounding box in the current view
+            </summary>
+            <param name="bbox"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalRemoveIsolation">
+            <summary>
+            Show all hiddent elements in the view
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.View3D.InternalSetView3D(Autodesk.Revit.DB.View3D)">
+            <summary>
+            Set the InternalView3D property and the associated element id and unique id
+            </summary>
+            <param name="view"></param>
+        </member>
+        <member name="P:Revit.Elements.Views.View3D.InternalView3D">
+            <summary>
+            An internal handle on the Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.View3D.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.#ctor(Autodesk.Revit.DB.View3D)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.#ctor(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.BoundingBoxXYZ,System.String,System.Boolean)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.#ctor(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.Element,System.String,System.Boolean)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.ByEyePointAndTarget(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Object,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Axonometric (isometric) View from an Eye position, 
+            a target position, and either an Element or BoundingBox.
+            </summary>
+            <param name="eyePoint">A Point representing the eye point in meters.</param>
+            <param name="target">A Point representing the target of view in meters.</param>
+            <param name="element">This argument cannot be null, and it has to be either a 
+            Revit.Elements.Element or  Revit.GeometryObjectsBoundingBox.</param>
+            <param name="name">The name of the view.</param>
+            <param name="isolateElement">If this argument is set to true, the element or 
+            bounding box will be isolated in the current view by creating a minimum size
+            crop box around it.</param>
+            <returns>Returns the resulting AxonometricView object.</returns>
+            
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Element,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Axonometric (isometric) View from an Eye position and target position and Element
+            </summary>
+            <param name="eyePoint">Eye point in meters</param>
+            <param name="target">Target of view in meters</param>
+            <param name="element"></param>
+            <param name="name"></param>
+            <param name="isolateElement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.BoundingBox,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Axonometric (isometric) View from an Eye position and target position and Bounding Box
+            </summary>
+            <param name="eyePoint">Eye point in meters</param>
+            <param name="target">Target of view in meters</param>
+            <param name="boundingBox">Bounding box represented in meters</param>
+            <param name="name"></param>
+            <param name="isolateElement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.AxonometricView.FromExisting(Autodesk.Revit.DB.View3D,System.Boolean)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="view"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Views.CeilingPlanView">
+            <summary>
+            A Revit ViewPlan
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.CeilingPlanView.#ctor(Autodesk.Revit.DB.ViewPlan)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.CeilingPlanView.#ctor(Autodesk.Revit.DB.Level)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.CeilingPlanView.ByLevel(Revit.Elements.Level)">
+            <summary>
+            Create a Revit Floor Plan at a given Level
+            </summary>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.CeilingPlanView.FromExisting(Autodesk.Revit.DB.ViewPlan,System.Boolean)">
+            <summary>
+            Create from existing Element
+            </summary>
+            <param name="plan"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Views.PerspectiveView">
+            <summary>
+            A Revit View3D
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.#ctor(Autodesk.Revit.DB.View3D)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.#ctor(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.BoundingBoxXYZ,System.String,System.Boolean)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.#ctor(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.Element,System.String,System.Boolean)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.ByEyePointAndTarget(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Object,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Perspective View from an Eye position, a target position, and 
+            either an Element or BoundingBox.
+            </summary>
+            <param name="eyePoint">A Point representing the eye point.</param>
+            <param name="target">A Point representing the target of view.</param>
+            <param name="element">This argument cannot be null, and it has to be either a 
+            Revit.Elements.Element or  Revit.GeometryObjectsBoundingBox.</param>
+            <param name="name">The name of the view.</param>
+            <param name="isolateElement">If this argument is set to true, the element or 
+            bounding box will be isolated in the current view by creating a minimum size
+            crop box around it.</param>
+            <returns>Returns the resulting PerspectiveView object.</returns>
+            
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Element,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Perspective View from an Eye position and target position and Element
+            </summary>
+            <param name="eyePoint"></param>
+            <param name="target"></param>
+            <param name="element"></param>
+            <param name="name"></param>
+            <param name="isolateElement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.BoundingBox,System.String,System.Boolean)">
+            <summary>
+            Create a Revit Perspective View from an Eye position and target position and Bounding Box
+            </summary>
+            <param name="eyePoint">Eye point in meters</param>
+            <param name="target">Target of view in meters</param>
+            <param name="boundingBox">Bounding box represented in meters</param>
+            <param name="name"></param>
+            <param name="isolateElement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.PerspectiveView.FromExisting(Autodesk.Revit.DB.View3D,System.Boolean)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="view"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Form.#ctor(Autodesk.Revit.DB.Form)">
+            <summary>
+            Construct a Revit Form from an existing form.  
+            </summary>
+            <param name="form"></param>
+        </member>
+        <member name="M:Revit.Elements.Form.#ctor(System.Boolean,Autodesk.Revit.DB.ReferenceArrayArray)">
+            <summary>
+            Create a Form by lofting
+            </summary>
+            <param name="isSolid"></param>
+            <param name="curves"></param>
+        </member>
+        <member name="M:Revit.Elements.Form.FromExisting(Autodesk.Revit.DB.Form,System.Boolean)">
+            <summary>
+            Construct the Revit element by selection.  
+            </summary>
+            <param name="formElement"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Form.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.SketchPlane">
+            <summary>
+            A Revit SketchPlane
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.#ctor(Autodesk.Revit.DB.SketchPlane)">
+            <summary>
+            Set the Sketch plane from an existing one
+            </summary>
+            <param name="existingSketchPlane"></param>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.#ctor(Autodesk.Revit.DB.Plane)">
+            <summary>
+            Make a SketchPlane from a plane
+            </summary>
+            <param name="p"></param>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.InternalSetPlane(Autodesk.Revit.DB.Plane)">
+            <summary>
+            Attempt to set the plane of an existing SketchPlane
+            </summary>
+            <param name="p"></param>
+            <returns>False if the new sketch plane is not parallel to the existing one</returns>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.InternalSetSketchPlane(Autodesk.Revit.DB.SketchPlane)">
+            <summary>
+            Set the Element, ElementId, and UniqueId
+            </summary>
+            <param name="existingSketchPlane"></param>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Make a Revit SketchPlane given a plane
+            </summary>
+            <param name="plane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.SketchPlane.FromExisting(Autodesk.Revit.DB.SketchPlane,System.Boolean)">
+            <summary>
+            Create from an existing element
+            </summary>
+            <param name="existingSketchPlane"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.SketchPlane.InternalSketchPlane">
+            <summary>
+            Internal reference to the Revit Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.SketchPlane.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Views.DraftingView">
+            <summary>
+            A Revit ViewDrafting
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.DraftingView.#ctor(Autodesk.Revit.DB.ViewDrafting)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.DraftingView.#ctor(System.String)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.DraftingView.InternalSetDraftingView(Autodesk.Revit.DB.ViewDrafting)">
+            <summary>
+            Set the InternalViewDrafting property and the associated element id and unique id
+            </summary>
+            <param name="floor"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.DraftingView.ByName(System.String)">
+            <summary>
+            Create a Revit DraftingView given it's name
+            </summary>
+            <param name="name">Name of the view</param>
+            <returns>The view</returns>
+        </member>
+        <member name="M:Revit.Elements.Views.DraftingView.FromExisting(Autodesk.Revit.DB.ViewDrafting,System.Boolean)">
+            <summary>
+            Create a View from a user selected Element.
+            </summary>
+            <param name="view"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Views.DraftingView.InternalViewDrafting">
+            <summary>
+            An internal handle on the Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.DraftingView.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Views.FloorPlanView">
+            <summary>
+            A Revit ViewPlan
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.FloorPlanView.#ctor(Autodesk.Revit.DB.ViewPlan)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.FloorPlanView.#ctor(Autodesk.Revit.DB.Level)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.FloorPlanView.ByLevel(Revit.Elements.Level)">
+            <summary>
+            Create a Revit Floor Plan at a given Level
+            </summary>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.FloorPlanView.FromExisting(Autodesk.Revit.DB.ViewPlan,System.Boolean)">
+            <summary>
+            Create from existing Element
+            </summary>
+            <param name="plan"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Views.Sheet">
+            <summary>
+            A Revit ViewSheet
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.#ctor(Autodesk.Revit.DB.ViewSheet)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.View})">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.#ctor(System.String,System.String,Autodesk.Revit.DB.FamilySymbol,System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.View})">
+            <summary>
+            Private constructor.
+            </summary>
+            <param name="sheetName"></param>
+            <param name="sheetNumber"></param>
+            <param name="titleBlockFamilySymbol"></param>
+            <param name="views"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.InternalAddViewsToSheetView(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.View})">
+            <summary>
+            This method adds the collection of views to the existing ViewSheet and packs them 
+            </summary>
+            <param name="views"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.InternalSetViewSheet(Autodesk.Revit.DB.ViewSheet)">
+            <summary>
+            Set the InternalViewSheet property and the associated element id and unique id
+            </summary>
+            <param name="floor"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.InternalSetSheetName(System.String)">
+            <summary>
+            Set the name of the sheet
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.InternalSetSheetNumber(System.String)">
+            <summary>
+            Set the sheet number of the sheet
+            </summary>
+            <param name="number"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.InternalSetTitleBlock(Autodesk.Revit.DB.ElementId)">
+            <summary>
+            Set the title block id for the view
+            </summary>
+            <param name="newTitleBlockId"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.ByNameNumberTitleBlockAndViews(System.String,System.String,Revit.Elements.FamilySymbol,Revit.Elements.Views.View[])">
+            <summary>
+            Create a Revit Sheet by the sheet name, number, a title block FamilySymbol, and a collection of views.  This method will automatically
+            pack the views onto the sheet. 
+            </summary>
+            <param name="sheetName"></param>
+            <param name="sheetNumber"></param>
+            <param name="titleBlockFamilySymbol"></param>
+            <param name="views"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.ByNameNumberTitleBlockAndView(System.String,System.String,Revit.Elements.FamilySymbol,Revit.Elements.Views.View)">
+            <summary>
+            Create a Revit Sheet by the sheet name, number, a title block FamilySymbol, and a collection of views.  This method will automatically
+            pack the view onto the sheet.
+            </summary>
+            <param name="sheetName"></param>
+            <param name="sheetNumber"></param>
+            <param name="titleBlockFamilySymbol"></param>
+            <param name="view"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.Sheet.FromExisting(Autodesk.Revit.DB.ViewSheet,System.Boolean)">
+            <summary>
+            Create a View from a user selected Element.
+            </summary>
+            <param name="view"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Views.Sheet.InternalViewSheet">
+            <summary>
+            An internal handle on the Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.Sheet.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.Sheet.SheetName">
+            <summary>
+            Get the SheetName of the Sheet
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.Sheet.SheetNumber">
+            <summary>
+            Get the SheetNumber of the Sheet
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.Sheet.Views">
+            <summary>
+            Get the Views on a Sheet
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.WallType">
+            <summary>
+            A Revit WallType
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.WallType.#ctor(Autodesk.Revit.DB.WallType)">
+            <summary>
+            Construct from an existing Revit Element
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Revit.Elements.WallType.InternalSetWallType(Autodesk.Revit.DB.WallType)">
+            <summary>
+            Set the internal Element, ElementId, and UniqueId
+            </summary>
+            <param name="wallType"></param>
+        </member>
+        <member name="M:Revit.Elements.WallType.ByName(System.String)">
+            <summary>
+            Select a walltype from the current document by name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.WallType.FromExisting(Autodesk.Revit.DB.WallType,System.Boolean)">
+            <summary>
+            Create from an existign Revit element
+            </summary>
+            <param name="wallType"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.WallType.InternalWallType">
+            <summary>
+            Internal reference to the Revit Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.WallType.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Views.SectionView">
+            <summary>
+            A Revit ViewSection
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.SectionView.#ctor(Autodesk.Revit.DB.ViewSection)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.SectionView.#ctor(Autodesk.Revit.DB.BoundingBoxXYZ)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Views.SectionView.InternalSetSectionView(Autodesk.Revit.DB.ViewSection)">
+            <summary>
+            Set the InternalViewSection property and the associated element id and unique id
+            </summary>
+            <param name="floor"></param>
+        </member>
+        <member name="M:Revit.Elements.Views.SectionView.ByBoundingBox(Autodesk.DesignScript.Geometry.BoundingBox)">
+            <summary>
+            Create a Revit ViewSection by a bounding box
+            </summary>
+            <param name="box">The bounding box of the view in meters</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Views.SectionView.FromExisting(Autodesk.Revit.DB.ViewSection,System.Boolean)">
+            <summary>
+            Create a View from a user selected Element.
+            </summary>
+            <param name="view"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Views.SectionView.InternalViewSection">
+            <summary>
+            An internal handle on the Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Views.SectionView.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Nuclex.Game.Packing.OutOfSpaceException">
+            <summary>Insufficient space left in packing area to contain a given object</summary>
+            <remarks>
+              An exception being sent to you from deep space. Erm, no, wait, it's an exception
+              that occurs when a packing algorithm runs out of space and is unable to fit
+              the object you tried to pack into the remaining packing area.
+            </remarks>
+        </member>
+        <member name="M:Nuclex.Game.Packing.OutOfSpaceException.#ctor">
+            <summary>Initializes the exception</summary>
+        </member>
+        <member name="M:Nuclex.Game.Packing.OutOfSpaceException.#ctor(System.String)">
+            <summary>Initializes the exception with an error message</summary>
+            <param name="message">Error message describing the cause of the exception</param>
+        </member>
+        <member name="M:Nuclex.Game.Packing.OutOfSpaceException.#ctor(System.String,System.Exception)">
+            <summary>Initializes the exception as a followup exception</summary>
+            <param name="message">Error message describing the cause of the exception</param>
+            <param name="inner">Preceding exception that has caused this exception</param>
+        </member>
+        <member name="M:Nuclex.Game.Packing.OutOfSpaceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>Initializes the exception from its serialized state</summary>
+            <param name="info">Contains the serialized fields of the exception</param>
+            <param name="context">Additional environmental informations</param>
+        </member>
+        <member name="M:Revit.GeometryConversion.HermiteToNurbs.ConvertExact(Autodesk.Revit.DB.HermiteSpline)">
+            <summary>
+            Convert a Revit HermiteSpline exactly to a NurbsCurve equivalent
+            </summary>
+            <param name="crv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.HermiteToNurbs.Clamp(System.Collections.Generic.IEnumerable{System.Double},System.Int32)">
+            <summary>
+            Clamp a collection of curve parameters by introducing knot multiplicities at each end such
+            that each end of the knot vector has degree + 1 copies of the knot
+            </summary>
+            <param name="curveParameters"></param>
+            <param name="degree"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.HermiteToNurbs.GetNurbsPoints(Autodesk.Revit.DB.HermiteSpline,System.Double[])">
+            <summary>
+            Obtain the Nurbs control points from a Hermite Spline
+            </summary>
+            <param name="curve"></param>
+            <param name="nurbsKnots"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.NurbsUtils.ElevateBezierDegree(Autodesk.DesignScript.Geometry.NurbsCurve,System.Int32)">
+            <summary>
+            Elevate the degree of a Bezier curve (represented in NURBS form) to a given degree
+            without changing the shape
+            </summary>
+            <param name="crv">The curve</param>
+            <param name="finalDegree">The requested degree</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.PolygonContainment.GetQuadrant(Autodesk.Revit.DB.UV,Autodesk.Revit.DB.UV)">
+            <summary>
+            Determine the quadrant of a polygon vertex 
+            relative to the test point.
+            </summary>
+        </member>
+        <member name="M:Revit.GeometryConversion.PolygonContainment.GetXIntercept(Autodesk.Revit.DB.UV,Autodesk.Revit.DB.UV,System.Double)">
+            <summary>
+            Determine the X intercept of a polygon edge 
+            with a horizontal line at the Y value of the 
+            test point.
+            </summary>
+        </member>
+        <member name="M:Revit.GeometryConversion.PolygonContainment.PolygonContains(System.Collections.Generic.List{Autodesk.Revit.DB.UV},Autodesk.Revit.DB.UV)">
+            <summary>
+            Determine whether given 2D point lies within 
+            the polygon.
+            
+            Written by Jeremy Tammik, Autodesk, 2009-09-23, 
+            based on code that I wrote back in 1996 in C++, 
+            which in turn was based on C code from the 
+            article "An Incremental Angle Point in Polygon 
+            Test" by Kevin Weiler, Autodesk, in "Graphics 
+            Gems IV", Academic Press, 1994.
+            
+            Copyright (C) 2009 by Jeremy Tammik. All 
+            rights reserved.
+            
+            This code may be freely used. Please preserve 
+            this comment.
+            </summary>
+        </member>
+        <member name="T:Revit.GeometryConversion.SurfaceExtractor">
+            <summary>
+            This class is required to extract the underlying surface representation from a Revit Face.
+            All Face types are supported.
+            </summary>
+        </member>
+        <member name="M:Revit.GeometryConversion.GeometryObjectConverter.Convert(Autodesk.Revit.DB.GeometryObject,Autodesk.Revit.DB.Reference)">
+            <summary>
+            Convert a GeometryObject to an applicable ProtoGeometry type.
+            </summary>
+            <param name="geom"></param>
+            <param name="reference"></param>
+            <returns>A Geometry type.  Null if there's no suitable conversion.</returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.UnitConverter.InDynamoUnits``1(``0)">
+            <summary>
+            Convert from Revit API internal units (feet) to Dynamo internal units (meters) 
+            
+            Can be used simply as geometry.InDynamoUnits() as the type is constrained
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="geometry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryConversion.UnitConverter.InHostUnits``1(``0)">
+            <summary>
+            Convert from Dynamo internal units (meters) to Revit API internal units (feet)
+            
+            Can be used simply as geometry.InHostUnits()
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="geometry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.GeometryObjects.GeometryObjectSelector.ByReferenceStableRepresentation(System.String)">
+            <summary>
+            Return an AbstractGeometryObject given a string representation of the geometry's reference.
+            </summary>
+            <param name="referenceString"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.GeometryReferences.ElementGeometryReference">
+            <summary>
+            A base class for revit Reference objects
+            </summary>
+        </member>
+        <member name="P:Revit.GeometryReferences.ElementGeometryReference.InternalReference">
+            <summary>
+            A stable reference to a Revit Element's geometry
+            </summary>
+        </member>
+        <member name="T:Revit.GeometryReferences.ElementFaceReference">
+            <summary>
+            A stable reference to a Revit Face, usually derived from a Revit Element
+            </summary>
+            See: http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/f3d5d2fe-96bf-8528-4628-78d8d5e6705f.htm
+        </member>
+        <member name="M:Revit.Elements.ElementSelector.ByType``1(System.Boolean)">
+            <summary>
+            Get a collection of wrapped elements from the current document by type
+            </summary>
+            <typeparam name="T">The type of the Revit element to select</typeparam>
+            <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ElementSelector.ByElementId(System.Int32,System.Boolean)">
+            <summary>
+            A factory method for looking up and obtaining elements
+            from the revit project.
+            </summary>
+            <param name="elementId">The id of the element to select</param>
+            <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ElementSelector.ByUniqueId(System.String,System.Boolean)">
+            <summary>
+            A factory method for looking up and obtaining elements
+            from the revit project
+            </summary>
+            <param name="uniqueId">The unique id of the element to select</param>
+            <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ElementSelector.InternalGetElementById(System.Int32)">
+            <summary>
+            Internal helper method to get an element from the current document by id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ElementSelector.InternalGetElementByUniqueId(System.String)">
+            <summary>
+            Obtain an element from the current document given the element's unique id
+            </summary>
+            <param name="uniqueId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Family">
+            <summary>
+            A Revit Family
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Family.InternalSetFamily(Autodesk.Revit.DB.Family)">
+            <summary>
+            Set the internal Revit representation and update the ElementId and UniqueId
+            </summary>
+            <param name="family"></param>
+        </member>
+        <member name="M:Revit.Elements.Family.ByName(System.String)">
+            <summary>
+            Obtain a Family from the current document given it's name
+            </summary>
+            <param name="name">The name of the family in the current document</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Family.FromExisting(Autodesk.Revit.DB.Family,System.Boolean)">
+            <summary>
+            Construct an Element from an existing Element in the Document
+            </summary>
+            <param name="family"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Family.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Family.Symbols">
+            <summary>
+            Obtain the FamilySymbols from this Family
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Family.Name">
+            <summary>
+            The name of this family
+            </summary>
+        </member>
+        <member name="M:Revit.References.RayBounce.FindClosestReference(System.Collections.Generic.IEnumerable{Autodesk.Revit.DB.ReferenceWithContext})">
+            <summary>
+            Find the first intersection with a face
+            </summary>
+            <param name="references"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Revit.Graphics.GraphicsManager.tesselationLevelOfDetail">
+            <summary>
+            Defines the global level of detail setting for 
+            object tesselation
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Parameter.Name">
+            <summary>
+            The name of the parameter.
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.AdaptiveComponent">
+            <summary>
+            A Revit Adaptive Component
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.#ctor(Autodesk.DesignScript.Geometry.Point[],Revit.Elements.FamilySymbol)">
+            <summary>
+            Internal constructor for the AdaptiveComponent wrapper
+            </summary>
+            <param name="pts">Points to use as reference</param>
+            <param name="fs">FamilySymbol to place</param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.#ctor(System.Double[][],Revit.GeometryReferences.ElementFaceReference,Revit.Elements.FamilySymbol)">
+            <summary>
+            Internal constructor for the AdaptiveComponent wrapper
+            </summary>
+            <param name="pts">Points to use as reference</param>
+            <param name="f">Face to use as reference</param>
+            <param name="fs">FamilySymbol to place</param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.#ctor(System.Double[],Autodesk.Revit.DB.Reference,Revit.Elements.FamilySymbol)">
+            <summary>
+            Internal constructor for the AdaptiveComponent wrapper
+            </summary>
+            <param name="parms">Params on curve to reference</param>
+            <param name="c">Curve to use as reference</param>
+            <param name="fs">FamilySymbol to place</param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.#ctor(Autodesk.Revit.DB.FamilyInstance)">
+            <summary>
+            Internal constructor for existing Elements.
+            </summary>
+            <param name="familyInstance"></param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.InternalSetFamilySymbol(Revit.Elements.FamilySymbol)">
+            <summary>
+            Set the family symbol for the internal family instance 
+            </summary>
+            <param name="fs"></param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.InternalSetPositions(Autodesk.Revit.DB.XYZ[])">
+            <summary>
+            Set the positions of the internal family instance from a list of XYZ points
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.InternalSetUvsAndFace(Autodesk.Revit.DB.UV[],Autodesk.Revit.DB.Reference)">
+            <summary>
+            Set the positions of the InternalFamilyInstace from an array of uvs
+            </summary>
+            <param name="uvs"></param>
+            <param name="faceReference"></param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.InternalSetParamsAndCurve(System.Double[],Autodesk.Revit.DB.Reference)">
+            <summary>
+            Set the positions of the InternalFamilyInstace from an array of parameters and curve
+            </summary>
+            <param name="parms"></param>
+            <param name="c"></param>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.ByPoints(Autodesk.DesignScript.Geometry.Point[],Revit.Elements.FamilySymbol)">
+            <summary>
+            Create an AdaptiveComponent from a list of points.
+            </summary>
+            <param name="points">The points to reference in the AdaptiveComponent</param>
+            <param name="familySymbol">The family symbol to use to build the AdaptiveComponent</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.ByParametersOnFace(Autodesk.DesignScript.Geometry.UV[],Autodesk.DesignScript.Geometry.Surface,Revit.Elements.FamilySymbol)">
+            <summary>
+            Create an adaptive component by uv points on a face.
+            </summary>
+            <param name="uvs">An array of UV pairs</param>
+            <param name="surface">The surface on which to place the AdaptiveComponent</param>
+            <param name="familySymbol"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.ByParametersOnCurveReference(System.Double[],Autodesk.DesignScript.Geometry.Curve,Revit.Elements.FamilySymbol)">
+            <summary>
+            Create an adaptive component referencing the parameters on a Curve reference
+            </summary>
+            <param name="parameters">The parameters on the curve</param>
+            <param name="curve">The curve to reference</param>
+            <param name="familySymbol">The family symbol to construct</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.AdaptiveComponent.FromExisting(Autodesk.Revit.DB.FamilyInstance,System.Boolean)">
+            <summary>
+            Construct from an existing instance of an AdaptiveComponent. 
+            </summary>
+            <param name="familyInstance"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.DividedPath">
+            <summary>
+            A Revit DividedPath
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.DividedPath.#ctor(Autodesk.Revit.DB.DividedPath)">
+            <summary>
+            Construct a DSDividedPath from an existing one.  
+            </summary>
+            <param name="divPath"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedPath.#ctor(Revit.GeometryReferences.ElementCurveReference[],System.Int32)">
+            <summary>
+            Private constructor to build a DividedPath
+            </summary>
+            <param name="c">Host curves</param>
+            <param name="divs">Number of divisions</param>
+        </member>
+        <member name="M:Revit.Elements.DividedPath.InternalSetDividedPath(Autodesk.Revit.DB.DividedPath)">
+            <summary>
+            Set the internal object and update the id's
+            </summary>
+            <param name="divPath">The divided path</param>
+        </member>
+        <member name="M:Revit.Elements.DividedPath.FromExisting(Autodesk.Revit.DB.DividedPath,System.Boolean)">
+            <summary>
+            Construct this type from an existing Revit element.
+            </summary>
+            <param name="dividedPath"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.DividedPath.InternalDividedPath">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedPath.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedPath.Points">
+            <summary>
+            All points along the DividedPath.
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.DividedSurface">
+            <summary>
+            A Revit DividedSurface
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.#ctor(Autodesk.Revit.DB.DividedSurface)">
+            <summary>
+            Construct from an existing Element.  The resulting object is Dynamo owned.
+            </summary>
+            <param name="divSurf"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.#ctor(Revit.GeometryReferences.ElementFaceReference,System.Int32,System.Int32,System.Double)">
+            <summary>
+            Private constructor for creating a divided surface
+            </summary>
+            <param name="elementFace"></param>
+            <param name="uDivs"></param>
+            <param name="vDivs"></param>
+            <param name="rotation"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.InternalSetDividedSurface(Autodesk.Revit.DB.DividedSurface)">
+            <summary>
+            Method to set the internal divided surface, id, and unique id
+            </summary>
+            <param name="divSurf"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.InternalSetDivisions(System.Int32,System.Int32)">
+            <summary>
+            Method to mutate the number of divisions of the internal divided surface.  Will
+            fail if the divided surface is not set
+            </summary>
+            <param name="uDivs"></param>
+            <param name="vDivs"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.InternalSetRotation(System.Double)">
+            <summary>
+            Method to set the grid rotation of the internal divided surface
+            </summary>
+            <param name="rotation"></param>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.ByFaceAndUVDivisions(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32)">
+            <summary>
+            Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
+            </summary>
+            <param name="elementFace"></param>
+            <param name="uDivs"></param>
+            <param name="vDivs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.ByFaceUVDivisionsAndRotation(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Int32,System.Double)">
+            <summary>
+            Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
+            and the rotation of the grid lines with respect to the natural UV parameterization of the face
+            </summary>
+            <param name="surface"></param>
+            <param name="uDivs"></param>
+            <param name="vDivs"></param>
+            <param name="gridRotation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.DividedSurface.FromExisting(Autodesk.Revit.DB.DividedSurface,System.Boolean)">
+            <summary>
+            Construct this type from an existing Revit element.
+            </summary>
+            <param name="dividedSurface"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.DividedSurface.InternalDividedSurface">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedSurface.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedSurface.UDivisions">
+            <summary>
+            Number of divisions in U direction
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedSurface.VDivisions">
+            <summary>
+            Number of divisions in V direction
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.DividedSurface.Rotation">
+            <summary>
+            Rotation of the grid lines with respect to the UV parameterization
+            of the face
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.FamilySymbol">
+            <summary>
+            A Revit FamilySymbol
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.#ctor(Autodesk.Revit.DB.FamilySymbol)">
+            <summary>
+            Private constructor for build a DSFamilySymbol
+            </summary>
+            <param name="symbol"></param>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.InternalSetFamilySymbol(Autodesk.Revit.DB.FamilySymbol)">
+            <summary>
+            Set the internal model of the family symbol along with its ElementId and UniqueId
+            </summary>
+            <param name="symbol"></param>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.ByFamilyAndName(Revit.Elements.Family,System.String)">
+            <summary>
+            Select a FamilySymbol given it's parent Family and the FamilySymbol's name.
+            </summary>
+            <param name="family">The FamilySymbol's parent Family</param>
+            <param name="name">The name of the FamilySymbol</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.ByFamilyNameAndTypeName(System.String,System.String)">
+            <summary>
+            Select a FamilySymbol give it's family name and type name.
+            </summary>
+            <param name="familyName">The FamilySymbol's parent Family name.</param>
+            <param name="typeName">The name of the FamilySymbol.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.ByName(System.String)">
+            <summary>
+            Select a FamilySymbol given it's name.  This method will return the first FamilySymbol it finds if there are
+            two or more FamilySymbol's with the same name.
+            </summary>
+            <param name="name">The name of the FamilySymbol</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilySymbol.FromExisting(Autodesk.Revit.DB.FamilySymbol,System.Boolean)">
+            <summary>
+            Obtain a FamilySymbol by selection. 
+            </summary>
+            <param name="familySymbol"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.FamilySymbol.InternalFamilySymbol">
+            <summary>
+            Internal wrapper property
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FamilySymbol.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FamilySymbol.Name">
+            <summary>
+            Get the name of this Family Symbol
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FamilySymbol.Family">
+            <summary>
+            Get the parent family of this FamilySymbol
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.FreeForm">
+            <summary>
+            A Revit FreeForm element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.FreeForm.#ctor(Autodesk.Revit.DB.FreeFormElement)">
+            <summary>
+            Private constructor that allows wrapping of an existing FreeForm element.
+            </summary>
+            <param name="ele"></param>
+        </member>
+        <member name="M:Revit.Elements.FreeForm.#ctor(Autodesk.Revit.DB.Solid)">
+            <summary>
+            Private constructor that constructs a FreeForm from a user-provided
+            solid
+            </summary>
+            <param name="solid"></param>
+        </member>
+        <member name="M:Revit.Elements.FreeForm.InternalSetSolid(Autodesk.Revit.DB.Solid)">
+            <summary>
+            Attempt to set the internal solid.  If this method fails, return false.
+            </summary>
+            <param name="solid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FreeForm.InternalSetFreeFormElement(Autodesk.Revit.DB.FreeFormElement)">
+            <summary>
+            Set the FreeFormElement and update it's id and unique id
+            </summary>
+            <param name="ele"></param>
+        </member>
+        <member name="M:Revit.Elements.FreeForm.FromExisting(Autodesk.Revit.DB.FreeFormElement,System.Boolean)">
+            <summary>
+            Construct the Revit element by selection.
+            </summary>
+            <param name="freeFormElement"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.FreeForm.InternalFreeFormElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.FreeForm.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Material.#ctor(Autodesk.Revit.DB.Material)">
+            <summary>
+            Private constructor for DSMaterial
+            </summary>
+            <param name="material"></param>
+        </member>
+        <member name="M:Revit.Elements.Material.InternalSetMaterial(Autodesk.Revit.DB.Material)">
+            <summary>
+            Set the internal Element, ELementId, and UniqueId
+            </summary>
+            <param name="material"></param>
+        </member>
+        <member name="M:Revit.Elements.Material.ByName(System.String)">
+            <summary>
+            Select a material from the current document by the name
+            </summary>
+            <param name="name">The name of the material</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Material.FromExisting(Autodesk.Revit.DB.Material,System.Boolean)">
+            <summary>
+            Wrap an element in the associated DS type
+            </summary>
+            <param name="material">The material</param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Material.InternalMaterial">
+            <summary>
+            Internal reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Material.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.ModelCurve">
+            <summary>
+            A Revit ModelCurve
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.#ctor(Autodesk.Revit.DB.ModelCurve)">
+            <summary>
+            Construct a model curve from the document.  The result is Dynamo owned
+            </summary>
+            <param name="curve"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.#ctor(Autodesk.Revit.DB.Curve,System.Boolean)">
+            <summary>
+            Internal constructor for ModelCurve
+            </summary>
+            <param name="crv"></param>
+            <param name="makeReferenceCurve"></param>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.InternalSetSketchPlaneFromCurve(Autodesk.Revit.DB.Curve)">
+            <summary>
+            Set the curve internally.  Returns false if this method failed to set the curve
+            </summary>
+            <param name="c"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.ByCurve(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>
+            Construct a Revit ModelCurve element from a Curve
+            </summary>
+            <param name="curve"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.ReferenceCurveByCurve(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>
+            Construct a Revit ModelCurve element from a Curve
+            </summary>
+            <param name="curve"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ModelCurve.FromExisting(Autodesk.Revit.DB.ModelCurve,System.Boolean)">
+            <summary>
+            Construct a Revit ModelCurve element from an existing element.  The result is Dynamo owned.
+            </summary>
+            <param name="modelCurve"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.FamilyInstance">
+            <summary>
+            A Revit FamilyInstance
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.#ctor(Autodesk.Revit.DB.FamilyInstance)">
+            <summary>
+            Wrap an existing FamilyInstance.
+            </summary>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.#ctor(Autodesk.Revit.DB.FamilySymbol,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.Level)">
+            <summary>
+            Internal constructor for a FamilyInstance
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.#ctor(Autodesk.Revit.DB.FamilySymbol,Autodesk.Revit.DB.XYZ)">
+            <summary>
+            Internal constructor for a FamilyInstance
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.ByPoint(Revit.Elements.FamilySymbol,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
+            </summary>
+            <param name="familySymbol"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.ByCoordinates(Revit.Elements.FamilySymbol,System.Double,System.Double,System.Double)">
+            <summary>
+            Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
+            </summary>
+            <param name="familySymbol"></param>
+            <param name="x">X coordinate in meters</param>
+            <param name="y">Y coordinate in meters</param>
+            <param name="z">Z coordinate in meters</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.ByPointAndLevel(Revit.Elements.FamilySymbol,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Level)">
+            <summary>
+            Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType), it's coordinates in world space, and the Level
+            </summary>
+            <param name="familySymbol"></param>
+            <param name="point">Point in meters</param>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.ByFamilySymbol(Revit.Elements.FamilySymbol)">
+            <summary>
+            Obtain a collection of FamilyInstances from the Revit Document and use them in the Dynamo graph
+            </summary>
+            <param name="familySymbol"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.FamilyInstance.FromExisting(Autodesk.Revit.DB.FamilyInstance,System.Boolean)">
+            <summary>
+            Construct a FamilyInstance from the Revit document. 
+            </summary>
+            <param name="familyInstance"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.Floor">
+            <summary>
+            A Revit Floor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Floor.#ctor(Autodesk.Revit.DB.Floor)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Floor.#ctor(Autodesk.Revit.DB.CurveArray,Autodesk.Revit.DB.FloorType,Autodesk.Revit.DB.Level)">
+            <summary>
+            Private constructor
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Floor.InternalSetFloor(Autodesk.Revit.DB.Floor)">
+            <summary>
+            Set the InternalFloor property and the associated element id and unique id
+            </summary>
+            <param name="floor"></param>
+        </member>
+        <member name="M:Revit.Elements.Floor.ByOutlineTypeAndLevel(Autodesk.DesignScript.Geometry.Curve[],Revit.Elements.FloorType,Revit.Elements.Level)">
+            <summary>
+            Create a Revit Floor given it's curve outline and Level
+            </summary>
+            <param name="outlineCurves"></param>
+            <param name="floorType"></param>
+            <param name="level"></param>
+            <returns>The floor</returns>
+        </member>
+        <member name="M:Revit.Elements.Floor.ByOutlineTypeAndLevel(Autodesk.DesignScript.Geometry.PolyCurve,Revit.Elements.FloorType,Revit.Elements.Level)">
+            <summary>
+            Create a Revit Floor given it's curve outline and Level
+            </summary>
+            <param name="outline"></param>
+            <param name="floorType"></param>
+            <param name="level"></param>
+            <returns>The floor</returns>
+        </member>
+        <member name="M:Revit.Elements.Floor.FromExisting(Autodesk.Revit.DB.Floor,System.Boolean)">
+            <summary>
+            Create a Floor from a user selected Element.
+            </summary>
+            <param name="floor"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Floor.InternalFloor">
+            <summary>
+            An internal handle on the Revit floor
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Floor.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Grid">
+            <summary>
+            A Revit Grid Element
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Grid.#ctor(Autodesk.Revit.DB.Grid)">
+            <summary>
+            Private constructor for wrapping an existing Element
+            </summary>
+            <param name="grid"></param>
+        </member>
+        <member name="M:Revit.Elements.Grid.#ctor(Autodesk.Revit.DB.Line)">
+            <summary>
+            Private constructor that creates a new Element every time
+            </summary>
+            <param name="line"></param>
+        </member>
+        <member name="M:Revit.Elements.Grid.#ctor(Autodesk.Revit.DB.Arc)">
+            <summary>
+            Private constructor that creates a new Element every time
+            </summary>
+            <param name="arc"></param>
+        </member>
+        <member name="M:Revit.Elements.Grid.InternalSetGrid(Autodesk.Revit.DB.Grid)">
+            <summary>
+            Set the internal Element, ElementId, and UniqueId
+            </summary>
+            <param name="grid"></param>
+        </member>
+        <member name="M:Revit.Elements.Grid.ByLine(Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            Create a Revit Grid Element in a Project along a Line.  
+            </summary>
+            <param name="line"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Grid.ByStartPointEndPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Create a Revit Grid Element in a project between two end points
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Grid.ByArc(Autodesk.DesignScript.Geometry.Arc)">
+            <summary>
+            Create a Revit Grid Element in a project along an Arc
+            </summary>
+            <param name="arc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Grid.FromExisting(Autodesk.Revit.DB.Grid,System.Boolean)">
+            <summary>
+            Wrap an existing Element in the associated DS type
+            </summary>
+            <param name="grid"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Grid.InternalGrid">
+            <summary>
+            Internal reference to Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Grid.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Grid.Curve">
+            <summary>
+            Get the underlying Curve geometry from this Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Grid.ElementCurveReference">
+            <summary>
+            Get a Reference to the underlying Curve Geometry of this Element
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.Level">
+            <summary>
+            A Revit Level
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.Level.#ctor(System.Double,System.String)">
+            <summary>
+            Private constructor for Level
+            </summary>
+            <param name="elevation"></param>
+            <param name="name"></param>
+        </member>
+        <member name="M:Revit.Elements.Level.InternalSetLevel(Autodesk.Revit.DB.Level)">
+            <summary>
+            Set the Element, it's Id, and it's uniqueId
+            </summary>
+            <param name="level"></param>
+        </member>
+        <member name="M:Revit.Elements.Level.InternalSetElevation(System.Double)">
+            <summary>
+            Mutate the height of the level
+            </summary>
+            <param name="elevation"></param>
+        </member>
+        <member name="M:Revit.Elements.Level.InternalSetName(System.String)">
+            <summary>
+            Mutate the name of the level
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Revit.Elements.Level.ByElevationAndName(System.Double,System.String)">
+            <summary>
+            Create a Revit Level given it's elevation and name in the project
+            </summary>
+            <param name="elevation"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Level.ByElevation(System.Double)">
+            <summary>
+            Create a Revit Level given it's elevation.  The name will be whatever
+            Revit gives it.
+            </summary>
+            <param name="elevation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Level.ByLevelAndOffset(Revit.Elements.Level,System.Double)">
+            <summary>
+            Create a Revit Level given it's length offset from an existing level
+            </summary>
+            <param name="level"></param>
+            <param name="offset"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Level.ByLevelOffsetAndName(Revit.Elements.Level,System.Double,System.String)">
+            <summary>
+            Create a Revit Level given a distance offset from an existing 
+            level and a name for the new level
+            </summary>
+            <param name="level"></param>
+            <param name="offset"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Level.FromExisting(Autodesk.Revit.DB.Level,System.Boolean)">
+            <summary>
+            Create a Level from a user selected Element.
+            </summary>
+            <param name="level"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Level.InternalLevel">
+            <summary>
+            Internal reference to Revit element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Level.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Level.Elevation">
+            <summary>
+            The elevation of the level above ground level
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Level.ProjectElevation">
+            <summary>
+            Elevation relative to the Project origin
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Level.Name">
+            <summary>
+            The name of the level
+            </summary>
+        </member>
+        <member name="T:Revit.GeometryReferences.ElementCurveReference">
+            <summary>
+            A stable reference to a Revit curve derived from a Revit Element
+            </summary>
+            See: http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/d5e10517-24fa-4627-43be-8981746d30c8.htm
+        </member>
+        <member name="M:Revit.GeometryReferences.ElementCurveReference.TryGetCurveReference(System.Object,System.String)">
+            <summary>
+            Attempt to extract a CurveReference from an object which may be a Revit.References.CurveReference, Revit.Elements.CurveElement, or Revit.Elements.Element
+            </summary>
+            <param name="curveObject"></param>
+            <param name="nodeTypeString"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Revit.Elements.ReferencePlane">
+            <summary>
+            A Revit ReferencePlane
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.#ctor(Autodesk.Revit.DB.ReferencePlane)">
+            <summary>
+            Internal reference plane
+            </summary>
+            <param name="referencePlane"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.#ctor(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.View)">
+            <summary>
+            Constructor used internally by public static constructors
+            </summary>
+            <param name="bubbleEnd"></param>
+            <param name="freeEnd"></param>
+            <param name="normal"></param>
+            <param name="view"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.InternalSetReferencePlane(Autodesk.Revit.DB.ReferencePlane)">
+            <summary>
+            Set the InternalReferencePlane and update the element id and unique id
+            </summary>
+            <param name="rp"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.InternalSetEndpoints(Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.XYZ)">
+            <summary>
+            Mutate the two end points of the ReferencePlane 
+            </summary>
+            <param name="bubbleEnd"></param>
+            <param name="freeEnd"></param>
+            <returns>False if the operation failed</returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.ByLine(Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            Form a ReferencePlane from a line in the Active view.  The cut vector is the Z Axis.
+            </summary>
+            <param name="line">The line where the bubble wil be located at the start</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePlane.ByStartPointEndPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Form a Refernece plane from two end points in the Active view.  The cut vector is the Z Axis.
+            </summary>
+            <param name="start">The location where the bubble will be located</param>
+            <param name="end">The other end</param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.ReferencePlane.InternalReferencePlane">
+            <summary>
+            Internal handle for the Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ReferencePlane.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ReferencePlane.Plane">
+            <summary>
+            Get the internal Geometric Plane
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ReferencePlane.ElementPlaneReference">
+            <summary>
+            Get a reference to this plane for downstream Elements requiring it
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.ReferencePoint">
+            <summary>
+            A Revit Reference Point
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.#ctor(Autodesk.Revit.DB.ReferencePoint)">
+            <summary>
+            Internal constructor for wrapping a ReferencePoint. 
+            </summary>
+            <param name="refPt"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.#ctor(Autodesk.Revit.DB.Reference,Autodesk.Revit.DB.UV)">
+            <summary>
+            Internal constructor for ReferencePoint Elements that a persistent relationship to a Face
+            </summary>
+            <param name="faceReference"></param>
+            <param name="uv"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.#ctor(Autodesk.Revit.DB.Reference,System.Double,Autodesk.Revit.DB.PointOnCurveMeasurementType,Autodesk.Revit.DB.PointOnCurveMeasureFrom)">
+            <summary>
+            Internal constructor for ReferencePoint Elements that a persistent relationship to a Curve
+            </summary>
+            <param name="curveReference"></param>
+            <param name="parameter"></param>
+            <param name="measurementType"></param>
+            <param name="measureFrom"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.#ctor(Autodesk.Revit.DB.XYZ)">
+            <summary>
+            Internal constructor for the ReferencePoint
+            </summary>
+            <param name="xyz"></param>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByCoordinates(System.Double,System.Double,System.Double)">
+            <summary>
+            Create a Reference Point by x, y, and z coordinates.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Create a Reference Point from a point.
+            </summary>
+            <param name="pt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByPointVectorDistance(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>
+            Create a Reference Point Element offset from a point along a vector
+            </summary>
+            <param name="basePoint"></param>
+            <param name="direction"></param>
+            <param name="distance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByLengthOnCurveReference(System.Object,System.Double)">
+            <summary>
+            Create a Reference Point at a particular length along a curve
+            </summary>
+            <param name="elementCurveReference"></param>
+            <param name="length">Distance in meters along the curve</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByParameterOnCurveReference(System.Object,System.Double)">
+            <summary>
+            Create a Reference Point at a parameter on an Curve.  This introduces a persistent relationship between
+            Elements in the Revit document.
+            </summary>
+            <param name="elementCurveReference"></param>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.ByParametersOnFaceReference(System.Object,System.Double,System.Double)">
+            <summary>
+            Create a Reference Point by UV coordinates on a Face. This introduces a persistent relationship between
+            Elements in the Revit document.
+            </summary>
+            <param name="elementFaceReference"></param>
+            <param name="u"></param>
+            <param name="v"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.FromExisting(Autodesk.Revit.DB.ReferencePoint,System.Boolean)">
+            <summary>
+            Create a Reference Point from a user selected Element.
+            </summary>
+            <param name="pt"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.ReferencePoint.Autodesk#DesignScript#Interfaces#IGraphicItem#Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+            <summary>
+            Tessellate Reference Point to render package for visualization.
+            </summary>
+            <param name="package"></param>
+            <param name="tol"></param>
+            <param name="gridLines"></param>
+        </member>
+        <member name="P:Revit.Elements.ReferencePoint.InternalReferencePoint">
+            <summary>
+            Internal variable containing the wrapped Revit object
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.ReferencePoint.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.AnalysisDisplay.SpmPrimitiveIdPair">
+            <summary>
+            Hold a pair of element ID of SpatialFieldManager and primitive ID to
+            support serialization.
+            </summary>
+        </member>
+        <member name="T:Revit.Elements.StructuralFraming">
+            <summary>
+            A Revit FamilyInstance
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.StructuralFraming.#ctor(Autodesk.Revit.DB.FamilyInstance)">
+            <summary>
+            Wrap an existing FamilyInstance. 
+            </summary>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Revit.Elements.StructuralFraming.#ctor(Autodesk.Revit.DB.Curve,Autodesk.Revit.DB.XYZ,Autodesk.Revit.DB.Level,Autodesk.Revit.DB.Structure.StructuralType,Autodesk.Revit.DB.FamilySymbol)">
+            <summary>
+            Internal constructor - creates a single StructuralFraming instance
+            </summary>
+        </member>
+        <member name="M:Revit.Elements.StructuralFraming.ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Autodesk.DesignScript.Geometry.Vector,Revit.Elements.StructuralType,Revit.Elements.FamilySymbol)">
+            <summary>
+            Create a Revit Structural Member - a special FamilyInstance
+            </summary>
+            <param name="curve">The curve path for the structural member</param>
+            <param name="upVector">The up vector for the element - this is required to determine the orientation of the element</param>
+            <param name="level">The level on which the member should appear</param>
+            <param name="structuralType">The type of the structural element - a beam, column, etc</param>
+            <param name="structuralFamilySymbol">The FamilySymbol representing the structural type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.StructuralFraming.FromExisting(Autodesk.Revit.DB.FamilyInstance,System.Boolean)">
+            <summary>
+            Construct a FamilyInstance from the Revit document. 
+            </summary>
+            <param name="familyInstance"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Wall.#ctor(Autodesk.Revit.DB.Wall)">
+            <summary>
+            Create from an existing Revit Element
+            </summary>
+            <param name="wall"></param>
+        </member>
+        <member name="M:Revit.Elements.Wall.#ctor(Autodesk.Revit.DB.Curve,Autodesk.Revit.DB.WallType,Autodesk.Revit.DB.Level,System.Double,System.Double,System.Boolean,System.Boolean)">
+            <summary>
+            Create a new instance of WallType, deleting the original
+            </summary>
+            <param name="curve"></param>
+            <param name="wallType"></param>
+            <param name="baseLevel"></param>
+            <param name="height"></param>
+            <param name="offset"></param>
+            <param name="flip"></param>
+            <param name="isStructural"></param>
+        </member>
+        <member name="M:Revit.Elements.Wall.InternalSetWall(Autodesk.Revit.DB.Wall)">
+            <summary>
+            Set the internal Element, ElementId, and UniqueId
+            </summary>
+            <param name="wall"></param>
+        </member>
+        <member name="M:Revit.Elements.Wall.ByCurveAndHeight(Autodesk.DesignScript.Geometry.Curve,System.Double,Revit.Elements.Level,Revit.Elements.WallType)">
+            <summary>
+            Create a Revit Wall from a guiding Curve, height, Level, and WallType
+            </summary>
+            <param name="curve"></param>
+            <param name="height"></param>
+            <param name="level"></param>
+            <param name="wallType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Wall.ByCurveAndLevels(Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Revit.Elements.Level,Revit.Elements.WallType)">
+            <summary>
+            Create a Revit Wall from a guiding Curve, start Level, end Level, and WallType
+            </summary>
+            <param name="c"></param>
+            <param name="startLevel"></param>
+            <param name="endLevel"></param>
+            <param name="wallType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Elements.Wall.FromExisting(Autodesk.Revit.DB.Wall,System.Boolean)">
+            <summary>
+            Create a Revit Wall from an existing reference
+            </summary>
+            <param name="wall"></param>
+            <param name="isRevitOwned"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Revit.Elements.Wall.InternalWall">
+            <summary>
+            Internal reference to the Revit Element
+            </summary>
+        </member>
+        <member name="P:Revit.Elements.Wall.InternalElement">
+            <summary>
+            Reference to the Element
+            </summary>
+        </member>
+        <member name="T:Revit.GeometryReferences.ElementPlaneReference">
+            <summary>
+            A Reference to a plane extracted from a Revit ELement
+            </summary>
+        </member>
+        <member name="T:Revit.Transaction.Transaction">
+            <summary>
+                A Revit Transaction.
+            </summary>
+        </member>
+        <member name="M:Revit.Transaction.Transaction.Start(System.Object)">
+            <summary>
+            Start a transaction if neccesssary, returning
+            whatever was passed in.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revit.Transaction.Transaction.End(System.Object)">
+            <summary>
+                Ends the current Dynamo transaction, returning whatever was
+                passed in.
+            </summary>
+            <param name="input">An object.</param>
+        </member>
+    </members>
+</doc>

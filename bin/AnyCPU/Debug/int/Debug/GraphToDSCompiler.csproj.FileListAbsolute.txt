@@ -1,0 +1,7 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\GraphToDSCompiler.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\GraphToDSCompiler.Properties.Resources.resources
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\GraphToDSCompiler.csproj.GenerateResource.Cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\GraphToDSCompiler.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\GraphToDSCompiler.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\GraphToDSCompiler.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\GraphToDSCompiler.pdb

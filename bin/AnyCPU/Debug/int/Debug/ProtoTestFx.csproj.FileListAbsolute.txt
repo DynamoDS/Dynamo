@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\ProtoTestFx.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\ProtoTestFx.pdb

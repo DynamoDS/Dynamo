@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoUtilities.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoUtilities.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DynamoUtilities.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DynamoUtilities.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoUtilities.csprojResolveAssemblyReference.cache

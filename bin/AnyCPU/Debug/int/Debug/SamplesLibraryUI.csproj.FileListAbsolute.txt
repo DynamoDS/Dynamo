@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\SamplesLibraryUI.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\nodes\SamplesLibraryUI.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\nodes\SamplesLibraryUI.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\SamplesLibraryUI.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\SamplesLibraryUI.pdb

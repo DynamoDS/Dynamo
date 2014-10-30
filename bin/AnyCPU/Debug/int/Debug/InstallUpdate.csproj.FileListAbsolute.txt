@@ -1,0 +1,7 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\InstallUpdate.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Dynamo.cer
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\InstallUpdate.exe.config
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\InstallUpdate.exe
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\InstallUpdate.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\InstallUpdate.exe
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\InstallUpdate.pdb

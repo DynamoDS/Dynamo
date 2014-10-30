@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DataBridgeTests.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DataBridgeTests.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DataBridgeTests.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DataBridgeTests.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DataBridgeTests.pdb

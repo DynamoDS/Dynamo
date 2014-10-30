@@ -1,0 +1,5 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitServices.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\RevitServices.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\RevitServices.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitServices.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\RevitServices.pdb

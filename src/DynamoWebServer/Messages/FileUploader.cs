@@ -30,15 +30,24 @@ namespace DynamoWebServer.Messages
         {
             try
             {
-                var content = uploadFileMessage.FileContent;
-                var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
                 IsCustomNode = uploadFileMessage.IsCustomNode;
-                
-                File.WriteAllBytes(filePath, content);
 
-                dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
-                
-                File.Delete(filePath);
+                // if path was specified it means NWK is used
+                if (!string.IsNullOrEmpty(uploadFileMessage.Path))
+                {
+                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(uploadFileMessage.Path));
+                }
+                else
+                {
+                    var content = uploadFileMessage.FileContent;
+                    var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
+                    
+                    File.WriteAllBytes(filePath, content);
+
+                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
+
+                    File.Delete(filePath);
+                }
 
                 nodesToCreate.Clear();
                 connectorsToCreate.Clear();

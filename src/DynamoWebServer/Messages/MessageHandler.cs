@@ -169,38 +169,52 @@ namespace DynamoWebServer.Messages
 
         private void SaveFile(DynamoModel dynamo, Message message, string sessionId)
         {
-            // Put into this list all workspaces that should be saved as files
-            var homeWorkspace = dynamoModel.HomeSpace;
+            string guid = (message as SaveFileMessage).Guid;
 
-            // Add home workspace into it
-            var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
+            WorkspaceModel workspaceToSave = null;
+            if (string.IsNullOrEmpty(guid))
+            {
+                workspaceToSave = dynamoModel.HomeSpace;
+            }
+            else
+            {
+                var definition = dynamoModel.CustomNodeManager.GetLoadedDefinitions().FirstOrDefault(d => d.FunctionId.ToString() == guid);
+                if (definition != null)
+                {
+                    workspaceToSave = definition.WorkspaceModel;
+                }
+                else
+                {
+                    return;
+                }
+            }
 
             byte[] fileContent;
             try
             {
-                string fileName, filePath;
+                string fileName, filePath = (message as SaveFileMessage).FilePath;
 
-                var customNodes = dynamoModel.CustomNodeManager.GetLoadedDefinitions()
-                    .Select(cnd => cnd.WorkspaceModel);
-
-                // Add workspaces of all loaded custom nodes into saving list
-                allWorkspacesToSave.AddRange(customNodes);
-
-                foreach (var ws in allWorkspacesToSave)
+                // if path was specified it means NWK is used and we need just to save file
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    if (!workspaceToSave.SaveAs(filePath))
+                        throw new Exception();
+                }
+                else
                 {
                     // If workspace has its own filename use it during saving
-                    if (!string.IsNullOrEmpty(ws.FileName))
+                    if (!string.IsNullOrEmpty(workspaceToSave.FileName))
                     {
-                        fileName = Path.GetFileName(ws.FileName);
-                        filePath = ws.FileName;
+                        fileName = Path.GetFileName(workspaceToSave.FileName);
+                        filePath = workspaceToSave.FileName;
                     }
                     else
                     {
                         // Add to file name a correct extension 
                         // dependently on its type (custom node or home)
-                        if (ws is CustomNodeWorkspaceModel)
+                        if (workspaceToSave is CustomNodeWorkspaceModel)
                         {
-                            fileName = (ws.Name != null ? ws.Name : "MyCustomNode") + ".dyf";
+                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "MyCustomNode") + ".dyf";
                         }
                         else
                         {
@@ -212,7 +226,7 @@ namespace DynamoWebServer.Messages
 
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
-                    if (!ws.SaveAs(filePath))
+                    if (!workspaceToSave.SaveAs(filePath))
                         throw new Exception();
 
                     // Get the file as byte array and after that delete it

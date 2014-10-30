@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <namespaces>
+        <namespace name="DSCore">
+            <category>Core</category>
+        </namespace>
+        <namespace name="DSCore.File">
+          <category>Core.File</category>
+        </namespace>
+    </namespaces>
+</doc>

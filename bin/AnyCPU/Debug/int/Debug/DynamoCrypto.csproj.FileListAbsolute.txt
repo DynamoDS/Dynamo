@@ -1,0 +1,6 @@
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoCrypto.csprojResolveAssemblyReference.cache
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Dynamo.cer
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoCrypto.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoCrypto.pdb
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DynamoCrypto.dll
+D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DynamoCrypto.pdb
