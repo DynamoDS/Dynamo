@@ -1,0 +1,20 @@
+<Workspace Version="0.7.2.2921" X="0" Y="0" zoom="1" Description="" Category="test" Name="duplicate-input" ID="9769c246-6db3-434c-b6ed-14a5975fe5c1">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="450bbb13-29f2-4ed1-8442-5142932be771" nickname="Input" x="147" y="198.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7fedc521-d58a-42a9-9ad5-8eaba26805ee" nickname="Input" x="139" y="302.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f9cacd5f-aa8f-4dc4-bf97-84f6081254ea" nickname="+" x="254" y="212.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="94d46dbf-0693-45ff-874a-f00f0b99e2c8" nickname="Output" x="307" y="343.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="450bbb13-29f2-4ed1-8442-5142932be771" start_index="0" end="f9cacd5f-aa8f-4dc4-bf97-84f6081254ea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7fedc521-d58a-42a9-9ad5-8eaba26805ee" start_index="0" end="f9cacd5f-aa8f-4dc4-bf97-84f6081254ea" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9cacd5f-aa8f-4dc4-bf97-84f6081254ea" start_index="0" end="94d46dbf-0693-45ff-874a-f00f0b99e2c8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

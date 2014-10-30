@@ -26,6 +26,11 @@ namespace Dynamo.Core.Threading
         private GraphSyncData graphSyncData;
         private EngineController engineController;
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
+
         #region Public Class Operational Methods
 
         internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler)
