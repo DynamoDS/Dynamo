@@ -2228,13 +2228,13 @@ namespace ProtoAssociative
                 string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
                 if (classNames.Length > 1)
                 {
+                    // There is a namespace conflict
+
                     // TODO Jun: Move this warning handler to after the SSA transform
                     // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                    buildStatus.LogNamespaceConflictWarning(identList.LeftNode.ToString(), classNames);
+                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
                 }
-
-                // Check if a classname is found
-                if(classNames.Length == 1)
+                else if(classNames.Length == 1)
                 {
                     // A matching class has been found
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
@@ -2242,20 +2242,20 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    // Continue traversing the identlist
+                    // There is no matching class name, continue traversing the identlist
 
                     // Check if the lhs is an identifier and if it has any namespace conflicts
                     // We want to handle this here because we know ident lists can potentially contain namespace resolving
-                    if (identList.LeftNode is IdentifierNode)
+                    var ident = identList.LeftNode as IdentifierNode; 
+                    if(ident != null)
                     {
                         // TODO Jun: Move this warning handler to after the SSA transform
                         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-
-                        string name = (identList.LeftNode as IdentifierNode).Value;
-                        classNames = core.ClassTable.GetAllMatchingClasses(name);
+                        classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, ident.Value);
                         if (classNames.Length > 1)
                         {
-                            buildStatus.LogNamespaceConflictWarning(name, classNames);
+                            // There is a namespace conflict
+                            buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
                         }
                     }
 

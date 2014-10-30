@@ -555,19 +555,16 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Logs the warning where the usage of a class (className) cannot be resolved because it collides with multiple classes(collidingClassNames) 
+        /// Logs the warning where the usage of a symbol (symbolName) cannot be resolved because it collides with multiple symbols(collidingSymbolNames) 
         /// </summary>
         /// <param name="symbolUsage"></param>
         /// <param name="duplicateSymbolNames"></param>
-        public void LogNamespaceConflictWarning(string className, string[] collidingClassNames)
+        public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            if (collidingClassNames.Length > 1)
+            if (collidingSymbolNames.Length > 1)
             {
-                string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFoundFromName, className, "");
-                foreach (var symbolName in collidingClassNames)
-                {
-                    message += ", " + symbolName;
-                }
+                string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFoundFromName, symbolName, "");
+                message += String.Join(", ", collidingSymbolNames);
                 LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
             }
         }
