@@ -250,14 +250,16 @@ namespace Dynamo.Applications.Models
             UnsubscribeTransactionManagerEvents();
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         protected override void PostShutdownCore(bool shutdownHost)
         {
-#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.ClearPromises();
             IdlePromise.Shutdown();
-#endif
             base.PostShutdownCore(shutdownHost);
         }
+
+#endif
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {

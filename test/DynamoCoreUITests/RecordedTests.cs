@@ -396,10 +396,10 @@ namespace DynamoCoreUITests
             });
         }
         [Test]
-        public void Deffect_CN_1143()
+        public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
-            RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_1143_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -443,9 +443,9 @@ namespace DynamoCoreUITests
             });
         }
         [Test]
-        public void TestDeffect_CN_2144()
+        public void Defect_MAGN_2144_CN()
         {
-            RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2144_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -1883,45 +1883,45 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_1412CreateList()
+        public void Defect_MAGN_1412_CreateList()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1412CreateList.xml");
+            RunCommandsFromFile("Defect_MAGN_1412_CreateList.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_1344PythonEditor()
+        public void Defect_MAGN_1344_PythonEditor()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1344PythonEditor.xml");
+            RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_2208Delete_CBN()
+        public void Defect_MAGN_2208_DeleteCBN()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Defect_MAGN_2208.xml");
+            RunCommandsFromFile("Defect_MAGN_2208_DeleteCBN.xml");
             Assert.AreEqual(0, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_2201Watch_CBN()
+        public void Defect_MAGN_2201_WatchCBN()
         {
-            RunCommandsFromFile("Defect_MAGN_2201.xml");
+            RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_747MultiReference()
+        public void Defect_MAGN_747_MultiReference()
         {
-            RunCommandsFromFile("defect_MAGN_747.xml", true);
+            RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml", true);
             Assert.AreEqual(1, workspace.Nodes.Count);
             AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96", 1);
 

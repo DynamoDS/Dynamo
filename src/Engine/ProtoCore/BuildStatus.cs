@@ -47,6 +47,7 @@ namespace ProtoCore
             kFileNotFound,
             kAlreadyImported,
             kMultipleSymbolFound,
+            kMultipleSymbolFoundFromName,
             kWarnMax
         }
 
@@ -84,7 +85,8 @@ namespace ProtoCore
             public const string kUsingNonStaticMemberInStaticContext = "'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.";
             public const string kFileNotFound = "File : '{0}' not found";
             public const string kAlreadyImported = "File : '{0}' is already imported";
-            public const string kMultipleSymbolFound = "Multiple definitions for '{0}' are found as {1}";
+            public const string kMultipleSymbolFound = "Multiple definitions for '{0}' are found as {1}";   
+            public const string kMultipleSymbolFoundFromName = "Multiple definitions for '{0}' are found as {1}";   
         }
 
         public struct ErrorEntry
@@ -550,6 +552,19 @@ namespace ProtoCore
                     throw new BuildHaltException(msg);
             }
             throw new BuildHaltException(msg);
+        }
+
+        /// <summary>
+        /// Logs the warning where the usage of a symbol (symbolName) cannot be 
+        /// resolved because it collides with multiple symbols(collidingSymbolNames) 
+        /// </summary>
+        /// <param name="symbolUsage"></param>
+        /// <param name="duplicateSymbolNames"></param>
+        public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
+        {
+            string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFoundFromName, symbolName, "");
+            message += String.Join(", ", collidingSymbolNames);
+            LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
         }
 
         public void LogWarning(BuildData.WarningID warningID, 
