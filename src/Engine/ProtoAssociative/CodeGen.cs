@@ -2258,6 +2258,11 @@ namespace ProtoAssociative
                         {
                             // There is a namespace conflict
                             buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
+
+                            // Continue traversing the expression even after a namespace conflict
+                            // TODO: Determine if we want to terminate traversal of this identlist
+                            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+
                         }
                     }
 
