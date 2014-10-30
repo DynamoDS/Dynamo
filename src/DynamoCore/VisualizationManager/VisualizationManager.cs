@@ -18,14 +18,17 @@ using Dynamo.DSEngine;
 
 namespace Dynamo
 {
+    #region event handlers
+
     public delegate void RenderCompleteEventHandler(object sender, RenderCompletionEventArgs e);
 
     public delegate void RenderFailedEventHandler(object sender, RenderFailedEventArgs e);
 
-
     public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
 
     public delegate void VisualizerDelegate(NodeModel node, object geom, string tag, RenderDescription target, Octree.OctreeSearch.Octree octree);
+
+    #endregion
 
     /// <summary>
     /// Visualization manager consolidates functionality for creating visualizations 
@@ -325,7 +328,6 @@ namespace Dynamo
             }
         }
 
-
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
         /// a message that a visualization is ready
@@ -400,6 +402,25 @@ namespace Dynamo
             //renderManager.RequestRenderAsync(new RenderTask());
             
             //renderManager.Render(null,false);
+        }
+
+        /// <summary>
+        /// Request updated visuals for a branch of the graph.
+        /// </summary>
+        /// <param name="node">The node whose branch you want updated visuals for, or null to return everything.</param>
+        public void RequestBranchUpdate(NodeModel node)
+        {
+            var scheduler = dynamoModel.Scheduler;
+
+            // Schedule a AggregateRenderPackageAsyncTask here so that the 
+            // background geometry preview gets refreshed.
+            // 
+            var task = new AggregateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(dynamoModel.CurrentWorkspace, node))
+            {
+                task.Completed += OnRenderPackageAggregationCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
         }
 
         #endregion
@@ -591,7 +612,9 @@ namespace Dynamo
 
         protected virtual void HandleRenderPackagesReadyCore()
         {
-            // The base VisualizationManager does nothing here.
+            // Fire the render complete event which is handled by the render
+            // targets. The render targets then request their updated branch visuals.
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1));
         }
 
         private void RequestNodeVisualUpdate(NodeModel nodeModel)
@@ -616,16 +639,6 @@ namespace Dynamo
             var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
             notifyTask.Completed += OnNodeModelRenderPackagesReady;
             scheduler.ScheduleForExecution(notifyTask);
-
-            // Schedule a AggregateRenderPackageAsyncTask here so that the 
-            // background geometry preview gets refreshed.
-            // 
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(dynamoModel.CurrentWorkspace, null))
-            {
-                task.Completed += OnRenderPackageAggregationCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
         }
 
         private void OnNodeModelRenderPackagesReady(AsyncTask asyncTask)
@@ -646,7 +659,9 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            var e = new VisualizationEventArgs(rps, string.Empty, -1);
+            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.Id));
+
+            var e = new VisualizationEventArgs(rps, task.Id, -1);
             OnResultsReadyToVisualize(this, e);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
@@ -52,7 +54,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
+                return this.ViewModel.ToggleCanNavigateBackgroundCommand;
             }
         }
         
@@ -75,7 +77,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DynamoViewModel DynamoViewModel { get; set; }
+        public DynamoViewModel ViewModel { get; set; }
+
+        public IVisualizationManager VisualizationManager { get; private set; }
 
         #endregion
 
@@ -107,7 +111,8 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            this.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            this.ViewModel = nodeUI.ViewModel.DynamoViewModel;
+            VisualizationManager = ViewModel.VisualizationManager;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
@@ -207,7 +212,7 @@ namespace Dynamo.Nodes
         private RenderPackage PackageRenderData(IGraphicItem gItem)
         {
             var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, this.DynamoViewModel.VisualizationManager.MaxTesselationDivisions);
+            gItem.Tessellate(renderPackage, -1.0, this.ViewModel.VisualizationManager.MaxTesselationDivisions);
             renderPackage.ItemsCount++;
             return renderPackage;
         }
@@ -316,8 +321,8 @@ namespace Dynamo.Nodes
 
         public void GetBranchVisualization(object parameters)
         {
-            var taskId = (long)parameters;
-            this.DynamoViewModel.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
+            Debug.WriteLine(string.Format("Requesting branch update for {0}", GUID));
+            ViewModel.VisualizationManager.RequestBranchUpdate(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -332,7 +337,7 @@ namespace Dynamo.Nodes
 
         private void CheckForLatestRender(object obj)
         {
-            this.DynamoViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+            this.ViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
         #endregion
