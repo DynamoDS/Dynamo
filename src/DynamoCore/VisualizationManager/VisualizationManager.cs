@@ -270,7 +270,7 @@ namespace Dynamo
         /// </summary>
         public void UnPause()
         {
-            UnPause(this, EventArgs.Empty);
+            UnPauseAndUpdate(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -529,7 +529,7 @@ namespace Dynamo
 
             // For a selection event, we need only to trigger a new rendering for 
             // the background preview.
-            AggregateUpstreamRenderPackages(new RenderTag(CurrentTaskId, null));
+            QueueRenderTask();
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace Dynamo
         {
             // Fire the render complete event which is handled by the render
             // targets. The render targets then request their updated branch visuals.
-            OnRenderComplete(this, new RenderCompletionEventArgs(-1));
+            QueueRenderTask();
         }
 
         private void RequestNodeVisualUpdate(NodeModel nodeModel)
@@ -670,7 +670,6 @@ namespace Dynamo
         private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
-            //QueueRenderTask();
             Cleanup();
         }
 
@@ -679,13 +678,15 @@ namespace Dynamo
         /// </summary>
         private void QueueRenderTask(bool increment = true)
         {
-            if (increment)
-            {
-                CurrentTaskId++;
-            }
+            //if (increment)
+            //{
+            //    CurrentTaskId++;
+            //}
             
-            Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
-            TaskList.Add(CurrentTaskId);
+            //Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
+            //TaskList.Add(CurrentTaskId);
+            //TODO: Ben to remove when he removes RenderManager.
+            TaskList.Add(-1);
             OnRenderComplete(this, new RenderCompletionEventArgs(CurrentTaskId));
         } 
 
