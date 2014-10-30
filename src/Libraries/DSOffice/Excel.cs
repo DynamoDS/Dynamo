@@ -65,8 +65,12 @@ namespace DSOffice
                     throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
                 }
             }
-            catch (Exception e)
+            catch (NotSupportedException)
             {
+                // An exception "The URI prefix is not recognized" will be
+                // thrown out for the first run, no idea why that happen, so
+                // just swallow this exception and try to create an new excel
+                // instance.
             }
 
             if (excel == null)
