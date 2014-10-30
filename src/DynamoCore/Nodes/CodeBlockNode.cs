@@ -252,16 +252,19 @@ namespace Dynamo.Nodes
                 value = CodeBlockUtils.FormatUserText(value);
                 if (value == "")
                 {
-                    if (this.Code == "")
-                    {
-                        this.Workspace.UndoRecorder.PopFromUndoGroup();
-                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                        this.Workspace.Nodes.Remove(this);
-                    }
-                    else
-                    {
-                        this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
-                    }
+                    //since the empty code block will be removed only on "esc" key press, recording the deletion 
+                    //of empty code block.
+                    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                    //if (this.Code == "")
+                    //{
+                    //    this.Workspace.UndoRecorder.PopFromUndoGroup();
+                    //    Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
+                    //    this.Workspace.Nodes.Remove(this);
+                    //}
+                    //else
+                    //{
+                    //    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                    //}
                 }
                
                 else

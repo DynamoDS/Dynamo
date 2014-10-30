@@ -61,7 +61,6 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-           
 
             // the code block should not be in focus upon undo/redo actions on node
             if (this.nodeModel.ShouldFocus)
@@ -459,6 +458,7 @@ namespace Dynamo.UI.Controls
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             this.InnerTextEditor.TextArea.ClearSelection();
+
             if (this.InnerTextEditor.Text != "")
             {
                 this.nodeViewModel.DynamoViewModel.ExecuteCommand(
@@ -482,7 +482,7 @@ namespace Dynamo.UI.Controls
                 this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
-               
+                e.Handled = true;
             }
         }
         #endregion
