@@ -289,7 +289,7 @@ namespace DSOffice
         {
             WorkBook wb = new WorkBook(filePath);
             WorkSheet ws = new WorkSheet (wb, sheetName);
-                ws = ws.WriteData(startRow, startCol, data);
+            ws = ws.WriteData(startRow, startCol, data);
             return ws.Data;
         }
     }
@@ -539,8 +539,8 @@ namespace DSOffice
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
                     .FirstOrDefault(e => e.FullName == path);
 
-                if (workbookOpen != null)
-                    return new WorkBook(workbookOpen, path);
+            if (workbookOpen != null)
+                return new WorkBook(workbookOpen, path);
 
             if (File.Exists(path))
                 return new WorkBook(ExcelInterop.App.Workbooks.Open(path, true, false), path);
