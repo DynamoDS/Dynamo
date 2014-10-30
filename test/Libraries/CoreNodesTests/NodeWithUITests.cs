@@ -36,6 +36,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("Failure")]
         public void SliderMaxValue()
         {
             var sliderNode = new DoubleSlider(null) { Value = 500 };
