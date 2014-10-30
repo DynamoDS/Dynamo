@@ -1,4 +1,5 @@
-﻿using Autodesk.DesignScript.Runtime;
+﻿using System.Dynamic;
+using Autodesk.DesignScript.Runtime;
 
 using System;
 using System.Collections;
@@ -74,6 +75,181 @@ namespace DSCore.IO
         public static bool HasExtension(string path)
         {
             return Path.HasExtension(path);
+        }
+    }
+
+    /// <summary>
+    ///     Methods for working with Files.
+    /// </summary>
+    public static class File
+    {
+        [IsVisibleInDynamoLibrary(false)]
+        public static FileInfo FromPath(string path)
+        {
+            return new FileInfo(path);
+        }
+
+        /// <summary>
+        ///     Reads a text file and returns the contents as a string.
+        /// </summary>
+        /// <returns name="str">Contents of the text file.</returns>
+        /// <search>read file,text,file</search>
+        public static string ReadText(FileInfo file)
+        {
+            return System.IO.File.ReadAllText(file.FullName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newPath"></param>
+        /// <param name="overwrite"></param>
+        public static void Move(string path, string newPath, bool overwrite = false)
+        {
+            if (overwrite && Exists(newPath))
+                Delete(newPath);
+            System.IO.File.Move(path, newPath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        public static void Delete(string path)
+        {
+            System.IO.File.Delete(path);
+        }
+
+        /// <summary>
+        ///     Copies a file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="destinationPath"></param>
+        /// <param name="overwrite"></param>
+        public static void Copy(FileInfo file, string destinationPath, bool overwrite = false)
+        {
+            file.CopyTo(destinationPath, overwrite);
+        }
+
+        /// <summary>
+        ///     Determines if a file exists at the given path.
+        /// </summary>
+        /// <param name="path"></param>
+        public static bool Exists(string path)
+        {
+            return System.IO.File.Exists(path);
+        }
+
+        /// <summary>
+        ///     Write the text content to a file specified by the path
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="text">Text content</param>
+        /// <search>write file,text,file</search>
+        public static void WriteText(string filePath, string text)
+        {
+            System.IO.File.WriteAllText(filePath, text);
+        }
+    }
+
+    /// <summary>
+    ///     Methods for working with Directories.
+    /// </summary>
+    public static class Directory
+    {
+        [IsVisibleInDynamoLibrary(false)]
+        public static DirectoryInfo FromPath(string path)
+        {
+            if (!Exists(path))
+                System.IO.Directory.CreateDirectory(path);
+            return new DirectoryInfo(path);
+        }
+
+        /// <summary>
+        ///     Moves a directory to a new location.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newPath"></param>
+        /// <param name="overwriteFiles"></param>
+        public static void Move(string path, string newPath, bool overwriteFiles = false)
+        {
+            if (!Exists(newPath))
+            {
+                System.IO.Directory.Move(path, newPath);
+                return;
+            }
+
+            var info = new DirectoryInfo(path);
+            foreach (var file in info.EnumerateFiles())
+            {
+                var newFilePath = Path.Combine(newPath, file.Name);
+                File.Move(file.FullName, newFilePath, overwriteFiles);
+            }
+
+            foreach (var dir in info.EnumerateDirectories())
+            {
+                var newDirPath = Path.Combine(newPath, dir.Name);
+                Move(dir.FullName, newDirPath, overwriteFiles);
+            }
+        }
+
+        /// <summary>
+        ///     Copies a directory to a destination location.
+        /// </summary>
+        /// <param name="directory">Directory to copy.</param>
+        /// <param name="destinationPath">Destination of the copy operation on disk.</param>
+        /// <param name="overwriteFiles"></param>
+        public static void Copy(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
+        {
+            if (!Exists(destinationPath))
+                System.IO.Directory.CreateDirectory(destinationPath);
+
+            foreach (var file in directory.EnumerateFiles())
+            {
+                var newFilePath = Path.Combine(destinationPath, file.Name);
+                File.Copy(file, newFilePath, overwriteFiles);
+            }
+
+            foreach (var dir in directory.EnumerateDirectories())
+            {
+                var newDirPath = Path.Combine(destinationPath, dir.Name);
+                Copy(dir, newDirPath, overwriteFiles);
+            }
+        }
+
+        /// <summary>
+        ///     Deletes a directory.
+        /// </summary>
+        /// <param name="path">Path to a directory on disk.</param>
+        /// <param name="recursive">Whether or not to delete all contents of the directory, defaults to false.</param>
+        public static void Delete(string path, bool recursive = false)
+        {
+            System.IO.Directory.Delete(path, recursive);
+        }
+
+        /// <summary>
+        ///     Gets all of the contents of a given directory.
+        /// </summary>
+        /// <param name="directory">Directory to get contents of.</param>
+        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
+        [MultiReturn("files", "directories")]
+        public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString = "*.*")
+        {
+            return new Dictionary<string, IList>
+            {
+                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
+                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+            };
+        }
+
+        /// <summary>
+        ///     Determines if a directory exists at the given path.
+        /// </summary>
+        /// <param name="path">Path to a directory on disk.</param>
+        public static bool Exists(string path)
+        {
+            return System.IO.Directory.Exists(path);
         }
     }
 
@@ -170,21 +346,13 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     The height of an image.
+        ///     Gets the width and height of an image.
         /// </summary>
-        /// <param name="image">An image.</param>
-        public static int Width(Bitmap image)
+        /// <param name="image">Image to get dimensions of.</param>
+        [MultiReturn("width", "height")]
+        public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return image.Width;
-        }
-
-        /// <summary>
-        ///     The width of an image.
-        /// </summary>
-        /// <param name="image">An image.</param>
-        public static int Height(Bitmap image)
-        {
-            return image.Height;
+            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
         }
 
         /// <summary>
@@ -197,64 +365,6 @@ namespace DSCore.IO
         public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(path);
-        }
-    }
-
-    /// <summary>
-    ///     Methods for working with Directories.
-    /// </summary>
-    public static class Directory
-    {
-        [IsVisibleInDynamoLibrary(false)]
-        public static DirectoryInfo FromPath(string path)
-        {
-            if (!Exists(path))
-                System.IO.Directory.CreateDirectory(path);
-            return new DirectoryInfo(path);
-        }
-        
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="newPath"></param>
-        public static void Move(string path, string newPath)
-        {
-            System.IO.Directory.Move(path, newPath);
-        }
-
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="recursive"></param>
-        public static void Delete(string path, bool recursive=false)
-        {
-            System.IO.Directory.Delete(path, recursive);
-        }
-
-        /// <summary>
-        ///     Gets all of the contents of a given directory.
-        /// </summary>
-        /// <param name="directory">Directory to get contents of.</param>
-        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
-        [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString="*.*")
-        {
-            return new Dictionary<string, IList>
-            {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
-            };
-        }
-
-        /// <summary>
-        ///     Determines if a directory exists at the given path.
-        /// </summary>
-        /// <param name="path"></param>
-        public static bool Exists(string path)
-        {
-            return System.IO.Directory.Exists(path);
         }
     }
 
@@ -305,9 +415,9 @@ namespace DSCore.IO
 
             var csvDataList = csvDataQuery.ToList();
             var numCols = csvDataList.Max(row => row.count);
-            var resultArray = 
+            var resultArray =
                 csvDataList.Select(
-                    row => 
+                    row =>
                         row.data
                             .Concat(Enumerable.Repeat(null as object, numCols - row.count))
                             .ToArray())
@@ -332,50 +442,8 @@ namespace DSCore.IO
             int i;
             if (int.TryParse(elementSt, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
                 return i;
-            
+
             return elementSt;
-        }
-    }
-
-    /// <summary>
-    ///     Methods for working with Files.
-    /// </summary>
-    public static class File
-    {
-        [IsVisibleInDynamoLibrary(false)]
-        public static FileInfo FromPath(string path)
-        {
-            return new FileInfo(path);
-        }
-
-        /// <summary>
-        ///     Reads a text file and returns the contents as a string.
-        /// </summary>
-        /// <returns name="str">Contents of the text file.</returns>
-        /// <search>read file,text,file</search>
-        public static string ReadText(FileInfo file)
-        {
-            return System.IO.File.ReadAllText(file.FullName);
-        }
-
-        /// <summary>
-        ///     Determines if a file exists at the given path.
-        /// </summary>
-        /// <param name="path"></param>
-        public static bool Exists(string path)
-        {
-            return System.IO.File.Exists(path);
-        }
-
-        /// <summary>
-        ///     Write the text content to a file specified by the path
-        /// </summary>
-        /// <param name="filePath">Path to write to</param>
-        /// <param name="text">Text content</param>
-        /// <search>write file,text,file</search>
-        public static void WriteText(string filePath, string text)
-        {
-            System.IO.File.WriteAllText(filePath, text);
         }
     }
 }
