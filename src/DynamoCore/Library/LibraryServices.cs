@@ -34,15 +34,13 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private List<string> importedLibraries = new List<string>();
+        private readonly Dictionary<string, SearchModel.ElementType> importedLibraries = 
+            new Dictionary<string, SearchModel.ElementType>();
 
         private readonly ProtoCore.Core libraryManagementCore;
 
         private Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
-
-        private readonly Dictionary<string, SearchModel.ElementType> libraries = 
-            new Dictionary<string, SearchModel.ElementType>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
@@ -66,11 +64,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<string> ImportedLibraries
         {
-<<<<<<< HEAD
-            get { return libraries.Keys; }
-=======
-            get { return importedLibraries; }
->>>>>>> 8c89111e3461f18be2a387b0a4b54805ed8d66e7
+            get { return importedLibraries.Keys; }
         }
 
         /// <summary>
@@ -96,10 +90,9 @@ namespace Dynamo.DSEngine
 
         private void PreloadLibraries()
         {
-            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
-
-            foreach (var library in importedLibraries)
+            foreach (var library in DynamoPathManager.Instance.PreloadLibraries)
             {
+                importedLibraries.Add(library, SearchModel.ElementType.Regular);
                 CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library); 
             }
         }
@@ -143,36 +136,6 @@ namespace Dynamo.DSEngine
             return newName + "@" + splitted[1];
         }
 
-<<<<<<< HEAD
-        /// <summary>
-        ///     Reset the whole library services. Note it should only be used in
-        ///     testing.
-        /// </summary>
-        public void Reset()
-        {
-            importedFunctionGroups.Clear();
-            builtinFunctionGroups.Clear();
-
-            PreloadLibraries();
-
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreloadLibraries();
-        }
-
-        private void PreloadLibraries()
-        {
-            GraphUtilities.Reset();
-
-            libraries.Clear();
-            foreach (var str in DynamoPathManager.Instance.PreloadLibraries)
-                libraries.Add(str, SearchModel.ElementType.Regular);
-                        
-            GraphUtilities.PreloadAssembly(Libraries);
-        }
-=======
->>>>>>> 8c89111e3461f18be2a387b0a4b54805ed8d66e7
-
         /// <summary>
         ///     Get function groups from an imported library.
         /// </summary>
@@ -186,7 +149,7 @@ namespace Dynamo.DSEngine
             Dictionary<string, FunctionGroup> functionGroups;
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
             {
-                if (libraries[library] == SearchModel.ElementType.CustomDll)
+                if (importedLibraries[library] == SearchModel.ElementType.CustomDll)
                 {
                     var modifiedFGroups = functionGroups.Values.ToList();
                     for (int i = 0; i < modifiedFGroups.Count; i++)
@@ -701,11 +664,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-<<<<<<< HEAD
-            libraries.Add(e.LibraryPath, e.ElementType);
-=======
-            importedLibraries.Add(e.LibraryPath);
->>>>>>> 8c89111e3461f18be2a387b0a4b54805ed8d66e7
+            importedLibraries.Add(e.LibraryPath, e.ElementType);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
