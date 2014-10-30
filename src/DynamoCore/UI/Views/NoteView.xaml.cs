@@ -27,11 +27,11 @@ namespace Dynamo.Nodes
                 };
             noteText.PreviewMouseDown += noteText_PreviewMouseDown;
 
-            Loaded += OnViewLoaded;
-            Unloaded += OnViewUnloaded;
+            Loaded += OnNoteViewLoaded;
+            Unloaded += OnNoteViewUnloaded;
         }
 
-        void OnViewLoaded(object sender, RoutedEventArgs e)
+        void OnNoteViewLoaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as NoteViewModel;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
         }
 
-        void OnViewUnloaded(object sender, RoutedEventArgs e)
+        void OnNoteViewUnloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Note view unloaded.");
 
