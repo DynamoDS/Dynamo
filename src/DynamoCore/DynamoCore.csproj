@@ -179,8 +179,8 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
-    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
-    <Compile Include="Nodes\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="UI\CodeBlockCompletionData.cs" />
+    <Compile Include="UI\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -881,6 +881,9 @@ limitations under the License.
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Images\CodeBlock\keyword.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
