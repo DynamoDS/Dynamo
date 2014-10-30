@@ -126,8 +126,7 @@ namespace DSCore.IO
             var height = colors.Length;
             var width = colors[0].Length;
 
-            var rgbVals =
-                colors.SelectMany(row => row.Select(color => Convert.ToByte(color.InternalColor.ToArgb())));
+            var rgbVals = colors.SelectMany(row => row);
 
             return FromPixelsHelper(rgbVals, width, height);
         }
@@ -140,24 +139,34 @@ namespace DSCore.IO
         /// <param name="height">Height of the new image, in pixels.</param>
         public static Bitmap FromPixels(Color[] colors, int width, int height)
         {
-            var rgbValues = colors.Select(color => Convert.ToByte(color.InternalColor.ToArgb()));
-            return FromPixelsHelper(rgbValues, width, height);
+            return FromPixelsHelper(colors, width, height);
         }
 
-        private static Bitmap FromPixelsHelper(IEnumerable<byte> colors, int width, int height)
+        private static Bitmap FromPixelsHelper(IEnumerable<Color> colors, int width, int height)
         {
-            var bitmap = new Bitmap(width, height);
+            var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var data = bitmap.LockBits(
                 new Rectangle(0, 0, width, height),
                 ImageLockMode.WriteOnly,
                 bitmap.PixelFormat);
-            
-            foreach (var pixel in colors.Select((pixel, idx) => new { pixel, idx }))
-                Marshal.WriteByte(data.Scan0, pixel.idx, pixel.pixel);
+
+            foreach (var colorByte in
+                colors.SelectMany(PixelsFromColor).Select((pixel, idx) => new { color = pixel, idx }))
+            {
+                Marshal.WriteByte(data.Scan0, colorByte.idx, colorByte.color);
+            }
 
             bitmap.UnlockBits(data);
 
             return bitmap;
+        }
+
+        private static IEnumerable<byte> PixelsFromColor(Color color)
+        {
+            yield return color.Alpha;
+            yield return color.Red;
+            yield return color.Green;
+            yield return color.Blue;
         }
 
         /// <summary>
