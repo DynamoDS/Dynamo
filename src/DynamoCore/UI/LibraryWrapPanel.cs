@@ -175,7 +175,7 @@ namespace Dynamo.Controls
             double x = 0, y = 0, currentRowHeight = 0;
 
             int itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
-            double sizeBetweenItems = (finalSize.Width - itemsPerRow*classObjectWidth) / (itemsPerRow+1);
+            double sizeBetweenItems = (finalSize.Width - itemsPerRow * classObjectWidth) / (itemsPerRow + 1);
 
 
             foreach (UIElement child in this.Children)
@@ -213,15 +213,18 @@ namespace Dynamo.Controls
 
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var index = ((sender as ListView).SelectedIndex);
+            var selectedIndex = (sender as ListView).SelectedIndex;
+            selectedClassProspectiveIndex = TranslateSelectionIndex(selectedIndex);
 
             // As focus moves within the class details, class button gets selected which 
             // triggers a selection change. During a selection change the items in the 
             // wrap panel gets reordered through "OrderListItems", but this is not always 
             // necessary. Here we determine if the "ListView.SelectedIndex" is the same 
             // as "currentSelectedIndex", if so simply returns to avoid a repainting.
-            if (currentIndex != index) currentIndex = index;
-            else return;
+            if (currentIndex != selectedClassProspectiveIndex)
+                currentIndex = selectedClassProspectiveIndex;
+            else
+                return;
 
             int classInfoIndex = GetClassInformationIndex();
 
@@ -229,7 +232,7 @@ namespace Dynamo.Controls
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
             // called again, with 'SelectedIndex' set to '-1', indicating that no item is selected,
             // in which case we need to hide the standard panel.
-            if (index == -1)
+            if (selectedClassProspectiveIndex == -1)
             {
                 if (classInfoIndex != -1)
                     (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
@@ -237,10 +240,11 @@ namespace Dynamo.Controls
                 return;
             }
             else
+            {
                 (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = true;
+            }
 
-            selectedClassProspectiveIndex = TranslateSelectionIndex(index);
-            currentClass = collection[index] as BrowserInternalElement;
+            currentClass = collection[selectedIndex] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
