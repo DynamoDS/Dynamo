@@ -274,9 +274,9 @@ namespace Dynamo.Nodes
 
             var resultAst = new[]
             {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
+                //AstFactory.BuildAssignment(
+                //    GetAstIdentifierForOutputIndex(0),
+                //    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
