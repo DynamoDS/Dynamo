@@ -692,20 +692,13 @@ namespace Dynamo
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
-                if (pair.Value == null)
+                if (pair.Value == null || (pair.Value.Item2 == null))
                     continue;
 
                 NodeModel node = pair.Value.Item2;
-
-                //We no longer depend on OldValue, as long as the given node has
-                //registered it's render description with Visualization manager
-                //we will be able to visualize the given node. -Sharad
-                if (node != null)
+                lock (node.RenderPackagesMutex)
                 {
-                    lock (node.RenderPackagesMutex)
-                    {
-                        packages.AddRange(node.RenderPackages);
-                    }
+                    packages.AddRange(node.RenderPackages);
                 }
 
                 if (node.IsUpstreamVisible)
