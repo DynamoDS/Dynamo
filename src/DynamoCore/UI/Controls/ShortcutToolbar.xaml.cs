@@ -1,6 +1,7 @@
 ﻿using Dynamo.UI.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -29,7 +30,7 @@ namespace Dynamo.UI.Controls
         }
     }
 
-    public partial class ShortcutBarItem
+    public partial class ShortcutBarItem : NotificationObject
     {
         private string shortcutToolTip;
         private string imgNormalSource;
