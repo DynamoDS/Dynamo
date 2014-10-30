@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
                     if (ViewModel != null)
                         ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
                 };
-            noteText.PreviewMouseDown += noteText_PreviewMouseDown;
+            noteText.PreviewMouseDown += OnNoteTextPreviewMouseDown;
 
             Loaded += OnNoteViewLoaded;
             Unloaded += OnNoteViewUnloaded;
@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
         void OnNoteViewLoaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as NoteViewModel;
-            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestsSelection += OnViewModelRequestsSelection;
 
             // NoteModel has default dimension of 100x100 which will not be ideal in 
             // most cases. Here we update the model according to the size of the view.
@@ -49,10 +49,10 @@ namespace Dynamo.Nodes
         {
             Debug.WriteLine("Note view unloaded.");
 
-            ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.RequestsSelection -= OnViewModelRequestsSelection;
         }
 
-        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        void OnViewModelRequestsSelection(object sender, EventArgs e)
         {
             if (!ViewModel.Model.IsSelected)
             {
@@ -76,14 +76,14 @@ namespace Dynamo.Nodes
             }
         }
 
-        void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        void OnNoteTextPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
-        private void editItem_Click(object sender, RoutedEventArgs e)
+        private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
             // Setup a binding with the edit window's text field
             var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
@@ -98,17 +98,17 @@ namespace Dynamo.Nodes
             editWindow.ShowDialog();
         }
 
-        private void deleteItem_Click(object sender, RoutedEventArgs e)
+        private void OnDeleteItemClick(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
-        private void Note_MouseDown(object sender, MouseButtonEventArgs e)
+        private void OnNoteMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
-                editItem_Click(this, null);
+                OnEditItemClick(this, null);
                 e.Handled = true;
             }
         }
