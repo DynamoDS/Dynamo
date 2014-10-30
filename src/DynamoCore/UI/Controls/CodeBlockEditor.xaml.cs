@@ -58,8 +58,10 @@ namespace Dynamo.UI.Controls
             this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
             // Register text editing events
+            this.InnerTextEditor.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
-            this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
+            //this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
+           
 
             // the code block should not be in focus upon undo/redo actions on node
             if (this.nodeModel.ShouldFocus)
@@ -456,7 +458,7 @@ namespace Dynamo.UI.Controls
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             this.InnerTextEditor.TextArea.ClearSelection();
-
+            
             this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
@@ -467,6 +469,16 @@ namespace Dynamo.UI.Controls
             if (WatermarkLabel.Visibility == Visibility.Visible)
                 WatermarkLabel.Visibility = System.Windows.Visibility.Collapsed;
 
+        }
+
+        void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (this.InnerTextEditor.Text == "" && e.Key == Key.Escape)
+            {
+                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    this.nodeViewModel.NodeModel.GUID, "Code", "esc"));
+            }
         }
         #endregion
 

@@ -501,7 +501,7 @@ namespace Dynamo.Views
         }
 
         private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
-        {
+        {           
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -729,5 +729,6 @@ namespace Dynamo.Views
 
             return HitTestResultBehavior.Continue;
         }
+        
     }
 }
