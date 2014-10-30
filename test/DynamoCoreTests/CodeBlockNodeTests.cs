@@ -773,9 +773,12 @@ b = c[w][x][y][z];";
         }
     }
 
-    public class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
+    public class CodeBlockCompletionTests 
     {
-        public override void Init()
+        private ProtoCore.Core libraryServicesCore = null;
+
+        [SetUp]
+        public void Init()
         {
             string libraryPath = "FFITarget.dll";
 
@@ -792,7 +795,8 @@ b = c[w][x][y][z];";
             CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
         }
 
-        public override void Cleanup()
+        [TearDown]
+        public void Cleanup()
         {
             if (libraryServicesCore != null)
             {
@@ -912,10 +916,6 @@ b = c[w][x][y][z];";
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        /// ////////////////////////////
-        /// </summary>
-
         [Test]
         [Category("UnitTests")]
         public void TestCtorSignatureCompletion()
@@ -982,7 +982,8 @@ b = c[w][x][y][z];";
             {
                 Assert.AreEqual(functionName, overload.Text);
             }
-            Assert.AreEqual("AddWithValueContainer : ValueContainer[] (valueContainer : ValueContainer)", overloads.ElementAt(0).Stub);
+            var expected = "AddWithValueContainer : ValueContainer[] (valueContainer : ValueContainer)";
+            Assert.AreEqual(expected, overloads.ElementAt(0).Stub);
         }
 
         [Test]

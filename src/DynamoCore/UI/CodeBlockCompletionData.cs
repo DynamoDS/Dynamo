@@ -33,10 +33,10 @@ namespace Dynamo.UI
             get { return this.Text; }
         }
 
-        // TODO: Implement this
+        // TODO: Implement this, tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5232
         public object Description { get; private set; }
 
-        // TODO: Implement this
+        // TODO: Implement this, tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5231
         /// <summary>
         /// This property can be used in the selection logic. You can use it to
         /// prefer selecting those items which the user is accessing most frequently

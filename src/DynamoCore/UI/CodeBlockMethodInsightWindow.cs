@@ -219,7 +219,6 @@ namespace Dynamo.UI
     /// </summary>
     sealed class CodeBlockInsightItem : INotifyPropertyChanged
     {
-        //public readonly MethodMirror Method;
         public readonly string Signature;
 
         public readonly string MethodName;
