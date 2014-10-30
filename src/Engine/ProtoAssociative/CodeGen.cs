@@ -2247,6 +2247,8 @@ namespace ProtoAssociative
                     // Check if the lhs is an identifier and if it has any namespace conflicts
                     // We want to handle this here because we know ident lists can potentially contain namespace resolving
                     var ident = identList.LeftNode as IdentifierNode; 
+
+                    // Check if this is the last ident in the identlist
                     if(ident != null)
                     {
                         // TODO Jun: Move this warning handler to after the SSA transform
