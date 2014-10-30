@@ -47,8 +47,6 @@ namespace Dynamo.Nodes
 
         void OnNoteViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Note view unloaded.");
-
             ViewModel.RequestsSelection -= OnViewModelRequestsSelection;
         }
 
