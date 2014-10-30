@@ -335,6 +335,7 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
             scheduler = new DynamoScheduler(thread);
+            scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 #endif
 
             if (preferences is PreferenceSettings)
@@ -353,14 +354,16 @@ namespace Dynamo.Models
             InitializeCurrentWorkspace();
 
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
+
+            DisposeLogic.IsShuttingDown = false;
+
+            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+
             this.Loader = new DynamoLoader(this);
 
             // do package uninstalls first
             this.Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
 
-            DisposeLogic.IsShuttingDown = false;
-
-            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             // Reset virtual machine to avoid a race condition by causing a 
@@ -383,7 +386,7 @@ namespace Dynamo.Models
             this.Loader.LoadNodeModels();
        
             // load packages last
-            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
+            this.Loader.PackageLoader.LoadPackagesIntoDynamo(preferences, EngineController.LibraryServices);
 
         }
 
@@ -456,6 +459,7 @@ namespace Dynamo.Models
             EngineController = null;
 
             PreferenceSettings.Save();
+            PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
             OnCleanup();
 
@@ -470,6 +474,7 @@ namespace Dynamo.Models
             if (scheduler != null)
             {
                 scheduler.Shutdown();
+                scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler = null;
             }
 #endif
@@ -593,6 +598,43 @@ namespace Dynamo.Models
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             OnEvaluationCompleted(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// This event handler is invoked when DynamoScheduler changes the state 
+        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
+        /// details of these state changes.
+        /// </summary>
+        /// <param name="sender">The scheduler which raised the event.</param>
+        /// <param name="e">Task state changed event argument.</param>
+        /// 
+        private void OnAsyncTaskStateChanged(
+            DynamoScheduler sender,
+            TaskStateChangedEventArgs e)
+        {
+            switch (e.CurrentState)
+            {
+                case TaskStateChangedEventArgs.State.ExecutionStarting:
+                    if (e.Task is UpdateGraphAsyncTask)
+                        ExecutionEvents.OnGraphPreExecution();
+                    break;
+
+                case TaskStateChangedEventArgs.State.ExecutionCompleted:
+                    if (e.Task is UpdateGraphAsyncTask)
+                    {
+                        // Record execution time for update graph task.
+                        long start = e.Task.ExecutionStartTime.TickCount;
+                        long end = e.Task.ExecutionEndTime.TickCount;
+                        var executionTimeSpan = new TimeSpan(end - start);
+
+                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                            e.Task.GetType().Name, executionTimeSpan);
+
+                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        ExecutionEvents.OnGraphPostExecution();
+                    }
+                    break;
+            }
         }
 
 #endif
@@ -1217,14 +1259,22 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                Dispatcher.CurrentDispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        sw.Stop();
-                        Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                    }));
+                // We don't want to put this action into Dispatcher's queue 
+                // in test mode because it would never get a chance to execute.
+                // As Dispatcher is a static object, DynamoModel instance will 
+                // be referenced by Dispatcher until nunit finishes all test 
+                // cases. 
+                if (!IsTestMode)
+                {
+                    // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
+                        DispatcherPriority.Background,
+                        new Action(() =>
+                        {
+                            sw.Stop();
+                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                        }));
+                }
 
                 #endregion
 

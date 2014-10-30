@@ -188,11 +188,11 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger )
+        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             try
             {
-                this.LoadAssembliesIntoDynamo( loader, logger );
+                this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
                 this.LoadCustomNodesIntoDynamo( loader );
                 this.EnumerateAdditionalFiles();
                 
@@ -236,9 +236,9 @@ namespace Dynamo.PackageManager
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
+        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
-            var assemblies = LoadAssembliesInBinDirectory();
+            var assemblies = LoadAssembliesInBinDirectory(logger);
 
             // filter the assemblies
             var zeroTouchAssemblies = new List<Assembly>();
@@ -259,7 +259,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                LibraryServices.GetInstance().ImportLibrary( zeroTouchAssem.Location, logger );
+                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger);
             }
 
             // load the node model assemblies
@@ -270,14 +270,21 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
+        private IEnumerable<Assembly> LoadAssembliesInBinDirectory(ILogger logger)
         {
-            if (!Directory.Exists(BinaryDirectory)) 
-                return new List<Assembly>();
+            var assemblies = new List<Assembly>();
 
-            var assemblies = (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+            if (!Directory.Exists(BinaryDirectory))
+                return assemblies;
+
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            {
+                Assembly assem;
+
+                // dll files may be un-managed, skip those
+                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                if (result) assemblies.Add(assem);
+            }
 
             foreach (var assem in assemblies)
             {

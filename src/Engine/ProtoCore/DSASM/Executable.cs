@@ -32,6 +32,12 @@ namespace ProtoCore.DSASM
     /// 
     public class Executable
     {
+        // Constants that represent indices into Executable data
+        public enum OffsetConstants
+        {
+            kInstrStreamGlobalScope = 0 // Offset into the instruction stream where global scope instructions are stored
+        }
+
         public bool isSingleAssocBlock { get; set; }
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }

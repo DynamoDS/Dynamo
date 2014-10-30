@@ -13,6 +13,11 @@ namespace Dynamo.Core.Threading
     {
         private Action actionToPerform;
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         #region Public Class Operational Methods
 
         internal DelegateBasedAsyncTask(DynamoScheduler scheduler)

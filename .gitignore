@@ -75,3 +75,4 @@ extern/ASM/
 images.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
 /src/DynamoCore/*.resources
+src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs

@@ -107,6 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="DynamoRevitApp.cs" />
     <Compile Include="Models\RevitDynamoModel.cs" />
     <Compile Include="Models\RevitDynamoRunner.cs" />

@@ -322,8 +322,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestCtorSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -359,8 +358,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -398,8 +396,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestMethodSignatureReturnTypeCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -465,8 +462,7 @@ namespace DynamoCoreUITests
         [Category("UnitTests")]
         public void TestStaticMethodSignatureCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -500,14 +496,13 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestCompletionWhenTyping()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             // Note this test may fail if another library with class names
             // beginning with "poi" is imported by default or if there is a change
             // to the classes "ProtoGeometry" or "FFITarget" libraries
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
@@ -536,9 +531,10 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
             var cbnEditor = new CodeBlockEditor(ViewModel);
             string code = "im";
             var completions = cbnEditor.SearchCompletions(code, System.Guid.Empty);

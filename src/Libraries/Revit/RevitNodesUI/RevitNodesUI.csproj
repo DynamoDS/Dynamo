@@ -67,6 +67,10 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Elements.cs" />
+    <Compile Include="LocationControl.xaml.cs">
+      <DependentUpon>LocationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SiteLocation.cs" />
     <Compile Include="RevitDropDown.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +103,11 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\RevitNodes\RevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>RevitNodes</Name>
@@ -109,6 +118,12 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="LocationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

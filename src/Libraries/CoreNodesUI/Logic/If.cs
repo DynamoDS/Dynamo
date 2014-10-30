@@ -14,7 +14,7 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 namespace DSCoreNodesUI.Logic
 {
     [NodeName("If")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("Conditional statement")]
     [IsDesignScriptCompatible]
     public class If : NodeModel
@@ -37,7 +37,7 @@ namespace DSCoreNodesUI.Logic
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
-            if (HasUnconnectedInput())
+            if (IsPartiallyApplied)
             {
                 var connectedInputs = Enumerable.Range(0, InPortData.Count)
                                             .Where(HasConnectedInput)
