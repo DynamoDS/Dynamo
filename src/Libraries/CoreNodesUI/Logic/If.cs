@@ -14,7 +14,7 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 namespace DSCoreNodesUI.Logic
 {
     [NodeName("If")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("Conditional statement")]
     [IsDesignScriptCompatible]
     public class If : NodeModel
