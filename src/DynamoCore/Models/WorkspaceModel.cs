@@ -20,7 +20,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
     {
         public const double ZOOM_MAXIMUM = 4.0;
         public const double ZOOM_MINIMUM = 0.01;
@@ -433,9 +433,17 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
-            WorkspaceSaved += OnWorkspaceSaved;
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
+        }
+
+        public event Action Disposed;
+        public virtual void Dispose()
+        {
+            var handler = Disposed;
+            if (handler != null) 
+                handler();
+            Disposed = null;
         }
 
         #endregion

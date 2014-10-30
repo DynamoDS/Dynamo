@@ -87,23 +87,6 @@ namespace Dynamo.Utilities
             AddDirectoryToSearchPath(DynamoPathManager.Instance.CommonDefinitions);
         }
 
-        private class CustomNodeSource : ICustomNodeSource
-        {
-            private readonly CustomNodeManager manager;
-            private readonly Guid customNodeId;
-
-            public CustomNodeSource(CustomNodeManager manager, Guid customNodeId)
-            {
-                this.manager = manager;
-                this.customNodeId = customNodeId;
-            }
-
-            public NodeModel NewInstance()
-            {
-                return manager.CreateCustomNodeInstance(customNodeId);
-            }
-        }
-
         /// <summary>
         ///     Creates a new Custom Node Instance.
         /// </summary>

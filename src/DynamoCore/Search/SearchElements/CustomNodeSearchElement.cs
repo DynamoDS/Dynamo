@@ -6,6 +6,23 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
+    public class CustomNodeSource : ICustomNodeSource
+    {
+        private readonly CustomNodeManager manager;
+        private readonly Guid customNodeId;
+
+        public CustomNodeSource(CustomNodeManager manager, Guid customNodeId)
+        {
+            this.manager = manager;
+            this.customNodeId = customNodeId;
+        }
+
+        public NodeModel NewInstance()
+        {
+            return manager.CreateCustomNodeInstance(customNodeId);
+        }
+    }
+
     public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
     {
         private readonly ICustomNodeSource nodeSource;

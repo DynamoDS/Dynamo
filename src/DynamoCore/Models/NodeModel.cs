@@ -1443,9 +1443,6 @@ namespace Dynamo.Models
         /// 
         public void RequestVisualUpdate(int maxTesselationDivisions)
         {
-            if (Workspace.DynamoModel == null)
-                return;
-
             // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
             // called in quick succession from the UI thread -- the first task may 
             // be updating '_renderPackages' when the second call gets here. In 
@@ -1454,7 +1451,7 @@ namespace Dynamo.Models
             // 
             lock (RenderPackagesMutex)
             {
-                _renderPackages.Clear();
+                renderPackages.Clear();
                 HasRenderPackages = false;
             }
 

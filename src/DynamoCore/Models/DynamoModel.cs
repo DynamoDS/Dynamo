@@ -33,10 +33,6 @@ namespace Dynamo.Models
     public partial class DynamoModel : IDisposable // : ModelBase
     {
         #region private members
-
-        private readonly Dictionary<WorkspaceModel, IDisposable> workspaceEventRegistrations =
-            new Dictionary<WorkspaceModel, IDisposable>();
-
         #endregion
 
         #region events
@@ -940,8 +936,7 @@ namespace Dynamo.Models
         {
             if (Workspaces.Remove(workspace))
             {
-                workspaceEventRegistrations[workspace].Dispose();
-                workspaceEventRegistrations.Remove(workspace);
+                workspace.Dispose();
             }
         }
 
@@ -951,8 +946,6 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void AddWorkspace(WorkspaceModel workspace)
         {
-            Workspaces.Add(workspace);
-            
             Action modifiedHandler = () => OnWorkspaceSaved(workspace);
             workspace.Modified += modifiedHandler;
             
@@ -960,14 +953,15 @@ namespace Dynamo.Models
             workspace.ConnectorAdded += OnConnectorAdded;
             workspace.MessageLogged += LogMessage;
 
-            workspaceEventRegistrations[workspace] = Disposable.Create(
-                () =>
-                {
-                    workspace.Modified -= modifiedHandler;
-                    //workspace.NodeAdded -= OnNodeAdded;
-                    workspace.ConnectorAdded -= OnConnectorAdded;
-                    workspace.MessageLogged -= LogMessage;
-                });
+            workspace.Disposed += () =>
+            {
+                workspace.Modified -= modifiedHandler;
+                //workspace.NodeAdded -= OnNodeAdded;
+                workspace.ConnectorAdded -= OnConnectorAdded;
+                workspace.MessageLogged -= LogMessage;
+            };
+
+            Workspaces.Add(workspace);
         }
 
         /// <summary>
