@@ -24,10 +24,18 @@ namespace Dynamo.PackageManager
         public DelegateCommand UpvoteCommand { get; set; }
         public DelegateCommand DownvoteCommand { get; set; }
 
+        internal PackageManagerSearchElement() 
+        {
+            this.IsExpanded = false;
+            this.DownloadLatest = new DelegateCommand((Action)Execute);
+            this.UpvoteCommand = new DelegateCommand((Action)Upvote, CanUpvote);
+            this.DownvoteCommand = new DelegateCommand((Action)Downvote, CanDownvote);
+        }
+
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
 
@@ -43,10 +51,6 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
-            this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote, CanUpvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote, CanDownvote);
         }
 
         public void Upvote()
@@ -65,6 +69,7 @@ namespace Dynamo.PackageManager
 
         private bool CanUpvote()
         {
+            if (this.dynamoViewModel == null) return false;
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
@@ -80,9 +85,9 @@ namespace Dynamo.PackageManager
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
-
         private bool CanDownvote()
         {
+            if (this.dynamoViewModel == null) return false;
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
@@ -340,6 +345,9 @@ namespace Dynamo.PackageManager
             public string Id { get { return Header._id; } }
 
             public override string Keywords { get; set; }
+
+            public string SiteUrl { get { return Header.site_url; } }
+            public string RepositoryUrl { get { return Header.repository_url; } }
 
         #endregion
         

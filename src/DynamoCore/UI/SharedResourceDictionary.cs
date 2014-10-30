@@ -68,8 +68,9 @@ namespace Dynamo.UI
         {
             get
             {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"UI\Themes\Modern\");
+                return @"C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo-pboyer\Dynamo\src\DynamoCore\" + @"UI\Themes\Modern\";
+                //return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                //    @"UI\Themes\Modern\");
             }
         }
 

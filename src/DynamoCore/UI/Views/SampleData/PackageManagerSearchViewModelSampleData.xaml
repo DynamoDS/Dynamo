@@ -1,0 +1,23 @@
+﻿<local:PackageManagerSearchViewModel xmlns:local="clr-namespace:Dynamo.PackageManager"
+                               xmlns:system="clr-namespace:System;assembly=mscorlib"
+                               xmlns:responses="clr-namespace:Greg.Responses;assembly=Greg">
+
+    <local:PackageManagerSearchViewModel.SearchResults>
+        
+        <local:PackageManagerSearchElement IsExpanded="true">
+            <local:PackageManagerSearchElement.Header>
+                <responses:PackageHeader name="Cool pkg" votes="10" group="cool group" site_url="cool.com" repository_url="really cool.com" description="This is the description">
+                </responses:PackageHeader>
+            </local:PackageManagerSearchElement.Header>
+        </local:PackageManagerSearchElement>
+
+        <local:PackageManagerSearchElement>
+            <local:PackageManagerSearchElement.Header>
+                <responses:PackageHeader name="Another cool one" votes="190" group="cool group" site_url="cool.com" repository_url="really cool.com" description="This is the description\npoodle town\n">
+                </responses:PackageHeader>
+            </local:PackageManagerSearchElement.Header>
+        </local:PackageManagerSearchElement>
+
+    </local:PackageManagerSearchViewModel.SearchResults>
+
+</local:PackageManagerSearchViewModel> 
