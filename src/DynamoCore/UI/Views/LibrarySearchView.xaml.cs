@@ -408,6 +408,13 @@ namespace Dynamo.UI.Views
                 (sender as ListBox).SelectedIndex = 0;
         }
 
+        // Everytime, when top result is updated, we have to select one first item.
+        private void OnTopResultTargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            if (sender is ListBox)
+                (sender as ListBox).SelectedIndex = 0;
+        }
+
         #endregion
 
     }
