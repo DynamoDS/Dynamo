@@ -478,6 +478,7 @@ namespace Dynamo.UI.Controls
         {
             if (this.InnerTextEditor.Text == "" && e.Key == Key.Escape)
             {
+                this.InnerTextEditor.TextArea.ClearSelection();
                 this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
