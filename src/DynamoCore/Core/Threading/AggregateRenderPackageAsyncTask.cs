@@ -164,6 +164,8 @@ namespace Dynamo.Core.Threading
 
             foreach (var upstreamNode in nodeModel.Inputs)
             {
+                if (upstreamNode.Value == null)
+                    continue;
                 // Add all the upstream nodes found into the list.
                 GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered);
             }
