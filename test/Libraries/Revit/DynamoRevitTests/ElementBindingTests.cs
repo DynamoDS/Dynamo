@@ -99,9 +99,9 @@ namespace Dynamo.Tests
             return new ElementId(id.IntID);
         }
 
-        [Test, Ignore]
-        [TestModel(@".\empty.rfa")]
-        public void CreateInDynamoModifyInRevit()
+        [Test]
+        [TestModel(@".\ElementBinding\CreateWallInDynamo.rvt")]
+        public void CreateInDynamoModifyInRevitToCauseFailure()
         {
             //Create a wall in Dynamo
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateWallInDynamo.dyn");
@@ -111,20 +111,43 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             //Modify the wall in Revit
-            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "DeleteInRevit"))
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "ModifyInRevit"))
             {
+                bool hasError = false;
                 trans.Start();
 
-                IList<Element> rps = GetAllWallElements(false);
-                Assert.AreEqual(1, rps.Count);
-                Wall wall = rps.First() as Wall;
-                //Modify the wall to cause a failure
-                Assert.Inconclusive("TO DO");
-                wall.Flip();
-                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
+                try
+                {
+                    IList<Element> rps = GetAllWallElements(false);
+                    Assert.AreEqual(1, rps.Count);
+                    Wall wall = rps.First() as Wall;
+                    List<XYZ> ctrlPnts = new List<XYZ>();
+                    ctrlPnts.Add(new XYZ(0.0, 1.0, 0.0));
+                    ctrlPnts.Add(new XYZ(1.0, 0.0, 0.0));
+                    ctrlPnts.Add(new XYZ(2.0, 0.0, 0.0));
+                    ctrlPnts.Add(new XYZ(3.0, 1.0, 0.0));
+                    List<double> weights = new List<double>();
+                    weights.Add(1.0);
+                    weights.Add(1.0);
+                    weights.Add(1.0);
+                    weights.Add(1.0);
+                    var spline = NurbSpline.Create(ctrlPnts, weights);
+                    var wallLocation = wall.Location as LocationCurve;
+                    wallLocation.Curve = spline;
+                }
+                catch (Exception e)
+                {
+                    hasError = true;
+                    trans.RollBack();
+                }
 
-                trans.Commit();
+                if (!hasError)
+                    trans.Commit();
             }
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            IList<Element> rps2 = GetAllWallElements(false);
+            Assert.AreEqual(1, rps2.Count);
         }
 
         [Test]
