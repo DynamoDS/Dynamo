@@ -433,7 +433,7 @@ namespace Dynamo.Applications.Models
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
-
+            
             IEnumerable<FailureMessageAccessor> query =
                 from fail in failList
                 where fail.GetSeverity() == FailureSeverity.Warning
@@ -451,7 +451,7 @@ namespace Dynamo.Applications.Models
             if (!deleted.Any())
                 return;
 
-            var nodes = GetNodesFromElementIds(deleted);
+            var nodes = ElementBinder.GetNodesFromElementIds(deleted, CurrentWorkspace, EngineController);
             foreach (var node in nodes)
             {
                 node.RequiresRecalc = true;
@@ -467,11 +467,11 @@ namespace Dynamo.Applications.Models
                 ElementUtils.TryGetElement(DocumentManager.Instance.CurrentDBDocument, x, out ret);
                 return ret;
             }).Select(x => x.Id);
-
+            
             if (!updatedIds.Any())
                 return;
 
-            var nodes = GetNodesFromElementIds(updatedIds);
+            var nodes = ElementBinder.GetNodesFromElementIds(updatedIds, CurrentWorkspace, EngineController);
             foreach (var node in nodes)
             {
                 node.RequiresRecalc = true;
@@ -479,89 +479,6 @@ namespace Dynamo.Applications.Models
             }
         }
 
-        #endregion
-
-
-        #region Utilities
-        /// <summary>
-        /// This function gets the nodes which have created the elements with the
-        /// given element IDs
-        /// </summary>
-        /// <param name="ids">The given element IDs</param>
-        /// <returns>the related nodes</returns>
-        private IEnumerable<NodeModel> GetNodesFromElementIds(IEnumerable<ElementId> ids)
-        {
-            List<NodeModel> nodes = new List<NodeModel>();
-            if (!ids.Any())
-                return nodes.AsEnumerable();
-
-            var workspace = CurrentWorkspace;
-
-            ProtoCore.Core core = null;
-            var engine = EngineController;
-            if (engine != null && (engine.LiveRunnerCore != null))
-                core = engine.LiveRunnerCore;
-
-            if (core == null)
-                return null;
-
-            // Selecting all nodes that are either a DSFunction,
-            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-            var nodeGuids = workspace.Nodes.Where((n) =>
-            {
-                return (n is DSFunction
-                        || (n is DSVarArgFunction)
-                        || (n is CodeBlockNodeModel));
-            }).Select((n) => n.GUID);
-
-            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
-
-            bool areElementsFoundForThisNode;
-            foreach (Guid guid in nodeTraceDataList.Keys)
-            {
-                areElementsFoundForThisNode = false;
-                foreach (CallSite cs in nodeTraceDataList[guid])
-                {
-                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
-                    {
-                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
-
-                        foreach (ISerializable thingy in traceData)
-                        {
-                            SerializableId sid = thingy as SerializableId;
-
-                            if (sid != null)
-                            {
-                                foreach (var id in ids)
-                                {
-                                    if (sid.IntID == id.IntegerValue)
-                                    {
-                                        areElementsFoundForThisNode = true;
-                                        break;
-                                    }
-                                }
-
-                                if (areElementsFoundForThisNode)
-                                {
-                                    NodeModel inm =
-                                        workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-                                    nodes.Add(inm);
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (areElementsFoundForThisNode)
-                            break;
-                    }
-
-                    if (areElementsFoundForThisNode)
-                        break;
-                }
-            }
-
-            return nodes.AsEnumerable();
-        }
         #endregion
     }
 }
