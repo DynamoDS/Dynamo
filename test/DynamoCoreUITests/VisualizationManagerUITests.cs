@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Windows.Media.Media3D;
+
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
@@ -134,7 +132,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -228,7 +226,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeASMSolids()
         {
             var model = ViewModel.Model;
@@ -244,7 +242,7 @@ namespace DynamoCoreUITests
             model.HomeSpace.HasUnsavedChanges = false;
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeASMSurfaces()
         {
             var viz = ViewModel.VisualizationManager;
@@ -259,7 +257,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeCoordinateSystems()
         {
             var viz = ViewModel.VisualizationManager;
@@ -275,7 +273,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeGeometryFromPython()
         {
             var viz = ViewModel.VisualizationManager;
@@ -293,7 +291,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
             var model = ViewModel.Model;
@@ -320,7 +318,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
             var model = ViewModel.Model;
@@ -341,7 +339,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
             Assert.IsTrue(
@@ -357,7 +355,7 @@ namespace DynamoCoreUITests
             Assert.Greater(BackgroundPreview.Points.Count, 0);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void HonorsPreviewSaveState()
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
