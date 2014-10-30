@@ -83,6 +83,23 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failure")]
+        public void TestDuplicateFunctionParams()
+        {
+            const string code = @"
+def test : int(a : int, a : int)
+{
+    return = a + a;
+}
+
+temp = test(1, 2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(1);
+            thisTest.Verify("temp", null);
+        }
+
+        [Test]
         public void TestFunctionsOverload01()
         {
             String code =
