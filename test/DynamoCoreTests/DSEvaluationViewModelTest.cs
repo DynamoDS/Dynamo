@@ -1158,5 +1158,24 @@ namespace Dynamo.Tests
 
             Assert.DoesNotThrow(() => RunModel(openPath));
         }
+
+        [Test]
+        public void Regress_Magn_4837()
+        {
+            // Test nested custom node: run and reset engine and re-run.
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+
+            RunModel(dynFilePath);
+ 
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            ViewModel.Model.ResetEngine(true);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
+        }
     }
 }
