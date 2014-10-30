@@ -753,17 +753,6 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Get matching classes given the classname
-        /// </summary>
-        /// <param name="classTable"></param>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, string className)
-        {
-            return classTable.GetAllMatchingClasses(className);
-        }
-
-        /// <summary>
         /// Traverses the identifierlist argument until class name resolution succeeds or fails.
         /// </summary>
         /// <param name="classTable"></param>

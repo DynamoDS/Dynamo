@@ -2253,7 +2253,7 @@ namespace ProtoAssociative
                     {
                         // TODO Jun: Move this warning handler to after the SSA transform
                         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                        classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, ident.Value);
+                        classNames = core.ClassTable.GetAllMatchingClasses(ident.Value);
                         if (classNames.Length > 1)
                         {
                             // There is a namespace conflict
