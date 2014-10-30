@@ -65,12 +65,21 @@ namespace DSOffice
                     throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
                 }
             }
-
-            if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
+            catch (NotSupportedException)
+            {
+                // An exception "The URI prefix is not recognized" will be
+                // thrown out for the first run, no idea why that happen, so
+                // just swallow this exception and try to create an new excel
+                // instance.
+            }
 
             if (excel == null)
             {
-                throw new Exception("Excel could not be opened.");
+                excel = new Microsoft.Office.Interop.Excel.Application();
+                if (excel == null)
+                {
+                    throw new Exception("Excel could not be opened.");
+                }
             }
 
             // KILLDYNSETTINGS - is this safe
@@ -532,7 +541,7 @@ namespace DSOffice
         internal static WorkBook ReadExcelFile(string path)
         {
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
-                .FirstOrDefault(e => e.FullName == path);
+                    .FirstOrDefault(e => e.FullName == path);
 
             if (workbookOpen != null)
                 return new WorkBook(workbookOpen, path);
