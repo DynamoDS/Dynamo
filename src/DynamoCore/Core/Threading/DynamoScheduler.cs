@@ -1,18 +1,62 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
+    public class TaskStateChangedEventArgs : EventArgs
+    {
+        public enum State
+        {
+            Scheduled,
+            Discarded,
+            ExecutionStarting,
+            ExecutionFailed,
+            ExecutionCompleted,
+            CompletionHandled
+        }
+
+        internal AsyncTask Task { get; private set; }
+        internal State CurrentState { get; private set; }
+
+        internal TaskStateChangedEventArgs(AsyncTask task, State state)
+        {
+            Task = task;
+            CurrentState = state;
+        }
+    }
+
+    public delegate void TaskStateChangedEventHandler(
+        DynamoScheduler sender, TaskStateChangedEventArgs e);
+
     public partial class DynamoScheduler
     {
-        #region Public Class Operational Methods
+        #region Class Events, Properties
+
+        /// <summary>
+        /// Event that is raised when the state of an AsyncTask is changed.
+        /// The state of an AsyncTask changes when it is scheduled, discarded,
+        /// executed or completed. Note that this event is raised in the context
+        /// of ISchedulerThread, any access to UI components or collections in 
+        /// WorkspaceModel (e.g. Nodes, Connectors, etc.) should be dispatched
+        /// for execution on the UI thread.
+        /// </summary>
+        internal event TaskStateChangedEventHandler TaskStateChanged;
 
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
         internal TimeStamp NextTimeStamp { get { return generator.Next; } }
+
+        #endregion
+
+        #region Public Class Operational Methods
 
         internal DynamoScheduler(ISchedulerThread schedulerThread)
         {
@@ -28,9 +72,10 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Call this method to properly shutdown the scheduler and its associated
         /// ISchedulerThread. This call will be blocked until the ISchedulerThread
-        /// terminates. Note that if the task queue is not empty at the time this 
-        /// call is made, all the tasks in queue will be executed before shutdown 
-        /// can proceed.
+        /// terminates. Note that the implementation of ISchedulerThread may or may 
+        /// not choose to handle all the remaining AsyncTask in queue when shutdown 
+        /// happens -- DynamoScheduler ensures the tasks in queue are cleared when 
+        /// this call returns.
         /// </summary>
         internal void Shutdown()
         {
@@ -40,6 +85,12 @@ namespace Dynamo.Core.Threading
             waitHandles[(int)EventIndex.Shutdown].Set();
 
             schedulerThread.Shutdown(); // Wait for scheduler thread to end.
+
+            lock (taskQueue)
+            {
+                taskQueue.Clear();
+                taskQueueUpdated = false;
+            }
         }
 
         /// <summary>
@@ -58,6 +109,7 @@ namespace Dynamo.Core.Threading
             if (DynamoModel.IsTestMode)
             {
                 asyncTask.MarkTaskAsScheduled();
+                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
                 ProcessTaskInternal(asyncTask);
                 return;
             }
@@ -66,6 +118,7 @@ namespace Dynamo.Core.Threading
             {
                 taskQueue.Add(asyncTask); // Append new task to the end
                 asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
+                NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
 
                 // Mark the queue as being updated. This causes the next call
                 // to "ProcessNextTask" method to post process the task queue.
@@ -95,6 +148,7 @@ namespace Dynamo.Core.Threading
         public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;
+            IEnumerable<AsyncTask> droppedTasks = null;
 
             lock (taskQueue)
             {
@@ -102,7 +156,7 @@ namespace Dynamo.Core.Threading
                 {
                     // The task queue has been updated since the last time 
                     // a task was processed, it might need compacting.
-                    CompactTaskQueue();
+                    droppedTasks = CompactTaskQueue();
                     ReprioritizeTasksInQueue();
                     taskQueueUpdated = false;
                 }
@@ -117,6 +171,16 @@ namespace Dynamo.Core.Threading
                     // No more task in queue, reset wait handle.
                     waitHandles[(int)EventIndex.TaskAvailable].Reset();
                 }
+            }
+
+            if (droppedTasks != null)
+            {
+                // Only notify listeners of dropping tasks here instead of
+                // within CompactTaskQueue method. This way the lock on task
+                // queue will not be held up for a prolonged period of time.
+                // 
+                foreach (var droppedTask in droppedTasks)
+                    NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
             }
 
             if (nextTask != null)

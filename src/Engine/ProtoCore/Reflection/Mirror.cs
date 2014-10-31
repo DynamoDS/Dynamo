@@ -407,10 +407,11 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
                     Select(x => new ClassMirror(core, x));
             }
 
-            public static IEnumerable<StaticMirror> GetAllMembers(Core core)
+            public static IEnumerable<StaticMirror> GetGlobals(Core core)
             {
                 List<StaticMirror> members = new List<StaticMirror>();
                 members.AddRange(GetBuiltInMethods(core));
@@ -981,7 +982,7 @@ namespace ProtoCore
                 sb.AppendLine(methodName + returnType + " (" + 
                     string.Join(", ", argList.Select(p => p.ToString())) + ')');
 
-                return sb.ToString();
+                return sb.ToString().Trim();
             }
         }
 

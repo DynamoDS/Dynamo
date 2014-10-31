@@ -1,5 +1,12 @@
-﻿using Dynamo.Core.Threading;
+﻿using System.IO;
+using System.Reflection;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Tests;
+
+using DynamoUtilities;
 
 using NUnit.Framework;
 using System;
@@ -10,19 +17,46 @@ using System.Threading.Tasks;
 
 namespace Dynamo
 {
+    using TaskState = TaskStateChangedEventArgs.State;
+
     #region Mock Classes for Test Cases
+
+    class TaskEventObserver
+    {
+        readonly List<string> events = new List<string>();
+
+        internal IEnumerable<string> Results { get { return events; } }
+
+        internal void OnTaskStateChanged(
+            DynamoScheduler scheduler,
+            TaskStateChangedEventArgs e)
+        {
+            AddToResultList(e.Task.ToString(), e.CurrentState);
+        }
+
+        private void AddToResultList(string content, TaskState state)
+        {
+            var stateString = state.ToString();
+            events.Add(string.Format("{0}: {1}", stateString, content));
+        }
+    }
 
     class SampleSchedulerThread : ISchedulerThread
     {
         private DynamoScheduler scheduler;
 
+        internal bool Initialized { get; private set; }
+        internal bool Destroyed { get; private set; }
+
         public void Initialize(DynamoScheduler owningScheduler)
         {
             scheduler = owningScheduler;
+            Initialized = true;
         }
 
         public void Shutdown()
         {
+            Destroyed = true;
         }
 
         internal void GetSchedulerToProcessTasks()
@@ -36,7 +70,12 @@ namespace Dynamo
 
     class SampleAsyncTask : AsyncTask
     {
-        private List<string> results; 
+        private List<string> results;
+
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
 
         internal SampleAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
@@ -50,7 +89,8 @@ namespace Dynamo
 
         protected void AddToResultList(string result)
         {
-            results.Add(result);
+            if (results != null)
+                results.Add(result);
         }
 
         protected override void ExecuteCore()
@@ -70,18 +110,28 @@ namespace Dynamo
     /// 
     class PrioritizedAsyncTask : SampleAsyncTask
     {
-        internal int Priority { get; private set; }
+        internal int CurrPriority { get; private set; }
+
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
 
         internal PrioritizedAsyncTask(DynamoScheduler scheduler, int priority)
             : base(scheduler)
         {
-            Priority = priority; // Assign task priority.
+            CurrPriority = priority; // Assign task priority.
+        }
+
+        public override string ToString()
+        {
+            return "PrioritizedAsyncTask: " + CurrPriority;
         }
 
         protected override void ExecuteCore()
         {
             // Task execution results in string added to list.
-            AddToResultList("PrioritizedAsyncTask: " + Priority);
+            AddToResultList(ToString());
         }
 
         protected override int CompareCore(AsyncTask otherTask)
@@ -96,7 +146,7 @@ namespace Dynamo
                 return base.CompareCore(otherTask);
 
             // Priority 1 tasks always come before priority 2 tasks.
-            return Priority - task.Priority;
+            return CurrPriority - task.CurrPriority;
         }
     }
 
@@ -109,16 +159,26 @@ namespace Dynamo
     {
         internal int Punch { get; private set; }
 
+        override internal TaskPriority Priority
+        {
+            get { return TaskPriority.BelowNormal; }
+        }
+
         internal InconsequentialAsyncTask(DynamoScheduler scheduler, int punch)
             : base(scheduler)
         {
             Punch = punch;
         }
 
+        public override string ToString()
+        {
+            return "InconsequentialAsyncTask: " + Punch;
+        }
+
         protected override void ExecuteCore()
         {
             // Task execution results in string added to list.
-            AddToResultList("InconsequentialAsyncTask: " + Punch);
+            AddToResultList(ToString());
         }
 
         protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
@@ -145,6 +205,40 @@ namespace Dynamo
         }
     }
 
+    /// <summary>
+    /// This task, when executed by DynamoScheduler, throws an exception. It is 
+    /// used to verify that TaskStateChangedEventArgs.State.ExecutionFailed is 
+    /// promptly sent out to DynamoScheduler.TaskStateChanged event handler.
+    /// </summary>
+    /// 
+    class ErrorProneAsyncTask : SampleAsyncTask
+    {
+        internal int Value { get; private set; }
+
+        override internal TaskPriority Priority
+        {
+            // Same as PrioritizedAsyncTask.
+            get { return TaskPriority.AboveNormal; }
+        }
+
+        internal ErrorProneAsyncTask(DynamoScheduler scheduler, int value)
+            : base(scheduler)
+        {
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return "ErrorProneAsyncTask: " + Value;
+        }
+
+        protected override void ExecuteCore()
+        {
+            // Throws an exception when executed.
+            throw new InvalidOperationException();
+        }
+    }
+
     class TimeStampGrabber
     {
         private ManualResetEvent doneEvent = null;
@@ -162,6 +256,157 @@ namespace Dynamo
         }
 
         internal TimeStamp TimeStampValue { get; private set; }
+    }
+
+    #endregion
+
+    #region Built-in AsyncTask Test Classes
+
+    class FakeAsyncTaskData
+    {
+        private static int currentSerialNumber = 0;
+        private readonly int serialNumber;
+
+        internal DynamoScheduler Scheduler { get; set; }
+        internal List<string> Results { get; set; }
+
+        internal static void ResetSerialNumber()
+        {
+            currentSerialNumber = 0;
+        }
+
+        internal FakeAsyncTaskData()
+        {
+            serialNumber = currentSerialNumber++;
+        }
+
+        internal void WriteExecutionLog(AsyncTask asyncTask)
+        {
+            var name = asyncTask.GetType().Name;
+            Results.Add(string.Format("{0}: {1}", name, serialNumber));
+        }
+    }
+
+    internal class FakeAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeAggregateRenderPackageAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class FakeCompileCustomNodeAsyncTask : CompileCustomNodeAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeCompileCustomNodeAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class FakeDelegateBasedAsyncTask : DelegateBasedAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeDelegateBasedAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class FakeNotifyRenderPackagesReadyAsyncTask : NotifyRenderPackagesReadyAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeNotifyRenderPackagesReadyAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class FakeSetTraceDataAsyncTask : SetTraceDataAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeSetTraceDataAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+    }
+
+    internal class FakeUpdateGraphAsyncTask : UpdateGraphAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeUpdateGraphAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
+
+        protected override void HandleTaskCompletionCore()
+        {
+            // Avoid base method which access EngineController.
+        }
+    }
+
+    internal class FakeUpdateRenderPackageAsyncTask : UpdateRenderPackageAsyncTask
+    {
+        private readonly FakeAsyncTaskData data;
+
+        internal FakeUpdateRenderPackageAsyncTask(FakeAsyncTaskData data)
+            : base(data.Scheduler)
+        {
+            this.data = data;
+        }
+
+        internal Guid NodeGuid
+        {
+            set { nodeGuid = value; }
+        }
+
+        protected override void ExecuteCore()
+        {
+            data.WriteExecutionLog(this);
+        }
     }
 
     #endregion
@@ -280,6 +525,27 @@ namespace Dynamo
         #endregion
 
         #region Scheduler Related Test Cases
+
+        /// <summary>
+        /// Ensure that DynamoScheduler.Shutdown properly initializes
+        /// and destroys the associated ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestSchedulerCreationDestruction()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            Assert.IsFalse(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            var scheduler = new DynamoScheduler(schedulerThread);
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            scheduler.Shutdown();
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
 
         /// <summary>
         /// Test scenario when various task types are interleaving one another.
@@ -533,9 +799,404 @@ namespace Dynamo
             Assert.Pass("Scheduler thread successfully exits");
         }
 
+        /// <summary>
+        /// Test scenario when various task types are interleaving one another.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestTaskStateChangedEventHandling()
+        {
+            var observer = new TaskEventObserver();
+            var schedulerThread = new SampleSchedulerThread();
+            var scheduler = new DynamoScheduler(schedulerThread);
+            scheduler.TaskStateChanged += observer.OnTaskStateChanged;
+
+            // Start scheduling a bunch of tasks.
+            var asyncTasks = new AsyncTask[]
+            {
+                new ErrorProneAsyncTask(scheduler, 7), 
+                new InconsequentialAsyncTask(scheduler, 100),
+                new PrioritizedAsyncTask(scheduler, 1),
+                new PrioritizedAsyncTask(scheduler, 5),
+                new ErrorProneAsyncTask(scheduler, 3), 
+                new InconsequentialAsyncTask(scheduler, 500),
+                new InconsequentialAsyncTask(scheduler, 300),
+                new PrioritizedAsyncTask(scheduler, 3), 
+                new ErrorProneAsyncTask(scheduler, 5), 
+            };
+
+            foreach (SampleAsyncTask asyncTask in asyncTasks)
+                scheduler.ScheduleForExecution(asyncTask);
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            // Drops all InconsequentialAsyncTask and leave behind one.
+            // Kept all PrioritizedAsyncTask instances and sorted them.
+            var expected = new List<string>
+            {
+                // Scheduling notifications...
+
+                "Scheduled: ErrorProneAsyncTask: 7",
+                "Scheduled: InconsequentialAsyncTask: 100",
+                "Scheduled: PrioritizedAsyncTask: 1",
+                "Scheduled: PrioritizedAsyncTask: 5",
+                "Scheduled: ErrorProneAsyncTask: 3",
+                "Scheduled: InconsequentialAsyncTask: 500",
+                "Scheduled: InconsequentialAsyncTask: 300",
+                "Scheduled: PrioritizedAsyncTask: 3",
+                "Scheduled: ErrorProneAsyncTask: 5",
+
+                // Task discarded notifications...
+
+                "Discarded: InconsequentialAsyncTask: 100",
+                "Discarded: InconsequentialAsyncTask: 300",
+
+                // Execution of remaining tasks...
+
+                "ExecutionStarting: ErrorProneAsyncTask: 7",
+                "ExecutionFailed: ErrorProneAsyncTask: 7",
+                "CompletionHandled: ErrorProneAsyncTask: 7",
+
+                "ExecutionStarting: PrioritizedAsyncTask: 1",
+                "ExecutionCompleted: PrioritizedAsyncTask: 1",
+                "CompletionHandled: PrioritizedAsyncTask: 1",
+
+                "ExecutionStarting: PrioritizedAsyncTask: 5",
+                "ExecutionCompleted: PrioritizedAsyncTask: 5",
+                "CompletionHandled: PrioritizedAsyncTask: 5",
+
+                "ExecutionStarting: ErrorProneAsyncTask: 3",
+                "ExecutionFailed: ErrorProneAsyncTask: 3",
+                "CompletionHandled: ErrorProneAsyncTask: 3",
+
+                "ExecutionStarting: PrioritizedAsyncTask: 3",
+                "ExecutionCompleted: PrioritizedAsyncTask: 3",
+                "CompletionHandled: PrioritizedAsyncTask: 3",
+
+                "ExecutionStarting: ErrorProneAsyncTask: 5",
+                "ExecutionFailed: ErrorProneAsyncTask: 5",
+                "CompletionHandled: ErrorProneAsyncTask: 5",
+
+                // Execution of InconsequentialAsyncTask last...
+
+                "ExecutionStarting: InconsequentialAsyncTask: 500",
+                "ExecutionCompleted: InconsequentialAsyncTask: 500",
+                "CompletionHandled: InconsequentialAsyncTask: 500"
+            };
+
+            Assert.AreEqual(expected.Count, observer.Results.Count());
+
+            int index = 0;
+            foreach (var actual in observer.Results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Most AsyncTask derived classes require NodeModel, WorkspaceModel or 
+    /// DynamoModel to work. For these cases, a DynamoModel is created to 
+    /// facilitate the creation of such model classes. Note that however, in 
+    /// order to allow actual task scheduling in "DynamoModel.scheduler", 
+    /// "DynamoModel.IsTestMode" is set to "false".
+    /// </summary>
+    /// 
+    public class SchedulerIntegrationTests : UnitTestBase
+    {
+        private DynamoModel dynamoModel;
+        private SampleSchedulerThread schedulerThread;
+        private List<string> results;
+
+        #region Integration Test Cases
+
+        /// <summary>
+        /// Test that shutting down DynamoModel correctly shuts down the
+        /// DynamoScheduler, which in turn shuts down ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test]
+        public void TestShutdownWithDynamoModel00()
+        {
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            dynamoModel.ShutDown(false); // Shutting down Dynamo scenario.
+            dynamoModel = null; // Nullify so we don't shutdown twice.
+
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
+
+        /// <summary>
+        /// Test that shutting down DynamoModel correctly shuts down the
+        /// DynamoScheduler, which in turn shuts down ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test]
+        public void TestShutdownWithDynamoModel01()
+        {
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            dynamoModel.ShutDown(true); // Shutting down host scenario.
+            dynamoModel = null; // Nullify so we don't shutdown twice.
+
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
+
+        [Test]
+        public void TestTaskQueuePreProcessing00()
+        {
+            var nodes = CreateBaseNodes().ToArray();
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                // This older task is kept because it wasn't re-scheduled.
+                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID),
+
+                // These older tasks are to be dropped.
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
+
+                // These older tasks are to be dropped.
+                MakeNotifyRenderPackagesReadyAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(),
+
+                // This higher priority task moves to the front.
+                MakeUpdateGraphAsyncTask(),
+
+                // These newer tasks will be kept.
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID),
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
+
+                // This higher priority task moves to the front.
+                MakeUpdateGraphAsyncTask(),
+
+                // These newer tasks will be kept.
+                MakeNotifyRenderPackagesReadyAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(),
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "FakeUpdateGraphAsyncTask: 5",
+                "FakeUpdateGraphAsyncTask: 8",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeUpdateRenderPackageAsyncTask: 6",
+                "FakeUpdateRenderPackageAsyncTask: 7",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 9",
+                "FakeAggregateRenderPackageAsyncTask: 10",
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        [Test]
+        public void TestTaskQueuePreProcessing01()
+        {
+            // Everything is scheduled in order of priority.
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                MakeSetTraceDataAsyncTask(),                        // Highest
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal
+                MakeUpdateGraphAsyncTask(),                         // Above normal
+                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeDelegateBasedAsyncTask(),                       // Normal
+                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "FakeSetTraceDataAsyncTask: 0",
+                "FakeCompileCustomNodeAsyncTask: 1",
+                "FakeUpdateGraphAsyncTask: 2",
+                "FakeAggregateRenderPackageAsyncTask: 3",
+                "FakeDelegateBasedAsyncTask: 4",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 5",
+                "FakeUpdateRenderPackageAsyncTask: 6"
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        [Test]
+        public void TestTaskQueuePreProcessing02()
+        {
+            // Everything is scheduled in reversed order of priority.
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
+                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
+                MakeDelegateBasedAsyncTask(),                       // Normal
+                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeUpdateGraphAsyncTask(),                         // Above normal
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal
+                MakeSetTraceDataAsyncTask(),                        // Highest
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "FakeSetTraceDataAsyncTask: 6",
+                "FakeUpdateGraphAsyncTask: 4",
+                "FakeCompileCustomNodeAsyncTask: 5",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
+                "FakeDelegateBasedAsyncTask: 2",
+                "FakeAggregateRenderPackageAsyncTask: 3",
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
         #endregion
 
-        #region Private Test Helper Methods
+        #region Test Setup, TearDown, Helper Methods
+
+        public override void Init()
+        {
+            base.Init();
+            StartDynamo();
+
+            FakeAsyncTaskData.ResetSerialNumber();
+            results = new List<string>();
+        }
+
+        public override void Cleanup()
+        {
+            if (dynamoModel != null)
+            {
+                dynamoModel.ShutDown(false);
+                dynamoModel = null;
+            }
+
+            base.Cleanup();
+        }
+
+        protected void StartDynamo()
+        {
+            DynamoPathManager.Instance.InitializeCore(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+
+            schedulerThread = new SampleSchedulerThread();
+            dynamoModel = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    // See documentation for 'SchedulerIntegrationTests' above.
+                    StartInTestMode = false,
+                    SchedulerThread = schedulerThread
+                });
+        }
+
+        private IEnumerable<NodeModel> CreateBaseNodes()
+        {
+            var nodes = new List<NodeModel>();
+
+            var workspace = dynamoModel.CurrentWorkspace;
+            nodes.Add(workspace.AddNode(0, 0, "Number"));
+            nodes.Add(workspace.AddNode(0, 0, "Number"));
+            nodes.Add(workspace.AddNode(0, 0, "Add"));
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            return nodes;
+        }
+
+        #endregion
+
+        #region AsyncTask Class Creation Methods
+
+        private AsyncTask MakeAggregateRenderPackageAsyncTask()
+        {
+            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeCompileCustomNodeAsyncTask()
+        {
+            return new FakeCompileCustomNodeAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeDelegateBasedAsyncTask()
+        {
+            return new FakeDelegateBasedAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()
+        {
+            return new FakeNotifyRenderPackagesReadyAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeSetTraceDataAsyncTask()
+        {
+            return new FakeSetTraceDataAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeUpdateGraphAsyncTask()
+        {
+            return new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+        }
+
+        private AsyncTask MakeUpdateRenderPackageAsyncTask(Guid nodeGuid)
+        {
+            return new FakeUpdateRenderPackageAsyncTask(MakeAsyncTaskData())
+            {
+                NodeGuid = nodeGuid
+            };
+        }
+
+        private FakeAsyncTaskData MakeAsyncTaskData()
+        {
+            return new FakeAsyncTaskData()
+            {
+                Scheduler = dynamoModel.Scheduler,
+                Results = results
+            };
+        }
 
         #endregion
     }

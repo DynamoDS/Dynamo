@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
+    <Compile Include="SiteLocationTests.cs" />
     <Compile Include="RenderingAsAServiceTests.cs" />
     <Compile Include="DividedCurveTests.cs" />
     <Compile Include="DocumentTests.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="ModelTextTests.cs" />
     <Compile Include="ReferenceCurveTests.cs" />
     <Compile Include="SelectionTests.cs" />
+    <Compile Include="StructuralFramingTests.cs" />
     <Compile Include="TopographyTests.cs" />
     <Compile Include="TransformTest.cs" />
     <Compile Include="XYZTests.cs" />

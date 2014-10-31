@@ -21,8 +21,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestPreLoadedLibrary()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-            var loadedLibs = libraryServices.Libraries;
+            var loadedLibs = libraryServices.ImportedLibraries;
             Assert.IsTrue(loadedLibs.Any());
         }
 
@@ -30,7 +29,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLoadDSFile()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
             bool libraryLoaded = false;
 
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -49,8 +47,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLibraryAcrossSessions()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
             bool libraryLoaded = false;
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 

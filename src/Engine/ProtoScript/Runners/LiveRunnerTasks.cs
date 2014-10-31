@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using GraphToDSCompiler;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.Utils;
 
@@ -78,7 +77,7 @@ namespace ProtoScript.Runners
                 {
                     try
                     {
-                        string code = GraphUtilities.ASTListToCode(astList);
+                        string code = new ProtoCore.CodeGenDS(astList).GenerateCode();
                         args = new NodesToCodeCompletedEventArgs(code, EventStatus.OK, "Node to code task complete.");
                     }
                     catch (Exception exception)

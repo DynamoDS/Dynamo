@@ -12,6 +12,8 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 
 using RevitServices.Persistence;
+using RevitServices.Transactions;
+
 using RTF.Framework;
 using Dynamo.Models;
 
@@ -79,13 +81,14 @@ namespace Dynamo.Tests
 
             refPt.X = 10;
 
-            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
+            TransactionManager.Instance.ForceCloseTransaction();
 
+            Assert.AreEqual(true, selectNode.ForceReExecuteOfNode);
             ViewModel.Model.RunExpression();
 
             Assert.AreNotEqual(0, watchNode.CachedValue); //Actual value depends on units
         }
-    
+
         [Test, Category("SmokeTests"), TestModel(@".\Selection\Selection.rfa")]
         public void EmptySingleSelectionReturnsNull()
         {
@@ -201,7 +204,7 @@ namespace Dynamo.Tests
             OpenAndAssertNoDummyNodes(Path.Combine(_testPath, @".\Selection\SelectEdge.dyn"));
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            var selectionNode = ViewModel.model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
+            var selectionNode = ViewModel.Model.Nodes.FirstOrDefault(n => n is ReferenceSelection) as ReferenceSelection;
             Assert.NotNull(selectionNode);
             var element = GetPreviewValue(selectionNode.GUID.ToString());
             Assert.IsInstanceOf<NurbsCurve>(element);

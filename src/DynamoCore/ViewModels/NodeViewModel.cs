@@ -282,6 +282,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool WillForceReExecuteOfNode
+        {
+            get { return NodeModel.ForceReExecuteOfNode; }
+        }
+
         #endregion
 
         #region events
@@ -484,6 +489,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
+                    break;
+                case "ForceReExecuteOfNode":
+                    RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;
             }
         }
