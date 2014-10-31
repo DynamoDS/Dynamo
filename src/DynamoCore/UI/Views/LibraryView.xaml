@@ -176,6 +176,8 @@
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Background"
                                     Value="#01000000" />
+                            <Setter Property="Margin"
+                                    Value="3,0,0,0" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <Binding Path="ActualWidth"
