@@ -677,6 +677,9 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+
+                <EventSetter Event="Expanded"
+                             Handler="OnExpanderCollapsed" />
             </Style>
 
             <Style x:Key="LibraryTreeView"
