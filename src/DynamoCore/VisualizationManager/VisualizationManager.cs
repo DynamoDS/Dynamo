@@ -115,7 +115,7 @@ namespace Dynamo
                     if (!drawToAlternateContext)
                     {
                         drawToAlternateContext = value;
-                        QueueRenderTask();
+                        OnRenderComplete(this, new RenderCompletionEventArgs(-1));
                     }
                 }
                 RaisePropertyChanged("DrawToAlternateContext");
@@ -324,7 +324,7 @@ namespace Dynamo
 
                 OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            allPackages, string.Empty, CurrentTaskId));
+                            allPackages, Guid.Empty, CurrentTaskId));
             }
         }
 
@@ -362,14 +362,14 @@ namespace Dynamo
                     // if there are packages, send any that aren't empty
                     OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty, tag.TaskId));
+                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), Guid.Empty, tag.TaskId));
                 }
                 else
                 {
                     // if there are no packages, still trigger an update
                     // so the view gets redrawn
                     OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty, tag.TaskId));
+                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), Guid.Empty, tag.TaskId));
                 }
 
             }
@@ -381,7 +381,7 @@ namespace Dynamo
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(tag.Node.Inputs, 0).ToList();
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID,tag.TaskId));
             }
 
             
@@ -458,7 +458,7 @@ namespace Dynamo
         {
             UpdatingPaused = false;
             RegisterEventListeners();
-            QueueRenderTask();
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1)); ;
         }
 
         /// <summary>
@@ -527,9 +527,7 @@ namespace Dynamo
             if (updatingPaused)
                 return;
 
-            // For a selection event, we need only to trigger a new rendering for 
-            // the background preview.
-            QueueRenderTask();
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1)); ;
         }
 
         /// <summary>
@@ -612,9 +610,7 @@ namespace Dynamo
 
         protected virtual void HandleRenderPackagesReadyCore()
         {
-            // Fire the render complete event which is handled by the render
-            // targets. The render targets then request their updated branch visuals.
-            QueueRenderTask();
+            // Default visualization mangager does nothing here.
         }
 
         private void RequestNodeVisualUpdate(NodeModel nodeModel)
@@ -649,6 +645,13 @@ namespace Dynamo
             // method, *do not* dispatch the following call here as derived 
             // handler may need it to remain on the ISchedulerThread's context.
             // 
+
+            // Fire event to tell render targets to request their visuals
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1));
+
+            // Call overridden method on visualization manager to
+            // process whatever internal logic there is around
+            // drawing a visualization.
             HandleRenderPackagesReadyCore();
         }
 
@@ -659,9 +662,9 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.Id));
+            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
 
-            var e = new VisualizationEventArgs(rps, task.Id, -1);
+            var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);
         }
 
@@ -672,24 +675,6 @@ namespace Dynamo
             Pause(this, EventArgs.Empty);
             Cleanup();
         }
-
-        /// <summary>
-        /// Increment the render task id and fire the render completed event.
-        /// </summary>
-        private void QueueRenderTask(bool increment = true)
-        {
-            //if (increment)
-            //{
-            //    CurrentTaskId++;
-            //}
-            
-            //Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
-            //TaskList.Add(CurrentTaskId);
-            //TODO: Ben to remove when he removes RenderManager.
-            TaskList.Add(-1);
-            OnRenderComplete(this, new RenderCompletionEventArgs(CurrentTaskId));
-        } 
-
         
         /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
@@ -758,11 +743,11 @@ namespace Dynamo
         /// <summary>
         /// The id of the view for which the description belongs.
         /// </summary>
-        public string Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         public long TaskId { get; internal set; }
 
-        public VisualizationEventArgs(IEnumerable<RenderPackage> description, string viewId, long taskId)
+        public VisualizationEventArgs(IEnumerable<RenderPackage> description, Guid viewId, long taskId)
         {
             Packages = description;
             Id = viewId;

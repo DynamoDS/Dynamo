@@ -29,7 +29,7 @@ namespace Dynamo.Core.Threading
         private readonly List<IRenderPackage> selectedRenderPackages;
         private IEnumerable<NodeModel> duplicatedNodeReferences;
 
-        internal string Id { get; set; }
+        internal Guid NodeId { get; set; }
 
         internal IEnumerable<IRenderPackage> NormalRenderPackages
         {
@@ -78,14 +78,14 @@ namespace Dynamo.Core.Threading
 
             if (nodeModel == null) // No node is specified, gather all nodes.
             {
-                Id = string.Empty;
+                NodeId = Guid.Empty;
 
                 // Duplicate a list of all nodes for consumption later.
                 duplicatedNodeReferences = workspaceModel.Nodes.ToList();
             }
             else
             {
-                Id = nodeModel.GUID.ToString();
+                NodeId = nodeModel.GUID;
 
                 // Recursively gather all upstream nodes.
                 var gathered = new List<NodeModel>();
@@ -135,7 +135,7 @@ namespace Dynamo.Core.Threading
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            if (Id != theOtherTask.Id)
+            if (NodeId != theOtherTask.NodeId)
                 return TaskMergeInstruction.KeepBoth;
 
             //// Comparing to another AggregateRenderPackageAsyncTask, the one 

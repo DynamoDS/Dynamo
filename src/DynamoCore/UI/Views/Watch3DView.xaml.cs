@@ -38,7 +38,7 @@ namespace Dynamo.Controls
 
         #region private members
 
-        private readonly string _id="";
+        private readonly Guid _id=Guid.Empty;
         private Point _rightMousePoint;
         private Point3DCollection _points = new Point3DCollection();
         private Point3DCollection _lines = new Point3DCollection();
@@ -187,7 +187,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
         }
 
-        public Watch3DView(string id)
+        public Watch3DView(Guid id)
         {
             InitializeComponent();
             watch_view.DataContext = this;

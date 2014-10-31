@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             //_watchView = new WatchView();
-            View = new Watch3DView(GUID.ToString())
+            View = new Watch3DView(GUID)
             {
                 DataContext = this,
                 Width = _watchWidth,
@@ -220,7 +220,7 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString(), -1));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID, -1));
         }
 
         private void mi_Click(object sender, RoutedEventArgs e)
