@@ -156,6 +156,33 @@
 
             <!-- Region DataContext Templates -->
 
+            <DataTemplate x:Key="MemberControlTemplate">
+                <StackPanel Name="ImageAndNodeName"
+                            Orientation="Horizontal">
+                    <Image HorizontalAlignment="Left"
+                           Height="32"
+                           Margin="16,0,16,0"
+                           VerticalAlignment="Center"
+                           Width="32"
+                           Source="{Binding SmallIcon}" />
+                    <TextBlock Name="memberName"
+                               HorizontalAlignment="Left"
+                               Text="{Binding Name}"
+                               VerticalAlignment="Top"
+                               Margin="5,10,0,0"
+                               Foreground="#CCCCCC"
+                               FontSize="13" />
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter TargetName="ImageAndNodeName"
+                                Property="Background"
+                                Value="#444444" />
+                    </Trigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
             <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <StackPanel Orientation="Vertical"
@@ -321,27 +348,12 @@
                 </TextBlock>
             </HierarchicalDataTemplate>
 
-            <!-- Used for categories that is full of memebers without classes. E.g. Operators.-->
-            <DataTemplate x:Key="CategoryClassDetailsTemplate">
-                <Expander Header="{Binding Path=Name}"
-                          OverridesDefaultStyle="True"
-                          Template="{StaticResource CategoryExpanderTemplate}"
-                          Collapsed="OnExpanderCollapsed"
-                          Margin="-2,0,0,0">
-                    <ContentControl ContentTemplate="{StaticResource ClassDetailsDataTemplate}">
-                        <ContentControl.Content>
-                            <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
-                        </ContentControl.Content>
-                    </ContentControl>
-                </Expander>
-            </DataTemplate>
-
             <!--EndRegion-->
 
             <!-- Region Selectors -->
             <controls:LibraryTreeTemplateSelector x:Key="LibraryTreeTemplateSelector"
+                                                  MemberTemplate="{StaticResource MemberControlTemplate}"
                                                   SubclassesTemplate="{StaticResource SubclassesTemplate}"
-                                                  CategoryClassDetailsTemplate="{StaticResource CategoryClassDetailsTemplate}"
                                                   NestedCategoryTemplate="{StaticResource NestedCategoryTemplate}" />
 
             <!--EndRegion-->
