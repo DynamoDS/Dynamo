@@ -2,12 +2,15 @@
 using NUnit.Framework;
 using Revit.Elements;
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class CurveByPointsTests : GeometricRevitNodeTest
+    public class CurveByPointsTests : GeometricNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

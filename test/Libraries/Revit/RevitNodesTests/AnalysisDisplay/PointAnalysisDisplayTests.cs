@@ -3,15 +3,22 @@
 using Analysis.DataTypes;
 
 using Autodesk.DesignScript.Geometry;
+
+using NUnit.Framework;
+
 using Revit.AnalysisDisplay;
 using Revit.Application;
-using NUnit.Framework;
+
+using RevitNodesTests;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.AnalysisDisplay
+namespace RevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
-    public class PointAnalysisDisplayTests : GeometricRevitNodeTest
+    public class PointAnalysisDisplayTests : GeometricNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]

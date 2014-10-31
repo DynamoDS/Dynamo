@@ -2,7 +2,11 @@
 using Autodesk.Revit.DB;
 using NUnit.Framework;
 using Revit.GeometryConversion;
+
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 using ModelText = Revit.Elements.ModelText;
 using ModelTextType = Revit.Elements.ModelTextType;
@@ -10,10 +14,10 @@ using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using SketchPlane = Revit.Elements.SketchPlane;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelTextTests : GeometricRevitNodeTest
+    public class ModelTextTests : GeometricNodeTestBase
     {
         internal double InternalDepth(Revit.Elements.ModelText text)
         {
