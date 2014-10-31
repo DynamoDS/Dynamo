@@ -162,7 +162,6 @@
                             Orientation="Horizontal">
                     <Image HorizontalAlignment="Left"
                            Height="32"
-                           Margin="16,0,16,0"
                            VerticalAlignment="Center"
                            Width="32"
                            Source="{Binding SmallIcon}" />
@@ -171,7 +170,7 @@
                                Text="{Binding Name}"
                                VerticalAlignment="Top"
                                Margin="5,10,0,0"
-                               Foreground="#CCCCCC"
+                               Foreground="#999999"
                                FontSize="13" />
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
