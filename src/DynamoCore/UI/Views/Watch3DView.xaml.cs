@@ -38,7 +38,7 @@ namespace Dynamo.Controls
 
         #region private members
 
-        private readonly string _id="";
+        private readonly Guid _id=Guid.Empty;
         private Point _rightMousePoint;
         private Point3DCollection _points = new Point3DCollection();
         private Point3DCollection _lines = new Point3DCollection();
@@ -187,7 +187,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
         }
 
-        public Watch3DView(string id)
+        public Watch3DView(Guid id)
         {
             InitializeComponent();
             watch_view.DataContext = this;
@@ -205,10 +205,9 @@ namespace Dynamo.Controls
         {
             Debug.WriteLine("Watch 3D view unloaded.");
 
-            //check this for null so the designer can load the preview
-            if (DataContext is DynamoViewModel)
+            var vm = DataContext as IWatchViewModel;
+            if (vm != null)
             {
-                var vm = DataContext as DynamoViewModel;
                 vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
@@ -221,10 +220,10 @@ namespace Dynamo.Controls
             MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
+            var vm = DataContext as IWatchViewModel;
             //check this for null so the designer can load the preview
-            if (DataContext is DynamoViewModel)
+            if (vm != null)
             {
-                var vm = DataContext as DynamoViewModel;
                 vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
@@ -391,6 +390,8 @@ namespace Dynamo.Controls
             {
                 return;
             }
+
+            Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
             var sw = new Stopwatch();
             sw.Start();
