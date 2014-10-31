@@ -156,6 +156,7 @@
 
             <!-- Region DataContext Templates -->
 
+            <!-- This data template is used to show single member. -->
             <DataTemplate x:Key="MemberControlTemplate">
                 <StackPanel Name="ImageAndNodeName"
                             Orientation="Horizontal">
