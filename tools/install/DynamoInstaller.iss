@@ -126,17 +126,20 @@ begin
   Result := sUnInstallString;
 end;
 
-function GetUninstallStringForMSI() : String;
+function GetUninstallStringForMSI(sAppId: String) : String;
 var 
   sUnInstPath: String;
   sUnInstallString: String;
 begin
   sUnInstallString := '';
 
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}')
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{' + sAppId);
   if not RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU64, sUnInstPath, 'UninstallString', sUnInstallString);
 
+  if sUnInstallString <> '' then
+    sUnInstallString := '/X' + sAppId;
+  
   Result := sUnInstallString;
 end;
 
@@ -189,11 +192,6 @@ begin
   Result := (GetUninstallStringForEXE() <> '');
 end;
 
-function IsMSIInstalled(): Boolean;
-begin
-  Result := (GetUninstallStringForMSI() <> '');
-end;
-
 /////////////////////////////////////////////////////////////////////
 function UnInstallOldEXE(sUnInstallString: String): Integer;
 var
@@ -229,7 +227,8 @@ begin
 
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec('MsiExec.exe', '/x{#emit StringChange(SetupSetting("AppId"),'{{','{')} /quiet','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
+	
+	if Exec('MsiExec.exe', sUnInstallString + ' /quiet','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
       Result := 3
     else
       Result := 2;
@@ -285,11 +284,16 @@ begin
           sUninstallString := GetUninstallStringForEXE()
           UnInstallOldEXE(sUninstallString)
         end;
-      if (IsMSIInstalled()) then
-        begin
-          sUninstallString := GetUninstallStringForMSI()
-          UnInstallOldMSI(sUninstallString)
-        end;
+      // Query for pre 0.7.3 MSI uninstall string, which is same as AppId
+      sUninstallString := GetUninstallStringForMSI(ExpandConstant('{#emit SetupSetting("AppId")}'));
+      if sUninstallString <> '' then
+        UnInstallOldMSI(sUninstallString);
+
+      // Query for 0.7.3 MSI uninstall string.
+      sUninstallString := GetUninstallStringForMSI('{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}');
+      if sUninstallString <> '' then
+        UnInstallOldMSI(sUninstallString);
+
     end;
 end;
 
@@ -319,4 +323,3 @@ begin
         end;
     end;
 end;
-
