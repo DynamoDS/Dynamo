@@ -135,12 +135,15 @@ namespace Dynamo.Core.Threading
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
+            if (Id != theOtherTask.Id)
+                return TaskMergeInstruction.KeepBoth;
+
             //// Comparing to another AggregateRenderPackageAsyncTask, the one 
             //// that gets scheduled more recently stay, while the earlier one 
             //// gets dropped. If this task has a higher tick count, keep this.
             //// 
-            //if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
-            //    return TaskMergeInstruction.KeepThis;
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
 
             //return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
             return TaskMergeInstruction.KeepBoth;
