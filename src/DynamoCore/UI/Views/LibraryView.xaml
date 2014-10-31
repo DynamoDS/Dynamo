@@ -172,15 +172,31 @@
                                Margin="5,10,0,0"
                                Foreground="#CCCCCC"
                                FontSize="13" />
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Background"
+                                    Value="#01000000" />
+                            <Setter Property="Width">
+                                <Setter.Value>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                                </Setter.Value>
+                            </Setter>
+                            <EventSetter Event="MouseEnter"
+                                         Handler="OnMemberMouseEnter" />
+                            <EventSetter Event="MouseLeave"
+                                         Handler="OnPopupMouseLeave" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="#444444" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                 </StackPanel>
-                <DataTemplate.Triggers>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter TargetName="ImageAndNodeName"
-                                Property="Background"
-                                Value="#444444" />
-                    </Trigger>
-                </DataTemplate.Triggers>
             </DataTemplate>
 
             <!-- This data template is used to show one subcategory. -->
@@ -809,5 +825,18 @@
                 </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
+
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
+        
     </Grid>
 </UserControl>
