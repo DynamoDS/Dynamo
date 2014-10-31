@@ -37,11 +37,7 @@ namespace Dynamo.Tests
         {
             try
             {
-                var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
-
-                ViewModel.PerformShutdownSequence(shutdownParams);
-                this.ViewModel = null;
+                base.Cleanup();
 
                 EventArgs args = new ExcelCloseEventArgs(false);
                 ExcelInterop.OnProcessExit(this, args);
@@ -50,8 +46,6 @@ namespace Dynamo.Tests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            base.Cleanup();
 
             GC.Collect();
         }

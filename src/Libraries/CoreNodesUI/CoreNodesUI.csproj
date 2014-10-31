@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -89,6 +89,7 @@
       <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selection.cs" />
+    <Compile Include="WatchImage.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +106,11 @@
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

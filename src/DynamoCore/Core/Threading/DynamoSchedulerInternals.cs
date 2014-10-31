@@ -113,7 +113,11 @@ namespace Dynamo.Core.Threading
             // 
             var temp = taskQueue.ToList(); // Duplicate the source list.
             taskQueue.Clear(); // Then it's safe to clear the source list.
-            taskQueue.AddRange(temp.OrderBy(t => t, new AsyncTaskComparer()));
+
+            // First sort tasks by AsyncTask.Priority property, then sort them 
+            // by calling AsyncTask.Compare method for relative importance.
+            taskQueue.AddRange(temp.OrderBy(t => t.Priority)
+                .ThenBy(t => t, new AsyncTaskComparer()));
         }
 
         private void ProcessTaskInternal(AsyncTask asyncTask)

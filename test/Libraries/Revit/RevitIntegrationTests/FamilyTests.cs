@@ -2,11 +2,9 @@
 
 using NUnit.Framework;
 
-using RevitSystemTests;
-
 using RTF.Framework;
 
-namespace Dynamo.Tests
+namespace RevitSystemTests
 {
     [TestFixture]
     class FamilyTests : SystemTest

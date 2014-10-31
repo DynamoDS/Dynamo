@@ -597,9 +597,24 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
+        /// <summary>
+        /// Verify the total warning count
+        /// </summary>
+        /// <param name="count"></param>
         public void VerifyBuildWarningCount(int count)
         {
             Assert.IsTrue(testCore.BuildStatus.WarningCount == count, mErrorMessage);
+        }
+
+        /// <summary>
+        /// Verify the number of times that the warning 'id' has occured
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="count"></param>
+        public void VerifyBuildWarningCount(ProtoCore.BuildData.WarningID id, int count)
+        {
+            int warningCount = testCore.BuildStatus.Warnings.Count(w => w.ID == id);
+            Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
         public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
@@ -697,7 +712,7 @@ namespace ProtoTestFx.TD
         {
             if (value == null)
             {
-                Assert.IsTrue(data.IsNull);
+                Assert.IsTrue(data.IsNull, "data is null");
             }
             else if (value is int)
             {

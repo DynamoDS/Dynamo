@@ -31,14 +31,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0])
-            };
-
-            return resultAst;
+            yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
         public void SetupCustomUIElements(dynNodeView nodeUi)
@@ -74,20 +69,17 @@ namespace Dynamo.Nodes
 
             var hbitmap = bmp.GetHbitmap();
             var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-            image.Source =  imageSource;
+            image.Source = imageSource;
         }
 
         private System.Drawing.Bitmap GetImageFromMirror()
         {
             if (this.InPorts[0].Connectors.Count == 0) return null;
 
-            var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            var data = this.CachedValue;
 
-            if (null == mirror)
-                return null;
-
-            var data = mirror.GetData();
-
+            //var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            
             if (data == null || data.IsNull) return null;
             if (data.Data is System.Drawing.Bitmap) return data.Data as System.Drawing.Bitmap;
             return null;

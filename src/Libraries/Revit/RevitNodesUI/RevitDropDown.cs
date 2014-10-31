@@ -487,16 +487,19 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("Structural Framing Types")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Select a level in the active document")]
-    [IsDesignScriptCompatible]
-    public class StructuralFramingTypes : RevitDropDownBase
+    public abstract class AllElementsInBuiltInCategory : RevitDropDownBase 
     {
-        private const string noFraming = "No structural framing types available.";
+        private string noTypesMessage;
+        private BuiltInCategory category;
 
-        public StructuralFramingTypes(WorkspaceModel workspaceModel)
-            : base(workspaceModel, "Framing Types"){}
+        internal AllElementsInBuiltInCategory(
+            BuiltInCategory category, string outputMessage, string noTypesMessage, WorkspaceModel workspaceModel)
+            : base(workspaceModel, outputMessage)
+        {
+            this.category = category;
+            this.noTypesMessage = noTypesMessage;
+            PopulateItems();
+        }
 
         protected override void PopulateItems()
         {
@@ -505,12 +508,12 @@ namespace DSRevitNodesUI
             //find all the structural framing family types in the project
             var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
-            var catFilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
+            var catFilter = new ElementCategoryFilter(category);
             collector.OfClass(typeof(FamilySymbol)).WherePasses(catFilter);
 
             if (collector.ToElements().Count == 0)
             {
-                Items.Add(new DynamoDropDownItem(noFraming, null));
+                Items.Add(new DynamoDropDownItem(noTypesMessage, null));
                 SelectedIndex = 0;
                 return;
             }
@@ -524,7 +527,7 @@ namespace DSRevitNodesUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (Items.Count == 0 ||
-                Items[0].Name == noFraming ||
+                Items[0].Name == noTypesMessage ||
                 SelectedIndex == -1)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
@@ -540,6 +543,26 @@ namespace DSRevitNodesUI
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
+    }
+
+    [NodeName("Structural Framing Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a structural framing type in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralFramingTypes : AllElementsInBuiltInCategory
+    {
+        public StructuralFramingTypes(WorkspaceModel workspaceModel)
+            : base(BuiltInCategory.OST_StructuralFraming, "Framing Types", "No structural framing types available.", workspaceModel){}
+    }
+
+    [NodeName("Structural Column Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a structural column type in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralColumnTypes : AllElementsInBuiltInCategory
+    {
+        public StructuralColumnTypes(WorkspaceModel workspaceModel)
+            : base(BuiltInCategory.OST_StructuralColumns, "Column Types", "No structural column types available.", workspaceModel){}
     }
 
     [NodeName("Spacing Rule Layout")]

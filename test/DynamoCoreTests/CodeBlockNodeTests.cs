@@ -11,6 +11,8 @@ using Dynamo.Models;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
 using Dynamo.DSEngine;
+using ProtoCore.Utils;
+using Dynamo.DSEngine.CodeCompletion;
 
 namespace Dynamo.Tests
 {
@@ -241,6 +243,54 @@ b = c[w][x][y][z];";
             var guid = codeBlockNodeTwo.GUID.ToString();
             var expectedIdentifier = "arr_" + guid.Replace("-", string.Empty);
             Assert.AreEqual(expectedIdentifier, codeBlockNodeTwo.AstIdentifierBase);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4946()
+        {
+            var model = ViewModel.Model;
+            int value = 10;
+            string codeInCBN = "a = " + value.ToString();
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            MirrorData mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
+            // Copy and paste the code block node.
+            model.AddToSelection(codeBlockNodeOne);
+            model.Copy(null); // Copy the selected node.
+            model.Paste(null); // Paste the copied node.
+
+            // After pasting, we should have two nodes.
+            Assert.AreEqual(2, model.Nodes.Count());
+
+            // Make sure we are able to get the second code block node.
+            var codeBlockNodeTwo = model.Nodes[1] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNodeTwo);
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
         }
 
         [Test]
@@ -723,25 +773,42 @@ b = c[w][x][y][z];";
         }
     }
 
-    class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
+    public class CodeBlockCompletionTests 
     {
+        private ProtoCore.Core libraryServicesCore = null;
+
+        [SetUp]
+        public void Init()
+        {
+            string libraryPath = "FFITarget.dll";
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+
+            libraryServicesCore = new ProtoCore.Core(options);
+
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
+        }
+
         [Test]
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-
-            string libraryPath = "FFITarget.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
@@ -758,19 +825,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-
-            string libraryPath = "FFITarget.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
@@ -793,7 +847,7 @@ b = c[w][x][y][z];";
             string expected = "x[y[z.foo()].goo()].bar";
             Assert.AreEqual(expected, actual);
 
-            
+
             code = @"abc.X[xyz.foo().Y";
             actual = CodeCompletionParser.GetStringToComplete(code);
             expected = "xyz.foo().Y";
@@ -861,6 +915,157 @@ b = c[w][x][y][z];";
             var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCtorSignatureCompletion()
+        {
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "CodeCompletionClass";
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 3 "CodeCompletionClass" ctor overloads
+            Assert.AreEqual(3, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("CodeCompletionClass (i1 : int, i2 : int, i3 : int)", overloads.ElementAt(2).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "OverloadedAdd";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 2 "OverloadedAdd" method overloads
+            Assert.AreEqual(2, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("OverloadedAdd : int (cf : ClassFunctionality)", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureReturnTypeCompletion()
+        {
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "AddWithValueContainer";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            var expected = "AddWithValueContainer : ValueContainer[] (valueContainer : ValueContainer)";
+            Assert.AreEqual(expected, overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltInMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "";
+            string functionName = "Count";
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("Count : int (array : [])", overloads.ElementAt(0).Stub);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestStaticMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "StaticFunction";
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 1 "StaticFunction" method overload
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("StaticFunction : int ()", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "Poi";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 4 completion items
+            Assert.AreEqual(4, completions.Count());
+
+            string[] expected = {"DummyPoint", "FFITarget.DesignScript.Point",
+                                    "FFITarget.Dynamo.Point", "UnknownPoint"};
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodKeywordCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "im";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(5, completions.Count());
+
+            string[] expected = { "Decimal", "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 
 }
