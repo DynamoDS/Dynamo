@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
 
 using NUnit.Framework;
+
+using RevitTestServices;
 
 using RTF.Framework;
 
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class ImportInstanceTests : RevitNodeTestBase

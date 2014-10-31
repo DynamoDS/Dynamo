@@ -1,11 +1,10 @@
 ﻿using Autodesk.DesignScript.Geometry;
 
+using NUnit.Framework;
+
 using RevitTestServices;
 
-using NUnit.Framework;
-using Point = Autodesk.DesignScript.Geometry.Point;
-
-namespace DSCoreNodesTests
+namespace RevitNodesTests
 {
     [TestFixture]
     class GeometrySanityCheck : RevitNodeTestBase

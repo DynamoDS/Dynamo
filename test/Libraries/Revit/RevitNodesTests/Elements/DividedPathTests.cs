@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Linq;
+
 using Autodesk.DesignScript.Geometry;
-using Revit.Elements;
+
 using NUnit.Framework;
 
+using Revit.Elements;
 using Revit.GeometryReferences;
 
-using RevitServices.Persistence;
+using RevitTestServices;
 
 using RTF.Framework;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     class DividedPathTests : RevitNodeTestBase

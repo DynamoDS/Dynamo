@@ -1,8 +1,14 @@
 ﻿using NUnit.Framework;
+
 using RevitServices.Persistence;
+
+using RevitNodesTests;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class AbstractElementTests : RevitNodeTestBase

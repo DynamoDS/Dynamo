@@ -5,13 +5,14 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 
-using Revit.Elements;
 using NUnit.Framework;
 
+using Revit.Elements;
 using Revit.GeometryConversion;
 
 using RevitServices.Persistence;
-using RevitServices.Transactions;
+
+using RevitTestServices;
 
 using RTF.Framework;
 
@@ -21,7 +22,7 @@ using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     class AdaptiveComponentTests : RevitNodeTestBase

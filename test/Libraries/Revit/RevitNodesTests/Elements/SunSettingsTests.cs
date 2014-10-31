@@ -2,9 +2,12 @@
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     public class SunSettingsTests : RevitNodeTestBase
     {

@@ -2,12 +2,15 @@
 
 using NUnit.Framework;
 
+using RevitNodesTests;
+
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 using TestServices;
 
 namespace RevitTestServices
+
 {
     /// <summary>
     /// Base class for units tests of Revit nodes.

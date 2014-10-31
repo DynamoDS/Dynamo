@@ -1,11 +1,15 @@
 ﻿using System;
-using Autodesk.DesignScript.Geometry;
+
+using NUnit.Framework;
+
 using Revit.Elements;
 using Revit.Elements.Views;
-using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements.Views
 {
     [TestFixture]
     class CeilingPlanViewTests : RevitNodeTestBase
