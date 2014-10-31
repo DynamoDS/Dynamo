@@ -331,7 +331,7 @@ namespace Dynamo.Applications.Models
         public void HandleApplicationDocumentClosing(Document doc)
         {
             // ReSharper disable once PossibleUnintendedReferenceComparison
-            if (DocumentManager.Instance.CurrentDBDocument.Equals(e.Document))
+            if (DocumentManager.Instance.CurrentDBDocument.Equals(doc))
             {
                 updateCurrentUIDoc = true;
             }
