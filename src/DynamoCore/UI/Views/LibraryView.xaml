@@ -159,8 +159,10 @@
             <!-- This data template is used to show single member. -->
             <DataTemplate x:Key="MemberControlTemplate">
                 <StackPanel Name="ImageAndNodeName"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
                     <Image HorizontalAlignment="Left"
+                           Margin="5,0,0,0"
                            Height="32"
                            VerticalAlignment="Center"
                            Width="32"
