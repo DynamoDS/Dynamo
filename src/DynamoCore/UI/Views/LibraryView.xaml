@@ -162,11 +162,11 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
                     <Image HorizontalAlignment="Left"
-                           Margin="5,0,0,0"
                            Height="32"
                            VerticalAlignment="Center"
                            Width="32"
-                           Source="{Binding SmallIcon}" />
+                           Source="{Binding SmallIcon}"
+                           Name="SmallIcon" />
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
                                Text="{Binding Name}"
@@ -201,6 +201,16 @@
                         </Style>
                     </StackPanel.Style>
                 </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Value="true">
+                        <DataTrigger.Binding>
+                            <Binding Path="Parent.IsPlaceholder" />
+                        </DataTrigger.Binding>
+                        <Setter Property="Margin"
+                                Value="10,0,0,0"
+                                TargetName="SmallIcon" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
 
             <!-- This data template is used to show one subcategory. -->
@@ -577,9 +587,9 @@
                                                                       Grid.Column="1"
                                                                       Grid.ColumnSpan="2"
                                                                       ContentSource="Header" />
-                                                    
+
                                             </Grid>
-                                            
+
                                             <Border.Style>
                                                 <Style TargetType="{x:Type Border}">
                                                     <Style.Triggers>
@@ -605,8 +615,10 @@
                                         </Border>
 
                                         <Border Grid.Column="0"
-                                                Grid.Row="1">
-                                            <ItemsPresenter x:Name="ItemsHost" />
+                                                Grid.Row="1"
+                                                Background="#2F2F2F">
+                                            <ItemsPresenter x:Name="ItemsHost"
+                                                            Margin="0,10,0,0" />
                                         </Border>
                                     </Grid>
                                     <Border.Style>
