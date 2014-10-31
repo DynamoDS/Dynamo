@@ -144,7 +144,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
 
             var data = mirror.GetData();
-            Assert.IsTrue(data.IsCollection);
+            Assert.IsTrue(data.IsCollection, "preview data is not a list");
             Assert.AreEqual(count, data.GetElements().Count);
         }
 
