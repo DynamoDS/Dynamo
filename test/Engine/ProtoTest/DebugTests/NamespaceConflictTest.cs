@@ -34,6 +34,19 @@ bO = b.Foo();
         }
 
         [Test]
+        public void DupImportTestNamespaceConflict01()
+        {
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+a = DupTargetTest.DupTargetTest(); 
+aO = a.Foo();
+"
+);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+        }
+
+
+        [Test]
         [Category("Trace")]
         public void DupImportTestNeg()
         {
