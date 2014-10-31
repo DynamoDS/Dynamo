@@ -14,7 +14,7 @@ using RTF.Framework;
 namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoSolidTests : GeometricNodeTestBase
+    internal class RevitToProtoSolidTests : RevitNodeTestBase
     {
         private static void AssertAllSolidsAreConvertedProperly(IEnumerable<Autodesk.Revit.DB.Solid> allSolidsInDoc)
         {

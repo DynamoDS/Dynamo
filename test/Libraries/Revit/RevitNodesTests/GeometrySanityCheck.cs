@@ -7,7 +7,7 @@ using RevitTestServices;
 namespace RevitNodesTests
 {
     [TestFixture]
-    class GeometrySanityCheck : GeometricNodeTestBase
+    class GeometrySanityCheck : RevitNodeTestBase
     {
         /// <summary>
         /// Example of calling ProtoGeometry methods from C#

@@ -25,7 +25,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class AdaptiveComponentTests : GeometricNodeTestBase
+    class AdaptiveComponentTests : RevitNodeTestBase
     {
 
         public List<XYZ> GetInternalPoints(FamilyInstance adaptiveComponent)

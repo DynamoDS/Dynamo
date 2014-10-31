@@ -6,6 +6,8 @@ using NUnit.Framework;
 using Revit.Elements;
 using Revit.GeometryReferences;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
 namespace RevitNodesTests.Elements

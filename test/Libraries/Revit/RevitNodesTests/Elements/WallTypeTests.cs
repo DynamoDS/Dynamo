@@ -1,6 +1,9 @@
 ﻿using System;
 using Revit.Elements;
 using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
 namespace RevitNodesTests.Elements

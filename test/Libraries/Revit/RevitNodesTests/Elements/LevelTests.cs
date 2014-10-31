@@ -5,6 +5,8 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 using Revit.Elements.InternalUtilities;
 

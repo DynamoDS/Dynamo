@@ -1,6 +1,8 @@
 ﻿using Revit.Application;
 using NUnit.Framework;
 
+using RevitTestServices;
+
 namespace RevitNodesTests.Elements
 {
     [TestFixture]

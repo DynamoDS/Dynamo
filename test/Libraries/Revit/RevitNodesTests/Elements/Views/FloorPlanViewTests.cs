@@ -12,7 +12,7 @@ using RTF.Framework;
 namespace RevitNodesTests.Elements.Views
 {
     [TestFixture]
-    class FloorPlanViewTests : GeometricNodeTestBase
+    class FloorPlanViewTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

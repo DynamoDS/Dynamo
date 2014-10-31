@@ -39,7 +39,6 @@ namespace Dynamo
 
                 AlternateContextName = dynamoModel.Context;
 
-                RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
                 dynamoModel.CleaningUp += CleanupVisualizations;
             }

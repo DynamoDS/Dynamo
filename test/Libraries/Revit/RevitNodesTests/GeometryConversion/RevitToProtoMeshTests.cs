@@ -14,7 +14,7 @@ using RTF.Framework;
 namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoMeshTests : GeometricNodeTestBase
+    public class RevitToProtoMeshTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\topography.rvt")]

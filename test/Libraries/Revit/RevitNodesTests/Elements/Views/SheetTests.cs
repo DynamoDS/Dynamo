@@ -16,7 +16,7 @@ using RTF.Framework;
 namespace RevitNodesTests.Elements.Views
 {
     [TestFixture]
-    class SheetTests : GeometricNodeTestBase
+    class SheetTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

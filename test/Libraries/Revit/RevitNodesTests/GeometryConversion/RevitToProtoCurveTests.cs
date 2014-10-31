@@ -12,7 +12,7 @@ using RTF.Framework;
 namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests : GeometricNodeTestBase
+    public class RevitToProtoCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

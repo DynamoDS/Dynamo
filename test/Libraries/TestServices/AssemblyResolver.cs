@@ -46,7 +46,7 @@ namespace RevitNodesTests
             resolverSetup = true;
         }
 
-        internal static string GetDynamoRootDirectory()
+        public static string GetDynamoRootDirectory()
         {
             var assemPath = Assembly.GetExecutingAssembly().Location;
             var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));

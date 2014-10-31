@@ -10,7 +10,7 @@ using RTF.Framework;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class FloorTests : GeometricNodeTestBase
+    public class FloorTests : RevitNodeTestBase
     {
 
         private double BoundingBoxVolume(BoundingBox bb)
