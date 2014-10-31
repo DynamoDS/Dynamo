@@ -1,5 +1,0 @@
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoCore.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoCore.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\ProtoCore.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\ProtoCore.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\ProtoCore.csprojResolveAssemblyReference.cache

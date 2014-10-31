@@ -1,8 +1,0 @@
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\FFITarget.csprojResolveAssemblyReference.cache
-D:\docs\Dynamo\dynamo - fork\test\Engine\FFITarget\bin\Debug\FFITarget.dll
-D:\docs\Dynamo\dynamo - fork\test\Engine\FFITarget\bin\Debug\FFITarget.pdb
-D:\docs\Dynamo\dynamo - fork\test\Engine\FFITarget\bin\Debug\DSNodeServices.dll
-D:\docs\Dynamo\dynamo - fork\test\Engine\FFITarget\bin\Debug\ProtoInterface.dll
-D:\docs\Dynamo\dynamo - fork\test\Engine\FFITarget\bin\Debug\DSNodeServices.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\FFITarget.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\FFITarget.pdb

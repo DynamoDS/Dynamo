@@ -1,9 +1,0 @@
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoRevit.csprojResolveAssemblyReference.cache
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\Dynamo.Applications.Properties.Resources.resources
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\Dynamo.Applications.Resource_en_us.resources
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoRevit.csproj.GenerateResource.Cache
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\DynamoRevitDS.XML
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\DynamoRevitDS.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\Revit_2014\DynamoRevitDS.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoRevitDS.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DynamoRevitDS.pdb

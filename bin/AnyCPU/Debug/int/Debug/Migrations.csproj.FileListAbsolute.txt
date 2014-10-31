@@ -1,5 +1,0 @@
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\Migrations.csprojResolveAssemblyReference.cache
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\nodes\Migrations.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\nodes\Migrations.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\Migrations.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\Migrations.pdb

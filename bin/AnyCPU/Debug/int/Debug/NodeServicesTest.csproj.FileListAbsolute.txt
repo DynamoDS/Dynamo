@@ -1,5 +1,0 @@
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\NodeServicesTest.csprojResolveAssemblyReference.cache
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DSNodeServicesTest.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\int\Debug\DSNodeServicesTest.pdb
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DSNodeServicesTest.dll
-D:\docs\Dynamo\dynamo - fork\bin\AnyCPU\Debug\DSNodeServicesTest.pdb
