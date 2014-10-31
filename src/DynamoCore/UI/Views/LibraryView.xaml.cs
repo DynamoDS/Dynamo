@@ -56,5 +56,10 @@ namespace Dynamo.UI.Views
             if (buttons != null)
                 buttons.UnselectAll();
         }
+
+        private void OnSubCategoryListViewPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
