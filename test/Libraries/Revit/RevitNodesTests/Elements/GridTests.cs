@@ -1,12 +1,15 @@
 ﻿using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class GridTests : GeometricRevitNodeTest
+    class GridTests : GeometricNodeTestBase
     {
         [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]

@@ -1,20 +1,20 @@
 ﻿using System;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
 
-using Revit.GeometryConversion;
 using NUnit.Framework;
+
+using Revit.Elements;
+using Revit.GeometryConversion;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-using FamilyInstance = Revit.Elements.FamilyInstance;
-using FamilySymbol = Revit.Elements.FamilySymbol;
-using Point = Autodesk.DesignScript.Geometry.Point;
-
-namespace RevitTestServices.Conversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class BoundingBoxTests : GeometricRevitNodeTest
+    public class BoundingBoxTests : GeometricNodeTestBase
     {
 
         public static double BoundingBoxVolume(BoundingBox bb)
