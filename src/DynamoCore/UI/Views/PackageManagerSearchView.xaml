@@ -193,13 +193,13 @@
 
                                         <StackPanel Orientation="Horizontal" Margin="1" Width="440">
 
-                                            <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666" Padding="2">
+                                            <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666">
                                                 <Grid Width="40" Height="64">
-                                                    <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="11">⬇</TextBlock>
+                                                    <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
                                                     <Ellipse
                                                         Fill="Transparent"
-                                                        Height="35"
-                                                        Width="35"
+                                                        Height="36"
+                                                        Width="36"
                                                         StrokeThickness="3"
                                                         Stroke="#666" />
                                                 </Grid>
@@ -238,15 +238,29 @@
                                                 </StackPanel>
                                             </Button>
 
-                                            <StackPanel Width="15"  Orientation="Vertical" Margin="10,0,0,0">
-                                                <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="1" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
-                                                <TextBlock FontSize="10" HorizontalAlignment="Center" Padding="4"  Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Foreground="Gray" Content="↓" Padding="1" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
+                                            <StackPanel Width="20"  Orientation="Vertical" Margin="10,0,0,0">
+                                                <Button Name="UpvoteButton" FontSize="10" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="▲" Padding="1" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
+                                                <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                <Button Name="DownvoteButton" FontSize="10" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Foreground="Gray" Content="▼" Padding="1" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
                                             </StackPanel>
                                         </StackPanel>
 
                                         <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                            <Setter Property="Background" Value="#222"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                            <Setter Property="Background" Value="#333"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            
                                             <TextBlock FontSize="11" FontWeight="Bold" Text="Description" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
                                             <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 

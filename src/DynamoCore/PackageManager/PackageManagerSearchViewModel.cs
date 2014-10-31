@@ -227,17 +227,24 @@ namespace Dynamo.PackageManager
         {
             var list = this.SearchResults.AsEnumerable().ToList();
             Sort(list, this.SortingKey);
-            this.SearchResults.Clear();
 
             if (SortingDirection == PackageSortingDirection.DESCENDING)
             {
                 list.Reverse();
             }
 
+            // temporarily hide binding
+            var temp = this.SearchResults;
+            this.SearchResults = null;
+
+            temp.Clear();
+
             foreach (var ele in list)
             {
-                this.SearchResults.Add(ele);
+                temp.Add(ele);
             }
+
+            this.SearchResults = temp;
         }
 
         /// <summary>
