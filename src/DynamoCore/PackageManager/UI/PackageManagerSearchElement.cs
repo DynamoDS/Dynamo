@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace Dynamo.PackageManager
         public DelegateCommand DownloadLatest { get; set; }
         public DelegateCommand UpvoteCommand { get; set; }
         public DelegateCommand DownvoteCommand { get; set; }
+        public DelegateCommand VisitSiteCommand { get; set; }
+        public DelegateCommand VisitRepositoryCommand { get; set; }
 
         internal PackageManagerSearchElement() 
         {
@@ -30,6 +33,116 @@ namespace Dynamo.PackageManager
             this.DownloadLatest = new DelegateCommand((Action)Execute);
             this.UpvoteCommand = new DelegateCommand((Action)Upvote, CanUpvote);
             this.DownvoteCommand = new DelegateCommand((Action)Downvote, CanDownvote);
+            this.VisitSiteCommand = 
+                new DelegateCommand(() => GoToUrl(FormatUrl(SiteUrl)), () => !String.IsNullOrEmpty(SiteUrl));
+            this.VisitRepositoryCommand =
+                new DelegateCommand(() => GoToUrl(FormatUrl(RepositoryUrl)), () => !String.IsNullOrEmpty(RepositoryUrl));
+        }
+
+        private string PrettyDate(string json_string)
+        {
+            DateTime d = DateTime.Parse(json_string);
+
+            return GetPrettyDate(d);
+        }
+
+        private static string GetPrettyDate(DateTime d)
+        {
+	        // 1.
+	        // Get time span elapsed since the date.
+	        TimeSpan s = DateTime.Now.Subtract(d);
+
+	        // 2.
+	        // Get total number of days elapsed.
+	        int dayDiff = (int)s.TotalDays;
+
+	        // 3.
+	        // Get total number of seconds elapsed.
+	        int secDiff = (int)s.TotalSeconds;
+
+	        // 4.
+	        // Don't allow out of range values.
+	        if (dayDiff < 0 || dayDiff >= 31)
+	        {
+	            return null;
+	        }
+
+	        // 5.
+	        // Handle same-day times.
+	        if (dayDiff == 0)
+	        {
+	            // A.
+	            // Less than one minute ago.
+	            if (secDiff < 60)
+	            {
+		        return "just now";
+	            }
+	            // B.
+	            // Less than 2 minutes ago.
+	            if (secDiff < 120)
+	            {
+		        return "1 minute ago";
+	            }
+	            // C.
+	            // Less than one hour ago.
+	            if (secDiff < 3600)
+	            {
+		        return string.Format("{0} minutes ago",
+		            Math.Floor((double)secDiff / 60));
+	            }
+	            // D.
+	            // Less than 2 hours ago.
+	            if (secDiff < 7200)
+	            {
+		        return "1 hour ago";
+	            }
+	            // E.
+	            // Less than one day ago.
+	            if (secDiff < 86400)
+	            {
+		        return string.Format("{0} hours ago",
+		            Math.Floor((double)secDiff / 3600));
+	            }
+	        }
+	        // 6.
+	        // Handle previous days.
+	        if (dayDiff == 1)
+	        {
+	            return "yesterday";
+	        }
+	        if (dayDiff < 7)
+	        {
+	            return string.Format("{0} days ago",
+		        dayDiff);
+	        }
+	        if (dayDiff < 31)
+	        {
+	            return string.Format("{0} weeks ago",
+		        Math.Ceiling((double)dayDiff / 7));
+	        }
+	        return null;
+            }
+        
+        private static string FormatUrl(string url)
+        {
+            var lurl = url.ToLower();
+
+            // if not preceded by http(s), process start will fail
+            if (!lurl.StartsWith("http://") || !lurl.StartsWith("https://"))
+            {
+                return "http://" + url;
+            }
+
+            return url;
+        }
+
+        private static void GoToUrl(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                Process.Start(sInfo);
+            }
         }
 
         /// <summary>
@@ -296,8 +409,9 @@ namespace Dynamo.PackageManager
             public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+            public string LatestVersionCreated { get { return PrettyDate(Header.versions[Header.versions.Count - 1].created); } }
             
             /// <summary>
             /// Header property </summary>

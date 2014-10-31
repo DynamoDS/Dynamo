@@ -66,7 +66,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
                 {
-                    return "Synchronizing package list with server...";
+                    return "Syncing with server...";
                 }
             }
 

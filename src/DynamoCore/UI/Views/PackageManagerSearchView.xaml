@@ -14,6 +14,47 @@
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
 
+            <!-- An unstyled button -->
+            <Style x:Key="FlatButton" TargetType="Button">
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="BorderInterior"  Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsDefaulted" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#44000000" />
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                    </Trigger>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="FontWeight" Value="Normal" />
+                    </Trigger>
+                </Style.Triggers>
+                
+            </Style>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -132,7 +173,7 @@
                                             </Style>
                                         </Border.Style>
 
-                                    <VirtualizingStackPanel Width ="445" Name="SearchEle">
+                                    <StackPanel Width ="445" Name="SearchEle">
 
                                         <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
                                             <TextBlock.Style>
@@ -149,62 +190,73 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                            
-                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="5">
 
-                                            <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
-                                                <VirtualizingStackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="WhiteSmoke" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="12" Text="{Binding Path=Maintainers}" Foreground="#AAA" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="11" Margin="3" Foreground="#999" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                        <StackPanel Orientation="Horizontal" Margin="1">
+
+                                            <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666" Padding="2">
+                                                <Grid>
+                                                    <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="11">⬇</TextBlock>
+                                                    <Ellipse
+                                                        Fill="Transparent"
+                                                        Height="35"
+                                                        Width="35"
+                                                        StrokeThickness="3"
+                                                        Stroke="#666" />
+                                                </Grid>
+                                            </Button>
+
+                                            <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpanded}" Background="#333">
+                                                <VirtualizingStackPanel Width="350" IsHitTestVisible="True" >
+                                                    <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path=Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path=LatestVersion}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path=Downloads}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path=LatestVersionCreated}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+                                                    <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+
                                                 </VirtualizingStackPanel>
-                                            </Border>
-                                    
-                                             <Border>
-                                                <VirtualizingStackPanel Width="170">
+                                            </Button>
 
-                                                    <VirtualizingStackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                                <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource SBadgeButton}" />
+                                                <TextBlock FontSize="10" HorizontalAlignment="Center" Padding="4"  Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource SBadgeButton}" />
+                                            </StackPanel>
+                                        </StackPanel>
 
-                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
-                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Installs   " Foreground="Gray" />
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
-                                                        </VirtualizingStackPanel>
+                                        <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
-                                                        <Border Margin="5,5,5,5" MinWidth="40" MaxWidth="40">
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                        </Border>
-
-                                                        <VirtualizingStackPanel Orientation="Horizontal" >
-                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource SBadgeButton}" />
-                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource SBadgeButton}" />
-                                                        </VirtualizingStackPanel>
-                                                        
-                                                    </VirtualizingStackPanel>
-
-                                                    <VirtualizingStackPanel Orientation="Vertical" Margin="5,0,5,5">
-                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="0">
-                                                            <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource SBadgeButton}" />
-                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource SBadgeButton}" />
-                                                        </VirtualizingStackPanel>
-                                                    </VirtualizingStackPanel>
-
-                                                </VirtualizingStackPanel>
-                                             </Border>
-                                        </VirtualizingStackPanel>
-
-                                        <VirtualizingStackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
-
-                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=SiteUrl}" TextWrapping="Wrap" Margin="10,10,10,0" />
-                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=RepositoryUrl}" TextWrapping="Wrap" Margin="10,10,10,0" />
+                                            <TextBlock FontSize="11" FontWeight="Bold" Text="Description" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
                                             <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 
-                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                                 <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
-                                            </VirtualizingStackPanel>
+                                            </StackPanel>
 
-                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,10">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Versions" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                                 <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
                                                     <ListBox.ItemContainerStyle>
@@ -227,11 +279,14 @@
                                                     </ListBox.ItemTemplate>
 
                                                 </ListBox>
-                                            </VirtualizingStackPanel>
-                                        </VirtualizingStackPanel>
+                                            </StackPanel>
 
+                                            <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{DynamicResource SBadgeButton}" />
+                                            <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{DynamicResource SBadgeButton}" />
 
-                                    </VirtualizingStackPanel>
+                                        </StackPanel>
+
+                                    </StackPanel>
                                     
                                 </Border>
                             </Border>
