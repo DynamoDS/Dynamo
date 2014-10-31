@@ -532,10 +532,10 @@
                              BorderBrush="Transparent"
                              ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ItemsSource="{Binding Members}"
-                             SelectedIndex="0"
+                             ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              GotFocus="OnTopResultGotFocus"
-                             KeyDown="OnMemberButtonKeyDown">
+                             KeyDown="OnMemberButtonKeyDown"
+                             TargetUpdated="OnTopResultTargetUpdated">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
