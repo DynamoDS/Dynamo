@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
 using Revit.Elements;
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.GeometryConversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoSolidTests : GeometricRevitNodeTest
+    internal class RevitToProtoSolidTests : GeometricNodeTestBase
     {
         private static void AssertAllSolidsAreConvertedProperly(IEnumerable<Autodesk.Revit.DB.Solid> allSolidsInDoc)
         {

@@ -4,7 +4,7 @@ using NUnit.Framework;
 using RevitServices.Persistence;
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class ElementSelectorTests : RevitNodeTestBase

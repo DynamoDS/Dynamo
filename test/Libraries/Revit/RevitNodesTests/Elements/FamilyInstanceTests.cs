@@ -4,16 +4,18 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
 using FamilyInstance = Revit.Elements.FamilyInstance;
 using FamilySymbol = Revit.Elements.FamilySymbol;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class FamilyInstanceTests : GeometricRevitNodeTest
+    public class FamilyInstanceTests : GeometricNodeTestBase
     {
         public Autodesk.Revit.DB.XYZ InternalLocation(Autodesk.Revit.DB.FamilyInstance instance)
         {

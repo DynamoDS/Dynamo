@@ -7,6 +7,8 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
 using Form = Revit.Elements.Form;
@@ -15,10 +17,10 @@ using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using ReferencePoint = Revit.Elements.ReferencePoint;
 
-namespace RevitTestServices
+namespace RevitNodesTests
 {
     [TestFixture]
-    internal class ReferencePointTests : GeometricRevitNodeTest
+    internal class ReferencePointTests : GeometricNodeTestBase
     {
 
         internal XYZ InternalPosition(Revit.Elements.ReferencePoint point)

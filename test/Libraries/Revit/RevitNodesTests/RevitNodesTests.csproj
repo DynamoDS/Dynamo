@@ -11,7 +11,7 @@
     <ProjectGuid>{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSRevitNodesTests</RootNamespace>
+    <RootNamespace>RevitNodesTests</RootNamespace>
     <AssemblyName>RevitNodesTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,10 +47,6 @@
     </Reference>
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
@@ -119,18 +115,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
+    <ProjectReference Include="..\..\..\..\src\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Analysis\Analysis.csproj">
       <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
       <Name>Analysis</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodes\RevitNodes.csproj">

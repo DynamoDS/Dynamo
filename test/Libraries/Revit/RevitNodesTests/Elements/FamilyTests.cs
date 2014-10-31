@@ -3,7 +3,7 @@ using Revit.Elements;
 using NUnit.Framework;
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class FamilyTests : RevitNodeTestBase
