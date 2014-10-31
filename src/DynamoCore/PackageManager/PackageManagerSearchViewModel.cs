@@ -437,22 +437,25 @@ namespace Dynamo.PackageManager
         {
             this.SearchText = query;
 
-            Task<IEnumerable<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
+            var t = Search(query);
 
-            ).ContinueWith((t) =>
-                {
+            var currentResults = this.SearchResults;
 
-                lock (SearchResults)
-                {
-                    SearchResults.Clear();
-                    foreach (var result in t.Result)
-                    {
-                        SearchResults.Add(result);
-                    }
-                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
-                }
+            // stop WPF from listening to the changes that we're about
+            // to perform
+            this.SearchResults = null;
+
+            currentResults.Clear();
+            foreach (var result in t)
+            {
+                currentResults.Add(result);
             }
-            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+
+            // cause WPF to rebind--but only once instead of once for
+            // each ele
+            SearchResults = currentResults;
+
+            SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
         }
 
         /// <summary>

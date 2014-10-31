@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,88 +42,11 @@ namespace Dynamo.PackageManager
 
         private string PrettyDate(string json_string)
         {
-            DateTime d = DateTime.Parse(json_string);
+            var d = DateTime.Parse(json_string);
 
-            return GetPrettyDate(d);
+            return d.ToString("d MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
         }
 
-        private static string GetPrettyDate(DateTime d)
-        {
-	        // 1.
-	        // Get time span elapsed since the date.
-	        TimeSpan s = DateTime.Now.Subtract(d);
-
-	        // 2.
-	        // Get total number of days elapsed.
-	        int dayDiff = (int)s.TotalDays;
-
-	        // 3.
-	        // Get total number of seconds elapsed.
-	        int secDiff = (int)s.TotalSeconds;
-
-	        // 4.
-	        // Don't allow out of range values.
-	        if (dayDiff < 0 || dayDiff >= 31)
-	        {
-	            return null;
-	        }
-
-	        // 5.
-	        // Handle same-day times.
-	        if (dayDiff == 0)
-	        {
-	            // A.
-	            // Less than one minute ago.
-	            if (secDiff < 60)
-	            {
-		        return "just now";
-	            }
-	            // B.
-	            // Less than 2 minutes ago.
-	            if (secDiff < 120)
-	            {
-		        return "1 minute ago";
-	            }
-	            // C.
-	            // Less than one hour ago.
-	            if (secDiff < 3600)
-	            {
-		        return string.Format("{0} minutes ago",
-		            Math.Floor((double)secDiff / 60));
-	            }
-	            // D.
-	            // Less than 2 hours ago.
-	            if (secDiff < 7200)
-	            {
-		        return "1 hour ago";
-	            }
-	            // E.
-	            // Less than one day ago.
-	            if (secDiff < 86400)
-	            {
-		        return string.Format("{0} hours ago",
-		            Math.Floor((double)secDiff / 3600));
-	            }
-	        }
-	        // 6.
-	        // Handle previous days.
-	        if (dayDiff == 1)
-	        {
-	            return "yesterday";
-	        }
-	        if (dayDiff < 7)
-	        {
-	            return string.Format("{0} days ago",
-		        dayDiff);
-	        }
-	        if (dayDiff < 31)
-	        {
-	            return string.Format("{0} weeks ago",
-		        Math.Ceiling((double)dayDiff / 7));
-	        }
-	        return null;
-            }
-        
         private static string FormatUrl(string url)
         {
             var lurl = url.ToLower();
@@ -386,17 +310,18 @@ namespace Dynamo.PackageManager
 
             private PackageVersion versionNumberToDownload = null;
 
+            private List<Tuple<PackageVersion, DelegateCommand>> versions;
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
                 get
                 {
                     return
-                        Header.versions.Select(
+                        versions ?? (versions = Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                                {
-                                    this.versionNumberToDownload = x;
-                                    this.Execute();
-                                }, () => true))).ToList();
+                            {
+                                this.versionNumberToDownload = x;
+                                this.Execute();
+                            }, () => true))).ToList());
                 } 
             }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
@@ -411,7 +336,13 @@ namespace Dynamo.PackageManager
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
-            public string LatestVersionCreated { get { return PrettyDate(Header.versions[Header.versions.Count - 1].created); } }
+
+            private string latestVersionCreated;
+            public string LatestVersionCreated { get
+            {
+                return latestVersionCreated ??
+                       (latestVersionCreated = PrettyDate(Header.versions[Header.versions.Count - 1].created));
+            } }
             
             /// <summary>
             /// Header property </summary>

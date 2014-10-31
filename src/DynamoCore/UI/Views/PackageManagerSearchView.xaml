@@ -137,7 +137,7 @@
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.ZIndex ="0" >
 
-                <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
+                <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}" VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard" >
 
                     <ListBox.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
@@ -159,19 +159,19 @@
                             <Border BorderBrush="#222" BorderThickness="0,0,0,1">
                                 <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0">
 
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
-                                                        <Setter Property="Background" Value="#222"/>
-                                                    </DataTrigger>
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                    <Setter Property="Background" Value="#222"/>
+                                                </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
-                                                        <Setter Property="Background" Value="#333"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
+                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                    <Setter Property="Background" Value="#333"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
                                     <StackPanel Width ="445" Name="SearchEle">
 
@@ -191,10 +191,10 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <StackPanel Orientation="Horizontal" Margin="1">
+                                        <StackPanel Orientation="Horizontal" Margin="1" Width="440">
 
                                             <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666" Padding="2">
-                                                <Grid>
+                                                <Grid Width="40" Height="64">
                                                     <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="11">⬇</TextBlock>
                                                     <Ellipse
                                                         Fill="Transparent"
@@ -206,27 +206,27 @@
                                             </Button>
 
                                             <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpanded}" Background="#333">
-                                                <VirtualizingStackPanel Width="350" IsHitTestVisible="True" >
+                                                <StackPanel Width="350" Height="75" IsHitTestVisible="True" >
                                                     <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
-                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path=Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
                                                         </StackPanel>
 
-                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" Text="{Binding Path=LatestVersion}" Foreground="Gray"  />
                                                         </StackPanel>
 
-                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" Text="{Binding Path=Downloads}" Foreground="Gray"  />
                                                         </StackPanel>
 
-                                                        <StackPanel Orientation="Horizontal" Margin="5" MinWidth="75">
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" Text="{Binding Path=LatestVersionCreated}" Foreground="Gray"  />
                                                         </StackPanel>
@@ -235,13 +235,13 @@
 
                                                     <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
 
-                                                </VirtualizingStackPanel>
+                                                </StackPanel>
                                             </Button>
 
-                                            <StackPanel Orientation="Vertical" Margin="10,0,0,0">
-                                                <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource SBadgeButton}" />
+                                            <StackPanel Width="15"  Orientation="Vertical" Margin="10,0,0,0">
+                                                <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="1" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
                                                 <TextBlock FontSize="10" HorizontalAlignment="Center" Padding="4"  Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource SBadgeButton}" />
+                                                <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Foreground="Gray" Content="↓" Padding="1" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
                                             </StackPanel>
                                         </StackPanel>
 
@@ -272,7 +272,7 @@
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource SBadgeButton}" />
+                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{StaticResource SBadgeButton}" />
                                                                 <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
                                                             </StackPanel>
                                                         </DataTemplate>
@@ -281,8 +281,8 @@
                                                 </ListBox>
                                             </StackPanel>
 
-                                            <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{DynamicResource SBadgeButton}" />
-                                            <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{DynamicResource SBadgeButton}" />
+                                            <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
+                                            <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
 
                                         </StackPanel>
 
