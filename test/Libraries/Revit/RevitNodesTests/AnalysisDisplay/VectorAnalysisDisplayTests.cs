@@ -18,7 +18,7 @@ using RTF.Framework;
 namespace RevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
-    public class VectorAnalysisDisplayTests : GeometricNodeTestBase
+    public class VectorAnalysisDisplayTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt"), Category(ANALYSIS_DISPLAY_TESTS)]

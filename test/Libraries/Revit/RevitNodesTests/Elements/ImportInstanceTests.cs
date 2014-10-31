@@ -13,7 +13,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class ImportInstanceTests : GeometricNodeTestBase
+    public class ImportInstanceTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

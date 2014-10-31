@@ -15,7 +15,7 @@ using ModelCurve = Revit.Elements.ModelCurve;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class FormTests : GeometricNodeTestBase
+    public class FormTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\modelLines.rfa")]

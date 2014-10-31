@@ -9,7 +9,7 @@ using RTF.Framework;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class GridTests : GeometricNodeTestBase
+    class GridTests : RevitNodeTestBase
     {
         [Test, Category("Failure")]
         [TestModel(@".\Empty.rvt")]

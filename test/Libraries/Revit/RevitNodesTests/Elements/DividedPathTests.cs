@@ -15,7 +15,7 @@ using RTF.Framework;
 namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class DividedPathTests : GeometricNodeTestBase
+    class DividedPathTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

@@ -11,7 +11,7 @@ using RTF.Framework;
 namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoFaceTests : GeometricNodeTestBase
+    internal class RevitToProtoFaceTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Revolve.rfa")]

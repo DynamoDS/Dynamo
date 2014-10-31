@@ -12,7 +12,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class ProtoToRevitCurveTests : GeometricNodeTestBase
+    internal class ProtoToRevitCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

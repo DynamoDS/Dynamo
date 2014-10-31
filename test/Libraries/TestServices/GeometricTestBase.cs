@@ -5,16 +5,35 @@ using System.IO;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
-using DynamoUnits;
-
 using DynamoUtilities;
 
 using NUnit.Framework;
 
 using RevitNodesTests;
 
-namespace RevitTestServices
+namespace TestServices
 {
+    public class GeometricTestBase
+    {
+        IExtensionApplication application = Application.Instance as IExtensionApplication;
+        TestExecutionSession session = new TestExecutionSession();
+
+        [SetUp]
+        public void Setup()
+        {
+            AssemblyResolver.Setup();
+            application.OnBeginExecution(session);
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void ShutDownHostFactory()
+        {
+            //application.OnEndExecution(session);
+            //HostFactory.Instance.ShutDown();
+        }
+    }
+
     /// <summary>
     /// This is a temporary session class which is only used for nodes that are using Geometries.
     /// When ProtoGeometry is loaded, the static instance GeometryFactory will be constructed which
@@ -76,37 +95,5 @@ namespace RevitTestServices
         {
             configValues.Clear();
         }
-    }
-
-    [TestFixture]
-    public class GeometricNodeTestBase : RevitNodeTestBase
-    {
-        IExtensionApplication application = Application.Instance;
-        TestExecutionSession session = new TestExecutionSession();
-
-        [SetUp]
-        public void SetUp()
-        {
-            AssemblyResolver.Setup();
-
-            application.OnBeginExecution(session);
-            HostFactory.Instance.StartUp();
-            SetUpHostUnits();
-        }
-
-        private void SetUpHostUnits()
-        {
-            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
-        }
-
-        [TearDown]
-        public void ShutDownHostFactory()
-        {
-            //application.OnEndExecution(session);
-            //HostFactory.Instance.ShutDown();
-        }
-
     }
 }

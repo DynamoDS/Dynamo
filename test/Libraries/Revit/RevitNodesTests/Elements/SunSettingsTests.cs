@@ -9,7 +9,7 @@ using RTF.Framework;
 
 namespace RevitNodesTests.Elements
 {
-    public class SunSettingsTests : GeometricNodeTestBase
+    public class SunSettingsTests : RevitNodeTestBase
     {
         [Test, TestModel(@".\Empty.rvt")]
         public void Current()

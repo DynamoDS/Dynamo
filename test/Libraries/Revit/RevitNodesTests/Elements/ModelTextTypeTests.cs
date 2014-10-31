@@ -2,6 +2,9 @@
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
 namespace RevitNodesTests.Elements
