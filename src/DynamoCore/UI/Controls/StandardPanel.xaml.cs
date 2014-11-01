@@ -130,6 +130,8 @@ namespace Dynamo.UI.Controls
 
             castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
+            castedDataContext.IsMoreButtonVisible = false;
+
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in primaryMembers.            
             if (hasCreateMembers)
@@ -186,6 +188,7 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in primaryMembers. 
             if (hasQueryMembers)
             {
+                castedDataContext.IsPrimaryHeaderVisible = true;
                 castedDataContext.PrimaryHeaderText = QueryHeaderText;
                 primaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
@@ -265,7 +268,7 @@ namespace Dynamo.UI.Controls
 
             // We are at the first member of secondary members, 
             // we have to move to last member of primary members.
-            if (secondaryMembers.Items.Contains(focusedButtonContent) )
+            if (secondaryMembers.Items.Contains(focusedButtonContent))
             {
                 var generator = primaryMembers.ItemContainerGenerator;
                 (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
