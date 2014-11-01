@@ -57,10 +57,10 @@ namespace Dynamo.Controls
             var listButtons = buttonsWrapPanel.Children;
 
             // If focused element is NodeSearchElement, that means focused element is inside expanded class.
-            // If user presses Up, we have to move back to selected class.
-            if (e.Key == Key.Up)
+            if (classButton.DataContext is NodeSearchElement)
             {
-                if (classButton.DataContext is NodeSearchElement)
+                // If user presses Up, we have to move back to selected class.
+                if (e.Key == Key.Up)
                 {
                     var selectedClassButton = listButtons.OfType<ListViewItem>().
                         Where(button => button.IsSelected).FirstOrDefault();
@@ -68,6 +68,8 @@ namespace Dynamo.Controls
                     e.Handled = true;
                     return;
                 }
+                // Otherwise, let user move inside expanded class.
+                return;
             }
 
             // If class is selected, we should move down to ClassDetails.
