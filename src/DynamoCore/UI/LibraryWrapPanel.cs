@@ -218,10 +218,10 @@ namespace Dynamo.Controls
             // necessary. Here we determine if the "translatedIndex" is the same as
             // "selectedClassProspectiveIndex", if so simply returns to avoid a repainting.
             var translatedIndex = TranslateSelectionIndex(selectedIndex);
-            if (selectedClassProspectiveIndex != translatedIndex)
-                selectedClassProspectiveIndex = translatedIndex;
-            else
+            if (selectedClassProspectiveIndex == translatedIndex)
                 return;
+
+            selectedClassProspectiveIndex = translatedIndex;
 
             int classInfoIndex = GetClassInformationIndex();
 
