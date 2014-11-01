@@ -910,6 +910,41 @@ b = c[w][x][y][z];";
             Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionForFullyQualifiedVariableType()
+        {
+            string code = "a : FFITarget.CodeCompletionClass1;";
+            string variableName = "a";
+
+            string type1 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.CodeCompletionClass1", type1);
+
+            // Assert that the class name is indeed a class
+            var type = new ClassMirror(type1, libraryServicesCore);
+
+            Assert.IsTrue(type != null);
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] {  };
+            AssertCompletions(members, expected);
+
+            code = @"b : FFITarget.CodeCompletion.CodeCompletionClass1;";
+            variableName = "b";
+            string type2 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.CodeCompletion.CodeCompletionClass1", type2);
+
+            // Assert that the class name is indeed a class
+            type = new ClassMirror(type2, libraryServicesCore);
+
+            Assert.IsTrue(type != null);
+            members = type.GetInstanceMembers();
+
+            expected = new string[] { "CodeCompletionClassProperty" };
+            AssertCompletions(members, expected);
+        }
+
+
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
             var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();

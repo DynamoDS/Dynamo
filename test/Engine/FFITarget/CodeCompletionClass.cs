@@ -77,4 +77,26 @@ namespace FFITarget
         }
     }
 
+    public class CodeCompletionClass1
+    {
+        public CodeCompletionClass1()
+        {
+        }
+    }
+
+    namespace CodeCompletion
+    {
+        public class CodeCompletionClass1
+        {
+            public CodeCompletionClass1()
+            { }
+
+            private ValueContainer classProperty;
+            public ValueContainer CodeCompletionClassProperty
+            {
+                get { return classProperty; }
+            }
+
+        }
+    }
 }
