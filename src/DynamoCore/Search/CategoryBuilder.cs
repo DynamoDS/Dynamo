@@ -93,6 +93,14 @@ namespace Dynamo.Search
                 internalElement.Parent.Items.Remove(internalElement);
                 RemoveEmptyCategory(internalElement.Parent);
             }
+
+            if (element is BrowserInternalElementForClasses && element.Items.Count == 0)
+            {
+                var internalElement = element as BrowserInternalElementForClasses;
+
+                internalElement.Parent.Items.Remove(internalElement);
+                RemoveEmptyCategory(internalElement.Parent);
+            }
         }
 
         /// <summary>
@@ -197,8 +205,27 @@ namespace Dynamo.Search
 
             // We sure, that the last member is class.
             if (!isAddons)
+            {
+                var currentFullCategory = string.Join(Configurations.CategoryDelimiter.ToString(),
+                    splitCategory.ToArray(), 0, splitCategory.Count - 1);
+                var index = currentFullCategory.LastIndexOf(Configurations.CategoryDelimiter);
+                if (index > -1)
+                {
+                    var classesCategory = currentFullCategory.Insert(index, ".Classes");
+
+                    var element = GetCategoryByName(classesCategory);
+                    if (element != null)
+                    {
+                        MoveElement(currentCategory, element);
+                        RemoveCategory(classesCategory);
+                        //if ((element as BrowserInternalElement).Parent.Items.Count==0)
+                        RemoveEmptyCategory((element as BrowserInternalElement).Parent);
+                    }
+                }
+
                 currentCategory = TryAddChildClass(currentCategory, splitCategory[splitCategory.Count - 1],
                     resourceAssembly);
+            }
 
             return currentCategory;
         }
@@ -341,6 +368,15 @@ namespace Dynamo.Search
 
             BrowserInternalElementForClasses element = classes.ElementAt(0);
             return element.ContainsClass(className);
+        }
+
+        internal void MoveElement(BrowserItem destination, BrowserItem source)
+        {
+            while (source.Items.Count != 0)
+            {
+                destination.Items.Add(source.Items[0]);
+                source.Items.RemoveAt(0);
+            }
         }
     }
 }
