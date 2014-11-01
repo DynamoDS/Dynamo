@@ -15,7 +15,6 @@ namespace Revit.Elements
     /// </summary>
     [DSNodeServices.RegisterForTrace]
     [IsVisibleInDynamoLibrary(false)]
-    [SupressImportIntoVM]
     public abstract class AbstractFamilyInstance : Element
     {
 
