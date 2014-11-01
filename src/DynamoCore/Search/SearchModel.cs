@@ -379,17 +379,10 @@ namespace Dynamo.Search
                     var displayString = function.UserFriendlyName;
                     var group = SearchElementGroup.None;
 
-                    string category;
-                    if (functionGroup.ElementType == ElementType.Regular)
-                    {
-                        category = ProcessNodeCategory(function.Category, ref group);
-                    }
-                    else
-                    {
-                        // Do not remove grouping information for not Regular node.
-                        ProcessNodeCategory(function.Category, ref group);
+                    // Rename category (except for custom nodes, imported libraries).
+                    string category = ProcessNodeCategory(function.Category, ref group);
+                    if (functionGroup.ElementType != ElementType.Regular)
                         category = function.Category;
-                    }
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -443,16 +436,11 @@ namespace Dynamo.Search
             var cat = "";
             if (attribs.Length > 0)
             {
-                cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                if (nodeType == ElementType.Regular)
-                {
-                    cat = ProcessNodeCategory(cat, ref group);
-                }
-                else
-                {
-                    // Do not remove grouping information for not Regular node.
-                    ProcessNodeCategory(cat, ref group);
-                }
+                var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
+                // Rename category (except for custom nodes, imported libraries).
+                cat = ProcessNodeCategory(catCandidate, ref group);                
+                if (nodeType != ElementType.Regular)
+                    cat = catCandidate;                
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
