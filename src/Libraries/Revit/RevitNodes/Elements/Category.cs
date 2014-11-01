@@ -40,7 +40,6 @@ namespace Revit.Elements
 
         #endregion
 
-        [IsVisibleInDynamoLibrary(false)]
         internal Autodesk.Revit.DB.Category InternalCategory
         {
             get { return internalCategory; }

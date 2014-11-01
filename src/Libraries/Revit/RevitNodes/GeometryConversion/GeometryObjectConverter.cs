@@ -12,7 +12,6 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryConversion
 {
-    [IsVisibleInDynamoLibrary(false)]
     internal static class GeometryObjectConverter
     {
         /// <summary>

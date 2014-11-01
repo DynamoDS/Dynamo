@@ -17,7 +17,6 @@ namespace Revit.Application
         /// <summary>
         /// Internal reference to the Document
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         internal Autodesk.Revit.DB.Document InternalDocument { get; private set; }
 
         internal Document(Autodesk.Revit.DB.Document currentDBDocument)

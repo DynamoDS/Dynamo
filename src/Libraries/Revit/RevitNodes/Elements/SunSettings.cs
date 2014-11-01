@@ -107,7 +107,7 @@ namespace Revit.Elements
         /// Get Element for further processing
         /// </summary>
         /// 
-        public Autodesk.Revit.DB.Element GetElement
+        internal Autodesk.Revit.DB.Element GetElement
         {
             get { return InternalSunAndShadowSettings as Autodesk.Revit.DB.Element; }
         }

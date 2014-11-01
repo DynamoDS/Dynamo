@@ -7,7 +7,6 @@ namespace DSCore
     /// <summary>
     ///     Comparison methods.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)] 
     internal static class Compare
     {
         /// <summary>

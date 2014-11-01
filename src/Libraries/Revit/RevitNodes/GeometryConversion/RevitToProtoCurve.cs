@@ -15,7 +15,6 @@ using Plane = Autodesk.DesignScript.Geometry.Plane;
 
 namespace Revit.GeometryConversion
 {
-    [SupressImportIntoVM]
     internal static class RevitToProtoCurve
     {
         public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve revitCurve, 

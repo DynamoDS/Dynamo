@@ -16,7 +16,6 @@ using Face = Autodesk.Revit.DB.Face;
 
 namespace Revit.GeometryConversion
 {
-    [SupressImportIntoVM]
     internal static class RevitToProtoFace
     {
         internal static IEnumerable<Surface> ToProtoType(this Autodesk.Revit.DB.Face revitFace,
