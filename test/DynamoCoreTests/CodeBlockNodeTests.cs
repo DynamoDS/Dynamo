@@ -1066,6 +1066,20 @@ b = c[w][x][y][z];";
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "HiddenCodeCompletionClass" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
+            // is set to false. We verify that this class does not appear in code completion results
+            string code = "Hid";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 0 completion items
+            Assert.AreEqual(0, completions.Count());
+        }
     }
 
 }
