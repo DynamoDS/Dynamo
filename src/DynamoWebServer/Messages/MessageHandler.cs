@@ -306,9 +306,6 @@ namespace DynamoWebServer.Messages
 
         private void NodesDataCreated(string sessionId)
         {
-            if (!wasRun)
-                return;
-
             var nodes = GetExecutedNodes();
 
             var currentWorkspace = dynamoModel.CurrentWorkspace;
@@ -388,6 +385,16 @@ namespace DynamoWebServer.Messages
             foreach (var pnResponse in proxyNodesResponses)
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
+            }
+
+            if (uploader.SendWorkspacePath)
+            {
+                var wsResponse = new WorkspacePathResponse()
+                {
+                    Guid = response.WorkspaceId,
+                    Path = currentWorkspace.FileName
+                };
+                OnResultReady(this, new ResultReadyEventArgs(wsResponse, sessionId));
             }
         }
 

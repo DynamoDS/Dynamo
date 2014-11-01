@@ -17,6 +17,7 @@ namespace DynamoWebServer.Messages
         List<ConnectorToCreate> connectorsToCreate;
 
         public bool IsCustomNode { get; private set; }
+        public bool SendWorkspacePath { get; private set; }
         public IEnumerable<NodeToCreate> NodesToCreate { get { return nodesToCreate; } }
         public IEnumerable<ConnectorToCreate> ConnectorsToCreate { get { return connectorsToCreate; } }
 
@@ -36,9 +37,11 @@ namespace DynamoWebServer.Messages
                 if (!string.IsNullOrEmpty(uploadFileMessage.Path))
                 {
                     dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(uploadFileMessage.Path));
+                    SendWorkspacePath = true;
                 }
                 else
                 {
+                    SendWorkspacePath = false;
                     var content = uploadFileMessage.FileContent;
                     var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
                     
