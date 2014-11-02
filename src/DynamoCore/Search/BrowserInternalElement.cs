@@ -324,6 +324,7 @@ namespace Dynamo.Nodes.Search
                 // If a caller sets the 'ClassDetailsVisibility' to 'false',
                 // then it is intended that we hide away the class details.
                 hideClassDetails = !value;
+                RaisePropertyChanged("ClassDetailsVisibility");
             }
 
             get

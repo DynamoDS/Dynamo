@@ -145,14 +145,14 @@ namespace Dynamo.DSEngine
 
         internal BitmapSource LoadIconInternal(string iconKey)
         {
+            if (cachedIcons.ContainsKey(iconKey))
+                return cachedIcons[iconKey];
+
             if (resourceAssembly == null)
             {
                 cachedIcons.Add(iconKey, null);
                 return null;
             }
-
-            if (cachedIcons.ContainsKey(iconKey))
-                return cachedIcons[iconKey];
 
             ResourceManager rm = new ResourceManager(assemblyName + imagesSuffix, resourceAssembly);
 
