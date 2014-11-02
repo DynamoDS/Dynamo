@@ -206,20 +206,29 @@ namespace Dynamo.Search
             // We sure, that the last member is class.
             if (!isAddons)
             {
+                // There are possible situations when one category is handled as namespace
+                // and class (created special BrowserInternalElement as container). For these
+                // situations created two instances. For example: Analyze.Render namespace
+                // and Analyze.Classes.Render as class.
+                // We need move childrens of Analyze.Classes.Render move to Analyze.Render.
+                // Category Analyze.Classes.Render (and Analyze.Classes if empty) should be removed.
                 var currentFullCategory = string.Join(Configurations.CategoryDelimiter.ToString(),
                     splitCategory.ToArray(), 0, splitCategory.Count - 1);
                 var index = currentFullCategory.LastIndexOf(Configurations.CategoryDelimiter);
+                // Supposed that top categories can't have a duality.
                 if (index > -1)
                 {
-                    var classesCategory = currentFullCategory.Insert(index, ".Classes");
+                    var classesCategory = currentFullCategory.Insert(index,
+                        Configurations.CategoryDelimiter + Configurations.ClassesDefaultName);
 
-                    var element = GetCategoryByName(classesCategory);
-                    if (element != null)
+                    // currentCategory represents context of namespace. For example: Analyze.Render.
+                    // Searching for Classes element. For example: Analyze.Classes.Render.                    
+                    var classesElement = GetCategoryByName(classesCategory);
+                    if (classesElement != null)
                     {
-                        MoveElement(currentCategory, element);
-                        RemoveCategory(classesCategory);
-                        //if ((element as BrowserInternalElement).Parent.Items.Count==0)
-                        RemoveEmptyCategory((element as BrowserInternalElement).Parent);
+                        MoveElementChilds(currentCategory, classesElement);
+                        RemoveCategory(classesElement);
+                        RemoveEmptyCategory((classesElement as BrowserInternalElement).Parent);
                     }
                 }
 
@@ -280,7 +289,8 @@ namespace Dynamo.Search
             // create it.
             if (parent.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault() == null)
             {
-                parent.Items.Insert(0, new BrowserInternalElementForClasses("Classes", parent));
+                parent.Items.Insert(0,
+                    new BrowserInternalElementForClasses(Configurations.ClassesDefaultName, parent));
             }
 
             // BIEFC is used to store all classes together. So that, they can be easily shown in treeview.
@@ -370,7 +380,7 @@ namespace Dynamo.Search
             return element.ContainsClass(className);
         }
 
-        internal void MoveElement(BrowserItem destination, BrowserItem source)
+        internal void MoveElementChilds(BrowserItem destination, BrowserItem source)
         {
             while (source.Items.Count != 0)
             {
