@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -76,22 +77,27 @@
     <ProjectReference Include="..\..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\DynamoRevit\DynamoRevit.csproj">
       <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
       <Name>DynamoRevit</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodesUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
@@ -101,14 +107,17 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

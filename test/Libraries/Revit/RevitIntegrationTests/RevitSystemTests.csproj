@@ -175,10 +175,12 @@
     <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
       <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
       <Name>RevitNodesTests</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\RevitTestServices\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
       <Name>RevitTestServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

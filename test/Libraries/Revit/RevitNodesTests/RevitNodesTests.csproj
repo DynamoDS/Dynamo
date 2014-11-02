@@ -141,10 +141,12 @@
     <ProjectReference Include="..\..\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\RevitTestServices\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
       <Name>RevitTestServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
