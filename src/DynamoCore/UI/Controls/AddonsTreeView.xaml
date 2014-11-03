@@ -330,11 +330,10 @@
                                         </Border.Style>
                                     </Border>
 
-                                    <Border Grid.Column="0"
-                                            Grid.ColumnSpan="1"
-                                            Grid.Row="1">
-                                        <ItemsPresenter x:Name="ItemsHost" />
-                                    </Border>
+                                    <ItemsPresenter x:Name="ItemsHost"
+                                                    Grid.Column="0"
+                                                    Grid.ColumnSpan="1"
+                                                    Grid.Row="1" />
                                 </Grid>
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
