@@ -225,6 +225,16 @@ namespace Dynamo.Models
         {
             this.ComputeVisualData();
 
+            // When evaluation is completed, we mark all
+            // nodes as ForceReexecuteOfNode = false to prevent
+            // cyclical graph updates. It is therefore the responsibility 
+            // of the node implementor to mark this flag = true, if they
+            // want to require update.
+            foreach (var n in HomeSpace.Nodes)
+            {
+                n.ForceReExecuteOfNode = false;
+            }
+
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
         }

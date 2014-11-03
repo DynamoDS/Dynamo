@@ -93,9 +93,6 @@
             <Component Id="cmpE04787A54E65CECE6381F006702C90EA" Directory="DYNAMO_INSTALLDIR" Guid="{F480B0A5-7968-40BD-B91C-C72B27E903A0}">
                 <File Id="fil007F8C37EFA591832495312FE9DA1C99" KeyPath="yes" Source="$(var.harvest)\GraphLayout.dll" />
             </Component>
-            <Component Id="cmpF60E29081F80ED0A7619FF0E96977855" Directory="DYNAMO_INSTALLDIR" Guid="{2A114E63-5589-4D3E-AEE2-CE61B96EA853}">
-                <File Id="fil7EA70DF8CC2C7D7CD8328757D89965F5" KeyPath="yes" Source="$(var.harvest)\GraphToDSCompiler.dll" />
-            </Component>
             <Component Id="cmp103730DBAE7295EC88981262AD99776B" Directory="DYNAMO_INSTALLDIR" Guid="{CD5FAFC8-BA9E-41D2-B233-F8F6FC9413D8}">
                 <File Id="fil3C3C40C93CEC4E6AE0506639AEE36841" KeyPath="yes" Source="$(var.harvest)\Greg.dll" />
             </Component>

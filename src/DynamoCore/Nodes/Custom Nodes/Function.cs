@@ -58,8 +58,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return  this.Workspace.DynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? this.Workspace.DynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                var infos = Workspace.DynamoModel.CustomNodeManager.NodeInfos;
+                return infos.ContainsKey(Definition.FunctionId)
+                    ? infos[Definition.FunctionId].Category
                     : "Custom Nodes";
             }
         }
@@ -396,22 +397,10 @@ namespace Dynamo.Nodes
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            return string.IsNullOrEmpty(InputSymbol)
-                ? AstIdentifierForPreview
-                : AstFactory.BuildIdentifier(InputSymbol);
+            return
+                AstFactory.BuildIdentifier(
+                    InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
         }
-
-        //protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
-        //{
-        //    Dictionary<int, INode> result;
-        //    if (!preBuilt.TryGetValue(this, out result))
-        //    {
-        //        result = new Dictionary<int, INode>();
-        //        result[outPort] = new SymbolNode(GUID.ToString());
-        //        preBuilt[this] = result;
-        //    }
-        //    return result[outPort];
-        //}
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -432,20 +421,6 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
-        /*
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 0, 1);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
-        }
-        */
     }
 
     [NodeName("Output")]
@@ -516,19 +491,5 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
-        /*
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 0);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
-        }
-        */
     }
 }

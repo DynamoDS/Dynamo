@@ -3,15 +3,14 @@ using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 
-using Revit.GeometryConversion;
+using RevitTestServices;
 
-using RevitServices.Persistence;
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class WallTests : GeometricRevitNodeTest
+    public class WallTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

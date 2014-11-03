@@ -19,6 +19,11 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
+
         #region Public Class Operational Methods
 
         internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
@@ -88,7 +93,7 @@ namespace Dynamo.Core.Threading
             {
                 modifiedNode.IsUpdated = true;
                 if (modifiedNode.State == ElementState.Warning)
-                    modifiedNode.ClearError();
+                    modifiedNode.ClearRuntimeError();
             }
         }
 
