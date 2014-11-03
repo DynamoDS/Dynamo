@@ -157,7 +157,7 @@ namespace ProtoFFI
                 Module = null;
         }
 
-        public static MethodInfo DisposeMethod 
+        public static MethodInfo DisposeMethod
         {
             get
             {
@@ -188,15 +188,15 @@ namespace ProtoFFI
         /// <summary>
         /// Imported ProtoCore.Type
         /// </summary>
-        public ProtoCore.Type ProtoCoreType 
-        { 
-            get 
-            { 
-                if(null == mProtoCoreType)
+        public ProtoCore.Type ProtoCoreType
+        {
+            get
+            {
+                if (null == mProtoCoreType)
                     mProtoCoreType = CLRObjectMarshler.GetUserDefinedType(CLRType);
 
                 return mProtoCoreType.Value;
-            } 
+            }
         }
 
         public static bool TryGetImportedDSType(Type type, out ProtoCore.Type dsType)
@@ -225,7 +225,7 @@ namespace ProtoFFI
 
             if (type == typeof(object) || !CLRObjectMarshler.IsMarshaledAsNativeType(type))
             {
-                if(type.IsEnum)
+                if (type.IsEnum)
                     protoCoreType = CLRModuleType.GetInstance(type, module, string.Empty).ProtoCoreType;
                 else
                     protoCoreType = CLRModuleType.GetInstance(type, null, string.Empty).ProtoCoreType;
@@ -426,7 +426,7 @@ namespace ProtoFFI
             foreach (var p in properties)
             {
                 AssociativeNode node = ParseProperty(p);
-                if(null != node)
+                if (null != node)
                     classnode.varlist.Add(node);
             }
 
@@ -441,7 +441,7 @@ namespace ProtoFFI
         {
             AssociativeNode node = ParseMethod(m);
             List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
-            
+
             FunctionDefinitionNode func = node as FunctionDefinitionNode;
             if (func != null)
             {
@@ -467,8 +467,8 @@ namespace ProtoFFI
         static readonly MethodInfo mDisposeMethod;
         private static void Dispose()
         {
-             //Do nothing.
-       }
+            //Do nothing.
+        }
 
         private static bool isEmpty(CLRModuleType type)
         {
@@ -544,7 +544,7 @@ namespace ProtoFFI
         {
             if (null == p || SupressesImport(p))
                 return null;
-            
+
             //Index properties are not parsed as property at this moment.
             ParameterInfo[] indexParams = p.GetIndexParameters();
             if (null != indexParams && indexParams.Length > 0)
@@ -558,15 +558,15 @@ namespace ProtoFFI
                 Type baseType = p.DeclaringType.BaseType;
                 PropertyInfo baseProp = (baseType != null) ? GetProperty(ref baseType, p.Name) : null;
                 //If this property is also declared in base class, then no need to add this is derived class.
-                if(null != baseProp && baseProp.DeclaringType != p.DeclaringType)
+                if (null != baseProp && baseProp.DeclaringType != p.DeclaringType)
                 {
                     //base class also has this method.
                     return null;
                 }
             }
-            
+
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = ParseArgumentDeclaration(p.Name, p.PropertyType);
-            if(null != varDeclNode)
+            if (null != varDeclNode)
                 varDeclNode.IsStatic = m.IsStatic;
             return varDeclNode;
         }
@@ -641,7 +641,7 @@ namespace ProtoFFI
 
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
             if (method.IsStatic &&
-                method.DeclaringType == method.ReturnType && 
+                method.DeclaringType == method.ReturnType &&
                 !propaccessor &&
                 !isOperator)
             {
@@ -670,7 +670,7 @@ namespace ProtoFFI
             func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
-            if ((retype.IsIndexable && mattrs.AllowRankReduction) 
+            if ((retype.IsIndexable && mattrs.AllowRankReduction)
                 || (typeof(object).Equals(method.ReturnType)))
             {
                 retype.rank = Constants.kArbitraryRank;
@@ -808,10 +808,10 @@ namespace ProtoFFI
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = new ProtoCore.AST.AssociativeAST.IdentifierNode
                                                                              {
-                Value = parameterName,
-                Name = parameterName,
-                datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
-            };
+                                                                                 Value = parameterName,
+                                                                                 Name = parameterName,
+                                                                                 datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
+                                                                             };
             //Lets emit native DS type object
             ProtoCore.Type argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
 
@@ -844,7 +844,7 @@ namespace ProtoFFI
         #endregion
 
         #region INTERNAL_METHODS
-        
+
         /// <summary>
         /// This method is for testing, to ensure cache is cleared before every test.
         /// </summary>
@@ -869,7 +869,7 @@ namespace ProtoFFI
     /// </summary>
     public class CLRDLLModule : DLLModule
     {
-        readonly Dictionary<string, CLRModuleType> mTypes = new Dictionary<string,CLRModuleType>();
+        readonly Dictionary<string, CLRModuleType> mTypes = new Dictionary<string, CLRModuleType>();
         public string Name
         {
             get;
@@ -906,7 +906,7 @@ namespace ProtoFFI
             if (CoreUtils.IsDisposeMethod(name))
             {
                 List<FFIFunctionPointer> pointers = new List<FFIFunctionPointer>();
-                pointers.Add( new DisposeFunctionPointer(this, CLRModuleType.DisposeMethod, CLRModuleType.GetProtoCoreType(CLRModuleType.DisposeMethod.ReturnType, this)));
+                pointers.Add(new DisposeFunctionPointer(this, CLRModuleType.DisposeMethod, CLRModuleType.GetProtoCoreType(CLRModuleType.DisposeMethod.ReturnType, this)));
                 return pointers;
             }
 
@@ -1054,7 +1054,7 @@ namespace ProtoFFI
                     return;
 
                 MethodInfo m = prop.GetSetMethod(true);
-                if(null != m)
+                if (null != m)
                     m.Invoke(null, new object[] { value });
             }
             catch (System.Exception)
@@ -1143,7 +1143,7 @@ namespace ProtoFFI
                     //This probably wasn't a .NET dll
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));   
+                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
 
                 catch (System.Exception exception)
@@ -1185,7 +1185,7 @@ namespace ProtoFFI
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray(); 
+            attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
             {
                 if (attr is IsVisibleInDynamoLibraryAttribute)
@@ -1232,6 +1232,30 @@ namespace ProtoFFI
             }
 
             attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+
+            // Check if method is a getter belonging to a property
+            // If so, get the corresponding PropertyInfo and check for any attributes 
+            // on it. Apply those attributes to the getter (method)
+            string getterPrefix = "get_";
+            if (method.Name.StartsWith(getterPrefix))
+            {
+                string propertyName = method.Name.Substring(getterPrefix.Length);
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    //PropertyInfo property = type.GetProperty(propertyName, BindingFlags.DeclaredOnly);
+                    var properties = type.GetProperties();
+                    if (properties.Any())
+                    {
+                        var matches = properties.Where(p => p.Name == propertyName && p.DeclaringType == type);
+                        if (matches.Any())
+                        {
+                            var property = matches.First();
+                            attributes = property.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+                        }
+                    }
+                }
+            }
+
             foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
