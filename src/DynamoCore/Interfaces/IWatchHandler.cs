@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-
+using System.Web.Configuration;
 using Dynamo.ViewModels;
 using DynamoUnits;
+using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Interfaces
@@ -23,20 +24,21 @@ namespace Dynamo.Interfaces
         /// 
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="core"></param>
         /// <param name="tag"></param>
         /// <param name="showRawData"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        WatchViewModel Process(dynamic value, string tag, bool showRawData, WatchHandlerCallback callback);
+        WatchViewModel Process(dynamic value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback);
     }
 
-    public delegate WatchViewModel WatchHandlerCallback(dynamic value, string tag, bool showRawData);
+    public delegate WatchViewModel WatchHandlerCallback(dynamic value, ProtoCore.Core core, string tag, bool showRawData);
 
     public static class WatchHandler
     {
-        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, string tag, bool showRawData = true)
+        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, ProtoCore.Core core, string tag, bool showRawData = true)
         {
-            return handler.Process(value, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
+            return handler.Process(value, core, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
         }
     }
 
@@ -56,7 +58,7 @@ namespace Dynamo.Interfaces
             this.preferences = preferences;
         }
 
-        private WatchViewModel ProcessThing(object value, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(object value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             WatchViewModel node;
 
@@ -67,8 +69,14 @@ namespace Dynamo.Interfaces
                 node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(callback(e.element, tag + ":" + e.idx, showRawData));
+                    node.Children.Add(callback(e.element, core, tag + ":" + e.idx, showRawData));
                 }
+            }
+            else if (core != null && value is StackValue)
+            {
+                int typeId = core.TypeSystem.GetType((StackValue)value);
+                string typeName = core.TypeSystem.classTable.GetTypeName(typeId);
+                node = new WatchViewModel(visualizationManager, typeName, tag);
             }
             else
             {
@@ -78,7 +86,7 @@ namespace Dynamo.Interfaces
             return node;
         }
 
-        private WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(SIUnit unit, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return showRawData
                 ? new WatchViewModel(
@@ -88,17 +96,17 @@ namespace Dynamo.Interfaces
                 : new WatchViewModel(visualizationManager, unit.ToString(), tag);
         }
 
-        private WatchViewModel ProcessThing(double value, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(double value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
-        private WatchViewModel ProcessThing(string value, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(string value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(visualizationManager, value, tag);
         }
 
-        private WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(MirrorData data, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             if (data.IsCollection)
             {
@@ -107,7 +115,7 @@ namespace Dynamo.Interfaces
                 var node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(ProcessThing(e.element, tag + ":" + e.idx, showRawData, callback));
+                    node.Children.Add(ProcessThing(e.element, core, tag + ":" + e.idx, showRawData, callback));
                 }
 
                 return node;
@@ -127,12 +135,12 @@ namespace Dynamo.Interfaces
                 if (null != classMirror)
                 {
                     //just show the class name.
-                    return ProcessThing(classMirror.ClassName, tag, showRawData, callback);
+                    return ProcessThing(classMirror.ClassName, core, tag, showRawData, callback);
                 }
             }
 
             //Finally for all else get the string representation of data as watch content.
-            return callback(data.Data, tag, showRawData);
+            return callback(data.Data, core, tag, showRawData);
         }
 
         private static string ToString(object obj)
@@ -142,11 +150,11 @@ namespace Dynamo.Interfaces
                 : (obj is bool ? obj.ToString().ToLower() : obj.ToString());
         }
 
-        public WatchViewModel Process(dynamic value, string tag, bool showRawData, WatchHandlerCallback callback)
+        public WatchViewModel Process(dynamic value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return Object.ReferenceEquals(value, null)
                 ? new WatchViewModel(visualizationManager, NULL_STRING, tag)
-                : ProcessThing(value, tag, showRawData, callback);
+                : ProcessThing(value, core, tag, showRawData, callback);
         }
     }
 }
