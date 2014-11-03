@@ -8,12 +8,22 @@ using DSCore;
 using DSCoreNodesUI;
 
 using Dynamo.Applications.Models;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+
+using Revit.Elements;
+
 using RevitServices.Persistence;
 using Category = Revit.Elements.Category;
+using Element = Autodesk.Revit.DB.Element;
+using Family = Autodesk.Revit.DB.Family;
+using FamilyInstance = Autodesk.Revit.DB.FamilyInstance;
+using FamilySymbol = Autodesk.Revit.DB.FamilySymbol;
+using Level = Autodesk.Revit.DB.Level;
+using Parameter = Autodesk.Revit.DB.Parameter;
 
 namespace DSRevitNodesUI
 {
@@ -394,7 +404,11 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class Categories : EnumBase<BuiltInCategory>
     {
-        public Categories(WorkspaceModel workspace) : base(workspace) { }
+        public Categories(WorkspaceModel workspace) : base(workspace)
+        {
+            OutPorts[0].PortName = "Category";
+            OutPortData[0].ToolTipString = "The selected Category.";
+        }
 
         protected override void PopulateItems()
         {
@@ -473,16 +487,19 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("Structural Framing Types")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Select a level in the active document")]
-    [IsDesignScriptCompatible]
-    public class StructuralFramingTypes : RevitDropDownBase
+    public abstract class AllElementsInBuiltInCategory : RevitDropDownBase 
     {
-        private const string noFraming = "No structural framing types available.";
+        private string noTypesMessage;
+        private BuiltInCategory category;
 
-        public StructuralFramingTypes(WorkspaceModel workspaceModel)
-            : base(workspaceModel, "Framing Types"){}
+        internal AllElementsInBuiltInCategory(
+            BuiltInCategory category, string outputMessage, string noTypesMessage, WorkspaceModel workspaceModel)
+            : base(workspaceModel, outputMessage)
+        {
+            this.category = category;
+            this.noTypesMessage = noTypesMessage;
+            PopulateItems();
+        }
 
         protected override void PopulateItems()
         {
@@ -491,12 +508,12 @@ namespace DSRevitNodesUI
             //find all the structural framing family types in the project
             var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
-            var catFilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
+            var catFilter = new ElementCategoryFilter(category);
             collector.OfClass(typeof(FamilySymbol)).WherePasses(catFilter);
 
             if (collector.ToElements().Count == 0)
             {
-                Items.Add(new DynamoDropDownItem(noFraming, null));
+                Items.Add(new DynamoDropDownItem(noTypesMessage, null));
                 SelectedIndex = 0;
                 return;
             }
@@ -510,7 +527,7 @@ namespace DSRevitNodesUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (Items.Count == 0 ||
-                Items[0].Name == noFraming ||
+                Items[0].Name == noTypesMessage ||
                 SelectedIndex == -1)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
@@ -526,6 +543,26 @@ namespace DSRevitNodesUI
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
+    }
+
+    [NodeName("Structural Framing Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a structural framing type in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralFramingTypes : AllElementsInBuiltInCategory
+    {
+        public StructuralFramingTypes(WorkspaceModel workspaceModel)
+            : base(BuiltInCategory.OST_StructuralFraming, "Framing Types", "No structural framing types available.", workspaceModel){}
+    }
+
+    [NodeName("Structural Column Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a structural column type in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralColumnTypes : AllElementsInBuiltInCategory
+    {
+        public StructuralColumnTypes(WorkspaceModel workspaceModel)
+            : base(BuiltInCategory.OST_StructuralColumns, "Column Types", "No structural column types available.", workspaceModel){}
     }
 
     [NodeName("Spacing Rule Layout")]
@@ -550,6 +587,56 @@ namespace DSRevitNodesUI
             var assemblyName = AstFactory.BuildStringNode("RevitAPI");
             var functionCall = AstFactory.BuildFunctionCall(new Func<string,string,object>(Types.FindTypeByNameInAssembly) , new List<AssociativeNode>(){typeName, assemblyName});
             return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)};
+        }
+    }
+
+    [NodeName("Views")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All views available in the current document.")]
+    [IsDesignScriptCompatible]
+    public class Views : RevitDropDownBase
+    {
+        public Views(WorkspaceModel workspaceModel) : base(workspaceModel, "Views") { }
+
+        protected override void PopulateItems()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            var views = fec.OfClass(typeof(View)).ToElements();
+
+            foreach (var v in views)
+            {
+                Items.Add(new DynamoDropDownItem(v.Name, v));
+            }
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (SelectedIndex == -1)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var view = Items[SelectedIndex].Item as View;
+                if (view == null)
+                {
+                    node = AstFactory.BuildNullNode();
+                }
+                else
+                {
+                    var idNode = AstFactory.BuildStringNode(view.UniqueId);
+                    var falseNode = AstFactory.BuildBooleanNode(true);
+                    
+                    node =
+                        AstFactory.BuildFunctionCall(
+                            new Func<string, bool, object>(ElementSelector.ByUniqueId),
+                            new List<AssociativeNode>() { idNode, falseNode });
+                }
+            }
+
+            return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
     }
 }

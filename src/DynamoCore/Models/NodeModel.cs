@@ -466,27 +466,6 @@ namespace Dynamo.Models
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
 
-
-
-        /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property")]
-        public bool HasUnconnectedInput()
-        {
-            return IsPartiallyApplied;
-        }
-
-        /// <summary>
-        ///     Flags this node as dirty.
-        /// </summary>
-        [Obsolete("Use RequiresRecalc = true")]
-        public void ResetOldValue()
-        {
-            RequiresRecalc = true;
-        }
-
         /// <summary>
         ///     Get the description from type information
         /// </summary>
@@ -759,7 +738,6 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void OnBuilt()
         {
-            
         }
 
         /// <summary>
@@ -941,7 +919,10 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        public void ClearError()
+        /// <summary>
+        /// Clears the errors/warnings that are generated when running the graph
+        /// </summary>
+        public virtual void ClearRuntimeError()
         {
             State = ElementState.Dead;
             ClearTooltipText();
@@ -1489,6 +1470,7 @@ namespace Dynamo.Models
             set
             {
                 forceReExec = value;
+                RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
         #endregion

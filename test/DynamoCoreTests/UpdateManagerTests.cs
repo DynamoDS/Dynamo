@@ -1,6 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+
 using Dynamo.UpdateManager;
+
+using ProtoCore.Lang;
+
+using DynUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using Moq;
 using NUnit.Framework;
 
@@ -11,6 +18,43 @@ namespace Dynamo.Tests
     /// </summary>
     public class UpdateManagerTestNotUpToDate
     {
+        /// <summary>
+        /// Utility class to inject the UpdateManagerConfiguration to
+        /// UpdateManager instance and then resets it to previous value
+        /// when its disposed.
+        /// </summary>
+        class ConfigInjection : IDisposable
+        {
+            private readonly DynUpdateManager updateManager; //updatemanager instance.
+            private readonly object configuration; //old configuration value.
+            private readonly FieldInfo fieldInfo; //internal configuration field.
+
+            /// <summary>
+            /// Creates ConfigInjection instance.
+            /// </summary>
+            /// <param name="updateManager">UpdateManager instance to which configuration is to be injected.</param>
+            /// <param name="configuration">The configuration for injection.</param>
+            public ConfigInjection(DynUpdateManager updateManager, UpdateManagerConfiguration configuration)
+            {
+                this.updateManager = updateManager;
+                fieldInfo = updateManager.GetType()
+                    .GetField("configuration", BindingFlags.NonPublic | BindingFlags.Instance);
+                Assert.IsNotNull(fieldInfo);
+
+                this.configuration = fieldInfo.GetValue(updateManager);
+                fieldInfo.SetValue(updateManager, configuration);
+            }
+
+            public void Dispose()
+            {
+                //Restore the old configuration
+                fieldInfo.SetValue(updateManager, configuration);
+            }
+        }
+
+        private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
+        private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
+
         [Test]
         [Category("UnitTests")]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
@@ -41,16 +85,74 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
-            var um = UpdateManager.UpdateManager.Instance;
+            var um = UpdateManager.UpdateManager.Instance as DynUpdateManager;
+            Assert.IsNotNull(um);
 
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
             um.UpdateDataAvailable(updateRequest.Object);
 
             // Spoof a download completion by setting the downloaded update info to the update info
-            (um as UpdateManager.UpdateManager).DownloadedUpdateInfo = um.UpdateInfo;
+            um.DownloadedUpdateInfo = um.UpdateInfo;
             Assert.NotNull(um.UpdateInfo);
             Assert.AreEqual(um.AvailableVersion.ToString(), "9.9.9.0");
+        }
+
+        [Test, Category("UnitTests")]
+        public void ConfigurationSerialization()
+        {
+            var config = new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S
+            };
+            
+            //save to a temp file.
+            var tempFile = Path.GetTempFileName();
+            Assert.DoesNotThrow(() => config.Save(tempFile, null));
+            
+            //read from a temp file.
+            UpdateManagerConfiguration savedConfig = null;
+            Assert.DoesNotThrow(() => savedConfig = UpdateManagerConfiguration.Load(tempFile, null));
+            
+            //Compare parameters.
+            Assert.IsNotNull(savedConfig);
+            Assert.AreEqual(config.CheckNewerDailyBuild, savedConfig.CheckNewerDailyBuild);
+            Assert.AreEqual(config.SignatureSourcePath, savedConfig.SignatureSourcePath);
+            Assert.AreEqual(config.DownloadSourcePath, savedConfig.DownloadSourcePath);
+            Assert.AreEqual(config.ForceUpdate, savedConfig.ForceUpdate);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ConfigurationRedirection()
+        {
+            var um = DynUpdateManager.Instance as DynUpdateManager;
+            Assert.IsNotNull(um);
+
+            //Inject test config to UpdateManager instance, using reflection.
+            var config = new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S
+            };
+
+            using (new ConfigInjection(um, config))
+            {
+                var updateRequest = new Mock<IAsynchronousRequest>();
+                updateRequest.Setup(ur => ur.Data)
+                    .Returns(UpdateManagerTestHelpers.updateAvailableData);
+                um.UpdateDataAvailable(updateRequest.Object);
+
+                // Spoof a download completion by setting the downloaded update info to the update info
+                um.DownloadedUpdateInfo = um.UpdateInfo;
+                Assert.NotNull(um.UpdateInfo);
+                Assert.AreEqual("9.9.9.0", um.AvailableVersion.ToString());
+                Assert.AreEqual(DOWNLOAD_SOURCE_PATH_S, um.UpdateInfo.VersionInfoURL);
+                Assert.AreEqual(
+                    SIGNATURE_SOURCE_PATH_S + @"DynamoInstall9.9.9.sig",
+                    um.UpdateInfo.SignatureURL);
+            }
         }
 
         [Test]

@@ -39,7 +39,6 @@ namespace Dynamo
 
                 AlternateContextName = dynamoModel.Context;
 
-                RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
                 dynamoModel.CleaningUp += CleanupVisualizations;
             }
@@ -48,6 +47,16 @@ namespace Dynamo
                 AlternateDrawingContextAvailable = false;
             }
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void HandleRenderPackagesReadyCore()
+        {
+            // Trigger an update of visualization in alternate context.
+            VisualizationManagerRenderComplete(this, EventArgs.Empty);
+        }
+
+#endif
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {

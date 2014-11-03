@@ -14,7 +14,6 @@ namespace ProtoCore.Utils
     /// </summary>
     public static class ParserUtils
     {
-
         private static string FindIdentifiers(string statement, int equalIndex)
         {
 
@@ -253,53 +252,37 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Parses designscript sourcecode and ouputs a Parser instance
-        /// Used internally by ParserUtils
-        /// </summary>
-        /// <param name="statement"></param>
-        private static ProtoCore.DesignScriptParser.Parser ParseInternal(Core core, string statement)
-        {
-            Validity.Assert(core != null);
-            Validity.Assert(statement != null);
-
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(statement));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-
-            p.Parse();
-            return p;
-        }
-
-        /// <summary>
-        /// Parses designscript code and outputs comment nodes and returns CodeBlockNode
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="code"> Source code to parse </param>
-        /// <param name="commentNode"> Comments in the code are preserved and stored in commentNode</param>
-        
-        
-        public static ProtoCore.AST.Node Parse(Core core, string code, out ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode)
-        {
-            commentNode = null;
-
-            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, code);
-            Validity.Assert(null != p);
-            commentNode = p.commentNode;
-
-            return p.root;
-        }
-
-        /// <summary>
         /// Parses designscript code and returns a ProtoAST CodeBlockNode
         /// </summary>
         /// <param name="code"> Source code to parse </param>
-        public static ProtoCore.AST.Node Parse(Core core, string code)
+        public static ProtoCore.AST.Node Parse(string code)
         {
-            Validity.Assert(core != null);
             Validity.Assert(code != null);
 
-            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, code);
+            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
+            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            core.IsParsingCodeBlockNode = true;
+            core.IsParsingPreloadedAssembly = false;
+
+            return ParseWithCore(code, core);
+        }
+
+        /// <summary>
+        /// Parses desginscript code with specified core and returns a 
+        /// ProtoAST CodeBlockNode
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static ProtoCore.AST.Node ParseWithCore(string code, ProtoCore.Core core)
+        {
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
+            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
             Validity.Assert(null != p);
+            p.Parse();
 
             return p.root;
         }

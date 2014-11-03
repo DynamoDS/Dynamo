@@ -298,7 +298,7 @@ namespace ProtoScript.Runners
             }
             catch (System.IO.IOException)
             {
-                throw new FatalError("Cannot open file " + filename);
+                throw new Exception("Cannot open file " + filename);
             }
 
             string strSource = reader.ReadToEnd();

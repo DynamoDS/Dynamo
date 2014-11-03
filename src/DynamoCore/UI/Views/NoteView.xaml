@@ -10,13 +10,13 @@
              Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
-             MouseDown="Note_MouseDown" >
+             MouseDown="OnNoteMouseDown" >
     
     <Grid Name="BaseGrid">
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Name="deleteItem" Header="Delete" Click="deleteItem_Click"  />
-                <MenuItem Name="editItem" Header="Edit..." Click="editItem_Click" />
+                <MenuItem Name="deleteItem" Header="Delete" Click="OnDeleteItemClick"  />
+                <MenuItem Name="editItem" Header="Edit..." Click="OnEditItemClick" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
