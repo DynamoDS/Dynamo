@@ -1,0 +1,20 @@
+<Workspace Version="0.7.2.26219" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="26078a96-2730-44d9-8f1e-8d54cc30b060" nickname="Code Block" x="234" y="238" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..5;" ShouldFocus="false" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="42693721-622d-475e-a82e-bfe793ddc153" nickname="TrussFrom4Points" x="424.5" y="306.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="2b59b1a2-bb54-40c5-83fd-528ec9abc36b" />
+      <Name value="outer custom node" />
+      <Description value="Creates a truss from 4 points, points must be ordered 1,2,3,4. right left top down" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="asdasdasd" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="26078a96-2730-44d9-8f1e-8d54cc30b060" start_index="0" end="42693721-622d-475e-a82e-bfe793ddc153" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

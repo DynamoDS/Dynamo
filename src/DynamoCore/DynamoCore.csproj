@@ -145,6 +145,7 @@ limitations under the License.
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
+    <Compile Include="DSEngine\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
     <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
@@ -178,8 +179,8 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
-    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
-    <Compile Include="Nodes\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="UI\CodeBlockCompletionData.cs" />
+    <Compile Include="UI\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -187,7 +188,6 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
-    <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -880,6 +880,9 @@ limitations under the License.
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Images\CodeBlock\keyword.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

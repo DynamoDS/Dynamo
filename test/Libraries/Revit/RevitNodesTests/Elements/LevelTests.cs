@@ -5,10 +5,12 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 using Revit.Elements.InternalUtilities;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
 
     [TestFixture]
@@ -63,8 +65,16 @@ namespace RevitTestServices.Elements
             Assert.AreEqual(name, level.Name);
 
             //Create a new level with the same name and elevation
-            //Ensure there is a exception thrown
-            Assert.Throws(typeof(System.Exception), ()=>Level.ByElevationAndName(elevation, name));
+            level = Level.ByElevationAndName(elevation, name);
+
+            Assert.AreEqual(elevation, level.Elevation);
+            Assert.AreEqual(name + "(1)", level.Name);
+
+            //Once again create a new level with the same name and elevation
+            level = Level.ByElevationAndName(elevation, name);
+
+            Assert.AreEqual(elevation, level.Elevation);
+            Assert.AreEqual(name + "(2)", level.Name);
 
             //Create a new level with a name of lowercase letters
             //and the same elevation
