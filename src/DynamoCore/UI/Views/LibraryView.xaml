@@ -228,7 +228,8 @@
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
                           ScrollViewer.CanContentScroll="False"
                           ScrollViewer.IsDeferredScrollingEnabled="False"
-                          ItemsSource="{Binding Path=Items}">
+                          ItemsSource="{Binding Path=Items}"
+                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <controls:LibraryWrapPanel Background="Transparent"

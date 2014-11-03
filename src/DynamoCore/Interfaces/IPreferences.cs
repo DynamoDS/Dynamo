@@ -12,9 +12,9 @@ namespace Dynamo.Interfaces
         ConnectorType ConnectorType { get; set; }
         bool FullscreenWatchShowing { get; set; }
         string NumberFormat { get; set; }
-        DynamoLengthUnit LengthUnit { get; set; }
-        DynamoAreaUnit AreaUnit { get; set; }
-        DynamoVolumeUnit VolumeUnit { get; set; }
+        LengthUnit LengthUnit { get; set; }
+        AreaUnit AreaUnit { get; set; }
+        VolumeUnit VolumeUnit { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsAnalyticsReportingApproved { get; set; }
         bool IsFirstRun { get; set; }

@@ -624,6 +624,7 @@ namespace Dynamo.Controls
             Debug.WriteLine("Dynamo window closed.");
 
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
+            dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
             //PACKAGE MANAGER
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
@@ -1104,6 +1105,7 @@ namespace Dynamo.Controls
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                this.Activate();
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
