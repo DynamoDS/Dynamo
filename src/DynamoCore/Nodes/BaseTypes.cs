@@ -1541,6 +1541,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             _convertToken = Convert;
+            Value = "0";
         }
 
         public virtual double Convert(double value)

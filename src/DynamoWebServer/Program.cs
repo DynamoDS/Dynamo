@@ -28,13 +28,6 @@ namespace DynamoWebServer
                     Preferences = PreferenceSettings.Load()
                 });
 
-            var viewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = null,
-                    DynamoModel = model
-                });
-
             var webSocketServer = new WebServer(model, new WebSocket());
 
             webSocketServer.Start();
@@ -48,6 +41,13 @@ namespace DynamoWebServer
             }
             else
             {
+                var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = null,
+                    DynamoModel = model
+                });
+
                 var view = new DynamoView(viewModel);
                 app.Run(view);
             }
