@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Dynamo.Nodes.Search;
 using System.Linq;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Microsoft.Practices.Prism.ViewModel;
@@ -17,11 +17,16 @@ namespace Dynamo.Search
         {
             get
             {
-                var fullName = FullyQualifiedName;
+                var delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
+
+                int index = FullyQualifiedName.IndexOf(delimiter);
+                var name = index > -1 ? FullyQualifiedName.Substring(index + delimiter.Length)
+                                      : FullyQualifiedName;
 
                 // Skip past the last delimiter and get the group name.
-                var delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
-                return fullName.Substring(0, fullName.LastIndexOf(delimiter) + delimiter.Length);
+                index = name.LastIndexOf(delimiter);
+                return index > -1 ? name.Substring(0, index + delimiter.Length)
+                                  : string.Empty;
             }
         }
 
@@ -71,7 +76,7 @@ namespace Dynamo.Search
 
         public bool ContainsMember(BrowserInternalElement member)
         {
-           return Members.Contains(member);
+            return Members.Contains(member);
         }
 
         public void ExpandAllMembers()
