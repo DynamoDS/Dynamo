@@ -78,12 +78,16 @@ namespace FFITarget
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
-    public class HiddenCodeCompletionClass
+    public class SampleClassA
     {
-        public HiddenCodeCompletionClass()
-        {
-                
-        }
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public class SampleClassB
+    {
+    }
+
+    public class SampleClassC
+    {
     }
 }

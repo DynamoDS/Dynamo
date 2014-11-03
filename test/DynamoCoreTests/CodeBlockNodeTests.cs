@@ -1074,11 +1074,16 @@ b = c[w][x][y][z];";
 
             // "HiddenCodeCompletionClass" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
             // is set to false. We verify that this class does not appear in code completion results
-            string code = "Hid";
+            string code = "sam";
             var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
 
-            // Expected 0 completion items
-            Assert.AreEqual(0, completions.Count());
+            // Expected 2 completion items
+            Assert.AreEqual(2, completions.Count());
+
+            string[] expected = { "SampleClassA", "SampleClassC" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
         }
     }
 
