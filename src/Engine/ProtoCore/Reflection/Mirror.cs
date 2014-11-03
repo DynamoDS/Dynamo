@@ -361,6 +361,9 @@ namespace ProtoCore
 
             protected StaticMirror(ProtoCore.Core core, string name = "")
             {
+                if (core == null)
+                    throw new ArgumentNullException("core");
+
                 MirrorObject.staticCore = core;
                 Name = name;
             }
@@ -551,24 +554,18 @@ namespace ProtoCore
             public ClassMirror(ProtoCore.Type type, ProtoCore.Core core)
                 : base(core, type.Name)
             {
-                if (core != null)
+                ClassName = type.Name;
+                if (classNode == null)
                 {
-                    ClassName = type.Name;
-                    if (classNode == null)
-                    {
-                        ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-                        classNode = classTable.ClassNodes[type.UID];
-                    }
-                    libraryMirror = new LibraryMirror(classNode.ExternLib, core);
+                    ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
+                    classNode = classTable.ClassNodes[type.UID];
                 }
+                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
 
             public ClassMirror(string className, ProtoCore.Core core)
                 : base(core, className)
             {
-                if (core == null)
-                    return;
-
                 ClassName = className;
 
                 if (classNode == null)
@@ -608,7 +605,6 @@ namespace ProtoCore
                 : base(core)
             {
                 Validity.Assert(svData.IsPointer);
-                Validity.Assert(null != core);
                 Validity.Assert(null != core.DSExecutable.classTable);
 
                 IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;

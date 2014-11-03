@@ -273,6 +273,14 @@ namespace Dynamo.Nodes
                     return true; // UpdateValueCore handled.
                 case "Value":
                     Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    if (Value >= Max)
+                    {
+                        this.Max = Value;
+                    }
+                    if (Value <= Min)
+                    {
+                        this.Min = Value;
+                    }
                     return true; // UpdateValueCore handled.
             }
 
