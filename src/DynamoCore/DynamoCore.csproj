@@ -932,6 +932,9 @@ limitations under the License.
     <Resource Include="UI\Images\nodes.png" />
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"

@@ -40,21 +40,27 @@
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-            <Border Height="30">
-                <TextBlock Foreground="#DDD"
-                           FontSize="13"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
-            </Border>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
+                <Border Height="30">
+                    <TextBlock Foreground="#DDD"
+                               FontSize="13"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                </Border>
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-            <Border Height="30">
-                <TextBlock Foreground="#DDD"
-                           FontSize="13"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
-            </Border>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
+                <Border Height="30">
+                    <TextBlock Foreground="#DDD"
+                               FontSize="13"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                </Border>
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <!--EndRegion-->
