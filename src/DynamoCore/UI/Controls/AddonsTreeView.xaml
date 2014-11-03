@@ -346,22 +346,15 @@
                                                 Value="35,0,0,5" />
                                         <Setter Property="BorderBrush">
                                             <Setter.Value>
-                                                <DrawingBrush Viewport="0,0,8,8"
-                                                              ViewportUnits="Absolute"
-                                                              TileMode="Tile">
-                                                    <DrawingBrush.Drawing>
-                                                        <DrawingGroup>
-                                                            <GeometryDrawing Brush="#49494b">
-                                                                <GeometryDrawing.Geometry>
-                                                                    <GeometryGroup>
-                                                                        <RectangleGeometry Rect="0,0,50,50" />
-                                                                        <RectangleGeometry Rect="50,50,50,50" />
-                                                                    </GeometryGroup>
-                                                                </GeometryDrawing.Geometry>
-                                                            </GeometryDrawing>
-                                                        </DrawingGroup>
-                                                    </DrawingBrush.Drawing>
-                                                </DrawingBrush>
+                                                <VisualBrush>
+                                                    <VisualBrush.Visual>
+                                                        <Path Data="M 0,0 L 0,30"
+                                                              StrokeDashArray="3 4"
+                                                              Stroke="#494949"
+                                                              StrokeThickness="1">
+                                                        </Path>
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
                                             </Setter.Value>
                                         </Setter>
                                         <Style.Triggers>
