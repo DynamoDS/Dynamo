@@ -806,12 +806,13 @@ namespace ProtoFFI
             varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
             varDeclNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
 
-            ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = new ProtoCore.AST.AssociativeAST.IdentifierNode
-                                                                             {
-                                                                                 Value = parameterName,
-                                                                                 Name = parameterName,
-                                                                                 datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
-                                                                             };
+            ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
+                new ProtoCore.AST.AssociativeAST.IdentifierNode
+                {
+                    Value = parameterName,
+                    Name = parameterName,
+                    datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
+                };
             //Lets emit native DS type object
             ProtoCore.Type argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
 
