@@ -14,7 +14,8 @@ namespace RevitNodesTests
         private static bool resolverSetup;
 
         /// <summary>
-        /// Setup the assembly resolver with a default core path.
+        /// Setup the assembly resolver using the base path specified in the config
+        /// file, or using a default location if no config file is found.
         /// </summary>
         public static void Setup()
         {
@@ -58,11 +59,9 @@ namespace RevitNodesTests
         private static bool OpenAndReadDynamoBasePath(ref string basePath)
         {
             var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configPath = Path.Combine(assDir, "RevitTestServices.dll");
+            var configPath = Path.Combine(assDir, "TestServices.dll");
             if (!File.Exists(configPath))
-            {
                 return false;
-            }
 
             try
             {
@@ -73,9 +72,7 @@ namespace RevitNodesTests
                     return false;
 
                 if (!Directory.Exists(value))
-                {
                     return false;
-                }
 
                 basePath = value;
                 return true;
