@@ -77,26 +77,23 @@ namespace FFITarget
         }
     }
 
-    public class CodeCompletionClass1
+    namespace FirstNamespace
     {
-        public CodeCompletionClass1()
+        public class ClassWithNameConflict
         {
+            public string PropertyA { get; set; }
+            public string PropertyB { get; set; }
+            public string PropertyC { get; set; }
         }
     }
 
-    namespace CodeCompletion
+    namespace SecondNamespace
     {
-        public class CodeCompletionClass1
+        public class ClassWithNameConflict
         {
-            public CodeCompletionClass1()
-            { }
-
-            private ValueContainer classProperty;
-            public ValueContainer CodeCompletionClassProperty
-            {
-                get { return classProperty; }
-            }
-
+            public string PropertyD { get; set; }
+            public string PropertyE { get; set; }
+            public string PropertyF { get; set; }
         }
     }
 }

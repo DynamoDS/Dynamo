@@ -812,9 +812,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
             var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
@@ -828,9 +828,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
 
             var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
@@ -914,33 +914,32 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestCodeCompletionForFullyQualifiedVariableType()
         {
-            string code = "a : FFITarget.CodeCompletionClass1;";
+            string code = "a : FFITarget.FirstNamespace.ClassWithNameConflict;";
             string variableName = "a";
 
             string type1 = CodeCompletionParser.GetVariableType(code, variableName);
-            Assert.AreEqual("FFITarget.CodeCompletionClass1", type1);
+            Assert.AreEqual("FFITarget.FirstNamespace.ClassWithNameConflict", type1);
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(type1, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(type1, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
 
-            var expected = new string[] {  };
+            var expected = new string[] { "PropertyA", "PropertyB", "PropertyC" };
             AssertCompletions(members, expected);
 
-            code = @"b : FFITarget.CodeCompletion.CodeCompletionClass1;";
+            code = @"b : FFITarget.SecondNamespace.ClassWithNameConflict;";
             variableName = "b";
             string type2 = CodeCompletionParser.GetVariableType(code, variableName);
-            Assert.AreEqual("FFITarget.CodeCompletion.CodeCompletionClass1", type2);
+            Assert.AreEqual("FFITarget.SecondNamespace.ClassWithNameConflict", type2);
 
             // Assert that the class name is indeed a class
-            type = new ClassMirror(type2, libraryServicesCore);
+            Assert.DoesNotThrow(() => type = new ClassMirror(type2, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             members = type.GetInstanceMembers();
 
-            expected = new string[] { "CodeCompletionClassProperty" };
+            expected = new string[] { "PropertyD", "PropertyE", "PropertyF" };
             AssertCompletions(members, expected);
         }
 
