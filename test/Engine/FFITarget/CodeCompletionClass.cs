@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.DesignScript.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,6 +76,19 @@ namespace FFITarget
         {
             StaticProp++;
         }
+    }
+
+    public class SampleClassA
+    {
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public class SampleClassB
+    {
+    }
+
+    public class SampleClassC
+    {
     }
 
     namespace FirstNamespace

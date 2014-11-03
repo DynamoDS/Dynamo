@@ -410,7 +410,11 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x =>
+                        {
+                            bool hidden = x.ClassAttributes == null ? false : x.ClassAttributes.HiddenInLibrary;
+                            return !hidden && !CoreUtils.StartsWithSingleUnderscore(x.name);
+                        }).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -975,7 +979,7 @@ namespace ProtoCore
                     returnType = " : " + this.ReturnType.ToString().Split('.').Last();
                 var methodName = this.MethodName;
                 var argList = this.ArgumentList.Select(x => x.Key + " : " + x.Value);
-                sb.AppendLine(methodName + returnType + " (" + 
+                sb.AppendLine(methodName + returnType + " (" +
                     string.Join(", ", argList.Select(p => p.ToString())) + ')');
 
                 return sb.ToString().Trim();
