@@ -52,9 +52,9 @@ namespace Dynamo.PackageManager
             var lurl = url.ToLower();
 
             // if not preceded by http(s), process start will fail
-            if (!lurl.StartsWith("http://") || !lurl.StartsWith("https://"))
+            if (!lurl.StartsWith(@"http://") && !lurl.StartsWith(@"https://"))
             {
-                return "http://" + url;
+                return @"http://" + url;
             }
 
             return url;
