@@ -24,6 +24,7 @@
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+            <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
 
             <!--EndRegion-->
 
@@ -285,8 +286,7 @@
                           PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <controls:LibraryWrapPanel Background="Transparent"
-                                                       Margin="0,10,0,10">
+                            <controls:LibraryWrapPanel Background="Transparent">
                                 <controls:LibraryWrapPanel.Width>
                                     <Binding Path="ActualWidth"
                                              ElementName="CategoryTreeView" />
@@ -569,11 +569,6 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <Grid.Margin>
-                                                    <Binding Path="FullCategoryName"
-                                                             Converter="{StaticResource FullCategoryNameToMarginConverter}" />
-                                                </Grid.Margin>
-
                                                 <ToggleButton Margin="5,0,0,0"
                                                               Grid.Row="0"
                                                               x:Name="Expander"
@@ -583,10 +578,30 @@
                                                               ClickMode="Press"
                                                               IsChecked="{Binding IsExpanded, Mode=OneWay}" />
 
-                                                    <ContentPresenter Grid.Row="0"
-                                                                      Grid.Column="1"
-                                                                      Grid.ColumnSpan="2"
-                                                                      ContentSource="Header" />
+                                                <ContentPresenter Grid.Row="0"
+                                                                  Grid.Column="1"
+                                                                  Grid.ColumnSpan="2"
+                                                                  ContentSource="Header" />
+                                                
+                                                <Grid.Style>
+                                                    <Style TargetType="{x:Type Grid}">
+                                                        <Setter Property="Margin"
+                                                                Value="0,0,0,0" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                                             Path="DataContext"
+                                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Margin"
+                                                                        Value="{Binding Path=FullCategoryName,
+                                                                                        Converter={StaticResource FullCategoryNameToMarginConverter}}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Grid.Style>
+
 
                                             </Grid>
 
@@ -600,8 +615,8 @@
                                                                            Value="true" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
-                                                                                     Converter={StaticResource ElementTypeToBoolConverter}}"
-                                                                           Value="false" />
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="true" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
@@ -628,11 +643,11 @@
                                             <Setter Property="Background"
                                                     Value="#282828" />
                                             <Style.Triggers>
-                                                <DataTrigger Value="True">
+                                                <DataTrigger Value="False">
                                                     <DataTrigger.Binding>
                                                         <Binding RelativeSource="{RelativeSource Self}"
                                                                  Path="DataContext"
-                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
@@ -662,11 +677,11 @@
 
                                 <!--Highlight item just in case this item is root element, not selected and
                                     ,mouse is over it.-->
-                                <DataTrigger Value="True">
+                                <DataTrigger Value="False">
                                     <DataTrigger.Binding>
                                         <Binding RelativeSource="{RelativeSource Self}"
                                                  Path="DataContext"
-                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                 Converter="{StaticResource RootElementToBoolConverter}" />
                                     </DataTrigger.Binding>
                                     <Setter Property="Background"
                                             Value="#2F2F2F" />
