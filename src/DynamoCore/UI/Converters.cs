@@ -1761,6 +1761,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is NodeSearchElement) 
+                return false;
             if (value is BrowserInternalElement)
                 return true;
             if (value is BrowserInternalElementForClasses)
@@ -1771,6 +1773,7 @@ namespace Dynamo.Controls
                 var rootElement = value as BrowserRootElement;
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
+
             return false;
         }
 
