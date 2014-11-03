@@ -268,6 +268,7 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" /> 
+            
             <Style.Triggers>
                 <Trigger Property="IsSelected"
                          Value="True">
