@@ -267,8 +267,7 @@
                 </Setter.Value>
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
-                         Handler="OnMouseLeftButtonDown" />
-
+                         Handler="OnMouseLeftButtonDown" /> 
             <Style.Triggers>
                 <Trigger Property="IsSelected"
                          Value="True">
@@ -320,6 +319,10 @@
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
+            <EventSetter Event="GotFocus"
+                         Handler="OnListBoxItemGotFocus" />
+            <EventSetter Event="LostFocus"
+                         Handler="OnListBoxItemLostFocus" />
         </Style>
 
         <!--Style for found MemberGroup-->
@@ -534,6 +537,7 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              GotFocus="OnTopResultGotFocus"
+                             LostFocus="OnTopResultLostFocus"
                              KeyDown="OnMemberButtonKeyDown"
                              TargetUpdated="OnTopResultTargetUpdated">
                         <ListBox.ItemTemplate>
