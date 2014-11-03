@@ -560,11 +560,6 @@ namespace Dynamo.DSEngine
             return libraryServices.GetFunctionDescriptor(managledName);
         }
 
-        internal ClassMirror GetClassType(string className)
-        {
-            return liveRunnerServices.GetClassType(className);
-        }
-
         /// <summary>
         /// LibraryLoading event handler.
         /// </summary>
