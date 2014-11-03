@@ -22,6 +22,10 @@ namespace Dynamo.Core.Threading
         public NotifyRenderDataReadyAsyncTask(DynamoScheduler scheduler)
             : base(scheduler) { }
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
 
         /// <summary>
         /// Call this method to determine if the task should be scheduled for 
