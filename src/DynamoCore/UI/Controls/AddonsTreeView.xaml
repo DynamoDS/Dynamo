@@ -40,29 +40,21 @@
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
+            <Border Height="30">
+                <TextBlock Foreground="#DDD"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
+            </Border>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
-                <StackPanel.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Edit..."
-                                  Click="OnEditClick"></MenuItem>
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
-            </StackPanel>
+            <Border Height="30">
+                <TextBlock Foreground="#DDD"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
+            </Border>
         </HierarchicalDataTemplate>
 
         <!--EndRegion-->
