@@ -137,27 +137,26 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="ExpanderButtonBorder">
-                            <Grid MinHeight="27"
-                                  MinWidth="66">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                        <Grid MinHeight="27"
+                              MinWidth="66"
+                              Name="ExpanderButtonBorder">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                                <Image x:Name="ExpandCollapseStateIcon"
-                                       Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
-                                       Width="16"
-                                       Height="16"
-                                       VerticalAlignment="Center" />
-                                <ContentPresenter x:Name="HeaderContent"
-                                                  Grid.Column="1"
-                                                  ContentSource="Content"
-                                                  VerticalAlignment="Center"
-                                                  TextBlock.FontSize="13"
-                                                  TextBlock.Foreground="#989898" />
-                            </Grid>
-                        </Border>
+                            <Image x:Name="ExpandCollapseStateIcon"
+                                   Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                                   Width="16"
+                                   Height="16"
+                                   VerticalAlignment="Center" />
+                            <ContentPresenter x:Name="HeaderContent"
+                                              Grid.Column="1"
+                                              ContentSource="Content"
+                                              VerticalAlignment="Center"
+                                              TextBlock.FontSize="13"
+                                              TextBlock.Foreground="#989898" />
+                        </Grid>
                         <ControlTemplate.Triggers>
 
                             <MultiDataTrigger>
@@ -212,7 +211,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            
+
             <Style.Triggers>
                 <DataTrigger Value="true">
                     <DataTrigger.Binding>
