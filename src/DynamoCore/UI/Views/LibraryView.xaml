@@ -136,7 +136,7 @@
                                   Height="27"
                                   BorderBrush="#353535"
                                   BorderThickness="0,0,0,1" />
-                    
+
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -164,11 +164,12 @@
             <DataTemplate x:Key="MemberControlTemplate">
                 <StackPanel Name="ImageAndNodeName"
                             Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <Image HorizontalAlignment="Left"
+                            VerticalAlignment="Center">                    
+                    <Image Margin="16,0,16,0"
                            Height="32"
-                           VerticalAlignment="Center"
                            Width="32"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
                            Source="{Binding SmallIcon}"
                            Name="SmallIcon" />
                     <TextBlock Name="memberName"
@@ -211,7 +212,7 @@
                             <Binding Path="Parent.IsPlaceholder" />
                         </DataTrigger.Binding>
                         <Setter Property="Margin"
-                                Value="10,0,0,0"
+                                Value="16,0,16,0"
                                 TargetName="SmallIcon" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
@@ -484,7 +485,7 @@
                                                                          Path=IsChecked}"
                                                    Value="False" />
                                     </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
+                                    <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
@@ -585,7 +586,7 @@
                                                                   Grid.Column="1"
                                                                   Grid.ColumnSpan="2"
                                                                   ContentSource="Header" />
-                                                
+
                                                 <Grid.Style>
                                                     <Style TargetType="{x:Type Grid}">
                                                         <Setter Property="Margin"
@@ -626,7 +627,7 @@
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-                                                        
+
                                                         <DataTrigger Value="true">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
@@ -890,6 +891,6 @@
                          Converter="{StaticResource BrowserItemToBooleanConverter}" />
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
-        
+
     </Grid>
 </UserControl>
