@@ -812,9 +812,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
             var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
@@ -828,9 +828,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
 
             var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
@@ -909,6 +909,40 @@ b = c[w][x][y][z];";
             code = @"a : Point = Point.ByCoordinates();";
             Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionForFullyQualifiedVariableType()
+        {
+            string code = "a : FFITarget.FirstNamespace.ClassWithNameConflict;";
+            string variableName = "a";
+
+            string type1 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.FirstNamespace.ClassWithNameConflict", type1);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(type1, libraryServicesCore));
+
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] { "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
+
+            code = @"b : FFITarget.SecondNamespace.ClassWithNameConflict;";
+            variableName = "b";
+            string type2 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.SecondNamespace.ClassWithNameConflict", type2);
+
+            // Assert that the class name is indeed a class
+            Assert.DoesNotThrow(() => type = new ClassMirror(type2, libraryServicesCore));
+
+            members = type.GetInstanceMembers();
+
+            expected = new string[] { "PropertyD", "PropertyE", "PropertyF" };
+            AssertCompletions(members, expected);
+        }
+
 
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
@@ -1066,6 +1100,25 @@ b = c[w][x][y][z];";
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "HiddenCodeCompletionClass" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
+            // is set to false. We verify that this class does not appear in code completion results
+            string code = "sam";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 2 completion items
+            Assert.AreEqual(2, completions.Count());
+
+            string[] expected = { "SampleClassA", "SampleClassC" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 
 }
