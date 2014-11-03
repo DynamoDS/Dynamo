@@ -25,6 +25,7 @@
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+            <controls:ElementTypeToExpanderMarginConverter x:Key="ElementTypeToExpanderMarginConverter" />
 
             <!--EndRegion-->
 
@@ -164,7 +165,7 @@
             <DataTemplate x:Key="MemberControlTemplate">
                 <StackPanel Name="ImageAndNodeName"
                             Orientation="Horizontal"
-                            VerticalAlignment="Center">                    
+                            VerticalAlignment="Center">
                     <Image Margin="16,0,16,0"
                            Height="32"
                            Width="32"
@@ -573,14 +574,19 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton Margin="5,0,0,0"
-                                                              Grid.Row="0"
+                                                <ToggleButton Grid.Row="0"
                                                               x:Name="Expander"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
                                                               Style="{StaticResource LibraryExpandCollapseToggleStyle}"
                                                               ClickMode="Press"
-                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}" />
+                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}">
+                                                    <ToggleButton.Margin>
+                                                        <Binding Path="DataContext"
+                                                                 RelativeSource="{RelativeSource Self}"
+                                                                 Converter="{StaticResource ElementTypeToExpanderMarginConverter}" />
+                                                    </ToggleButton.Margin>
+                                                </ToggleButton>
 
                                                 <ContentPresenter Grid.Row="0"
                                                                   Grid.Column="1"
@@ -605,8 +611,6 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Grid.Style>
-
-
                                             </Grid>
 
                                             <Border.Style>
@@ -891,6 +895,5 @@
                          Converter="{StaticResource BrowserItemToBooleanConverter}" />
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
-
     </Grid>
 </UserControl>

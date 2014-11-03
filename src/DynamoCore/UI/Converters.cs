@@ -1940,4 +1940,21 @@ namespace Dynamo.Controls
             return formattedText.Width;
         }
     }
+
+    // Converter is used to specify Margin of every ToggleButton for CategoryTreeView of LibraryView
+    public class ElementTypeToExpanderMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserRootElement)
+                return new Thickness(5, 0, 0, 0);
+            else
+                return new Thickness(20, 0, 20, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
