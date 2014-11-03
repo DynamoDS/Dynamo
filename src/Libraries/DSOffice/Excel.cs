@@ -35,7 +35,7 @@ namespace DSOffice
             }
         }
 
-        private static bool _showOnStartup = false;
+        private static bool _showOnStartup = true;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
