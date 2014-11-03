@@ -52,29 +52,35 @@ namespace RevitNodesTests
 
         #region private helper methods
 
+        /// <summary>
+        /// Read the Dynamo base directory from a config file. If the 
+        /// path is empty in the config file, then use the directory
+        /// of the executing assembly.
+        /// </summary>
+        /// <returns></returns>
         private static string OpenAndReadDynamoBasePath()
         {
             var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var configPath = Path.Combine(assDir, "TestServices.dll");
             if (!File.Exists(configPath))
             {
-                throw new Exception("The config file for TestServices.dll.config could not be found");
+                return assDir;
             }
 
             var config = ConfigurationManager.OpenExeConfiguration(configPath);
-            var value = GetAppSetting(config, "DynamoBasePath");
+            var dir = GetAppSetting(config, "DynamoBasePath");
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(dir))
             {
-                throw new Exception("The DynamoBasePath key was not found in the config file, or was invalid.");
+                return assDir;
             }
 
-            if (!Directory.Exists(value))
+            if (!Directory.Exists(dir))
             {
                 throw new Exception("The DynamoBasePath key specified in the config file does not exist.");
             }
 
-            return value;
+            return dir;
         }
 
         private static string GetAppSetting(Configuration config, string key)
