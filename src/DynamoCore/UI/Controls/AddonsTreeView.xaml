@@ -40,14 +40,12 @@
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
                 <Border Height="30">
                     <TextBlock Foreground="#DDD"
                                FontSize="13"
                                Text="{Binding Path=Name}"
                                VerticalAlignment="Center" />
                 </Border>
-            </StackPanel>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
