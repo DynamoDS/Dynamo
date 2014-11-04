@@ -52,10 +52,7 @@ namespace Dynamo.Nodes.Search
             set
             {
                 if (selectedItem != null)
-                {
                     selectedItem.IsSelected = false;
-                    //RaisePropertyChanged("IsSelected");
-                }
                 selectedItem = value;
             }
         }
