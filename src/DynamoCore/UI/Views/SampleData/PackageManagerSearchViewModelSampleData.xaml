@@ -10,7 +10,7 @@
                     <responses:PackageHeader.versions>
                         <responses:PackageVersion>
                             <responses:PackageVersion.version>0.7.2</responses:PackageVersion.version>
-                            <responses:PackageVersion.created>dateCreated</responses:PackageVersion.created>
+                            <responses:PackageVersion.created>2014-11-04T15:58:27.992Z</responses:PackageVersion.created>
                         </responses:PackageVersion>
                     </responses:PackageHeader.versions>
                     <responses:PackageHeader.maintainers>

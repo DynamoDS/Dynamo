@@ -40,13 +40,6 @@ namespace Dynamo.PackageManager
                 new DelegateCommand(() => GoToUrl(FormatUrl(RepositoryUrl)), () => !String.IsNullOrEmpty(RepositoryUrl));
         }
 
-        private string PrettyDate(string json_string)
-        {
-            var d = DateTime.Parse(json_string);
-
-            return d.ToString("d MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
-        }
-
         private static string FormatUrl(string url)
         {
             var lurl = url.ToLower();
@@ -336,13 +329,7 @@ namespace Dynamo.PackageManager
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
-
-            private string latestVersionCreated;
-            public string LatestVersionCreated { get
-            {
-                return latestVersionCreated ??
-                       (latestVersionCreated = PrettyDate(Header.versions[Header.versions.Count - 1].created));
-            } }
+            public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
             
             /// <summary>
             /// Header property </summary>
