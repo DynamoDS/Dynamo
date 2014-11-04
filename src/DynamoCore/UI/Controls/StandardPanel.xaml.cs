@@ -206,6 +206,9 @@ namespace Dynamo.UI.Controls
 
         private void TruncateSecondaryMembers()
         {
+            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.None)
+                return;
+
             IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
             if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
