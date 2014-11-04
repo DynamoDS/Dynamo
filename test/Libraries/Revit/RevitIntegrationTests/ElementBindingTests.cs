@@ -211,7 +211,7 @@ namespace RevitSystemTests
                 //Modify the wall to cause a failure
                 Assert.Inconclusive("TO DO");
                 wall.Flip();
-                DocumentManager.Instance.CurrentDBDocument.Delete(wall);
+                DocumentManager.Instance.CurrentDBDocument.Delete(wall.Id);
 
                 trans.Commit();
             }
