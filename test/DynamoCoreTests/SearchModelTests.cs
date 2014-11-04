@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -14,11 +12,15 @@ namespace Dynamo.Tests
     internal class SearchModelTests
     {
         private static SearchModel search;
+        private static CategoryBuilder browserCatBuilder;
+        private static CategoryBuilder addonCatBuilder;
 
         [SetUp]
         public void Init()
         {
             search = new SearchModel();
+            browserCatBuilder = search.browserCategoriesBuilder;
+            addonCatBuilder = search.addonCategoriesBuilder;
         }
 
         #region Refactoring
@@ -156,7 +158,7 @@ namespace Dynamo.Tests
         }
 
         #endregion
-#if false
+
         #region Obtaining Stored Categories
 
         [Test]
@@ -164,10 +166,10 @@ namespace Dynamo.Tests
         public void GetCategoryByNameWithValidInput()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Category.Child");
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsTrue(addonCatBuilder.ContainsCategory(catName));
+            Assert.AreEqual(1, addonCatBuilder.RootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = addonCatBuilder.GetCategoryByName("Category.Child");
             Assert.NotNull(nestedCat);
         }
 
@@ -176,10 +178,10 @@ namespace Dynamo.Tests
         public void GetCategoryByNameWithInvalidInput()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Toonces.The.Cat");
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsTrue(addonCatBuilder.ContainsCategory(catName));
+            Assert.AreEqual(1, addonCatBuilder.RootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = addonCatBuilder.GetCategoryByName("Toonces.The.Cat");
             Assert.IsNull(nestedCat);
         }
 
@@ -188,8 +190,8 @@ namespace Dynamo.Tests
         public void ContainsCategoryWithValidInput()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsTrue(addonCatBuilder.ContainsCategory(catName));
         }
 
         [Test]
@@ -197,19 +199,18 @@ namespace Dynamo.Tests
         public void ContainsCategoryWithInvalidInput()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsFalse(search.ContainsCategory("Toonces.The.Cat"));
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsFalse(addonCatBuilder.ContainsCategory("Toonces.The.Cat"));
         }
-
 
         [Test]
         [Category("UnitTests")]
         public void TryGetSubCategoryWithValidInput()
         {
             const string catName = "Category";
-            var cat = search.AddCategory(catName);
+            var cat = addonCatBuilder.AddCategory(catName);
             cat.Items.Add(new BrowserInternalElement("Child", cat));
-            Assert.IsNotNull(search.TryGetSubCategory(cat, "Child"));
+            Assert.IsNotNull(addonCatBuilder.TryGetSubCategory(cat, "Child"));
         }
 
         [Test]
@@ -217,11 +218,10 @@ namespace Dynamo.Tests
         public void TryGetSubCategoryWithInvalidInput()
         {
             const string catName = "Category";
-            var cat = search.AddCategory(catName);
+            var cat = addonCatBuilder.AddCategory(catName);
             cat.Items.Add(new BrowserInternalElement("Child", cat));
-            Assert.IsNull(search.TryGetSubCategory(cat, "Purple"));
+            Assert.IsNull(addonCatBuilder.TryGetSubCategory(cat, "Purple"));
         }
-
         #endregion
 
         #region Search
@@ -231,10 +231,10 @@ namespace Dynamo.Tests
         public void CanSearchForPartOfTextAndGetResult()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Category.Child");
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsTrue(addonCatBuilder.ContainsCategory(catName));
+            Assert.AreEqual(1, addonCatBuilder.RootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = addonCatBuilder.GetCategoryByName("Category.Child");
             Assert.NotNull(nestedCat);
         }
 
@@ -259,8 +259,8 @@ namespace Dynamo.Tests
         public void CanAddMultiplyNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
         }
 
         [Test]
@@ -268,10 +268,10 @@ namespace Dynamo.Tests
         public void CanAddAndRemoveMultiplyNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-            search.RemoveCategory(catName);
-            Assert.False(search.ContainsCategory(catName));
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+            addonCatBuilder.RemoveCategory(catName);
+            Assert.False(addonCatBuilder.ContainsCategory(catName));
         }
 
         [Test]
@@ -279,10 +279,10 @@ namespace Dynamo.Tests
         public void CanRemoveRootAndRestOfChildrenOfNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-            search.RemoveCategory("Category");
-            Assert.False(search.ContainsCategory(catName));
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+            addonCatBuilder.RemoveCategory("Category");
+            Assert.False(addonCatBuilder.ContainsCategory(catName));
         }
 
         [Test]
@@ -290,11 +290,11 @@ namespace Dynamo.Tests
         public void CanAddMultiplyNestedCategoryMultipleTimes()
         {
             const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
         }
 
         [Test]
@@ -308,7 +308,7 @@ namespace Dynamo.Tests
                 search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
             }
 
-            var nestedCat = search.GetCategoryByName(catName);
+            var nestedCat = addonCatBuilder.GetCategoryByName(catName);
             Assert.AreEqual(100, nestedCat.Items.Count());
             Assert.AreEqual(nodeName, nestedCat.Items[0].Name);
         }
@@ -358,7 +358,7 @@ namespace Dynamo.Tests
         public void SearchingForACategoryReturnsAllItsChildren()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "what", catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
@@ -367,7 +367,7 @@ namespace Dynamo.Tests
         }
 
         #endregion
-
+#if false
         #region Split categories
 
         [Test]
