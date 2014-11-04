@@ -79,25 +79,12 @@ namespace Dynamo.Utils
         {
             string modulePath = GetMainModuleFilepath(p.Id);
             string instanceName = Path.GetFileNameWithoutExtension(modulePath);
-
-            using (var counter = new PerformanceCounter(CATEGORY_NET_CLR_MEMORY, PROCESS_ID, instanceName, true))
+            if (instanceName.Equals("nunit-console", StringComparison.CurrentCultureIgnoreCase))
             {
-                long id = 0;
-                while (true)
-                {
-                    var sample = counter.NextSample();
-                    id = sample.RawValue;
-
-                    if (id > 0)
-                    {
-                        break;
-                    }
-
-                    Thread.Sleep(15);
-                }
-
-                return (id == p.Id) ? instanceName : null;
+                instanceName = "nunit-agent";
             }
+            Thread.Sleep(2000);
+            return instanceName;
         }
 
         #region IDisposable Members
