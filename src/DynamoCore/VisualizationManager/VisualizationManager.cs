@@ -411,6 +411,8 @@ namespace Dynamo
         public void RequestBranchUpdate(NodeModel node)
         {
             var scheduler = dynamoModel.Scheduler;
+            if (scheduler == null) // Shutdown has begun.
+                return;
 
             // Schedule a AggregateRenderPackageAsyncTask here so that the 
             // background geometry preview gets refreshed.
