@@ -1,17 +1,19 @@
-<dynWorkspace X="42.3998664008251" Y="7.52311111111084" zoom="0.7" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynConcatStrings type="Dynamo.Nodes.dynConcatStrings" guid="b4dca1b1-e421-443d-a7a0-63b808691784" nickname="Concat Strings" x="535" y="45.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="8c7c1a80-021b-4064-b9d1-873a0538bb0b" nickname="Watch" x="0" y="335.508095238096" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="8" y="71.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestConcatString_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" nickname="Read Text File" x="283" y="91.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="b4dca1b1-e421-443d-a7a0-63b808691784" start_index="0" end="8c7c1a80-021b-4064-b9d1-873a0538bb0b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" start_index="0" end="b4dca1b1-e421-443d-a7a0-63b808691784" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" start_index="0" end="b4dca1b1-e421-443d-a7a0-63b808691784" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.7.4.3075" X="56.3998664008251" Y="357.523111111111" zoom="0.7" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="b4dca1b1-e421-443d-a7a0-63b808691784" nickname="String.Concat" x="525" y="55.5200000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" inputcount="2" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="8c7c1a80-021b-4064-b9d1-873a0538bb0b" nickname="Watch" x="685.714285714286" y="55.508095238096" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="-83.4285714285714" y="70.0914285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestConcatString_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" nickname="File.ReadText" x="374.428571428571" y="69.5914285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="b879b705-b296-4e45-a2d7-08b879dd99c7" nickname="File.FromPath" x="239.428762284536" y="69.9669841269845" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b4dca1b1-e421-443d-a7a0-63b808691784" start_index="0" end="8c7c1a80-021b-4064-b9d1-873a0538bb0b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="b879b705-b296-4e45-a2d7-08b879dd99c7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" start_index="0" end="b4dca1b1-e421-443d-a7a0-63b808691784" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" start_index="0" end="b4dca1b1-e421-443d-a7a0-63b808691784" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b879b705-b296-4e45-a2d7-08b879dd99c7" start_index="0" end="fa7cd4dd-fc45-4009-8c0b-50ee7ac8d0df" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
