@@ -45,7 +45,8 @@ namespace Revit.Interactivity
             Reference reference = null;
 
             var choices = doc.Selection;
-            choices.Elements.Clear();
+            List<ElementId> elementIds = new List<ElementId>();
+            choices.SetElementIds(elementIds);
 
             logger.Log(message);
 
@@ -73,7 +74,8 @@ namespace Revit.Interactivity
             IList<Reference> references = null;
 
             var choices = doc.Selection;
-            choices.Elements.Clear();
+            List<ElementId> elementIds = new List<ElementId>();
+            choices.SetElementIds(elementIds);
 
             logger.Log(message);
 
@@ -175,7 +177,8 @@ namespace Revit.Interactivity
             Element e = null;
 
             var choices = doc.Selection;
-            choices.Elements.Clear();
+            List<ElementId> elementIds = new List<ElementId>();
+            choices.SetElementIds(elementIds);
 
             logger.Log(selectionMessage);
 
@@ -198,7 +201,8 @@ namespace Revit.Interactivity
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             var choices = doc.Selection;
-            choices.Elements.Clear();
+            List<ElementId> elementIds = new List<ElementId>();
+            choices.SetElementIds(elementIds);
 
             logger.Log(selectionMessage);
 
