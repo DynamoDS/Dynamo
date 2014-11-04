@@ -20,7 +20,7 @@ namespace Dynamo.UI.Controls
         private const string ActionHeaderText = "ACTIONS";
         private const string ActionHeaderTag = "Action";
         private const string QueryHeaderTag = "Query";
-        private const int TruncatedMembersCount = 4;
+        private const int TruncatedMembersCount = 5;
 
         #endregion
 
