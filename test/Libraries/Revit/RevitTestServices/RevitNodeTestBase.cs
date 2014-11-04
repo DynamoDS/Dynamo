@@ -1,20 +1,34 @@
-﻿using NUnit.Framework;
+﻿using DynamoUnits;
+
+using NUnit.Framework;
+
+using RevitNodesTests;
 
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
+using TestServices;
+
 namespace RevitTestServices
+
 {
     /// <summary>
     /// Base class for units tests of Revit nodes.
     /// </summary>
-    public class RevitNodeTestBase
+    public class RevitNodeTestBase : GeometricTestBase
     {
         public const string ANALYSIS_DISPLAY_TESTS = "AnalysisDisplayTests";
 
         public RevitNodeTestBase()
         {
             AssemblyResolver.Setup();
+        }
+
+        [SetUp]
+        public virtual void SetupGeometry()
+        {
+            Setup();
+            SetUpHostUnits();
         }
 
         [SetUp]
@@ -42,6 +56,13 @@ namespace RevitTestServices
             // run the test framework without running Dynamo, so
             // we ensure that the transaction is closed here.
             TransactionManager.Instance.ForceCloseTransaction();
+        }
+
+        private static void SetUpHostUnits()
+        {
+            BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicFoot;
         }
     }
 }

@@ -10,6 +10,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
+using System.Collections.Specialized;
 
 namespace Dynamo.Views
 {
@@ -73,53 +74,30 @@ namespace Dynamo.Views
 
             InitializeComponent();
 
-            selectionCanvas.Loaded += selectionCanvas_Loaded;
-            DataContextChanged += dynWorkspaceView_DataContextChanged;
+            selectionCanvas.Loaded += OnSelectionCanvasLoaded;
+            DataContextChanged += OnWorkspaceViewDataContextChanged;
 
-            Loaded += dynWorkspaceView_Loaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Loaded += OnWorkspaceViewLoaded;
+            Unloaded += OnWorkspaceViewUnloaded;
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Workspace view unloaded.");
+            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
 
-            DynamoSelection.Instance.Selection.CollectionChanged -= new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
+            ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
+        }
+
+        void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
+        {
+            DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
 
             if (ViewModel != null)
             {
-                ViewModel.DragSelectionStarted -= ViewModel_DragSelectionStarted;
-                ViewModel.DragSelectionEnded -= ViewModel_DragSelectionEnded;
+                ViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
+                ViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
-        }
-
-        void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
-        {
-            /*
-            // Add EndlessGrid
-            endlessGrid = new EndlessGrid(outerCanvas);
-            selectionCanvas.Children.Add(endlessGrid);
-            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
-
-            // Binding for grid lines HitTest and Visibility
-            var binding = new Binding()
-            {
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);*/
-
-            //============
-            //LoadCursorState();
-            //============
-
-            Debug.WriteLine("Workspace loaded.");
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
-
-            ViewModel.DragSelectionStarted += ViewModel_DragSelectionStarted;
-            ViewModel.DragSelectionEnded += ViewModel_DragSelectionEnded;
         }
 
         /// <summary>
@@ -128,7 +106,7 @@ namespace Dynamo.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ViewModel_DragSelectionEnded(object sender, EventArgs e)
+        void OnViewModelDragSelectionEnded(object sender, EventArgs e)
         {
             if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(false))
             {
@@ -142,7 +120,7 @@ namespace Dynamo.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ViewModel_DragSelectionStarted(object sender, EventArgs e)
+        void OnViewModelDragSelectionStarted(object sender, EventArgs e)
         {
             if (ViewModel.PauseVisualizationManagerCommand.CanExecute(true))
             {
@@ -170,7 +148,7 @@ namespace Dynamo.Views
 
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void OnSelectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
             // KILLDYNSETTINGS
@@ -186,7 +164,7 @@ namespace Dynamo.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void OnWorkspaceViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Remove before adding registration of event listener to prevent multiple registration 
             // to the same WorkspaceViewModel
@@ -293,7 +271,7 @@ namespace Dynamo.Views
             }
         }
 
-        void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
+        void OnSelectionCanvasLoaded(object sender, RoutedEventArgs e)
         {
             //Stopwatch sw = new Stopwatch();
             //sw.Start();

@@ -366,8 +366,8 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
-                                                                    .Where(n => n.ForceReExecuteOfNode)
-                                                                    .Select(n => n.GUID);
+                .Where(n => n.ForceReExecuteOfNode)
+                .Select(n => n.GUID);
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
             {
                 for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
@@ -544,11 +544,6 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             return libraryServices.GetFunctionDescriptor(managledName);
-        }
-
-        internal ClassMirror GetClassType(string className)
-        {
-            return liveRunnerServices.GetClassType(className);
         }
 
         /// <summary>

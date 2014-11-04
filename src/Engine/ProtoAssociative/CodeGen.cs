@@ -2228,19 +2228,44 @@ namespace ProtoAssociative
                 string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
                 if (classNames.Length > 1)
                 {
-                    string message = string.Format(WarningMessage.kMultipleSymbolFound, identList.LeftNode.ToString(), classNames[0]);
-                    for(int i = 1; i < classNames.Length; ++i)
-                        message += ", " + classNames[i];
-                    this.core.BuildStatus.LogWarning(WarningID.kMultipleSymbolFound, message);
-                }
+                    // There is a namespace conflict
 
-                if(classNames.Length == 1)
+                    // TODO Jun: Move this warning handler to after the SSA transform
+                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
+                }
+                else if(classNames.Length == 1)
                 {
+                    // A matching class has been found
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
                     SSAIdentList(leftNode, ref ssaStack, ref astlist);
                 }
                 else
                 {
+                    // There is no matching class name, continue traversing the identlist
+
+                    // Check if the lhs is an identifier and if it has any namespace conflicts
+                    // We want to handle this here because we know ident lists can potentially contain namespace resolving
+                    var ident = identList.LeftNode as IdentifierNode; 
+
+                    // Check if this is the last ident in the identlist
+                    if(ident != null)
+                    {
+                        // TODO Jun: Move this warning handler to after the SSA transform
+                        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                        classNames = core.ClassTable.GetAllMatchingClasses(ident.Value);
+                        if (classNames.Length > 1)
+                        {
+                            // There is a namespace conflict
+                            buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
+
+                            // Continue traversing the expression even after a namespace conflict
+                            // TODO: Determine if we want to terminate traversal of this identlist
+                            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+
+                        }
+                    }
+
                     // Recursively traversse the left of the ident list
                     SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
                 }

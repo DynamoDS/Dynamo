@@ -361,6 +361,9 @@ namespace ProtoCore
 
             protected StaticMirror(ProtoCore.Core core, string name = "")
             {
+                if (core == null)
+                    throw new ArgumentNullException("core");
+
                 MirrorObject.staticCore = core;
                 Name = name;
             }
@@ -407,7 +410,11 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x =>
+                        {
+                            bool hidden = x.ClassAttributes == null ? false : x.ClassAttributes.HiddenInLibrary;
+                            return !hidden && !CoreUtils.StartsWithSingleUnderscore(x.name);
+                        }).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -547,24 +554,18 @@ namespace ProtoCore
             public ClassMirror(ProtoCore.Type type, ProtoCore.Core core)
                 : base(core, type.Name)
             {
-                if (core != null)
+                ClassName = type.Name;
+                if (classNode == null)
                 {
-                    ClassName = type.Name;
-                    if (classNode == null)
-                    {
-                        ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-                        classNode = classTable.ClassNodes[type.UID];
-                    }
-                    libraryMirror = new LibraryMirror(classNode.ExternLib, core);
+                    ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
+                    classNode = classTable.ClassNodes[type.UID];
                 }
+                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
 
             public ClassMirror(string className, ProtoCore.Core core)
                 : base(core, className)
             {
-                if (core == null)
-                    return;
-
                 ClassName = className;
 
                 if (classNode == null)
@@ -604,7 +605,6 @@ namespace ProtoCore
                 : base(core)
             {
                 Validity.Assert(svData.IsPointer);
-                Validity.Assert(null != core);
                 Validity.Assert(null != core.DSExecutable.classTable);
 
                 IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;
@@ -979,10 +979,10 @@ namespace ProtoCore
                     returnType = " : " + this.ReturnType.ToString().Split('.').Last();
                 var methodName = this.MethodName;
                 var argList = this.ArgumentList.Select(x => x.Key + " : " + x.Value);
-                sb.AppendLine(methodName + returnType + " (" + 
+                sb.AppendLine(methodName + returnType + " (" +
                     string.Join(", ", argList.Select(p => p.ToString())) + ')');
 
-                return sb.ToString();
+                return sb.ToString().Trim();
             }
         }
 
