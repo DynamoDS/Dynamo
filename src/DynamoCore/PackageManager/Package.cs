@@ -45,7 +45,7 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(this.RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; set; }
+        public bool Loaded { get; private set; }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -113,7 +113,6 @@ namespace Dynamo.PackageManager
 
         public Package(string directory, string name, string versionName, string license)
         {
-            this.Loaded = false;
             this.RootDirectory = directory;
             this.Name = name;
             this.License = license;
@@ -166,8 +165,17 @@ namespace Dynamo.PackageManager
 
         }
 
+        /// <summary>
+        /// Load the Package into Dynamo.  
+        /// </summary>
+        /// <param name="loader"></param>
+        /// <param name="logger"></param>
+        /// <param name="libraryServices"></param>
         public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
+            // Prevent duplicate loads
+            if (Loaded) return;
+
             try
             {
                 this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
@@ -249,21 +257,40 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        ///     Determines if there are binaries in the package
+        /// </summary>
         internal bool ContainsBinaries
         {
             get { return this.LoadedAssemblies.Any(); }
         }
 
+        /// <summary>
+        ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
+        /// </summary>
         internal IEnumerable<Assembly> NodeLibraries
         {
             get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
         } 
 
-        internal void AddAssemblies(IEnumerable<PackageAssembly> enumerable)
+        /// <summary>
+        ///     Add assemblies at runtime to the package.  Does not load the assembly into the node library.
+        ///     If the package is already present in LoadedAssemblies, this will mutate it's IsNodeLibrary property.
+        /// </summary>
+        /// <param name="assems">A list of assemblies</param>
+        internal void AddAssemblies(IEnumerable<PackageAssembly> assems)
         {
-            foreach (var assem in enumerable)
+            foreach (var assem in assems)
             {
-                this.LoadedAssemblies.Add(assem);
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly == assem.Assembly);
+                if (existingAssem != null)
+                {
+                    existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
+                }
+                else
+                {
+                    this.LoadedAssemblies.Add(assem);
+                }
             }
         }
 
@@ -278,6 +305,7 @@ namespace Dynamo.PackageManager
             if (!Directory.Exists(BinaryDirectory))
                 return assemblies;
 
+            // use the pkg header to determine which assemblies to load
             var nodeLibraries = this.Header.node_libraries;
 
             foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
