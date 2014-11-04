@@ -1,16 +1,18 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynString2Num type="Dynamo.Nodes.dynString2Num" guid="0f912454-b278-499f-b15f-c42c039a5453" nickname="String to Number" x="546" y="187.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="825dc249-e1b6-4f17-ad36-5ebcdcd1bb0b" nickname="File Path" x="18" y="134.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestStringToNumber_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" nickname="Read Text File" x="277" y="195.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f8767579-f7c1-475f-980e-7cd6a42684c8" nickname="Watch" x="785" y="186.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="0f912454-b278-499f-b15f-c42c039a5453" start_index="0" end="f8767579-f7c1-475f-980e-7cd6a42684c8" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="825dc249-e1b6-4f17-ad36-5ebcdcd1bb0b" start_index="0" end="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" start_index="0" end="0f912454-b278-499f-b15f-c42c039a5453" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.7.4.3075" X="-326" Y="11" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0f912454-b278-499f-b15f-c42c039a5453" nickname="String.ToNumber" x="546" y="187.02" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="DSCoreNodes.dll" function="DSCore.String.ToNumber@string" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="825dc249-e1b6-4f17-ad36-5ebcdcd1bb0b" nickname="File Path" x="18" y="134.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestStringToNumber_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" nickname="File.ReadText" x="277" y="195.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f8767579-f7c1-475f-980e-7cd6a42684c8" nickname="Watch" x="785" y="186.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="57670579-8ab3-409b-afe7-b7f4c34f66fb" nickname="File.FromPath" x="131" y="235.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0f912454-b278-499f-b15f-c42c039a5453" start_index="0" end="f8767579-f7c1-475f-980e-7cd6a42684c8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="825dc249-e1b6-4f17-ad36-5ebcdcd1bb0b" start_index="0" end="57670579-8ab3-409b-afe7-b7f4c34f66fb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" start_index="0" end="0f912454-b278-499f-b15f-c42c039a5453" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="57670579-8ab3-409b-afe7-b7f4c34f66fb" start_index="0" end="83bb2385-4711-4fb9-9109-c7a3f30e9b7c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
