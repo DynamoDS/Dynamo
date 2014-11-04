@@ -113,8 +113,8 @@ namespace Dynamo.Applications.Models
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Autodesk.Revit.DB.Element element) => ElementWrapper.ToDSType(element, (bool)true));
 
             // Turn off element binding during iron python script execution
-            IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
-            IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
+            //IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
+            //IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
 
             // register UnwrapElement method in ironpython
             IronPythonEvaluator.EvaluationBegin += (a, b, scope, d, e) =>
