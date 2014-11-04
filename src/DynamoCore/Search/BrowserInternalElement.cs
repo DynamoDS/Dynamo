@@ -203,7 +203,7 @@ namespace Dynamo.Nodes.Search
             var ele = this.Parent as BrowserItem;
             while (!(ele is BrowserRootElement))
             {
-                ele = ele.Parent as BrowserItem;
+                ele = ele.Parent;
             }
             return ele as BrowserRootElement;
         }
