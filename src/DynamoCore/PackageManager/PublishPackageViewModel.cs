@@ -104,27 +104,7 @@ namespace Dynamo.PackageManager
                 }
             }
         }
-
-        /// <summary>
-        /// Name property </summary>
-        /// <value>
-        /// The name of the node to be uploaded </value>
-        private string _name = "";
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (this._name != value)
-                {
-                    this._name = value;
-                    this.RaisePropertyChanged("Name");
-                    this.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
-                }
-            }
-        }
-
+        
         /// <summary>
         /// CanEditName property </summary>
         /// <value>
@@ -299,6 +279,95 @@ namespace Dynamo.PackageManager
             }
         }
 
+
+        /// <summary>
+        /// License property </summary>
+        /// <value>
+        /// The license for the package </value>
+        private string _license = "";
+        public string License
+        {
+            get { return _license; }
+            set
+            {
+                if (this._license != value)
+                {
+                    this._license = value;
+                    this.RaisePropertyChanged("License");
+                }
+            }
+        }
+
+        /// <summary>
+        /// SiteUrl property </summary>
+        /// <value>
+        /// The website for the package</value>
+        private string _siteUrl = "";
+        public string SiteUrl
+        {
+            get { return _siteUrl; }
+            set
+            {
+                if (this._siteUrl != value)
+                {
+                    this._siteUrl = value;
+                    this.RaisePropertyChanged("SiteUrl");
+                }
+            }
+        }
+
+        /// <summary>
+        /// RepositoryUrl property </summary>
+        /// <value>
+        /// The repository url for the package</value>
+        private string _repositoryUrl = "";
+        public string RepositoryUrl
+        {
+            get { return _repositoryUrl; }
+            set
+            {
+                if (this._repositoryUrl != value)
+                {
+                    this._repositoryUrl = value;
+                    this.RaisePropertyChanged("RepositoryUrl");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Name property </summary>
+        /// <value>
+        /// The name of the node to be uploaded </value>
+        private string _name = "";
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (this._name != value)
+                {
+                    this._name = value;
+                    this.RaisePropertyChanged("Name");
+                    this.BeginInvoke(
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                }
+            }
+        }
+
+        private bool _moreExpanded;
+        public bool MoreExpanded
+        {
+            get { return _moreExpanded; }
+            set
+            {
+                if (this._moreExpanded != value)
+                {
+                    this._moreExpanded = value;
+                    this.RaisePropertyChanged("MoreExpanded");
+                }
+            }
+        }
+
         public bool HasDependencies
         {
             get { return this.Dependencies.Count > 0; }
@@ -320,6 +389,12 @@ namespace Dynamo.PackageManager
         /// <value>
         /// A command which, when executed, submits the current package</value>
         public DelegateCommand ShowAddFileDialogAndAddCommand { get; private set; }
+
+        /// <summary>
+        /// ToggleMoreCommand property </summary>
+        /// <value>
+        /// A command which, when executed, submits the current package</value>
+        public DelegateCommand ToggleMoreCommand { get; private set; }
 
         /// <summary>
         /// The package used for this submission
@@ -413,6 +488,7 @@ namespace Dynamo.PackageManager
             this.customNodeDefinitions = new List<CustomNodeDefinition>();
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
+            this.ToggleMoreCommand = new DelegateCommand(() => this.MoreExpanded = !this.MoreExpanded, () => true);
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
             this.PropertyChanged += this.ThisPropertyChanged;
@@ -453,7 +529,10 @@ namespace Dynamo.PackageManager
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
                 Name = l.Name,
-                Package = l
+                RepositoryUrl = l.RepositoryUrl ?? "",
+                SiteUrl = l.SiteUrl ?? "",
+                Package = l,
+                License = l.License
             };
 
             // add additional files
@@ -779,12 +858,15 @@ namespace Dynamo.PackageManager
                 // build the package
                 var isNewPackage = Package == null;
 
-                Package = Package ?? new Package("", this.Name, this.FullVersion);
+                Package = Package ?? new Package("", this.Name, this.FullVersion, this.License);
 
                 Package.VersionName = FullVersion;
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
+                Package.License = License;
+                Package.SiteUrl = SiteUrl;
+                Package.RepositoryUrl = RepositoryUrl;
 
                 AppendPackageContents();
 
@@ -910,6 +992,7 @@ namespace Dynamo.PackageManager
 
             return true;
         }
+
     }
 
 }

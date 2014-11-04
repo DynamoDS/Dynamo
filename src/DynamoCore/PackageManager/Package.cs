@@ -117,6 +117,9 @@ namespace Dynamo.PackageManager
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
+        public String SiteUrl { get; set; }
+        public String RepositoryUrl { get; set; }
+
         public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
         public ObservableCollection<Type> LoadedTypes { get; private set; }
@@ -127,11 +130,12 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        public Package(string directory, string name, string versionName)
+        public Package(string directory, string name, string versionName, string license)
         {
             this.Loaded = false;
             this.RootDirectory = directory;
             this.Name = name;
+            this.License = license;
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
             this.LoadedAssemblies = new ObservableCollection<PackageAssembly>();
@@ -157,14 +161,15 @@ namespace Dynamo.PackageManager
                     throw new Exception("The header is missing a name or version field.");
                 }
 
-                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version);
+                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version, body.license);
                 pkg.Group = body.group;
                 pkg.Description = body.description;
                 pkg.Keywords = body.keywords;
                 pkg.VersionName = body.version;
-                pkg.License = body.license;
                 pkg.EngineVersion = body.engine_version;
                 pkg.Contents = body.contents;
+                pkg.SiteUrl = body.site_url;
+                pkg.RepositoryUrl = body.repository_url;
                 body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
 
                 return pkg;

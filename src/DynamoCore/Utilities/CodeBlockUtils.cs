@@ -349,9 +349,15 @@ namespace Dynamo.Utilities
     {
         #region private members
 
+        // This should match with production for identifier in language parser
+        // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
         private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+
         private static string spacesOrNonePattern = @"(\s*)";
         private static string colonPattern = ":";
+
+        // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
+        private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
 
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses
@@ -455,8 +461,8 @@ namespace Dynamo.Utilities
             Dictionary<string, string> variableTypes = new Dictionary<string, string>();
 
             // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
-            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + variableNamePattern;
-
+            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
+            
             var varDeclarations = Regex.Matches(code, pattern);
             for (int i = 0; i < varDeclarations.Count; i++)
             {

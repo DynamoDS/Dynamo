@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Windows.Media.Media3D;
+
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
@@ -24,7 +22,7 @@ namespace DynamoCoreUITests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
             var viz = ViewModel.VisualizationManager;
@@ -88,7 +86,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(0, renderables.Count());
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreview()
         {
             var model = ViewModel.Model;
@@ -134,7 +132,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -143,11 +141,8 @@ namespace DynamoCoreUITests
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            ViewModel.Model.OnRequestLayoutUpdate(this, EventArgs.Empty);
-
             // run the expression
             ViewModel.Model.RunExpression();
-            Thread.Sleep(1000);
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -164,41 +159,38 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-
-            var watch = model.Nodes.First(x => x.GetType().Name == "Watch3D");
-            var watchView = watch.GetType().GetProperty("View").GetValue(watch, null);
-            var points = watchView.GetType().GetProperty("Points").GetValue(watchView, null) as Point3DCollection;
-            Assert.AreEqual(0, points.Count);
+            var watch3D =
+                model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
+            var watchView = watch3D.View;
+            Assert.AreEqual(0, watchView.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizePoints()
         {
-            //var model = ViewModel.Model;
-            //var viz = ViewModel.VisualizationManager;
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            // run the expression
+            ViewModel.Model.RunExpression();
 
-            //// run the expression
-            //ViewModel.Model.RunExpression();
+            //ensure that the number of visualizations matches the 
+            //number of pieces of geometry in the collection
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
 
-            ////ensure that the number of visualizations matches the 
-            ////number of pieces of geometry in the collection
-            //Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
+            //adjust the number node's value - currently set to 0..5 (6 elements)
+            var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
+            numNode.Value = "0..10";
+            ViewModel.Model.RunExpression();
 
-            ////adjust the number node's value - currently set to 0..5 (6 elements)
-            //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
-            //numNode.Value = "0..10";
-            //ViewModel.Model.RunExpression();
-
-            //Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
-
-            Assert.Inconclusive("Porting : DoubleInput");
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
         }
 
         [Test, Category("Failure")]
@@ -234,7 +226,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeASMSolids()
         {
             var model = ViewModel.Model;
@@ -250,7 +242,7 @@ namespace DynamoCoreUITests
             model.HomeSpace.HasUnsavedChanges = false;
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeASMSurfaces()
         {
             var viz = ViewModel.VisualizationManager;
@@ -265,7 +257,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeCoordinateSystems()
         {
             var viz = ViewModel.VisualizationManager;
@@ -281,7 +273,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, BackgroundPreview.ZAxes.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanVisualizeGeometryFromPython()
         {
             var viz = ViewModel.VisualizationManager;
@@ -299,7 +291,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
             var model = ViewModel.Model;
@@ -326,7 +318,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
             var model = ViewModel.Model;
@@ -347,7 +339,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
             Assert.IsTrue(
@@ -363,7 +355,7 @@ namespace DynamoCoreUITests
             Assert.Greater(BackgroundPreview.Points.Count, 0);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void HonorsPreviewSaveState()
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
@@ -377,7 +369,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanDrawNodeLabels()
         {
             var model = ViewModel.Model;
@@ -418,16 +410,16 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.Text.Count());
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanDrawNodeLabelsOnCurves()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -436,12 +428,11 @@ namespace DynamoCoreUITests
             // run the expression
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
-            //10 lines segments in this file
-            Assert.AreEqual(60, BackgroundPreview.Lines.Count());
+            Assert.AreEqual(6, BackgroundPreview.Lines.Count()/2);
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
-            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "e9e53fe0-a0b0-4cf7-93d5-5eea8f0428f2");
+            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
