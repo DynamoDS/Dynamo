@@ -256,7 +256,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            Dispatcher.Invoke(new Action(delegate
+            Dispatcher.BeginInvoke(new Action(delegate
             {
                 var vm = (IWatchViewModel) DataContext;
 
