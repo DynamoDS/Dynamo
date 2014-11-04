@@ -87,7 +87,6 @@
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="PackageManager\PackageLoaderTests.cs" />
     <Compile Include="PackageManager\PackageManagerClientTests.cs" />
-    <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="ScopedNodeTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SchedulerTests.cs" />

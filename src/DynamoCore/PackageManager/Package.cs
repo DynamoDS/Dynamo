@@ -23,29 +23,6 @@ using String = System.String;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageFileInfo
-    {
-        public FileInfo Model { get; private set; }
-        private readonly string packageRoot;
-
-        /// <summary>
-        /// Filename relative to the package root directory
-        /// </summary>
-        public string RelativePath
-        {
-            get
-            {
-                return Model.FullName.Substring(packageRoot.Length);
-            }
-        }
-
-        public PackageFileInfo(string packageRoot, string filename)
-        {
-            this.packageRoot = packageRoot;
-            this.Model = new FileInfo(filename);
-        }
-    }
-
     public class Package : NotificationObject
     {
 
@@ -120,12 +97,17 @@ namespace Dynamo.PackageManager
         public String SiteUrl { get; set; }
         public String RepositoryUrl { get; set; }
 
-        public PackageUploadRequestBody Header { get; internal set; }
         public ObservableCollection<Type> LoadedTypes { get; private set; }
         public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
+
+        /// <summary>
+        ///     A header used to create the package, this data does not reflect runtime
+        ///     changes to the package, but instead reflects how the package was formed.
+        /// </summary>
+        public PackageUploadRequestBody Header { get; internal set; }
 
         #endregion
 
