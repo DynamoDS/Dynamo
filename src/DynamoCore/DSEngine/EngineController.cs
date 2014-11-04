@@ -171,20 +171,6 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Get string representation of the value of variable.
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        public string GetStringValue(string variableName)
-        {
-            lock (macroMutex)
-            {
-                RuntimeMirror mirror = GetMirror(variableName);
-                return null == mirror ? "null" : mirror.GetStringData();
-            }
-        }
-
-        /// <summary>
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
