@@ -127,7 +127,6 @@ namespace Dynamo.Utils
 
             using (ManagedMemoryCounter counter = new ManagedMemoryCounter(process))
             {
-                var bytes = new List<long>();
                 Stopwatch timer = Stopwatch.StartNew(); 
                 timer.Start();
 
@@ -135,15 +134,13 @@ namespace Dynamo.Utils
                 {
                     var bytesInHeap = counter.BytesInAllHeaps;
 
-                    Console.WriteLine("Memory usage: {0}", bytesInHeap);
-                    bytes.Add(bytesInHeap);
-                    Thread.Sleep(1000);
+                    Console.WriteLine(bytesInHeap);
+                    Thread.Sleep(100);
                 }
 
                 timer.Stop();
                 var seconds = timer.ElapsedMilliseconds / 1000;
                 Console.WriteLine("Elapsed time: {0} seconds.", seconds);
-                Console.WriteLine("Average managed heap size: {0}", (long)bytes.Average());
             }
         }
     }
