@@ -30,7 +30,7 @@ namespace DynamoCoreUITests
             // run the expression
             ViewModel.Model.RunExpression();
 
-            Assert.AreEqual(0, BackgroundPreview.Points.Count);
+            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
             //Assert.AreEqual(0, BackgroundPreview.Mesh.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.XAxes.Positions.Count);
@@ -102,7 +102,7 @@ namespace DynamoCoreUITests
             //the graph is two points feeding into a line
 
             //ensure that visulations match our expectations
-            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
@@ -111,7 +111,7 @@ namespace DynamoCoreUITests
             var p1 = model.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.IsVisible = false;
 
-            Assert.AreEqual(1, BackgroundPreview.Points.Count);
+            Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
@@ -119,7 +119,7 @@ namespace DynamoCoreUITests
             var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsVisible = false;
 
-            Assert.AreEqual(1, BackgroundPreview.Points.Count);
+            Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
@@ -127,7 +127,7 @@ namespace DynamoCoreUITests
             p1.IsVisible = true;
             l1.IsVisible = true;
 
-            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
@@ -148,7 +148,7 @@ namespace DynamoCoreUITests
             //the graph is two points feeding into a line
 
             //ensure that visulations match our expectations
-            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
@@ -162,7 +162,7 @@ namespace DynamoCoreUITests
             var watch3D =
                 model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
             var watchView = watch3D.View;
-            Assert.AreEqual(0, watchView.Points.Count);
+            Assert.AreEqual(0, watchView.Points.Positions.Count);
         }
 
         [Test]
@@ -183,14 +183,14 @@ namespace DynamoCoreUITests
 
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
-            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Positions.Count);
 
             //adjust the number node's value - currently set to 0..5 (6 elements)
             var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
             numNode.Value = "0..10";
             ViewModel.Model.RunExpression();
 
-            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Positions.Count);
         }
 
         [Test, Category("Failure")]
@@ -212,7 +212,7 @@ namespace DynamoCoreUITests
             //look at the data in the visualization manager
             //ensure that the number of Drawable nodes
             //and the number of entries in the Dictionary match
-            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count / 2);
             
             //delete a conector coming into the lines node
@@ -222,7 +222,7 @@ namespace DynamoCoreUITests
 
             //ensure that the visualization no longer contains
             //the renderables for the line node
-            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
         }
 
@@ -286,7 +286,7 @@ namespace DynamoCoreUITests
 
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
-            Assert.AreEqual(1000, BackgroundPreview.Points.Count);
+            Assert.AreEqual(1000, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(1000, BackgroundPreview.MeshCount);
 
         }
@@ -306,7 +306,7 @@ namespace DynamoCoreUITests
             // run the expression
             ViewModel.Model.RunExpression();
 
-            Assert.AreEqual(6, BackgroundPreview.Points.Count);
+            Assert.AreEqual(6, BackgroundPreview.Points.Positions.Count);
 
             //delete a node and ensure that the renderables are cleaned up
             var pointNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
@@ -315,7 +315,7 @@ namespace DynamoCoreUITests
 
             model.HomeSpace.HasUnsavedChanges = false;
 
-            Assert.AreEqual(0, BackgroundPreview.Points.Count);
+            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
         }
 
         [Test]
@@ -330,13 +330,13 @@ namespace DynamoCoreUITests
             ViewModel.Model.RunExpression();
 
             //ensure that we have some visualizations
-            Assert.Greater(BackgroundPreview.Points.Count, 0);
+            Assert.Greater(BackgroundPreview.Points.Positions.Count, 0);
 
             //now clear the workspace
             model.Clear(null);
 
             //ensure that we have no visualizations
-            Assert.AreEqual(0, BackgroundPreview.Points.Count);
+            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
         }
 
         [Test]
@@ -352,7 +352,7 @@ namespace DynamoCoreUITests
             ViewModel.Model.RunExpression();
 
             //ensure that we have some visualizations
-            Assert.Greater(BackgroundPreview.Points.Count, 0);
+            Assert.Greater(BackgroundPreview.Points.Positions.Count, 0);
         }
 
         [Test]
@@ -390,7 +390,7 @@ namespace DynamoCoreUITests
             
             // run the expression
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-            Assert.AreEqual(4, BackgroundPreview.Points.Count());
+            Assert.AreEqual(4, BackgroundPreview.Points.Positions.Count());
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
@@ -403,7 +403,7 @@ namespace DynamoCoreUITests
             //ensure that the labels update to match
             //ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-            Assert.AreEqual(64, BackgroundPreview.Points.Count());
+            Assert.AreEqual(64, BackgroundPreview.Points.Positions.Count());
             //Assert.AreEqual(64, BackgroundPreview.Text.Count());
 
             cbn.DisplayLabels = false;
