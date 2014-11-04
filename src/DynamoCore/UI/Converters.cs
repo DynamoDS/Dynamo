@@ -1755,13 +1755,57 @@ namespace Dynamo.Controls
     }
 
     // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
-    // in contrast to ClassObject. 
+    // in contrast to ClassObject.
+    // Also decides, should be category underlined or not.
     public class ElementTypeToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is BrowserInternalElement) return true;
+            if (value is BrowserInternalElement)
+                return true;
+            if (value is BrowserInternalElementForClasses)
+                return true;
+
+            if (value is BrowserRootElement)
+            {
+                var rootElement = value as BrowserRootElement;
+                return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
+            }
             return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RootElementToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is BrowserRootElement);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
+    public class HasParentRootElement : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserRootElement) return true;
+            if (value is BrowserInternalElement)
+            {
+                return (value as BrowserInternalElement).Parent is BrowserRootElement; 
+            }
+            else return false;
         }
 
         public object ConvertBack(

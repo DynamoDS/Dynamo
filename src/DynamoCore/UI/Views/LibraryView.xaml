@@ -21,6 +21,7 @@
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -132,7 +133,10 @@
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                   OverridesDefaultStyle="True"
-                                  Height="27" />
+                                  Height="27"
+                                  BorderBrush="#353535"
+                                  BorderThickness="0,0,0,1" />
+                    
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -513,7 +517,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Border>
+                                        <Border BorderBrush="#353535">
                                             <Grid Background="Transparent"
                                                   Grid.Row="0">
                                                 <Grid.ColumnDefinitions>
@@ -566,7 +570,16 @@
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-
+                                                        
+                                                        <DataTrigger Value="false">
+                                                            <DataTrigger.Binding>
+                                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                                         Path="DataContext"
+                                                                         Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="BorderThickness"
+                                                                    Value="0,0,0,1" />
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
@@ -592,6 +605,13 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
+                                                </DataTrigger>
+                                                <DataTrigger Value="false">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                                                    </DataTrigger.Binding>
                                                     <Setter Property="Padding"
                                                             Value="0,0,0,10" />
                                                 </DataTrigger>
