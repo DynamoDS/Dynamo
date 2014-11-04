@@ -122,14 +122,32 @@ namespace Dynamo.UI.Views
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-            ListBoxItem fromSender = sender as ListBoxItem;
-            libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            ShowTooltip(sender);
+        }
+
+        private void OnListBoxItemGotFocus(object sender, RoutedEventArgs e)
+        {
+            ShowTooltip(sender);
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             libraryToolTipPopup.SetDataContext(null);
+        }
+
+        private void OnListBoxItemLostFocus(object sender, RoutedEventArgs e)
+        {
+            // Hide tooltip immediately.
+            libraryToolTipPopup.DataContext = null;
+        }
+
+        private void ShowTooltip(object sender)
+        {
+            ListBoxItem fromSender = sender as ListBoxItem;
+            if (fromSender == null) return;
+
+            libraryToolTipPopup.PlacementTarget = fromSender;
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
         }
 
         #endregion
@@ -405,7 +423,11 @@ namespace Dynamo.UI.Views
         private void OnTopResultGotFocus(object sender, RoutedEventArgs e)
         {
             if (sender is ListBox)
-                (sender as ListBox).SelectedIndex = 0;
+            {
+                var topResultList = sender as ListBox;
+                topResultList.SelectedIndex = 0;
+                ShowTooltip(GetListItemByIndex(topResultList, 0));
+            }
         }
 
         // Everytime, when top result is updated, we have to select one first item.
@@ -413,6 +435,12 @@ namespace Dynamo.UI.Views
         {
             if (sender is ListBox)
                 (sender as ListBox).SelectedIndex = 0;
+        }
+
+        private void OnTopResultLostFocus(object sender, RoutedEventArgs e)
+        {
+            // Hide tooltip immediately.
+            libraryToolTipPopup.DataContext = null;
         }
 
         #endregion
