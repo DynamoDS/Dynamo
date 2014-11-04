@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
-using Revit.Elements;
+
 using NUnit.Framework;
 
+using Revit.Elements;
 using Revit.GeometryReferences;
 
-using RTF.Framework;
-using DividedSurface = Revit.Elements.DividedSurface;
-using Form = Revit.Elements.Form;
+using RevitTestServices;
 
-namespace RevitTestServices
+using RTF.Framework;
+
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class DividedSurfaceTests : RevitNodeTestBase

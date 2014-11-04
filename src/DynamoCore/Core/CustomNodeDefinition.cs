@@ -214,7 +214,7 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
-            var parameters = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierForPreview.Value: x.InputSymbol);
+            var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes

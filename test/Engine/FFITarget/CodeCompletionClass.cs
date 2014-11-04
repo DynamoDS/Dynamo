@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.DesignScript.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,4 +78,36 @@ namespace FFITarget
         }
     }
 
+    public class SampleClassA
+    {
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public class SampleClassB
+    {
+    }
+
+    public class SampleClassC
+    {
+    }
+
+    namespace FirstNamespace
+    {
+        public class ClassWithNameConflict
+        {
+            public string PropertyA { get; set; }
+            public string PropertyB { get; set; }
+            public string PropertyC { get; set; }
+        }
+    }
+
+    namespace SecondNamespace
+    {
+        public class ClassWithNameConflict
+        {
+            public string PropertyD { get; set; }
+            public string PropertyE { get; set; }
+            public string PropertyF { get; set; }
+        }
+    }
 }

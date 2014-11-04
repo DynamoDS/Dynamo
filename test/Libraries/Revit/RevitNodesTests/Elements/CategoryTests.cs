@@ -1,11 +1,14 @@
 ﻿using System;
 
 using NUnit.Framework;
+
 using Revit.Elements;
+
 using RevitTestServices;
+
 using RTF.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class CategoryTests : RevitNodeTestBase
