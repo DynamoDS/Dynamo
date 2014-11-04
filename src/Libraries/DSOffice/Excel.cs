@@ -168,6 +168,12 @@ namespace DSOffice
             return WorkBook.ReadExcelFile(file.FullName);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook ReadExcelFile(string file)
+        {
+            return WorkBook.ReadExcelFile(file);
+        }
+
         /// <summary>
         /// Returns a list of all the worksheets present in the given Excel workbook
         /// </summary>
@@ -270,6 +276,12 @@ namespace DSOffice
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             return ws.Data;
+        }
+
+        [Obsolete("Use Excel.ReadFromFile node instead.")]
+        public static object[][] Read(string filePath, string sheetName)
+        {
+            return ReadFromFile(new FileInfo(filePath), sheetName);
         }
 
         /// <summary>
