@@ -244,10 +244,16 @@ namespace Dynamo.UI.Views
 
                 // Otherwise, pressed Key is Up.
 
+#if SEARCH_SHOW_CLASSES
                 // No class is found in this 'SearchCategory', return from here so that higher level
                 // element gets to handle the navigational keys to move focus to the previous category.
                 if (searchCategoryContent.Classes.Count == 0)
                     return;
+#else
+                // All classes are hidden. Do not select any of them.
+                return;
+#endif
+
 
                 // Otherwise, we move to first class button.
                 var listItem = FindFirstChildListItem(searchCategoryElement, "SubCategoryListView");
@@ -386,6 +392,7 @@ namespace Dynamo.UI.Views
                 topResultElement.UnselectAll();
 
                 var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+#if SEARCH_SHOW_CLASSES
                 var firstCategoryContent = firstCategory.Content as SearchCategory;
                 // If classes presented, set focus on the first class button.
                 if (firstCategoryContent.Classes.Count > 0)
@@ -394,7 +401,7 @@ namespace Dynamo.UI.Views
                     e.Handled = true;
                     return;
                 }
-
+#endif
                 // Otherwise, set focus on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
                 FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();

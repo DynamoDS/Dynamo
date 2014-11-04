@@ -689,7 +689,7 @@
                                                         <TextBlock Text="{Binding Prefix}"
                                                                    Foreground="#989898"
                                                                    FontSize="12"
-                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
+                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown" />
                                                         <TextBlock Text="{Binding GroupName}"
                                                                    FontSize="12">
                                                             <TextBlock.Style>
