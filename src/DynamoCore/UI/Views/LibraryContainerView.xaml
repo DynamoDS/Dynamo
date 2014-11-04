@@ -212,7 +212,8 @@
                            Grid.Row="2"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch"
-                           DataContext="{Binding}">
+                           DataContext="{Binding}"
+                           PreviewKeyDown="OnLibraryViewPreviewKeyDown">
             <views:LibraryView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"
@@ -222,7 +223,8 @@
 
         <!-- LIBRARYSEARCH VIEW -->
         <views:LibrarySearchView Grid.Row="2"
-                                 DataContext="{Binding}">
+                                 DataContext="{Binding}"
+                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown">
             <views:LibrarySearchView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"
