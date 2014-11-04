@@ -542,7 +542,7 @@ namespace Dynamo.PackageManager
                 vm.AdditionalFiles.Add(file.Model.FullName);
             }
 
-            var nodeLibraryNames = l.EnumerateNodeLibraryNames();
+            var nodeLibraryNames = l.Header.node_libraries;
 
             // load assemblies into reflection only context
             foreach (var file in l.EnumerateAssemblyFiles())
@@ -880,6 +880,8 @@ namespace Dynamo.PackageManager
                     this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
                 }
 
+                Package.AddAssemblies(this.Assemblies.Where(x => x.IsNodeLibrary));
+
                 // begin submission
                 var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);
 
@@ -902,8 +904,6 @@ namespace Dynamo.PackageManager
             if (ContainsBinaries) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesConstant;
             if (ContainsPythonScripts) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsConstant;
 
-            Package.Contents = Package.Contents
-                + Package.SerializeNodeLibraryNames(this.Assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly));
         }
 
         private bool ContainsBinaries
