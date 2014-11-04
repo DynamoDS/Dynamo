@@ -356,7 +356,21 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            Grid = HelixToolkit.Wpf.SharpDX.LineBuilder.GenerateGrid(Vector3.UnitY, -50, 50);
+            var builder = new HelixToolkit.Wpf.SharpDX.LineBuilder();
+            var size = 50;
+
+            for (int x = -size; x <= size; x++)
+            {
+                builder.AddLine(new Vector3(x, -.001f, -size), new Vector3(x, -.001f, size));
+            }
+
+            for (int y = -size; y <= size; y++)
+            {
+                builder.AddLine(new Vector3(-size, -.001f, y), new Vector3(size, -.001f, y));
+            }
+
+            Grid = builder.ToLineGeometry3D();
+            //Grid = HelixToolkit.Wpf.SharpDX.LineBuilder.GenerateGrid(Vector3.UnitY, -50, 50);
         }
 
         /// <summary>
