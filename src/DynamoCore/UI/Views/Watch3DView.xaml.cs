@@ -25,6 +25,7 @@ using SharpDX;
 
 using Color = System.Windows.Media.Color;
 using Material = System.Windows.Media.Media3D.Material;
+using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Point = System.Windows.Point;
 
 namespace Dynamo.Controls
@@ -51,17 +52,7 @@ namespace Dynamo.Controls
 
         private readonly Guid _id=Guid.Empty;
         private Point _rightMousePoint;
-        private Point3DCollection _points;
-        private LineGeometry3D _lines;
-        private LineGeometry3D _xAxis;
-        private LineGeometry3D _yAxis;
-        private LineGeometry3D _zAxis;
-        private HelixToolkit.Wpf.SharpDX.MeshGeometry3D _mesh;
-        private Point3DCollection _pointsSelected;
-        private LineGeometry3D _linesSelected;
-        private HelixToolkit.Wpf.SharpDX.MeshGeometry3D _meshSelected;
         private LineGeometry3D _grid;
-        //private List<BillboardTextItem> _text = new List<BillboardTextItem>();
         private RenderTechnique renderTechnique;
         private HelixToolkit.Wpf.SharpDX.Camera camera;
 
@@ -84,98 +75,25 @@ namespace Dynamo.Controls
             }
         }
 
-        public Point3DCollection Points
-        {
-            get { return _points; }
-            set
-            {
-                _points = value;
-            }
-        }
+        public Point3DCollection Points { get; set; }
 
-        public LineGeometry3D Lines
-        {
-            get { return _lines; }
-            set
-            {
-                _lines = value;
-            }
-        }
+        public LineGeometry3D Lines { get; set; }
 
-        public LineGeometry3D XAxes
-        {
-            get { return _xAxis; }
-            set
-            {
-                _xAxis = value;
-            }
-        }
+        public LineGeometry3D XAxes { get; set; }
 
-        public LineGeometry3D YAxes
-        {
-            get { return _yAxis; }
-            set
-            {
-                _yAxis = value;
-            }
-        }
+        public LineGeometry3D YAxes { get; set; }
 
-        public LineGeometry3D ZAxes
-        {
-            get { return _zAxis; }
-            set
-            {
-                _zAxis = value;
-            }
-        }
+        public LineGeometry3D ZAxes { get; set; }
 
-        public HelixToolkit.Wpf.SharpDX.MeshGeometry3D Mesh
-        {
-            get { return _mesh; }
-            set
-            {
-                _mesh = value;
-            }
-        }
+        public MeshGeometry3D Mesh { get; set; }
 
-        public Point3DCollection PointsSelected
-        {
-            get { return _pointsSelected; }
-            set
-            {
-                _pointsSelected = value;
-            }
-        }
+        public Point3DCollection PointsSelected { get; set; }
 
-        public LineGeometry3D LinesSelected
-        {
-            get { return _linesSelected; }
-            set
-            {
-                _linesSelected = value;
-            }
-        }
+        public LineGeometry3D LinesSelected { get; set; }
 
-        public HelixToolkit.Wpf.SharpDX.MeshGeometry3D MeshSelected
-        {
-            get { return _meshSelected; }
-            set
-            {
-                _meshSelected = value;
-            }
-        }
+        public MeshGeometry3D MeshSelected { get; set; }
 
-        //public List<BillboardTextItem> Text
-        //{
-        //    get
-        //    {
-        //        return _text;
-        //    }
-        //    set
-        //    {
-        //        _text = value;
-        //    }
-        //}
+        //public List<BillboardTextItem> Text { get; set; }
 
         public Viewport3DX View
         {
@@ -189,6 +107,7 @@ namespace Dynamo.Controls
         public int MeshCount { get; set; }
 
         public PhongMaterial RedMaterial { get; private set; }
+        public PhongMaterial CyanMaterial { get; private set; }
         public Vector3 DirectionalLightDirection { get; private set; }
         public Color4 DirectionalLightColor { get; private set; }
         public Color4 AmbientLightColor { get; private set; }
@@ -255,7 +174,9 @@ namespace Dynamo.Controls
             this.DirectionalLightDirection = new Vector3(-2, -5, -2);
             this.RenderTechnique = Techniques.RenderPhong;
             this.RedMaterial = PhongMaterials.Red;
-            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
+            this.CyanMaterial = PhongMaterials.Turquoise;
+
+            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
             // camera setup
             this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
             {
@@ -266,14 +187,17 @@ namespace Dynamo.Controls
 
             var b1 = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
             b1.AddSphere(new Vector3(0, 0, 0), 0.5);
-
             Mesh = b1.ToMeshGeometry3D();
-            DrawGrid();
+            MeshSelected = b1.ToMeshGeometry3D();
 
             var e1 = new LineBuilder();
-            e1.AddBox(new Vector3(0, 0, 0), 1, 0.5, 2);
+            e1.AddLine(new Vector3(), new Vector3(1,1,1) );
             Lines = e1.ToLineGeometry3D();
+            LinesSelected = e1.ToLineGeometry3D();
+
+            DrawGrid();
         }
+
         #endregion
 
         #region event handlers
@@ -482,12 +406,6 @@ namespace Dynamo.Controls
             var points = new Point3DCollection(pointsCount);
             var pointsSelected = new Point3DCollection(selPointsCount);
 
-            //pre-size the lines collections
-            //these sizes are conservative as the axis lines will be
-            //taken from the linestripvertex collections as well.
-            //var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
-            //var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
-
             //var lines = new Point3DCollection(lineCount);
             //var linesSelected = new Point3DCollection(lineSelCount);
             var lines = InitLineGeometry();
@@ -504,23 +422,11 @@ namespace Dynamo.Controls
             var textCount = e.Packages.Count(x => x.DisplayLabels);
             var text = new List<BillboardTextItem>(textCount);
 
-            //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
-            //presize the mesh collections
-            var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
-            var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
-
             //var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
             //var meshSel = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
             var mesh = InitMeshGeometry();
             var meshSel = InitMeshGeometry();
 
-            var verts = new Vector3Collection(meshVertCount);
-            var vertsSel = new Vector3Collection(meshVertSelCount);
-            var norms = new Vector3Collection(meshVertCount);
-            var normsSel = new Vector3Collection(meshVertSelCount);
-            var tris = new IntCollection(meshVertCount);
-            var trisSel = new IntCollection(meshVertSelCount);
-                
             foreach (var package in packages)
             {
                 ConvertPoints(package, points);
@@ -554,18 +460,7 @@ namespace Dynamo.Controls
 
             points.Freeze();
             pointsSelected.Freeze();
-            //lines.Freeze();
-            //linesSelected.Freeze();
-            //redLines.Freeze();
-            //greenLines.Freeze();
-            //blueLines.Freeze();
-            //verts.Freeze();
-            //norms.Freeze();
-            //tris.Freeze();
-            //vertsSel.Freeze();
-            //normsSel.Freeze();
-            //trisSel.Freeze();
-            
+
             Dispatcher.Invoke(new Action<
                 Point3DCollection,
                 Point3DCollection,
@@ -574,12 +469,6 @@ namespace Dynamo.Controls
                 LineGeometry3D,
                 LineGeometry3D,
                 LineGeometry3D,
-                Vector3Collection,
-                Vector3Collection,
-                HelixToolkit.Wpf.SharpDX.Core.IntCollection,
-                Vector3Collection,
-                Vector3Collection,
-                HelixToolkit.Wpf.SharpDX.Core.IntCollection,
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D,
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D>(SendGraphicsToView), DispatcherPriority.Render,
                                new object[] {
@@ -590,12 +479,6 @@ namespace Dynamo.Controls
                                    redLines, 
                                    greenLines, 
                                    blueLines, 
-                                   verts, 
-                                   norms, 
-                                   tris, 
-                                   vertsSel, 
-                                   normsSel, 
-                                   trisSel, 
                                    mesh, 
                                    meshSel});
         }
@@ -653,12 +536,6 @@ namespace Dynamo.Controls
             LineGeometry3D redLines,
             LineGeometry3D greenLines,
             LineGeometry3D blueLines, 
-            Vector3Collection verts, 
-            Vector3Collection norms, 
-            HelixToolkit.Wpf.SharpDX.Core.IntCollection tris,
-            Vector3Collection vertsSel, 
-            Vector3Collection normsSel, 
-            HelixToolkit.Wpf.SharpDX.Core.IntCollection trisSel, 
             HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh,
             HelixToolkit.Wpf.SharpDX.MeshGeometry3D meshSel)
         {
@@ -669,12 +546,6 @@ namespace Dynamo.Controls
             //XAxes = redLines;
             //YAxes = greenLines;
             //ZAxes = blueLines;
-            //mesh.Positions = verts;
-            //mesh.Normals = norms;
-            //mesh.Indices = tris;
-            //meshSel.Positions = vertsSel;
-            //meshSel.Normals = normsSel;
-            //meshSel.Indices = trisSel;
             Mesh = mesh;
             MeshSelected = meshSel;
             //Text = text;
