@@ -671,11 +671,9 @@ namespace Dynamo.Models
             foreach (var node in CurrentWorkspace.Nodes)
                 node.RequestVisualUpdate(MaxTesselationDivisions);
 
-            var task = new NotifyRenderDataReadyAsyncTask(scheduler);
-            if (task.Initialize(this))
-            {
-                scheduler.ScheduleForExecution(task);
-            }
+            var task = new DelegateBasedAsyncTask(scheduler);
+            task.Initialize(() => OnFullRunCompleted(null, new FullRunCompletedEventArgs(true)));
+            scheduler.ScheduleForExecution(task);
         }
 
         protected void ResetEngineInternal()
