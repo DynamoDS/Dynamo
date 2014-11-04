@@ -171,7 +171,7 @@ namespace Dynamo.Controls
             this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-2, -5, -2);
-            this.RenderTechnique = Techniques.RenderPhong;
+            this.RenderTechnique = Techniques.RenderColors;
             this.RedMaterial = PhongMaterials.Red;
             this.CyanMaterial = PhongMaterials.Turquoise;
 
@@ -188,18 +188,8 @@ namespace Dynamo.Controls
             Mesh = InitMeshGeometry();
             MeshSelected = InitMeshGeometry();
 
-            //var b1 = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
-            //b1.AddSphere(new Vector3(0, 0, 0), 0.5);
-            //Mesh = b1.ToMeshGeometry3D();
-            //MeshSelected = b1.ToMeshGeometry3D();
-
             Lines = InitLineGeometry();
             LinesSelected = InitLineGeometry();
-
-            //var e1 = new LineBuilder();
-            //e1.AddLine(new Vector3(), new Vector3(1,1,1) );
-            //Lines = e1.ToLineGeometry3D();
-            //LinesSelected = e1.ToLineGeometry3D();
 
             DrawGrid();
         }
@@ -732,9 +722,9 @@ namespace Dynamo.Controls
                 var normal = new Vector3(xn, zn, yn);
 
                 var color = new Color4(
-                    (float)(p.TriangleVertexColors[color_idx]/255),
-                    (float)(p.TriangleVertexColors[color_idx + 1]/255),
-                    (float)(p.TriangleVertexColors[color_idx + 2]/255),
+                    (float)(p.TriangleVertexColors[color_idx]/255.0),
+                    (float)(p.TriangleVertexColors[color_idx + 1]/255.0),
+                    (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
                     1);
 
                 mesh.Positions.Add(new_point);
@@ -749,7 +739,22 @@ namespace Dynamo.Controls
             if (mesh.Indices.Count > 0)
             {
                 MeshCount++;
-            } 
+            }
+
+            // Create reversed backfaces
+            var copytri = new int[mesh.Indices.Count];
+            mesh.Indices.CopyTo(copytri);
+            Array.Reverse(copytri);
+
+            var copynorm = new Vector3[mesh.Normals.Count];
+            for (int i = 0; i < copynorm.Length; i++)
+                copynorm[i] = -1 * mesh.Normals[i];
+
+            mesh.Positions.AddRange(mesh.Positions.ToArray());
+            mesh.Indices.AddRange(copytri);
+            mesh.Normals.AddRange(copynorm);
+            mesh.Colors.AddRange(mesh.Colors.ToArray());
+
         }
 
         private string CleanTag(string tag)

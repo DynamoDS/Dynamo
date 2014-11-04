@@ -113,7 +113,7 @@
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
             
-            <hx:MeshGeometryModel3D x:Name="mesh" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding RedMaterial}" IsHitTestVisible="False"  />
+            <hx:MeshGeometryModel3D x:Name="mesh" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding RedMaterial}" IsHitTestVisible="False" />
             <hx:MeshGeometryModel3D x:Name="meshSelected" Geometry="{Binding MeshSelected}" Transform = "{Binding Model1Transform}" Material="{Binding CyanMaterial}"  IsHitTestVisible="False"  />
 
             <hx:LineGeometryModel3D x:Name="lines"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.Black}" Thickness="0.5" IsHitTestVisible="False" />
