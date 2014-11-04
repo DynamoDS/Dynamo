@@ -805,10 +805,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kToString,
-                    MethodAttributes = new MethodAttributes(true),
+                    ID = BuiltInMethods.MethodID.kToString
                 },
 
                 new BuiltInMethod

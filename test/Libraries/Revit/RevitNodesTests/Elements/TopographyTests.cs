@@ -2,12 +2,15 @@
 using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 using Revit.Elements;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class TopographyTests : GeometricRevitNodeTest
+    class TopographyTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rvt")]

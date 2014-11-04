@@ -2,11 +2,14 @@
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
-    public class SunSettingsTests : GeometricRevitNodeTest
+    public class SunSettingsTests : RevitNodeTestBase
     {
         [Test, TestModel(@".\Empty.rvt")]
         public void Current()
