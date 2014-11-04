@@ -1196,6 +1196,9 @@ namespace ProtoFFI
                 else if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
                 }
             }
         }
@@ -1260,6 +1263,8 @@ namespace ProtoFFI
                 {
                     HiddenInLibrary = true;
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
                 }
             }
         }

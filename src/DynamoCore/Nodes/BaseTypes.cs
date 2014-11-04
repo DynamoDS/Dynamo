@@ -261,6 +261,8 @@ namespace Dynamo.Nodes
                 if (null != attr)
                 {
                     obsoleteMsg = attr.Message;
+                    if (string.IsNullOrEmpty(obsoleteMsg))
+                        obsoleteMsg = "Obsolete";
                 }
             }
 
