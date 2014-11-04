@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Dynamo.PackageManager
 {
-    internal class PackageFileInfo
+    public class PackageFileInfo
     {
         public FileInfo Model { get; private set; }
         private readonly string packageRoot;
