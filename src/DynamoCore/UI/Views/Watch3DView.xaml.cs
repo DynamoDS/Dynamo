@@ -255,13 +255,13 @@ namespace Dynamo.Controls
             this.DirectionalLightDirection = new Vector3(-2, -5, -2);
             this.RenderTechnique = Techniques.RenderPhong;
             this.RedMaterial = PhongMaterials.Red;
-            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
+            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
             // camera setup
             this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
             {
                 Position = new Point3D(3, 3, 5),
                 LookDirection = new Vector3D(-3, -3, -5),
-                UpDirection = new Vector3D(0, 0, 1)
+                UpDirection = new Vector3D(0, 1, 0)
             };
 
             var b1 = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
@@ -432,21 +432,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            Grid = null;
-
-            var builder = new HelixToolkit.Wpf.SharpDX.LineBuilder();
-
-            for (int x = -10; x <= 10; x++)
-            {
-                builder.AddLine(new Vector3(x, -10, -.001f),new Vector3(x, 10, -.001f));
-            }
-
-            for (int y = -10; y <= 10; y++)
-            {
-                builder.AddLine(new Vector3(-10, y, -.001f),new Vector3(10, y, -.001f));
-            }
-
-            Grid = builder.ToLineGeometry3D();
+            Grid = HelixToolkit.Wpf.SharpDX.LineBuilder.GenerateGrid(Vector3.UnitY, -50, 50);
         }
 
         /// <summary>
@@ -504,29 +490,8 @@ namespace Dynamo.Controls
 
             //var lines = new Point3DCollection(lineCount);
             //var linesSelected = new Point3DCollection(lineSelCount);
-            var lines = new LineGeometry3D();
-            var linesSel = new LineGeometry3D();
-
-            // Add some geometry or helix will barf
-            lines.Positions = new Vector3Collection();
-            lines.Indices = new IntCollection();
-            lines.Colors = new Color4Collection();
-            lines.Positions.Add(new Vector3());
-            lines.Positions.Add(new Vector3());
-            lines.Indices.Add(0);
-            lines.Indices.Add(1);
-            lines.Colors.Add(new Color4());
-            lines.Colors.Add(new Color4());
-
-            linesSel.Positions = new Vector3Collection();
-            linesSel.Indices = new IntCollection();
-            linesSel.Colors = new Color4Collection();
-            linesSel.Positions.Add(new Vector3());
-            linesSel.Positions.Add(new Vector3());
-            linesSel.Indices.Add(0);
-            linesSel.Indices.Add(1);
-            linesSel.Colors.Add(new Color4());
-            linesSel.Colors.Add(new Color4());
+            var lines = InitLineGeometry();
+            var linesSel = InitLineGeometry();
 
             //var redLines = new Point3DCollection(lineCount);
             //var greenLines = new Point3DCollection(lineCount);
@@ -544,8 +509,11 @@ namespace Dynamo.Controls
             var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
             var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
 
-            var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
-            var meshSel = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
+            //var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
+            //var meshSel = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
+            var mesh = InitMeshGeometry();
+            var meshSel = InitMeshGeometry();
+
             var verts = new Vector3Collection(meshVertCount);
             var vertsSel = new Vector3Collection(meshVertSelCount);
             var norms = new Vector3Collection(meshVertCount);
@@ -555,22 +523,24 @@ namespace Dynamo.Controls
                 
             foreach (var package in packages)
             {
-                //ConvertPoints(package, points);
+                ConvertPoints(package, points);
 
                 //ConvertLines(package, lines, redLines, greenLines, blueLines);
                 ConvertLines(package, lines);
 
                 //ConvertMeshes(package, verts, norms, tris);
+                ConvertMeshes(package, mesh);
             }
 
             foreach (var package in selPackages)
             {
-                //ConvertPoints(package, pointsSelected);
+                ConvertPoints(package, pointsSelected);
 
                 //ConvertLines(package, linesSelected, redLines, greenLines, blueLines);
                 ConvertLines(package, linesSel);
 
                 //ConvertMeshes(package, vertsSel, normsSel, trisSel);
+                ConvertMeshes(package, meshSel);
             }
 
             sw.Stop();
@@ -630,6 +600,51 @@ namespace Dynamo.Controls
                                    meshSel});
         }
 
+        private static LineGeometry3D InitLineGeometry()
+        {
+            var lines = new LineGeometry3D
+            {
+                Positions = new Vector3Collection(),
+                Indices = new IntCollection(),
+                Colors = new Color4Collection()
+            };
+
+            lines.Positions.Add(new Vector3());
+            lines.Positions.Add(new Vector3());
+            lines.Indices.Add(0);
+            lines.Indices.Add(1);
+            lines.Colors.Add(new Color4());
+            lines.Colors.Add(new Color4());
+
+            return lines;
+        }
+
+        private static HelixToolkit.Wpf.SharpDX.MeshGeometry3D InitMeshGeometry()
+        {
+            var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D()
+            {
+                Positions = new Vector3Collection(),
+                Indices = new IntCollection(),
+                Colors = new Color4Collection(),
+                Normals = new Vector3Collection(),
+            };
+
+            mesh.Positions.Add(new Vector3());
+            mesh.Positions.Add(new Vector3());
+            mesh.Positions.Add(new Vector3());
+            mesh.Normals.Add(new Vector3(0, 0, 1));
+            mesh.Normals.Add(new Vector3(0, 0, 1));
+            mesh.Normals.Add(new Vector3(0, 0, 1));
+            mesh.Colors.Add(new Color4());
+            mesh.Colors.Add(new Color4());
+            mesh.Colors.Add(new Color4());
+            mesh.Indices.Add(0);
+            mesh.Indices.Add(1);
+            mesh.Indices.Add(2);
+
+            return mesh;
+        }
+
         private void SendGraphicsToView(
             Point3DCollection points, 
             Point3DCollection pointsSelected,
@@ -660,8 +675,8 @@ namespace Dynamo.Controls
             //meshSel.Positions = vertsSel;
             //meshSel.Normals = normsSel;
             //meshSel.Indices = trisSel;
-            //Mesh = mesh;
-            //MeshSelected = meshSel;
+            Mesh = mesh;
+            MeshSelected = meshSel;
             //Text = text;
 
             // Send property changed notifications for everything
@@ -686,46 +701,6 @@ namespace Dynamo.Controls
                     //text.Add(new BillboardTextItem {Text = CleanTag(p.Tag), Position = pos});
                 }
             }
-        }
-
-        private void ConvertLines(RenderPackage p, LineGeometry3D geom)
-        {
-            int color_idx = 0;
-            int line_idx = geom.Positions.Count;
-
-            for (int i = 0; i < p.LineStripVertices.Count; i += 6)
-            {
-                var start = new Vector3((float)p.LineStripVertices[i], (float)p.LineStripVertices[i + 1],
-                    (float)p.LineStripVertices[i + 2]);
-
-                var end = new Vector3((float)p.LineStripVertices[i + 3], (float)p.LineStripVertices[i + 4],
-                    (float)p.LineStripVertices[i + 5]);
-
-                //if (i == 0 && outerCount == 0 && p.DisplayLabels)
-                //{
-                //    //text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
-                //}
-
-                var startColor = new SharpDX.Color4(
-                                        (float)(p.LineStripVertexColors[color_idx]/255),
-                                        (float)(p.LineStripVertexColors[color_idx + 1]/255),
-                                        (float)(p.LineStripVertexColors[color_idx + 2]/255), 1);
-                var endColor = new SharpDX.Color4(
-                                        (float)(p.LineStripVertexColors[color_idx + 3]/255),
-                                        (float)(p.LineStripVertexColors[color_idx + 4]/255),
-                                        (float)(p.LineStripVertexColors[color_idx + 5]/255), 1);
-
-                geom.Positions.Add(start);
-                geom.Positions.Add(end);
-                geom.Indices.Add(line_idx);
-                geom.Indices.Add(line_idx + 1);
-                geom.Colors.Add(startColor);
-                geom.Colors.Add(endColor);
-
-                line_idx += 2;
-                color_idx += 8;
-            }
-  
         }
 
         private void ConvertLines(RenderPackage p,
@@ -812,6 +787,78 @@ namespace Dynamo.Controls
             {
                 MeshCount++;
             }
+        }
+
+        private void ConvertLines(RenderPackage p, LineGeometry3D geom)
+        {
+            int color_idx = 0;
+
+            for (int i = 0; i < p.LineStripVertices.Count; i += 3)
+            {
+                var x = (float)p.LineStripVertices[i];
+                var y = (float)p.LineStripVertices[i + 1];
+                var z = (float)p.LineStripVertices[i + 2];
+                
+                // DirectX convention - Y Up
+                var pt = new Vector3(x,z,y);
+
+                //if (i == 0 && outerCount == 0 && p.DisplayLabels)
+                //{
+                //    //text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
+                //}
+
+                var startColor = new SharpDX.Color4(
+                                        (float)(p.LineStripVertexColors[color_idx] / 255),
+                                        (float)(p.LineStripVertexColors[color_idx + 1] / 255),
+                                        (float)(p.LineStripVertexColors[color_idx + 2] / 255), 1);
+
+                geom.Positions.Add(pt);
+                geom.Indices.Add(geom.Indices.Count);
+                geom.Colors.Add(startColor);
+
+                color_idx += 4;
+            }
+
+        }
+
+        private void ConvertMeshes(RenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
+        {
+            int color_idx = 0;
+            int pt_idx = mesh.Positions.Count;
+
+            for (int i = 0; i < p.TriangleVertices.Count; i += 3)
+            {
+                var x = (float)p.TriangleVertices[i];
+                var y = (float)p.TriangleVertices[i + 1];
+                var z = (float)p.TriangleVertices[i + 2];
+
+                // DirectX convention - Y Up
+                var new_point = new Vector3(x, z, y);
+
+                var xn = (float)p.TriangleNormals[i];
+                var yn = (float)p.TriangleNormals[i + 1];
+                var zn = (float)p.TriangleNormals[i + 2];
+                var normal = new Vector3(xn, zn, yn);
+
+                var color = new Color4(
+                    (float)(p.TriangleVertexColors[color_idx]/255),
+                    (float)(p.TriangleVertexColors[color_idx + 1]/255),
+                    (float)(p.TriangleVertexColors[color_idx + 2]/255),
+                    1);
+
+                mesh.Positions.Add(new_point);
+                mesh.Indices.Add(pt_idx);
+                mesh.Normals.Add(normal);
+                mesh.Colors.Add(color);
+
+                color_idx += 4;
+                pt_idx += 1;
+            }
+
+            if (mesh.Indices.Count > 0)
+            {
+                MeshCount++;
+            } 
         }
 
         private string CleanTag(string tag)
