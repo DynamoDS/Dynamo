@@ -446,5 +446,47 @@ namespace RevitSystemTests
             instances = GetAllFamilyInstances(true);
             Assert.AreEqual(8, instances.Count);
         }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void CreateElementsInPythonNodeAndUpdate()
+        {
+            //This is to test that element binding works correctly in the Python nodes
+
+            //Create 4x2 reference points
+            string dynFilePath = Path.Combine(workingDirectory, @".\ElementBinding\CreateReferencePointInPythonNode.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            //Check the number of the refrence points
+            var points = GetAllReferencePointElements(true);
+            Assert.AreEqual(1, points.Count);
+
+            //Save the element ID of the reference point
+            var point = points[0] as ReferencePoint;
+            int id = point.Id.IntegerValue;
+
+            var model = ViewModel.Model;
+            var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "ba302df5-99b9-404e-8a66-eb71726daead"));
+            Assert.IsTrue(selNodes.Any());
+            var node = selNodes.First();
+            var slider = node as DoubleSlider;
+
+            //Change the slider value from 52.518 to 3.0
+            slider.Value = 3.0;
+
+            //Run the graph again
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            //Check the number of the refrence points
+            points = GetAllReferencePointElements(true);
+            Assert.AreEqual(1, points.Count);
+            
+            //Check the element ID has not changed
+            point = points[0] as ReferencePoint;
+            Assert.AreEqual(id, point.Id.IntegerValue);
+        }
     }
 }
