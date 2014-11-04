@@ -113,6 +113,10 @@ namespace Dynamo.Nodes.Search
                     // Get dis-ambiguous resource name and try again.
                     name = GetResourceName(ResourceType.SmallIcon, true);
                     icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+
+                    // If there is no icon, use default.
+                    if (icon == null)
+                        icon = LoadDefaultIcon();
                 }
                 return icon;
             }
@@ -226,6 +230,12 @@ namespace Dynamo.Nodes.Search
             if (cust != null)
                 icon = cust.LoadIconInternal(fullNameOfIcon);
             return icon;
+        }
+
+        private BitmapSource LoadDefaultIcon()
+        {
+            var cust = LibraryCustomizationServices.GetForAssembly(Dynamo.UI.Configurations.DefaultAssembly);
+            return cust.LoadIconInternal(Dynamo.UI.Configurations.DefaultIcon);
         }
     }
 

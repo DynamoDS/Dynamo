@@ -14,15 +14,15 @@
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
+        <controls:HasParentRootElement x:Key="HasParentRootElement" />
 
         <!-- Region DataTemplates -->
 
         <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
                                   ItemsSource="{Binding Path=Items}">
-            <Border Height="30"
-                    BorderThickness="0,0,0,2"
-                    BorderBrush="#2F2F2F">
-                <TextBlock Foreground="#DDD"
+            <Border Height="30">
+                <TextBlock Foreground="#989898"
                            FontSize="13"
                            Text="{Binding Path=Name}"
                            VerticalAlignment="Center" />
@@ -41,6 +41,7 @@
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
             <StackPanel Orientation="Horizontal">
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
                 <Border Height="30">
                     <TextBlock Foreground="#DDD"
                                FontSize="13"
@@ -52,29 +53,13 @@
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
             <StackPanel Orientation="Horizontal">
-                <Border Background="#444"
-                        Margin="0 6 10 6"
-                        CornerRadius="1"
-                        BorderThickness="1"
-                        BorderBrush="#222">
-                    <TextBlock Foreground="#222"
-                               FontWeight="Bold"
-                               Padding="4"
-                               FontSize="9"
-                               Text="C" />
-                </Border>
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
                 <Border Height="30">
                     <TextBlock Foreground="#DDD"
                                FontSize="13"
                                Text="{Binding Path=Name}"
                                VerticalAlignment="Center" />
                 </Border>
-                <StackPanel.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Edit..."
-                                  Click="OnEditClick"></MenuItem>
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -144,82 +129,98 @@
             <Setter Property="Padding"
                     Value="0" />
             <Setter Property="Margin"
-                    Value="0" />
-            <Setter Property="Foreground"
-                    Value="#888" />
+                    Value="-9,0,0,0" />
             <Setter Property="VerticalAlignment"
                     Value="Center" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Image x:Name="ExpandCollapseStateIcon"
-                               Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
-                               Width="16"
-                               Height="16"
-                               VerticalAlignment="Center"
-                               Margin="0" />
+                        <Grid MinHeight="27"
+                              MinWidth="66"
+                              Name="ExpanderButtonBorder">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
+                            <Image x:Name="ExpandCollapseStateIcon"
+                                   Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                                   Width="16"
+                                   Height="16"
+                                   VerticalAlignment="Center" />
+                            <ContentPresenter x:Name="HeaderContent"
+                                              Grid.Column="1"
+                                              ContentSource="Content"
+                                              VerticalAlignment="Center"
+                                              TextBlock.FontSize="13"
+                                              TextBlock.Foreground="#989898" />
+                        </Grid>
                         <ControlTemplate.Triggers>
+
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
-                                               Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
                                                                          Path=IsMouseOver}"
                                                Value="True" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
+                                               Value="False" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Source"
-                                        TargetName="ExpandCollapseStateIcon"
-                                        Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Source"
+                                            TargetName="ExpandCollapseStateIcon"
+                                            Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                                </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
+                                               Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
                                                                          Path=IsChecked}"
                                                Value="True" />
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
-                                               Value="False" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Source"
-                                        TargetName="ExpandCollapseStateIcon"
-                                        Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Source"
+                                            TargetName="ExpandCollapseStateIcon"
+                                            Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                                </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
-                                               Value="False" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
                                                                          Path=IsMouseOver}"
+                                               Value="False" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
                                                Value="True" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Source"
-                                        TargetName="ExpandCollapseStateIcon"
-                                        Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
-                            </MultiDataTrigger>
-
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
-                                               Value="False" />
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
-                                               Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Source"
-                                        TargetName="ExpandCollapseStateIcon"
-                                        Value="/DynamoCore;component/UI/Images/collapsestate_normal.png" />
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Source"
+                                            TargetName="ExpandCollapseStateIcon"
+                                            Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                                </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <Style.Triggers>
+                <DataTrigger Value="true">
+                    <DataTrigger.Binding>
+                        <Binding RelativeSource="{RelativeSource Self}"
+                                 Path="DataContext"
+                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                    </DataTrigger.Binding>
+                    <Setter Property="Margin"
+                            Value="5,0,0,0" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="AddonsTreeViewItem"
@@ -249,20 +250,16 @@
                                 </ControlTemplate>
                             </Button.Template>
 
-                            <Border Name="ContainerLight"
-                                    BorderThickness="1,0,0,0"
-                                    BorderBrush="#444444">
-                                <Border Name="Bd"
-                                        BorderThickness="0,2,0,0"
-                                        BorderBrush="Transparent">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
+                            <Border Name="ContainerLight">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                        <Grid Background="Transparent"
-                                              Grid.Row="0">
+                                    <Border Name="ToggleButtonAndNodeName"
+                                            Grid.Row="0">
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
@@ -274,21 +271,18 @@
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
 
-                                            <ToggleButton Margin="5,0,0,0"
-                                                          Grid.Row="0"
-                                                          VerticalAlignment="Center"
+                                            <ToggleButton Grid.Row="0"
                                                           x:Name="Expander"
                                                           Background="Transparent"
                                                           IsHitTestVisible="False"
                                                           Style="{StaticResource AddonsExpandCollapseToggleStyle}"
                                                           ClickMode="Press"
-                                                          IsChecked="{Binding IsExpanded, Mode=OneWay}" />
-                                            <Border Margin="5,0,5,0"
-                                                    Name="NodeName"
+                                                          IsChecked="{Binding IsExpanded, Mode=OneWay}">
+                                            </ToggleButton>
+                                            <Border Name="NodeName"
                                                     Grid.Column="1"
                                                     Grid.ColumnSpan="2"
                                                     VerticalAlignment="Center"
-                                                    BorderBrush="{TemplateBinding BorderBrush}"
                                                     BorderThickness="{TemplateBinding BorderThickness}"
                                                     Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter Grid.Row="0"
@@ -298,14 +292,88 @@
                                             </Border>
                                         </Grid>
 
-                                        <Border Grid.Column="0"
-                                                Grid.ColumnSpan="1"
-                                                Grid.Row="1"
-                                                Margin="15 0 0 0">
-                                            <ItemsPresenter x:Name="ItemsHost" />
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        <Border.Style>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="Background"
+                                                        Value="#353535" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="true">
+                                                        <DataTrigger.Binding>
+                                                            <Binding RelativeSource="{RelativeSource Self}"
+                                                                     Path="DataContext"
+                                                                     Converter="{StaticResource RootElementToBoolConverter}" />
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="BorderThickness"
+                                                                Value="0,0,0,1" />
+                                                        <Setter Property="Background"
+                                                                Value="#282828" />
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                       Value="true" />
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                       Value="true" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Background"
+                                                                    Value="#222222" />
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+
+                                    <ItemsPresenter x:Name="ItemsHost"
+                                                    Grid.Column="0"
+                                                    Grid.ColumnSpan="1"
+                                                    Grid.Row="1" />
+                                </Grid>
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderThickness"
+                                                Value="1,0,0,0" />
+                                        <Setter Property="Padding"
+                                                Value="35,0,0,5" />
+                                        <Setter Property="BorderBrush">
+                                            <Setter.Value>
+                                                <VisualBrush>
+                                                    <VisualBrush.Visual>
+                                                        <Path Data="M 0,0 L 0,30"
+                                                              StrokeDashArray="3 4"
+                                                              Stroke="#494949"
+                                                              StrokeThickness="1">
+                                                        </Path>
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="true">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource HasParentRootElement}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="BorderThickness"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
+                                            <DataTrigger Value="true">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource RootElementToBoolConverter}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Padding"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                             </Border>
                         </Button>
 
@@ -324,44 +392,7 @@
                                         Value="Collapsed" />
                                 <Setter Property="Margin"
                                         TargetName="NodeName"
-                                        Value="40,0,5,0" />
-                            </Trigger>
-
-                            <Trigger Property="IsSelected"
-                                     Value="true">
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#444" />
-                            </Trigger>
-
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="true" />
-                                    <Condition Property="IsExpanded"
-                                               Value="false" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#2e2e2e" />
-                            </MultiTrigger>
-
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="true" />
-                                    <Condition Property="HasItems"
-                                               Value="false" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        TargetName="Bd"
-                                        Value="#444" />
-                            </MultiTrigger>
-
-                            <Trigger Property="IsEnabled"
-                                     Value="false">
-                                <Setter Property="Foreground"
-                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        Value="15,0,0,0" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
