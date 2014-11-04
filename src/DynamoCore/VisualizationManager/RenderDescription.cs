@@ -64,7 +64,7 @@ namespace Dynamo
         /// <summary>
         /// A collection of text items with locations.
         /// </summary>
-        public ThreadSafeList<BillboardTextItem> Text { get; internal set; }
+        //public ThreadSafeList<BillboardTextItem> Text { get; internal set; }
  
         public RenderDescription()
         {
@@ -79,7 +79,7 @@ namespace Dynamo
             SelectedLines = new ThreadSafeList<Point3D>();
             SelectedMeshes = new ThreadSafeList<MeshGeometry3D>();
 
-            Text = new ThreadSafeList<BillboardTextItem>();
+            //Text = new ThreadSafeList<BillboardTextItem>();
         }
 
         public void Clear()
@@ -93,7 +93,7 @@ namespace Dynamo
             SelectedPoints.Clear();
             SelectedLines.Clear();
             SelectedMeshes.Clear();
-            Text.Clear();
+            //Text.Clear();
         }
     }
 

@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+             xmlns:sdx="clr-namespace:SharpDX;assembly=SharpDX" 
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
              xmlns:ui="clr-namespace:Dynamo.UI"
              Name="topControl" 
              mc:Ignorable="d" 
@@ -89,7 +90,34 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
+        <hx:Viewport3DX 
+            Name="watch_view"
+            ShowViewCube="false" 
+            UseDefaultGestures="True"  
+            ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}"
+            RenderTechnique="{Binding RenderTechnique}"
+            Camera="{Binding Camera}" 
+            IsHitTestVisible="True">
+            <!--<hx:Viewport3DX.InputBindings>
+                <KeyBinding Key="B" Command="hx:ViewportCommands.BackView"/>
+                <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView"/>
+                <KeyBinding Key="U" Command="hx:ViewportCommands.TopView"/>
+                <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView"/>
+                <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView"/>
+                <KeyBinding Key="R" Command="hx:ViewportCommands.RightView"/>
+                <KeyBinding Gesture="Control+E" Command="hx:ViewportCommands.ZoomExtents"/>
+                <MouseBinding Gesture="RightClick" Command="hx:ViewportCommands.Rotate"/>
+                <MouseBinding Gesture="MiddleClick" Command="hx:ViewportCommands.Zoom"/>
+                <MouseBinding Gesture="Shift+RightClick" Command="hx:ViewportCommands.Pan"/>
+            </hx:Viewport3DX.InputBindings>-->
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
+            <hx:DirectionalLight3D Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
+            <hx:MeshGeometryModel3D x:Name="model1" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding RedMaterial}"   />
+            <hx:LineGeometryModel3D x:Name="lines"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Thickness="1"/>
+            <hx:LineGeometryModel3D x:Name="grid"   Geometry="{Binding Grid}"  Transform = "{Binding GridTransform}"   Color="{x:Static sdx:Color.DarkGray}" Thickness="0.5"/>
+        </hx:Viewport3DX>
+        
+        <!--<HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
                                       IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
                                       ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
@@ -190,7 +218,7 @@
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=Grid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
             <HelixToolkit:BillboardTextGroupVisual3D Foreground="DarkGray" Items="{Binding Text}" BorderThickness="1" FontSize="12" Padding="2" FontFamily="Arial" HeightFactor="1"/>
-        </HelixToolkit:HelixViewport3D>
+        </HelixToolkit:HelixViewport3D>-->
 
         <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
                DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"
