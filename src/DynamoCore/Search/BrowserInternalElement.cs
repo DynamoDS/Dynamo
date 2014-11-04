@@ -30,6 +30,8 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        public override BrowserItem Parent { get; set; }
+
         /// <summary>
         /// Property specifies if BrowserItem has members only as children. No any subcategories.
         /// </summary>        
@@ -40,6 +42,21 @@ namespace Dynamo.Nodes.Search
                 // If all childs are derived from NodeSearchElement they all are members
                 // not subcategories.
                 return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
+            }
+        }
+
+        private BrowserInternalElement selectedItem;
+        public BrowserInternalElement SelectedItem
+        {
+            get { return selectedItem; }
+            set
+            {
+                if (selectedItem != null)
+                {
+                    selectedItem.IsSelected = false;
+                    //RaisePropertyChanged("IsSelected");
+                }
+                selectedItem = value;
             }
         }
 
@@ -90,8 +107,28 @@ namespace Dynamo.Nodes.Search
 
         public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
 
-        public BrowserItem Parent { get; set; }
+        public override BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
+
+        private bool isSelected = false;
+        public bool IsSelected
+        {
+            set
+            {
+                isSelected = value;
+                RaisePropertyChanged("IsSelected");
+                if (!isSelected)
+                    return;
+
+                var rootCategory = GetRootParent();
+                if (rootCategory != null)
+                    rootCategory.SelectedItem = this;
+            }
+            get
+            {
+                return isSelected;
+            }
+        }
 
         protected enum ResourceType
         {
@@ -162,6 +199,16 @@ namespace Dynamo.Nodes.Search
             {
                 parent.ExpandToRoot();
             }
+        }
+
+        public BrowserRootElement GetRootParent()
+        {
+            var ele = this.Parent as BrowserItem;
+            while (!(ele is BrowserRootElement))
+            {
+                ele = ele.Parent as BrowserItem;
+            }
+            return ele as BrowserRootElement;
         }
 
         /// <summary>
@@ -257,7 +304,19 @@ namespace Dynamo.Nodes.Search
             set { classesItems = value; } 
         }
 
-        public BrowserItem Parent { get; set; }
+        private BrowserItem parent;
+        public override BrowserItem Parent 
+        {
+            get
+            {
+                return parent;
+            }
+            set
+            {
+                parent = value;
+            }
+            
+        }
 
         public BrowserInternalElementForClasses(string name, BrowserItem parent)
         {
@@ -312,6 +371,12 @@ namespace Dynamo.Nodes.Search
 
         public override string Name
         {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override BrowserItem Parent
+        {
+            set { throw new System.NotImplementedException(); }
             get { throw new System.NotImplementedException(); }
         }
 

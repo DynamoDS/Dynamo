@@ -273,6 +273,9 @@
                                              Converter="{StaticResource ElementTypeToBoolConverter}" />
                                 </Setter.Value>
                             </Setter>
+                            
+                            <Setter Property="IsSelected"
+                                    Value="{Binding IsSelected,Mode=TwoWay}" />
 
                             <Style.Triggers>
                                 <Trigger Property="IsSelected"

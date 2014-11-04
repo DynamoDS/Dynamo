@@ -75,6 +75,8 @@ namespace Dynamo.Nodes.Search
             }
         }
 
+        public abstract BrowserItem Parent { get; set; }
+
         /// <summary>
         ///     Adds an element as a child of this one, while updating its parent and oldparent field
         /// </summary>
