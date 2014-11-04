@@ -134,7 +134,7 @@ namespace RevitSystemTests
         public void CreateInDynamoModifyInRevitToCauseFailure()
         {
             //Create a wall in Dynamo
-            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateWallInDynamo.dyn");
+            string dynFilePath = Path.Combine(workingDirectory, @".\ElementBinding\CreateWallInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
             ViewModel.OpenCommand.Execute(testPath);
@@ -185,7 +185,7 @@ namespace RevitSystemTests
         public void CreateInDynamoModifyInRevitReRun()
         {
             //Create a reference point at (0.0, 0.0, 0.0);
-            string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateOneReferencePoint.dyn");
+            string dynFilePath = Path.Combine(workingDirectory, @".\ElementBinding\CreateOneReferencePoint.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
             ViewModel.OpenCommand.Execute(testPath);
