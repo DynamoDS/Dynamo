@@ -94,6 +94,23 @@ namespace Dynamo.PackageManager
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
+
+        /// <summary>
+        ///     Determines if there are binaries in the package
+        /// </summary>
+        internal bool ContainsBinaries
+        {
+            get { return this.LoadedAssemblies.Any(); }
+        }
+
+        /// <summary>
+        ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
+        /// </summary>
+        internal IEnumerable<Assembly> NodeLibraries
+        {
+            get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
+        } 
+
         public String SiteUrl { get; set; }
         public String RepositoryUrl { get; set; }
 
@@ -207,7 +224,7 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles.AddRange( nonDyfDllFiles );
         }
 
-        public IEnumerable<string> EnumerateAssemblyFiles()
+        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return new List<string>();
 
@@ -256,22 +273,6 @@ namespace Dynamo.PackageManager
                 nodes.ForEach(x => LoadedTypes.Add(x));
             }
         }
-
-        /// <summary>
-        ///     Determines if there are binaries in the package
-        /// </summary>
-        internal bool ContainsBinaries
-        {
-            get { return this.LoadedAssemblies.Any(); }
-        }
-
-        /// <summary>
-        ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
-        /// </summary>
-        internal IEnumerable<Assembly> NodeLibraries
-        {
-            get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
-        } 
 
         /// <summary>
         ///     Add assemblies at runtime to the package.  Does not load the assembly into the node library.

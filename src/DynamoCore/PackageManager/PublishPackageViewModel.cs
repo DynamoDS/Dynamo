@@ -545,7 +545,7 @@ namespace Dynamo.PackageManager
             var nodeLibraryNames = l.Header.node_libraries;
 
             // load assemblies into reflection only context
-            foreach (var file in l.EnumerateAssemblyFiles())
+            foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
@@ -901,8 +901,8 @@ namespace Dynamo.PackageManager
         {
             Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
 
-            if (ContainsBinaries) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesConstant;
-            if (ContainsPythonScripts) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsConstant;
+            if (ContainsBinaries) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesContant;
+            if (ContainsPythonScripts) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsContant;
 
         }
 

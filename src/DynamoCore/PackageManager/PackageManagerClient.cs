@@ -48,8 +48,8 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
-        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
-        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+        internal readonly static string PackageContainsBinariesContant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal readonly static string PackageContainsPythonScriptsContant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly DynamoModel dynamoModel;
 
@@ -110,7 +110,7 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private static readonly string serverUrl = "https://www.dynamopackages.com/";
+        private static readonly string serverUrl = "http://107.20.146.184/";
 
         public PackageManagerClient(DynamoModel dynamoModel)
         {

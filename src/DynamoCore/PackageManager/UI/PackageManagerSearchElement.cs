@@ -170,11 +170,11 @@ namespace Dynamo.PackageManager
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinaries =
                     allPackageVersions.Any(
-                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant));
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesContant));
 
                 var containsPythonScripts =
                     allPackageVersions.Any(
-                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsContant));
 
                 // if any do, notify user and allow cancellation
                 if (containsBinaries || containsPythonScripts)
