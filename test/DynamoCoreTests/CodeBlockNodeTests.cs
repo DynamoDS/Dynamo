@@ -1106,7 +1106,7 @@ b = c[w][x][y][z];";
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
-            // "HiddenCodeCompletionClass" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
+            // "SampleClassB" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
             // is set to false. We verify that this class does not appear in code completion results
             string code = "sam";
             var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
@@ -1118,6 +1118,37 @@ b = c[w][x][y][z];";
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenConflictingClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "SecondNamespace.AnotherClassWithNameConflict" is defined in FFITarget library with "IsVisibleInDynamoLibrary" 
+            // attribute set to false. We verify that this class does not appear in code completion results
+            // and that only "FirstNamespace.AnotherClassWithNameConflict" appears in code completion results with
+            // fully qualified name so that it can be resolved against "SecondNamespace.AnotherClassWithNameConflict" 
+            string code = "ano";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 1 completion items
+            Assert.AreEqual(1, completions.Count());
+
+            string[] expected = { "FFITarget.FirstNamespace.AnotherClassWithNameConflict" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror("FirstNamespace.AnotherClassWithNameConflict", libraryServicesCore));
+
+            var members = type.GetMembers();
+
+            expected = new string[] { "AnotherClassWithNameConflict", "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
         }
     }
 

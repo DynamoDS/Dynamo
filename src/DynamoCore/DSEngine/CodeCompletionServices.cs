@@ -108,13 +108,14 @@ namespace Dynamo.DSEngine.CodeCompletion
             {
                 if (group.Count() > 1)
                 {
-                    completions.AddRange(group.Select(x =>
-                    {
-                        return CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true);
-                    }));
+                    completions.AddRange(group.
+                        Where(x => !x.IsHiddenInLibrary).
+                        Select(x =>CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true)));
                 }
                 else
-                    completions.AddRange(group.Select(x => CompletionData.ConvertMirrorToCompletionData(x)));
+                    completions.AddRange(group.
+                        Where(x => !x.IsHiddenInLibrary).
+                        Select(x => CompletionData.ConvertMirrorToCompletionData(x)));
             }
 
             // Add matching builtin methods
