@@ -77,11 +77,6 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\src\DynamoRevit\DynamoRevit.csproj">
-      <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
-      <Name>DynamoRevit</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
@@ -100,11 +95,6 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
-      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
-      <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\TestServices\TestServices.csproj">
