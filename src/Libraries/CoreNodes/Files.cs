@@ -182,6 +182,12 @@ namespace DSCore.IO
             return true;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static void ExportToCSV(string filePath, object[][] data)
+        {
+            CSV.WriteToFile(filePath, data);
+        }
+
         #endregion
     }
 

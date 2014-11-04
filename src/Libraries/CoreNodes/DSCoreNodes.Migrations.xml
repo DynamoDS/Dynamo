@@ -2,7 +2,7 @@
 <migrations>
   <priorNameHint>
     <oldName>DSCore.File.ExportToCSV</oldName>
-    <newName>DSCore.IO.CSV.WriteToFile</newName>
+    <newName>DSCore.IO.File.ExportToCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.WriteText</oldName>
