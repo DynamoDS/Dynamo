@@ -64,7 +64,8 @@ namespace RevitNodesTests.Elements
                                           .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
-            var symbol = family.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
+            var symbol = family.GetFamilySymbolIds().Select(x=>DocumentManager.Instance.CurrentDBDocument.GetElement(x)).
+                OfType<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
             Assert.NotNull(symbol);
 
             // use the element factory to do the same
@@ -88,7 +89,8 @@ namespace RevitNodesTests.Elements
                                         .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
-            var symbol = family.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
+            var symbol = family.GetFamilySymbolIds().Select(x => DocumentManager.Instance.CurrentDBDocument.GetElement(x)).
+                OfType<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
             Assert.NotNull(symbol);
 
             // use the element factory to do the same
