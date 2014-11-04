@@ -353,6 +353,7 @@ namespace Dynamo.UI.Views
             }
             else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
+#if SEARCH_SHOW_CLASSES
                 if (nextFocusedCategoryContent.Classes.Count > 0)
                 {
                     // If classes are presented, then focus on first class.
@@ -364,6 +365,11 @@ namespace Dynamo.UI.Views
                     var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
                     FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
                 }
+#else
+                // If there are no classes, then focus on first method.
+                var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
+#endif
             }
             e.Handled = true;
         }
