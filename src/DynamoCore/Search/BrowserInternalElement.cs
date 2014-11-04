@@ -301,19 +301,8 @@ namespace Dynamo.Nodes.Search
             set { classesItems = value; } 
         }
 
-        private BrowserItem parent;
-        public override BrowserItem Parent 
-        {
-            get
-            {
-                return parent;
-            }
-            set
-            {
-                parent = value;
-            }
-            
-        }
+        public override BrowserItem Parent
+        { get; set; }
 
         public BrowserInternalElementForClasses(string name, BrowserItem parent)
         {
