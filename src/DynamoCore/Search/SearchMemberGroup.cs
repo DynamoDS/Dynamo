@@ -17,6 +17,9 @@ namespace Dynamo.Search
         {
             get
             {
+                if (string.IsNullOrEmpty(FullyQualifiedName))
+                    return string.Empty;
+
                 var delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
 
                 int index = FullyQualifiedName.IndexOf(delimiter);
