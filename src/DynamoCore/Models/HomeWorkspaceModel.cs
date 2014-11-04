@@ -9,6 +9,17 @@ namespace Dynamo.Models
     {
         private readonly DispatcherTimer runExpressionTimer;
 
+        internal bool IsEvaluationPending
+        {
+            get
+            {
+                if (runExpressionTimer == null)
+                    return false;
+
+                return runExpressionTimer.IsEnabled;
+            }
+        }
+
         public HomeWorkspaceModel(DynamoModel dynamoModel)
             : this(dynamoModel, new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
