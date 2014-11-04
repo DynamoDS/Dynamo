@@ -1193,6 +1193,10 @@ namespace ProtoFFI
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                }
             }
         }
     }
@@ -1251,6 +1255,11 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
+                }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                 }
             }
         }

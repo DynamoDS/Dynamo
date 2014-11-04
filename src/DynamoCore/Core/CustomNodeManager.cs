@@ -799,8 +799,9 @@ namespace Dynamo.Utilities
                         // 
                         typeName = Nodes.Utilities.PreprocessTypeName(typeName);
                         System.Type type = Nodes.Utilities.ResolveType(this.dynamoModel, typeName);
+                        TypeLoadData data = Nodes.Utilities.GetDataForType(dynamoModel, type);
                         if (type != null)
-                            el = ws.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                            el = ws.NodeFactory.CreateNodeInstance(data, nickname, signature, guid);
 
                         if (el != null)
                         {
@@ -826,8 +827,9 @@ namespace Dynamo.Utilities
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         System.Type type = Dynamo.Nodes.Utilities.ResolveType(this.dynamoModel, typeName);
+                        var tld = Nodes.Utilities.GetDataForType(dynamoModel, type);
 
-                        el = ws.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
+                        el = ws.NodeFactory.CreateNodeInstance(tld, nickname, string.Empty, guid);
                         el.Load(dummyElement);
                     }
 

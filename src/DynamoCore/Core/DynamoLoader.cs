@@ -125,22 +125,9 @@ namespace Dynamo.Utilities
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
-        /// <summary>
-        ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
-        ///     out what nodes to load from other libraries (.dlls).
-        /// </summary>
-        /// <parameter>The type</parameter>
-        /// <returns>True if the type is node.</returns>
-        public bool IsNodeSubType(Type t)
-        {
-            return //t.Namespace == "Dynamo.Nodes" &&
-                   !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(NodeModel));
-        }
-
         internal bool ContainsNodeModelSubType(Assembly assem)
         {
-            return assem.GetTypes().Any(IsNodeSubType);
+            return assem.GetTypes().Any(Nodes.Utilities.IsNodeSubType);
         }
 
         /// <summary>
@@ -166,43 +153,32 @@ namespace Dynamo.Utilities
                 {
                     try
                     {
-                        //only load types that are in the right namespace, are not abstract
-                        //and have the elementname attribute
+                        var data = Nodes.Utilities.GetDataForType(dynamoModel, t);
+
+                        if (data == null)
+                            continue;
+
                         var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         bool isHidden = false;
-                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Any())
+                        if (data.IsObsolete)
+                            isHidden = true;
+                        else
                         {
-                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
-                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                            var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                            if (null != attrs && attrs.Any())
                             {
-                                isHidden = true;
+                                var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                                if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                                {
+                                    isHidden = true;
+                                }
                             }
                         }
 
-                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
-                            continue;
-
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(Context.NONE))
-                        {
-
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
-                            {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the Model
-                                //then skip loading this type.
-                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
-                                    continue;
-                            }
-                        }
                         string typeName;
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
@@ -214,8 +190,6 @@ namespace Dynamo.Utilities
                             typeName = t.Name;
 
                         AssemblyPathToTypesLoaded[assembly.Location].Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
 
                         if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
                             dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
