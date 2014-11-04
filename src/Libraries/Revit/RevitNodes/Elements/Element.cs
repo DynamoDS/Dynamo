@@ -103,8 +103,7 @@ namespace Revit.Elements
         /// <summary>
         /// A reference to the element
         /// </summary>
-        //[SupressImportIntoVM]
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public abstract Autodesk.Revit.DB.Element InternalElement
         {
             get;

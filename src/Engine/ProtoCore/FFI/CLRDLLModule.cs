@@ -577,6 +577,15 @@ namespace ProtoFFI
                 return true;
 
             object[] atts = member.GetCustomAttributes(false);
+
+            var method = member as MethodInfo;
+            if (method != null)
+            {
+                var propAtts = FFIMethodAttributes.TryGetAttributesFromProperty(method);
+                if (propAtts != null)
+                    atts = propAtts;
+            }
+
             foreach (var item in atts)
             {
                 SupressImportIntoVMAttribute supressImport = item as SupressImportIntoVMAttribute;
@@ -1217,8 +1226,8 @@ namespace ProtoFFI
         public FFIMethodAttributes(MethodInfo method)
         {
             if (method == null)
-                throw new ArgumentException("method");
-
+                throw new ArgumentNullException("method");
+            
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
             if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
@@ -1233,29 +1242,10 @@ namespace ProtoFFI
             }
 
             attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-
-            // Check if method is a getter belonging to a property
-            // If so, get the corresponding PropertyInfo and check for any attributes 
-            // on it. Apply those attributes to the getter (method)
-            string getterPrefix = "get_";
-            if (method.Name.StartsWith(getterPrefix))
-            {
-                string propertyName = method.Name.Substring(getterPrefix.Length);
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    //PropertyInfo property = type.GetProperty(propertyName, BindingFlags.DeclaredOnly);
-                    var properties = type.GetProperties();
-                    if (properties.Any())
-                    {
-                        var matches = properties.Where(p => p.Name == propertyName && p.DeclaringType == type);
-                        if (matches.Any())
-                        {
-                            var property = matches.First();
-                            attributes = property.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-                        }
-                    }
-                }
-            }
+            
+            var atts = TryGetAttributesFromProperty(method);
+            if (atts != null)
+                attributes = atts.Cast<Attribute>().ToArray();
 
             foreach (var attr in attributes)
             {
@@ -1278,6 +1268,36 @@ namespace ProtoFFI
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
             }
+        }
+
+        /// <summary>
+        /// Check if method is a getter belonging to a property
+        /// If so, get the corresponding PropertyInfo and check for any attributes 
+        /// on it. Apply those attributes to the getter (method)
+        /// </summary>
+        internal static object[] TryGetAttributesFromProperty(MethodInfo method)
+        {
+            object[] atts = null;
+            string getterPrefix = "get_";
+            if (method.Name.StartsWith(getterPrefix))
+            {
+                string propertyName = method.Name.Substring(getterPrefix.Length);
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    var type = method.DeclaringType;
+                    var properties = type.GetProperties();
+                    if (properties.Any())
+                    {
+                        var matches = properties.Where(p => p.Name == propertyName && p.DeclaringType == type);
+                        if (matches.Any())
+                        {
+                            var property = matches.First();
+                            atts = property.GetCustomAttributes(false);
+                        }
+                    }
+                }
+            }
+            return atts;
         }
     }
 }

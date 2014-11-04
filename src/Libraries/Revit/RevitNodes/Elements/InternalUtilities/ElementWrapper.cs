@@ -15,8 +15,7 @@ namespace Revit.Elements
     /// Element wrapper supplies tools for wrapping Autodesk.Revit.DB.Element types
     /// in their associated Revit.Elements.Element wrapper
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public static class ElementWrapper
+    internal static class ElementWrapper
     {
         /// <summary>
         /// If possible, wrap the element in a DS type
