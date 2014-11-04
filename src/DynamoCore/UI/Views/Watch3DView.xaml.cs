@@ -112,7 +112,6 @@ namespace Dynamo.Controls
         public Color4 DirectionalLightColor { get; private set; }
         public Color4 AmbientLightColor { get; private set; }
         public System.Windows.Media.Media3D.Transform3D Model1Transform { get; private set; }
-
         public RenderTechnique RenderTechnique
         {
             get
@@ -176,7 +175,8 @@ namespace Dynamo.Controls
             this.RedMaterial = PhongMaterials.Red;
             this.CyanMaterial = PhongMaterials.Turquoise;
 
-            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
+            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
+
             // camera setup
             this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
             {
@@ -185,15 +185,21 @@ namespace Dynamo.Controls
                 UpDirection = new Vector3D(0, 1, 0)
             };
 
-            var b1 = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
-            b1.AddSphere(new Vector3(0, 0, 0), 0.5);
-            Mesh = b1.ToMeshGeometry3D();
-            MeshSelected = b1.ToMeshGeometry3D();
+            Mesh = InitMeshGeometry();
+            MeshSelected = InitMeshGeometry();
 
-            var e1 = new LineBuilder();
-            e1.AddLine(new Vector3(), new Vector3(1,1,1) );
-            Lines = e1.ToLineGeometry3D();
-            LinesSelected = e1.ToLineGeometry3D();
+            //var b1 = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
+            //b1.AddSphere(new Vector3(0, 0, 0), 0.5);
+            //Mesh = b1.ToMeshGeometry3D();
+            //MeshSelected = b1.ToMeshGeometry3D();
+
+            Lines = InitLineGeometry();
+            LinesSelected = InitLineGeometry();
+
+            //var e1 = new LineBuilder();
+            //e1.AddLine(new Vector3(), new Vector3(1,1,1) );
+            //Lines = e1.ToLineGeometry3D();
+            //LinesSelected = e1.ToLineGeometry3D();
 
             DrawGrid();
         }
