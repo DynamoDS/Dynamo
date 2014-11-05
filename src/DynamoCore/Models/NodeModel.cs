@@ -1475,6 +1475,18 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
+        /// Call this method to asynchronously update the cached MirrorData for 
+        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
+        /// being accessed within this method, therefore the method is typically
+        /// called from the main/UI thread.
+        /// </summary>
+        /// 
+        public void RequestValueUpdateAsync()
+        {
+            // TODO(Ben): Update cachedMirrorData asynchronously.
+        }
+
+        /// <summary>
         /// Call this method to asynchronously regenerate render package for 
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
