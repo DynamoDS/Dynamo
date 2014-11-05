@@ -13,6 +13,11 @@ namespace Dynamo.Models
             Assembly = assemblyIn;
             Type = typeIn;
         }
+
+        public NodeModel CreateNode()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

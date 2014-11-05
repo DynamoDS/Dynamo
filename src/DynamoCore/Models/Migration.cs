@@ -63,9 +63,9 @@ namespace Dynamo.Models
 
         private static MigrationManager _instance;
 
-        private static int NewNodeOffsetX = -150;
+        private const int NewNodeOffsetX = -150;
 
-        private static int NewNodeOffsetY = 100;
+        private const int NewNodeOffsetY = 100;
 
         /// <summary>
         /// The singleton instance property.
@@ -143,6 +143,8 @@ namespace Dynamo.Models
             {
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
+
+
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
 
                 if (type == null)

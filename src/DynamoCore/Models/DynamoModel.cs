@@ -144,6 +144,11 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        public ZeroTouchManager ZeroTouchManager { get; set; }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public DynamoLogger Logger { get; private set; }
 
         /// <summary>
@@ -455,10 +460,14 @@ namespace Dynamo.Models
             InitializeCurrentWorkspace();
 
             CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
+            CustomNodeManager.MessageLogged += LogMessage;
+
+            ZeroTouchManager = new ZeroTouchManager();
+            ZeroTouchManager.MessageLogged += LogMessage;
 
             Loader = new DynamoLoader();
-            Loader.PackageLoader.DoCachedPackageUninstalls( preferences );
-            Loader.PackageLoader.LoadPackagesIntoDynamo( preferences );
+            Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
+            Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -495,6 +504,8 @@ namespace Dynamo.Models
             Runner.EvaluationCompleted -= Runner_EvaluationCompleted;
             Runner.ExceptionOccurred -= Runner_ExceptionOccurred;
             Runner.MessageLogged -= LogMessage;
+            CustomNodeManager.MessageLogged -= LogMessage;
+            ZeroTouchManager.MessageLogged -= LogMessage;
             CurrentWorkspaceChanged -= SearchModel.RevealWorkspaceSpecificNodes;
             if (PreferenceSettings != null)
             {
@@ -1076,7 +1087,7 @@ namespace Dynamo.Models
                         MigrationManager.Instance.ProcessWorkspaceMigrations(
                             currentVersion,
                             xmlDoc,
-                            fileVersion);
+                            fileVersion)
                         MigrationManager.Instance.ProcessNodesInWorkspace(this, xmlDoc, fileVersion);
                         break;
                 }

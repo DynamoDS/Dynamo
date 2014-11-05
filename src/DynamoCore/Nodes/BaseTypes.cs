@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.UI;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -203,13 +204,13 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <returns></returns>
-        public static System.Type ResolveType(DynamoModel dynamoModel, string fullyQualifiedName)
+        public static Type ResolveType(
+            string fullyQualifiedName, Dictionary<string, TypeLoadData> builtInTypes, ILogger logger)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException("fullyQualifiedName");
+                throw new ArgumentNullException(@"fullyQualifiedName");
 
-            TypeLoadData tData = null;
-            var builtInTypes = dynamoModel.BuiltInTypesByName;
+            TypeLoadData tData;
             if (builtInTypes.TryGetValue(fullyQualifiedName, out tData))
                 return tData.Type; // Found among built-in types, return it.
 
@@ -218,31 +219,35 @@ namespace Dynamo.Nodes
             if (null != type)
                 return type;
 
-            // If we still can't find the type, try the also known as attributes.
-            foreach (var builtInType in dynamoModel.BuiltInTypesByName)
+            var query =
+                builtInTypes.Select(
+                    builtInType =>
+                        new
+                        {
+                            builtInType,
+                            attribs =
+                        builtInType.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false)
+                        })
+                    .Where(
+                        t =>
+                            t.attribs.Any()
+                                && (t.attribs[0] as AlsoKnownAsAttribute).Values.Contains(fullyQualifiedName))
+                    .Select(t => t.builtInType);
+
+            if (query.Any()) // Found a matching type.
             {
-                var attribs = builtInType.Value.Type.GetCustomAttributes(
-                    typeof(AlsoKnownAsAttribute), false);
-
-                if (attribs.Count() <= 0)
-                    continue;
-
-                AlsoKnownAsAttribute akaAttrib = attribs[0] as AlsoKnownAsAttribute;
-                if (akaAttrib.Values.Contains(fullyQualifiedName))
-                {
-                    dynamoModel.Logger.Log(string.Format(
+                var builtInType = query.First();
+                logger.Log(
+                    string.Format(
                         "Found matching node for {0} also known as {1}",
-                        builtInType.Key, fullyQualifiedName));
+                        builtInType.Key,
+                        fullyQualifiedName));
 
-                    return builtInType.Value.Type; // Found a matching type.
-                }
+                return builtInType.Value.Type;
             }
 
-            dynamoModel.Logger.Log(string.Format(
-                "Could not load node of type: {0}", fullyQualifiedName));
-
-            dynamoModel.Logger.Log("Loading will continue but nodes " +
-                "might be missing from your workflow.");
+            logger.Log(string.Format("Could not load node of type: {0}", fullyQualifiedName));
+            logger.Log("Loading will continue but nodes " + "might be missing from your workflow.");
 
             return null;
         }

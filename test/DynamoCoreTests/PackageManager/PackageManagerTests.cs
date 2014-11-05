@@ -8,7 +8,6 @@ using DSCore;
 
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 
 using Greg.Responses;
@@ -53,7 +52,7 @@ namespace Dynamo.Tests
         [Category("Failure")]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger);
+            var loader = new PackageLoader((string)ViewModel.Model.Logger);
             loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings);
 
             Assert.AreEqual(1, loader.LocalPackages.Count);

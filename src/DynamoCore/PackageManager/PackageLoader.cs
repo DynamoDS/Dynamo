@@ -15,17 +15,13 @@ namespace Dynamo.PackageManager
     public class PackageLoader : LogSourceBase
     {
         public string RootPackagesDirectory { get; private set; }
-
-        private readonly DynamoLoader loader;
-
-        public PackageLoader(DynamoLoader dynamoLoader)
-            : this(dynamoLoader, Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
+        
+        public PackageLoader()
+            : this(Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
         { }
 
-        public PackageLoader(DynamoLoader dynamoLoader, string overridePackageDirectory)
+        public PackageLoader(string overridePackageDirectory)
         {
-            loader = dynamoLoader;
-
             RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(RootPackagesDirectory))
                 Directory.CreateDirectory(RootPackagesDirectory);
@@ -37,7 +33,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo( IPreferences preferences )
+        public void LoadPackagesIntoDynamo(IPreferences preferences, DynamoLoader loader)
         {
             ScanAllPackageDirectories( preferences );
 

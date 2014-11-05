@@ -18,10 +18,10 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase
     {
-        public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+        public DSVarArgFunction() : this(null) { }
 
-        public DSVarArgFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
-            : base(new ZeroTouchVarArgNodeController(workspaceModel.dynamoModel.EngineController, descriptor))
+        public DSVarArgFunction(FunctionDescriptor descriptor)
+            : base(new ZeroTouchVarArgNodeController(descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
         }
@@ -92,9 +92,8 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
     {
-        public ZeroTouchVarArgNodeController(EngineController engineController,
-            FunctionDescriptor zeroTouchDef)
-            : base(engineController, zeroTouchDef) { }
+        public ZeroTouchVarArgNodeController(FunctionDescriptor zeroTouchDef)
+            : base(zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

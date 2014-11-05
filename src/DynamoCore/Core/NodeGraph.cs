@@ -16,139 +16,13 @@ namespace Dynamo.Core
         public List<ConnectorModel> Connectors;
         public List<NoteModel> Notes;
 
-        private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc)
+        private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes.Count == 0)
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
             XmlNode elNodesList = elNodes[0];
-
-            foreach (XmlNode elNode in elNodesList.ChildNodes)
-            {
-                XmlAttribute typeAttrib = elNode.Attributes["type"];
-                XmlAttribute guidAttrib = elNode.Attributes["guid"];
-                XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
-                XmlAttribute xAttrib = elNode.Attributes["x"];
-                XmlAttribute yAttrib = elNode.Attributes["y"];
-                XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
-                XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
-                XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
-
-                string typeName = typeAttrib.Value;
-
-                //test the GUID to confirm that it is non-zero
-                //if it is zero, then we have to fix it
-                //this will break the connectors, but it won't keep
-                //propagating bad GUIDs
-                var guid = new Guid(guidAttrib.Value);
-                if (guid == Guid.Empty)
-                {
-                    guid = Guid.NewGuid();
-                }
-
-                string nickname = nicknameAttrib.Value;
-
-                double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-                bool isVisible = true;
-                if (isVisAttrib != null)
-                    isVisible = isVisAttrib.Value == "true";
-
-                bool isUpstreamVisible = true;
-                if (isUpstreamVisAttrib != null)
-                    isUpstreamVisible = isUpstreamVisAttrib.Value == "true";
-
-                // Retrieve optional 'function' attribute (only for DSFunction).
-                XmlAttribute signatureAttrib = elNode.Attributes["function"];
-                var signature = signatureAttrib == null ? null : signatureAttrib.Value;
-                
-                NodeModel node = null;
-                XmlElement dummyElement = null;
-
-                try
-                {
-                    // The attempt to create node instance may fail due to "type" being
-                    // something else other than "NodeModel" derived object type. This 
-                    // is possible since some legacy nodes have been made to derive from
-                    // "MigrationNode" object type that is not derived from "NodeModel".
-                    // 
-                    typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                    Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
-                    if (type != null)
-                        node = nodeFactory.CreateNodeInstance(type, nickname, signature, guid);
-
-                    if (node != null)
-                    {
-                        node.Load(elNode);
-                    }
-                    else
-                    {
-                        var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateMissingNode(e, 1, 1);
-                    }
-                }
-                catch (UnresolvedFunctionException)
-                {
-                    // If a given function is not found during file load, then convert the 
-                    // function node into a dummy node (instead of crashing the workflow).
-                    // 
-                    var e = elNode as XmlElement;
-                    dummyElement = MigrationManager.CreateUnresolvedFunctionNode(e);
-                }
-
-                //=====HOME=====
-
-                // If a custom node fails to load its definition, convert it into a dummy node.
-                var function = node as Function;
-                if ((function != null) && (function.Definition == null))
-                {
-                    var e = elNode as XmlElement;
-                    dummyElement = MigrationManager.CreateMissingNode(
-                        e, node.InPortData.Count, node.OutPortData.Count);
-                }
-
-                //==============
-
-                if (dummyElement != null) // If a dummy node placement is desired.
-                {
-                    // The new type representing the dummy node.
-                    typeName = dummyElement.GetAttribute("type");
-                    var type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
-
-                    node = NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
-                    node.Load(dummyElement);
-                }
-
-                node.X = x;
-                node.Y = y;
-
-                if (lacingAttrib != null)
-                {
-                    if (node.ArgumentLacing != LacingStrategy.Disabled)
-                    {
-                        LacingStrategy lacing;
-                        Enum.TryParse(lacingAttrib.Value, out lacing);
-                        node.ArgumentLacing = lacing;
-                    }
-                }
-
-                // This is to fix MAGN-3648. Method reference in CBN that gets 
-                // loaded before method definition causes a CBN to be left in 
-                // a warning state. This is to clear such warnings and set the 
-                // node to "Dead" state (correct value of which will be set 
-                // later on with a call to "EnableReporting" below). Please 
-                // refer to the defect for details and other possible fixes.
-                // 
-                if (node.State == ElementState.Warning && (node is CodeBlockNodeModel))
-                    node.State = ElementState.Dead; // Condition to fix MAGN-3648
-
-
-                node.IsVisible = isVisible;
-                node.IsUpstreamVisible = isUpstreamVisible;
-
-                yield return node;
-            }
+            return from XmlNode elNode in elNodesList.ChildNodes select nodeFactory.CreateNodeFromXml(elNode);
         }
 
         public static NodeGraph LoadFromXml(XmlDocument xmlDoc)
@@ -198,7 +72,7 @@ namespace Dynamo.Core
                 NodeModel start = null;
                 NodeModel end = null;
 
-                foreach (NodeModel e in CurrentWorkspace.Nodes)
+                foreach (NodeModel e in nodes)
                 {
                     if (e.GUID == guidStart)
                     {

@@ -6,6 +6,7 @@ using System.Linq;
 
 using Dynamo.Core;
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using System.Reflection;
 using System.IO;
@@ -23,21 +24,19 @@ namespace Dynamo.Utilities
     /// about package loading see the PackageLoader. For information
     /// about loading other libraries, see LibraryServices.
     /// </summary>
-    public class DynamoLoader
+    public class DynamoLoader : LogSourceBase, IDisposable
     {
         #region Properties/Fields
 
-        private DynamoModel dynamoModel;
         public PackageLoader PackageLoader { get; private set; }
 
-        private static string _dynamoDirectory = "";
-        public static HashSet<string> SearchPaths = new HashSet<string>();
-        public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
-        public static HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
-        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
+        public readonly HashSet<string> SearchPaths = new HashSet<string>();
+        public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
+        public readonly HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
+
+        public readonly Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
             new Dictionary<string, List<Type>>();
 
-       
         #endregion
 
         #region Events
@@ -68,21 +67,25 @@ namespace Dynamo.Utilities
 
         #endregion
 
-        public DynamoLoader(DynamoModel model)
+        public DynamoLoader()
         {
-            this.dynamoModel = model;
-            this.PackageLoader = new PackageLoader(this, dynamoModel.Logger);
+            PackageLoader = new PackageLoader();
+            PackageLoader.MessageLogged += Log;
+        }
+
+        public void Dispose()
+        {
+            PackageLoader.MessageLogged -= Log;
         }
 
         #region Methods
-
 
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
         /// the bin/nodes directory. Add the types to the searchviewmodel and
         /// the controller's dictionaries.
         /// </summary>
-        internal void LoadNodeModels()
+        public void LoadNodeModels()
         {
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
@@ -148,7 +151,7 @@ namespace Dynamo.Utilities
                     }
                     catch (Exception e)
                     {
-                        dynamoModel.Logger.Log(e);
+                        Log(e);
                     }
                 }
             }
@@ -203,7 +206,8 @@ namespace Dynamo.Utilities
                         var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
-                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
+                        var isDSCompatible =
+                            t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         bool isHidden = false;
                         var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
@@ -224,10 +228,12 @@ namespace Dynamo.Utilities
                         if (!dynamoModel.Context.Equals(Context.NONE))
                         {
 
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                            object[] platformExclusionAttribs =
+                                t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
                             if (platformExclusionAttribs.Length > 0)
                             {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+                                string[] exclusions =
+                                    (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
 
                                 //if the attribute's values contain the context stored on the Model
                                 //then skip loading this type.
@@ -249,46 +255,37 @@ namespace Dynamo.Utilities
 
                         var data = new TypeLoadData(assembly, t);
 
-                        if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
-                            dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
-                        else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
-
                         if (!dynamoModel.BuiltInTypesByName.ContainsKey(t.FullName))
                             dynamoModel.BuiltInTypesByName.Add(t.FullName, data);
                         else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
+                            Log("Duplicate type encountered: " + typeName);
 
                         OnAssemblyLoaded(assembly);
                     }
                     catch (Exception e)
                     {
-                        dynamoModel.Logger.Log("Failed to load type from " + assembly.FullName);
-                        dynamoModel.Logger.Log("The type was " + t.FullName);
-                        dynamoModel.Logger.Log(e);
+                        Log("Failed to load type from " + assembly.FullName);
+                        Log("The type was " + t.FullName);
+                        Log(e);
                     }
 
+                }
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                Log("Could not load types.");
+                Log(e);
+                foreach (var ex in e.LoaderExceptions)
+                {
+                    Log("Dll Load Exception:");
+                    Log(ex.ToString());
                 }
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Could not load types.");
-                dynamoModel.Logger.Log(e);
-                if (e is ReflectionTypeLoadException)
-                {
-                    var typeLoadException = e as ReflectionTypeLoadException;
-                    Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[0]);
-                    dynamoModel.Logger.Log(loaderExceptions[0].ToString());
-                    if (loaderExceptions.Count() > 1)
-                    {
-                        dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[1]);
-                        dynamoModel.Logger.Log(loaderExceptions[1].ToString());
-                    }
-                }
+                Log("Could not load types.");
+                Log(e);
             }
-
-            
 
             return AssemblyPathToTypesLoaded[assembly.Location];
         }

@@ -24,12 +24,12 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {
-        public DSFunction(EngineController engineController) 
-            : this(engineController, null)
+        public DSFunction() 
+            : this(null)
         { }
 
-        public DSFunction(EngineController engineController, FunctionDescriptor descriptor)
-            : base(new ZeroTouchNodeController(engineController, descriptor))
+        public DSFunction(FunctionDescriptor descriptor)
+            : base(new ZeroTouchNodeController(descriptor))
         { }
     }
 
@@ -38,14 +38,9 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchNodeController : FunctionCallNodeController<FunctionDescriptor>
     {
-        private readonly EngineController engineController;
-
-        public ZeroTouchNodeController(
-            EngineController engineController, FunctionDescriptor zeroTouchDef) :
-                base(zeroTouchDef)
-        {
-            this.engineController = engineController;
-        }
+        public ZeroTouchNodeController(FunctionDescriptor zeroTouchDef)
+            : base(zeroTouchDef)
+        { }
 
         /// <summary>
         ///     Description of function, taken from Definition.
@@ -187,10 +182,12 @@ namespace Dynamo.Nodes
                     LibraryServices.GetInstance()
                         .FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
-                function = hintedSigniture == null ? xmlSignature : hintedSigniture;
+                function = hintedSigniture ?? xmlSignature;
             }
 
-            var engine = this.engineController;
+            //TODO(Steve): This should go in the ZeroTouchManager
+
+            var engine = engineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {
