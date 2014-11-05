@@ -2042,9 +2042,102 @@ r = Equals(x, {41, 42});
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
 
-            // Verify that x must have automatically re-executed and that it can no loger find the function
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
             RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
             Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestRedefineFunctionName01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = 1;}",
+                "x = f();",
+                "def g() { return = 1;}",
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestRedefineFunctionName02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = 1;} def f(i:int) { return = i;}",
+                "x = f();y = f(2);",
+                "def g() { return = 1;} def f(i:int) { return = i;}",
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+            AssertValue("y", 2);
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+            // Verify that 'y' was not affected and retains its old value
+            AssertValue("y", 2);
 
         }
 

@@ -1443,9 +1443,10 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
             }
 
-            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
-                   ReturnType.Equals(otherNode.ReturnType) &&
-                   Attributes.SequenceEqual(otherNode.Attributes);
+            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) 
+                && ReturnType.Equals(otherNode.ReturnType) 
+                && Attributes.SequenceEqual(otherNode.Attributes)
+                && Name.Equals(otherNode.Name);
 
             bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
 
