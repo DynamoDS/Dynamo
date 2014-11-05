@@ -101,8 +101,6 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetsFromFile.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(4, ViewModel.CurrentSpace.Nodes.Count);
-
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
@@ -145,8 +143,6 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
-
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
@@ -167,8 +163,6 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_ascending.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -204,8 +198,6 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_2Dimensional.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
-
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
@@ -240,8 +232,6 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_missingCell.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -281,8 +271,6 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -328,8 +316,6 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\ReadAndWriteExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
-
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
@@ -340,10 +326,10 @@ namespace Dynamo.Tests
             stringNode.Value = filePath;
 
             // watch displays the data from the Read node
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.Read");
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
 
             // writeNode should have the same data contained in watch
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.Write");
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
             ViewModel.Model.RunExpression();
 
@@ -542,7 +528,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.Write");
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
             ViewModel.Model.RunExpression();
 

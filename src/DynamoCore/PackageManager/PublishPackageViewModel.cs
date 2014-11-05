@@ -25,11 +25,21 @@ namespace Dynamo.PackageManager
 {
     public delegate void PublishSuccessHandler(PublishPackageViewModel sender);
 
+    public class PackageAssembly
+    {
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
+
+        public string Name
+        {
+            get { return Assembly.GetName().Name; }
+        }
+    }
+
     /// <summary>
     /// The ViewModel for Package publishing </summary>
     public class PublishPackageViewModel : NotificationObject
     {
-
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
@@ -401,7 +411,7 @@ namespace Dynamo.PackageManager
             {
                 _packageContents = CustomNodeDefinitions.Select(
                     (def) => new PackageItemRootViewModel(def))
-                    .Concat(Assemblies.Select((assem) => new PackageItemRootViewModel(assem)))
+                    .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                     .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                     .ToList();
                 return _packageContents;
@@ -422,7 +432,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public List<Assembly> Assemblies { get; set; }
+        public List<PackageAssembly> Assemblies { get; set; }
 
         /// <summary>
         /// AdditionalFiles property 
@@ -480,7 +490,7 @@ namespace Dynamo.PackageManager
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.ToggleMoreCommand = new DelegateCommand(() => this.MoreExpanded = !this.MoreExpanded, () => true);
             this.Dependencies = new ObservableCollection<PackageDependency>();
-            this.Assemblies = new List<Assembly>();
+            this.Assemblies = new List<PackageAssembly>();
             this.PropertyChanged += this.ThisPropertyChanged;
         }
 
@@ -532,14 +542,21 @@ namespace Dynamo.PackageManager
                 vm.AdditionalFiles.Add(file.Model.FullName);
             }
 
+            var nodeLibraryNames = l.Header.node_libraries;
+
             // load assemblies into reflection only context
-            foreach (var file in l.EnumerateAssemblyFiles())
+            foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
                 if (result)
                 {
-                    vm.Assemblies.Add(assem);
+                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                    vm.Assemblies.Add(new  PackageAssembly()
+                    {
+                        IsNodeLibrary = isNodeLibrary,
+                        Assembly = assem
+                    });
                 }
                 else
                 {
@@ -627,7 +644,7 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(this.AdditionalFiles);
-            files = files.Union(this.Assemblies.Select(x => x.Location));
+            files = files.Union(this.Assemblies.Select(x => x.Assembly.Location));
 
             return files;
         }
@@ -683,7 +700,6 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
-            // TODO: include descriptions for all compiled nodes
             var pkgLoader = this.dynamoViewModel.Model.Loader.PackageLoader;
 
             // collect the name-description pairs for every custom node
@@ -815,7 +831,11 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(filename, out assem);
                 if (result)
                 {
-                    this.Assemblies.Add(assem);
+                    this.Assemblies.Add(new PackageAssembly()
+                    {
+                        Assembly = assem,
+                        IsNodeLibrary = true // assume is node library when first added
+                    });
                     this.RaisePropertyChanged("PackageContents");
                 }
                 else
@@ -835,6 +855,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
+                // build the package
                 var isNewPackage = Package == null;
 
                 Package = Package ?? new Package("", this.Name, this.FullVersion, this.License);
@@ -847,10 +868,7 @@ namespace Dynamo.PackageManager
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
 
-                Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
-
-                if (ContainsBinaries) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesConstant;
-                if (ContainsPythonScripts) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsConstant;
+                AppendPackageContents();
 
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
@@ -862,8 +880,12 @@ namespace Dynamo.PackageManager
                     this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
                 }
 
+                Package.AddAssemblies(this.Assemblies);
+
+                // begin submission
                 var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);
 
+                // start upload
                 this.Uploading = true;
                 this.UploadHandle = handle;
 
@@ -873,27 +895,11 @@ namespace Dynamo.PackageManager
                 ErrorString = e.Message;
                 this.dynamoViewModel.Model.Logger.Log(e);
             }
-
         }
 
-        private bool ContainsBinaries
+        private void AppendPackageContents()
         {
-            get
-            {
-                return this.Assemblies.Any()
-                    || this.AdditionalFiles.Any(x => x.ToLower().EndsWith(".dll") || x.ToLower().EndsWith(".exe"));
-            }
-        }
-
-        private bool ContainsPythonScripts
-        {
-            get
-            {
-                return this.CustomNodeDefinitions.Any(
-                    x => x.WorkspaceModel.Nodes.Any(
-                        n => n.GetType().Name == "PythonNode" ||
-                            n.GetType().Name == "PythonStringNode"));
-            }
+            Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
         }
 
         /// <summary>
