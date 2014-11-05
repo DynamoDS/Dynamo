@@ -109,7 +109,7 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private static readonly string serverUrl = "https://www.dynamopackages.com";
+        private static readonly string serverUrl = "https://www.dynamopackages.com/";
 
         public PackageManagerClient(DynamoModel dynamoModel)
         {
