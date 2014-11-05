@@ -31,8 +31,6 @@ namespace RevitSystemTests
             string samplePath = Path.Combine(workingDirectory, @".\Samples\SimpleCloudRender.dyn");
             string testPath = Path.GetFullPath(samplePath);
             ViewModel.OpenCommand.Execute(testPath);
-
-            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             AssertNoDummyNodes();
         }
 

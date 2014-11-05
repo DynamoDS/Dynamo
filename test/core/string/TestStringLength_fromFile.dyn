@@ -1,16 +1,18 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynStringLen type="Dynamo.Nodes.dynStringLen" guid="5cdd53ee-c7a2-4629-bcaa-2e9216172739" nickname="String Length" x="446" y="313.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="669" y="318.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="62873736-eccd-4d4f-b452-a58c5b6a90f9" nickname="Read Text File" x="276" y="299.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="5315a1dc-17e5-4a88-973b-71592116a05a" nickname="File Path" x="32" y="278.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestStringLength_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="5cdd53ee-c7a2-4629-bcaa-2e9216172739" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="62873736-eccd-4d4f-b452-a58c5b6a90f9" start_index="0" end="5cdd53ee-c7a2-4629-bcaa-2e9216172739" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="5315a1dc-17e5-4a88-973b-71592116a05a" start_index="0" end="62873736-eccd-4d4f-b452-a58c5b6a90f9" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.7.4.3075" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5cdd53ee-c7a2-4629-bcaa-2e9216172739" nickname="String.Length" x="446" y="313.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Length@string" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="669" y="318.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="62873736-eccd-4d4f-b452-a58c5b6a90f9" nickname="File.ReadText" x="276" y="299.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="5315a1dc-17e5-4a88-973b-71592116a05a" nickname="File Path" x="24" y="160.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestStringLength_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="5f97496f-e1b9-4ada-b664-5f195753edf5" nickname="File.FromPath" x="134" y="301.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5cdd53ee-c7a2-4629-bcaa-2e9216172739" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="62873736-eccd-4d4f-b452-a58c5b6a90f9" start_index="0" end="5cdd53ee-c7a2-4629-bcaa-2e9216172739" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5315a1dc-17e5-4a88-973b-71592116a05a" start_index="0" end="5f97496f-e1b9-4ada-b664-5f195753edf5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5f97496f-e1b9-4ada-b664-5f195753edf5" start_index="0" end="62873736-eccd-4d4f-b452-a58c5b6a90f9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
