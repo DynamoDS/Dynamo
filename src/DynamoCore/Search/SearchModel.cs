@@ -82,7 +82,11 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return browserCategoriesBuilder.RootCategories; }            
+            get 
+            {
+                // Order addons by names.
+                return browserCategoriesBuilder.RootCategories.OrderBy(x => x.Name).ToObservableCollection(); 
+            }            
         }
 
         /// <summary>
