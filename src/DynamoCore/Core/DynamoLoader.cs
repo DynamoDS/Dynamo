@@ -1,4 +1,5 @@
 ﻿//#define __NO_SAMPLES_MENU
+#define DEBUG_LIBRARY
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
+using System.Text;
 
 namespace Dynamo.Utilities
 {
@@ -121,7 +123,12 @@ namespace Dynamo.Utilities
                 }
             }
 
-            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
+            var functionGroups = dynamoModel.EngineController.GetFunctionGroups();
+            dynamoModel.SearchModel.Add(functionGroups);
+
+#if DEBUG_LIBRARY
+            DumpLibrarySnapshot(functionGroups);
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
@@ -136,6 +143,41 @@ namespace Dynamo.Utilities
             return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(NodeModel));
+        }
+
+        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var functionGroup in functionGroups)
+            {
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                foreach (var function in functions)
+                {
+                    //Don't add the functions that are not visible in library.
+                    if (!function.IsVisibleInLibrary)
+                        continue;
+
+                    var displayString = function.UserFriendlyName;
+                
+                    // do not add GetType method names to search
+                    if (displayString.Contains("GetType"))
+                    {
+                        continue;
+                    }
+
+                    var nameSpace = string.IsNullOrEmpty(function.Namespace) ? "" : function.Namespace + ".";
+                    var description = nameSpace + function.Signature + "\n";
+
+                    sb.Append(description + "\n");
+                }
+            }
+            dynamoModel.Logger.Log(sb.ToString(), LogLevel.File);
         }
 
         internal bool ContainsNodeModelSubType(Assembly assem)
