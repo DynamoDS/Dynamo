@@ -90,7 +90,11 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get { return addonCategoriesBuilder.RootCategories; }            
+            get 
+            {
+                // Order addons by names.
+                return addonCategoriesBuilder.RootCategories.OrderBy(x => x.Name).ToObservableCollection();
+            }
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
