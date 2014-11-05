@@ -25,11 +25,12 @@ namespace Dynamo.Core.Threading
     {
         #region Class Data Members and Properties
 
+        protected Guid targetedNodeId = Guid.Empty;
         private readonly List<IRenderPackage> normalRenderPackages;
         private readonly List<IRenderPackage> selectedRenderPackages;
         private IEnumerable<NodeModel> duplicatedNodeReferences;
 
-        internal Guid NodeId { get; set; }
+        internal Guid NodeId { get { return targetedNodeId; } }
 
         internal IEnumerable<IRenderPackage> NormalRenderPackages
         {
@@ -78,14 +79,14 @@ namespace Dynamo.Core.Threading
 
             if (nodeModel == null) // No node is specified, gather all nodes.
             {
-                NodeId = Guid.Empty;
+                targetedNodeId = Guid.Empty;
 
                 // Duplicate a list of all nodes for consumption later.
                 duplicatedNodeReferences = workspaceModel.Nodes.ToList();
             }
             else
             {
-                NodeId = nodeModel.GUID;
+                targetedNodeId = nodeModel.GUID;
 
                 // Recursively gather all upstream nodes.
                 var gathered = new List<NodeModel>();
@@ -145,8 +146,7 @@ namespace Dynamo.Core.Threading
             if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
                 return TaskMergeInstruction.KeepThis;
 
-            //return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
-            return TaskMergeInstruction.KeepBoth;
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
         }
 
         #endregion
