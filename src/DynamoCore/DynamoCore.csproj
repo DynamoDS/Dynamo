@@ -179,6 +179,7 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
+    <Compile Include="PackageManager\PackageFileInfo.cs" />
     <Compile Include="UI\CodeBlockCompletionData.cs" />
     <Compile Include="UI\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
