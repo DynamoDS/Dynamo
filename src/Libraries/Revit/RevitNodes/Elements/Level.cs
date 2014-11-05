@@ -58,15 +58,7 @@ namespace Revit.Elements
                 return;
             }
 
-            //Phase 2- There was no existing element, create new
-            //Phase 2.1- Check to see whether there is an existing level with the same name
-            var levels = ElementQueries.GetAllLevels();
-            if (levels.Any(x => string.CompareOrdinal(x.Name, name) == 0))
-            {
-                throw new Exception("A level with the specified name already exists");
-            }
-
-            //Phase 2.2 - if there is no existing level of the same name, create a new one
+            //There was no element, create a new one
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             Autodesk.Revit.DB.Level level;
@@ -126,7 +118,17 @@ namespace Revit.Elements
         /// <param name="name"></param>
         private void InternalSetName(string name)
         {
-            if (String.IsNullOrEmpty(name)) return;
+            if (String.IsNullOrEmpty(name) ||
+                string.CompareOrdinal(InternalLevel.Name, name) == 0)
+                return;
+
+            //Check to see whether there is an existing level with the same name
+            var levels = ElementQueries.GetAllLevels();
+            while (levels.Any(x => string.CompareOrdinal(x.Name, name) == 0))
+            {
+                //Update the level name
+                ElementUtils.UpdateLevelName(ref name);
+            }
 
             TransactionManager.Instance.EnsureInTransaction(Document);
             this.InternalLevel.Name = name;
@@ -211,7 +213,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("level");
             }
 
-            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, null);
+            return new Level((level.Elevation + offset) * UnitConverter.DynamoToHostFactor, null);
         }
 
         /// <summary>
@@ -234,7 +236,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, name);
+            return new Level((level.Elevation + offset) * UnitConverter.DynamoToHostFactor, name);
         }
 
         #endregion

@@ -119,24 +119,11 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
-            // convert
-            var center = arc.CenterPoint.ToXyz(false);
             var sp = arc.StartPoint.ToXyz(false);
+            var ep = arc.EndPoint.ToXyz(false);
+            var mp = arc.PointAtParameter(0.5).ToXyz(false);
 
-            // get the xaxis of the arc base plane
-            var x = (sp - center).Normalize();
-
-            // get a second vector in the plane
-            var vecY = (arc.PointAtParameter(0.1).ToXyz(false) - center);
-
-            // get the normal to the plane
-            var n2 = x.CrossProduct(vecY).Normalize();
-
-            // obtain the y axis in the plane - perp to x and z
-            var y = n2.CrossProduct(x);
-
-            var plane = new Autodesk.Revit.DB.Plane(x, y, center);
-            return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, 0, arc.SweepAngle.ToRadians());
+            return Autodesk.Revit.DB.Arc.Create(sp, ep, mp);
         }
 
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)

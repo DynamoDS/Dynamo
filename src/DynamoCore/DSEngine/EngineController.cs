@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -30,6 +31,7 @@ namespace Dynamo.DSEngine
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
+        private CodeCompletionServices codeCompletionServices; 
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
@@ -59,6 +61,8 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
 
@@ -84,6 +88,7 @@ namespace Dynamo.DSEngine
             }
 
             libraryServices.Dispose();
+            codeCompletionServices = null;
 
             libraryCore.Cleanup();
         }
@@ -130,6 +135,11 @@ namespace Dynamo.DSEngine
             get { return libraryServices; }
         }
 
+        public CodeCompletionServices CodeCompletionServices
+        {
+            get { return codeCompletionServices; }
+        }
+
         #region Value queries
 
         /// <summary>
@@ -157,20 +167,6 @@ namespace Dynamo.DSEngine
                 }
 
                 return mirror;
-            }
-        }
-
-        /// <summary>
-        /// Get string representation of the value of variable.
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        public string GetStringValue(string variableName)
-        {
-            lock (macroMutex)
-            {
-                RuntimeMirror mirror = GetMirror(variableName);
-                return null == mirror ? "null" : mirror.GetStringData();
             }
         }
 
@@ -370,8 +366,8 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
-                                                                    .Where(n => n.ForceReExecuteOfNode)
-                                                                    .Select(n => n.GUID);
+                .Where(n => n.ForceReExecuteOfNode)
+                .Select(n => n.GUID);
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
             {
                 for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
@@ -550,11 +546,6 @@ namespace Dynamo.DSEngine
             return libraryServices.GetFunctionDescriptor(managledName);
         }
 
-        internal ClassMirror GetClassType(string className)
-        {
-            return liveRunnerServices.GetClassType(className);
-        }
-
         /// <summary>
         /// LibraryLoading event handler.
         /// </summary>
@@ -587,6 +578,10 @@ namespace Dynamo.DSEngine
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+
+            // The LiveRunner core is newly instantiated whenever a new library is imported
+            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.

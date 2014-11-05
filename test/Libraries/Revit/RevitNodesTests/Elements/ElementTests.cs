@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
 
 using NUnit.Framework;
 
@@ -13,12 +9,14 @@ using Revit.GeometryReferences;
 
 using RevitServices.Persistence;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    class ElementTests : GeometricRevitNodeTest
+    class ElementTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\materials.rvt")]
