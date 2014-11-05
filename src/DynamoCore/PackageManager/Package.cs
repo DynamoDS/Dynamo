@@ -283,7 +283,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var assem in assems)
             {
-                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly == assem.Assembly);
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.FullName == assem.Assembly.FullName);
                 if (existingAssem != null)
                 {
                     existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
@@ -416,7 +416,6 @@ namespace Dynamo.PackageManager
                         .ToList()
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
-
 
     }
 }

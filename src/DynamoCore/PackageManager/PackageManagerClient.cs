@@ -55,7 +55,7 @@ namespace Dynamo.PackageManager
 
         public bool HasAuthenticator
         {
-            get { return this.RequestAuthentication != null; }
+            get { return true; }
         }
 
         /// <summary>

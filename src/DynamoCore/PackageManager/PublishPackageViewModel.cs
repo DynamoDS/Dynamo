@@ -880,7 +880,7 @@ namespace Dynamo.PackageManager
                     this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
                 }
 
-                Package.AddAssemblies(this.Assemblies.Where(x => x.IsNodeLibrary));
+                Package.AddAssemblies(this.Assemblies);
 
                 // begin submission
                 var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);

@@ -190,6 +190,7 @@ namespace Dynamo.PackageManager.UI
         {
             get
             {
+                if (Assembly == null) return false;
                 return Assembly.IsNodeLibrary;
             }
             set
