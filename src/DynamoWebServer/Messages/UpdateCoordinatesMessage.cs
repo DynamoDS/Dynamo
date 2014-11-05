@@ -12,13 +12,22 @@ namespace DynamoWebServer.Messages
         #region Class Data Members
 
         /// <summary>
-        /// List of recordable commands that should be executed on server
+        /// List of nodes' guids with their positions
         /// </summary>
         [DataMember]
         public IEnumerable<NodePosition> NodePositions { get; set; }
 
+        /// <summary>
+        /// Guid of a specified workspace. Empty string for Home workspace
+        /// </summary>
         [DataMember]
         public string WorkspaceGuid { get; set; }
+
+        /// <summary>
+        /// New name for a specified workspace
+        /// </summary>
+        [DataMember]
+        public string WorkspaceName { get; set; }
 
         #endregion
     }
