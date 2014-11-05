@@ -193,5 +193,64 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        #region Categories Search
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanSearchForPartOfTextAndGetResult()
+        {
+            const string catName = "Category.Child";
+            addonCatBuilder.AddCategory(catName);
+            Assert.IsTrue(addonCatBuilder.ContainsCategory(catName));
+            Assert.AreEqual(1, addonCatBuilder.RootCategories.Count(x => x.Name == "Category"));
+            var nestedCat = addonCatBuilder.GetCategoryByName("Category.Child");
+            Assert.NotNull(nestedCat);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddMultiplyNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddAndRemoveMultiplyNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+            addonCatBuilder.RemoveCategory(catName);
+            Assert.False(addonCatBuilder.ContainsCategory(catName));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveRootAndRestOfChildrenOfNestedCategory()
+        {
+            const string catName = "Category.Child.Thing.That";
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+            addonCatBuilder.RemoveCategory("Category");
+            Assert.False(addonCatBuilder.ContainsCategory(catName));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddMultiplyNestedCategoryMultipleTimes()
+        {
+            const string catName = "Category.Child.Thing.That";
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            addonCatBuilder.AddCategory(catName);
+            Assert.True(addonCatBuilder.ContainsCategory(catName));
+        }
+
+        #endregion
     }
 }
