@@ -545,8 +545,8 @@ namespace ProtoScript.Runners
                             newCachedASTList.AddRange(modifiedASTList);
 
                             // ================================================================================
-                            // Get a list of functions that were removed and add them to the removed list 
-                            // This will be used by the changeset applier to handle removed function in the VM
+                            // Get a list of functions that were removed. 
+                            // This will passed to the changeset applier to handle removed functions in the VM
                             // ================================================================================
                             csData.RemovedFunctionDefNodesFromModification.AddRange(GetRemovedFunctions(oldSubTree.AstNodes, st.AstNodes));
 
@@ -816,7 +816,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Gets the list of functions that in prevASTList that no longer exist in newASTList
+        /// Returns the list of functions that exist in prevASTList and no longer exist in newASTList
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -834,20 +834,10 @@ namespace ProtoScript.Runners
                     continue;
                 }
 
-                bool functionExistsInNewAstList = false;
-                foreach (AssociativeNode newNode in newASTList)
+                // Check if the function 'fNode' exists in the newASTList
+                if (newASTList.Find(f => f.Equals(fNode)) == null)
                 {
-                    functionExistsInNewAstList = newNode.Equals(fNode);
-                    if (functionExistsInNewAstList)
-                    {
-                        // Function exists in the new astlist
-                        // Move to the next function in the previous ast list
-                        break;
-                    }
-                }
-
-                if (!functionExistsInNewAstList)
-                {
+                    // The function doesnt exist, add it to the removed list
                     removedFunctions.Add(fNode);
                 }
             }
