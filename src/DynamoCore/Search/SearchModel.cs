@@ -82,7 +82,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return browserCategoriesBuilder.RootCategories; }             
+            get { return browserCategoriesBuilder.RootCategories; }            
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get { return addonCategoriesBuilder.RootCategories; }               
+            get { return addonCategoriesBuilder.RootCategories; }            
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
