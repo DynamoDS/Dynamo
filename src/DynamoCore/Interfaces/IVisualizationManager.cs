@@ -1,4 +1,6 @@
-﻿namespace Dynamo.Interfaces
+﻿using Dynamo.Models;
+
+namespace Dynamo.Interfaces
 {
     public interface IVisualizationManager
     {
@@ -71,5 +73,6 @@
         /// </summary>
         void CheckIfLatestAndUpdate(long taskId);
 
+        void RequestBranchUpdate(NodeModel node);
     }
 }

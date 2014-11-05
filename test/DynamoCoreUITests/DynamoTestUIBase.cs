@@ -7,6 +7,9 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
@@ -27,6 +30,11 @@ namespace DynamoCoreUITests
         [SetUp]
         public virtual void Start()
         {
+            DynamoPathManager.Instance.InitializeCore(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
             CreateTemporaryFolder();
 

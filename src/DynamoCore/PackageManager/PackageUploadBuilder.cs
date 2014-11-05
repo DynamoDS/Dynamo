@@ -13,28 +13,29 @@ namespace Dynamo.PackageManager
 {
     static class PackageUploadBuilder
     {
-
         public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, "MIT", l.Contents, "dynamo",
-                                                         engineVersion, engineMetadata, l.Group, l.Dependencies );
+            // TODO(Peter): Once node library masks are active, we should store them in the last parameter
+            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, "dynamo",
+                                                         engineVersion, engineMetadata, l.Group, l.Dependencies, 
+                                                         l.SiteUrl, l.RepositoryUrl, l.EnumerateAssemblyFiles().Any(), 
+                                                         new List<string>() ); 
         }
 
         public static PackageUpload NewPackage(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
-            return BuildPackageUpload(pkg.Header, zipPath);
+            return new PackageUpload(pkg.Header, zipPath);
         }
 
         public static PackageVersionUpload NewPackageVersion(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
-            return BuildPackageVersionUpload(pkg.Header, zipPath);
+            string zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
+            return new PackageVersionUpload(pkg.Header, zipPath);
         }
-
 
     #region Utility methods
 
@@ -69,38 +70,6 @@ namespace Dynamo.PackageManager
             if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
 
             return zipPath;
-        }
-
-
-        private static PackageVersionUpload BuildPackageVersionUpload(PackageUploadRequestBody pkgHeader, string zipPath )
-        {
-            return new PackageVersionUpload(  pkgHeader.name,
-                                                pkgHeader.version,
-                                                pkgHeader.description,
-                                                pkgHeader.keywords,
-                                                pkgHeader.contents,
-                                                "dynamo",
-                                                pkgHeader.engine_version,
-                                                pkgHeader.engine_metadata,
-                                                pkgHeader.group,
-                                                zipPath,
-                                                pkgHeader.dependencies);    
-        }
-
-        private static PackageUpload BuildPackageUpload(PackageUploadRequestBody pkgHeader, string zipPath)
-        {
-            return new PackageUpload(pkgHeader.name,
-                                        pkgHeader.version,
-                                        pkgHeader.description,
-                                        pkgHeader.keywords,
-                                        pkgHeader.license,
-                                        pkgHeader.contents,
-                                        "dynamo",
-                                        pkgHeader.engine_version,
-                                        pkgHeader.engine_metadata,
-                                        pkgHeader.group,
-                                        zipPath,
-                                        pkgHeader.dependencies);
         }
 
         private static void RemapCustomNodeFilePaths( CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot )
@@ -229,7 +198,6 @@ namespace Dynamo.PackageManager
         }
 
 #endregion
-
 
     }
 }

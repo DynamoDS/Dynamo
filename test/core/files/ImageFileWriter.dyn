@@ -1,32 +1,20 @@
-<Workspace Version="0.7.0.28265" X="592.562114099586" Y="108.992338777982" zoom="1.13758205229474" Description="" Category="" Name="Home">
+<Workspace Version="0.7.4.3075" X="142.666620392657" Y="166.542150968933" zoom="0.770516848202245" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="48c04164-6435-4124-9fe6-b3319ef177da" nickname="Watch" x="517" y="154.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="84693240-90f3-45f3-9cb3-88207499f0bc" nickname="String" x="89" y="125.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value=".\" />
-    </Dynamo.Nodes.StringInput>
     <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" nickname="String" x="89" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="test" />
+      <System.String value="test.png" />
     </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="8357e7f6-f2c6-4b0b-b1df-1fd374a68877" nickname="File.WriteImage" x="287" y="135.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.WriteImage@string,string,var" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9f013ece-2df9-42ae-8cec-267ab5ee6bc1" nickname="FileReader.LoadImageFromPath" x="4.11370824768233" y="298.659296977478" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.LoadImageFromPath@string" />
     <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="0aaae6d6-f84b-4e61-888b-14936343d80a" nickname="String" x="-198.94856715832" y="300.417411916058" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="..\..\..\test\core\files\ImageFile.png" />
     </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="85b51fb0-1070-46c9-9de0-50292062ea92" nickname="Image.ReadFromFile" x="124.54458154042" y="376.895411744293" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.ReadFromFile@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" nickname="File.FromPath" x="-34.5648204010803" y="407.662423169445" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7d84e03a-61af-43e7-9445-dbfddb2713c4" nickname="Image.WriteToFile" x="394.38885207309" y="254.426689253478" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.WriteToFile@string,var" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="84693240-90f3-45f3-9cb3-88207499f0bc" start_index="0" end="8357e7f6-f2c6-4b0b-b1df-1fd374a68877" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" start_index="0" end="8357e7f6-f2c6-4b0b-b1df-1fd374a68877" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="8357e7f6-f2c6-4b0b-b1df-1fd374a68877" start_index="0" end="48c04164-6435-4124-9fe6-b3319ef177da" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9f013ece-2df9-42ae-8cec-267ab5ee6bc1" start_index="0" end="8357e7f6-f2c6-4b0b-b1df-1fd374a68877" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="0aaae6d6-f84b-4e61-888b-14936343d80a" start_index="0" end="9f013ece-2df9-42ae-8cec-267ab5ee6bc1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" start_index="0" end="7d84e03a-61af-43e7-9445-dbfddb2713c4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0aaae6d6-f84b-4e61-888b-14936343d80a" start_index="0" end="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="85b51fb0-1070-46c9-9de0-50292062ea92" start_index="0" end="7d84e03a-61af-43e7-9445-dbfddb2713c4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" start_index="0" end="85b51fb0-1070-46c9-9de0-50292062ea92" end_index="0" portType="0" />
   </Connectors>
   <Notes />
-  <SessionTraceData>
-    <NodeTraceData NodeId="8357e7f6-f2c6-4b0b-b1df-1fd374a68877">
-      <CallsiteTraceData>PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDAuMC4wLjAlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPmZhbHNlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo=</CallsiteTraceData>
-    </NodeTraceData>
-    <NodeTraceData NodeId="9f013ece-2df9-42ae-8cec-267ab5ee6bc1">
-      <CallsiteTraceData>PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDAuMC4wLjAlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPmZhbHNlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo=</CallsiteTraceData>
-    </NodeTraceData>
-  </SessionTraceData>
 </Workspace>

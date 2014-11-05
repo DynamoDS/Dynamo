@@ -213,7 +213,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("level");
             }
 
-            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, null);
+            return new Level((level.Elevation + offset) * UnitConverter.DynamoToHostFactor, null);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, name);
+            return new Level((level.Elevation + offset) * UnitConverter.DynamoToHostFactor, name);
         }
 
         #endregion
