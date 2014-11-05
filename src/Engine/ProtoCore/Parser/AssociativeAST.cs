@@ -65,6 +65,10 @@ namespace ProtoCore.AST.AssociativeAST
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
+            if (otherNode == null)
+            {
+                return false;
+            }
 
             // Compare language block properties
             bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);

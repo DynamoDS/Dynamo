@@ -142,7 +142,13 @@ namespace ProtoScript.Runners
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+            
+            // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
+
+            // Mark all graphnodes dependent on the removed function as dirty
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.RemovedFunctionDefNodesFromModification);
+
             // Mark all graphnodes dependent on the modified functions as dirty
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
         }
@@ -530,14 +536,19 @@ namespace ProtoScript.Runners
                         {
                             // Only update the cached ASTs if it is not ForceExecution
 
-                            // Cache the functions that were re-defined
-                            // The changeSetApplier will remove the previous definition of these functions given the function signature
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions.Where(n => n is FunctionDefinitionNode));
-
-                            // Update the current subtree list
                             List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+
+                            // Get all the unomodified ASTs and append them to the cached ast list 
                             newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+
+                            // Append all the modified ASTs to the cached ast list 
                             newCachedASTList.AddRange(modifiedASTList);
+
+                            // ================================================================================
+                            // Get a list of functions that were removed and add them to the removed list 
+                            // This will be used by the changeset applier to handle removed function in the VM
+                            // ================================================================================
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(GetRemovedFunctions(oldSubTree.AstNodes, st.AstNodes));
 
                             st.AstNodes.Clear();
                             st.AstNodes.AddRange(newCachedASTList);
@@ -802,6 +813,45 @@ namespace ProtoScript.Runners
                 }
             }
             return existingList;
+        }
+
+        /// <summary>
+        /// Gets the list of functions that in prevASTList that no longer exist in newASTList
+        /// </summary>
+        /// <param name="prevASTList"></param>
+        /// <param name="newASTList"></param>
+        /// <returns></returns>
+        private List<AssociativeNode> GetRemovedFunctions(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
+        {
+            List<AssociativeNode> removedFunctions = new List<AssociativeNode>();
+
+            // If any function in the prev ast list no longer exist in newASTList, then add it to the removed function list
+            foreach (AssociativeNode prevNode in prevASTList)
+            {
+                FunctionDefinitionNode fNode = prevNode as FunctionDefinitionNode;
+                if (fNode == null)
+                {
+                    continue;
+                }
+
+                bool functionExistsInNewAstList = false;
+                foreach (AssociativeNode newNode in newASTList)
+                {
+                    functionExistsInNewAstList = newNode.Equals(fNode);
+                    if (functionExistsInNewAstList)
+                    {
+                        // Function exists in the new astlist
+                        // Move to the next function in the previous ast list
+                        break;
+                    }
+                }
+
+                if (!functionExistsInNewAstList)
+                {
+                    removedFunctions.Add(fNode);
+                }
+            }
+            return removedFunctions;
         }
 
         /// <summary>
