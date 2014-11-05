@@ -15,6 +15,7 @@
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -138,6 +139,10 @@
                                 Grid.ColumnSpan="4"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
+                        <StackPanel.Visibility>
+                            <Binding Path="FullName"
+                                     Converter="{StaticResource EmptyStringToCollapsedConverter}"/>
+                        </StackPanel.Visibility>
                         <Image Source="/DynamoCore;component/UI/Images/Tooltip/code.png"/>
                         <TextBlock Name="code"
                                    FontSize="13"

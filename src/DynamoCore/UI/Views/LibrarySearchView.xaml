@@ -588,8 +588,10 @@
                                               Focusable="False"
                                               SelectionMode="Single">
                                         <ListView.Visibility>
-                                            <Binding Path="Classes.Count"
-                                                     Converter="{StaticResource IntToVisibilityConverter}" />
+                                            Collapsed
+                                            <!-- Do not remove. Classes are hidden temporarily. -->
+                                            <!--<Binding Path="Classes.Count"
+                                                     Converter="{StaticResource IntToVisibilityConverter}" />-->
                                         </ListView.Visibility>
                                         <ListView.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -687,7 +689,7 @@
                                                         <TextBlock Text="{Binding Prefix}"
                                                                    Foreground="#989898"
                                                                    FontSize="12"
-                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown"/>
+                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown" />
                                                         <TextBlock Text="{Binding GroupName}"
                                                                    FontSize="12">
                                                             <TextBlock.Style>
