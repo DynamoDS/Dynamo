@@ -29,6 +29,11 @@ namespace Dynamo.Search
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
         }
 
+        internal void SortCategoryItems()
+        {
+            rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.OrderBy(x => x.Name));
+        }
+
         internal void SortCategoryChildren()
         {
             rootCategories.ToList().ForEach(x => x.RecursivelySort());

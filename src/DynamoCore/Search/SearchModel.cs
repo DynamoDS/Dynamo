@@ -82,11 +82,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get 
-            {
-                // Order root elements by names.
-                return browserCategoriesBuilder.RootCategories.OrderBy(x => x.Name).ToObservableCollection(); 
-            }            
+            get { return browserCategoriesBuilder.RootCategories; }
         }
 
         /// <summary>
@@ -94,11 +90,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get 
-            {
-                // Order addons by names.
-                return addonCategoriesBuilder.RootCategories.OrderBy(x => x.Name).ToObservableCollection();
-            }
+            get { return addonCategoriesBuilder.RootCategories; }
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
@@ -328,6 +320,12 @@ namespace Dynamo.Search
         {
             browserCategoriesBuilder.RemoveEmptyCategories();
             addonCategoriesBuilder.RemoveEmptyCategories();
+        }
+
+        internal void SortRootCategories()
+        {
+            browserCategoriesBuilder.SortCategoryItems();
+            addonCategoriesBuilder.SortCategoryItems();
         }
 
         internal void SortCategoryChildren()
