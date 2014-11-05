@@ -11,16 +11,16 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class SearchModelTests
     {
-        private static SearchModel search;
-        private static CategoryBuilder browserCatBuilder;
-        private static CategoryBuilder addonCatBuilder;
+        private SearchModel search;
+        private CategoryBuilder browserCatBuilder;
+        private CategoryBuilder addonCatBuilder;
 
         [SetUp]
         public void Init()
         {
             search = new SearchModel();
-            browserCatBuilder = search.browserCategoriesBuilder;
-            addonCatBuilder = search.addonCategoriesBuilder;
+            browserCatBuilder = search.BrowserCategoriesBuilder;
+            addonCatBuilder = search.AddonCategoriesBuilder;
         }
 
         #region Refactoring
@@ -427,7 +427,7 @@ namespace Dynamo.Tests
         /// <summary>
         /// Helper method for custom node adding and removing
         /// </summary>
-        public static void AssertAddAndRemoveCustomNode(SearchModel searchModel, string nodeName, string catName, string descr = "Bla",
+        public void AssertAddAndRemoveCustomNode(SearchModel searchModel, string nodeName, string catName, string descr = "Bla",
                                                  string path = "Bla")
         {
             var dummyInfo = new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, descr, path);
@@ -689,7 +689,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanRunRemoveCategoryIfCategoryDoesntExist()
         {
-            var search = new SearchModel();
             addonCatBuilder.AddCategory("Peter.Boyer");
 
             addonCatBuilder.RemoveCategory("Peter.Rabbit");
