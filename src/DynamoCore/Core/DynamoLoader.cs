@@ -1,5 +1,5 @@
 ﻿//#define __NO_SAMPLES_MENU
-#define DEBUG_LIBRARY
+//#define DEBUG_LIBRARY
 
 using System;
 using System.Collections.Generic;
