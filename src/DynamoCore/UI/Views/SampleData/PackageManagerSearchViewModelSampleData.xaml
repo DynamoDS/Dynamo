@@ -21,7 +21,7 @@
                         </responses:User>
                     </responses:PackageHeader.maintainers>
                 </responses:PackageHeader>
-                
+                 
             </local:PackageManagerSearchElement.Header>
         </local:PackageManagerSearchElement>
 
