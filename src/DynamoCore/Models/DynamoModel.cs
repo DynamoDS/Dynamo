@@ -988,7 +988,6 @@ namespace Dynamo.Models
             Logger.Log("Opening home workspace " + xmlPath + "...");
 
             CleanWorkbench();
-            MigrationManager.ResetIdentifierIndex();
 
             var sw = new Stopwatch();
 

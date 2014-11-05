@@ -15,41 +15,40 @@ namespace Dynamo.Nodes
     /// </summary>
     public class CustomNodeController : FunctionCallNodeController<CustomNodeDefinition>
     {
-        private bool watchingDefForChanges;
-
         public CustomNodeController(CustomNodeDefinition def)
             : base(def)
-        {
-        }
+        { }
 
-        /// <summary>
-        ///     Definition of a custom node.
-        /// </summary>
-        public new CustomNodeDefinition Definition
-        {
-            get { return base.Definition; }
-            internal set { base.Definition = value; }
-        }
+        //private bool watchingDefForChanges;
 
-        protected override void OnDefinitionChanging()
-        {
-            if (watchingDefForChanges)
-            {
-                Definition.Updated -= OnDefinitionChanged;
-                watchingDefForChanges = false;
-            }
-            base.OnDefinitionChanging();
-        }
+        ///// <summary>
+        /////     Definition of a custom node.
+        ///// </summary>
+        //public new CustomNodeDefinition Definition
+        //{
+        //    get { return base.Definition; }
+        //    internal set { base.Definition = value; }
+        //}
 
-        protected override void OnDefinitionChanged()
-        {
-            if (!watchingDefForChanges)
-            {
-                Definition.Updated += OnDefinitionChanged;
-                watchingDefForChanges = true;
-            }
-            base.OnDefinitionChanged();
-        }
+        //protected override void OnDefinitionChanging()
+        //{
+        //    if (watchingDefForChanges)
+        //    {
+        //        Definition.Updated -= OnDefinitionChanged;
+        //        watchingDefForChanges = false;
+        //    }
+        //    base.OnDefinitionChanging();
+        //}
+
+        //protected override void OnDefinitionChanged()
+        //{
+        //    if (!watchingDefForChanges)
+        //    {
+        //        Definition.Updated += OnDefinitionChanged;
+        //        watchingDefForChanges = true;
+        //    }
+        //    base.OnDefinitionChanged();
+        //}
 
         protected override void InitializeInputs(NodeModel model)
         {

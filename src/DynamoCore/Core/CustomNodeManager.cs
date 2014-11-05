@@ -613,14 +613,14 @@ namespace Dynamo.Utilities
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
-                string funName = null;
-                string category = "";
                 double cx = 0;
                 double cy = 0;
-                string description = "";
+                double zoom = 1.0;
                 string version = "";
 
-                double zoom = 1.0;
+                string funName = null;
+                string category = "";
+                string description = "";
                 string id = "";
 
                 // load the header
@@ -693,7 +693,7 @@ namespace Dynamo.Utilities
                         Log(message);
                     }
 
-                    MigrationManager.Instance.ProcessWorkspaceMigrations(this.dynamoModel, xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
                     MigrationManager.Instance.ProcessNodesInWorkspace(this.dynamoModel, xmlDoc, fileVersion);
                 }
 

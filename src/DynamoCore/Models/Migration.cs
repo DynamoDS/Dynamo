@@ -63,21 +63,9 @@ namespace Dynamo.Models
 
         private static MigrationManager _instance;
 
-        private static int IdentifierIndex = 0;
-
         private static int NewNodeOffsetX = -150;
 
         private static int NewNodeOffsetY = 100;
-
-        public static int GetNextIdentifierIndex()
-        {
-            return IdentifierIndex++;
-        }
-
-        public static void ResetIdentifierIndex()
-        {
-            IdentifierIndex = 0;
-        }
 
         /// <summary>
         /// The singleton instance property.
