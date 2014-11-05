@@ -84,7 +84,7 @@ namespace Dynamo.Search
         {
             get 
             {
-                // Order addons by names.
+                // Order root elements by names.
                 return browserCategoriesBuilder.RootCategories.OrderBy(x => x.Name).ToObservableCollection(); 
             }            
         }
