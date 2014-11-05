@@ -900,30 +900,6 @@ namespace Dynamo.PackageManager
         private void AppendPackageContents()
         {
             Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
-
-            if (ContainsBinaries) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsBinariesContant;
-            if (ContainsPythonScripts) Package.Contents = Package.Contents + PackageManagerClient.PackageContainsPythonScriptsContant;
-
-        }
-
-        private bool ContainsBinaries
-        {
-            get
-            {
-                return this.Assemblies.Any()
-                    || this.AdditionalFiles.Any(x => x.ToLower().EndsWith(".dll") || x.ToLower().EndsWith(".exe"));
-            }
-        }
-
-        private bool ContainsPythonScripts
-        {
-            get
-            {
-                return this.CustomNodeDefinitions.Any(
-                    x => x.WorkspaceModel.Nodes.Any(
-                        n => n.GetType().Name == "PythonNode" ||
-                            n.GetType().Name == "PythonStringNode"));
-            }
         }
 
         /// <summary>
