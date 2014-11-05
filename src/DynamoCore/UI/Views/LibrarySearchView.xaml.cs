@@ -249,18 +249,14 @@ namespace Dynamo.UI.Views
                 // element gets to handle the navigational keys to move focus to the previous category.
                 if (searchCategoryContent.Classes.Count == 0)
                     return;
-#else
-                // All classes are hidden. Do not select any of them.
-                return;
-#endif
 
-
-                // Otherwise, we move to first class button.
+               // Otherwise, we move to first class button.
                 var listItem = FindFirstChildListItem(searchCategoryElement, "SubCategoryListView");
                 if (listItem != null)
                     listItem.Focus();
-
                 e.Handled = true;
+#endif
+
                 return;
             }
 
