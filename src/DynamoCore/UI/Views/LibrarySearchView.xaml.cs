@@ -253,6 +253,7 @@ namespace Dynamo.UI.Views
 
                 // Otherwise, pressed Key is Up.
 
+#if SEARCH_SHOW_CLASSES
                 // No class is found in this 'SearchCategory', return from here so that higher level
                 // element gets to handle the navigational keys to move focus to the previous category.
                 if (searchCategoryContent.Classes.Count == 0)
@@ -264,6 +265,8 @@ namespace Dynamo.UI.Views
                     listItem.Focus();
 
                 e.Handled = true;
+#endif
+
                 return;
             }
 
@@ -356,6 +359,7 @@ namespace Dynamo.UI.Views
             }
             else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
+#if SEARCH_SHOW_CLASSES
                 if (nextFocusedCategoryContent.Classes.Count > 0)
                 {
                     // If classes are presented, then focus on first class.
@@ -367,6 +371,11 @@ namespace Dynamo.UI.Views
                     var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
                     FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
                 }
+#else
+                // If there are no classes, then focus on first method.
+                var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
+#endif
             }
             e.Handled = true;
         }
@@ -395,6 +404,7 @@ namespace Dynamo.UI.Views
                 topResultElement.UnselectAll();
 
                 var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+#if SEARCH_SHOW_CLASSES
                 var firstCategoryContent = firstCategory.Content as SearchCategory;
                 // If classes presented, set focus on the first class button.
                 if (firstCategoryContent.Classes.Count > 0)
@@ -403,7 +413,7 @@ namespace Dynamo.UI.Views
                     e.Handled = true;
                     return;
                 }
-
+#endif
                 // Otherwise, set focus on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
                 FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
