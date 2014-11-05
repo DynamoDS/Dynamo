@@ -80,13 +80,16 @@ namespace Dynamo.Search
         /// <param name="element"></param>
         internal void RemoveEmptyCategory(BrowserItem element)
         {
-            if (element is BrowserRootElement && element.Items.Count == 0)
+            if (element.Items.Count != 0)
+                return;
+
+            if (element is BrowserRootElement)
             {
                 RemoveEmptyRootCategory(element as BrowserRootElement);
                 return;
             }
 
-            if (element is BrowserInternalElement && element.Items.Count == 0)
+            if (element is BrowserInternalElement)
             {
                 var internalElement = element as BrowserInternalElement;
 
@@ -94,7 +97,7 @@ namespace Dynamo.Search
                 RemoveEmptyCategory(internalElement.Parent);
             }
 
-            if (element is BrowserInternalElementForClasses && element.Items.Count == 0)
+            if (element is BrowserInternalElementForClasses)
             {
                 var internalElement = element as BrowserInternalElementForClasses;
 
@@ -157,6 +160,7 @@ namespace Dynamo.Search
                 return this.TryAddRootCategory("Uncategorized");
             }
 
+            // If the category is already created just return it.
             if (ContainsCategory(categoryName))
             {
                 return GetCategoryByName(categoryName);
@@ -170,10 +174,10 @@ namespace Dynamo.Search
                 searchModel.NodeCategories.Add(categoryName, category);
             }
 
-            // otherwise split the category name
+            // Otherwise split the category name.
             var splitCategory = SearchModel.SplitCategoryName(categoryName);
 
-            // attempt to add root element
+            // Attempt to add root element
             if (splitCategory.Count == 1)
             {
                 return this.TryAddRootCategory(categoryName);
@@ -184,7 +188,7 @@ namespace Dynamo.Search
                 return null;
             }
 
-            // attempt to add root category
+            // Attempt to add root category
             var currentCategory = TryAddRootCategory(splitCategory[0]);
 
             // If splitCat.Count equals 2, then we try to add not class.
@@ -203,38 +207,41 @@ namespace Dynamo.Search
                 currentCategory = TryAddChildCategory(currentCategory, splitCategory[i], resourceAssembly);
             }
 
+            // That's all for Addons builder.
+            if (isAddons)
+                return currentCategory;
+
             // We sure, that the last member is class.
-            if (!isAddons)
+
+            // There are possible situations when one category is handled as namespace
+            // and class (created special BrowserInternalElement as container). For these
+            // situations will be created two instances. Here we fix the case.
+            // For example: Analyze.Render namespace and Analyze.Classes.Render as class.
+            // We need to move children of Analyze.Classes.Render to Analyze.Render.
+            // Category Analyze.Classes.Render (and Analyze.Classes if empty) should be removed.
+            var currentFullCategory = string.Join(Configurations.CategoryDelimiter.ToString(),
+                splitCategory.ToArray(), 0, splitCategory.Count - 1);
+            var index = currentFullCategory.LastIndexOf(Configurations.CategoryDelimiter);
+            // Supposed that top categories can't have a duality.
+            if (index > -1)
             {
-                // There are possible situations when one category is handled as namespace
-                // and class (created special BrowserInternalElement as container). For these
-                // situations created two instances. For example: Analyze.Render namespace
-                // and Analyze.Classes.Render as class.
-                // We need move childrens of Analyze.Classes.Render move to Analyze.Render.
-                // Category Analyze.Classes.Render (and Analyze.Classes if empty) should be removed.
-                var currentFullCategory = string.Join(Configurations.CategoryDelimiter.ToString(),
-                    splitCategory.ToArray(), 0, splitCategory.Count - 1);
-                var index = currentFullCategory.LastIndexOf(Configurations.CategoryDelimiter);
-                // Supposed that top categories can't have a duality.
-                if (index > -1)
+                var classesCategory = currentFullCategory.Insert(index,
+                    Configurations.CategoryDelimiter + Configurations.ClassesDefaultName);
+
+                // currentCategory represents context of namespace. For example: Analyze.Render.
+                // Searching for Classes element. For example: Analyze.Classes.Render.                    
+                var classesElement = GetCategoryByName(classesCategory);
+                if (classesElement != null)
                 {
-                    var classesCategory = currentFullCategory.Insert(index,
-                        Configurations.CategoryDelimiter + Configurations.ClassesDefaultName);
-
-                    // currentCategory represents context of namespace. For example: Analyze.Render.
-                    // Searching for Classes element. For example: Analyze.Classes.Render.                    
-                    var classesElement = GetCategoryByName(classesCategory);
-                    if (classesElement != null)
-                    {
-                        MoveElementChilds(currentCategory, classesElement);
-                        RemoveCategory(classesElement);
-                        RemoveEmptyCategory((classesElement as BrowserInternalElement).Parent);
-                    }
+                    // Both entries are presented in the tree.                    
+                    MoveElementChildren(classesElement, currentCategory);
+                    RemoveCategory(classesElement);
+                    RemoveEmptyCategory((classesElement as BrowserInternalElement).Parent);
                 }
-
-                currentCategory = TryAddChildClass(currentCategory, splitCategory[splitCategory.Count - 1],
-                    resourceAssembly);
             }
+
+            currentCategory = TryAddChildClass(currentCategory, splitCategory[splitCategory.Count - 1],
+                resourceAssembly);
 
             return currentCategory;
         }
@@ -380,7 +387,7 @@ namespace Dynamo.Search
             return element.ContainsClass(className);
         }
 
-        internal void MoveElementChilds(BrowserItem destination, BrowserItem source)
+        internal void MoveElementChildren(BrowserItem source, BrowserItem destination)
         {
             while (source.Items.Count != 0)
             {
