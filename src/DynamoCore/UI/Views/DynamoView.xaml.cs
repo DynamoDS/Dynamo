@@ -544,7 +544,10 @@ namespace Dynamo.Controls
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },
                     nameView = { Text = e.Name },
-                    nameBox = { Text = e.Name }
+                    nameBox = { Text = e.Name },
+                    // center the prompt
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
                 if (e.CanEditName)
