@@ -250,10 +250,11 @@ namespace Dynamo.UI.Views
                 if (searchCategoryContent.Classes.Count == 0)
                     return;
 
-               // Otherwise, we move to first class button.
+                // Otherwise, we move to first class button.
                 var listItem = FindFirstChildListItem(searchCategoryElement, "SubCategoryListView");
                 if (listItem != null)
                     listItem.Focus();
+
                 e.Handled = true;
 #endif
 
