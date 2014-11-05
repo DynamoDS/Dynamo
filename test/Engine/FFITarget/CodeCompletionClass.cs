@@ -99,6 +99,13 @@ namespace FFITarget
             public string PropertyB { get; set; }
             public string PropertyC { get; set; }
         }
+
+        public class AnotherClassWithNameConflict
+        {
+            public static string PropertyA { get; set; }
+            public static string PropertyB { get; set; }
+            public static string PropertyC { get; set; }
+        }
     }
 
     namespace SecondNamespace
@@ -108,6 +115,14 @@ namespace FFITarget
             public string PropertyD { get; set; }
             public string PropertyE { get; set; }
             public string PropertyF { get; set; }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public class AnotherClassWithNameConflict
+        {
+            public static string PropertyD { get; set; }
+            public static string PropertyE { get; set; }
+            public static string PropertyF { get; set; }
         }
     }
 }
