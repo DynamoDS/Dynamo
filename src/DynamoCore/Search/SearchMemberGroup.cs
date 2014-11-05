@@ -9,7 +9,7 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup : NotificationObject
     {
-        private readonly List<BrowserInternalElement> members;
+        private List<BrowserInternalElement> members;
 
         public string FullyQualifiedName { get; private set; }
 
@@ -86,6 +86,11 @@ namespace Dynamo.Search
         {
             showAllMembers = true;
             RaisePropertyChanged("Members");
+        }
+
+        public void Sort()
+        {
+            members = members.OrderBy(x => x.Name).ToList();
         }
     }
 }

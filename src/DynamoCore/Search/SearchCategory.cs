@@ -90,5 +90,11 @@ namespace Dynamo.Search
                     return category;
             }
         }
+
+        public void SortChildren()
+        {
+            Classes.ToList().ForEach(x=>x.RecursivelySort());
+            MemberGroups.ToList().ForEach(x=>x.Sort());
+        }
     }
 }
