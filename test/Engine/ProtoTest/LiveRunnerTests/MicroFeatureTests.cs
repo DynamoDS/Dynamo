@@ -5220,6 +5220,49 @@ a = p.UpdateCount;
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
+
+        [Test]
+        public void TestUnboundVariableWarning01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code = 
+            @"
+            a = b; 
+            b = 1;
+            ";
+        
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
+
+        [Test]
+        public void TestUnboundVariableWarning02()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+            a = b; 
+            b = c; 
+            c = 1;
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
     }
 
 }

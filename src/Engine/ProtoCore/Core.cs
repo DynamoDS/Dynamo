@@ -924,6 +924,24 @@ namespace ProtoCore
 
     public class Core
     {
+        #region RUNTIME_PROPERTIES
+
+        /// <summary>
+        ///  These are the list of symbols updated by the VM after an execution cycle
+        /// </summary>
+        public List<SymbolNode> UpdatedSymbols { get; private set; }
+        
+        public void AddUpdatedSymbol(SymbolNode symbol) 
+        {
+            Validity.Assert(symbol != null);
+            if (!UpdatedSymbols.Contains(symbol))
+            {
+                UpdatedSymbols.Add(symbol);
+            }
+        }
+
+        #endregion
+
         public const int FIRST_CORE_ID = 0;
 
         public int ID { get; private set; }
@@ -1332,6 +1350,12 @@ namespace ProtoCore
 
             ExpressionUID = 0;
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+        }
+
+
+        private void ResetAllRuntimeProperties()
+        {
+            UpdatedSymbols = new List<SymbolNode>();
         }
 
         private void ResetAll(Options options)
@@ -1757,6 +1781,7 @@ namespace ProtoCore
         public Core(Options options)
         {
             ResetAll(options);
+            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)

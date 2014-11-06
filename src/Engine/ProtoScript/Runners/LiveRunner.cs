@@ -1533,6 +1533,32 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
+        /// <summary>
+        /// Functionalities applied to the VM after an execution cycle
+        /// </summary>
+        private void PostExecution()
+        {
+            ApplyUpdate();
+            HandleWarnings();
+        }
+
+        /// <summary>
+        /// Handle warnings that will be reported to the frontend
+        /// </summary>
+        private void HandleWarnings()
+        {
+            SuppressResovledUnboundVariableWarnings();
+        }
+
+        /// <summary>
+        /// Removes all warnings that were initially unbound variables but were resolved at runtime
+        /// </summary>
+        private void SuppressResovledUnboundVariableWarnings()
+        {
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.UpdatedSymbols);
+            runnerCore.UpdatedSymbols.Clear();
+        }
+
         private void ApplyUpdate()
         {
             if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
@@ -1565,7 +1591,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(code);
-            ApplyUpdate();
+            PostExecution();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1587,7 +1613,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
-            ApplyUpdate();
+            PostExecution();
         }
 
         private void PreviewInternal(GraphSyncData syncData)
