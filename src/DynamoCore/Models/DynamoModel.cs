@@ -595,6 +595,12 @@ namespace Dynamo.Models
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
+            // Refresh values of nodes that took place in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             OnEvaluationCompleted(this, EventArgs.Empty);
