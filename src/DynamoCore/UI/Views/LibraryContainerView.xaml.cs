@@ -336,5 +336,11 @@ namespace Dynamo.Search
             var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
             if ((topResult != null) && (topResult.IsFocused)) SearchTextBox.Focus();
         }
+
+        private void OnLibraryViewPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Escape) return;
+            SearchTextBox.Text = "";
+        }
     }
 }
