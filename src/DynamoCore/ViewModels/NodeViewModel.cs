@@ -25,10 +25,11 @@ namespace Dynamo.ViewModels
         #region delegates
         public delegate void SetToolTipDelegate(string message);
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
+        public delegate void SnapInputEventHandler(PortViewModel portViewModel,  String eventType);
         #endregion
 
         #region events
-        public event SnapInputEventHandler SnapInputEvent;
+        public event SnapInputEventHandler SnapInputEvent;        
         #endregion
 
 
@@ -663,10 +664,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = new PortViewModel(this, item as PortModel);
-                    outportViewModel.MouseEnter += portViewModel_MouseEnter;
-                    outportViewModel.MouseLeave += portViewModel_MouseLeave;
-                    outportViewModel.MouseLeftButtonDown += portViewModel_MouseLeftButtonDown;
+                    PortViewModel outportViewModel = RegisterPortEvents(item as PortModel);                    
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -682,6 +680,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Registers the port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
         private PortViewModel RegisterPortEvents(PortModel item)
         {
             PortViewModel portViewModel = new PortViewModel(this, item);
@@ -691,6 +695,12 @@ namespace Dynamo.ViewModels
             return portViewModel;
         }
 
+
+        /// <summary>
+        /// Unsubscribe port events.
+        /// </summary>
+        /// <param name="item">The PortViewModel.</param>
+        /// <returns></returns>
         private PortViewModel UnSubscribePortEvents(PortViewModel item)
         {
             item.MouseEnter -= portViewModel_MouseEnter;
@@ -699,25 +709,41 @@ namespace Dynamo.ViewModels
             return item;
         }
 
+
+        /// <summary>
+        /// Handles the MouseLeftButtonDown event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void portViewModel_MouseLeftButtonDown(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel, false, "MouseLeftButtonDown");
+                SnapInputEvent(portViewModel,"MouseLeftButtonDown");
         }
 
+        /// <summary>
+        /// Handles the MouseLeave event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void portViewModel_MouseLeave(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel, false, "MouseLeave");
+                SnapInputEvent(portViewModel, "MouseLeave");
         }
 
+        /// <summary>
+        /// Handles the MouseEnter event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void portViewModel_MouseEnter(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel, true, "MouseEnter");
+                SnapInputEvent(portViewModel, "MouseEnter");
         }
 
 

@@ -73,6 +73,13 @@
                 internal text box will also appear semi-transparent. This is why an 
                 intermediary Border is required just for mouse-over highlighting.
             -->
+            
+            <!--
+               Port is contained in another rectangle to ensure that hit area is extended outside the grid.
+               Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
+               the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
+               as no mouse events are generated.This happens only for codeblock node. 
+            -->
             <Rectangle Fill="Transparent" Margin="-25,0,-25,0"                      
                        SnapsToDevicePixels="True"
                        MinWidth="26"

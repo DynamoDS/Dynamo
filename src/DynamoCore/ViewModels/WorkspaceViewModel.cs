@@ -27,8 +27,7 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
-    public delegate void SnapInputEventHandler(PortViewModel portViewModel, bool isSnapping, String eventType);
-
+    
     public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
@@ -376,7 +375,7 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
 
                             var nodeViewModel = new NodeViewModel(this, node);
-                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;
+                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;                          
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                         }
@@ -397,17 +396,25 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-       
-        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel, bool isSnapping, String eventType)
+
+        
+        /// <summary>
+        /// Handles the port snapping on Mouse Enter.
+        /// </summary>
+        /// <param name="portViewModel">The port view model.</param>
+        /// <param name="eventType">Type of the event.</param>
+        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel, String eventType)
         {
             switch (eventType)
             {
                 case "MouseEnter":
                 case "MouseLeave":
-                    IsSnapping = isSnapping;
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
                     this.portViewModel = portViewModel;
                     break;
                 case "MouseLeftButtonDown":
+                    //If the connector is not active, then the state is changed to None. otherwise, the connector state is connection and 
+                    //is not deleted from the view.
                     this.portViewModel = portViewModel;
                     if(!this.CheckActiveConnectorCompatibility(portViewModel))
                         this.CancelActiveState();

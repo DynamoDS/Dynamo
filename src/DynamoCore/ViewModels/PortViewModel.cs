@@ -92,7 +92,7 @@ namespace Dynamo.ViewModels
         #region events
         public event EventHandler MouseEnter;
         public event EventHandler MouseLeave;
-        public event EventHandler MouseLeftButtonDown;
+        public event EventHandler MouseLeftButtonDown;       
         #endregion
 
 
@@ -166,18 +166,30 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Handles the Mouse enter event on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
         private void Rectangle_MouseEnter(object parameter)
         {
             if (MouseEnter != null)
-                MouseEnter(parameter,null);
+                MouseEnter(parameter, null);
         }
 
+        /// <summary>
+        /// Handles the Mouse leave on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
         private void Rectangle_MouseLeave(object parameter)
         {
             if (MouseLeave != null)
                 MouseLeave(parameter, null);
         }
 
+        /// <summary>
+        /// Handles the Mouse left button down on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
         private void Rectangle_MouseLeftButtonDown(object parameter)
         {
             if (MouseLeftButtonDown != null)
