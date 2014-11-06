@@ -220,6 +220,8 @@ namespace Dynamo.UI
         public const char CategoryDelimiter = '.';
         public const char ShortenedCategoryDelimiter = '>';
 
+        public const string ClassesDefaultName = "Classes";
+
         #endregion
 
 #if DEBUG
