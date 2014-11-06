@@ -399,12 +399,48 @@
             <Setter Property="Height"
                     Value="1" />
             <Setter Property="Margin"
-                    Value="10,0,10,0" />
+                    Value="10,2,10,2" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Separator">
                         <Border BorderBrush="#494949"
                                 BorderThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type MenuItem}">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="#00000000" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                 Color="#00000000" />
+            </Style.Resources>
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="Foreground"
+                    Value="#989898" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border x:Name="Border"
+                                MinWidth="150">
+                            <ContentPresenter Margin="15,5,5,5"
+                                              ContentSource="Header"
+                                              RecognizesAccessKey="True" />
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#343434" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
