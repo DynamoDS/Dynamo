@@ -25,7 +25,6 @@
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-            <controls:ElementTypeToExpanderMarginConverter x:Key="ElementTypeToExpanderMarginConverter" />
 
             <!--EndRegion-->
 
@@ -582,9 +581,8 @@
                                                               ClickMode="Press"
                                                               IsChecked="{Binding IsExpanded, Mode=OneWay}">
                                                     <ToggleButton.Margin>
-                                                        <Binding Path="DataContext"
-                                                                 RelativeSource="{RelativeSource Self}"
-                                                                 Converter="{StaticResource ElementTypeToExpanderMarginConverter}" />
+                                                        <Binding Path="FullCategoryName"
+                                                                 Converter="{StaticResource FullCategoryNameToMarginConverter}" />
                                                     </ToggleButton.Margin>
                                                 </ToggleButton>
 
@@ -602,11 +600,10 @@
                                                                 <DataTrigger.Binding>
                                                                     <Binding RelativeSource="{RelativeSource Self}"
                                                                              Path="DataContext"
-                                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                             Converter="{StaticResource RootElementToBoolConverter}" />
                                                                 </DataTrigger.Binding>
                                                                 <Setter Property="Margin"
-                                                                        Value="{Binding Path=FullCategoryName,
-                                                                                        Converter={StaticResource FullCategoryNameToMarginConverter}}" />
+                                                                        Value="5,0,0,0" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
