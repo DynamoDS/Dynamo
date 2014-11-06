@@ -35,7 +35,10 @@ namespace Dynamo.Search
         #region Properties/Fields
 
         private CategoryBuilder browserCategoriesBuilder;
+        internal CategoryBuilder BrowserCategoriesBuilder { get { return browserCategoriesBuilder; } }
+
         private CategoryBuilder addonCategoriesBuilder;
+        internal CategoryBuilder AddonCategoriesBuilder { get { return addonCategoriesBuilder; } }
 
         /// <summary>
         /// Leaves of the browser - used for navigation
