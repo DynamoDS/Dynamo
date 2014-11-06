@@ -167,7 +167,7 @@ namespace Dynamo.Controls
             // setup lighting            
             this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
             this.DirectionalLightColor = SharpDX.Color.White;
-            this.DirectionalLightDirection = new Vector3(-2, -5, -2);
+            this.DirectionalLightDirection = new Vector3(-2, -2, -5);
             this.RenderTechnique = Techniques.RenderPhong;
             this.RedMaterial = PhongMaterials.Red;
             this.CyanMaterial = PhongMaterials.Turquoise;
@@ -742,41 +742,43 @@ namespace Dynamo.Controls
 
         private void ConvertMeshes(RenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
         {
+            // DirectX has a different winding than we store in
+            // render packages. Re-wind triangles here...
             int color_idx = 0;
             int pt_idx = mesh.Positions.Count;
 
-            for (int i = 0; i < p.TriangleVertices.Count; i += 3)
+            for (int i = 0; i < p.TriangleVertices.Count; i += 9)
             {
-                var x = (float)p.TriangleVertices[i];
-                var y = (float)p.TriangleVertices[i + 1];
-                var z = (float)p.TriangleVertices[i + 2];
+                var a = GetVertex(p.TriangleVertices, i);
+                var b = GetVertex(p.TriangleVertices, i + 3);
+                var c = GetVertex(p.TriangleVertices, i + 6);
 
-                // DirectX convention - Y Up
-                var new_point = new Vector3(x, z, y);
+                var an = GetVertex(p.TriangleNormals, i);
+                var bn = GetVertex(p.TriangleNormals, i + 3);
+                var cn = GetVertex(p.TriangleNormals, i + 6);
 
-                var xn = (float)p.TriangleNormals[i];
-                var yn = (float)p.TriangleNormals[i + 1];
-                var zn = (float)p.TriangleNormals[i + 2];
-                var normal = new Vector3(xn, zn, yn);
+                var ca = GetColor(p, color_idx);
+                var cb = GetColor(p, color_idx + 4);
+                var cc = GetColor(p, color_idx + 8);
 
-                var color = new Color4(
-                    (float)(p.TriangleVertexColors[color_idx]/255.0),
-                    (float)(p.TriangleVertexColors[color_idx + 1]/255.0),
-                    (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
-                    1);
+                mesh.Positions.Add(a);
+                mesh.Positions.Add(c);
+                mesh.Positions.Add(b);
 
-                if (color == new Color4(1, 1, 1, 1))
-                {
-                    color = new Color4(0.5f,0.5f,0.5f,1);
-                }
-
-                mesh.Positions.Add(new_point);
                 mesh.Indices.Add(pt_idx);
-                mesh.Normals.Add(normal);
-                mesh.Colors.Add(color);
+                mesh.Indices.Add(pt_idx + 1);
+                mesh.Indices.Add(pt_idx + 2);
 
-                color_idx += 4;
-                pt_idx += 1;
+                mesh.Normals.Add(an);
+                mesh.Normals.Add(cn);
+                mesh.Normals.Add(bn);
+
+                mesh.Colors.Add(ca);
+                mesh.Colors.Add(cc);
+                mesh.Colors.Add(cb);
+
+                color_idx += 12;
+                pt_idx += 3;
             }
 
             if (mesh.Indices.Count > 0)
@@ -784,22 +786,49 @@ namespace Dynamo.Controls
                 MeshCount++;
             }
 
-            //if (p.TriangleVertices.Any())
-            //{
-            //    // Create reversed backfaces
-            //    var copytri = new int[mesh.Indices.Count];
-            //    mesh.Indices.CopyTo(copytri);
-            //    Array.Reverse(copytri);
+            // Backface rendering. Currently causes 
+            // out of memory exceptions as we're doubling.
+            // geometry inside the same mesh.
 
-            //    var copynorm = new Vector3[mesh.Normals.Count];
-            //    for (int i = 0; i < copynorm.Length; i++)
-            //        copynorm[i] = -1 * mesh.Normals[i];
+            //if (!p.TriangleVertices.Any()) return;
 
-            //    mesh.Positions.AddRange(mesh.Positions.ToArray());
-            //    mesh.Indices.AddRange(copytri);
-            //    mesh.Normals.AddRange(copynorm);
-            //    mesh.Colors.AddRange(mesh.Colors.ToArray());
-            //}
+            // Create reversed backfaces
+            //var copytri = new int[mesh.Indices.Count];
+            //mesh.Indices.CopyTo(copytri);
+            //Array.Reverse(copytri);
+
+            //var copynorm = new Vector3[mesh.Normals.Count];
+            //for (int i = 0; i < copynorm.Length; i++)
+            //    copynorm[i] = -1 * mesh.Normals[i];
+
+            //mesh.Positions.AddRange(mesh.Positions.ToArray());
+            //mesh.Indices.AddRange(copytri);
+            //mesh.Normals.AddRange(copynorm);
+            //mesh.Colors.AddRange(mesh.Colors.ToArray());
+        }
+
+        private static Color4 GetColor(RenderPackage p, int color_idx)
+        {
+            var color = new Color4(
+                (float)(p.TriangleVertexColors[color_idx]/255.0),
+                (float)(p.TriangleVertexColors[color_idx + 1]/255.0),
+                (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
+                1);
+
+            if (color == new Color4(1, 1, 1, 1))
+                color = new Color4(0.5f, 0.5f, 0.5f, 1);
+            return color;
+        }
+
+        private static Vector3 GetVertex(List<double> p, int i)
+        {
+            var x = (float)p[i];
+            var y = (float)p[i + 1];
+            var z = (float)p[i + 2];
+
+            // DirectX convention - Y Up
+            var new_point = new Vector3(x, z, y);
+            return new_point;
         }
 
         private string CleanTag(string tag)
