@@ -410,7 +410,7 @@
             <TextBlock Text="Add-ons"
                        VerticalAlignment="Center"
                        FontSize="13"
-                       Foreground="#989898"
+                       Foreground="#666666"
                        Margin="16,0,0,0" />
         </Border>
         <TreeView ItemsSource="{Binding Model.AddonRootCategories}"
