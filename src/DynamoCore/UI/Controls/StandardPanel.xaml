@@ -185,7 +185,7 @@
                 <StackPanel Orientation="Horizontal"
                             Margin="16,0,0,0">
                     <TextBlock x:Name="secondaryHeaderLeft"
-                               Tag="Query"
+                               Tag="Action"
                                PreviewMouseDown="OnHeaderMouseDown"
                                VerticalAlignment="Center"
                                FontSize="9"
@@ -204,7 +204,7 @@
                                         <Pen.Thickness>
                                             <Binding Path="CurrentDisplayMode"
                                                      Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                     ConverterParameter="Query" />
+                                                     ConverterParameter="Action" />
                                         </Pen.Thickness>
                                     </Pen>
                                 </TextDecoration.Pen>
@@ -223,7 +223,7 @@
                         </Ellipse.Visibility>
                     </Ellipse>
                     <TextBlock x:Name="secondaryHeaderRight"
-                               Tag="Action"
+                               Tag="Query"
                                PreviewMouseDown="OnHeaderMouseDown"
                                VerticalAlignment="Center"
                                FontSize="9"
@@ -241,7 +241,7 @@
                                         <Pen.Thickness>
                                             <Binding Path="CurrentDisplayMode"
                                                      Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                     ConverterParameter="Action" />
+                                                     ConverterParameter="Query" />
                                         </Pen.Thickness>
                                     </Pen>
                                 </TextDecoration.Pen>
