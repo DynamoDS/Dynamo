@@ -189,7 +189,7 @@ namespace Dynamo.Controls
         {
            //Release the mouse capture on left button up.
            //this will allow window selection to continue when mouse accidentally moves beyond the canvas
-           if(this.CaptureMouse())
+           if(this.IsMouseCaptured)
                this.ReleaseMouseCapture();
         }
 
