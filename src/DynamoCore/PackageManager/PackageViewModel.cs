@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -7,10 +8,11 @@ using System.Windows;
 using Dynamo.PackageManager;
 
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public class PackageViewModel
+    public class PackageViewModel : NotificationObject
     {
         private DynamoViewModel dynamoViewModel;
         public Package Model { get; private set; }
@@ -18,6 +20,16 @@ namespace Dynamo.ViewModels
         public bool HasAdditionalFiles
         {
             get { return this.Model.AdditionalFiles.Any(); }
+        }
+
+        public bool HasAdditionalAssemblies
+        {
+            get { return this.Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
+        }
+
+        public bool HasNodeLibraries
+        {
+            get { return this.Model.LoadedAssemblies.Any(x => x.IsNodeLibrary); }
         }
 
         public bool HasCustomNodes
@@ -55,11 +67,19 @@ namespace Dynamo.ViewModels
             UnmarkForUninstallationCommand = new DelegateCommand(this.UnmarkForUninstallation, this.CanUnmarkForUninstallation);
             GoToRootDirectoryCommand = new DelegateCommand(this.GoToRootDirectory, this.CanGoToRootDirectory);
 
+            this.Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
             this.Model.PropertyChanged += ModelOnPropertyChanged;
             this.dynamoViewModel.Model.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
+        }
+
+        private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RaisePropertyChanged("HasAdditionalAssemblies");
+            RaisePropertyChanged("HasAssemblies");
+            RaisePropertyChanged("HasNodeLibraries");
         }
 
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

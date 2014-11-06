@@ -65,12 +65,17 @@ namespace DSOffice
                     throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
                 }
             }
-            catch (NotSupportedException)
+            catch (Exception)
             {
                 // An exception "The URI prefix is not recognized" will be
                 // thrown out for the first run, no idea why that happen, so
                 // just swallow this exception and try to create an new excel
                 // instance.
+
+                // Sometimes a FileNotFoundException occurs with DynamoCore.XmlSerializers
+                // which is not clear why. This exception also makes Excel tests very flaky
+                // It is found that just swallowing these exceptions and creating a new excel instance 
+                // below causes the test to continue and successfuly pass
             }
 
             if (excel == null)

@@ -591,10 +591,6 @@ namespace RevitSystemTests
 
             AssertNoDummyNodes();
 
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-
             var workspace = model.CurrentWorkspace;
             var filePickerNode = workspace.FirstNodeFromWorkspace<Filename>();
 

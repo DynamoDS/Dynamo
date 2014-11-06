@@ -254,15 +254,17 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            Dispatcher.Invoke(new Action(delegate
+            var executeCommand = new Action(delegate
             {
-                var vm = (IWatchViewModel) DataContext;
-
+                var vm = (IWatchViewModel)DataContext;
                 if (vm.GetBranchVisualizationCommand.CanExecute(e.TaskId))
-                {
                     vm.GetBranchVisualizationCommand.Execute(e.TaskId);
-                }
-            }));
+            });
+
+            if (CheckAccess())
+                executeCommand();
+            else
+                Dispatcher.BeginInvoke(executeCommand);
         }
 
         /// <summary>
