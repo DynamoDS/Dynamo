@@ -123,7 +123,7 @@
             <hx:LineGeometryModel3D Thickness="4" Color="Blue" Geometry="{Binding Path=ZAxes, Mode=TwoWay}"/>-->
             <hx:LineGeometryModel3D x:Name="grid" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.DarkGray}" Thickness="0.5"/>
             <hx:PointGeometryModel3D x:Name="points" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.Black}"/>
-            <hx:PointGeometryModel3D x:Name="pointsSelected" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.Black}"/>
+            <hx:PointGeometryModel3D x:Name="pointsSelected" Geometry="{Binding PointsSelected}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.Cyan}"/>
         </hx:Viewport3DX>
         
         <!--<HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 

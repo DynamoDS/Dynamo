@@ -696,6 +696,7 @@ namespace Dynamo.Controls
         private void ConvertLines(RenderPackage p, LineGeometry3D geom)
         {
             int color_idx = 0;
+            var idx = geom.Indices.Count;
 
             for (int i = 0; i < p.LineStripVertices.Count; i += 6)
             {
@@ -703,9 +704,9 @@ namespace Dynamo.Controls
                 var y = (float)p.LineStripVertices[i + 1];
                 var z = (float)p.LineStripVertices[i + 2];
 
-                var x1 = (float)p.LineStripVertices[i];
-                var y1 = (float)p.LineStripVertices[i + 1];
-                var z1 = (float)p.LineStripVertices[i + 2];
+                var x1 = (float)p.LineStripVertices[i + 3];
+                var y1 = (float)p.LineStripVertices[i + 4];
+                var z1 = (float)p.LineStripVertices[i + 5];
                 
                 // DirectX convention - Y Up
                 var ptA = new Vector3(x,z,y);
@@ -726,14 +727,15 @@ namespace Dynamo.Controls
                                         (float)(p.LineStripVertexColors[color_idx + 4] / 255),
                                         (float)(p.LineStripVertexColors[color_idx + 5] / 255), 1);
 
+                geom.Indices.Add(idx);
+                geom.Indices.Add(idx + 1);
                 geom.Positions.Add(ptA);
-                geom.Positions.Add(ptA);
-                geom.Indices.Add(geom.Indices.Count);
-                geom.Indices.Add(geom.Indices.Count+1);
+                geom.Positions.Add(ptB);
                 geom.Colors.Add(startColor);
                 geom.Colors.Add(endColor);
 
-                color_idx += 4;
+                color_idx += 8;
+                idx += 1;
             }
 
         }
