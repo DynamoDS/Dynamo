@@ -26,6 +26,11 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.AboveNormal; }
         }
 
+        internal IEnumerable<NodeModel> ModifiedNodes
+        {
+            get { return modifiedNodes; }
+        }
+
         #endregion
 
         #region Public Class Operational Methods
