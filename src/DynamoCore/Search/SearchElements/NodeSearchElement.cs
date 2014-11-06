@@ -42,7 +42,13 @@ namespace Dynamo.Search.SearchElements
         /// <value>
         /// A string describing what the node does</value>
         private string _description;
-        public override string Description { get { return _description; } }
+        public override string Description 
+        { 
+            get 
+            {
+                return "" != _description ? _description : Dynamo.UI.Configurations.NoDescriptionAvailable;
+            } 
+        }
 
         /// <summary>
         /// Group property </summary>

@@ -48,9 +48,24 @@
                     <TextBlock Text="{Binding Path=Description}"
                                Grid.Column="0"
                                FontSize="13"
-                               Foreground="#cccccc"
                                Margin="0,0,10,0"
-                               TextWrapping="WrapWithOverflow" />
+                               TextWrapping="WrapWithOverflow">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Foreground"
+                                        Value="#cccccc" />
+                                <Style.Triggers>
+                                    <DataTrigger Value="No description available"
+                                                 Binding="{Binding Description}">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="Foreground"
+                                                    Value="#666666" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                     <Image Grid.Row="0"
                            Grid.Column="1"
                            Grid.ColumnSpan="2"
