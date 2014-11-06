@@ -10,7 +10,6 @@ namespace Dynamo.PackageManager.UI
     {
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
-
             this.DataContext = pm;
             InitializeComponent();
 
