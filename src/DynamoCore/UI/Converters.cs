@@ -1773,7 +1773,6 @@ namespace Dynamo.Controls
                 var rootElement = value as BrowserRootElement;
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
-
             return false;
         }
 
