@@ -531,14 +531,10 @@ namespace Dynamo.UI.Controls
                 .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
 
-            // If target location in less then 0, that means target item was scrolled to th left side.
-            // So, we add some gap, and use abs of this negative value to locate tooltip.
-            if (targetLocation.X < 0) targetLocation.X -= gap * 2;
-
             // Count width.
             double x = 0;
             x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                + gap + Math.Abs(targetLocation.X);
+                + gap*2 + targetLocation.X * (-1);
 
             // Count height.
             var availableHeight = dynamoWindow.ActualHeight - popup.Height

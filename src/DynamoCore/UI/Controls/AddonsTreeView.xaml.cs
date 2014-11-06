@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using Dynamo.Search.SearchElements;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Controls
 {
@@ -29,6 +31,22 @@ namespace Dynamo.UI.Controls
                 }
             }
 #endif
+        }
+
+        private void OnMemberMouseEnter(object sender, MouseEventArgs e)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            if (fromSender.DataContext is NodeSearchElement ||
+                fromSender.DataContext is CustomNodeSearchElement)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
+        }
+
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null);
         }
     }
 }
