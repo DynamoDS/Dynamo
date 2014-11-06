@@ -354,20 +354,35 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            var builder = new HelixToolkit.Wpf.SharpDX.LineBuilder();
+            //var builder = new HelixToolkit.Wpf.SharpDX.LineBuilder();
+            Grid = new LineGeometry3D();
+            var positions = new Vector3Collection();
+            var indices = new IntCollection();
+
             var size = 50;
 
             for (int x = -size; x <= size; x++)
             {
-                builder.AddLine(new Vector3(x, -.001f, -size), new Vector3(x, -.001f, size));
+                //builder.AddLine(new Vector3(x, -.001f, -size), new Vector3(x, -.001f, size));
+                positions.Add(new Vector3(x, -.001f, -size));
+                indices.Add(positions.Count-1);
+                positions.Add(new Vector3(x, -.001f, size));
+                indices.Add(positions.Count-1);
+                
             }
 
             for (int y = -size; y <= size; y++)
             {
-                builder.AddLine(new Vector3(-size, -.001f, y), new Vector3(size, -.001f, y));
+                //builder.AddLine(new Vector3(-size, -.001f, y), new Vector3(size, -.001f, y));
+                positions.Add(new Vector3(-size, -.001f, y)); 
+                indices.Add(positions.Count-1);
+                positions.Add(new Vector3(size, -.001f, y));
+                indices.Add(positions.Count-1);
             }
 
-            Grid = builder.ToLineGeometry3D();
+            //Grid = builder.ToLineGeometry3D();
+            Grid.Positions = positions;
+            Grid.Indices = indices;
         }
 
         /// <summary>
@@ -698,19 +713,14 @@ namespace Dynamo.Controls
             int color_idx = 0;
             var idx = geom.Indices.Count;
 
-            for (int i = 0; i < p.LineStripVertices.Count; i += 6)
+            for (int i = 0; i < p.LineStripVertices.Count; i += 3)
             {
                 var x = (float)p.LineStripVertices[i];
                 var y = (float)p.LineStripVertices[i + 1];
                 var z = (float)p.LineStripVertices[i + 2];
 
-                var x1 = (float)p.LineStripVertices[i + 3];
-                var y1 = (float)p.LineStripVertices[i + 4];
-                var z1 = (float)p.LineStripVertices[i + 5];
-                
                 // DirectX convention - Y Up
                 var ptA = new Vector3(x,z,y);
-                var ptB = new Vector3(x1,z1,y1);
 
                 //if (i == 0 && outerCount == 0 && p.DisplayLabels)
                 //{
@@ -722,19 +732,11 @@ namespace Dynamo.Controls
                                         (float)(p.LineStripVertexColors[color_idx + 1] / 255),
                                         (float)(p.LineStripVertexColors[color_idx + 2] / 255), 1);
 
-                var endColor = new SharpDX.Color4(
-                                        (float)(p.LineStripVertexColors[color_idx + 3] / 255),
-                                        (float)(p.LineStripVertexColors[color_idx + 4] / 255),
-                                        (float)(p.LineStripVertexColors[color_idx + 5] / 255), 1);
-
                 geom.Indices.Add(idx);
-                geom.Indices.Add(idx + 1);
                 geom.Positions.Add(ptA);
-                geom.Positions.Add(ptB);
                 geom.Colors.Add(startColor);
-                geom.Colors.Add(endColor);
 
-                color_idx += 8;
+                color_idx += 4;
                 idx += 1;
             }
 
