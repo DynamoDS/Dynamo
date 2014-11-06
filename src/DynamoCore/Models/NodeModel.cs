@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
-
+using System.Windows.Media;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
@@ -1238,7 +1238,8 @@ namespace Dynamo.Models
                     //register listeners on the port
                     p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
-
+                    
+                   
                     return p;
 
                 case PortType.OUTPUT:
@@ -1268,6 +1269,7 @@ namespace Dynamo.Models
             return null;
         }
 
+      
         private void p_PortConnected(object sender, EventArgs e)
         {
             ValidateConnections();
@@ -1888,6 +1890,8 @@ namespace Dynamo.Models
         {
             return true; // Default implementation: always show preview.
         }
+
+        public System.Windows.Media.Geometry expandedHitTestArea { get; set; }
     }
 
     public enum ElementState

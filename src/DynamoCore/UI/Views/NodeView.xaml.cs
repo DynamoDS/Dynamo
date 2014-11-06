@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.AccessControl;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -23,7 +27,7 @@ namespace Dynamo.Controls
     {
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
-
+        List<DependencyObject> hitResultsList = new List<DependencyObject>();
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -78,6 +82,7 @@ namespace Dynamo.Controls
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
+
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
@@ -147,6 +152,30 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+
+            //foreach (var port in ViewModel.InPorts)
+            //{
+            //    System.Windows.Media.EllipseGeometry expandedHitTestArea = new
+            //                                    System.Windows.Media.EllipseGeometry(port.Center, 2 * port.Center.X, port.Center.Y);
+
+
+            //    hitResultsList.Clear();
+            //    VisualTreeHelper.HitTest(this, null,
+            //                new HitTestResultCallback(MyHitTestResultCallback),
+            //                    new GeometryHitTestParameters(expandedHitTestArea));
+
+            //}
+        }
+
+        private HitTestResultBehavior MyHitTestResultCallback(HitTestResult result)
+        {
+            if (null != result && (null != result.VisualHit))
+            {
+                hitResultsList.Add(result.VisualHit);
+                return HitTestResultBehavior.Stop;
+            }
+
+            return HitTestResultBehavior.Continue;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

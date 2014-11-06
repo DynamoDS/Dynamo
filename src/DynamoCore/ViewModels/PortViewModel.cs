@@ -1,5 +1,6 @@
-﻿using System.Windows;
-
+﻿using System;
+using System.Windows;
+using System.Windows.Input;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -88,6 +89,14 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        #region events
+        public event EventHandler MouseEnter;
+        public event EventHandler MouseLeave;
+        public event EventHandler MouseLeftButtonDown;
+        #endregion
+
+
+
         public PortViewModel(NodeViewModel node, PortModel port)
         {
             _node = node;
@@ -155,6 +164,24 @@ namespace Dynamo.ViewModels
         private bool CanConnect(object parameter)
         {
             return true;
+        }
+
+        private void Rectangle_MouseEnter(object parameter)
+        {
+            if (MouseEnter != null)
+                MouseEnter(parameter,null);
+        }
+
+        private void Rectangle_MouseLeave(object parameter)
+        {
+            if (MouseLeave != null)
+                MouseLeave(parameter, null);
+        }
+
+        private void Rectangle_MouseLeftButtonDown(object parameter)
+        {
+            if (MouseLeftButtonDown != null)
+                MouseLeftButtonDown(parameter, null);
         }
     }
 }

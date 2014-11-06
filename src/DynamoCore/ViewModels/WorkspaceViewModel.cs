@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -26,6 +27,7 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
+    public delegate void SnapInputEventHandler(PortViewModel portViewModel, bool isSnapping, String eventType);
 
     public partial class WorkspaceViewModel : ViewModelBase
     {
@@ -45,7 +47,8 @@ namespace Dynamo.ViewModels
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
-
+        public PortViewModel portViewModel { get; set; }
+        public bool IsSnapping { get; set; }
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -303,6 +306,7 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            IsSnapping = false;
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -372,6 +376,7 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
 
                             var nodeViewModel = new NodeViewModel(this, node);
+                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                         }
@@ -391,6 +396,28 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+        }
+       
+        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel, bool isSnapping, String eventType)
+        {
+            switch (eventType)
+            {
+                case "MouseEnter":
+                case "MouseLeave":
+                    IsSnapping = isSnapping;
+                    this.portViewModel = portViewModel;
+                    break;
+                case "MouseLeftButtonDown":
+                    this.portViewModel = portViewModel;
+                    if(!this.CheckActiveConnectorCompatibility(portViewModel))
+                        this.CancelActiveState();
+                    else
+                    {
+                        this.HandlePortClicked(portViewModel);
+                    }
+                    break;
+            }
+            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
