@@ -349,6 +349,8 @@ namespace Dynamo.Utilities
     {
         #region private members
 
+        private readonly string text;
+
         // This should match with production for identifier in language parser
         // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
         private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
@@ -381,19 +383,30 @@ namespace Dynamo.Utilities
         /// </summary>
         private string functionName = String.Empty;
 
+        private int argCount = 0;
+
         /// <summary>
         /// Identifier or Class name on which function being typed currently is invoked
         /// </summary>
         private string functionPrefix = String.Empty;
 
         private string type = string.Empty;
-        private int argCount = 0;
+
+        // Context of string being typed for completion
+        private bool IsInSingleComment = false;
+        private bool IsInString = false;
+        private bool IsInChar = false;
+        private bool IsInMultiLineComment = false;
 
         #endregion
 
+        public CodeCompletionParser(string text)
+        {
+            this.text = text;
+        }
+
         #region public members
 
-        
         /// <summary>
         /// Parses given block of code and declared variable,
         /// returns the type of the variable: e.g. in:
@@ -421,7 +434,7 @@ namespace Dynamo.Utilities
         /// <param name="code"></param>
         public static string GetStringToComplete(string code)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -442,7 +455,7 @@ namespace Dynamo.Utilities
         /// <param name="functionPrefix"> output type or variable on which fn is invoked </param>
         public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -451,6 +464,22 @@ namespace Dynamo.Utilities
             }
             functionName = codeParser.functionName;
             functionPrefix = codeParser.functionPrefix;
+        }
+
+        /// <summary>
+        /// Parsing text to determine if string being typed is in 
+        /// the context of a comment or string or character
+        /// </summary>
+        /// <returns>True if any of above context is true.</returns>
+        public static bool IsInsideCommentOrString(string text)
+        {
+            var lexer = new CodeCompletionParser(text);
+            lexer.ParseContext();
+            return
+                lexer.IsInSingleComment ||
+                    lexer.IsInString ||
+                    lexer.IsInChar ||
+                    lexer.IsInMultiLineComment;
         }
 
         #endregion
@@ -462,7 +491,7 @@ namespace Dynamo.Utilities
 
             // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
             string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
-            
+
             var varDeclarations = Regex.Matches(code, pattern);
             for (int i = 0; i < varDeclarations.Count; i++)
             {
@@ -521,7 +550,7 @@ namespace Dynamo.Utilities
                         // Auto-complete function signature  
                         // Class/Type and function name must be known at this point
                         functionName = GetMemberIdentifier();
-                        if(string.Equals(strPrefix, functionName))
+                        if (string.Equals(strPrefix, functionName))
                             functionPrefix = string.Empty;
                         else
                             functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
@@ -571,6 +600,61 @@ namespace Dynamo.Utilities
                     break;
             }
             return strPrefix;
+        }
+
+        public void ParseContext()
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                char ch = text[i];
+                char lookAhead = i + 1 < text.Length ? text[i + 1] : '\0';
+                switch (ch)
+                {
+                    case '/':
+                        if (IsInString || IsInChar || IsInSingleComment || IsInMultiLineComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            IsInSingleComment = true;
+                        }
+                        if (lookAhead == '*')
+                        {
+                            IsInMultiLineComment = true;
+                            i++;
+                        }
+                        break;
+                    case '*':
+                        if (IsInString || IsInChar || IsInSingleComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            IsInMultiLineComment = false;
+                        }
+                        break;
+                    case '\n':
+                    case '\r':
+                        IsInSingleComment = false;
+                        IsInString = false;
+                        IsInChar = false;
+                        break;
+                    case '\\':
+                        if (IsInString || IsInChar)
+                            i++;
+                        break;
+                    case '"':
+                        if (IsInSingleComment || IsInMultiLineComment || IsInChar)
+                            break;
+                        IsInString = !IsInString;
+                        break;
+                    case '\'':
+                        if (IsInSingleComment || IsInMultiLineComment || IsInString)
+                            break;
+                        IsInChar = !IsInChar;
+                        break;
+                }
+            }
         }
 
         #region private utility methods

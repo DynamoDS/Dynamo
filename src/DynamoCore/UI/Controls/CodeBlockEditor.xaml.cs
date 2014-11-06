@@ -225,6 +225,9 @@ namespace Dynamo.UI.Controls
                 var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
                 if (e.Text == ".")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                        return;
+
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
                     var completions = this.GetCompletionData(code, stringToComplete);
@@ -237,6 +240,9 @@ namespace Dynamo.UI.Controls
                 // Complete function signatures
                 else if (e.Text == "(")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                        return;
+
                     string functionName;
                     string functionPrefix;
                     CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
@@ -252,6 +258,9 @@ namespace Dynamo.UI.Controls
                 }
                 else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                        return;
+
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
