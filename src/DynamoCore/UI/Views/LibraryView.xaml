@@ -206,16 +206,6 @@
                         </Style>
                     </StackPanel.Style>
                 </StackPanel>
-                <DataTemplate.Triggers>
-                    <DataTrigger Value="true">
-                        <DataTrigger.Binding>
-                            <Binding Path="Parent.IsPlaceholder" />
-                        </DataTrigger.Binding>
-                        <Setter Property="Margin"
-                                Value="16,0,16,0"
-                                TargetName="SmallIcon" />
-                    </DataTrigger>
-                </DataTemplate.Triggers>
             </DataTemplate>
 
             <!-- This data template is used to show one subcategory. -->
