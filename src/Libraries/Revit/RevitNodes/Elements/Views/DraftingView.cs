@@ -54,7 +54,11 @@ namespace Revit.Elements.Views
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var vd = Document.Create.NewViewDrafting();
+            FilteredElementCollector collector = new FilteredElementCollector(Document);
+            var viewFamilyType = collector.OfClass(typeof(ViewFamilyType)).Cast<ViewFamilyType>().
+                First(vft => vft.ViewFamily == ViewFamily.Drafting);
+
+            var vd = ViewDrafting.Create(Document, viewFamilyType.Id);
 
             //rename the view
             if (!vd.Name.Equals(name))

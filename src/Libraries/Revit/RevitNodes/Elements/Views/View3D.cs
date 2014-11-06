@@ -142,7 +142,7 @@ namespace Revit.Elements.Views
 
             if (view.IsPerspective)
             {
-                var farClip = view.get_Parameter("Far Clip Active");
+                var farClip = view.LookupParameter("Far Clip Active");
                 farClip.Set(0);
             }
             else

@@ -75,7 +75,9 @@ namespace DSRevitNodesUI
 
             foreach (Family family in fec.ToElements())
             {
-                foreach (FamilySymbol fs in family.Symbols)
+                var symbols = family.GetFamilySymbolIds().Select(x => DocumentManager.Instance.CurrentDBDocument.GetElement(x)).
+                    OfType<FamilySymbol>();
+                foreach (FamilySymbol fs in symbols)
                 {
                     Items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", family.Name, fs.Name), fs));
                 }
