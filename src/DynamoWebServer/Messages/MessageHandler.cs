@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -26,7 +27,7 @@ namespace DynamoWebServer.Messages
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
         private AutoResetEvent nextRunAllowed = new AutoResetEvent(true);
-        private bool wasRun = false;
+        private bool evaluationTookPlace = false;
         private int maxMsToWait = 20000;
         
         public MessageHandler(DynamoModel dynamoModel)
@@ -39,17 +40,29 @@ namespace DynamoWebServer.Messages
 
             this.dynamoModel = dynamoModel;
             uploader = new FileUploader();
-            this.dynamoModel.FullRunCompleted += RunCommandCompleted;
+            this.dynamoModel.EvaluationCompleted += RunCommandCompleted;
         }
 
         /// <summary>
         /// It's called after all computations are done and Dynamo is ready
-        /// to send ComputationResponse
+        /// to comput graphics data and send ComputationResponse
         /// </summary>
-        void RunCommandCompleted(object sender, FullRunCompletedEventArgs e)
+        void RunCommandCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            wasRun = e.WasRun;
-            nextRunAllowed.Set();
+            if (evaluationTookPlace = e.EvaluationTookPlace)
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(dynamoModel.MaxTesselationDivisions);
+
+                var task = new DelegateBasedAsyncTask(dynamoModel.Scheduler);
+                task.Initialize(() => nextRunAllowed.Set());
+                dynamoModel.Scheduler.ScheduleForExecution(task);
+            }
+            else
+            {
+                nextRunAllowed.Set();
+            }
         }
 
         /// <summary>
@@ -122,7 +135,7 @@ namespace DynamoWebServer.Messages
         /// <param name="e">Event args</param>
         internal void NodesDataModified(string sessionId)
         {
-            if (!wasRun)
+            if (!evaluationTookPlace)
                 return;
 
             var nodes = GetExecutedNodes();
@@ -154,7 +167,7 @@ namespace DynamoWebServer.Messages
             {
                 nextRunAllowed.Reset();
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-                WaitWhileRunCompletes();
+                WaitForRunCompletion();
                 NodesDataCreated(sessionId);
             }
             else
@@ -264,7 +277,7 @@ namespace DynamoWebServer.Messages
                 {
                     nextRunAllowed.Reset();
                     dynamo.ExecuteCommand(command);
-                    WaitWhileRunCompletes();
+                    WaitForRunCompletion();
                     NodesDataModified(sessionId);
                 }
                 else
@@ -274,7 +287,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void WaitWhileRunCompletes()
+        private void WaitForRunCompletion()
         {
             nextRunAllowed.WaitOne(maxMsToWait);
         }

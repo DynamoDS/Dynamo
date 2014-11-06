@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -21,7 +22,7 @@ namespace Dynamo.UI.Controls
     /// See "Action" enumeration below for more details of each item sub-type.
     /// </summary>
     /// 
-    public class StartPageListItem
+    public class StartPageListItem : NotificationObject
     {
         private ImageSource icon = null;
 
@@ -125,6 +126,12 @@ namespace Dynamo.UI.Controls
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
+            fileOperations.Add(new StartPageListItem("Custom Node", "icon-customnode.png")
+            {
+                ContextData = ButtonNames.NewCustomNodeWorkspace,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
+
             fileOperations.Add(new StartPageListItem("Open", "icon-open.png")
             {
                 ContextData = ButtonNames.OpenWorkspace,
@@ -201,11 +208,15 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        // Resursive call for each subdirectory.
-                        SampleFileEntry subProperty = 
-                            new SampleFileEntry(directory.Name, directory.FullName);
-                        WalkDirectoryTree(directory, subProperty);
-                        rootProperty.AddChildSampleFile(subProperty);
+                        //Make sure the folder's name is not "backup" 
+                        if (!directory.Name.Equals(Configurations.BackupFolderName))
+                        {
+                            // Resursive call for each subdirectory.
+                            SampleFileEntry sampleFileEntry =
+                                new SampleFileEntry(directory.Name, directory.FullName);
+                            WalkDirectoryTree(directory, sampleFileEntry);
+                            rootProperty.AddChildSampleFile(sampleFileEntry);
+                        }
                     }
                 }
 
@@ -338,6 +349,10 @@ namespace Dynamo.UI.Controls
                 case ButtonNames.OpenWorkspace:
                     dvm.ShowOpenDialogAndOpenResultCommand.Execute(null);
                     break;
+                    
+                case ButtonNames.NewCustomNodeWorkspace:
+                    dvm.ShowNewFunctionDialogCommand.Execute(null);
+                    break;
 
                 default:
                     throw new ArgumentException(
@@ -371,6 +386,7 @@ namespace Dynamo.UI.Controls
     struct ButtonNames
     {
         public const string NewWorkspace = "NewWorkspace";
+        public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
     }
 

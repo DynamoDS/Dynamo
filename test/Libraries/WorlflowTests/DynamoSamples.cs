@@ -508,14 +508,9 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_CSV_to_Stuff()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"ImportExport\ImportExport_CSV to Stuff.dyn");
 
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
-
-            var filename = (DSCore.File.Filename)ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
@@ -525,7 +520,7 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
+            const string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
             AssertPreviewCount(lineNodeID, 201);
 
             // There should be 201 Points.

@@ -66,4 +66,4 @@ extern/DynamoAsm/
 extern/ASM/
 
 tools/CBNLanguageComparisonTests/GenerateTests.cs
-/bin
+src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs

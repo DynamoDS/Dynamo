@@ -29,7 +29,7 @@ namespace Revit.GeometryObjects
 
                 return geob != null ? geob.Convert(elRef) : null;
             }
-            catch
+            catch(Exception ex)
             {
                 throw new Exception("Could not get a geometry object from the current document using the provided reference.");
             }

@@ -403,7 +403,17 @@ namespace Dynamo.Tests
             Assert.Inconclusive();
         }
 
+        [Test]
+        public void CanEvaluateCustomNodeWithDuplicateInputs()
+        {
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\duplicate-input.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.Model.RunExpression();
 
+            var addNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            AssertPreviewValue(addNode.GUID.ToString(), 3);
+        }
+        
         [Test]
         public void CanCreateAndPlaceNewCustomNode()
         {

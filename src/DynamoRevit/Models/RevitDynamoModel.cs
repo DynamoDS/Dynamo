@@ -95,6 +95,16 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        /// <summary>
+        /// This call is made during start-up sequence after RevitDynamoModel 
+        /// constructor returned. Virtual methods on DynamoModel that perform 
+        /// initialization steps should only be called from here.
+        /// </summary>
+        internal void HandlePostInitialization()
+        {
+            InitializeMaterials(); // Initialize materials for preview.
+        }
+
         private bool setupPython;
         private void SetupPython()
         {
@@ -131,21 +141,22 @@ namespace Dynamo.Applications.Models
             }
         }
 
+        private void InitializeMaterials()
+        {
+            // Does nothing: MaterialsManager is Revit 2015 specific.
+        }
+
         #endregion
 
         #region Event subscribe/unsubscribe
 
         private void SubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
         }
 
@@ -161,23 +172,11 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeDocumentManagerEvents()
         {
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
-                Application_DocumentClosed;
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
-                Application_DocumentOpened;
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
-
             DocumentManager.OnLogError += this.Logger.Log;
         }
 
         private void UnsubscribeDocumentManagerEvents()
         {
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed -=
-                Application_DocumentClosed;
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened -=
-                Application_DocumentOpened;
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated -= Revit_ViewActivated;
-
             DocumentManager.OnLogError -= this.Logger.Log;
         }
 
@@ -185,7 +184,7 @@ namespace Dynamo.Applications.Models
 
         #region Public methods
 
-        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        public override void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             // finally close the transaction!
             TransactionManager.Instance.ForceCloseTransaction();
@@ -239,18 +238,20 @@ namespace Dynamo.Applications.Models
             UnsubscribeTransactionManagerEvents();
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         protected override void PostShutdownCore(bool shutdownHost)
         {
-#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.ClearPromises();
             IdlePromise.Shutdown();
-#endif
             base.PostShutdownCore(shutdownHost);
         }
 
+#endif
+
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
             if (markNodesAsDirty)
                 Nodes.ForEach(n => n.RequiresRecalc = true);
         }
@@ -295,13 +296,11 @@ namespace Dynamo.Applications.Models
         #region Event handlers 
 
         /// <summary>
-        /// Handler for Revit's DocumentOpened event.
-        /// This handler is called when a document is opened, but NOT when
-        /// a document is created from a template.
+        /// Handler Revit's DocumentOpened event.
+        /// It is called when a document is opened, but NOT when a document is 
+        /// created from a template.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
+        public void HandleApplicationDocumentOpened()
         {
             // If the current document is null, for instance if there are
             // no documents open, then set the current document, and 
@@ -316,12 +315,19 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
-        /// Handler for Revit's DocumentClosed event.
-        /// This handler is called when a document is closed.
+        /// Handler Revit's DocumentClosing event.
+        /// It is called when a document is closing.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Application_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        public void HandleApplicationDocumentClosing(Document doc)
+        {
+            // no-op on revit2014
+        }
+
+        /// <summary>
+        /// Handle Revit's DocumentClosed event.
+        /// It is called when a document is closed.
+        /// </summary>
+        public void HandleApplicationDocumentClosed()
         {
             // If the active UI document is null, it means that all views have been 
             // closed from all document. Clear our reference, present a warning,
@@ -353,13 +359,11 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
-        /// Handler for Revit's ViewActivated event.
-        /// This handler is called when a view is activated. It is called
-        /// after the ViewActivating event.
+        /// Handler Revit's ViewActivated event.
+        /// It is called when a view is activated. It is called after the 
+        /// ViewActivating event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Revit_ViewActivated(object sender, ViewActivatedEventArgs e)
+        public void HandleRevitViewActivated()
         {
             // If there is no active document, then set it to whatever
             // document has just been activated
@@ -368,6 +372,7 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
+                InitializeMaterials();
                 this.RunEnabled = true;
             }
         }
@@ -387,7 +392,7 @@ namespace Dynamo.Applications.Models
         private void ResetForNewDocument()
         {
             foreach (var node in this.Nodes)
-                node.ResetOldValue();
+                node.RequiresRecalc = true;
 
             foreach (var node in this.Nodes)
             {
