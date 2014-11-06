@@ -112,11 +112,11 @@ namespace DynamoWebServer.Messages
             }
             else if (message is SaveFileMessage)
             {
-                SaveFile(dynamo, message, sessionId);
+                SaveFile(dynamo, message as SaveFileMessage, sessionId);
             }
             else if (message is UploadFileMessage)
             {
-                UploadFile(dynamo, message, sessionId);
+                UploadFile(dynamo, message as UploadFileMessage, sessionId);
             }
             else if (message is GetNodeGeometryMessage)
             {
@@ -125,6 +125,25 @@ namespace DynamoWebServer.Messages
             else if (message is ClearWorkspaceMessage)
             {
                 ClearWorkspace();
+            }
+        }
+
+        private WorkspaceModel GetWorkspaceByGuid(string guidStr)
+        {
+            if (string.IsNullOrEmpty(guidStr))
+            {
+                return dynamoModel.HomeSpace;
+            }
+            else
+            {
+                Guid guid = Guid.Parse(guidStr);
+
+                var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
+                var definition = defs.FirstOrDefault(d => d.FunctionId == guid);
+                if (definition == null)
+                    return null;
+
+                return definition.WorkspaceModel;
             }
         }
 
@@ -161,9 +180,9 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
+        private void UploadFile(DynamoModel dynamo, UploadFileMessage message, string sessionId)
         {
-            if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
+            if (uploader.ProcessFileData(message, dynamo))
             {
                 nextRunAllowed.Reset();
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
@@ -180,32 +199,16 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void SaveFile(DynamoModel dynamo, Message message, string sessionId)
+        private void SaveFile(DynamoModel dynamo, SaveFileMessage message, string sessionId)
         {
-            string guid = (message as SaveFileMessage).Guid;
-
-            WorkspaceModel workspaceToSave = null;
-            if (string.IsNullOrEmpty(guid))
-            {
-                workspaceToSave = dynamoModel.HomeSpace;
-            }
-            else
-            {
-                var definition = dynamoModel.CustomNodeManager.GetLoadedDefinitions().FirstOrDefault(d => d.FunctionId.ToString() == guid);
-                if (definition != null)
-                {
-                    workspaceToSave = definition.WorkspaceModel;
-                }
-                else
-                {
-                    return;
-                }
-            }
+            WorkspaceModel workspaceToSave = GetWorkspaceByGuid(message.Guid);
+            if (workspaceToSave == null)
+                return;
 
             byte[] fileContent;
             try
             {
-                string fileName, filePath = (message as SaveFileMessage).FilePath;
+                string fileName, filePath = message.FilePath;
 
                 // if path was specified it means NWK is used and we need just to save file
                 if (!string.IsNullOrEmpty(filePath))
