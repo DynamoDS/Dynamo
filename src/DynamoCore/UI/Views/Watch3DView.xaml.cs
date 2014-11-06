@@ -697,14 +697,19 @@ namespace Dynamo.Controls
         {
             int color_idx = 0;
 
-            for (int i = 0; i < p.LineStripVertices.Count; i += 3)
+            for (int i = 0; i < p.LineStripVertices.Count; i += 6)
             {
                 var x = (float)p.LineStripVertices[i];
                 var y = (float)p.LineStripVertices[i + 1];
                 var z = (float)p.LineStripVertices[i + 2];
+
+                var x1 = (float)p.LineStripVertices[i];
+                var y1 = (float)p.LineStripVertices[i + 1];
+                var z1 = (float)p.LineStripVertices[i + 2];
                 
                 // DirectX convention - Y Up
-                var pt = new Vector3(x,z,y);
+                var ptA = new Vector3(x,z,y);
+                var ptB = new Vector3(x1,z1,y1);
 
                 //if (i == 0 && outerCount == 0 && p.DisplayLabels)
                 //{
@@ -716,9 +721,17 @@ namespace Dynamo.Controls
                                         (float)(p.LineStripVertexColors[color_idx + 1] / 255),
                                         (float)(p.LineStripVertexColors[color_idx + 2] / 255), 1);
 
-                geom.Positions.Add(pt);
+                var endColor = new SharpDX.Color4(
+                                        (float)(p.LineStripVertexColors[color_idx + 3] / 255),
+                                        (float)(p.LineStripVertexColors[color_idx + 4] / 255),
+                                        (float)(p.LineStripVertexColors[color_idx + 5] / 255), 1);
+
+                geom.Positions.Add(ptA);
+                geom.Positions.Add(ptA);
                 geom.Indices.Add(geom.Indices.Count);
+                geom.Indices.Add(geom.Indices.Count+1);
                 geom.Colors.Add(startColor);
+                geom.Colors.Add(endColor);
 
                 color_idx += 4;
             }
