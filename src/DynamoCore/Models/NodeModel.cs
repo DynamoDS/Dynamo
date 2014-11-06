@@ -1518,11 +1518,6 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
 
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
-                return;
-
             RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
 
