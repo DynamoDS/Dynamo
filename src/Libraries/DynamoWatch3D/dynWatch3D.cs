@@ -129,8 +129,8 @@ namespace Dynamo.Nodes
                 Height = _watchHeight
             };
 
-            View.View.Camera.Position = _camPosition;
-            View.View.Camera.LookDirection = _lookDirection;
+            //View.View.Camera.Position = _camPosition;
+            //View.View.Camera.LookDirection = _lookDirection;
 
             var backgroundRect = new Rectangle
             {
