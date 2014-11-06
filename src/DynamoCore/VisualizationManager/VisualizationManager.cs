@@ -131,7 +131,11 @@ namespace Dynamo
             set { alternateContextName = value; }
         }
 
-        public int MaxTesselationDivisions { get; set; }
+        public int MaxTesselationDivisions
+        {
+            get { return this.dynamoModel.MaxTesselationDivisions; }
+            set { this.dynamoModel.MaxTesselationDivisions = value; }
+        }
 
         public Object CurrentTaskIdMutex = new object();
         public long CurrentTaskId
@@ -226,8 +230,6 @@ namespace Dynamo
 
         public VisualizationManager(DynamoModel dynamoModel)
         {
-            MaxTesselationDivisions = dynamoModel.MaxTesselationDivisions;
-
             this.dynamoModel = dynamoModel;
 
 #if !ENABLE_DYNAMO_SCHEDULER
@@ -515,7 +517,7 @@ namespace Dynamo
                 renderManager.RequestRenderAsync(new RenderTask());
 #else
             if (updateVisualization)
-                RequestNodeVisualUpdate();
+                RequestNodeVisualUpdate(null);
 #endif
         }
 
@@ -559,7 +561,7 @@ namespace Dynamo
         private void RegisterEventListeners()
         {
             dynamoModel.EvaluationCompleted += Update;
-            dynamoModel.RequestsRedraw += ComputeAndUpdate;
+            dynamoModel.RequestsRedraw += Update;
             dynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
@@ -581,7 +583,7 @@ namespace Dynamo
         private void UnregisterEventListeners()
         {
             dynamoModel.EvaluationCompleted -= Update;
-            dynamoModel.RequestsRedraw -= ComputeAndUpdate;
+            dynamoModel.RequestsRedraw -= Update;
             dynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
@@ -593,31 +595,22 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Handler for the EvaluationCompleted event.
+        /// Handler for the RequestRedraw event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager.RequestRenderAsync(new RenderTask());
-#else
-            RequestNodeVisualUpdate();
-#endif
-        }
+            // do nothing if it has come on EvaluationCompleted
+            // and no evaluation was
+            var args = e as EvaluationCompletedEventArgs;
+            if (args != null && !args.EvaluationTookPlace)
+                return;
 
-        /// <summary>
-        /// Handler for the RequestRedraw event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComputeAndUpdate(object sender, EventArgs e)
-        {
 #if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
 #else
-            dynamoModel.ComputeVisualData();
-            RequestNodeVisualUpdate();
+            RequestNodeVisualUpdate(null);
 #endif
         }
 
@@ -625,11 +618,23 @@ namespace Dynamo
 
         protected virtual void HandleRenderPackagesReadyCore()
         {
-            // Default visualization mangager does nothing here.
+            // Default visualization manager does nothing here.
         }
 
-        private void RequestNodeVisualUpdate()
+        private void RequestNodeVisualUpdate(NodeModel nodeModel)
         {
+            if (nodeModel != null)
+            {
+                // Visualization update for a given node is desired.
+                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
+            }
+            else
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(MaxTesselationDivisions);
+            }
+
             // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
             // render packages of all the NodeModel objects are generated, the 
             // VisualizationManager gets notified.

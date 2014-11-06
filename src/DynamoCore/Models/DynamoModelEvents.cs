@@ -220,36 +220,36 @@ namespace Dynamo.Models
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
-        public event EventHandler EvaluationCompleted;
-        public virtual void OnEvaluationCompleted(object sender, EventArgs e)
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        public virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            this.ComputeVisualData();
-
-            // When evaluation is completed, we mark all
-            // nodes as ForceReexecuteOfNode = false to prevent
-            // cyclical graph updates. It is therefore the responsibility 
-            // of the node implementor to mark this flag = true, if they
-            // want to require update.
-            foreach (var n in HomeSpace.Nodes)
+            if (e.EvaluationTookPlace)
             {
-                n.ForceReExecuteOfNode = false;
+                // When evaluation is completed, we mark all
+                // nodes as ForceReexecuteOfNode = false to prevent
+                // cyclical graph updates. It is therefore the responsibility 
+                // of the node implementor to mark this flag = true, if they
+                // want to require update.
+                foreach (var n in HomeSpace.Nodes)
+                {
+                    n.ForceReExecuteOfNode = false;
+                }
             }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
         }
 
-        /// <summary>
-        /// An event is triggered when RenderPackages are computed 
-        /// for all graphical nodes.
-        /// </summary>
-        public event EventHandler<FullRunCompletedEventArgs> FullRunCompleted;
-        public virtual void OnFullRunCompleted(object sender, FullRunCompletedEventArgs e)
+        #endregion
+    }
+
+    public class EvaluationCompletedEventArgs : EventArgs
+    {
+        public EvaluationCompletedEventArgs(bool evaluationTookPlace)
         {
-            if (FullRunCompleted != null)
-                FullRunCompleted(sender, e);
+            EvaluationTookPlace = evaluationTookPlace;
         }
 
-        #endregion
+        public bool EvaluationTookPlace { get; private set; }
     }
 }

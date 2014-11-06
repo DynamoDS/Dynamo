@@ -137,7 +137,7 @@ namespace Dynamo.Models
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
         public bool ShutdownRequested { get; internal set; }
-        public int MaxTesselationDivisions { get; private set; }
+        public int MaxTesselationDivisions { get; set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -544,7 +544,11 @@ namespace Dynamo.Models
                 scheduler.ScheduleForExecution(task);
             }
             else
-                OnFullRunCompleted(null, new FullRunCompletedEventArgs(false));
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
         }
 
         /// <summary>
@@ -601,7 +605,10 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            OnEvaluationCompleted(this, EventArgs.Empty);
+
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
         }
 
         /// <summary>
@@ -663,17 +670,6 @@ namespace Dynamo.Models
 
                 RunExpression();
             }
-        }
-
-        public void ComputeVisualData()
-        {
-            // Get each node in workspace to update their visuals.
-            foreach (var node in CurrentWorkspace.Nodes)
-                node.RequestVisualUpdate(MaxTesselationDivisions);
-
-            var task = new DelegateBasedAsyncTask(scheduler);
-            task.Initialize(() => OnFullRunCompleted(null, new FullRunCompletedEventArgs(true)));
-            scheduler.ScheduleForExecution(task);
         }
 
         protected void ResetEngineInternal()
