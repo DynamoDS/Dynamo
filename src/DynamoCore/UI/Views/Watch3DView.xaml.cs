@@ -20,6 +20,7 @@ using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
+using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
@@ -75,9 +76,9 @@ namespace Dynamo.Controls
             }
         }
 
-        public MeshGeometry3D Points { get; set; }
+        public PointGeometry3D Points { get; set; }
 
-        public MeshGeometry3D PointsSelected { get; set; }
+        public PointGeometry3D PointsSelected { get; set; }
 
         public LineGeometry3D Lines { get; set; }
 
@@ -191,8 +192,8 @@ namespace Dynamo.Controls
             Lines = InitLineGeometry();
             LinesSelected = InitLineGeometry();
 
-            Points = InitMeshGeometry();
-            PointsSelected = InitMeshGeometry();
+            Points = InitPointGeometry();
+            PointsSelected = InitPointGeometry();
 
             DrawGrid();
         }
@@ -418,8 +419,8 @@ namespace Dynamo.Controls
             //pre-size the points collections
             //var points = new Point3DCollection(pointsCount);
             //var pointsSelected = new Point3DCollection(selPointsCount);
-            var points = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
-            var pointsSelected = new HelixToolkit.Wpf.SharpDX.MeshBuilder();
+            var points = InitPointGeometry();
+            var pointsSelected = InitPointGeometry();
 
             //var lines = new Point3DCollection(lineCount);
             //var linesSelected = new Point3DCollection(lineSelCount);
@@ -473,30 +474,9 @@ namespace Dynamo.Controls
             //    vm.CheckForLatestRenderCommand.Execute(e.TaskId);
             //}
 
-            var pointsIn = points.ToMeshGeometry3D();
-            var pointSelIn = pointsSelected.ToMeshGeometry3D();
-
-            if (pointsIn.Positions.Count == 0)
-            {
-                pointsIn = InitMeshGeometry();
-            }
-            else
-            {
-                pointsIn.Colors = new Color4Collection(pointsIn.Positions.Select(x => new Color4(0, 0, 0, 1)));
-            }
-
-            if (pointSelIn.Positions.Count == 0)
-            {
-                pointSelIn = InitMeshGeometry();
-            }
-            else
-            {
-                pointSelIn.Colors = new Color4Collection(pointSelIn.Positions.Select(x => new Color4(0, 1, 1, 1)));  
-            }
-
             Dispatcher.Invoke(new Action<
-                MeshGeometry3D,
-                MeshGeometry3D,
+                PointGeometry3D,
+                PointGeometry3D,
                 LineGeometry3D,
                 LineGeometry3D,
                 LineGeometry3D,
@@ -505,8 +485,8 @@ namespace Dynamo.Controls
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D,
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D>(SendGraphicsToView), DispatcherPriority.Render,
                                new object[] {
-                                   pointsIn, 
-                                   pointSelIn, 
+                                   points, 
+                                   pointsSelected, 
                                    lines, 
                                    linesSel, 
                                    redLines, 
@@ -533,6 +513,22 @@ namespace Dynamo.Controls
             lines.Colors.Add(new Color4());
 
             return lines;
+        }
+
+        private static PointGeometry3D InitPointGeometry()
+        {
+            var points = new PointGeometry3D()
+            {
+                Positions = new Vector3Collection(),
+                Indices = new IntCollection(),
+                Colors = new Color4Collection()
+            };
+
+            points.Positions.Add(new Vector3());
+            points.Indices.Add(0);
+            points.Colors.Add(new Color4());
+
+            return points;
         }
 
         private static HelixToolkit.Wpf.SharpDX.MeshGeometry3D InitMeshGeometry()
@@ -562,8 +558,8 @@ namespace Dynamo.Controls
         }
 
         private void SendGraphicsToView(
-            MeshGeometry3D points,
-            MeshGeometry3D pointsSelected,
+            PointGeometry3D points,
+            PointGeometry3D pointsSelected,
             LineGeometry3D lines,
             LineGeometry3D linesSelected,
             LineGeometry3D redLines,
@@ -693,9 +689,9 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertPoints(RenderPackage p, HelixToolkit.Wpf.SharpDX.MeshBuilder builder)
+        private void ConvertPoints(RenderPackage p, PointGeometry3D points)
         {
-            //int color_idx = 0;
+            int color_idx = 0;
 
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
@@ -711,14 +707,15 @@ namespace Dynamo.Controls
                 //    //text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
                 //}
 
-                //var startColor = new SharpDX.Color4(
-                //                        (float)(p.PointVertexColors[color_idx] / 255),
-                //                        (float)(p.PointVertexColors[color_idx + 1] / 255),
-                //                        (float)(p.PointVertexColors[color_idx + 2] / 255), 1);
+                var ptColor = new SharpDX.Color4(
+                                        (float)(p.PointVertexColors[color_idx] / 255),
+                                        (float)(p.PointVertexColors[color_idx + 1] / 255),
+                                        (float)(p.PointVertexColors[color_idx + 2] / 255), 1);
                 
-                builder.AddBox(pt, 0.01,0.01,0.01);
-
-                //color_idx += 4;
+                points.Positions.Add(pt);
+                points.Indices.Add(points.Positions.Count);
+                points.Colors.Add(ptColor);
+                color_idx += 4;
             }
 
         }
