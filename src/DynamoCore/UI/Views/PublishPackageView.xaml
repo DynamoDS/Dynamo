@@ -289,6 +289,15 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Name="Icon" Width="32" Height="32" />
                                     <TextBlock Name="DepName" Padding="7" FontSize="13" Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                                    
+                                    <StackPanel.ContextMenu>
+
+                                        <ContextMenu Name="DepContextMenu" >
+                                            <MenuItem Name="IsNodeLibraryButton" Header="Is Node Library" Visibility="Collapsed" IsCheckable="True" IsChecked="{Binding IsNodeLibrary}"></MenuItem>
+                                        </ContextMenu>
+
+                                    </StackPanel.ContextMenu>
+                                    
                                 </StackPanel>
 
                                 <DataTemplate.Triggers>
@@ -311,6 +320,17 @@
                                             <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
                                         </DataTrigger.Value>
                                         <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/nodes.png"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Visibility" TargetName="IsNodeLibraryButton" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsNodeLibrary}" Value="true">
+                                        <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}}"
