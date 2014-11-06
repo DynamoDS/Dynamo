@@ -304,26 +304,7 @@ namespace Dynamo.Models
 
         public MirrorData CachedValue
         {
-            get
-            {
-                if (cachedMirrorData != null)
-                    return cachedMirrorData;
-
-                // Do not have an identifier for preview right now. For an example,
-                // this can be happening at the beginning of a code block node creation.
-                if (AstIdentifierForPreview.Value == null)
-                    return null;
-
-                cachedMirrorData = null;
-
-                var engine = Workspace.DynamoModel.EngineController;
-                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-                if (runtimeMirror != null)
-                    cachedMirrorData = runtimeMirror.GetData();
-
-                return cachedMirrorData;
-            }
+            get { return cachedMirrorData; }
         }
 
         /// <summary>
@@ -337,8 +318,6 @@ namespace Dynamo.Models
                 isUpdated = value;
                 if (isUpdated != false)      // When a NodeModel is updated, its 
                     cachedMirrorData = null; // cached data should be invalidated.
-
-                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -1483,7 +1462,29 @@ namespace Dynamo.Models
         /// 
         public void RequestValueUpdateAsync()
         {
-            // TODO(Ben): Update cachedMirrorData asynchronously.
+            // Do not have an identifier for preview right now. For an example,
+            // this can be happening at the beginning of a code block node creation.
+            var variableName = AstIdentifierForPreview.Value;
+            if (string.IsNullOrEmpty(variableName))
+                return;
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
+            {
+                DynamoScheduler = scheduler,
+                EngineController = Workspace.DynamoModel.EngineController,
+                VariableName = variableName
+            });
+
+            task.Completed += OnNodeValueQueried;
+            scheduler.ScheduleForExecution(task);
+        }
+
+        private void OnNodeValueQueried(AsyncTask asyncTask)
+        {
+            var task = asyncTask as QueryMirrorDataAsyncTask;
+            cachedMirrorData = task.MirrorData;
+            RaisePropertyChanged("IsUpdated");
         }
 
         /// <summary>
