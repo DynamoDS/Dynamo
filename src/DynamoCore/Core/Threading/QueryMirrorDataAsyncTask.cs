@@ -1,23 +1,53 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
+﻿using System;
+using System.Drawing.Text;
+
+using Dynamo.DSEngine;
+
+using ProtoCore.Mirror;
+
+#if ENABLE_DYNAMO_SCHEDULER
 
 namespace Dynamo.Core.Threading
 {
+    struct QueryMirrorDataParams
+    {
+        internal DynamoScheduler DynamoScheduler { get; set; }
+        internal EngineController EngineController { get; set; }
+        internal string VariableName { get; set; }
+    }
+
     class QueryMirrorDataAsyncTask : AsyncTask
     {
         #region Class Data Members and Properties
 
-        internal override AsyncTask.TaskPriority Priority
+        private string variableName;
+        private MirrorData cachedMirrorData;
+        private EngineController engineController;
+
+        internal override TaskPriority Priority
         {
-            get { throw new System.NotImplementedException(); }
+            get { return TaskPriority.Normal; }
+        }
+
+        internal MirrorData MirrorData
+        {
+            get { return cachedMirrorData; }
         }
 
         #endregion
 
         #region Public Class Operational Methods
 
-        internal QueryMirrorDataAsyncTask(DynamoScheduler scheduler)
-            : base(scheduler)
+        internal QueryMirrorDataAsyncTask(QueryMirrorDataParams initParams)
+            : base(initParams.DynamoScheduler)
         {
+            if (initParams.EngineController == null)
+                throw new ArgumentNullException("initParams.EngineController");
+            if (string.IsNullOrEmpty(initParams.VariableName))
+                throw new ArgumentNullException("initParams.VariableName");
+
+            variableName = initParams.VariableName;
+            engineController = initParams.EngineController;
         }
 
         #endregion
@@ -26,12 +56,13 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskExecutionCore()
         {
-            throw new System.NotImplementedException();
+            var runtimeMirror = engineController.GetMirror(variableName);
+            if (runtimeMirror != null)
+                cachedMirrorData = runtimeMirror.GetData();
         }
 
         protected override void HandleTaskCompletionCore()
         {
-            throw new System.NotImplementedException();
         }
 
         #endregion
