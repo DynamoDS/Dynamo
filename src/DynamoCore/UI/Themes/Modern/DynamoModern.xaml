@@ -517,9 +517,9 @@
                                           Margin="5,5,0,0" />
                             <TextBlock x:Name="previewText"
                                        Foreground="#555555"
-                                       FontSize="12px"
-                                       Padding="6"
-                                       Margin="4 0 0 0"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Padding="{TemplateBinding Padding}"
+                                       Margin="5,5,0,0"
                                        IsHitTestVisible="False"
                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Text="{TemplateBinding Tag}" />
