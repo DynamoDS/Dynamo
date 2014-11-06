@@ -7,13 +7,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
-
-using Autodesk.DesignScript.Geometry;
 
 using Dynamo.DSEngine;
 using Dynamo.ViewModels;
@@ -172,7 +168,7 @@ namespace Dynamo.Controls
             this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-2, -5, -2);
-            this.RenderTechnique = Techniques.RenderColors;
+            this.RenderTechnique = Techniques.RenderPhong;
             this.RedMaterial = PhongMaterials.Red;
             this.CyanMaterial = PhongMaterials.Turquoise;
 
@@ -372,7 +368,6 @@ namespace Dynamo.Controls
             }
 
             Grid = builder.ToLineGeometry3D();
-            //Grid = HelixToolkit.Wpf.SharpDX.LineBuilder.GenerateGrid(Vector3.UnitY, -50, 50);
         }
 
         /// <summary>
@@ -416,20 +411,12 @@ namespace Dynamo.Controls
                 .Where(rp => rp.TriangleVertices.Count % 9 == 0)
                 .ToArray();
 
-            //pre-size the points collections
-            //var points = new Point3DCollection(pointsCount);
-            //var pointsSelected = new Point3DCollection(selPointsCount);
             var points = InitPointGeometry();
             var pointsSelected = InitPointGeometry();
 
-            //var lines = new Point3DCollection(lineCount);
-            //var linesSelected = new Point3DCollection(lineSelCount);
             var lines = InitLineGeometry();
             var linesSel = InitLineGeometry();
 
-            //var redLines = new Point3DCollection(lineCount);
-            //var greenLines = new Point3DCollection(lineCount);
-            //var blueLines = new Point3DCollection(lineCount);
             var redLines = new LineGeometry3D();
             var greenLines = new LineGeometry3D();
             var blueLines = new LineGeometry3D();
@@ -438,19 +425,13 @@ namespace Dynamo.Controls
             var textCount = e.Packages.Count(x => x.DisplayLabels);
             var text = new List<BillboardTextItem>(textCount);
 
-            //var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
-            //var meshSel = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D();
             var mesh = InitMeshGeometry();
             var meshSel = InitMeshGeometry();
 
             foreach (var package in packages)
             {
                 ConvertPoints(package, points);
-
-                //ConvertLines(package, lines, redLines, greenLines, blueLines);
                 ConvertLines(package, lines);
-
-                //ConvertMeshes(package, verts, norms, tris);
                 ConvertMeshes(package, mesh);
             }
 
@@ -458,21 +439,13 @@ namespace Dynamo.Controls
             {
                 ConvertPoints(package, pointsSelected);
 
-                //ConvertLines(package, linesSelected, redLines, greenLines, blueLines);
                 ConvertLines(package, linesSel);
 
-                //ConvertMeshes(package, vertsSel, normsSel, trisSel);
                 ConvertMeshes(package, meshSel);
             }
 
             sw.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
-
-            //var vm = (IWatchViewModel)DataContext;
-            //if (vm.CheckForLatestRenderCommand.CanExecute(e.TaskId))
-            //{
-            //    vm.CheckForLatestRenderCommand.Execute(e.TaskId);
-            //}
 
             Dispatcher.Invoke(new Action<
                 PointGeometry3D,
@@ -777,6 +750,11 @@ namespace Dynamo.Controls
                     (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
                     1);
 
+                if (color == new Color4(1, 1, 1, 1))
+                {
+                    color = new Color4(0.5f,0.5f,0.5f,1);
+                }
+
                 mesh.Positions.Add(new_point);
                 mesh.Indices.Add(pt_idx);
                 mesh.Normals.Add(normal);
@@ -791,22 +769,22 @@ namespace Dynamo.Controls
                 MeshCount++;
             }
 
-            if (p.TriangleVertices.Any())
-            {
-                // Create reversed backfaces
-                var copytri = new int[mesh.Indices.Count];
-                mesh.Indices.CopyTo(copytri);
-                Array.Reverse(copytri);
+            //if (p.TriangleVertices.Any())
+            //{
+            //    // Create reversed backfaces
+            //    var copytri = new int[mesh.Indices.Count];
+            //    mesh.Indices.CopyTo(copytri);
+            //    Array.Reverse(copytri);
 
-                var copynorm = new Vector3[mesh.Normals.Count];
-                for (int i = 0; i < copynorm.Length; i++)
-                    copynorm[i] = -1 * mesh.Normals[i];
+            //    var copynorm = new Vector3[mesh.Normals.Count];
+            //    for (int i = 0; i < copynorm.Length; i++)
+            //        copynorm[i] = -1 * mesh.Normals[i];
 
-                mesh.Positions.AddRange(mesh.Positions.ToArray());
-                mesh.Indices.AddRange(copytri);
-                mesh.Normals.AddRange(copynorm);
-                mesh.Colors.AddRange(mesh.Colors.ToArray());
-            }
+            //    mesh.Positions.AddRange(mesh.Positions.ToArray());
+            //    mesh.Indices.AddRange(copytri);
+            //    mesh.Normals.AddRange(copynorm);
+            //    mesh.Colors.AddRange(mesh.Colors.ToArray());
+            //}
         }
 
         private string CleanTag(string tag)
