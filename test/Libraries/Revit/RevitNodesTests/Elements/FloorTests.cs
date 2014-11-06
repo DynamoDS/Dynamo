@@ -3,12 +3,14 @@ using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
-    public class FloorTests : GeometricRevitNodeTest
+    public class FloorTests : RevitNodeTestBase
     {
 
         private double BoundingBoxVolume(BoundingBox bb)

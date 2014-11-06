@@ -50,6 +50,9 @@ limitations under the License.
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -86,6 +89,10 @@ limitations under the License.
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>

@@ -1,31 +1,28 @@
-<dynWorkspace X="0" Y="0" zoom="0.9" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="848" y="190.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynJoinStrings type="Dynamo.Nodes.dynJoinStrings" guid="d1f1f34a-c742-4bee-ba4b-726b5d1842d8" nickname="Join Strings" x="635.555555555555" y="190.242222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-    </Dynamo.Nodes.dynJoinStrings>
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="68c6dd5e-cac2-41ba-abe5-5f097d2e5fb6" nickname="File Path" x="33.3253968253969" y="49.3947619047621" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestJoinString_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="48b02aa8-fc9b-487c-9d21-5e4a511bb480" nickname="Read Text File" x="264.436507936508" y="63.8392063492065" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="a2cfcc3a-46ae-4176-b6e3-4a672e7fcb5c" nickname="List" x="424.436507936508" y="72.7280952380954" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Input name="index0" />
-      <Input name="index1" />
-    </Dynamo.Nodes.dynNewList>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="2df5f7d8-4dab-4c76-bfc3-3c3caaa4b904" nickname="String" x="287.769841269841" y="161.616984126984" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.7.4.3075" X="-401" Y="86" zoom="0.9" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="848" y="190.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="07301e8e-d852-404c-950b-ba0daf27bd3e" nickname="String.Join" x="509.999999999999" y="141.353333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Join@string,string[]" inputcount="3">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.DSVarArgFunction>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="68c6dd5e-cac2-41ba-abe5-5f097d2e5fb6" nickname="File Path" x="33.3253968253969" y="49.3947619047621" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestJoinString_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="48b02aa8-fc9b-487c-9d21-5e4a511bb480" nickname="File.ReadText" x="493.325396825397" y="-33.9385714285713" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="2df5f7d8-4dab-4c76-bfc3-3c3caaa4b904" nickname="String" x="339.992063492063" y="206.061428571428" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="x" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="88548610-ee32-4a9a-a8e1-7c5c9192cb21" nickname="String" x="496.65873015873" y="308.283650793651" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="88548610-ee32-4a9a-a8e1-7c5c9192cb21" nickname="String" x="371.103174603174" y="144.950317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="." />
-    </Dynamo.Nodes.dynStringInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="d1f1f34a-c742-4bee-ba4b-726b5d1842d8" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="68c6dd5e-cac2-41ba-abe5-5f097d2e5fb6" start_index="0" end="48b02aa8-fc9b-487c-9d21-5e4a511bb480" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="48b02aa8-fc9b-487c-9d21-5e4a511bb480" start_index="0" end="a2cfcc3a-46ae-4176-b6e3-4a672e7fcb5c" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="a2cfcc3a-46ae-4176-b6e3-4a672e7fcb5c" start_index="0" end="d1f1f34a-c742-4bee-ba4b-726b5d1842d8" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="2df5f7d8-4dab-4c76-bfc3-3c3caaa4b904" start_index="0" end="a2cfcc3a-46ae-4176-b6e3-4a672e7fcb5c" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="88548610-ee32-4a9a-a8e1-7c5c9192cb21" start_index="0" end="d1f1f34a-c742-4bee-ba4b-726b5d1842d8" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.StringInput>
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="e984a18b-9c42-401a-a036-ed850a67c46f" nickname="File.FromPath" x="357.777777777778" y="-34.9999999999999" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="07301e8e-d852-404c-950b-ba0daf27bd3e" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="68c6dd5e-cac2-41ba-abe5-5f097d2e5fb6" start_index="0" end="e984a18b-9c42-401a-a036-ed850a67c46f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48b02aa8-fc9b-487c-9d21-5e4a511bb480" start_index="0" end="07301e8e-d852-404c-950b-ba0daf27bd3e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2df5f7d8-4dab-4c76-bfc3-3c3caaa4b904" start_index="0" end="07301e8e-d852-404c-950b-ba0daf27bd3e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88548610-ee32-4a9a-a8e1-7c5c9192cb21" start_index="0" end="07301e8e-d852-404c-950b-ba0daf27bd3e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e984a18b-9c42-401a-a036-ed850a67c46f" start_index="0" end="48b02aa8-fc9b-487c-9d21-5e4a511bb480" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
