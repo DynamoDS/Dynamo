@@ -647,8 +647,79 @@ namespace Dynamo.Models
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
         protected virtual void LoadNode(XmlNode nodeElement) { }
 
+        private void ReadBasicData(XmlNode elNode)
+        {
+            XmlAttribute guidAttrib = elNode.Attributes["guid"];
+            XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
+            XmlAttribute xAttrib = elNode.Attributes["x"];
+            XmlAttribute yAttrib = elNode.Attributes["y"];
+            XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
+            XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
+            XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
+
+            //test the GUID to confirm that it is non-zero
+            //if it is zero, then we have to fix it
+            //this will break the connectors, but it won't keep
+            //propagating bad GUIDs
+            Guid guid;
+            if (!Guid.TryParse(guidAttrib.Value, out guid))
+                guid = Guid.NewGuid();
+
+            GUID = guid;
+
+            string nickname = nicknameAttrib.Value;
+            if (!string.IsNullOrEmpty(nickname))
+                NickName = nickname;
+
+            double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+            double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
+
+            bool isVisible = true;
+            if (isVisAttrib != null)
+                isVisible = isVisAttrib.Value == "true";
+
+            bool isUpstreamVisible = true;
+            if (isUpstreamVisAttrib != null)
+                isUpstreamVisible = isUpstreamVisAttrib.Value == "true";
+
+            X = x;
+            Y = y;
+
+            if (lacingAttrib != null)
+            {
+                if (ArgumentLacing != LacingStrategy.Disabled)
+                {
+                    LacingStrategy lacing;
+                    Enum.TryParse(lacingAttrib.Value, out lacing);
+                    ArgumentLacing = lacing;
+                }
+            }
+
+            //TODO(Steve): Move this to ZeroTouchManager I guess
+            #region DSFunction only
+            // Retrieve optional 'function' attribute (only for DSFunction).
+            XmlAttribute signatureAttrib = elNode.Attributes["function"];
+            var signature = signatureAttrib == null ? null : signatureAttrib.Value;
+
+            // This is to fix MAGN-3648. Method reference in CBN that gets 
+            // loaded before method definition causes a CBN to be left in 
+            // a warning state. This is to clear such warnings and set the 
+            // node to "Dead" state (correct value of which will be set 
+            // later on with a call to "EnableReporting" below). Please 
+            // refer to the defect for details and other possible fixes.
+            // 
+            if (State == ElementState.Warning && (this is CodeBlockNodeModel))
+                State = ElementState.Dead; // Condition to fix MAGN-3648
+            #endregion
+
+            IsVisible = isVisible;
+            IsUpstreamVisible = isUpstreamVisible;
+        }
+
         public void Load(XmlNode elNode)
         {
+            ReadBasicData(elNode);
+            
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();

@@ -193,66 +193,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// <para>Resolve either a built-in type or a system type, given its fully
-        /// qualified name. This method performs the search with the following 
-        /// order:</para>
-        /// <para>1. Search among the built-in types registered with 
-        /// DynamoModel.BuiltInTypesByName dictionary</para>
-        /// <para>2. Search among the available .NET runtime types</para>
-        /// <para>3. Search among built-in types, taking their "also-known-as" 
-        /// attributes into consideration when matching the type name</para>
-        /// </summary>
-        /// <param name="fullyQualifiedName"></param>
-        /// <returns></returns>
-        public static Type ResolveType(
-            string fullyQualifiedName, Dictionary<string, TypeLoadData> builtInTypes, ILogger logger)
-        {
-            if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException(@"fullyQualifiedName");
-
-            TypeLoadData tData;
-            if (builtInTypes.TryGetValue(fullyQualifiedName, out tData))
-                return tData.Type; // Found among built-in types, return it.
-
-            //try and get a system type by this name
-            Type type = Type.GetType(fullyQualifiedName);
-            if (null != type)
-                return type;
-
-            var query =
-                builtInTypes.Select(
-                    builtInType =>
-                        new
-                        {
-                            builtInType,
-                            attribs =
-                        builtInType.Value.Type.GetCustomAttributes(typeof(AlsoKnownAsAttribute), false)
-                        })
-                    .Where(
-                        t =>
-                            t.attribs.Any()
-                                && (t.attribs[0] as AlsoKnownAsAttribute).Values.Contains(fullyQualifiedName))
-                    .Select(t => t.builtInType);
-
-            if (query.Any()) // Found a matching type.
-            {
-                var builtInType = query.First();
-                logger.Log(
-                    string.Format(
-                        "Found matching node for {0} also known as {1}",
-                        builtInType.Key,
-                        fullyQualifiedName));
-
-                return builtInType.Value.Type;
-            }
-
-            logger.Log(string.Format("Could not load node of type: {0}", fullyQualifiedName));
-            logger.Log("Loading will continue but nodes " + "might be missing from your workflow.");
-
-            return null;
-        }
-
-        /// <summary>
         /// Call this method to associate/remove the target file path with/from
         /// the given XmlDocument object.
         /// </summary>

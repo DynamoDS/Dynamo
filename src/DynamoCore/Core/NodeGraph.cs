@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Double = System.Double;
@@ -12,9 +13,11 @@ namespace Dynamo.Core
 {
     public class NodeGraph
     {
-        public List<NodeModel> Nodes;
-        public List<ConnectorModel> Connectors;
-        public List<NoteModel> Notes;
+        public List<NodeModel> Nodes { get; private set; }
+        public List<ConnectorModel> Connectors { get; private set; }
+        public List<NoteModel> Notes { get; private set; }
+
+        private NodeGraph() { }
 
         private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
@@ -25,83 +28,56 @@ namespace Dynamo.Core
             return from XmlNode elNode in elNodesList.ChildNodes select nodeFactory.CreateNodeFromXml(elNode);
         }
 
-        public static NodeGraph LoadFromXml(XmlDocument xmlDoc)
+        private static bool LoadConnectorFromXml(XmlNode connEl, IDictionary<Guid, NodeModel> nodes, out ConnectorModel connector)
         {
-            var nodes = new List<NodeModel>();
-            var connectors = new List<NodeModel>();
-            var notes = new List<ConnectorModel>();
+            XmlAttribute guidStartAttrib = connEl.Attributes[0];
+            XmlAttribute intStartAttrib = connEl.Attributes[1];
+            XmlAttribute guidEndAttrib = connEl.Attributes[2];
+            XmlAttribute intEndAttrib = connEl.Attributes[3];
+            XmlAttribute portTypeAttrib = connEl.Attributes[4];
 
-            XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+            var guidStart = new Guid(guidStartAttrib.Value);
+            var guidEnd = new Guid(guidEndAttrib.Value);
+            int startIndex = Convert.ToInt16(intStartAttrib.Value);
+            int endIndex = Convert.ToInt16(intEndAttrib.Value);
+            var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
+
+            //find the elements to connect
+            NodeModel start;
+            if (nodes.TryGetValue(guidStart, out start))
+            {
+                NodeModel end;
+                if (nodes.TryGetValue(guidEnd, out end))
+                {
+                    connector = ConnectorModel.Make(start, end, startIndex, endIndex, portType);
+                    return connector != null;
+                }
+            }
+            connector = null;
+            return false;
+        }
+
+        private static IEnumerable<ConnectorModel> LoadConnectorsFromXml(XmlDocument xmlDoc, IDictionary<Guid, NodeModel> nodes)
+        {
             XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
-            XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
-
-            if (elNodes.Count == 0)
-                elNodes = xmlDoc.GetElementsByTagName("dynElements");
             if (cNodes.Count == 0)
                 cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-            if (nNodes.Count == 0)
-                nNodes = xmlDoc.GetElementsByTagName("dynNotes");
-
-            XmlNode elNodesList = elNodes[0];
             XmlNode cNodesList = cNodes[0];
-            XmlNode nNodesList = nNodes[0];
-
-            #region Nodes
-
-            
-
-            #endregion
-
-            #region Connectors
 
             foreach (XmlNode connector in cNodesList.ChildNodes)
             {
-                XmlAttribute guidStartAttrib = connector.Attributes[0];
-                XmlAttribute intStartAttrib = connector.Attributes[1];
-                XmlAttribute guidEndAttrib = connector.Attributes[2];
-                XmlAttribute intEndAttrib = connector.Attributes[3];
-                XmlAttribute portTypeAttrib = connector.Attributes[4];
-
-                var guidStart = new Guid(guidStartAttrib.Value);
-                var guidEnd = new Guid(guidEndAttrib.Value);
-                int startIndex = Convert.ToInt16(intStartAttrib.Value);
-                int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
-
-                //find the elements to connect
-                NodeModel start = null;
-                NodeModel end = null;
-
-                foreach (NodeModel e in nodes)
-                {
-                    if (e.GUID == guidStart)
-                    {
-                        start = e;
-                    }
-                    else if (e.GUID == guidEnd)
-                    {
-                        end = e;
-                    }
-                    if (start != null && end != null)
-                    {
-                        break;
-                    }
-                }
-
-                var newConnector = CurrentWorkspace.AddConnection(
-                    start,
-                    end,
-                    startIndex,
-                    endIndex,
-                    Logger,
-                    portType);
-
-                OnConnectorAdded(newConnector);
+                ConnectorModel c;
+                if (LoadConnectorFromXml(connector, nodes, out c))
+                    yield return c;
             }
+        }
 
-            #endregion
-
-            #region Notes
+        private static IEnumerable<NoteModel> LoadNotesFromXml(XmlDocument xmlDoc)
+        {
+            XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+            if (nNodes.Count == 0)
+                nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+            XmlNode nNodesList = nNodes[0];
 
             if (nNodesList != null)
             {
@@ -115,14 +91,26 @@ namespace Dynamo.Core
                     double x = Double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = Double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                    // TODO(Ben): Shouldn't we be reading in the Guid 
-                    // from file instead of generating a new one here?
-                    CurrentWorkspace.AddNote(false, x, y, text, Guid.NewGuid());
+                    // TODO(Ben): Shouldn't we be reading in the Guid from file instead of generating a new one here?
+                    yield return new NoteModel(x, y, text, Guid.NewGuid());
                 }
             }
+        }
 
-            #endregion
-            
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="nodeFactory"></param>
+        /// <returns></returns>
+        public static NodeGraph LoadFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
+        {
+            var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
+            var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
+            var notes = LoadNotesFromXml(xmlDoc).ToList();
+
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
+
             //=====HOME=====
 
             HomeSpace.FileName = xmlPath;

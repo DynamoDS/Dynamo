@@ -116,7 +116,7 @@ namespace Dynamo
             IsUsageReportingApproved = false;
             ConsoleHeight = 0;
             ShowConnector = true;
-            ConnectorType = ConnectorType.BEZIER;
+            ConnectorType = ConnectorType.Bezier;
             FullscreenWatchShowing = true;
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;

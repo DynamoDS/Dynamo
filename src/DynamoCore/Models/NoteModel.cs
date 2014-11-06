@@ -1,28 +1,27 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using Dynamo.Utilities;
 namespace Dynamo.Models
 {
     public class NoteModel:ModelBase
     {
-
-        private readonly WorkspaceModel workspaceModel;
-
-        private string _text;
+        private string text;
         public string Text
         {
-            get { return _text; }
+            get { return text; }
             set
             {
-                _text = value;
+                text = value;
                 RaisePropertyChanged("Text");
             }
         }
 
-        public NoteModel(WorkspaceModel workspace, double x, double y)
+        public NoteModel(double x, double y, string text, Guid guid)
         {
-            this.workspaceModel = workspace;
             X = x;
             Y = y;
+            Text = text;
+            GUID = guid;
         }
 
         #region Command Framework Supporting Methods

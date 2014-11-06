@@ -1574,11 +1574,11 @@ namespace Dynamo.ViewModels
         {
             if (parameters.ToString() == "BEZIER")
             {
-                ConnectorType = ConnectorType.BEZIER;
+                ConnectorType = ConnectorType.Bezier;
             }
             else
             {
-                ConnectorType = ConnectorType.POLYLINE;
+                ConnectorType = ConnectorType.Polyline;
             }
         }
 
