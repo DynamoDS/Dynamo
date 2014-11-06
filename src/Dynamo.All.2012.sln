@@ -124,7 +124,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSOffice", "Libraries\DSOff
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesLibraryUI", "Libraries\SamplesLibraryUI\SamplesLibraryUI.csproj", "{227B776D-8866-49E8-8C93-809CCF86AF12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryUI", "Libraries\SamplesLibraryUI\SampleLibraryUI.csproj", "{227B776D-8866-49E8-8C93-809CCF86AF12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOffice", "Libraries\DynamoMSOffice\DynamoMSOffice.csproj", "{798656E4-733F-4ABC-8AF4-604412FC0BC0}"
 	ProjectSection(ProjectDependencies) = postProject
