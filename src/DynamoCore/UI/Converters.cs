@@ -1939,5 +1939,4 @@ namespace Dynamo.Controls
             return formattedText.Width;
         }
     }
-
 }
