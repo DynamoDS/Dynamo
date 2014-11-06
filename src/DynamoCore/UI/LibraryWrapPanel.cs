@@ -23,6 +23,7 @@ namespace Dynamo.Controls
         /// </summary>
         private int selectedClassProspectiveIndex = -2;
         private double classObjectWidth = double.NaN;
+        private int itemsPerRow = 3;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
 
@@ -173,9 +174,8 @@ namespace Dynamo.Controls
 
             double x = 0, y = 0, currentRowHeight = 0;
 
-            int itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
+            itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
             double sizeBetweenItems = (finalSize.Width - itemsPerRow * classObjectWidth) / (itemsPerRow + 1);
-
 
             foreach (UIElement child in this.Children)
             {
@@ -231,6 +231,14 @@ namespace Dynamo.Controls
             selectedClassProspectiveIndex = translatedIndex;
 
             int classInfoIndex = GetClassInformationIndex();
+            if (classInfoIndex == selectedIndex)
+            {
+                selectedClassProspectiveIndex += itemsPerRow - 1;
+                currentClass = collection[selectedIndex - itemsPerRow] as BrowserInternalElement;
+                (sender as ListView).SelectedIndex--;
+                OrderListItems();
+                return;
+            }
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
@@ -295,8 +303,7 @@ namespace Dynamo.Controls
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
             // When we know the number of items on a single row, through selected 
-            // item index we will find out where the expanded StandardPanel sit.
-            var itemsPerRow = ((int)Math.Floor(ActualWidth / classObjectWidth));
+            // item index we will find out where the expanded StandardPanel sit.            
             var d = ((double)selectedClassProspectiveIndex) / itemsPerRow;
             var selectedItemRow = ((int)Math.Floor(d));
 
