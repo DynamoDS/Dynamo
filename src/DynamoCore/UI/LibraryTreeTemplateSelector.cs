@@ -10,23 +10,17 @@ namespace Dynamo.Controls
     {
         public DataTemplate NestedCategoryTemplate { get; set; }
         public DataTemplate SubclassesTemplate { get; set; }
-        public DataTemplate CategoryClassDetailsTemplate { get; set; }
+        public DataTemplate MemberTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
+            if (item is NodeSearchElement)
+                return MemberTemplate;
+
             if (item is BrowserInternalElementForClasses)
                 return SubclassesTemplate;
 
-            var browserRootElement = item as BrowserRootElement;
-            if (browserRootElement != null)
-            {
-                if (browserRootElement.IsPlaceholder)
-                    return CategoryClassDetailsTemplate;
-
-                return NestedCategoryTemplate;
-            }
-
-            if (item is BrowserInternalElement)
+            if (item is BrowserRootElement || item is BrowserInternalElement)
                 return NestedCategoryTemplate;
 
             const string message = "Unknown object bound to collection";

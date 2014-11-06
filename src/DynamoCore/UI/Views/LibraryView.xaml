@@ -136,7 +136,7 @@
                                   Height="27"
                                   BorderBrush="#353535"
                                   BorderThickness="0,0,0,1" />
-                    
+
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -159,6 +159,54 @@
             <!--EndRegion-->
 
             <!-- Region DataContext Templates -->
+
+            <!-- This data template is used to show single member. -->
+            <DataTemplate x:Key="MemberControlTemplate">
+                <StackPanel Name="ImageAndNodeName"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Image Margin="16,0,16,0"
+                           Height="32"
+                           Width="32"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Source="{Binding SmallIcon}"
+                           Name="SmallIcon" />
+                    <TextBlock Name="memberName"
+                               HorizontalAlignment="Left"
+                               Text="{Binding Name}"
+                               VerticalAlignment="Top"
+                               Margin="5,10,0,0"
+                               Foreground="#999999"
+                               FontSize="13" />
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Background"
+                                    Value="#01000000" />
+                            <Setter Property="Margin"
+                                    Value="3,0,0,0" />
+                            <Setter Property="Width">
+                                <Setter.Value>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                                </Setter.Value>
+                            </Setter>
+                            <EventSetter Event="MouseEnter"
+                                         Handler="OnMemberMouseEnter" />
+                            <EventSetter Event="MouseLeave"
+                                         Handler="OnPopupMouseLeave" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="#444444" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                </StackPanel>
+            </DataTemplate>
 
             <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
@@ -232,8 +280,7 @@
                           PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <controls:LibraryWrapPanel Background="Transparent"
-                                                       Margin="0,10,0,10">
+                            <controls:LibraryWrapPanel Background="Transparent">
                                 <controls:LibraryWrapPanel.Width>
                                     <Binding Path="ActualWidth"
                                              ElementName="CategoryTreeView" />
@@ -325,27 +372,12 @@
                 </TextBlock>
             </HierarchicalDataTemplate>
 
-            <!-- Used for categories that is full of memebers without classes. E.g. Operators.-->
-            <DataTemplate x:Key="CategoryClassDetailsTemplate">
-                <Expander Header="{Binding Path=Name}"
-                          OverridesDefaultStyle="True"
-                          Template="{StaticResource CategoryExpanderTemplate}"
-                          Collapsed="OnExpanderCollapsed"
-                          Margin="-2,0,0,0">
-                    <ContentControl ContentTemplate="{StaticResource ClassDetailsDataTemplate}">
-                        <ContentControl.Content>
-                            <Binding Converter="{StaticResource BrowserRootElementToSubclassesConverter}" />
-                        </ContentControl.Content>
-                    </ContentControl>
-                </Expander>
-            </DataTemplate>
-
             <!--EndRegion-->
 
             <!-- Region Selectors -->
             <controls:LibraryTreeTemplateSelector x:Key="LibraryTreeTemplateSelector"
+                                                  MemberTemplate="{StaticResource MemberControlTemplate}"
                                                   SubclassesTemplate="{StaticResource SubclassesTemplate}"
-                                                  CategoryClassDetailsTemplate="{StaticResource CategoryClassDetailsTemplate}"
                                                   NestedCategoryTemplate="{StaticResource NestedCategoryTemplate}" />
 
             <!--EndRegion-->
@@ -443,7 +475,7 @@
                                                                          Path=IsChecked}"
                                                    Value="False" />
                                     </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
+                                    <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
@@ -531,27 +563,43 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <Grid.Margin>
-                                                    <Binding Path="FullCategoryName"
-                                                             Converter="{StaticResource FullCategoryNameToMarginConverter}" />
-                                                </Grid.Margin>
-
-                                                <ToggleButton Margin="5,0,0,0"
-                                                              Grid.Row="0"
+                                                <ToggleButton Grid.Row="0"
                                                               x:Name="Expander"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
                                                               Style="{StaticResource LibraryExpandCollapseToggleStyle}"
                                                               ClickMode="Press"
-                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}" />
+                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}">
+                                                    <ToggleButton.Margin>
+                                                        <Binding Path="FullCategoryName"
+                                                                 Converter="{StaticResource FullCategoryNameToMarginConverter}" />
+                                                    </ToggleButton.Margin>
+                                                </ToggleButton>
 
-                                                    <ContentPresenter Grid.Row="0"
-                                                                      Grid.Column="1"
-                                                                      Grid.ColumnSpan="2"
-                                                                      ContentSource="Header" />
-                                                    
+                                                <ContentPresenter Grid.Row="0"
+                                                                  Grid.Column="1"
+                                                                  Grid.ColumnSpan="2"
+                                                                  ContentSource="Header" />
+
+                                                <Grid.Style>
+                                                    <Style TargetType="{x:Type Grid}">
+                                                        <Setter Property="Margin"
+                                                                Value="0,0,0,0" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                                             Path="DataContext"
+                                                                             Converter="{StaticResource RootElementToBoolConverter}" />
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Margin"
+                                                                        Value="5,0,0,0" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Grid.Style>
                                             </Grid>
-                                            
+
                                             <Border.Style>
                                                 <Style TargetType="{x:Type Border}">
                                                     <Style.Triggers>
@@ -562,20 +610,20 @@
                                                                            Value="true" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
-                                                                                     Converter={StaticResource ElementTypeToBoolConverter}}"
-                                                                           Value="false" />
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="true" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-                                                        
-                                                        <DataTrigger Value="false">
+
+                                                        <DataTrigger Value="true">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
                                                                          Path="DataContext"
-                                                                         Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                         Converter="{StaticResource RootElementToBoolConverter}" />
                                                             </DataTrigger.Binding>
                                                             <Setter Property="BorderThickness"
                                                                     Value="0,0,0,1" />
@@ -586,8 +634,10 @@
                                         </Border>
 
                                         <Border Grid.Column="0"
-                                                Grid.Row="1">
-                                            <ItemsPresenter x:Name="ItemsHost" />
+                                                Grid.Row="1"
+                                                Background="#2F2F2F">
+                                            <ItemsPresenter x:Name="ItemsHost"
+                                                            Margin="0,10,0,0" />
                                         </Border>
                                     </Grid>
                                     <Border.Style>
@@ -597,11 +647,11 @@
                                             <Setter Property="Background"
                                                     Value="#282828" />
                                             <Style.Triggers>
-                                                <DataTrigger Value="True">
+                                                <DataTrigger Value="False">
                                                     <DataTrigger.Binding>
                                                         <Binding RelativeSource="{RelativeSource Self}"
                                                                  Path="DataContext"
-                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
@@ -638,11 +688,11 @@
 
                                 <!--Highlight item just in case this item is root element, not selected and
                                     ,mouse is over it.-->
-                                <DataTrigger Value="True">
+                                <DataTrigger Value="False">
                                     <DataTrigger.Binding>
                                         <Binding RelativeSource="{RelativeSource Self}"
                                                  Path="DataContext"
-                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                 Converter="{StaticResource RootElementToBoolConverter}" />
                                     </DataTrigger.Binding>
                                     <Setter Property="Background"
                                             Value="#2F2F2F" />
@@ -653,6 +703,9 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+
+                <EventSetter Event="Expanded"
+                             Handler="OnExpanderCollapsed" />
             </Style>
 
             <Style x:Key="LibraryTreeView"
@@ -817,5 +870,17 @@
                 </uicontrols:AddonsTreeView>
             </Grid>
         </ScrollViewer>
+
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
     </Grid>
 </UserControl>

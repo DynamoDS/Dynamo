@@ -1761,6 +1761,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is NodeSearchElement) 
+                return false;
             if (value is BrowserInternalElement)
                 return true;
             if (value is BrowserInternalElementForClasses)
@@ -1858,10 +1860,10 @@ namespace Dynamo.Controls
         {
             var incomingString = value as string;
 
-            if (string.IsNullOrEmpty(incomingString)) return new Thickness(0, 0, 0, 0);
+            if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
 
             var numberOfPoints = incomingString.Count(x => x == '.');
-            return new Thickness(10 * numberOfPoints, 0, 0, 0);
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
         }
 
         public object ConvertBack(
