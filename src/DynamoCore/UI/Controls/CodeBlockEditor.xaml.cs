@@ -204,14 +204,15 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
+                    char currentChar = e.Text[0];
                     // If a completion item is highlighted and the user types
                     // any of the following characters, only then is it selected and inserted
                     // and the code completion window closed
-                    if (e.Text[0] == '\t' || e.Text[0] == '.' || e.Text[0] == '\n' || e.Text[0] == '\r')
+                    if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
                     {
                         completionWindow.CompletionList.RequestInsertion(e);
                     }
-                    else if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
+                    else if (!char.IsLetterOrDigit(currentChar) && !char.Equals(currentChar, '_'))
                     {
                         // In all other cases where what is being typed is not alpha-numeric 
                         // we want to get rid of the completion window 
