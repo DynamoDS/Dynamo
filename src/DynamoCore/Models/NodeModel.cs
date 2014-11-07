@@ -1032,6 +1032,12 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
 
+        public void NotifyAstBuildBroken(string p)
+        {
+            State = ElementState.AstBuildBroken;
+            toolTipText = p;
+        }
+
         #endregion
 
         #region Port Management
@@ -1875,7 +1881,8 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
-        Error
+        Error,
+        AstBuildBroken
     };
 
 
