@@ -126,13 +126,13 @@ namespace DynamoWebServer.Messages
             {
                 ClearWorkspace();
             }
-            else if (message is UpdateCoordinatesMessage)
+            else if (message is SetModelPositionMessage)
             {
-                UpdateCoordinates(message as UpdateCoordinatesMessage);
+                UpdateCoordinates(message as SetModelPositionMessage);
             }
         }
 
-        private void UpdateCoordinates(UpdateCoordinatesMessage message)
+        private void UpdateCoordinates(SetModelPositionMessage message)
         {
             WorkspaceModel workspaceToUpdate = GetWorkspaceByGuid(message.WorkspaceGuid);
             if (workspaceToUpdate == null)
@@ -143,9 +143,9 @@ namespace DynamoWebServer.Messages
 
             NodeModel node;
             Guid nodeId;
-            foreach (var nodePos in message.NodePositions)
+            foreach (var nodePos in message.ModelPositions)
             {
-                if (!Guid.TryParse(nodePos.NodeId, out nodeId))
+                if (!Guid.TryParse(nodePos.ModelId, out nodeId))
                     continue;
                 
                 node = workspaceToUpdate.Nodes.FirstOrDefault(n => n.GUID == nodeId);
@@ -156,18 +156,6 @@ namespace DynamoWebServer.Messages
                     node.ReportPosition();
                 }
             }
-        }
-
-        private WorkspaceModel GetWorkspaceByGuid(string guidStr)
-        {
-            Guid guidValue;
-            if (!Guid.TryParse(guidStr, out guidValue))
-                return dynamoModel.HomeSpace;
-
-            var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
-            var definition = defs.FirstOrDefault(d => d.FunctionId == guidValue);
-
-            return definition != null ? definition.WorkspaceModel : null;
         }
 
         private WorkspaceModel GetWorkspaceByGuid(string guidStr)
@@ -270,7 +258,7 @@ namespace DynamoWebServer.Messages
                         }
                         else
                         {
-                            fileName = (ws.Name != null ? ws.Name : "Home") + ".dyn";
+                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "Home") + ".dyn";
                         }
 
                         filePath = Path.GetTempPath() + "\\" + fileName;

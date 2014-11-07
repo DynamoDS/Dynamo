@@ -88,7 +88,7 @@
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Messages\NodeToCreate.cs" />
-    <Compile Include="Messages\UpdateCoordinatesMessage.cs" />
+    <Compile Include="Messages\SetModelPositionMessage.cs" />
     <Compile Include="Messages\UploadFileMessage.cs" />
     <Compile Include="Messages\FileUploader.cs" />
     <Compile Include="Messages\ConnectorToCreate.cs" />

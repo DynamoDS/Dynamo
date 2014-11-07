@@ -7,7 +7,7 @@ using System.Text;
 namespace DynamoWebServer.Messages
 {
     [DataContract]
-    public class UpdateCoordinatesMessage : Message
+    public class SetModelPositionMessage : Message
     {
         #region Class Data Members
 
@@ -15,7 +15,7 @@ namespace DynamoWebServer.Messages
         /// List of nodes' guids with their positions
         /// </summary>
         [DataMember]
-        public IEnumerable<NodePosition> NodePositions { get; set; }
+        public IEnumerable<ModelPosition> ModelPositions { get; set; }
 
         /// <summary>
         /// Guid of a specified workspace. Empty string for Home workspace
@@ -33,22 +33,22 @@ namespace DynamoWebServer.Messages
     }
 
     [DataContract]
-    public class NodePosition
+    public class ModelPosition
     {
         /// <summary>
-        /// Guid of the specified node
+        /// Guid of the specified model
         /// </summary>
         [DataMember]
-        public string NodeId { get; set; }
+        public string ModelId { get; set; }
 
         /// <summary>
-        /// X coordinate of the specified node
+        /// X coordinate of the specified model
         /// </summary>
         [DataMember]
         public double X { get; set; }
 
         /// <summary>
-        /// Y coordinate of the specified node
+        /// Y coordinate of the specified model
         /// </summary>
         [DataMember]
         public double Y { get; set; }
