@@ -1867,5 +1867,13 @@ d1;d2;d3;d4;d5;
             thisTest.Verify("x", null);
             thisTest.VerifyRuntimeWarningCount(1);
         }
+        [Test]
+        public void RegressMagn5111_04()
+        {
+            string code = @"x = 0..0..360/{0,0};";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", new object [] {null,null});
+            thisTest.VerifyRuntimeWarningCount(2);
+        }
     }
 }

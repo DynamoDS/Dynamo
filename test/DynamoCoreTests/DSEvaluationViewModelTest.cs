@@ -1039,7 +1039,21 @@ namespace Dynamo.Tests
             AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
 
         }
-       
+      
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_warning_5357()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
+            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
+            var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+            
+
+        }
         
     }
 
@@ -1177,5 +1191,6 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
+       
     }
 }
