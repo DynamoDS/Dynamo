@@ -72,26 +72,28 @@
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        Height="30">
+                <StackPanel.Width>
+                    <Binding Path="ActualWidth"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                </StackPanel.Width>
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#444444" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
                 <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
+                <TextBlock Foreground="#DDD"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -192,10 +194,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
@@ -208,10 +210,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
@@ -224,10 +226,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="False" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
