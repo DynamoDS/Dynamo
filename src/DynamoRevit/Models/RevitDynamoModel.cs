@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -44,6 +45,16 @@ namespace Dynamo.Applications.Models
 
         #region Properties/Fields
         public RevitServicesUpdater RevitServicesUpdater { get; private set; }
+
+        public override string AppVersion
+        {
+            get
+            {
+                return Process.GetCurrentProcess().ProcessName + "-R" +  
+                    DocumentManager.Instance.CurrentUIApplication.Application.VersionName +  "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
      
         #endregion
 
