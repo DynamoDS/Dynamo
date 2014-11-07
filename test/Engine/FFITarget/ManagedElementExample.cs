@@ -156,7 +156,7 @@ namespace FFITarget
         /// <summary>
         /// This method tells the life cycle 
         /// </summary>
-        /// <param name="id"The element that needs to be deleted></param>
+        /// <param name="id">The element that needs to be deleted></param>
         public void NotifyOfRevitDeletion(T id)
         {
             revitDeleted[id] = true;
