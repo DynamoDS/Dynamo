@@ -218,6 +218,19 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedIndex = (sender as ListView).SelectedIndex;
+            var classInfoIndex = GetClassInformationIndex();
+
+            // Handling situation when when standard panel is selected. It is possible
+            // when user drags class down to standard panel.
+            // We should select class on next row. 
+            if (classInfoIndex == selectedIndex)
+            {
+                var newSelectedIndex = collection.IndexOf(currentClass);
+                if (newSelectedIndex + itemsPerRow + 1 < collection.Count)
+                    newSelectedIndex += itemsPerRow + 1;
+                (sender as ListView).SelectedIndex = newSelectedIndex;
+                return;
+            }
 
             // As focus moves within the class details, class button gets selected which 
             // triggers a selection change. During a selection change the items in the 
@@ -229,16 +242,6 @@ namespace Dynamo.Controls
                 return;
 
             selectedClassProspectiveIndex = translatedIndex;
-
-            int classInfoIndex = GetClassInformationIndex();
-            if (classInfoIndex == selectedIndex)
-            {
-                selectedClassProspectiveIndex += itemsPerRow - 1;
-                currentClass = collection[selectedIndex - itemsPerRow] as BrowserInternalElement;
-                (sender as ListView).SelectedIndex--;
-                OrderListItems();
-                return;
-            }
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
