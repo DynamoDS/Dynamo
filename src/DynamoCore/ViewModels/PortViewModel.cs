@@ -172,7 +172,7 @@ namespace Dynamo.ViewModels
         /// Handles the Mouse enter event on the port
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        private void Rectangle_MouseEnter(object parameter)
+        private void OnRectangleMouseEnter(object parameter)
         {
             if (MouseEnter != null)
                 MouseEnter(parameter, null);
@@ -182,7 +182,7 @@ namespace Dynamo.ViewModels
         /// Handles the Mouse leave on the port
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        private void Rectangle_MouseLeave(object parameter)
+        private void OnRectangleMouseLeave(object parameter)
         {
             if (MouseLeave != null)
                 MouseLeave(parameter, null);
@@ -192,7 +192,7 @@ namespace Dynamo.ViewModels
         /// Handles the Mouse left button down on the port
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        private void Rectangle_MouseLeftButtonDown(object parameter)
+        private void OnRectangleMouseLeftButtonDown(object parameter)
         {
             if (MouseLeftButtonDown != null)
                 MouseLeftButtonDown(parameter, null);

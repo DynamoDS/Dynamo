@@ -24,7 +24,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_rectangleMouseEnterCommand == null)
-                    _rectangleMouseEnterCommand = new DelegateCommand(Rectangle_MouseEnter, CanConnect);
+                    _rectangleMouseEnterCommand = new DelegateCommand(OnRectangleMouseEnter, CanConnect);
 
                 return _rectangleMouseEnterCommand;
             }
@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_rectangleMouseLeaveCommand == null)
-                    _rectangleMouseLeaveCommand = new DelegateCommand(Rectangle_MouseLeave, CanConnect);
+                    _rectangleMouseLeaveCommand = new DelegateCommand(OnRectangleMouseLeave, CanConnect);
 
                 return _rectangleMouseLeaveCommand;
             }
@@ -46,7 +46,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_rectangleMouseLeftButtonCommand == null)
-                    _rectangleMouseLeftButtonCommand = new DelegateCommand(Rectangle_MouseLeftButtonDown, CanConnect);
+                    _rectangleMouseLeftButtonCommand = new DelegateCommand(OnRectangleMouseLeftButtonDown, CanConnect);
 
                 return _rectangleMouseLeftButtonCommand;
             }
