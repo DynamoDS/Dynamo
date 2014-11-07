@@ -205,8 +205,8 @@ namespace Dynamo.UI.Controls
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
                     // If a completion item is highlighted and the user types
-                    // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
+                    // any of the following characters, only then is it selected and inserted
+                    if(e.Text[0] == '\t' || e.Text[0] == '.' || e.Text[0] == '\n' || e.Text[0] == '\r')
                         completionWindow.CompletionList.RequestInsertion(e);
                 }
             }
