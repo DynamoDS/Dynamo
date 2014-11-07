@@ -12,9 +12,8 @@
              MouseLeftButtonDown="OnMouseLeftButtonDown"
              MouseUp="OnMouseRelease"
              MouseMove="OnMouseMove"
-             MouseLeave="OnMouseLeave"
              KeyDown="dynWorkspaceView_KeyDown"
-             KeyUp="dynWorkspaceView_KeyUp"                       
+             KeyUp="dynWorkspaceView_KeyUp"
              IsHitTestVisible="{Binding IsCurrentSpace}">
 
     <Grid HorizontalAlignment="Stretch"
