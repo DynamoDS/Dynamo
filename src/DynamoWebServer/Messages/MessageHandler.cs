@@ -26,7 +26,7 @@ namespace DynamoWebServer.Messages
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
-        private AutoResetEvent nextRunAllowed = new AutoResetEvent(true);
+        private AutoResetEvent nextRunAllowed = new AutoResetEvent(false);
         private bool evaluationTookPlace = false;
         private int maxMsToWait = 20000;
         
@@ -177,7 +177,6 @@ namespace DynamoWebServer.Messages
         {
             if (uploader.ProcessFileData(message, dynamo))
             {
-                nextRunAllowed.Reset();
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
                 WaitForRunCompletion();
                 NodesDataCreated(sessionId);
@@ -271,7 +270,6 @@ namespace DynamoWebServer.Messages
             {
                 if (command is DynamoModel.RunCancelCommand)
                 {
-                    nextRunAllowed.Reset();
                     dynamo.ExecuteCommand(command);
                     WaitForRunCompletion();
                     NodesDataModified(sessionId);
