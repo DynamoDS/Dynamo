@@ -222,7 +222,9 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
+                
                 if (e.Text == ".")
                 {
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
@@ -252,6 +254,11 @@ namespace Dynamo.UI.Controls
                 }
                 else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
                 {
+                    // Begin completion while typing only if the previous character already typed in
+                    // is a white space or non-alphanumeric character
+                    if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
