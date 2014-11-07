@@ -28,29 +28,13 @@ namespace DynamoWebServer
                     Preferences = PreferenceSettings.Load()
                 });
 
-            var viewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = null,
-                    DynamoModel = model
-                });
-
             var webSocketServer = new WebServer(model, new WebSocket());
 
             webSocketServer.Start();
 
             var app = new Application();
             app.Exit += webSocketServer.ProcessExit;
-
-            if (args.Any(arg => arg.ToLower().Contains("headless")))
-            {
-                app.Run();
-            }
-            else
-            {
-                var view = new DynamoView(viewModel);
-                app.Run(view);
-            }
+            app.Run();
         }
     }
 }

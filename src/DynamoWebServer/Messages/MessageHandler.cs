@@ -13,6 +13,8 @@ using DynamoWebServer.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
+using Dynamo.Core;
+using Dynamo.Core.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -24,8 +26,10 @@ namespace DynamoWebServer.Messages
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
-        private RenderCompleteEventHandler RenderCompleteHandler;
-
+        private AutoResetEvent nextRunAllowed = new AutoResetEvent(false);
+        private bool evaluationTookPlace = false;
+        private int maxMsToWait = 20000;
+        
         public MessageHandler(DynamoModel dynamoModel)
         {
             jsonSettings = new JsonSerializerSettings
@@ -35,6 +39,30 @@ namespace DynamoWebServer.Messages
             };
 
             this.dynamoModel = dynamoModel;
+            uploader = new FileUploader();
+            this.dynamoModel.EvaluationCompleted += RunCommandCompleted;
+        }
+
+        /// <summary>
+        /// It's called after all computations are done and Dynamo is ready
+        /// to comput graphics data and send ComputationResponse
+        /// </summary>
+        void RunCommandCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            if (evaluationTookPlace = e.EvaluationTookPlace)
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(dynamoModel.MaxTesselationDivisions);
+
+                var task = new DelegateBasedAsyncTask(dynamoModel.Scheduler);
+                task.Initialize(() => nextRunAllowed.Set());
+                dynamoModel.Scheduler.ScheduleForExecution(task);
+            }
+            else
+            {
+                nextRunAllowed.Set();
+            }
         }
 
         /// <summary>
@@ -107,6 +135,9 @@ namespace DynamoWebServer.Messages
         /// <param name="e">Event args</param>
         internal void NodesDataModified(string sessionId)
         {
+            if (!evaluationTookPlace)
+                return;
+
             var nodes = GetExecutedNodes();
             if (nodes == null || !nodes.Any())
                 return;
@@ -132,15 +163,10 @@ namespace DynamoWebServer.Messages
 
         private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
         {
-            if (uploader == null)
-                uploader = new FileUploader();
-
             if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
             {
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-
-                WaitWhileRunning();
-
+                WaitForRunCompletion();
                 NodesDataCreated(sessionId);
             }
             else
@@ -150,16 +176,6 @@ namespace DynamoWebServer.Messages
                     Status = ResponceStatuses.Error,
                     StatusMessage = "Bad file request"
                 }, sessionId));
-            }
-        }
-
-        private void WaitWhileRunning()
-        {
-            Thread.Sleep(10);
-
-            while (dynamoModel.Runner.Running)
-            {
-                Thread.Sleep(10);
             }
         }
 
@@ -242,15 +258,22 @@ namespace DynamoWebServer.Messages
 
             foreach (var command in recordableCommandMsg.Commands)
             {
-                dynamo.ExecuteCommand(command);
-
-                //TO DO: Find a better way to determine end of computations
                 if (command is DynamoModel.RunCancelCommand)
                 {
-                    WaitWhileRunning();
+                    dynamo.ExecuteCommand(command);
+                    WaitForRunCompletion();
                     NodesDataModified(sessionId);
                 }
+                else
+                {
+                    dynamo.ExecuteCommand(command);
+                }
             }
+        }
+
+        private void WaitForRunCompletion()
+        {
+            nextRunAllowed.WaitOne(maxMsToWait);
         }
 
         private void SelectTabByGuid(DynamoModel dynamo, Guid guid)
@@ -379,8 +402,7 @@ namespace DynamoWebServer.Messages
 
         private string GetValue(NodeModel node)
         {
-            string data;
-            data = "null";
+            string data = "null";
             if (node.CachedValue != null)
             {
                 if (node.CachedValue.IsCollection)
@@ -391,6 +413,10 @@ namespace DynamoWebServer.Messages
                 {
                     data = node.CachedValue.Data.ToString();
                 }
+            }
+            else if (node is DoubleInput)
+            {
+                data = (node as DoubleInput).Value;
             }
 
             return data;
@@ -449,7 +475,7 @@ namespace DynamoWebServer.Messages
             stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
             stringBuilder.Append("], \"OutPorts\": [");
             stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("], \"Data\": " + GetValue(node) + "}");
+            stringBuilder.Append("], \"Data\": \"" + GetValue(node) + "\"}");
 
             return stringBuilder.ToString();
         }

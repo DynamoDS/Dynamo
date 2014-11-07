@@ -31,3 +31,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
+[assembly: InternalsVisibleTo("DynamoWebServer")]
