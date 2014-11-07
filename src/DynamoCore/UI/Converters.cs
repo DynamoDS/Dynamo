@@ -1670,7 +1670,10 @@ namespace Dynamo.Controls
                 shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
-            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+
+            if (input.Equals(""))
+                return string.Empty;
+            if (input.Equals(NoneString))
                 return NoneString;
 
             if (shouldPrefixColon)
@@ -1761,6 +1764,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is CustomNodeSearchElement)
+                return true;
             if (value is NodeSearchElement) 
                 return false;
             if (value is BrowserInternalElement)

@@ -16,6 +16,7 @@
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -118,16 +119,47 @@
                            FontSize="10"
                            Foreground="#50b5a3"
                            Margin="0,10,0,0" />
-                <TextBlock Grid.Row="4"
-                           Grid.ColumnSpan="3"
-                           FontSize="13"
-                           Foreground="#777777">
-                    <TextBlock.Text>
-                        <Binding Path="OutputParameters"
-                                 Mode="OneWay"
-                                 Converter="{StaticResource InOutParamTypeConverter}"/>
-                    </TextBlock.Text>
-                </TextBlock>
+                <ListBox ItemsSource="{Binding OutputParameters}"
+                         Grid.Row="4"
+                         Grid.ColumnSpan="3"
+                         Background="Transparent"
+                         BorderBrush="Transparent">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock FontSize="13"
+                                       Text="{Binding}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Foreground"
+                                                Value="#777777" />
+                                        <Style.Triggers>
+                                            <DataTrigger Value="true">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Foreground"
+                                                        Value="#cccccc" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">

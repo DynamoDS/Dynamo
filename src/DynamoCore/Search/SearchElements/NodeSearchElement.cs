@@ -75,9 +75,9 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        private string _outputParameters;
+        private List<string> _outputParameters;
 
-        public string OutputParameters
+        public List<string> OutputParameters
         {
             get
             {
@@ -133,7 +133,7 @@ namespace Dynamo.Search.SearchElements
                                  IEnumerable<string> tags, SearchElementGroup group,
                                  string fullName = "", string _assembly = "",
                                  IEnumerable<Tuple<string, string>> inputParameters = null,
-                                 string outputParameters = "")
+                                 List<string> outputParameters = null)
         {
             this.Node = null;
             this._name = name;
@@ -210,7 +210,7 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected virtual string GenerateOutputParameters()
+        protected virtual List<string> GenerateOutputParameters()
         {
             return _outputParameters;
         }
