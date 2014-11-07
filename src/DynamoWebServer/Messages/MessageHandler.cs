@@ -206,7 +206,7 @@ namespace DynamoWebServer.Messages
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     if (!workspaceToSave.SaveAs(filePath))
-                        throw new Exception();
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
                 }
                 else
                 {
@@ -235,7 +235,7 @@ namespace DynamoWebServer.Messages
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
                     if (!workspaceToSave.SaveAs(filePath))
-                        throw new Exception();
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
 
                     // Get the file as byte array and after that delete it
                     fileContent = File.ReadAllBytes(filePath);
