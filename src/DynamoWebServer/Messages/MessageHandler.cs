@@ -132,21 +132,14 @@ namespace DynamoWebServer.Messages
 
         private WorkspaceModel GetWorkspaceByGuid(string guidStr)
         {
-            if (string.IsNullOrEmpty(guidStr))
-            {
+            Guid guidValue;
+            if (!Guid.TryParse(guidStr, out guidValue))
                 return dynamoModel.HomeSpace;
-            }
-            else
-            {
-                Guid guid = Guid.Parse(guidStr);
 
-                var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
-                var definition = defs.FirstOrDefault(d => d.FunctionId == guid);
-                if (definition == null)
-                    return null;
+            var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
+            var definition = defs.FirstOrDefault(d => d.FunctionId == guidValue);
 
-                return definition.WorkspaceModel;
-            }
+            return definition != null ? definition.WorkspaceModel : null;
         }
 
         /// <summary>
