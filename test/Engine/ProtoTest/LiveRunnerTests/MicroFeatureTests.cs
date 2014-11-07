@@ -5220,6 +5220,36 @@ a = p.UpdateCount;
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
+
+        [Test]
+        public void RegressMAGN5311()
+        {
+            // This test case tries to verify that when a FFI object is deleted, 
+            // the corresponding _Dispose() should be invoked.
+            var added = new List<Subtree>();
+
+            var guid1 = Guid.NewGuid();
+            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer();";
+            added.Add(CreateSubTreeFromCode(guid1, code1));
+
+            var guid2 = Guid.NewGuid();
+            var code2 = "y = DisposeTracer.DisposeCount;";
+            added.Add(CreateSubTreeFromCode(guid2, code2));
+
+            // Verify that UpateCount is only called once
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("y", 0);
+
+            // Modify CBN2 
+            Subtree subtree = new Subtree(new List<AssociativeNode>{}, guid1);
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(subtree);
+
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("y", 1);
+        }
     }
 
 }
