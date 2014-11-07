@@ -491,6 +491,9 @@ namespace ProtoCore.Lang
                         ret = StackValue.Null;
                     }
                     break;
+                case BuiltInMethods.MethodID.kNodeAstFailed:
+                    ret = StackValue.Null;
+                    break;
                 default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
