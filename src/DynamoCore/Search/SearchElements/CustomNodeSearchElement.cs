@@ -66,6 +66,5 @@ namespace Dynamo.Search.SearchElements
         {
             return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
         }
-
     }
 }
