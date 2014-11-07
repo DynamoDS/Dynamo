@@ -1,9 +1,12 @@
 ﻿using System;
 using Revit.Elements;
 using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.Elements
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class MaterialTests : RevitNodeTestBase
