@@ -196,7 +196,7 @@ namespace Dynamo.Applications.Models
 
         #region Public methods
 
-        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        public override void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             // finally close the transaction!
             TransactionManager.Instance.ForceCloseTransaction();
