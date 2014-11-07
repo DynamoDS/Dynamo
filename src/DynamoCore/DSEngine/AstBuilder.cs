@@ -150,10 +150,13 @@ namespace Dynamo.DSEngine
             catch (Exception e)
             {
                 node.State = ElementState.AstBuildBroken;
-                node.NotifyAstBuildBroken(e.Message);
+                var message = String.Format(StringConstants.AstBuildBrokenMessage, e.Message);
+                node.NotifyAstBuildBroken(message);
 
-                var nodeInfo = AstFactory.BuildStringNode(node.ToString());
-                var func = AstFactory.BuildFunctionCall("_nodeAstFailed", new List<AssociativeNode> { nodeInfo }); 
+                var nodeFullname = node.GetType().ToString();
+                var nodeInfo = AstFactory.BuildStringNode(nodeFullname);
+                var arguments = new List<AssociativeNode> { nodeInfo };
+                var func = AstFactory.BuildFunctionCall("_nodeAstFailed", arguments); 
 
                 astNodes = new []
                 {
@@ -377,6 +380,7 @@ namespace Dynamo.DSEngine
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";
+            public const string AstBuildBrokenMessage = @"Whilst preparing to run this node encountered a problem. Please talk to the creators of the node, and give them this message: {0}";
         }
     }
 }
