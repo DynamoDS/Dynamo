@@ -25,17 +25,49 @@
                 <TextBlock Foreground="#989898"
                            FontSize="13"
                            Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <Binding Path="IsExpanded"
+                                                 RelativeSource="{RelativeSource FindAncestor, 
+                                                                                 AncestorType={x:Type TreeViewItem}}" />
+                                    </DataTrigger.Binding>
+                                    <Setter Property="TextBlock.FontWeight"
+                                            Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Border>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
                                   ItemsSource="{Binding Path=Items}">
             <Border Height="30">
-                <TextBlock Foreground="#DDD"
+                <TextBlock Foreground="#989898"
                            FontSize="13"
                            Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <Binding Path="IsExpanded"
+                                                 RelativeSource="{RelativeSource FindAncestor, 
+                                                                                 AncestorType={x:Type TreeViewItem}}" />
+                                    </DataTrigger.Binding>
+                                    <Setter Property="TextBlock.FontWeight"
+                                            Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Border>
         </HierarchicalDataTemplate>
 
