@@ -24,7 +24,7 @@ namespace DynamoWebServer.Messages
             get { return path; }
             set
             {
-                if (CheckPath(value))
+                if (IsValidDynamoFilePath(value))
                 {
                     path = value;
                     IsCustomNode = value.EndsWith(".dyf");
@@ -34,9 +34,24 @@ namespace DynamoWebServer.Messages
 
         private string path;
 
-        private bool CheckPath(string toCheck)
+        public static bool IsValidDynamoFilePath(string toCheck)
         {
-            return (toCheck != null && (toCheck.EndsWith(".dyn") || toCheck.EndsWith(".dyf")));
+            try
+            {
+                var extension = System.IO.Path.GetExtension(toCheck);
+                switch (extension.ToLower())
+                {
+                    case ".dyn":
+                    case ".dyf":
+                        return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
         
         public UploadFileMessage(byte[] content)
