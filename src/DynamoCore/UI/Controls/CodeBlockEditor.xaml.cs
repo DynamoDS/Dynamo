@@ -227,7 +227,7 @@ namespace Dynamo.UI.Controls
                 
                 if (e.Text == ".")
                 {
-                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
                         return;
 
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
@@ -242,7 +242,7 @@ namespace Dynamo.UI.Controls
                 // Complete function signatures
                 else if (e.Text == "(")
                 {
-                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
                         return;
 
                     string functionName;
@@ -265,7 +265,7 @@ namespace Dynamo.UI.Controls
                     if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
                         return;
 
-                    if (CodeCompletionParser.IsInsideCommentOrString(code))
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
                         return;
 
                     // Autocomplete as you type

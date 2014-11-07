@@ -467,14 +467,16 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Parsing text to determine if string being typed is in 
+        /// Parse text to determine if string being typed at caretPos is in 
         /// the context of a comment or string or character
         /// </summary>
-        /// <returns>True if any of above context is true.</returns>
-        public static bool IsInsideCommentOrString(string text)
+        /// <param name="text"> input block of code </param>
+        /// <param name="caretPos"> caret position in text at which to determine context </param>
+        /// <returns> True if any of above context is true </returns>
+        public static bool IsInsideCommentOrString(string text, int caretPos)
         {
             var lexer = new CodeCompletionParser(text);
-            lexer.ParseContext();
+            lexer.ParseContext(caretPos);
             return
                 lexer.IsInSingleComment ||
                     lexer.IsInString ||
@@ -602,9 +604,9 @@ namespace Dynamo.Utilities
             return strPrefix;
         }
 
-        public void ParseContext()
+        private void ParseContext(int caretPos)
         {
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < caretPos; i++)
             {
                 char ch = text[i];
                 char lookAhead = i + 1 < text.Length ? text[i + 1] : '\0';
