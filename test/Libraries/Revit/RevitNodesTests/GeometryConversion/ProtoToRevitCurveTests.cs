@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Revit.GeometryConversion;
 using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace RevitTestServices.GeometryConversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class ProtoToRevitCurveTests : GeometricRevitNodeTest
+    internal class ProtoToRevitCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -258,6 +260,34 @@ namespace RevitTestServices.GeometryConversion
             circ.Radius.ShouldBeApproximately( revitArc.Radius );
             Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void Arc_Tilted()
+        {
+            var p1 = Point.ByCoordinates(4.3957, 7.96146, 0);
+            var p2 = Point.ByCoordinates(6.49355, 5.98396, 2.28352);
+            var p3 = Point.ByCoordinates(7.11897, 2.70101, 3.81878);
+
+
+            var arc = Arc.ByThreePoints(p1, p2, p3);
+
+            var revitCurve = arc.ToRevitType(false);
+
+            Assert.NotNull(revitCurve);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.Arc>(revitCurve);
+
+            var revitArc = (Autodesk.Revit.DB.Arc)revitCurve;
+
+            revitArc.Center.X.ShouldBeApproximately(2, 0.0001);
+            revitArc.Center.Y.ShouldBeApproximately(2, 0.0001);
+            revitArc.Center.Z.ShouldBeApproximately(0, 0.0001);
+
+            arc.CenterPoint.ShouldBeApproximately(revitArc.Center.ToPoint(false));
+            arc.Radius.ShouldBeApproximately(revitArc.Radius);
+            Math.Abs(arc.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
         }
 
         [Test]

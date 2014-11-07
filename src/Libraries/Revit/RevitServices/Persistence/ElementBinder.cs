@@ -1,8 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+
+using ProtoCore;
+
+using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.DSEngine;
+using System.Runtime.Serialization;
+using RevitServices.Persistence;
 
 namespace RevitServices.Persistence
 {
@@ -342,8 +351,87 @@ namespace RevitServices.Persistence
         {
             return TraceUtils.GetTraceData(REVIT_TRACE_ID);
         }
+        
 
+        /// <summary>
+        /// This function gets the nodes which are binding with the elements which have the
+        /// given element IDs
+        /// </summary>
+        /// <param name="ids">The given element IDs</param>
+        /// <param name="workspace">The workspace model for the nodes</param>
+        /// <param name="engine">The engine controller</param>
+        /// <returns>the related nodes</returns>
+        public static IEnumerable<NodeModel> GetNodesFromElementIds(IEnumerable<ElementId> ids,
+            WorkspaceModel workspace, EngineController engine)
+        {
+            List<NodeModel> nodes = new List<NodeModel>();
+            if (!ids.Any())
+                return nodes.AsEnumerable();
 
+            Core core = null;
+            if (engine != null && (engine.LiveRunnerCore != null))
+                core = engine.LiveRunnerCore;
+
+            if (core == null)
+                return null;
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids = workspace.Nodes.Where((n) =>
+            {
+                return (n is DSFunction
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+            }).Select((n) => n.GUID);
+
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
+
+            bool areElementsFoundForThisNode;
+            foreach (Guid guid in nodeTraceDataList.Keys)
+            {
+                areElementsFoundForThisNode = false;
+                foreach (CallSite cs in nodeTraceDataList[guid])
+                {
+                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
+                    {
+                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                        foreach (ISerializable thingy in traceData)
+                        {
+                            SerializableId sid = thingy as SerializableId;
+
+                            if (sid != null)
+                            {
+                                foreach (var id in ids)
+                                {
+                                    if (sid.IntID == id.IntegerValue)
+                                    {
+                                        areElementsFoundForThisNode = true;
+                                        break;
+                                    }
+                                }
+
+                                if (areElementsFoundForThisNode)
+                                {
+                                    NodeModel inm =
+                                        workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                                    nodes.Add(inm);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (areElementsFoundForThisNode)
+                            break;
+                    }
+
+                    if (areElementsFoundForThisNode)
+                        break;
+                }
+            }
+
+            return nodes.AsEnumerable();
+        }
     }
 
 }

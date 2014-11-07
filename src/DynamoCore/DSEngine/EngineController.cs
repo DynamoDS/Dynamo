@@ -172,20 +172,6 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Get string representation of the value of variable.
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        public string GetStringValue(string variableName)
-        {
-            lock (macroMutex)
-            {
-                RuntimeMirror mirror = GetMirror(variableName);
-                return null == mirror ? "null" : mirror.GetStringData();
-            }
-        }
-
-        /// <summary>
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
@@ -381,8 +367,8 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
-                                                                    .Where(n => n.ForceReExecuteOfNode)
-                                                                    .Select(n => n.GUID);
+                .Where(n => n.ForceReExecuteOfNode)
+                .Select(n => n.GUID);
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
             {
                 for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
@@ -559,11 +545,6 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             return libraryServices.GetFunctionDescriptor(managledName);
-        }
-
-        internal ClassMirror GetClassType(string className)
-        {
-            return liveRunnerServices.GetClassType(className);
         }
 
         /// <summary>
