@@ -406,13 +406,13 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                PortViewModel inportViewModel = RegisterPortEvents(item);               
+                PortViewModel inportViewModel = SubscribePortEvents(item);               
                 InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                PortViewModel outportViewModel = RegisterPortEvents(item);              
+                PortViewModel outportViewModel = SubscribePortEvents(item);              
                 OutPorts.Add(outportViewModel);
             }
         }
@@ -638,7 +638,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel inportViewModel = RegisterPortEvents(item as PortModel);                   
+                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);                   
                     InPorts.Add(inportViewModel);                    
                 }
             }
@@ -664,7 +664,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = RegisterPortEvents(item as PortModel);                    
+                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);                    
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -686,12 +686,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="item">PortModel.</param>
         /// <returns></returns>
-        private PortViewModel RegisterPortEvents(PortModel item)
+        private PortViewModel SubscribePortEvents(PortModel item)
         {
             PortViewModel portViewModel = new PortViewModel(this, item);            
-            portViewModel.MouseEnter += portViewModel_MouseEnter;
-            portViewModel.MouseLeave += portViewModel_MouseLeave;
-            portViewModel.MouseLeftButtonDown += portViewModel_MouseLeftButtonDown;
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
             return portViewModel;
         }
 
@@ -704,8 +704,8 @@ namespace Dynamo.ViewModels
         private PortViewModel UnSubscribePortEvents(PortViewModel item)
         {
             item.MouseEnter -= portViewModel_MouseEnter;
-            item.MouseLeave -= portViewModel_MouseLeave;
-            item.MouseLeftButtonDown -= portViewModel_MouseLeftButtonDown;
+            item.MouseLeave -= OnRectangleMouseLeave;
+            item.MouseLeftButtonDown -= OnMouseLeftButtonDown;
             return item;
         }
 
@@ -715,7 +715,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void portViewModel_MouseLeftButtonDown(object sender, EventArgs e)
+        private void OnMouseLeftButtonDown(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             portViewModel.EventType = PortEventType.MouseLeftButtonDown;
@@ -728,7 +728,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void portViewModel_MouseLeave(object sender, EventArgs e)
+        private void OnRectangleMouseLeave(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             portViewModel.EventType = PortEventType.MouseLeave;
@@ -741,7 +741,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void portViewModel_MouseEnter(object sender, EventArgs e)
+        private void OnRectangleMouseEnter(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
             portViewModel.EventType = PortEventType.MouseEnter;

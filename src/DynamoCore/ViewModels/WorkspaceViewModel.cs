@@ -415,11 +415,14 @@ namespace Dynamo.ViewModels
                     //If the connector is not active, then the state is changed to None. otherwise, the connector state is connection and 
                     //is not deleted from the view.
                     this.portViewModel = portViewModel;
-                    if(!this.CheckActiveConnectorCompatibility(portViewModel))
-                        this.CancelActiveState();
-                    else
+                    if (this.CheckActiveConnectorCompatibility(portViewModel))
                     {
                         this.HandlePortClicked(portViewModel);
+                    }
+                    else
+                    {
+                        this.CancelActiveState();
+
                     }
                     break;
                 default:
