@@ -112,11 +112,11 @@ namespace DynamoWebServer.Messages
             }
             else if (message is SaveFileMessage)
             {
-                SaveFile(dynamo, message, sessionId);
+                SaveFile(dynamo, message as SaveFileMessage, sessionId);
             }
             else if (message is UploadFileMessage)
             {
-                UploadFile(dynamo, message, sessionId);
+                UploadFile(dynamo, message as UploadFileMessage, sessionId);
             }
             else if (message is GetNodeGeometryMessage)
             {
@@ -126,6 +126,18 @@ namespace DynamoWebServer.Messages
             {
                 ClearWorkspace();
             }
+        }
+
+        private WorkspaceModel GetWorkspaceByGuid(string guidStr)
+        {
+            Guid guidValue;
+            if (!Guid.TryParse(guidStr, out guidValue))
+                return dynamoModel.HomeSpace;
+
+            var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
+            var definition = defs.FirstOrDefault(d => d.FunctionId == guidValue);
+
+            return definition != null ? definition.WorkspaceModel : null;
         }
 
         /// <summary>
@@ -161,13 +173,15 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
+        private void UploadFile(DynamoModel dynamo, UploadFileMessage message, string sessionId)
         {
-            if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
+            var result = uploader.ProcessFileData(message, dynamo);
+            if (result != ProcessResult.Failed)
             {
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
                 WaitForRunCompletion();
-                NodesDataCreated(sessionId);
+                bool respondWithPath = (result == ProcessResult.RespondWithPath);
+                NodesDataCreated(sessionId, respondWithPath);
             }
             else
             {
@@ -179,40 +193,38 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void SaveFile(DynamoModel dynamo, Message message, string sessionId)
+        private void SaveFile(DynamoModel dynamo, SaveFileMessage message, string sessionId)
         {
-            // Put into this list all workspaces that should be saved as files
-            var homeWorkspace = dynamoModel.HomeSpace;
-
-            // Add home workspace into it
-            var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
+            WorkspaceModel workspaceToSave = GetWorkspaceByGuid(message.Guid);
+            if (workspaceToSave == null)
+                return;
 
             byte[] fileContent;
             try
             {
-                string fileName, filePath;
+                string fileName, filePath = message.FilePath;
 
-                var customNodes = dynamoModel.CustomNodeManager.GetLoadedDefinitions()
-                    .Select(cnd => cnd.WorkspaceModel);
-
-                // Add workspaces of all loaded custom nodes into saving list
-                allWorkspacesToSave.AddRange(customNodes);
-
-                foreach (var ws in allWorkspacesToSave)
+                // if path was specified it means NWK is used and we need just to save file
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    if (!workspaceToSave.SaveAs(filePath))
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
+                }
+                else
                 {
                     // If workspace has its own filename use it during saving
-                    if (!string.IsNullOrEmpty(ws.FileName))
+                    if (!string.IsNullOrEmpty(workspaceToSave.FileName))
                     {
-                        fileName = Path.GetFileName(ws.FileName);
-                        filePath = ws.FileName;
+                        fileName = Path.GetFileName(workspaceToSave.FileName);
+                        filePath = workspaceToSave.FileName;
                     }
                     else
                     {
                         // Add to file name a correct extension 
                         // dependently on its type (custom node or home)
-                        if (ws is CustomNodeWorkspaceModel)
+                        if (workspaceToSave is CustomNodeWorkspaceModel)
                         {
-                            fileName = (ws.Name != null ? ws.Name : "MyCustomNode") + ".dyf";
+                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "MyCustomNode") + ".dyf";
                         }
                         else
                         {
@@ -224,8 +236,8 @@ namespace DynamoWebServer.Messages
 
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
-                    if (!ws.SaveAs(filePath))
-                        throw new Exception();
+                    if (!workspaceToSave.SaveAs(filePath))
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
 
                     // Get the file as byte array and after that delete it
                     fileContent = File.ReadAllBytes(filePath);
@@ -301,7 +313,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void NodesDataCreated(string sessionId)
+        private void NodesDataCreated(string sessionId, bool respondWithPath)
         {
             var nodes = GetExecutedNodes();
 
@@ -382,6 +394,16 @@ namespace DynamoWebServer.Messages
             foreach (var pnResponse in proxyNodesResponses)
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
+            }
+
+            if (respondWithPath)
+            {
+                var wsResponse = new WorkspacePathResponse()
+                {
+                    Guid = response.WorkspaceId,
+                    Path = currentWorkspace.FileName
+                };
+                OnResultReady(this, new ResultReadyEventArgs(wsResponse, sessionId));
             }
         }
 

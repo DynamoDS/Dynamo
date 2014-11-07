@@ -26,28 +26,39 @@ namespace DynamoWebServer.Messages
             connectorsToCreate = new List<ConnectorToCreate>();
         }
 
-        internal bool ProcessFileData(UploadFileMessage uploadFileMessage, DynamoModel dynamoViewModel)
+        internal ProcessResult ProcessFileData(UploadFileMessage uploadFileMessage, DynamoModel dynamoViewModel)
         {
             try
             {
-                var content = uploadFileMessage.FileContent;
-                var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
                 IsCustomNode = uploadFileMessage.IsCustomNode;
-                
-                File.WriteAllBytes(filePath, content);
+                var result = ProcessResult.Succeeded;
 
-                dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
-                
-                File.Delete(filePath);
+                // if path was specified it means NWK is used
+                if (!string.IsNullOrEmpty(uploadFileMessage.Path))
+                {
+                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(uploadFileMessage.Path));
+                    result = ProcessResult.RespondWithPath;
+                }
+                else
+                {
+                    var content = uploadFileMessage.FileContent;
+                    var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
+                    
+                    File.WriteAllBytes(filePath, content);
+
+                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
+
+                    File.Delete(filePath);
+                }
 
                 nodesToCreate.Clear();
                 connectorsToCreate.Clear();
 
-                return true;
+                return result;
             }
             catch
             {
-                return false;
+                return ProcessResult.Failed;
             }
         }
 
@@ -57,5 +68,12 @@ namespace DynamoWebServer.Messages
             nodesToCreate.Add(nodeToCreate);
             connectorsToCreate.AddRange(ConnectorToCreate.GetOutgoingConnectors(node));
         }
+    }
+
+    enum ProcessResult
+    {
+        Failed,
+        Succeeded,
+        RespondWithPath
     }
 }
