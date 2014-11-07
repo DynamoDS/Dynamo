@@ -512,7 +512,7 @@ namespace Dynamo.ViewModels
             #region User Input Event Handlers
 
             private MouseClickHistory prevClick;
-            private MouseClickHistory curClick;
+          
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
@@ -521,8 +521,8 @@ namespace Dynamo.ViewModels
                     ignoreMouseClick = false;
                     return false;
                 }
-                if(e != null)
-                    curClick = new MouseClickHistory(sender, e);
+
+                MouseClickHistory curClick = new MouseClickHistory(sender, e);
 
                 bool eventHandled = false;
                 bool returnFocusToSearch = true;

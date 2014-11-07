@@ -25,7 +25,7 @@ namespace Dynamo.ViewModels
         #region delegates
         public delegate void SetToolTipDelegate(string message);
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
-        public delegate void SnapInputEventHandler(PortViewModel portViewModel,  String eventType);
+        public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         #endregion
 
         #region events
@@ -688,7 +688,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private PortViewModel RegisterPortEvents(PortModel item)
         {
-            PortViewModel portViewModel = new PortViewModel(this, item);
+            PortViewModel portViewModel = new PortViewModel(this, item);            
             portViewModel.MouseEnter += portViewModel_MouseEnter;
             portViewModel.MouseLeave += portViewModel_MouseLeave;
             portViewModel.MouseLeftButtonDown += portViewModel_MouseLeftButtonDown;
@@ -718,8 +718,9 @@ namespace Dynamo.ViewModels
         private void portViewModel_MouseLeftButtonDown(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseLeftButtonDown;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel,"MouseLeftButtonDown");
+                SnapInputEvent(portViewModel);
         }
 
         /// <summary>
@@ -730,8 +731,9 @@ namespace Dynamo.ViewModels
         private void portViewModel_MouseLeave(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseLeave;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel, "MouseLeave");
+                SnapInputEvent(portViewModel);
         }
 
         /// <summary>
@@ -742,8 +744,9 @@ namespace Dynamo.ViewModels
         private void portViewModel_MouseEnter(object sender, EventArgs e)
         {
             PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseEnter;
             if (SnapInputEvent != null)
-                SnapInputEvent(portViewModel, "MouseEnter");
+                SnapInputEvent(portViewModel);
         }
 
 

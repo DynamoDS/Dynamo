@@ -87,6 +87,8 @@ namespace Dynamo.ViewModels
             get { return _port.MarginThickness; }
         }
 
+        public PortEventType EventType { get; set; }
+
         #endregion
 
         #region events

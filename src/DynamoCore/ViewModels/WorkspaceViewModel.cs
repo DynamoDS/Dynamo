@@ -304,8 +304,7 @@ namespace Dynamo.ViewModels
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
-            IsSnapping = false;
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));           
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -403,16 +402,16 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="portViewModel">The port view model.</param>
         /// <param name="eventType">Type of the event.</param>
-        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel, String eventType)
+        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel)
         {
-            switch (eventType)
+            switch (portViewModel.EventType)
             {
-                case "MouseEnter":
-                case "MouseLeave":
+                case PortEventType.MouseEnter:
+                case PortEventType.MouseLeave:
                     IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
                     this.portViewModel = portViewModel;
                     break;
-                case "MouseLeftButtonDown":
+                case PortEventType.MouseLeftButtonDown:
                     //If the connector is not active, then the state is changed to None. otherwise, the connector state is connection and 
                     //is not deleted from the view.
                     this.portViewModel = portViewModel;
@@ -423,6 +422,11 @@ namespace Dynamo.ViewModels
                         this.HandlePortClicked(portViewModel);
                     }
                     break;
+                default:
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
+                    this.portViewModel = portViewModel;
+                    break;
+
             }
             
         }

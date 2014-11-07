@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
@@ -1890,8 +1889,7 @@ namespace Dynamo.Models
         {
             return true; // Default implementation: always show preview.
         }
-
-        public System.Windows.Media.Geometry expandedHitTestArea { get; set; }
+      
     }
 
     public enum ElementState
@@ -1911,6 +1909,13 @@ namespace Dynamo.Models
         Longest,
         CrossProduct
     };
+
+    public enum PortEventType
+    {
+        MouseEnter,
+        MouseLeave,
+        MouseLeftButtonDown
+    }
 
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
