@@ -1671,10 +1671,8 @@ namespace Dynamo.Controls
 
             var input = value as string;
 
-            if (input.Equals(""))
-                return string.Empty;
-            if (input.Equals(NoneString))
-                return NoneString;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return input;
 
             if (shouldPrefixColon)
                 return String.Concat(ColonString, SpaceString, input);
