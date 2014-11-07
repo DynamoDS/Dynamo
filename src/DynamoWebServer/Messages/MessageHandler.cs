@@ -175,11 +175,13 @@ namespace DynamoWebServer.Messages
 
         private void UploadFile(DynamoModel dynamo, UploadFileMessage message, string sessionId)
         {
-            if (uploader.ProcessFileData(message, dynamo))
+            var result = uploader.ProcessFileData(message, dynamo);
+            if (result != ProcessResult.Failed)
             {
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
                 WaitForRunCompletion();
-                NodesDataCreated(sessionId);
+                bool respondWithPath = (result == ProcessResult.RespondWithPath);
+                NodesDataCreated(sessionId, respondWithPath);
             }
             else
             {
@@ -311,7 +313,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void NodesDataCreated(string sessionId)
+        private void NodesDataCreated(string sessionId, bool respondWithPath)
         {
             var nodes = GetExecutedNodes();
 
@@ -394,7 +396,7 @@ namespace DynamoWebServer.Messages
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
             }
 
-            if (uploader.SendWorkspacePath)
+            if (respondWithPath)
             {
                 var wsResponse = new WorkspacePathResponse()
                 {
