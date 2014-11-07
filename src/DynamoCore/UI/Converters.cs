@@ -1670,7 +1670,6 @@ namespace Dynamo.Controls
                 shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
-
             if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
                 return input;
 
