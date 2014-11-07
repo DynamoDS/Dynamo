@@ -13,6 +13,8 @@ using DynamoWebServer.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
+using Dynamo.Core;
+using Dynamo.Core.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -24,8 +26,10 @@ namespace DynamoWebServer.Messages
         private readonly JsonSerializerSettings jsonSettings;
         private readonly DynamoModel dynamoModel;
         private FileUploader uploader;
-        private RenderCompleteEventHandler RenderCompleteHandler;
-
+        private AutoResetEvent nextRunAllowed = new AutoResetEvent(false);
+        private bool evaluationTookPlace = false;
+        private int maxMsToWait = 20000;
+        
         public MessageHandler(DynamoModel dynamoModel)
         {
             jsonSettings = new JsonSerializerSettings
@@ -35,6 +39,30 @@ namespace DynamoWebServer.Messages
             };
 
             this.dynamoModel = dynamoModel;
+            uploader = new FileUploader();
+            this.dynamoModel.EvaluationCompleted += RunCommandCompleted;
+        }
+
+        /// <summary>
+        /// It's called after all computations are done and Dynamo is ready
+        /// to comput graphics data and send ComputationResponse
+        /// </summary>
+        void RunCommandCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            if (evaluationTookPlace = e.EvaluationTookPlace)
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
+                    node.RequestVisualUpdate(dynamoModel.MaxTesselationDivisions);
+
+                var task = new DelegateBasedAsyncTask(dynamoModel.Scheduler);
+                task.Initialize(() => nextRunAllowed.Set());
+                dynamoModel.Scheduler.ScheduleForExecution(task);
+            }
+            else
+            {
+                nextRunAllowed.Set();
+            }
         }
 
         /// <summary>
@@ -84,11 +112,11 @@ namespace DynamoWebServer.Messages
             }
             else if (message is SaveFileMessage)
             {
-                SaveFile(dynamo, message, sessionId);
+                SaveFile(dynamo, message as SaveFileMessage, sessionId);
             }
             else if (message is UploadFileMessage)
             {
-                UploadFile(dynamo, message, sessionId);
+                UploadFile(dynamo, message as UploadFileMessage, sessionId);
             }
             else if (message is GetNodeGeometryMessage)
             {
@@ -142,6 +170,18 @@ namespace DynamoWebServer.Messages
             return definition != null ? definition.WorkspaceModel : null;
         }
 
+        private WorkspaceModel GetWorkspaceByGuid(string guidStr)
+        {
+            Guid guidValue;
+            if (!Guid.TryParse(guidStr, out guidValue))
+                return dynamoModel.HomeSpace;
+
+            var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
+            var definition = defs.FirstOrDefault(d => d.FunctionId == guidValue);
+
+            return definition != null ? definition.WorkspaceModel : null;
+        }
+
         /// <summary>
         /// This method sends ComputationResponse on render complete
         /// </summary>
@@ -149,6 +189,9 @@ namespace DynamoWebServer.Messages
         /// <param name="e">Event args</param>
         internal void NodesDataModified(string sessionId)
         {
+            if (!evaluationTookPlace)
+                return;
+
             var nodes = GetExecutedNodes();
             if (nodes == null || !nodes.Any())
                 return;
@@ -172,18 +215,15 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void UploadFile(DynamoModel dynamo, Message message, string sessionId)
+        private void UploadFile(DynamoModel dynamo, UploadFileMessage message, string sessionId)
         {
-            if (uploader == null)
-                uploader = new FileUploader();
-
-            if (uploader.ProcessFileData(message as UploadFileMessage, dynamo))
+            var result = uploader.ProcessFileData(message, dynamo);
+            if (result != ProcessResult.Failed)
             {
                 dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-
-                WaitWhileRunning();
-
-                NodesDataCreated(sessionId);
+                WaitForRunCompletion();
+                bool respondWithPath = (result == ProcessResult.RespondWithPath);
+                NodesDataCreated(sessionId, respondWithPath);
             }
             else
             {
@@ -195,50 +235,38 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void WaitWhileRunning()
+        private void SaveFile(DynamoModel dynamo, SaveFileMessage message, string sessionId)
         {
-            Thread.Sleep(10);
-
-            while (dynamoModel.Runner.Running)
-            {
-                Thread.Sleep(10);
-            }
-        }
-
-        private void SaveFile(DynamoModel dynamo, Message message, string sessionId)
-        {
-            // Put into this list all workspaces that should be saved as files
-            var homeWorkspace = dynamoModel.HomeSpace;
-
-            // Add home workspace into it
-            var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
+            WorkspaceModel workspaceToSave = GetWorkspaceByGuid(message.Guid);
+            if (workspaceToSave == null)
+                return;
 
             byte[] fileContent;
             try
             {
-                string fileName, filePath;
+                string fileName, filePath = message.FilePath;
 
-                var customNodes = dynamoModel.CustomNodeManager.GetLoadedDefinitions()
-                    .Select(cnd => cnd.WorkspaceModel);
-
-                // Add workspaces of all loaded custom nodes into saving list
-                allWorkspacesToSave.AddRange(customNodes);
-
-                foreach (var ws in allWorkspacesToSave)
+                // if path was specified it means NWK is used and we need just to save file
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    if (!workspaceToSave.SaveAs(filePath))
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
+                }
+                else
                 {
                     // If workspace has its own filename use it during saving
-                    if (!string.IsNullOrEmpty(ws.FileName))
+                    if (!string.IsNullOrEmpty(workspaceToSave.FileName))
                     {
-                        fileName = Path.GetFileName(ws.FileName);
-                        filePath = ws.FileName;
+                        fileName = Path.GetFileName(workspaceToSave.FileName);
+                        filePath = workspaceToSave.FileName;
                     }
                     else
                     {
                         // Add to file name a correct extension 
                         // dependently on its type (custom node or home)
-                        if (ws is CustomNodeWorkspaceModel)
+                        if (workspaceToSave is CustomNodeWorkspaceModel)
                         {
-                            fileName = (ws.Name != null ? ws.Name : "MyCustomNode") + ".dyf";
+                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "MyCustomNode") + ".dyf";
                         }
                         else
                         {
@@ -250,8 +278,8 @@ namespace DynamoWebServer.Messages
 
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
-                    if (!ws.SaveAs(filePath))
-                        throw new Exception();
+                    if (!workspaceToSave.SaveAs(filePath))
+                        throw new Exception(string.Format("Failed to save file: {0}", filePath));
 
                     // Get the file as byte array and after that delete it
                     fileContent = File.ReadAllBytes(filePath);
@@ -284,15 +312,22 @@ namespace DynamoWebServer.Messages
 
             foreach (var command in recordableCommandMsg.Commands)
             {
-                dynamo.ExecuteCommand(command);
-
-                //TO DO: Find a better way to determine end of computations
                 if (command is DynamoModel.RunCancelCommand)
                 {
-                    WaitWhileRunning();
+                    dynamo.ExecuteCommand(command);
+                    WaitForRunCompletion();
                     NodesDataModified(sessionId);
                 }
+                else
+                {
+                    dynamo.ExecuteCommand(command);
+                }
             }
+        }
+
+        private void WaitForRunCompletion()
+        {
+            nextRunAllowed.WaitOne(maxMsToWait);
         }
 
         private void SelectTabByGuid(DynamoModel dynamo, Guid guid)
@@ -320,7 +355,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void NodesDataCreated(string sessionId)
+        private void NodesDataCreated(string sessionId, bool respondWithPath)
         {
             var nodes = GetExecutedNodes();
 
@@ -403,6 +438,16 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(pnResponse, sessionId));
             }
+
+            if (respondWithPath)
+            {
+                var wsResponse = new WorkspacePathResponse()
+                {
+                    Guid = response.WorkspaceId,
+                    Path = currentWorkspace.FileName
+                };
+                OnResultReady(this, new ResultReadyEventArgs(wsResponse, sessionId));
+            }
         }
 
         private string GetData(NodeModel node)
@@ -422,8 +467,7 @@ namespace DynamoWebServer.Messages
 
         private string GetValue(NodeModel node)
         {
-            string data;
-            data = "null";
+            string data = "null";
             if (node.CachedValue != null)
             {
                 if (node.CachedValue.IsCollection)
@@ -434,6 +478,10 @@ namespace DynamoWebServer.Messages
                 {
                     data = node.CachedValue.Data.ToString();
                 }
+            }
+            else if (node is DoubleInput)
+            {
+                data = (node as DoubleInput).Value;
             }
 
             return data;
