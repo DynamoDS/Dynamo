@@ -205,8 +205,8 @@ namespace Dynamo.UI.Controls
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
                     // If a completion item is highlighted and the user types
-                    // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
+                    // any of the following characters, only then is it selected and inserted
+                    if(e.Text[0] == '\t' || e.Text[0] == '.' || e.Text[0] == '\n' || e.Text[0] == '\r')
                         completionWindow.CompletionList.RequestInsertion(e);
                 }
             }
@@ -222,7 +222,9 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
+                
                 if (e.Text == ".")
                 {
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
@@ -252,6 +254,11 @@ namespace Dynamo.UI.Controls
                 }
                 else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
                 {
+                    // Begin completion while typing only if the previous character already typed in
+                    // is a white space or non-alphanumeric character
+                    if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
