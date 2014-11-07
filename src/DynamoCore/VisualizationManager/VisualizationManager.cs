@@ -131,7 +131,11 @@ namespace Dynamo
             set { alternateContextName = value; }
         }
 
-        public int MaxTesselationDivisions { get; set; }
+        public int MaxTesselationDivisions
+        {
+            get { return this.dynamoModel.MaxTesselationDivisions; }
+            set { this.dynamoModel.MaxTesselationDivisions = value; }
+        }
 
         public Object CurrentTaskIdMutex = new object();
         public long CurrentTaskId
@@ -226,8 +230,6 @@ namespace Dynamo
 
         public VisualizationManager(DynamoModel dynamoModel)
         {
-            MaxTesselationDivisions = 128;
-
             this.dynamoModel = dynamoModel;
 
 #if !ENABLE_DYNAMO_SCHEDULER
@@ -601,6 +603,12 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
+            // do nothing if it has come on EvaluationCompleted
+            // and no evaluation was
+            var args = e as EvaluationCompletedEventArgs;
+            if (args != null && !args.EvaluationTookPlace)
+                return;
+
 #if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
 #else
@@ -612,7 +620,7 @@ namespace Dynamo
 
         protected virtual void HandleRenderPackagesReadyCore()
         {
-            // Default visualization mangager does nothing here.
+            // Default visualization manager does nothing here.
         }
 
         private void RequestNodeVisualUpdate(NodeModel nodeModel)
