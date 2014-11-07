@@ -163,7 +163,7 @@ namespace Dynamo.Models
             get { return state; }
             set
             {
-                if (value != ElementState.Error)
+                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
                 state = value;
@@ -173,6 +173,17 @@ namespace Dynamo.Models
                 // as connectors are deleted.
                 if (IsReportingModifications)
                     RaisePropertyChanged("State");
+            }
+        }
+
+        /// <summary>
+        ///   If the state of node is Error or AstBuildBroken
+        /// </summary>
+        public bool IsInErrorState
+        {
+            get
+            {
+                return state == ElementState.AstBuildBroken || state == ElementState.Error;
             }
         }
 
@@ -1035,7 +1046,7 @@ namespace Dynamo.Models
         public void NotifyAstBuildBroken(string p)
         {
             State = ElementState.AstBuildBroken;
-            toolTipText = p;
+            ToolTipText = p;
         }
 
         #endregion
