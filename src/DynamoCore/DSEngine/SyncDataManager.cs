@@ -17,6 +17,10 @@ namespace Dynamo.DSEngine
     {
         private readonly LinkedListOfList<Guid, AssociativeNode> nodes = new LinkedListOfList<Guid, AssociativeNode>();
 
+        // states :: Dictionary<Guid, State>
+        // It is a dictionary for the state of each UI node. We use 
+        // OrderedDictionary here is because we want to keep the order of
+        // state change. 
         private OrderedDictionary states = new OrderedDictionary();
 
         /// <summary>
