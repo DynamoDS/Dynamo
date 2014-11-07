@@ -1,5 +1,8 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Collections.Generic;
+
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 namespace SampleLibraryZeroTouch
 {
@@ -40,7 +43,13 @@ namespace SampleLibraryZeroTouch
         /// <summary>
         /// The Point stored on the object.
         /// </summary>
-        public Point Point { get { return Point; } }
+        public Point Point { get { return point; } }
+            
+        /// <summary>
+        /// Properties and methods marked as internal will not
+        /// be visible in the Dynamo UI.
+        /// </summary>
+        internal double InvisibleProperty { get { return 42.0; } }
 
         /// <summary>
         /// Private methods, such as this constructor,
@@ -55,15 +64,49 @@ namespace SampleLibraryZeroTouch
         }
 
         /// <summary>
-        /// Dynamo uses static constructors.
+        /// Dynamo uses that pattern of static constructors.
+        /// Don't forget to fill in the xml comments so that
+        /// you will get help tips in the UI. You can also use
+        /// default parameters, as we have here. With default
+        /// parameters defined, you will not be required to attach
+        /// any inputs to these ports in Dynamo.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        /// <returns></returns>
-        public static HelloDynamoZeroTouch ByCoordinates(double x, double y, double z)
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <param name="z">The z coordinate of the point.</param>
+        /// <returns>A HelloDynamoZeroTouch object.</returns>
+        public static HelloDynamoZeroTouch ByCoordinates(double x=42.0, double y=42.0, double z=42.0)
         {
             return new HelloDynamoZeroTouch(x, y, z);
+        }
+
+        /// <summary>
+        /// The MultiReturn attribute can be used to specify
+        /// the names of multiple output ports on a node that 
+        /// returns a dictionary. The node must return a dictionary
+        /// to be recognized as a multi-out node.
+        /// </summary>
+        /// <returns></returns>
+        [MultiReturn(new[] { "thing 1", "thing 2" })]
+        public static Dictionary<string, List<string>> MultiReturnExample()
+        {
+            return new Dictionary<string, List<string>>()
+            {
+                { "thing 1", new List<string>{"apple", "banana", "cat"} },
+                { "thing 2", new List<string>{"Tywin", "Cersei", "Hodor"} }
+            };
+        }
+
+        /// <summary>
+        /// Overriding ToString allows you to control what is
+        /// displayed whenever the object's string representation
+        /// is used. For example, ToString is called when the 
+        /// object is displayed in a Watch node.
+        /// </summary>
+        /// <returns>The string representation of our object.</returns>
+        public override string ToString()
+        {
+            return string.Format("HelloDynamoZeroTouch:{0},{1},{2}", point.X, point.Y, point.Z);
         }
 
         #region IGraphicItem interface
@@ -78,6 +121,7 @@ namespace SampleLibraryZeroTouch
         /// of generated meshes for surfaces.</param>
         /// <param name="maxGridLines">An optional tesselation tolerance which specifies the maximum number
         /// of surface subdivisions to be used for tesselation.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             // This example contains information to draw a point
@@ -86,5 +130,27 @@ namespace SampleLibraryZeroTouch
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// By decorating a class with the 
+    /// IsVisibleInDynamoLibrary attribute, and setting
+    /// it to false, you are saying that you want this member
+    /// to be available to the VM, but not be visible in the
+    /// library view or search.
+    ///
+    /// By decorating a class with the SupressImportIntoVM
+    /// attribute, you are saying that you do not want to import
+    /// this class into Dynamo. BE CAREFUL! This class will then
+    /// be unavailable to others that might reference it.
+    /// </summary>
+    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
+    public class DoesNotImportClass
+    {
+        /// <summary>
+        /// DoesNotImportClass constructor.
+        /// </summary>
+        public DoesNotImportClass(){}
     }
 }
