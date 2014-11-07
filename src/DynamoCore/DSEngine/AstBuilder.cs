@@ -10,6 +10,7 @@ using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
+using ProtoCore.DSASM;
 
 #endregion
 
@@ -156,7 +157,7 @@ namespace Dynamo.DSEngine
                 var nodeFullname = node.GetType().ToString();
                 var nodeInfo = AstFactory.BuildStringNode(nodeFullname);
                 var arguments = new List<AssociativeNode> { nodeInfo };
-                var func = AstFactory.BuildFunctionCall("_nodeAstFailed", arguments); 
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
 
                 astNodes = new []
                 {
