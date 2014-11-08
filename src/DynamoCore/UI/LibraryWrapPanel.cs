@@ -220,12 +220,7 @@ namespace Dynamo.Controls
             // necessary. Here we determine if the "translatedIndex" is the same as
             // "selectedClassProspectiveIndex", if so simply returns to avoid a repainting.
             var translatedIndex = TranslateSelectionIndex(selectedIndex);
-            System.Diagnostics.Debug.WriteLine("SelectionIndex=" + translatedIndex.ToString());
             int classInfoIndex = GetClassInformationIndex();
-
-            if (translatedIndex != 1 && translatedIndex!=4)
-            {
-            }
 
             if (selectedClassProspectiveIndex == translatedIndex)
             {
@@ -237,6 +232,7 @@ namespace Dynamo.Controls
             }
             else
             {
+                // Class information cannot be selected, leave last selected class index as selected index.
                 (sender as ListView).SelectedIndex = selectedClassProspectiveIndex;
             }
 
