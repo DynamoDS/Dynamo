@@ -220,12 +220,25 @@ namespace Dynamo.Controls
             // necessary. Here we determine if the "translatedIndex" is the same as
             // "selectedClassProspectiveIndex", if so simply returns to avoid a repainting.
             var translatedIndex = TranslateSelectionIndex(selectedIndex);
-            if (selectedClassProspectiveIndex == translatedIndex)
-                return;
-
-            selectedClassProspectiveIndex = translatedIndex;
-
+            System.Diagnostics.Debug.WriteLine("SelectionIndex=" + translatedIndex.ToString());
             int classInfoIndex = GetClassInformationIndex();
+
+            if (translatedIndex != 1 && translatedIndex!=4)
+            {
+            }
+
+            if (selectedClassProspectiveIndex == translatedIndex)
+            {
+                return;
+            }
+            if (!(selectedIndex == classInfoIndex))
+            {
+                selectedClassProspectiveIndex = translatedIndex;
+            }
+            else
+            {
+                (sender as ListView).SelectedIndex = selectedClassProspectiveIndex;
+            }
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
