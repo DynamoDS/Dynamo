@@ -126,6 +126,36 @@ namespace DynamoWebServer.Messages
             {
                 ClearWorkspace();
             }
+            else if (message is SetModelPositionMessage)
+            {
+                UpdateCoordinates(message as SetModelPositionMessage);
+            }
+        }
+
+        private void UpdateCoordinates(SetModelPositionMessage message)
+        {
+            WorkspaceModel workspaceToUpdate = GetWorkspaceByGuid(message.WorkspaceGuid);
+            if (workspaceToUpdate == null)
+                return;
+
+            if (!string.IsNullOrWhiteSpace(message.WorkspaceName))
+                workspaceToUpdate.Name = message.WorkspaceName;
+
+            NodeModel node;
+            Guid nodeId;
+            foreach (var nodePos in message.ModelPositions)
+            {
+                if (!Guid.TryParse(nodePos.ModelId, out nodeId))
+                    continue;
+                
+                node = workspaceToUpdate.Nodes.FirstOrDefault(n => n.GUID == nodeId);
+                if (node != null)
+                {
+                    node.X = nodePos.X;
+                    node.Y = nodePos.Y;
+                    node.ReportPosition();
+                }
+            }
         }
 
         private WorkspaceModel GetWorkspaceByGuid(string guidStr)
@@ -228,7 +258,7 @@ namespace DynamoWebServer.Messages
                         }
                         else
                         {
-                            fileName = "Home.dyn";
+                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "Home") + ".dyn";
                         }
 
                         filePath = Path.GetTempPath() + "\\" + fileName;
@@ -348,7 +378,8 @@ namespace DynamoWebServer.Messages
             {
                 Nodes = uploader.NodesToCreate,
                 Connections = uploader.ConnectorsToCreate,
-                NodesResult = nodes
+                NodesResult = nodes,
+                WorkspaceName = currentWorkspace.Name
             };
 
             var proxyNodesResponses = new List<UpdateProxyNodesResponse>();

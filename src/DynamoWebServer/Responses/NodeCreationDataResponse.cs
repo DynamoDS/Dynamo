@@ -6,6 +6,7 @@ namespace DynamoWebServer.Responses
     public class NodeCreationDataResponse : Response
     {
         public string WorkspaceId { get; set; }
+        public string WorkspaceName { get; set; }
         public IEnumerable<object> Nodes { get; set; }
         public IEnumerable<object> Connections { get; set; }
         public IEnumerable<object> NodesResult { get; set; }
