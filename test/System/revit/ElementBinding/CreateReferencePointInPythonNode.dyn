@@ -1,0 +1,30 @@
+<Workspace Version="0.7.2.2921" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="49a02d19-723c-4ea6-a696-fc646bcd5e65" nickname="Python Script" x="352" y="218.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script>import clr
+import sys
+sys.path.append('.\Revit_2014');
+clr.AddReference('ProtoGeometry')
+clr.AddReference('RevitNodes')
+from Autodesk.DesignScript.Geometry import *
+from Revit.Elements import *
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+pnt = ReferencePoint.ByCoordinates(IN[0],0,0)
+
+#Assign your output to the OUT variable
+OUT = pnt</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="ba302df5-99b9-404e-8a66-eb71726daead" nickname="Double Slider" x="108" y="221.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>52.518</System.Double>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="4c37af9f-7b96-4da1-9216-826060429a3e" nickname="ReferencePoint.X" x="545.5" y="221" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.ReferencePoint.X" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="49a02d19-723c-4ea6-a696-fc646bcd5e65" start_index="0" end="4c37af9f-7b96-4da1-9216-826060429a3e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba302df5-99b9-404e-8a66-eb71726daead" start_index="0" end="49a02d19-723c-4ea6-a696-fc646bcd5e65" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
