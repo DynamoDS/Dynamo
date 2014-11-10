@@ -1475,6 +1475,18 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
+        /// Call this method to asynchronously update the cached MirrorData for 
+        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
+        /// being accessed within this method, therefore the method is typically
+        /// called from the main/UI thread.
+        /// </summary>
+        /// 
+        public void RequestValueUpdateAsync()
+        {
+            // TODO(Ben): Update cachedMirrorData asynchronously.
+        }
+
+        /// <summary>
         /// Call this method to asynchronously regenerate render package for 
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
@@ -1482,12 +1494,12 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        public void RequestVisualUpdate(int maxTesselationDivisions)
+        public void RequestVisualUpdateAsync(int maxTesselationDivisions)
         {
             if (Workspace.DynamoModel == null)
                 return;
 
-            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
+            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
             // called in quick succession from the UI thread -- the first task may 
             // be updating '_renderPackages' when the second call gets here. In 
             // this case '_renderPackages' should be protected against concurrent 
@@ -1504,7 +1516,7 @@ namespace Dynamo.Models
             if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
                 return;
 
-            RequestVisualUpdateCore(maxTesselationDivisions);
+            RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
 
         /// <summary>
@@ -1517,7 +1529,7 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected virtual void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             var initParams = new UpdateRenderPackageParams()
             {

@@ -637,6 +637,7 @@ namespace ProtoCore.DSASM
         /// Throws an exception if the heap is corrupted
         /// </summary>
         /// <param name="core"></param>
+        [Conditional("GC_REFERENCE_COUNTING")]
         public void Verify()
         {
             // Check the integrity of the heap memory layout
