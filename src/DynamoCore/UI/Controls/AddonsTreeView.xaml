@@ -16,6 +16,7 @@
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
+        <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
 
         <!-- Region DataTemplates -->
 
@@ -78,18 +79,8 @@
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
                 </StackPanel.Width>
-                <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#444444" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png"
+                       Margin="30,0,0,0" />
                 <TextBlock Foreground="#DDD"
                            FontSize="13"
                            Text="{Binding Path=Name}"
@@ -357,6 +348,21 @@
                                                                     Value="#222222" />
                                                         </MultiDataTrigger.Setters>
                                                     </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                       Value="true" />
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource ElementTypeToBoolConverter}}"
+                                                                       Value="false" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Background"
+                                                                    Value="#595959" />
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
@@ -401,6 +407,15 @@
                                                     <Binding RelativeSource="{RelativeSource Self}"
                                                              Path="DataContext"
                                                              Converter="{StaticResource RootElementToBoolConverter}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Padding"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
+                                            <DataTrigger Value="false">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
                                                 </DataTrigger.Binding>
                                                 <Setter Property="Padding"
                                                         Value="0,0,0,0" />
