@@ -23,7 +23,7 @@ namespace Dynamo.Core.Threading
         {
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             // Does nothing...
         }
