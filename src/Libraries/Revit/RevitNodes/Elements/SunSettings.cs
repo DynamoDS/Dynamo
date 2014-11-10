@@ -112,20 +112,6 @@ namespace Revit.Elements
             get { return InternalSunAndShadowSettings as Autodesk.Revit.DB.Element; }
         }
 
-        ///// <summary>
-        /////     Gets the SunPath geometry for the current frame of the solar study.
-        ///// </summary>
-        //public GeometryElement CurrentSunPathGeometry
-        //{
-
-        //    get
-        //    {
-
-        //        var geomOptions = new Autodesk.Revit.DB.Options();
-        //        geomOptions.ComputeReferences = true;
-        //        return InternalSunAndShadowSettings.get_Geometry(geomOptions);
-        //    }
-        //}
 
     }
 }

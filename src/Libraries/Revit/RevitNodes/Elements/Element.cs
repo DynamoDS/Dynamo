@@ -18,6 +18,7 @@ using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.Revit.DB.Face;
 using Solid = Autodesk.DesignScript.Geometry.Solid;
 
+
 namespace Revit.Elements
 {
     /// <summary>
@@ -360,13 +361,23 @@ namespace Revit.Elements
                         converted.Add(convert);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // we catch all geometry conversion exceptions
+                    //DynamoLogger.Log(ex.ToString());
                 }
             }
 
             return converted.ToArray();
+        }
+
+        /// <summary>
+        /// Get all of the Revit Geometry associated with this object
+        /// </summary>
+        public object[] RevitGeometry()
+        {
+
+            return InternalGeometry().ToArray();
         }
 
         #region Geometry extraction
@@ -398,6 +409,65 @@ namespace Revit.Elements
                 }
             }
 
+            // SunPath / SunAndShadowSettings is also a special case
+            if (thisElement is SunAndShadowSettings)
+            {
+                var sunPath = (SunAndShadowSettings)thisElement;
+                if (sunPath != null)
+                {
+                    var goptions1 = new Options
+                    {
+                        IncludeNonVisibleObjects = true,
+                        View = Document.ActiveView,
+                        ComputeReferences = true
+                    };
+                    geomElement = thisElement.get_Geometry(goptions1);
+
+
+                    // MDJ_WORKAROUND the SunPath Surfaces (the analema (the figure eight shaped spline) swept around the sun arc) fail to convert to protogeometry with these errors:
+                    //      Unable to create face from spline : IG_SURFACE_MULTIPLE_ISSUES -- Multiple surface issues found
+                    //      Surfaces could not be joined into a closed Solid, even with refinement!
+                    // here we are finding the bad solids, grabbing the surfaces, and then for each surface use the revit triangulate method, 
+                    // we then pass that mesh on with the other objects to protogeometry but leave out the original (sometimes problematic) solid. 
+                    // Note this triangulates the sun dome and also the sun sphere itself. we should not need to do this
+
+                    List<GeometryObject> geomElementList = geomElement.ToList();
+
+                    foreach (GeometryObject geom in geomElement)
+                    {
+
+                        if (geom is Autodesk.Revit.DB.Solid)// if we found the solid grab the faces,  triagulate them and add to a new list.
+                        {
+
+                            if ((Autodesk.Revit.DB.Solid)geom != null) 
+                            {
+                                Autodesk.Revit.DB.Solid solid = geom as Autodesk.Revit.DB.Solid;
+                                var faces = solid.Faces;
+                                foreach (GeometryObject geom2 in faces)
+                                {
+                                    if ((Autodesk.Revit.DB.Solid)geom != null)
+                                    {
+                                        Autodesk.Revit.DB.Face face =
+                                            geom2 as Autodesk.Revit.DB.Face;
+                                        Autodesk.Revit.DB.Mesh meshedFace = face.Triangulate(.5);
+                                        geomElementList.Add(meshedFace);
+                                    }
+
+                                }
+
+                            }
+                        }
+                        else // add every non-solid wholesale as they convert fine already 
+                        {
+                            geomElementList.Add(geom);
+                        }
+                    }
+
+                    return CollectConcreteGeometry(geomElementList, useSymbolGeometry); // only added this override for sunpath to get around the solid tranlation issues.
+
+                }
+            }
+
             return CollectConcreteGeometry(geomElement, useSymbolGeometry);
         }
 
@@ -426,6 +496,46 @@ namespace Revit.Elements
                 else if (geomElement != null)
                 {
                     instanceGeometryObjects.AddRange( CollectConcreteGeometry(geometryElement) );
+                }
+                else
+                {
+                    instanceGeometryObjects.Add(geob);
+                }
+            }
+
+            // Certain kinds of Elements will return Solids with zero faces - make sure to filter them out
+            return
+                instanceGeometryObjects.Where(
+                    x =>
+                        !(x is Autodesk.Revit.DB.Solid) || (x as Autodesk.Revit.DB.Solid).Faces.Size > 0);
+        }
+
+        //MDJ_HACK only added this override for sunpath to get around the solid tranlation issues.
+        /// <summary>
+        /// Collects the concrete GeometryObject's in a List of Geometry Objects 
+        /// </summary>
+        /// <param name="List<GeometryObject>">The Geometry collection</param>
+        /// <param name="useSymbolGeometry">When encountering a GeometryInstance, use GetSymbolGeometry() which obtains usable Reference objects</param>
+        /// <returns></returns>
+        private static IEnumerable<GeometryObject> CollectConcreteGeometry(List<GeometryObject> geometryElement, bool useSymbolGeometry = false)
+        {
+            var instanceGeometryObjects = new List<GeometryObject>();
+
+            if (geometryElement == null) return instanceGeometryObjects;
+
+            foreach (GeometryObject geob in geometryElement)
+            {
+                var geomInstance = geob as GeometryInstance;
+                var geomElement = geob as GeometryElement;
+
+                if (geomInstance != null)
+                {
+                    var instanceGeom = useSymbolGeometry ? geomInstance.GetSymbolGeometry() : geomInstance.GetInstanceGeometry();
+                    instanceGeometryObjects.AddRange(CollectConcreteGeometry(instanceGeom));
+                }
+                else if (geomElement != null)
+                {
+                    instanceGeometryObjects.AddRange(CollectConcreteGeometry(geometryElement));
                 }
                 else
                 {
