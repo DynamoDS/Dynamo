@@ -55,7 +55,7 @@
         HeaderBackgroundBroken="{StaticResource headerBackgroundBroken}"
         HeaderForegroundBroken="{StaticResource headerForegroundBroken}"
         HeaderBorderBroken="{StaticResource headerBorderBroken}"
-        OuterBordeBroken="{StaticResource outerBorderBroken}"
+        OuterBorderBroken="{StaticResource outerBorderBroken}"
         BodyBackgroundBroken="{StaticResource bodyBackgroundBroken}"
         OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
