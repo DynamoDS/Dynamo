@@ -712,18 +712,20 @@ namespace Dynamo.Models
             }
             catch (Exception e)
             {
-                // If any exception from BuildOutputAst(), we simply emit
-                // a function call "var_guid = %nodeAstFailed(full.node.name)",
-                // and set the state of node to AstBuildBroken. 
+                // If any exception from BuildOutputAst(), we emit
+                // a function call "var_guid = %nodeAstFailed(full.node.name)"
+                // for this node, set the state of node to AstBuildBroken and
+                // disply the corresponding error message. 
                 // 
-                // The return value of this function is always null.
-                this.State = ElementState.AstBuildBroken;
-                var message = String.Format(AstBuilder.StringConstants.AstBuildBrokenMessage, e.Message);
-                this.NotifyAstBuildBroken(message);
+                // The return value of function %nodeAstFailed() is always 
+                // null.
+                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var fullMsg = String.Format(errorMsg, e.Message);
+                this.NotifyAstBuildBroken(fullMsg);
 
-                var nodeFullname = this.GetType().ToString();
-                var nodeInfo = AstFactory.BuildStringNode(nodeFullname);
-                var arguments = new List<AssociativeNode> { nodeInfo };
+                var fullName = this.GetType().ToString();
+                var astNodeFullName = AstFactory.BuildStringNode(fullName);
+                var arguments = new List<AssociativeNode> { astNodeFullName };
                 var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
 
                 return new []
@@ -1070,6 +1072,11 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
 
+        /// <summary>
+        /// Change the state of node to ElementState.AstBuildBroken and display
+        /// "p" in tooltip window. 
+        /// </summary>
+        /// <param name="p"></param>
         public void NotifyAstBuildBroken(string p)
         {
             State = ElementState.AstBuildBroken;

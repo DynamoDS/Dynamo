@@ -9,8 +9,8 @@ using System.Text;
 namespace DynamoDummyNodes
 {
     [NodeName("DynamoDummyErrorNode")]
-    [NodeCategory("DynamoDummy")]
-    [NodeDescription("Dynamo dummy node which will throuw an excpetion when is compiled to AST.")]
+    [NodeCategory("DynamoDummyNodes")]
+    [NodeDescription("A test node which will throw an excpetion when it is compiled to AST node.")]
     [IsDesignScriptCompatible]
     [IsVisibleInDynamoLibrary(false)]
     public class DynamoDummyErrorNode: NodeModel
@@ -25,7 +25,7 @@ namespace DynamoDummyNodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            throw new Exception("Dummy error in building dummy node");
+            throw new Exception("Dummy error message.");
         }
     }
 }
