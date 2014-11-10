@@ -1761,8 +1761,6 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is CustomNodeSearchElement)
-                return true;
             if (value is NodeSearchElement) 
                 return false;
             if (value is BrowserInternalElement)
@@ -1775,6 +1773,23 @@ namespace Dynamo.Controls
                 var rootElement = value as BrowserRootElement;
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
+            return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // This converter is used to change color of output parameters for custom node.
+    public class CustomNodeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CustomNodeSearchElement)
+                return true;
             return false;
         }
 
