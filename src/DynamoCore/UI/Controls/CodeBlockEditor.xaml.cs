@@ -204,10 +204,20 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
+                    char currentChar = e.Text[0];
                     // If a completion item is highlighted and the user types
                     // any of the following characters, only then is it selected and inserted
-                    if(e.Text[0] == '\t' || e.Text[0] == '.' || e.Text[0] == '\n' || e.Text[0] == '\r')
+                    // and the code completion window closed
+                    if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
+                    {
                         completionWindow.CompletionList.RequestInsertion(e);
+                    }
+                    else if (!char.IsLetterOrDigit(currentChar) && currentChar != '_')
+                    {
+                        // In all other cases where what is being typed is not alpha-numeric 
+                        // we want to get rid of the completion window 
+                        completionWindow.Close();
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -224,7 +234,7 @@ namespace Dynamo.UI.Controls
             {
                 int startPos = this.InnerTextEditor.CaretOffset;
                 var code = this.InnerTextEditor.Text.Substring(0, startPos);
-                
+
                 if (e.Text == ".")
                 {
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
@@ -268,7 +278,7 @@ namespace Dynamo.UI.Controls
                     if (!completions.Any())
                         return;
 
-                    ShowCompletionWindow(completions, completeWhenTyping : true);
+                    ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
             catch (System.Exception ex)
@@ -290,7 +300,7 @@ namespace Dynamo.UI.Controls
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            
+
             if (completeWhenTyping)
             {
                 // As opposed to complete on '.', in complete while typing mode 
