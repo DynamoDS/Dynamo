@@ -658,6 +658,11 @@ namespace Dynamo.Models
             RaisePropertyChanged("Position");
         }
 
+        public void FindAndColorTheNodes()
+        {
+            
+        }
+
         #endregion
 
         #region private/internal methods
