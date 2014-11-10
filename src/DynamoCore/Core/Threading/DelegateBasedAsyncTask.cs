@@ -37,7 +37,7 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             actionToPerform();
         }
