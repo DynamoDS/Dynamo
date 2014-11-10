@@ -25,6 +25,7 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+        private bool isMouseDown = false;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -34,8 +35,14 @@ namespace Dynamo.Controls
             collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
             this.KeyDown += OnLibraryWrapPanelKeyDown;
+            this.PreviewMouseDown += OnLibraryWrapPanelMouseDown;
 
             base.OnInitialized(e);
+        }
+
+        private void OnLibraryWrapPanelMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            isMouseDown = true; 
         }
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -226,7 +233,8 @@ namespace Dynamo.Controls
             {
                 return;
             }
-            if (!(selectedIndex == classInfoIndex))
+
+            if (isMouseDown)
             {
                 selectedClassProspectiveIndex = translatedIndex;
             }
@@ -234,6 +242,7 @@ namespace Dynamo.Controls
             {
                 // Class information cannot be selected, leave last selected class index as selected index.
                 (sender as ListView).SelectedIndex = selectedClassProspectiveIndex;
+                selectedIndex = selectedClassProspectiveIndex;
             }
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
@@ -254,6 +263,7 @@ namespace Dynamo.Controls
 
             currentClass = collection[selectedIndex] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
+            isMouseDown = false;
         }
 
         /// <summary>
