@@ -51,7 +51,7 @@ namespace Dynamo.Applications.Models
             get
             {
                 return Process.GetCurrentProcess().ProcessName + "-R" +  
-                    DocumentManager.Instance.CurrentUIApplication.Application.VersionName +  "-"
+                    DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild +  "-"
                     + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
             }
         }
