@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -84,6 +85,30 @@ namespace SampleLibraryZeroTouch
         /// <returns>A HelloDynamoZeroTouch object.</returns>
         public static HelloDynamoZeroTouch ByCoordinates(double x=42.0, double y=42.0, double z=42.0)
         {
+            // Let's say in our example that the user is not allowed
+            // to create an instance of this class if any of the 
+            // coordinates is less than zero. We check the parameters
+            // here because passing to the private constructor, and
+            // we throw an error if the parameters do not conform.
+
+            // These exceptions will be shown in the error bubble
+            // over the node, and the node will turn yellow.
+
+            if (x < 0)
+            {
+                throw new ArgumentException("x");
+            }
+
+            if (y < 0)
+            {
+                throw new ArgumentException("y");
+            }
+
+            if (z < 0)
+            {
+                throw new ArgumentException("z");
+            }
+
             return new HelloDynamoZeroTouch(x, y, z);
         }
 

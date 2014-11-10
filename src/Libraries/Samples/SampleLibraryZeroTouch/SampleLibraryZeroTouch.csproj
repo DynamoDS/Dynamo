@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>extern\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoGeometry">
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
@@ -48,9 +52,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HelloDynamoZeroTouch.cs" />
+    <Compile Include="HelloDynamoZeroTouchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\test\Libraries\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestServices.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>copy $(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.dll $(ProjectDir)extern\ProtoGeometry.dll
+copy $(SolutionDir)..\extern\ProtoGeometry\ProtoInterface.dll $(ProjectDir)extern\ProtoInterface.dll
+
+copy $(SolutionDir)..\extern\NUnit\nunit.framework.dll $(ProjectDir)extern\nunit.framework.dll</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
