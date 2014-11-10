@@ -1446,7 +1446,10 @@ namespace Dynamo.Models
             {
                 dirty = value;
                 if (dirty)
+                {
                     ReportModification();
+                    
+                }
             } 
         }
 
