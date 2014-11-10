@@ -14,25 +14,32 @@ namespace SampleLibraryZeroTouch
     /// </summary>
     public class HelloDynamoZeroTouch : IGraphicItem
     {
+         //OPTIONAL:
+         //IGraphicItem is an interface which allows your
+         //class to participate in the rendering of geometry
+         //to the background preview, and to Watch3D nodes.
+         //You do not need to implement IGraphicItem unless
+         //your node needs to draw geometry to the view.
+        
         private Point point;
 
-        /// --------------------------------------------------
-        /// A NOTE ON XML COMMENTS:
-        /// 
-        /// Dynamo uses the comments you've put on your code to 
-        /// populate tooltips and help windows in the user 
-        /// interface. In order to enable this behavior, your 
-        /// project needs to be set to build xml 
-        /// documentation. To do this:
-        /// 1. Right click on your project in the solution explorer.
-        /// 2. Select Properties.
-        /// 3. Select the Build tab. 
-        /// 4. Check the XML Documentation box.
-        ///
-        /// The generated xml file will be called the same
-        /// thing as your library, and needs to live along-side
-        /// your library to be picked up by the Dynamo loader.
-        /// --------------------------------------------------
+         //--------------------------------------------------
+         //A NOTE ON XML COMMENTS:
+         
+         //Dynamo uses the comments you've put on your code to 
+         //populate tooltips and help windows in the user 
+         //interface. In order to enable this behavior, your 
+         //project needs to be set to build xml 
+         //documentation. To do this:
+         //1. Right click on your project in the solution explorer.
+         //2. Select Properties.
+         //3. Select the Build tab. 
+         //4. Check the XML Documentation box.
+        
+         //The generated xml file will be called the same
+         //thing as your library, and needs to live along-side
+         //your library to be picked up by the Dynamo loader.
+         //--------------------------------------------------
         
         /// <summary>
         /// Properties marked as public will show up as 
