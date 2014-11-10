@@ -393,10 +393,10 @@ namespace Dynamo.Utilities
         private string type = string.Empty;
 
         // Context of string being typed for completion
-        private bool IsInSingleComment = false;
-        private bool IsInString = false;
-        private bool IsInChar = false;
-        private bool IsInMultiLineComment = false;
+        private bool isInSingleComment = false;
+        private bool isInString = false;
+        private bool isInChar = false;
+        private bool isInMultiLineComment = false;
 
         #endregion
 
@@ -478,13 +478,15 @@ namespace Dynamo.Utilities
             var lexer = new CodeCompletionParser(text);
             lexer.ParseContext(caretPos);
             return
-                lexer.IsInSingleComment ||
-                    lexer.IsInString ||
-                    lexer.IsInChar ||
-                    lexer.IsInMultiLineComment;
+                lexer.isInSingleComment ||
+                    lexer.isInString ||
+                    lexer.isInChar ||
+                    lexer.isInMultiLineComment;
         }
 
         #endregion
+
+        #region private methods
 
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
@@ -613,53 +615,54 @@ namespace Dynamo.Utilities
                 switch (ch)
                 {
                     case '/':
-                        if (IsInString || IsInChar || IsInSingleComment || IsInMultiLineComment)
+                        if (isInString || isInChar || isInSingleComment || isInMultiLineComment)
                             break;
                         if (lookAhead == '/')
                         {
                             i++;
-                            IsInSingleComment = true;
+                            isInSingleComment = true;
                         }
                         if (lookAhead == '*')
                         {
-                            IsInMultiLineComment = true;
+                            isInMultiLineComment = true;
                             i++;
                         }
                         break;
                     case '*':
-                        if (IsInString || IsInChar || IsInSingleComment)
+                        if (isInString || isInChar || isInSingleComment)
                             break;
                         if (lookAhead == '/')
                         {
                             i++;
-                            IsInMultiLineComment = false;
+                            isInMultiLineComment = false;
                         }
                         break;
                     case '\n':
                     case '\r':
-                        IsInSingleComment = false;
-                        IsInString = false;
-                        IsInChar = false;
+                        isInSingleComment = false;
+                        isInString = false;
+                        isInChar = false;
                         break;
                     case '\\':
-                        if (IsInString || IsInChar)
+                        if (isInString || isInChar)
                             i++;
                         break;
                     case '"':
-                        if (IsInSingleComment || IsInMultiLineComment || IsInChar)
+                        if (isInSingleComment || isInMultiLineComment || isInChar)
                             break;
-                        IsInString = !IsInString;
+                        isInString = !isInString;
                         break;
                     case '\'':
-                        if (IsInSingleComment || IsInMultiLineComment || IsInString)
+                        if (isInSingleComment || isInMultiLineComment || isInString)
                             break;
-                        IsInChar = !IsInChar;
+                        isInChar = !isInChar;
+                        break;
+                    default:
                         break;
                 }
             }
         }
 
-        #region private utility methods
         private string GetMemberIdentifier()
         {
             return strPrefix.Split('.').Last();
