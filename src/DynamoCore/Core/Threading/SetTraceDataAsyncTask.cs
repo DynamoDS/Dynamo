@@ -52,7 +52,7 @@ namespace Dynamo.Core.Threading
             return ((traceData != null) && traceData.Any());
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             engineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
         }
