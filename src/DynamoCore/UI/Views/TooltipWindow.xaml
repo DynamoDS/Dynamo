@@ -16,7 +16,7 @@
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+            <controls:CustomNodeToBoolConverter x:Key="CustomNodeToBoolConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -148,7 +148,7 @@
                                                 <DataTrigger.Binding>
                                                     <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
                                                              Path="DataContext"
-                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                             Converter="{StaticResource CustomNodeToBoolConverter}" />
                                                 </DataTrigger.Binding>
                                                 <Setter Property="Foreground"
                                                         Value="#cccccc" />

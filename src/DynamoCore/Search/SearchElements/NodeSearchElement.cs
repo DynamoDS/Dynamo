@@ -75,7 +75,7 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        private List<string> _outputParameters;
+        private List<string> _outputParameters = new List<String>();
 
         public List<string> OutputParameters
         {
@@ -212,6 +212,11 @@ namespace Dynamo.Search.SearchElements
 
         protected virtual List<string> GenerateOutputParameters()
         {
+            if (_outputParameters == null)
+            {
+                _outputParameters = new List<String>();
+                _outputParameters.Add("none");
+            }
             return _outputParameters;
         }
 
