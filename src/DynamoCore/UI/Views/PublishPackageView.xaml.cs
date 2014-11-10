@@ -2,6 +2,8 @@
 using System.Windows;
 
 using Dynamo.Controls;
+using Dynamo.PackageManager.UI;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager
@@ -13,12 +15,8 @@ namespace Dynamo.PackageManager
     {
         public PublishPackageView(PublishPackageViewModel packageViewModel)
         {
-
             this.DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
-
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             InitializeComponent();
         }
