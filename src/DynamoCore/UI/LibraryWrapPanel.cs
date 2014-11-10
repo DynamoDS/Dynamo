@@ -230,9 +230,7 @@ namespace Dynamo.Controls
             int classInfoIndex = GetClassInformationIndex();
 
             if (selectedClassProspectiveIndex == translatedIndex)
-            {
                 return;
-            }
 
             if (isMouseDown)
             {
