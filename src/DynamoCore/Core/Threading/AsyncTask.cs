@@ -177,7 +177,7 @@ namespace Dynamo.Core.Threading
 
             try
             {
-                ExecuteCore();
+                HandleTaskExecutionCore();
             }
             catch (Exception exception)
             {
@@ -210,7 +210,7 @@ namespace Dynamo.Core.Threading
 
         #region Protected/Private Class Helper Methods
 
-        protected abstract void ExecuteCore();
+        protected abstract void HandleTaskExecutionCore();
         protected abstract void HandleTaskCompletionCore();
 
         protected virtual TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
