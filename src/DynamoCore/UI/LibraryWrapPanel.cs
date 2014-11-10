@@ -294,7 +294,7 @@ namespace Dynamo.Controls
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
             // When we know the number of items on a single row, through selected 
-            // item index we will find out where the expanded StandardPanel sit.  
+            // item index we will find out where the expanded StandardPanel sit.
             var itemsPerRow = ((int)Math.Floor(ActualWidth / classObjectWidth));
             var d = ((double)selectedClassProspectiveIndex) / itemsPerRow;
             var selectedItemRow = ((int)Math.Floor(d));
