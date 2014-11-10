@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using Autodesk.DesignScript.Runtime;
+using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace DynamoDummyNodes
     [NodeCategory("DynamoDummy")]
     [NodeDescription("Dynamo dummy node which will throuw an excpetion when is compiled to AST.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DynamoDummyErrorNode: NodeModel
     {
         public DynamoDummyErrorNode(WorkspaceModel workspaceModel)

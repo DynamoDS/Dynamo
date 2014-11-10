@@ -492,6 +492,8 @@ namespace ProtoCore.Lang
                     }
                     break;
                 case BuiltInMethods.MethodID.kNodeAstFailed:
+                    var nodeFullName = formalParameters[0];
+                    var fullName = StringUtils.GetStringValue(nodeFullName, core);
                     ret = StackValue.Null;
                     break;
                 default:
