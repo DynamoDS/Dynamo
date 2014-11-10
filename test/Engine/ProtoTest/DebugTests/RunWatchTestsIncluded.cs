@@ -22296,7 +22296,6 @@ result = Count(a);";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch815_T047_Sum_ForLoop()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
@@ -22326,7 +22325,6 @@ result =
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch816_T048_Sum_WhileLoop()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
