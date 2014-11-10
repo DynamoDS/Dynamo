@@ -74,13 +74,15 @@
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
             <StackPanel Orientation="Horizontal"
-                        Height="30">
+                        Height="40">
                 <StackPanel.Width>
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
                 </StackPanel.Width>
                 <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png"
-                       Margin="30,0,0,0" />
+                       Margin="30,0,0,0"
+                       Width="30"
+                       Height="30" />
                 <TextBlock Foreground="#DDD"
                            FontSize="13"
                            Text="{Binding Path=Name}"
