@@ -23,7 +23,6 @@ namespace Dynamo.Controls
         /// </summary>
         private int selectedClassProspectiveIndex = -2;
         private double classObjectWidth = double.NaN;
-        private int itemsPerRow = 3;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
 
@@ -174,7 +173,7 @@ namespace Dynamo.Controls
 
             double x = 0, y = 0, currentRowHeight = 0;
 
-            itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
+            var itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
             double sizeBetweenItems = (finalSize.Width - itemsPerRow * classObjectWidth) / (itemsPerRow + 1);
 
             foreach (UIElement child in this.Children)
@@ -218,19 +217,6 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedIndex = (sender as ListView).SelectedIndex;
-            var classInfoIndex = GetClassInformationIndex();
-
-            // Handling situation when when standard panel is selected. It is possible
-            // when user drags class down to standard panel.
-            // We should select class on next row. 
-            if (classInfoIndex == selectedIndex)
-            {
-                var newSelectedIndex = collection.IndexOf(currentClass);
-                if (newSelectedIndex + itemsPerRow + 1 < collection.Count)
-                    newSelectedIndex += itemsPerRow + 1;
-                (sender as ListView).SelectedIndex = newSelectedIndex;
-                return;
-            }
 
             // As focus moves within the class details, class button gets selected which 
             // triggers a selection change. During a selection change the items in the 
@@ -242,6 +228,8 @@ namespace Dynamo.Controls
                 return;
 
             selectedClassProspectiveIndex = translatedIndex;
+
+            int classInfoIndex = GetClassInformationIndex();
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
@@ -306,7 +294,8 @@ namespace Dynamo.Controls
             classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
             // When we know the number of items on a single row, through selected 
-            // item index we will find out where the expanded StandardPanel sit.            
+            // item index we will find out where the expanded StandardPanel sit.  
+            var itemsPerRow = ((int)Math.Floor(ActualWidth / classObjectWidth));
             var d = ((double)selectedClassProspectiveIndex) / itemsPerRow;
             var selectedItemRow = ((int)Math.Floor(d));
 
