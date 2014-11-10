@@ -703,7 +703,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private PortViewModel UnSubscribePortEvents(PortViewModel item)
         {
-            item.MouseEnter -= portViewModel_MouseEnter;
+            item.MouseEnter -= OnRectangleMouseEnter;
             item.MouseLeave -= OnRectangleMouseLeave;
             item.MouseLeftButtonDown -= OnMouseLeftButtonDown;
             return item;
