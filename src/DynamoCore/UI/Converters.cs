@@ -486,7 +486,7 @@ namespace Dynamo.Controls
         public SolidColorBrush HeaderBackgroundBroken { get; set; }
         public SolidColorBrush HeaderForegroundBroken { get; set; }
         public SolidColorBrush HeaderBorderBroken { get; set; }
-        public SolidColorBrush OuterBordeBroken { get; set; }
+        public SolidColorBrush OuterBorderBroken { get; set; }
         public SolidColorBrush BodyBackgroundBroken { get; set; }
         public SolidColorBrush OuterBorderSelection { get; set; }
 
@@ -574,7 +574,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return OuterBorderActive;
                 case ElementState.Warning: return OuterBorderWarning;
                 case ElementState.Error: return OuterBorderError;
-                case ElementState.AstBuildBroken: return OuterBordeBroken;
+                case ElementState.AstBuildBroken: return OuterBorderBroken;
             }
 
             throw new NotImplementedException();
