@@ -212,7 +212,7 @@ namespace Dynamo.UI.Controls
                     {
                         completionWindow.CompletionList.RequestInsertion(e);
                     }
-                    else if (!char.IsLetterOrDigit(currentChar) && !char.Equals(currentChar, '_'))
+                    else if (!char.IsLetterOrDigit(currentChar) && currentChar != '_')
                     {
                         // In all other cases where what is being typed is not alpha-numeric 
                         // we want to get rid of the completion window 
