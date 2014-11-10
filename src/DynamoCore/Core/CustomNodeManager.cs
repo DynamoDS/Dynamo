@@ -53,9 +53,14 @@ namespace Dynamo.Utilities
         #region Fields and properties
 
         /// <summary>
-        /// An event that is fired when a definition is loaded (e.g. when the node is placed)
+        ///     An event that is fired when a definition is updated
         /// </summary>
-        public event DefinitionLoadHandler DefinitionLoaded;
+        public event Action<Guid, CustomNodeDefinition> DefinitionUpdated;
+        protected virtual void OnDefinitionUpdated(Guid arg1, CustomNodeDefinition arg2)
+        {
+            var handler = DefinitionUpdated;
+            if (handler != null) handler(arg1, arg2);
+        }
 
         public OrderedDictionary LoadedCustomNodes = new OrderedDictionary();
 
@@ -91,13 +96,16 @@ namespace Dynamo.Utilities
         ///     Creates a new Custom Node Instance.
         /// </summary>
         /// <param name="id">Identifier referring to a custom node definition.</param>
-        public Function CreateCustomNodeInstance(Guid id)
+        /// <param name="nickname"></param>
+        /// <param name="isTestMode"></param>
+        public Function CreateCustomNodeInstance(Guid id, string nickname=null, bool isTestMode=false)
         {
             CustomNodeDefinition def;
-            if (!GetDefinition(id, out def))
+            if (!GetDefinition(id, out def, isTestMode)
+                && !GetDefinitionFromNickName(nickname, ref id, out def, isTestMode))
             {
                 Log("Unable to create instance of custom node with id: \"" + id + "\"", WarningLevel.Error);
-                return null;   
+                return null;
             }
 
             var node = new Function(def);
@@ -110,13 +118,6 @@ namespace Dynamo.Utilities
             node.Disposed += () => { DefinitionUpdated -= defUpdatedHandler; };
 
             return node;
-        }
-
-        public event Action<Guid, CustomNodeDefinition> DefinitionUpdated;
-        protected virtual void OnDefinitionUpdated(Guid arg1, CustomNodeDefinition arg2)
-        {
-            var handler = DefinitionUpdated;
-            if (handler != null) handler(arg1, arg2);
         }
 
         /// <summary> 
@@ -223,9 +224,20 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public List<CustomNodeInfo> UpdateSearchPath()
+        public IEnumerable<CustomNodeInfo> ScanSearchPaths()
         {
-            return SearchPath.SelectMany(ScanNodeHeadersInDirectory).ToList();
+            return SearchPath.SelectMany(ScanNodeHeadersInDirectory);
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public IEnumerable<CustomNodeInfo> AddSearchPathAndScan(string path)
+        {
+            AddDirectoryToSearchPath(path);
+            return ScanNodeHeadersInDirectory(path);
         }
 
         /// <summary>
@@ -316,8 +328,9 @@ namespace Dynamo.Utilities
         ///     Get the function definition from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
+        /// <param name="isTestMode"></param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
-        public CustomNodeDefinition GetFunctionDefinition(Guid id)
+        public CustomNodeDefinition GetFunctionDefinition(Guid id, bool isTestMode)
         {
             if (!Contains(id))
                 return null;
@@ -327,7 +340,7 @@ namespace Dynamo.Utilities
                 return LoadedCustomNodes[id] as CustomNodeDefinition;
             }
             CustomNodeDefinition def;
-            return GetDefinitionFromPath(id, out def) ? def : null;
+            return GetDefinitionFromPath(id, isTestMode, out def) ? def : null;
         }
 
         /// <summary>
@@ -336,11 +349,12 @@ namespace Dynamo.Utilities
         ///     custom node for proxy node.
         /// </summary>
         /// <param name="id">The unique id for the node</param>
+        /// <param name="isTestMode"></param>
         /// <returns></returns>
-        public CustomNodeDefinition ReloadFunctionDefintion(Guid id)
+        public CustomNodeDefinition ReloadFunctionDefintion(Guid id, bool isTestMode)
         {
             CustomNodeDefinition def;
-            if (!GetDefinitionFromPath(id, out def)) //TODO(Steve): This is where we actually load and set the new definition
+            if (!GetDefinitionFromPath(id, isTestMode, out def)) //TODO(Steve): This is where we actually load and set the new definition
                 return null;
 
             if (def == null)
@@ -348,21 +362,8 @@ namespace Dynamo.Utilities
                 return null;
             }
 
-            //TODO(Steve): Keep track of all created instances directly (makes sense since CustomNodeManager will handle instance creation).
-            var customNodeInstances =
-                dynamoModel
-                    .AllNodes
-                    .OfType<Function>()
-                    .Where(f => f.Definition != null &&
-                                f.Definition.FunctionId.Equals(id));
-
-            foreach (var item in customNodeInstances)
-            {
-                item.ResyncWithDefinition(def);
-                item.State = ElementState.Dead;
-                item.ValidateConnectionsSync();
-            }
-
+            OnDefinitionUpdated(id, def);
+            
             return def;
         }
 
@@ -382,7 +383,7 @@ namespace Dynamo.Utilities
         {
             var compiledNodes = new HashSet<Guid>();
 
-            var enumerator =  LoadedCustomNodes.GetEnumerator();
+            var enumerator = LoadedCustomNodes.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var guid = (Guid)enumerator.Key;
@@ -440,7 +441,8 @@ namespace Dynamo.Utilities
         ///     And add the compiled node to the enviro.
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
-        public bool GetDefinition(string name, out CustomNodeDefinition result)
+        [Obsolete("Use GetDefinitionFromNickName instead", true)]
+        public bool GetDefinition(string name, out CustomNodeDefinition result, bool isTestMode)
         {
             if (!Contains(name))
             {
@@ -448,8 +450,7 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            return GetDefinition(GetGuidFromName(name), out result);
-
+            return GetDefinition(GetGuidFromName(name), out result, isTestMode);
         }
 
         /// <summary>
@@ -459,7 +460,8 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
         /// <param name="result"></param>
-        public bool GetDefinition(Guid guid, out CustomNodeDefinition result)
+        /// <param name="isTestMode"></param>
+        public bool GetDefinition(Guid guid, out CustomNodeDefinition result, bool isTestMode)
         {
             if (!Contains(guid))
             {
@@ -469,7 +471,7 @@ namespace Dynamo.Utilities
 
             if (!IsInitialized(guid))
             {
-                if (!GetDefinitionFromPath(guid, out result))
+                if (!GetDefinitionFromPath(guid, isTestMode, out result))
                 {
                     return false;
                 }
@@ -480,6 +482,27 @@ namespace Dynamo.Utilities
             }
 
             return true;
+        }
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="id"></param>
+        /// <param name="def"></param>
+        /// <param name="isTestMode"></param>
+        /// <returns></returns>
+        private bool GetDefinitionFromNickName(string nickname, ref Guid id, out CustomNodeDefinition def, bool isTestMode)
+        {
+            // if there is a node with this name, use it instead
+            if (!Contains(nickname))
+            {
+                def = null;
+                return false;
+            }
+
+            id = GetGuidFromName(nickname);
+            return GetDefinition(id, out def, isTestMode);
         }
 
         /// <summary>

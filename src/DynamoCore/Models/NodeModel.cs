@@ -616,6 +616,7 @@ namespace Dynamo.Models
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
 
+
         /// <summary>
         ///     Saves this node into an XML Document.
         /// </summary>
@@ -624,6 +625,8 @@ namespace Dynamo.Models
         /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            SaveBasicData(dynEl);
+
             SaveNode(xmlDoc, dynEl, context);
             
             var portsWithDefaultValues = 
@@ -640,12 +643,25 @@ namespace Dynamo.Models
             }
         }
 
+        private void SaveBasicData(XmlElement dynEl)
+        {
+            //set the type attribute
+            dynEl.SetAttribute("type", GetType().ToString());
+            dynEl.SetAttribute("guid", GUID.ToString());
+            dynEl.SetAttribute("nickname", NickName);
+            dynEl.SetAttribute("x", X.ToString(CultureInfo.InvariantCulture));
+            dynEl.SetAttribute("y", Y.ToString(CultureInfo.InvariantCulture));
+            dynEl.SetAttribute("isVisible", IsVisible.ToString().ToLower());
+            dynEl.SetAttribute("isUpstreamVisible", IsUpstreamVisible.ToString().ToLower());
+            dynEl.SetAttribute("lacing", ArgumentLacing.ToString());
+        }
+
         /// <summary>
         ///     Override this to implement loading of custom data for your Element. If overridden, you should also override
         ///     SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
-        protected virtual void LoadNode(XmlNode nodeElement) { }
+        protected virtual void LoadNode(XmlElement nodeElement) { }
 
         private void ReadBasicData(XmlNode elNode)
         {
@@ -716,7 +732,7 @@ namespace Dynamo.Models
             IsUpstreamVisible = isUpstreamVisible;
         }
 
-        public void Load(XmlNode elNode)
+        public void Load(XmlElement elNode)
         {
             ReadBasicData(elNode);
             
@@ -1497,6 +1513,7 @@ namespace Dynamo.Models
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
+        [Obsolete("Call OnModified() instead", true)]
         public virtual bool ForceReExecuteOfNode { get; set; }
         #endregion
 

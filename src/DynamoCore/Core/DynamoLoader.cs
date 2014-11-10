@@ -24,18 +24,12 @@ namespace Dynamo.Utilities
     /// about package loading see the PackageLoader. For information
     /// about loading other libraries, see LibraryServices.
     /// </summary>
-    public class DynamoLoader : LogSourceBase, IDisposable
+    public class DynamoLoader : LogSourceBase
     {
         #region Properties/Fields
 
-        public PackageLoader PackageLoader { get; private set; }
-
-        public readonly HashSet<string> SearchPaths = new HashSet<string>();
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         public readonly HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
-
-        public readonly Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
-            new Dictionary<string, List<Type>>();
 
         #endregion
 
@@ -66,18 +60,7 @@ namespace Dynamo.Utilities
         }
 
         #endregion
-
-        public DynamoLoader()
-        {
-            PackageLoader = new PackageLoader();
-            PackageLoader.MessageLogged += Log;
-        }
-
-        public void Dispose()
-        {
-            PackageLoader.MessageLogged -= Log;
-        }
-
+        
         #region Methods
 
         /// <summary>
@@ -85,17 +68,16 @@ namespace Dynamo.Utilities
         /// the bin/nodes directory. Add the types to the searchviewmodel and
         /// the controller's dictionaries.
         /// </summary>
-        public void LoadNodeModels()
+        public List<TypeLoadData> LoadNodeModels()
         {
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
             // cache the loaded assembly information
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (
+                var assembly in 
+                    AppDomain.CurrentDomain.GetAssemblies().Where(assembly => !assembly.IsDynamic))
             {
-                if (assembly.IsDynamic)
-                    continue;
-
                 try
                 {
                     allLoadedAssembliesByPath[assembly.Location] = assembly;
@@ -107,17 +89,19 @@ namespace Dynamo.Utilities
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
             List<string> allDynamoAssemblyPaths =
-                DynamoPathManager.Instance.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
+                DynamoPathManager.Instance.Nodes.SelectMany(
+                    path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
             allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
 
-            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
-            {
-                Assembly result;
-                allLoadedAssemblies.TryGetValue(args.Name, out result);
-                return result;
-            });
+            ResolveEventHandler resolver = 
+                (sender, args) =>
+                {
+                    Assembly result;
+                    allLoadedAssemblies.TryGetValue(args.Name, out result);
+                    return result;
+                };
 
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
@@ -191,7 +175,7 @@ namespace Dynamo.Utilities
 
             var searchViewModel = dynamoModel.SearchModel;
 
-            AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
+            var result = new List<Type>();
 
             try
             {
@@ -288,54 +272,6 @@ namespace Dynamo.Utilities
             }
 
             return AssemblyPathToTypesLoaded[assembly.Location];
-        }
-
-        /// <summary>
-        ///     Load Custom Nodes from the default directory - the "definitions"
-        ///     directory where the executing assembly is located..
-        /// </summary>
-        public IEnumerable<CustomNodeInfo> LoadCustomNodes()
-        {
-            var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoModel.SearchModel;
-            var loadedNodes = customNodeLoader.UpdateSearchPath();
-
-            // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x));
-
-            // update search view
-            searchModel.OnLibraryUpdated();
-
-            return loadedNodes;
-        }
-
-        /// <summary>
-        ///     Load Custom Nodes from the CustomNodeLoader search path and update search
-        /// </summary>
-        public List<CustomNodeInfo> LoadCustomNodes(string path)
-        {
-            if (!Directory.Exists(path))
-                return new List<CustomNodeInfo>();
-
-            var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoModel.SearchModel;
-
-            var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            customNodeLoader.AddDirectoryToSearchPath(path);
-
-            // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x));
-
-            // update search view
-            searchModel.OnLibraryUpdated();
-
-            return loadedNodes;
-        }
-
-        internal void ClearCachedAssemblies()
-        {
-            LoadedAssemblyNames = new HashSet<string>();
-            AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
         }
 
         #endregion

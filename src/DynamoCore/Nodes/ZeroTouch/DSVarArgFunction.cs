@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
             VarInputController.SaveNode(xmlDoc, nodeElement, context);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void LoadNode(XmlElement nodeElement)
         {
             base.LoadNode(nodeElement);
             VarInputController.LoadNode(nodeElement);

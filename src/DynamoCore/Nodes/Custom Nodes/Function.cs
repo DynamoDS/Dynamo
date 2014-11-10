@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public class Function : FunctionCallBase<CustomNodeDefinition>
+    public class Function : FunctionCallBase<CustomNodeController, CustomNodeDefinition>
     {
         protected internal Function(CustomNodeDefinition def)
             : base(new CustomNodeController(def))
@@ -83,10 +83,8 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void LoadNode(XmlElement nodeElement)
         {
-            Controller.LoadNode(nodeElement);
-
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
@@ -339,7 +337,7 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void LoadNode(XmlElement nodeElement)
         {
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
@@ -410,7 +408,7 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void LoadNode(XmlElement nodeElement)
         {
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()

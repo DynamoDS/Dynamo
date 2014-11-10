@@ -1,5 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
-
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
@@ -29,6 +29,8 @@ namespace Dynamo.DSEngine
     {
         public event AstBuiltEventHandler AstBuilt;
 
+        private readonly DynamoModel dynamoModel;
+
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
         private readonly AstBuilder astBuilder;
@@ -38,12 +40,15 @@ namespace Dynamo.DSEngine
 
         private readonly Object macroMutex = new Object();
 
-        public EngineController(string geometryFactoryFileName)
+        public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
-            libraryServices = LibraryServices.GetInstance();
+            this.dynamoModel = dynamoModel;
+
+            libraryServices = LibraryServices.Instance;
             libraryServices.LibraryLoading += LibraryLoading;
             libraryServices.LibraryLoadFailed += LibraryLoadFailed;
             libraryServices.LibraryLoaded += LibraryLoaded;
+            libraryServices.MessageLogged += dynamoModel.Logger.Log;
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
@@ -62,6 +67,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= LibraryLoading;
             libraryServices.LibraryLoadFailed -= LibraryLoadFailed;
             libraryServices.LibraryLoaded -= LibraryLoaded;
+            libraryServices.MessageLogged -= dynamoModel.Logger.Log;
         }
 
         #region Function Groups
@@ -81,7 +87,7 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         public void ImportLibrary(string library)
         {
-            libraryServices.ImportLibrary(library, dynamoModel.Logger);
+            libraryServices.ImportLibrary(library);
         }
 
         #endregion

@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Documents;
-using System.Windows.Markup;
 using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Models;
-
 using DynamoUtilities;
 
 using GraphToDSCompiler;
@@ -29,7 +25,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    internal class LibraryServices : LogSourceBase
+    public class LibraryServices : LogSourceBase
     {
         /// <summary>
         ///     lock object to prevent races on establishing the singleton
@@ -44,7 +40,7 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private Dictionary<string, string> priorNameHints =
+        private readonly Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
         private List<string> libraries;
@@ -87,11 +83,14 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        public static LibraryServices GetInstance()
+        public static LibraryServices Instance
         {
-            lock (singletonMutex)
+            get
             {
-                return _libraryServices ?? (_libraryServices = new LibraryServices());
+                lock (singletonMutex)
+                {
+                    return _libraryServices ?? (_libraryServices = new LibraryServices());
+                }
             }
         }
 

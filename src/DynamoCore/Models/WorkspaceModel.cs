@@ -774,17 +774,6 @@ namespace Dynamo.Models
 
                     var dynEl = xmlDoc.CreateElement(typeName);
                     elementList.AppendChild(dynEl);
-
-                    //set the type attribute
-                    dynEl.SetAttribute("type", el.GetType().ToString());
-                    dynEl.SetAttribute("guid", el.GUID.ToString());
-                    dynEl.SetAttribute("nickname", el.NickName);
-                    dynEl.SetAttribute("x", el.X.ToString(CultureInfo.InvariantCulture));
-                    dynEl.SetAttribute("y", el.Y.ToString(CultureInfo.InvariantCulture));
-                    dynEl.SetAttribute("isVisible", el.IsVisible.ToString().ToLower());
-                    dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
-                    dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
-
                     el.Save(xmlDoc, dynEl, SaveContext.File);
                 }
 

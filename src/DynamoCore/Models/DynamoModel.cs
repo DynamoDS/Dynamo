@@ -134,18 +134,18 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        public PackageLoader PackageLoader { get; private set; }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
 
         /// <summary>
         /// TODO
         /// </summary>
         public CustomNodeManager CustomNodeManager { get; private set; }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public ZeroTouchManager ZeroTouchManager { get; set; }
-
+        
         /// <summary>
         /// TODO
         /// </summary>
@@ -279,6 +279,7 @@ namespace Dynamo.Models
         ///     All nodes in all workspaces. 
         /// </summary>
         //TODO(Steve): Probably should get rid of this...
+        [Obsolete("This should be done manually, but ideally not at all.", true)]
         public IEnumerable<NodeModel> AllNodes
         {
             get
@@ -433,6 +434,8 @@ namespace Dynamo.Models
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
@@ -461,18 +464,18 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
             CustomNodeManager.MessageLogged += LogMessage;
-
-            ZeroTouchManager = new ZeroTouchManager();
-            ZeroTouchManager.MessageLogged += LogMessage;
-
+            
             Loader = new DynamoLoader();
-            Loader.PackageLoader.DoCachedPackageUninstalls(preferences);
-            Loader.PackageLoader.LoadPackagesIntoDynamo(preferences);
+            Loader.MessageLogged += LogMessage;
+
+            PackageLoader = new PackageLoader();
+            PackageLoader.MessageLogged += LogMessage;
 
             DisposeLogic.IsShuttingDown = false;
 
-            EngineController = new EngineController(DynamoPathManager.Instance.GeometryFactory);
-            CustomNodeManager.RecompileAllNodes(EngineController);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+
+            LibraryServices.Instance.MessageLogged += LogMessage;
 
             // Reset virtual machine to avoid a race condition by causing a 
             // thread join inside the vm exec. Since DynamoModel is being called 
@@ -482,18 +485,69 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             //TODO(Steve): Update location where nodes are marked dirty
-            Nodes.ForEach(n => n.RequiresRecalc = true);
+            foreach (var n in CurrentWorkspace.Nodes)
+            {
+                n.RequiresRecalc = true;
+                n.ForceReExecuteOfNode = true;
+            }
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            Loader.ClearCachedAssemblies();
-            Loader.LoadNodeModels();
+            PackageManagerClient = new PackageManagerClient(PackageLoader.RootPackagesDirectory, CustomNodeManager);
 
-            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+            InitializeNodeLibrary(preferences);
+        }
 
-            PackageManagerClient = new PackageManagerClient(Loader.PackageLoader.RootPackagesDirectory, CustomNodeManager);
+        private void InitializeNodeLibrary(IPreferences preferences)
+        {
+            NodeFactory.AddLoader(new ZeroTouchNodeLoader());
+            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+
+            //CustomNodeManager.RecompileAllNodes(EngineController);
+            //Loader.ClearCachedAssemblies();
+
+            // Load NodeModels
+            foreach (var type in Loader.LoadNodeModels())
+            {
+                NodeFactory.AddLoader(type.Type, type.AlsoKnownAs);
+                AddNodeTypeToSearch(type.Type);
+            }
+
+            // Import Zero Touch libs
+            foreach (var funcGroup in EngineController.GetFunctionGroups())
+            {
+                AddZeroTouchNodeToSearch(funcGroup);
+            }
+
+            // Load Packages
+            PackageLoader.DoCachedPackageUninstalls(preferences);
+            PackageLoader.LoadPackagesIntoDynamo(preferences, Loader); //TODO(Steve)
+
+            // Load local custom nodes
+            foreach (var custNodeDef in CustomNodeManager.ScanSearchPaths())
+            {
+                AddCustomNodeToSearch(custNodeDef);
+            }
+        }
+
+        private void AddNodeTypeToSearch(Type t)
+        {
+            //TODO(Steve)
+            throw new NotImplementedException();
+        }
+
+        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
+        {
+            //TODO(Steve)
+            throw new NotImplementedException();
+        }
+
+        private void AddCustomNodeToSearch(CustomNodeInfo info)
+        {
+            //TODO(Steve)
+            throw new NotImplementedException();
         }
 
         public void Dispose()
@@ -505,8 +559,12 @@ namespace Dynamo.Models
             Runner.ExceptionOccurred -= Runner_ExceptionOccurred;
             Runner.MessageLogged -= LogMessage;
             CustomNodeManager.MessageLogged -= LogMessage;
-            ZeroTouchManager.MessageLogged -= LogMessage;
+            Loader.MessageLogged -= LogMessage;
+            PackageLoader.MessageLogged -= LogMessage;
+            LibraryServices.Instance.MessageLogged -= LogMessage;
+
             CurrentWorkspaceChanged -= SearchModel.RevealWorkspaceSpecificNodes;
+
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
@@ -516,7 +574,7 @@ namespace Dynamo.Models
         //SEPARATECORE: causes mono crash
         private void InitializeInstrumentationLogger()
         {
-            if (DynamoModel.IsTestMode == false)
+            if (IsTestMode == false)
                 InstrumentationLogger.Start(this);
         }
 
@@ -675,7 +733,7 @@ namespace Dynamo.Models
                 if (fatal)
                 {
                     OnRequestDispatcherBeginInvoke(
-                        () => Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(this, exception));
+                        () => Utils.DisplayEngineFailureMessage(this, exception));
                 }
             }
             else
@@ -731,7 +789,7 @@ namespace Dynamo.Models
             var info = manager.AddFileToPath(workspaceHeader.FileName);
 
             //TODO(Steve): This is where the custom node workspace is actually "loaded"
-            var funcDef = manager.GetFunctionDefinition(info.Guid); 
+            var funcDef = manager.GetFunctionDefinition(info.Guid, TODO); 
 
             if (funcDef == null) // Fail to load custom function.
                 return;
@@ -754,7 +812,7 @@ namespace Dynamo.Models
 
             if (funcDef.IsProxy)
             {
-                funcDef = manager.ReloadFunctionDefintion(info.Guid);
+                funcDef = manager.ReloadFunctionDefintion(info.Guid, TODO);
                 if (funcDef == null)
                 {
                     return;
@@ -803,7 +861,7 @@ namespace Dynamo.Models
             //TODO(Steve): It only searches for dyfs in the same directory if we're opening a dyn
             var dirName = Path.GetDirectoryName(xmlPath);
             CustomNodeManager.AddDirectoryToSearchPath(dirName);
-            CustomNodeManager.UpdateSearchPath();
+            CustomNodeManager.ScanSearchPaths();
 
             return OpenWorkspace(xmlPath);
         }
@@ -815,7 +873,6 @@ namespace Dynamo.Models
         //TODO(Steve): We shouldn't have to handle post-activation stuff in the model, this stuff can probably go somewhere else.
         internal void PostUIActivation(object parameter)
         {
-            Loader.LoadCustomNodes();
 
             Logger.Log("Welcome to Dynamo!");
         }
@@ -833,7 +890,7 @@ namespace Dynamo.Models
             
             foreach (NodeModel el in CurrentWorkspace.Nodes)
             {
-                el.DisableReporting(); //TODO: Disposable.Create to unregister/reregister modified event handler
+                el.DisableReporting();
                 el.Dispose();
 
                 foreach (PortModel p in el.InPorts)

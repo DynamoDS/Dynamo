@@ -20,6 +20,35 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Func<T> GetDefaultConstructor<T>()
+        {
+            return Expression.Lambda<Func<T>>(Expression.New(typeof(T))).Compile();
+        }
+
+        /// <summary>
+        ///     Creates a function that constructs an instance of an object of the given
+        ///     type.
+        /// </summary>
+        /// <typeparam name="T">The return type of the constructor function.</typeparam>
+        /// <param name="type">The type to create a constructor for.</param>
+        public static Func<T> GetDefaultConstructor<T>(this Type type)
+        {
+            if (!type.IsSubclassOf(typeof(T)))
+            {
+                var msg = string.Format(
+                    @"Cannot make constructor returning a ""{0}"" given type ""{1}""",
+                    typeof(T).FullName,
+                    type.FullName);
+                throw new ArgumentException(msg, "type");
+            }
+            return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
+        }
+
+        /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>
         /// <typeparam name="TArg">The type of the argument to pass to the constructor.</typeparam>

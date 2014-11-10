@@ -22,7 +22,8 @@ namespace Dynamo.Nodes
         /// <summary>
         ///     A FunctionDescriptor describing the function that this controller will call.
         /// </summary>
-        public T Definition { get; set; //get { return definition; }
+        public T Definition { get; set; 
+            //get { return definition; }
             //protected set
             //{
             //    OnDefinitionChanging();
@@ -189,12 +190,7 @@ namespace Dynamo.Nodes
         ///     Writes Controller information to a node's XML.
         /// </summary>
         public virtual void SaveNode(XmlDocument xmlDocument, XmlElement xmlElement, SaveContext saveContext) { }
-
-        /// <summary>
-        ///     Loads Controller information from a node's XML.
-        /// </summary>
-        public virtual void LoadNode(XmlNode xmlNode) { }
-
+        
         /// <summary>
         ///     Deserializes Controller information from XML.
         /// </summary>

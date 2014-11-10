@@ -19,7 +19,7 @@ namespace Dynamo.Search.SearchElements
 
         public NodeModel NewInstance()
         {
-            return manager.CreateCustomNodeInstance(customNodeId);
+            return manager.CreateCustomNodeInstance(customNodeId, TODO);
         }
     }
 

@@ -109,7 +109,7 @@ namespace Dynamo.PackageManager
             var defList= filePaths
                 .Where(x => x.EndsWith(".dyf"))
                 .Select(customNodeManager.GuidFromPath)
-                .Select(customNodeManager.GetFunctionDefinition)
+                .Select(id => customNodeManager.GetFunctionDefinition(id, TODO))
                 .ToList();
                 
             defList.ForEach( func =>

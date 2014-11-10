@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.DSEngine;
+using Dynamo.Library;
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
@@ -11,20 +12,12 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Base class for NodeModels representing zero-touch-imported-function calls.
     /// </summary>
-    public abstract class DSFunctionBase : FunctionCallBase<FunctionDescriptor>
+    public abstract class DSFunctionBase : FunctionCallBase<ZeroTouchNodeController, FunctionDescriptor>
     {
         protected DSFunctionBase(ZeroTouchNodeController controller)
             : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
-        }
-
-        /// <summary>
-        ///     Controller used to sync node with a zero-touch function definition.
-        /// </summary>
-        public new ZeroTouchNodeController Controller
-        {
-            get { return base.Controller as ZeroTouchNodeController; }
         }
 
         public override string Description
@@ -67,11 +60,10 @@ namespace Dynamo.Nodes
         ///     Open document will call this method to unsearilize xml data to node
         /// </summary>
         /// <param name="nodeElement"></param>
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void LoadNode(XmlElement nodeElement)
         {
             if (Controller.Definition != null) return;
 
-            Controller.LoadNode(nodeElement);
             Controller.SyncNodeWithDefinition(this);
         }
 
@@ -93,6 +85,265 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return Controller.BuildAst(this, inputAstNodes);
+        }
+    }
+    
+
+    /// <summary>
+    ///     Controller that synchronizes a node with a zero-touch function definition.
+    /// </summary>
+    public class ZeroTouchNodeController : FunctionCallNodeController<FunctionDescriptor>
+    {
+        public ZeroTouchNodeController(FunctionDescriptor zeroTouchDef)
+            : base(zeroTouchDef)
+        { }
+
+        /// <summary>
+        ///     Description of function, taken from Definition.
+        /// </summary>
+        public string Description { get { return Definition.Description; } }
+
+        /// <summary>
+        ///     Category of function, taken from Definition.
+        /// </summary>
+        public string Category { get { return Definition.Category; } }
+
+        /// <summary>
+        ///     MangledName of function, taken from Definition.
+        /// </summary>
+        public string MangledName { get { return Definition.MangledName; } }
+
+        /// <summary>
+        ///     Is this function an instance member of a class?
+        /// </summary>
+        public bool IsInstanceMember()
+        {
+            return Definition.Type == FunctionType.InstanceMethod
+                || Definition.Type == FunctionType.InstanceProperty;
+        }
+
+        /// <summary>
+        ///     Is this function a static member of a class?
+        /// </summary>
+        public bool IsStaticMember()
+        {
+            return Definition.Type == FunctionType.StaticMethod
+                || Definition.Type == FunctionType.StaticProperty;
+        }
+
+        /// <summary>
+        ///     Is this function a constructor of a class?
+        /// </summary>
+        public bool IsConstructor()
+        {
+            return Definition.Type == FunctionType.Constructor;
+        }
+
+        protected override void InitializeInputs(NodeModel model)
+        {
+            if (IsInstanceMember())
+            {
+                string varname = Definition.ClassName.Split('.').Last();
+                varname = char.ToLowerInvariant(varname[0]) + varname.Substring(1);
+                model.InPortData.Add(new PortData(varname, Definition.ClassName));
+            }
+
+            if (Definition.Parameters != null)
+            {
+                InitializeFunctionParameters(model, Definition.Parameters);
+            }
+        }
+
+        /// <summary>
+        ///     Initializes a node's InPortData based on a list of parameters.
+        /// </summary>
+        /// <param name="model">Node to initialize.</param>
+        /// <param name="parameters">Parameters used for initialization.</param>
+        protected virtual void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
+        {
+            foreach (var arg in parameters)
+                model.InPortData.Add(new PortData(arg.Name, arg.Description, arg.DefaultValue));
+        }
+
+        protected override void InitializeOutputs(NodeModel model)
+        {
+            // Returns a dictionary
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
+            {
+                foreach (var key in Definition.ReturnKeys)
+                {
+                    model.OutPortData.Add(new PortData(key, "var"));
+                }
+            }
+            else
+            {
+                string displayReturnType = IsConstructor()
+                    ? Definition.UnqualifedClassName
+                    : Definition.ReturnType;
+                model.OutPortData.Add(new PortData(displayReturnType, displayReturnType));
+            }
+        }
+
+        public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            var asmPath = Definition.Assembly ?? "";
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Utilities.MakeRelativePath(docPath, asmPath);
+            }
+
+            nodeElement.SetAttribute("assembly", asmPath);
+            nodeElement.SetAttribute("function", Definition.MangledName ?? "");
+        }
+
+        public override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("name", Definition.MangledName);
+        }
+
+        /// <summary>
+        ///     Creates a FunctionObject representing a partial application of a function.
+        /// </summary>
+        /// <param name="model">Node to produce FunctionObject for.</param>
+        /// <param name="functionNode">AST representing the function to make a FunctionObject out of.</param>
+        /// <param name="inputs">Arguments to be applied partially.</param>
+        protected AssociativeNode CreateFunctionObject(
+            NodeModel model,
+            AssociativeNode functionNode, List<AssociativeNode> inputs)
+        {
+            return AstFactory.BuildFunctionObject(
+                functionNode,
+                model.InPorts.Count(),
+                model.GetConnectedInputs(),
+                inputs);
+        }
+
+        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode rhs;
+
+            string function = Definition.Name;
+
+            switch (Definition.Type)
+            {
+                case FunctionType.Constructor:
+                case FunctionType.StaticMethod:
+                    if (model.IsPartiallyApplied)
+                    {
+                        var functionNode = new IdentifierListNode
+                        {
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        model.AppendReplicationGuides(inputAstNodes);
+                        rhs = AstFactory.BuildFunctionCall(
+                            Definition.ClassName,
+                            Definition.Name,
+                            inputAstNodes);
+                    }
+                    break;
+
+                case FunctionType.StaticProperty:
+
+                    var staticProp = new IdentifierListNode
+                    {
+                        LeftNode = new IdentifierNode(Definition.ClassName),
+                        RightNode = new IdentifierNode(Definition.Name)
+                    };
+                    rhs = staticProp;
+                    break;
+
+                case FunctionType.InstanceProperty:
+
+                    // Only handle getter here. Setter could be handled in CBN.
+                    if (model.IsPartiallyApplied)
+                    {
+                        var functionNode = new IdentifierListNode
+                        {
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = new NullNode();
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            if (thisNode != null && !(thisNode is NullNode))
+                            {
+                                var insProp = new IdentifierListNode
+                                {
+                                    LeftNode = inputAstNodes[0],
+                                    RightNode = new IdentifierNode(Definition.Name)
+                                };
+                                rhs = insProp;
+                            }
+                        }
+                    }
+
+                    break;
+
+                case FunctionType.InstanceMethod:
+                    if (model.IsPartiallyApplied)
+                    {
+                        var functionNode = new IdentifierListNode
+                        {
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = new NullNode();
+                        model.AppendReplicationGuides(inputAstNodes);
+
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            inputAstNodes.RemoveAt(0); // remove this pointer
+
+                            if (thisNode != null && !(thisNode is NullNode))
+                            {
+                                var memberFunc = new IdentifierListNode
+                                {
+                                    LeftNode = thisNode,
+                                    RightNode =
+                                        AstFactory.BuildFunctionCall(function, inputAstNodes)
+                                };
+                                rhs = memberFunc;
+                            }
+                        }
+                    }
+
+                    break;
+
+                default:
+                    if (model.IsPartiallyApplied)
+                    {
+                        var functionNode = new IdentifierNode(function);
+                        rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        model.AppendReplicationGuides(inputAstNodes);
+                        rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    }
+                    break;
+            }
+
+            return rhs;
         }
     }
 }

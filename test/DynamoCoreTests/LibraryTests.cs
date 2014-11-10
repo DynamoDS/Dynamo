@@ -19,7 +19,7 @@ namespace Dynamo.Tests
         public override void Init()
         {
             base.Init();
-            libraryServices = LibraryServices.GetInstance();
+            libraryServices = LibraryServices.Instance;
             RegisterEvents();
         }
 

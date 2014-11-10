@@ -224,12 +224,10 @@ namespace Dynamo.PackageManager
 
         public IEnumerable<string> EnumerateAssemblyFiles()
         {
-            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return new List<string>();
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
+                return new List<string>();
 
-            return Directory.EnumerateFiles(
-                RootDirectory,
-                "*.dll",
-                SearchOption.AllDirectories);
+            return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
         }
 
         private void LoadCustomNodesIntoDynamo(DynamoLoader loader)
@@ -260,7 +258,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                LibraryServices.GetInstance().ImportLibrary(zeroTouchAssem.Location);
+                LibraryServices.Instance.ImportLibrary(zeroTouchAssem.Location);
             }
 
             // load the node model assemblies

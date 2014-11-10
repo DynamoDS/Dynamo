@@ -134,13 +134,13 @@ namespace Dynamo.PackageManager
 
         private static bool hasAttemptedUninstall;
 
-        internal void DoCachedPackageUninstalls( IPreferences preferences )
+        internal void DoCachedPackageUninstalls(IPreferences preferences)
         {
             // this can only be run once per app run
             if (hasAttemptedUninstall) return;
             hasAttemptedUninstall = true;
 
-            var pkgDirsRemoved = new List<string>();
+            var pkgDirsRemoved = new HashSet<string>();
             foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
             {
                 try
@@ -152,11 +152,13 @@ namespace Dynamo.PackageManager
                 catch
                 {
                     Log(
-                        String.Format("Failed to delete package directory at \"{0}\", you may need to delete the directory manually.", 
-                        pkgNameDirTup), WarningLevel.Moderate);
+                        String.Format(
+                            "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                            pkgNameDirTup),
+                        WarningLevel.Moderate);
                 }
             }
-            
+
             preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
         }
     }

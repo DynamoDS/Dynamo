@@ -140,32 +140,6 @@ namespace Dynamo.Nodes
             nodeElement.SetAttribute("nickname", NickName);
         }
 
-        public override void LoadNode(XmlNode nodeElement)
-        {
-            //TODO(Steve): Handle loading through custom node manager. First load definition, then dispatch to custom node instance for remainder of load.
-
-            XmlNode idNode =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .LastOrDefault(subNode => subNode.Name.Equals("ID"));
-
-            if (idNode == null || idNode.Attributes == null) return;
-            
-            string id = idNode.Attributes[0].Value;
-
-            string nickname = nodeElement.Attributes["nickname"].Value;
-            
-            Guid funcId;
-            if (!Guid.TryParse(id, out funcId) && nodeElement.Attributes != null)
-            {
-                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
-            }
-
-            if (!VerifyFuncId(ref funcId, nickname))
-                LoadProxyCustomNode(funcId, nickname);
-
-            Definition = customNodeManager.GetFunctionDefinition(funcId);
-        }
-
         public override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
