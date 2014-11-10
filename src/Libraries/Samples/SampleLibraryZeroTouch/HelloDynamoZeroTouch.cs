@@ -71,7 +71,7 @@ namespace SampleLibraryZeroTouch
         }
 
         /// <summary>
-        /// Dynamo uses that pattern of static constructors.
+        /// Dynamo uses the pattern of static constructors.
         /// Don't forget to fill in the xml comments so that
         /// you will get help tips in the UI. You can also use
         /// default parameters, as we have here. With default
