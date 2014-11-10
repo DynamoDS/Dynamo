@@ -139,6 +139,11 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        public ZeroTouchNodeLoader ZeroTouchLoader { get; private set; }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
 
         /// <summary>
@@ -165,11 +170,21 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public DebugSettings DebugSettings { get; private set; }
-        
+
         /// <summary>
         /// TODO
         /// </summary>
-        public EngineController EngineController { get; private set; }
+        public EngineController EngineController
+        {
+            get { return engine; }
+            private set
+            {
+                engine = value;
+                //TODO(Steve): Remove this once there will only ever be a single instance of EngineController
+                ZeroTouchLoader.EngineController = value; 
+            }
+        }
+        private EngineController engine;
 
         /// <summary>
         /// TODO
@@ -436,9 +451,6 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            NodeFactory = new NodeFactory();
-            NodeFactory.MessageLogged += LogMessage;
-
             Runner = runner;
             Runner.RunStarted += Runner_RunStarted;
             Runner.RunCompleted += Runner_RunCompeleted;
@@ -477,6 +489,13 @@ namespace Dynamo.Models
 
             LibraryServices.Instance.MessageLogged += LogMessage;
 
+            NodeFactory = new NodeFactory();
+            NodeFactory.MessageLogged += LogMessage;
+
+            ZeroTouchLoader = new ZeroTouchNodeLoader(EngineController);
+            NodeFactory.AddLoader(ZeroTouchLoader);
+            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+
             // Reset virtual machine to avoid a race condition by causing a 
             // thread join inside the vm exec. Since DynamoModel is being called 
             // on the main/idle thread, it is safe to call ResetEngineInternal 
@@ -502,8 +521,6 @@ namespace Dynamo.Models
 
         private void InitializeNodeLibrary(IPreferences preferences)
         {
-            NodeFactory.AddLoader(new ZeroTouchNodeLoader());
-            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
             //CustomNodeManager.RecompileAllNodes(EngineController);
             //Loader.ClearCachedAssemblies();
@@ -523,7 +540,8 @@ namespace Dynamo.Models
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadPackagesIntoDynamo(preferences, Loader); //TODO(Steve)
+            //TODO(Steve): This will need refactoring
+            PackageLoader.LoadPackagesIntoDynamo(preferences, Loader);
 
             // Load local custom nodes
             foreach (var custNodeDef in CustomNodeManager.ScanSearchPaths())
