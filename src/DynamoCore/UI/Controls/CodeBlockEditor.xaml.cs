@@ -204,10 +204,20 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
+                    char currentChar = e.Text[0];
                     // If a completion item is highlighted and the user types
-                    // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
+                    // any of the following characters, only then is it selected and inserted
+                    // and the code completion window closed
+                    if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
+                    {
                         completionWindow.CompletionList.RequestInsertion(e);
+                    }
+                    else if (!char.IsLetterOrDigit(currentChar) && currentChar != '_')
+                    {
+                        // In all other cases where what is being typed is not alpha-numeric 
+                        // we want to get rid of the completion window 
+                        completionWindow.Close();
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -222,7 +232,9 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
+
                 if (e.Text == ".")
                 {
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
@@ -252,6 +264,11 @@ namespace Dynamo.UI.Controls
                 }
                 else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
                 {
+                    // Begin completion while typing only if the previous character already typed in
+                    // is a white space or non-alphanumeric character
+                    if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
@@ -261,7 +278,7 @@ namespace Dynamo.UI.Controls
                     if (!completions.Any())
                         return;
 
-                    ShowCompletionWindow(completions, completeWhenTyping : true);
+                    ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
             catch (System.Exception ex)
@@ -283,7 +300,7 @@ namespace Dynamo.UI.Controls
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            
+
             if (completeWhenTyping)
             {
                 // As opposed to complete on '.', in complete while typing mode 
