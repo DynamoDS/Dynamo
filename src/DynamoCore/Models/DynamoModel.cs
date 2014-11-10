@@ -595,7 +595,7 @@ namespace Dynamo.Models
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
-            // Refresh values of nodes that took place in update.
+            // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
             {
                 modifiedNode.RequestValueUpdateAsync();

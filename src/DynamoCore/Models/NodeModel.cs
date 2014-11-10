@@ -45,9 +45,15 @@ namespace Dynamo.Models
         private const string FailureString = "Node evaluation failed";
         protected IdentifierNode identifier;
 
-        // Data caching related class members.
+        // Data caching related class members. There are multiple parties at
+        // play when it comes to caching MirrorData for a NodeModel, this value
+        // is accessed from UI thread for display (e.g. preview bubble) and it's
+        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
+        // Access to the cached data is guarded by cachedMirrorDataMutex object.
+        // 
         private bool isUpdated = false;
         private MirrorData cachedMirrorData = null;
+        private readonly object cachedMirrorDataMutex = new object();
 
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
@@ -304,7 +310,13 @@ namespace Dynamo.Models
 
         public MirrorData CachedValue
         {
-            get { return cachedMirrorData; }
+            get
+            {
+                lock (cachedMirrorDataMutex)
+                {
+                    return cachedMirrorData;
+                }
+            }
         }
 
         /// <summary>
@@ -316,8 +328,15 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated != false)      // When a NodeModel is updated, its 
-                    cachedMirrorData = null; // cached data should be invalidated.
+                if (isUpdated != false)
+                {
+                    // When a NodeModel is updated, its
+                    // cached data should be invalidated.
+                    lock (cachedMirrorDataMutex)
+                    {
+                        cachedMirrorData = null;
+                    }
+                }
             }
         }
 
@@ -1466,7 +1485,10 @@ namespace Dynamo.Models
             // requested to update its value. When the QueryMirrorDataAsyncTask 
             // returns, it will update cachedMirrorData with the latest value.
             // 
-            cachedMirrorData = null;
+            lock (cachedMirrorDataMutex)
+            {
+                cachedMirrorData = null;
+            }
 
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
@@ -1488,8 +1510,12 @@ namespace Dynamo.Models
 
         private void OnNodeValueQueried(AsyncTask asyncTask)
         {
-            var task = asyncTask as QueryMirrorDataAsyncTask;
-            cachedMirrorData = task.MirrorData;
+            lock (cachedMirrorDataMutex)
+            {
+                var task = asyncTask as QueryMirrorDataAsyncTask;
+                cachedMirrorData = task.MirrorData;
+            }
+
             RaisePropertyChanged("IsUpdated");
         }
 
