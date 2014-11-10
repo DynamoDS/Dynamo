@@ -150,7 +150,10 @@ namespace SampleLibraryZeroTouch
     /// By decorating a class with the SupressImportIntoVM
     /// attribute, you are saying that you do not want to import
     /// this class into Dynamo. BE CAREFUL! This class will then
-    /// be unavailable to others that might reference it.
+    /// be unavailable to others that might reference it. In most
+    /// cases, adding IsVisibleInDynamoLibrary(false) will suffice 
+    /// to hide your method from view without needing to disable
+    /// its import completely.
     /// </summary>
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
