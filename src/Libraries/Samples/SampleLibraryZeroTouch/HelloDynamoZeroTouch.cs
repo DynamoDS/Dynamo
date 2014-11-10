@@ -105,6 +105,7 @@ namespace SampleLibraryZeroTouch
         }
 
         /// <summary>
+        /// OPTIONAL:
         /// Overriding ToString allows you to control what is
         /// displayed whenever the object's string representation
         /// is used. For example, ToString is called when the 
