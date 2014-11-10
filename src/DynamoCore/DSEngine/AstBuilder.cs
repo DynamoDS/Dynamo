@@ -140,30 +140,10 @@ namespace Dynamo.DSEngine
 #endif
 
             var scopedNode = node as ScopedNodeModel;
-            IEnumerable<AssociativeNode> astNodes = null;
-
-            try
-            {
-                astNodes = scopedNode != null
+            IEnumerable<AssociativeNode> astNodes = 
+                scopedNode != null
                     ? scopedNode.BuildAstInScope(inputAstNodes)
                     : node.BuildAst(inputAstNodes);
-            }
-            catch (Exception e)
-            {
-                node.State = ElementState.AstBuildBroken;
-                var message = String.Format(StringConstants.AstBuildBrokenMessage, e.Message);
-                node.NotifyAstBuildBroken(message);
-
-                var nodeFullname = node.GetType().ToString();
-                var nodeInfo = AstFactory.BuildStringNode(nodeFullname);
-                var arguments = new List<AssociativeNode> { nodeInfo };
-                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
-
-                astNodes = new []
-                {
-                    AstFactory.BuildAssignment(node.AstIdentifierForPreview, func)
-                };
-            }
             
             if (dynamoModel.DebugSettings.VerboseLogging)
             {

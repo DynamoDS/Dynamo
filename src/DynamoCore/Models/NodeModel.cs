@@ -24,6 +24,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -703,7 +704,33 @@ namespace Dynamo.Models
         {
             OnBuilt();
 
-            var result = BuildOutputAst(inputAstNodes);
+            IEnumerable<AssociativeNode> result = null;
+
+            try
+            {
+                result = BuildOutputAst(inputAstNodes);
+            }
+            catch (Exception e)
+            {
+                // If any exception from BuildOutputAst(), we simply emit
+                // a function call "var_guid = %nodeAstFailed(full.node.name)",
+                // and set the state of node to AstBuildBroken. 
+                // 
+                // The return value of this function is always null.
+                this.State = ElementState.AstBuildBroken;
+                var message = String.Format(AstBuilder.StringConstants.AstBuildBrokenMessage, e.Message);
+                this.NotifyAstBuildBroken(message);
+
+                var nodeFullname = this.GetType().ToString();
+                var nodeInfo = AstFactory.BuildStringNode(nodeFullname);
+                var arguments = new List<AssociativeNode> { nodeInfo };
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+
+                return new []
+                {
+                    AstFactory.BuildAssignment(AstIdentifierForPreview, func)
+                };
+            }
 
             if (OutPortData.Count == 1)
             {
