@@ -1923,6 +1923,45 @@ r = Equals(x, {41, 42});
 
         }
 
+        [Test]
+        [Category("Failure")]
+        public void TestFunctionOverloadRedefinitionOnUnmodifiedNode03()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5370
+            List<string> codes = new List<string>() 
+            {
+                "def foo(i:int) { return = i;}",
+                "def bar : double(x:int) { return = x;}",
+                "r = foo(bar(2));",
+                "def foo(d:double) { return = d;}"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create function foo, bar and a statement that uses them
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 2);
+
+
+            // Add overload foo
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 2.0);
+
+        }
+
+
         public void TestFunctionOverloadOnNewNode01()
         {
             List<string> codes = new List<string>() 
