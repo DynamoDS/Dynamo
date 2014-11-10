@@ -95,7 +95,7 @@ namespace Dynamo
                 results.Add(result);
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
         }
 
@@ -130,7 +130,7 @@ namespace Dynamo
             return "PrioritizedAsyncTask: " + CurrPriority;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             // Task execution results in string added to list.
             AddToResultList(ToString());
@@ -177,7 +177,7 @@ namespace Dynamo
             return "InconsequentialAsyncTask: " + Punch;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             // Task execution results in string added to list.
             AddToResultList(ToString());
@@ -234,7 +234,7 @@ namespace Dynamo
             return "ErrorProneAsyncTask: " + Value;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             // Throws an exception when executed.
             throw new InvalidOperationException();
@@ -301,7 +301,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -317,7 +317,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -333,7 +333,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -349,7 +349,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -385,7 +385,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -401,7 +401,7 @@ namespace Dynamo
             this.data = data;
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
@@ -427,7 +427,7 @@ namespace Dynamo
             set { nodeGuid = value; }
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
         }
