@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Dynamo.Nodes
+namespace DynamoDummyNodes
 {
     [NodeName("DynamoDummyErrorNode")]
     [NodeCategory("DynamoDummy")]
