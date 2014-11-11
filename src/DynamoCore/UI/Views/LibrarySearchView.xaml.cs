@@ -397,12 +397,12 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            var nextselectedCategory = GetListItemByIndex(categoryListView, categoryIndex);
-            var nextselectedCategoryContent = nextselectedCategory.Content as SearchCategory;
+            var nextSelectedCategory = GetListItemByIndex(categoryListView, categoryIndex);
+            var nextselectedCategoryContent = nextSelectedCategory.Content as SearchCategory;
 
             if (e.Key == Key.Up)
             {
-                var memberGroupsList = WPF.FindChild<ListBox>(nextselectedCategory, "MemberGroupsListBox");
+                var memberGroupsList = WPF.FindChild<ListBox>(nextSelectedCategory, "MemberGroupsListBox");
                 var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
                 var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
 
@@ -425,7 +425,7 @@ namespace Dynamo.UI.Views
                 }
 #else
                 // If there are no classes, then focus on first method.
-                var memberGroupsList = FindFirstChildListItem(nextselectedCategory, "MemberGroupsListBox");
+                var memberGroupsList = FindFirstChildListItem(nextSelectedCategory, "MemberGroupsListBox");
                 HighlightedItem = FindFirstChildListItem(memberGroupsList, "MembersListBox");
 #endif
             }
