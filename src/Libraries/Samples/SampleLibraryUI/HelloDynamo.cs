@@ -184,9 +184,9 @@ namespace SamplesLibraryUI
         }
 
         /// <summary>
-        /// SetupCustomUIElements is part of the IWpfNode interface
-        /// at run-time, this method is called during the node 
-        /// creation. In here you can create custom UI elements and
+        /// SetupCustomUIElements is part of the IWpfNode interface.
+        /// At run-time, this method is called during the node 
+        /// creation. Here you can create custom UI elements and
         /// add them to the node view, but we recommend designing
         /// your UI declaratively using xaml, and binding it to
         /// properties on this node as the DataContext.
