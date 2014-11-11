@@ -97,7 +97,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName, Header.license);
 
             return true;
         }

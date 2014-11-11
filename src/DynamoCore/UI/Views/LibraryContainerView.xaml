@@ -143,7 +143,8 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                HorizontalAlignment="Center"
                                Height="18"
-                               Width="52">
+                               Width="52"
+                               Margin="3,0,0,0">
                         SEARCH
                     </TextBlock>
                 </StackPanel>
@@ -211,7 +212,8 @@
                            Grid.Row="2"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch"
-                           DataContext="{Binding}">
+                           DataContext="{Binding}"
+                           PreviewKeyDown="OnLibraryViewPreviewKeyDown">
             <views:LibraryView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"
@@ -221,7 +223,8 @@
 
         <!-- LIBRARYSEARCH VIEW -->
         <views:LibrarySearchView Grid.Row="2"
-                                 DataContext="{Binding}">
+                                 DataContext="{Binding}"
+                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown">
             <views:LibrarySearchView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"

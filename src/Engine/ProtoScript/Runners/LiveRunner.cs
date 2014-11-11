@@ -937,7 +937,6 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        ClassMirror GetClassType(string className);
         
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1790,18 +1789,6 @@ namespace ProtoScript.Runners
             }
 
             return ret;
-        }
-
-        public ClassMirror GetClassType(string className)
-        {
-            try
-            {
-                return new ClassMirror(className, this.Core);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
         #endregion

@@ -197,7 +197,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!--Menu-->
-                <Menu IsMainMenu="True" Name="menu1" Style="{StaticResource MainMenu}">
+                <Menu IsMainMenu="True" Name="menu1" Style="{StaticResource MainMenu}" >
 
                     <MenuItem Header="_File" Name="fileMenu" Focusable="False">
                         <MenuItem Header="_New" Name="newMenu" Focusable="False">
@@ -222,6 +222,9 @@
                                 <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <Separator />
+                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>
+                        <Separator />
                         <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
@@ -311,10 +314,6 @@
                                           Focusable="False"
                                           Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
                         </MenuItem>
-                    </MenuItem>
-
-                    <MenuItem Header="_Libraries" Name="LibraryManagerMenu" Focusable="False" IsEnabled="True">
-                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
                     </MenuItem>
                     
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">

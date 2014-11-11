@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +25,47 @@ namespace Dynamo.PackageManager
         public DelegateCommand DownloadLatest { get; set; }
         public DelegateCommand UpvoteCommand { get; set; }
         public DelegateCommand DownvoteCommand { get; set; }
+        public DelegateCommand VisitSiteCommand { get; set; }
+        public DelegateCommand VisitRepositoryCommand { get; set; }
+
+        internal PackageManagerSearchElement() 
+        {
+            this.IsExpanded = false;
+            this.DownloadLatest = new DelegateCommand((Action)Execute);
+            this.UpvoteCommand = new DelegateCommand((Action)Upvote, CanUpvote);
+            this.DownvoteCommand = new DelegateCommand((Action)Downvote, CanDownvote);
+            this.VisitSiteCommand = 
+                new DelegateCommand(() => GoToUrl(FormatUrl(SiteUrl)), () => !String.IsNullOrEmpty(SiteUrl));
+            this.VisitRepositoryCommand =
+                new DelegateCommand(() => GoToUrl(FormatUrl(RepositoryUrl)), () => !String.IsNullOrEmpty(RepositoryUrl));
+        }
+
+        private static string FormatUrl(string url)
+        {
+            var lurl = url.ToLower();
+
+            // if not preceded by http(s), process start will fail
+            if (!lurl.StartsWith(@"http://") && !lurl.StartsWith(@"https://"))
+            {
+                return @"http://" + url;
+            }
+
+            return url;
+        }
+
+        private static void GoToUrl(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                Process.Start(sInfo);
+            }
+        }
 
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
 
@@ -43,10 +81,6 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
-            this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote, CanUpvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote, CanDownvote);
         }
 
         public void Upvote()
@@ -65,6 +99,7 @@ namespace Dynamo.PackageManager
 
         private bool CanUpvote()
         {
+            if (this.dynamoViewModel == null) return false;
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
@@ -80,9 +115,9 @@ namespace Dynamo.PackageManager
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
-
         private bool CanDownvote()
         {
+            if (this.dynamoViewModel == null) return false;
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
@@ -135,7 +170,7 @@ namespace Dynamo.PackageManager
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinaries =
                     allPackageVersions.Any(
-                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant));
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) || x.Item2.contains_binaries);
 
                 var containsPythonScripts =
                     allPackageVersions.Any(
@@ -268,17 +303,18 @@ namespace Dynamo.PackageManager
 
             private PackageVersion versionNumberToDownload = null;
 
+            private List<Tuple<PackageVersion, DelegateCommand>> versions;
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
                 get
                 {
                     return
-                        Header.versions.Select(
+                        versions ?? (versions = Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                                {
-                                    this.versionNumberToDownload = x;
-                                    this.Execute();
-                                }, () => true))).ToList();
+                            {
+                                this.versionNumberToDownload = x;
+                                this.Execute();
+                            }, () => true))).ToList());
                 } 
             }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
@@ -291,8 +327,9 @@ namespace Dynamo.PackageManager
             public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+            public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
             
             /// <summary>
             /// Header property </summary>
@@ -340,6 +377,9 @@ namespace Dynamo.PackageManager
             public string Id { get { return Header._id; } }
 
             public override string Keywords { get; set; }
+
+            public string SiteUrl { get { return Header.site_url; } }
+            public string RepositoryUrl { get { return Header.repository_url; } }
 
         #endregion
         

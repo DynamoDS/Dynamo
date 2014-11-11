@@ -1,14 +1,19 @@
 ﻿using System;
-using Autodesk.DesignScript.Geometry;
-using Revit.Elements.Views;
+
 using NUnit.Framework;
+
+using Revit.Elements.Views;
+
 using RevitServices.Persistence;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements.Views
 {
     [TestFixture]
-    class DraftingViewTests : GeometricRevitNodeTest
+    class DraftingViewTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

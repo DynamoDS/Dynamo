@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
 
 using Revit.GeometryConversion;
 using NUnit.Framework;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.GeometryConversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests : GeometricRevitNodeTest
+    public class RevitToProtoCurveTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

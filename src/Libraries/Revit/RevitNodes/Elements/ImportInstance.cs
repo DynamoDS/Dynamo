@@ -54,6 +54,8 @@ namespace Revit.Elements
             this.Path = satPath;
 
             TransactionManager.Instance.TransactionTaskDone();
+
+            ElementBinder.SetElementForTrace(importInstance);
         }
 
         private void InternalUnpinAndTranslateImportInstance(Autodesk.Revit.DB.XYZ translation)
