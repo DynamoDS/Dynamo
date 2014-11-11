@@ -8,6 +8,11 @@ namespace Dynamo.Utilities
 {
     public static class ExtensionMethods
     {
+        public static IEnumerable<T> AsSingleton<T>(this T o)
+        {
+            yield return o;
+        }
+
         public struct EnumerationIndex<T>
         {
             public int Index;

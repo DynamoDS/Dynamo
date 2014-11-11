@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -45,6 +46,16 @@ namespace Dynamo.Models
             }
             else
                 Name = Type.Name;
+
+            SearchKeys = Type.GetCustomAttributes<NodeSearchTagsAttribute>(false).SelectMany(x => x.Tags);
+            Category =
+                Type.GetCustomAttributes<NodeCategoryAttribute>(false)
+                    .Select(x => x.ElementCategory)
+                    .FirstOrDefault();
+            Description =
+                Type.GetCustomAttributes<NodeDescriptionAttribute>(false)
+                    .Select(x => x.ElementDescription)
+                    .FirstOrDefault() ?? "";
         }
 
         /// <summary>
@@ -76,5 +87,30 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public readonly IEnumerable<string> SearchKeys;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public string Category
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(category))
+                    return Type.Namespace;
+                return category;
+            }
+            private set { category = value; }
+        }
+        private string category;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public readonly string Description;
     }
 }

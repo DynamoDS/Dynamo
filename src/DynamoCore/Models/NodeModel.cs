@@ -1486,10 +1486,8 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-
-        //TODO: Refactor Property into Automatic with private(?) setter
-        //TODO: Add RequestRecalc() method to replace setter --steve
-
+        
+        [Obsolete("Call OnModified() isntead", true)]
         private bool dirty = true;
 
         /// <summary>

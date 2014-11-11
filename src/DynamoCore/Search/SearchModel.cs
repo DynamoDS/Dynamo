@@ -9,8 +9,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
 
-using GraphToDSCompiler;
-
 namespace Dynamo.Search
 {
     public class SearchModel
@@ -624,7 +622,7 @@ namespace Dynamo.Search
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+            var nodeEle = new SearchElements.CustomNodeSearchElement(nodeInfo);
             nodeEle.Executed += OnNodeProduced;
 
             if (SearchDictionary.Contains(nodeEle))

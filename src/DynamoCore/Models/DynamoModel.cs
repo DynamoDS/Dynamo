@@ -160,7 +160,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        public SearchModel SearchModel { get; private set; }
+        public NodeSearchModel SearchModel { get; private set; }
 
         /// <summary>
         /// TODO
@@ -454,8 +454,8 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            SearchModel = new SearchModel();
-            SearchModel.NodeProduced += AddNodeToCurrentWorkspace;
+            SearchModel = new NodeSearchModel();
+            SearchModel.ItemProduced += AddNodeToCurrentWorkspace;
             CurrentWorkspaceChanged += SearchModel.RevealWorkspaceSpecificNodes;
 
             InitializeCurrentWorkspace();
@@ -477,7 +477,6 @@ namespace Dynamo.Models
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
-
             NodeFactory.AddLoader(new ZeroTouchNodeLoader());
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
@@ -495,9 +494,8 @@ namespace Dynamo.Models
                 n.ForceReExecuteOfNode = true;
             }
 
-            Logger.Log(String.Format(
-                "Dynamo -- Build {0}",
-                Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log(
+                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
             PackageManagerClient = new PackageManagerClient(PackageLoader.RootPackagesDirectory, CustomNodeManager);
 
@@ -506,7 +504,6 @@ namespace Dynamo.Models
 
         private void InitializeNodeLibrary(IPreferences preferences)
         {
-
             //CustomNodeManager.RecompileAllNodes(EngineController);
             //Loader.ClearCachedAssemblies();
 
@@ -535,25 +532,36 @@ namespace Dynamo.Models
             }
         }
 
-        private void AddNodeTypeToSearch(TypeLoadData t)
+        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
-            if (!t.IsDSCompatible || t.IsDeprecated || t.IsHidden || t.IsMetaNode)
+            if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
+                || typeLoadData.IsMetaNode)
+            {
                 return;
+            }
 
-            //TODO(Steve): Construct SearchEntry, add to SearchModel
-            throw new NotImplementedException();
+            SearchModel.AddToSearch(new NodeModelSearchElement(typeLoadData));
         }
 
         private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
         {
-            //TODO(Steve)
-            throw new NotImplementedException();
+            foreach (var functionDescriptor in funcGroup.Functions)
+            {
+                AddZeroTouchNodeToSearch(functionDescriptor);
+            }
+        }
+
+        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
+        {
+            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+            {
+                SearchModel.AddToSearch(new ZeroTouchSearchElement(functionDescriptor));
+            }
         }
 
         private void AddCustomNodeToSearch(CustomNodeInfo info)
         {
-            //TODO(Steve)
-            throw new NotImplementedException();
+            SearchModel.AddToSearch(new CustomNodeSearchElement(CustomNodeManager, info));
         }
 
         public void Dispose()
@@ -569,6 +577,7 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged -= LogMessage;
             LibraryServices.Instance.MessageLogged -= LogMessage;
 
+            SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
             CurrentWorkspaceChanged -= SearchModel.RevealWorkspaceSpecificNodes;
 
             if (PreferenceSettings != null)

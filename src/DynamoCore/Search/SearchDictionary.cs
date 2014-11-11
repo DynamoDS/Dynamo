@@ -263,10 +263,8 @@ namespace Dynamo.Search
 
         private bool ContainsSpecialCharacters(string element)
         {
-
             return element.Contains("*") || element.Contains(".") || element.Contains(" ")
                 || element.Contains("\\");
-
         }
 
         /// <summary>
