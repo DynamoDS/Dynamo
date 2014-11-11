@@ -42,7 +42,22 @@ namespace Dynamo.Search.SearchElements
         /// <value>
         /// A string describing what the node does</value>
         private string _description;
-        public override string Description { get { return _description; } }
+        public override string Description 
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_description))
+                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+
+                return _description;
+            } 
+        }
+
+
+        public bool HasDescription
+        {
+            get { return (!string.IsNullOrEmpty(_description)); }
+        }
 
         /// <summary>
         /// Group property </summary>
@@ -69,9 +84,9 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        private string _outputParameters;
+        private List<string> _outputParameters = new List<String>();
 
-        public string OutputParameters
+        public List<string> OutputParameters
         {
             get
             {
@@ -127,7 +142,7 @@ namespace Dynamo.Search.SearchElements
                                  IEnumerable<string> tags, SearchElementGroup group,
                                  string fullName = "", string _assembly = "",
                                  IEnumerable<Tuple<string, string>> inputParameters = null,
-                                 string outputParameters = "")
+                                 List<string> outputParameters = null)
         {
             this.Node = null;
             this._name = name;
@@ -204,8 +219,13 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected virtual string GenerateOutputParameters()
+        protected virtual List<string> GenerateOutputParameters()
         {
+            if (_outputParameters == null)
+            {
+                _outputParameters = new List<String>();
+                _outputParameters.Add("none");
+            }
             return _outputParameters;
         }
 

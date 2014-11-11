@@ -1694,7 +1694,7 @@ namespace Dynamo.Controls
 
             var input = value as string;
             if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
-                return NoneString;
+                return input;
 
             if (shouldPrefixColon)
                 return String.Concat(ColonString, SpaceString, input);
@@ -1797,6 +1797,26 @@ namespace Dynamo.Controls
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
             return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // This converter is used to change color of output parameters for custom node.
+    public class NodeTypeToColorConverter : IValueConverter
+    {
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CustomNodeSearchElement)
+                return TrueBrush;
+            return FalseBrush;
         }
 
         public object ConvertBack(
