@@ -56,13 +56,7 @@ namespace Dynamo.Search.SearchElements
 
         public bool HasDescription
         {
-            get
-            {
-                if (string.IsNullOrEmpty(_description))
-                    return false;
-
-                return true;
-            }
+            get { return (!string.IsNullOrEmpty(_description)); }
         }
 
         /// <summary>
