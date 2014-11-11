@@ -243,24 +243,24 @@ namespace Dynamo.UI.Views
                 }
             }
 
-            int nextselectedMemberGroupIndex = selectedMemberGroupIndex;
+            int nextSelectedMemberGroupIndex = selectedMemberGroupIndex;
             // If user presses down, then we need to set focus to the next member group.
             // Otherwise to previous.
             if (e.Key == Key.Down)
-                nextselectedMemberGroupIndex++;
+                nextSelectedMemberGroupIndex++;
             if (e.Key == Key.Up)
-                nextselectedMemberGroupIndex--;
+                nextSelectedMemberGroupIndex--;
 
             // The member group list box does not attempt to process the key event if it 
             // has moved beyond its available list of member groups. In this case, the 
             // key event is considered not handled and will be left to the parent visual 
             // (e.g. class button or another category) to handle.
             e.Handled = false;
-            if (nextselectedMemberGroupIndex < 0 || nextselectedMemberGroupIndex > memberGroups.Count - 1)
+            if (nextSelectedMemberGroupIndex < 0 || nextSelectedMemberGroupIndex > memberGroups.Count - 1)
                 return;
 
-            var item = GetListItemByIndex(memberGroupListBox, nextselectedMemberGroupIndex);
-            var nextselectedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
+            var item = GetListItemByIndex(memberGroupListBox, nextSelectedMemberGroupIndex);
+            var nextSelectedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
 
             // When moving on to the next member group list below (by pressing down arrow),
             // the focus should moved on to the first member in the member group list. Likewise,
@@ -268,10 +268,10 @@ namespace Dynamo.UI.Views
             // the last member in that list.
             var itemIndex = 0;
             if (e.Key == Key.Up)
-                itemIndex = nextselectedMembers.Items.Count - 1;
+                itemIndex = nextSelectedMembers.Items.Count - 1;
 
 
-            HighlightedItem = GetListItemByIndex(nextselectedMembers, itemIndex);
+            HighlightedItem = GetListItemByIndex(nextSelectedMembers, itemIndex);
 
             e.Handled = true;
         }
