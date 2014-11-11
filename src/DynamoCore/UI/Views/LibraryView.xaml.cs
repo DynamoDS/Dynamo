@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Views
@@ -90,6 +91,33 @@ namespace Dynamo.UI.Views
                 return;
 
             var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
+            if (selectedClass == null || selectedClass is NodeSearchElement ||
+                !(selectedClass.Parent is BrowserInternalElementForClasses))
+                return;
+
+            foreach (var wrapPanel in wrapPanels)
+            {
+                if (wrapPanel.HasSelectedItem)
+                {
+                    if (wrapPanel.SelectedItem != selectedClass)
+                    {
+                        if (wrapPanel.Contains(selectedClass))
+                            wrapPanel.Select(selectedClass);
+                        else
+                            wrapPanel.UnselectAll();
+
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    if (wrapPanel.Contains(selectedClass))
+                    {
+                        wrapPanel.Select(selectedClass);
+                        e.Handled = true;
+                    }
+                }
+            }
         }
     }
 }

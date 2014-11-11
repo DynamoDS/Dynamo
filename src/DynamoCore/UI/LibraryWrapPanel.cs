@@ -27,14 +27,14 @@ namespace Dynamo.Controls
         private BrowserInternalElement currentClass;
         private ListView classListView;
 
-        internal bool IsSelected()
+        internal bool HasSelectedItem
         {
-            return currentClass != null;
+            get { return currentClass != null; }
         }
 
-        internal BrowserInternalElement SelectedItem()
+        internal BrowserInternalElement SelectedItem
         {
-            return currentClass;
+            get { return currentClass; }
         }
 
         internal bool Contains(BrowserInternalElement item)
@@ -63,6 +63,7 @@ namespace Dynamo.Controls
             collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
             collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
+
             this.KeyDown += OnLibraryWrapPanelKeyDown;
 
             base.OnInitialized(e);
