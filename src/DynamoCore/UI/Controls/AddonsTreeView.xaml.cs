@@ -36,8 +36,7 @@ namespace Dynamo.UI.Controls
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
         {
             FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender.DataContext is NodeSearchElement ||
-                fromSender.DataContext is CustomNodeSearchElement)
+            if (fromSender.DataContext is NodeSearchElement)
             {
                 libraryToolTipPopup.PlacementTarget = fromSender;
                 libraryToolTipPopup.SetDataContext(fromSender.DataContext);
