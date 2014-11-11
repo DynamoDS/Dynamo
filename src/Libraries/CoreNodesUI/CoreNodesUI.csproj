@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -62,6 +62,7 @@
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\DoubleSlider.cs" />
     <Compile Include="Input\DoubleSliderNodeViewCustomization.cs" />
+    <Compile Include="Input\File.cs" />
     <Compile Include="Input\Filename.cs" />
     <Compile Include="Input\FilenameNodeViewCustomization.cs" />
     <Compile Include="Input\FileSystemBrowser.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="Input\StringInputCustomization.cs" />
     <Compile Include="Input\StringNodeViewCustomization.cs" />
     <Compile Include="Input\BasicInteractiveNodeViewCustomization.cs" />
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="ColorRange.cs" />
     <Compile Include="ColorRangeNodeViewCustomization.cs" />
     <Compile Include="CreateList.cs" />
@@ -107,7 +111,7 @@
     <Compile Include="Selection.cs" />
     <Compile Include="SelectionBaseNodeViewCustomization.cs" />
     <Compile Include="Watch.cs" />
-    <Compile Include="WatchImage.cs" />
+    <Compile Include="WatchImageCore.cs" />
     <Compile Include="WatchImageNodeViewCustomization.cs" />
     <Compile Include="WatchNodeViewCustomization.cs" />
     <Compile Include="WebRequest.cs" />
@@ -136,6 +140,7 @@
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

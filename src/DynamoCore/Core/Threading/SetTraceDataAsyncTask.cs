@@ -14,6 +14,11 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Highest; }
+        }
+
         internal SetTraceDataAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
@@ -47,7 +52,7 @@ namespace Dynamo.Core.Threading
             return ((traceData != null) && traceData.Any());
         }
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             engineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
         }

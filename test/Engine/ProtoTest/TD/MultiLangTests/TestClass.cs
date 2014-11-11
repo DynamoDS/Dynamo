@@ -6075,7 +6075,6 @@ r2 = b1.count;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T95_1467421_4()
         {
             String code =
@@ -6946,13 +6945,11 @@ b = MyInt.MyInt().foo().IntValue;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(2);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
         }
 
         [Test]
-        [Category("SmokeTest")]
         public void T116_1467599_Type_Conversion()
         {
             String code =
@@ -6967,7 +6964,7 @@ x = 1;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("myValue", 2);
             thisTest.Verify("x", 1.5);
         }
@@ -6997,7 +6994,7 @@ c = a.x;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("b", 2);
             thisTest.Verify("c", 1.5);
         }

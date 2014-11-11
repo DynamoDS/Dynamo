@@ -349,6 +349,12 @@ namespace ProtoCore.Utils
             return propertyName.StartsWith(ProtoCore.DSASM.Constants.kSetterPrefix);
         }
 
+        public static bool StartsWithSingleUnderscore(string name)
+        {
+            Validity.Assert(null != name);
+            return name.StartsWith(ProtoCore.DSASM.Constants.kSingleUnderscore);
+        }
+
         public static bool StartsWithDoubleUnderscores(string name)
         {
             Validity.Assert(null != name);
@@ -451,38 +457,50 @@ namespace ProtoCore.Utils
         {
             // Jun Comment: The current convention for auto generated SSA variables begin with '%'
             // This ensures that the variables is compiler generated as the '%' symbol cannot be used as an identifier and will fail compilation
-            Validity.Assert(null != ssaVar);
+            Validity.Assert(!string.IsNullOrEmpty(ssaVar));
             return ssaVar.StartsWith(ProtoCore.DSASM.Constants.kSSATempPrefix);
         }
 
         public static bool IsTempVarProperty(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
         }
 
         public static bool IsCompilerGenerated(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix);
         }
 
         public static bool IsInternalFunction(string methodName)
         {
-            Validity.Assert(null != methodName);
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
             return methodName.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) || methodName.StartsWith(ProtoCore.DSDefinitions.Keyword.Dispose);
         }
 
         public static bool IsDisposeMethod(string methodName)
         {
-            Validity.Assert(null != methodName);
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
             return methodName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
+        }
+
+        public static bool IsGetTypeMethod(string methodName)
+        {
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
+            return methodName.Equals(ProtoCore.DSDefinitions.Keyword.GetType);
         }
 
         public static bool IsPropertyTemp(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
+        }
+
+        public static bool IsDefaultArgTemp(string varname)
+        {
+            Validity.Assert(null != varname);
+            return varname.StartsWith(ProtoCore.DSASM.Constants.kTempDefaultArg);
         }
 
         public static ProtoCore.AST.AssociativeAST.FunctionDotCallNode GenerateCallDotNode(ProtoCore.AST.AssociativeAST.AssociativeNode lhs, 
@@ -773,7 +791,7 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != core);
             List<AssociativeNode> astList = new List<AssociativeNode>();
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             astList.AddRange(cbn.Body);
             return astList;
         }

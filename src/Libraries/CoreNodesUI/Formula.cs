@@ -197,7 +197,7 @@ namespace DSCoreNodesUI
             }
 
             RegisterInputPorts();
-            ClearError();
+            ClearRuntimeError();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -248,7 +248,7 @@ namespace DSCoreNodesUI
                     }
             };
 
-            if (HasUnconnectedInput())
+            if (IsPartiallyApplied)
             {
                 return new AssociativeNode[]
                 {

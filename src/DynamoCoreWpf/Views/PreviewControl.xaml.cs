@@ -250,7 +250,11 @@ namespace Dynamo.UI.Controls
                     // when it is multi-dimensional array)?
                     cachedSmallContent = "Array";
                 }
-                else 
+                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
+                {
+                    cachedSmallContent = mirrorData.Class.ClassName;
+                }
+                else
                 {
                     cachedSmallContent = mirrorData.StringData;
                 }
@@ -282,7 +286,7 @@ namespace Dynamo.UI.Controls
 
             // Associate the data context to the view before binding.
             cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                mirrorData, string.Empty, false);
+                mirrorData, null, string.Empty, false);
 
             rootDataContext.Children.Add(cachedLargeContent);
 

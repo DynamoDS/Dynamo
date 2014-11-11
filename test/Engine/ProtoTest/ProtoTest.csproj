@@ -96,6 +96,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Assembler\MicroFeatureTests.cs" />
     <Compile Include="Associative\BuiltinMethodsTest.cs" />
     <Compile Include="Associative\FunctionObject.cs" />
@@ -128,12 +131,12 @@
     <Compile Include="FFITests\Dummy.cs" />
     <Compile Include="FFITests\RegressionAnalysisTests.cs" />
     <Compile Include="FuzzTests.cs" />
-    <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
     <Compile Include="GraphCompiler\NewFrontEndTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />
     <Compile Include="Imperative\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />
     <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
+    <Compile Include="LiveRunnerTests\PreviewChangeSetTests.cs" />
     <Compile Include="MinimalClassTests.cs" />
     <Compile Include="ModifierStack.cs" />
     <Compile Include="MultiLangTests\AssociativeToImperative.cs" />
@@ -200,10 +203,6 @@
     <Compile Include="UtilsTests\TextFxTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
-      <Project>{593BE9FC-7482-4CD6-9F87-77E7AC5CDFF2}</Project>
-      <Name>GraphToDSCompiler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
       <Name>ProtoAssociative</Name>
@@ -221,7 +220,7 @@
       <Name>ProtoScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\FFITarget\FFITarget.csproj">
-      <Project>{C70FE632-5500-4C57-B3D6-9B5574137551}</Project>
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
       <Name>FFITarget</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProtoTestFx\ProtoTestFx.csproj">

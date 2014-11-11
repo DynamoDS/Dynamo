@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 
 using Greg.Responses;
 
@@ -22,6 +24,7 @@ namespace Dynamo.PackageManager
         {
             this.client = client;
 
+            this.IsExpanded = false;
             this.Header = header;
             this.Weight = header.deprecated ? 0.1 : 1;
 
@@ -34,7 +37,6 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
-            this.IsExpanded = false;
         }
 
         public void Upvote()
@@ -47,8 +49,13 @@ namespace Dynamo.PackageManager
                         this.Votes += 1;
                     }
                 }
-                , TaskScheduler.FromCurrentSynchronizationContext()); 
+                , TaskScheduler.FromCurrentSynchronizationContext());
 
+        }
+
+        public bool CanUpvote()
+        {
+            return client != null && client.HasAuthenticator;
         }
 
         public void Downvote()
@@ -60,7 +67,12 @@ namespace Dynamo.PackageManager
                     {
                         this.Votes -= 1;
                     }
-                } , TaskScheduler.FromCurrentSynchronizationContext()); 
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public bool CanDownvote()
+        {
+            return client != null && client.HasAuthenticator;
         }
 
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
@@ -76,14 +88,8 @@ namespace Dynamo.PackageManager
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
         }
 
-        public override void Execute()
-        {
-            this.IsExpanded = !this.IsExpanded;
-        }
 
         #region Properties 
-
-            public PackageVersion VersionNumberToDownload = null;
 
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
             private int _votes;
@@ -95,8 +101,9 @@ namespace Dynamo.PackageManager
             public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+            public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
             
             /// <summary>
             /// Header property </summary>
@@ -145,7 +152,11 @@ namespace Dynamo.PackageManager
 
             public override string Keywords { get; set; }
 
+            public string SiteUrl { get { return Header.site_url; } }
+            public string RepositoryUrl { get { return Header.repository_url; } }
+
         #endregion
+        
 
     }
 

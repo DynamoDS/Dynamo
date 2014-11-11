@@ -67,6 +67,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="IronPythonCompletionData.cs" />
     <Compile Include="IronPythonCompletionProvider.cs" />
     <Compile Include="PythonNode.cs" />

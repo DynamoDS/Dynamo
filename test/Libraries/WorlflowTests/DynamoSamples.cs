@@ -63,14 +63,39 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             //============================================================================
+            // Examples from First Section of DYN files (there are total 6 sections)
+
+            // Checking decimal points in CBN: 3.142
+            AssertPreviewValue("27c2f333-f51f-4a0c-9f71-70dc64f2ecbe", 3.142);
+
+            // Checking String in CBN: "Less is more."
+            AssertPreviewValue("4c8ddee8-e2b1-4472-9470-a4142f56ac97", "Less is more.");
+
+            // Checking Multiplication in CBN: 3*5
+            AssertPreviewValue("d4ae3f27-c68c-41dd-830d-36ee0f8f51cc", 15.0);
+
+        }
+
+        [Test, Category("SmokeTests")]
+        public void Core_CodeBlocks_02()
+        {
+            DynamoModel model = ViewModel.Model;
+            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            //============================================================================
             // Examples from Second Section of DYN files (there are total 6 sections)
 
-            var pointNodeID = "943f8f51-57bc-498e-ad5a-3e5a32a04ace";
-            // output will be Point @ 0,-10,0
+            var pointNodeID = "5ba4c6a0-4641-4624-86f7-d26506f554b0";
+            // output will be Point @ 0,-10
             var pt1 = GetPreviewValue(pointNodeID) as Point;
             Assert.AreEqual(0, pt1.X);
             Assert.AreEqual(-10, pt1.Y);
-            Assert.AreEqual(0, pt1.Z);
 
             var cbnNodeID = "4ea1d0d8-4882-4f6f-b659-2dcb297db34e";
             // output will be Point @ 0,0,0
@@ -97,11 +122,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(-10, pt3.Y);
             Assert.AreEqual(0, pt3.Z);
             //=============================================================================
-
         }
 
         [Test, Category("SmokeTests")]
-        public void Core_CodeBlocks_02()
+        public void Core_CodeBlocks_03()
         {
             DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
@@ -200,7 +224,6 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(nurbsCurve1);
             }
             //=============================================================================
-
         }
 
         [Test, Category("SmokeTests")]
@@ -485,14 +508,9 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_CSV_to_Stuff()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"ImportExport\ImportExport_CSV to Stuff.dyn");
 
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
-
-            var filename = (DSCore.File.Filename)ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
@@ -502,7 +520,7 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
+            const string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
             AssertPreviewCount(lineNodeID, 201);
 
             // There should be 201 Points.

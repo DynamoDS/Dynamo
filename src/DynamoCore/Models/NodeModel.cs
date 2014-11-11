@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
@@ -456,27 +458,6 @@ namespace Dynamo.Models
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
 
-
-
-        /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property")]
-        public bool HasUnconnectedInput()
-        {
-            return IsPartiallyApplied;
-        }
-
-        /// <summary>
-        ///     Flags this node as dirty.
-        /// </summary>
-        [Obsolete("Use RequiresRecalc = true")]
-        public void ResetOldValue()
-        {
-            RequiresRecalc = true;
-        }
-
         /// <summary>
         ///     Get the description from type information
         /// </summary>
@@ -749,7 +730,6 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void OnBuilt()
         {
-            
         }
 
         /// <summary>
@@ -887,7 +867,10 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        public void ClearError()
+        /// <summary>
+        /// Clears the errors/warnings that are generated when running the graph
+        /// </summary>
+        public virtual void ClearRuntimeError()
         {
             State = ElementState.Dead;
             ClearTooltipText();
@@ -1430,6 +1413,7 @@ namespace Dynamo.Models
             set
             {
                 forceReExec = value;
+                RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
         #endregion
@@ -1439,6 +1423,18 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
+        /// Call this method to asynchronously update the cached MirrorData for 
+        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
+        /// being accessed within this method, therefore the method is typically
+        /// called from the main/UI thread.
+        /// </summary>
+        /// 
+        public void RequestValueUpdateAsync()
+        {
+            // TODO(Ben): Update cachedMirrorData asynchronously.
+        }
+
+        /// <summary>
         /// Call this method to asynchronously regenerate render package for 
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
@@ -1446,9 +1442,29 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        public void RequestVisualUpdate(int maxTesselationDivisions)
+        public void RequestVisualUpdateAsync(int maxTesselationDivisions)
         {
-            RequestVisualUpdateCore(maxTesselationDivisions);
+            if (Workspace.DynamoModel == null)
+                return;
+
+            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
+            // called in quick succession from the UI thread -- the first task may 
+            // be updating '_renderPackages' when the second call gets here. In 
+            // this case '_renderPackages' should be protected against concurrent 
+            // accesses.
+            // 
+            lock (RenderPackagesMutex)
+            {
+                _renderPackages.Clear();
+                HasRenderPackages = false;
+            }
+
+            // If a node is in either of the following states, then it will not 
+            // produce any geometric output. Bail after clearing the render packages.
+            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
+                return;
+
+            RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
 
         /// <summary>
@@ -1461,9 +1477,44 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected virtual void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
-            // SCHEDULER: Schedule an 'UpdateRenderPackageAsyncTask' here.
+            var initParams = new UpdateRenderPackageParams()
+            {
+                Node = this,
+                MaxTesselationDivisions = maxTesselationDivisions,
+                EngineController = Workspace.DynamoModel.EngineController,
+                DrawableIds = GetDrawableIds(),
+                PreviewIdentifierName = AstIdentifierForPreview.Name
+            };
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new UpdateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(initParams))
+            {
+                task.Completed += OnRenderPackageUpdateCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
+        }
+
+        /// <summary>
+        /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
+        /// completed, at which point the render packages (specific to this node) 
+        /// become available. Since this handler is called off the UI thread, the 
+        /// '_renderPackages' must be guarded against concurrent access.
+        /// </summary>
+        /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
+        /// that was responsible of generating the render packages.</param>
+        /// 
+        private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
+        {
+            lock (RenderPackagesMutex)
+            {
+                var task = asyncTask as UpdateRenderPackageAsyncTask;
+                _renderPackages.Clear();
+                _renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = _renderPackages.Any();
+            }
         }
 
 #else

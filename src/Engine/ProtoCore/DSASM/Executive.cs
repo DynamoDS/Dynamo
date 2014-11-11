@@ -1341,6 +1341,7 @@ namespace ProtoCore.DSASM
                     {
                         continue;
                     }
+
                     // Is return node or is updatable
                     if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
                     {
@@ -1364,6 +1365,15 @@ namespace ProtoCore.DSASM
                         else
                         {
                             Properties.updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
+                        }
+
+                        // Clear runtime warning for the first run in delta
+                        // execution.
+                        if (core.Options.IsDeltaExecution && 
+                            (Properties.executingGraphNode == null ||
+                             Properties.executingGraphNode.OriginalAstID != graphNode.OriginalAstID))
+                        {
+                            core.RuntimeStatus.ClearWarningsForAst(graphNode.OriginalAstID);
                         }
 
                         // Set the current graphnode being executed
@@ -1410,16 +1420,28 @@ namespace ProtoCore.DSASM
         }
 
         private void SetupGraphEntryPoint(int entrypoint)
-        {
-            // Find the graph where the entry point matches the graph pc
-            // Set that graph node as not dirty   
-            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+        { 
+            List<AssociativeGraph.GraphNode> graphNodeList = null;
+            if (core.Options.ApplyUpdate)
+            {
+                // Getting the entry point only graphnodes at the global scope
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+
+                // Set the default entry point on ApplyUpdate  is the first graphNode
+                Validity.Assert(graphNodeList.Count > 0);
+                entrypoint = graphNodeList[0].updateBlock.startpc;
+            }
+            else
+            {
+                graphNodeList = istream.dependencyGraph.GraphList;
+            }
+
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
             {
                 if (core.Options.IsDeltaExecution)
                 {
                     // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
                     bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-
                     if (graphNode.isDirty && inStartRange)
                     {
                         pc = graphNode.updateBlock.startpc;
@@ -1441,6 +1463,11 @@ namespace ProtoCore.DSASM
                         break;
                     }
                 }
+            }
+
+            if (core.Options.IsDeltaExecution)
+            {
+                core.RuntimeStatus.ClearWarningsForAst(Properties.executingGraphNode.OriginalAstID);
             }
         }
 
@@ -1537,16 +1564,17 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
-                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null; 
+                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
+                    bool recursiveSearch = false;
                     if (core.Options.ExecuteSSA)
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
+                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
                     }
                     else
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
+                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
                     }
 
                     // Mark reachable nodes as dirty
@@ -1561,9 +1589,8 @@ namespace ProtoCore.DSASM
             }
             return propertyChanged;
         }
-       
-
-        private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
+     
+        private int UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
         {
             if (null != Properties.executingGraphNode)
             {
@@ -1575,7 +1602,7 @@ namespace ProtoCore.DSASM
 
             // Find reachable graphnodes
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock);
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, false);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
@@ -1595,10 +1622,17 @@ namespace ProtoCore.DSASM
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
                 // Handle deactivated graphnodes
-                GCAnonymousSymbols(gnode.symbolListWithinExpression);
+                GCSymbols(gnode.symbolListWithinExpression);
+#if GC_MARK_AND_SWEEP
+                foreach (var symbol in gnode.symbolListWithinExpression)
+                {
+                    rmem.SetSymbolValue(symbol, StackValue.Null);
+                }
+#endif
                 gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
+            return reachableGraphNodes.Count;
         }
 
         /// <summary>
@@ -1783,7 +1817,7 @@ namespace ProtoCore.DSASM
                 }
             }
         }
-        
+
         private void UpdateLanguageBlockDependencyGraph(int entry)
         {
             int setentry = entry;
@@ -2965,6 +2999,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
+                    core.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -2982,6 +3017,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
+                    core.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
@@ -4011,37 +4047,13 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void GCAnonymousSymbols(List<SymbolNode> symbolList, bool isLastNodeSetter = false)
+        private void GCSymbols(List<SymbolNode> symbolList)
         {
-            //foreach (SymbolNode symbol in symbolList)
-            for(int i = 0; i < symbolList.Count; ++i)
+            foreach (var symbol in symbolList)
             {
-                //
-                // Comment Jun: We want to prevent GC of temp var if it is being assigned to a property
-                // This is a current issue of property setters where a GCRetain is not called on the RHS 
-                // i.e. 
-                //  a.b = p -> GCRetain is not called when p is popped to a.b
-                //
-                if (isLastNodeSetter && i == symbolList.Count - 1)
-                {
-                    break;
-                }
-
-                SymbolNode symbol = symbolList[i];
-
-                int offset = symbol.index;
-                int n = offset;
-                if (symbol.absoluteFunctionIndex != Constants.kGlobalScope)
-                {
-                    // Comment Jun: We only want the relative offset if a variable is in a function
-                    n = rmem.GetRelative(rmem.GetStackIndex(offset));
-                }
-
-                if (n >= 0)
-                {
-                    GCRelease(rmem.Stack[n]);
-                }
-           }
+                StackValue sv = rmem.GetSymbolValue(symbol);
+                GCRelease(sv);
+            }
         }
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
@@ -5787,6 +5799,12 @@ namespace ProtoCore.DSASM
             }
             rmem.Push(pointer);
 
+            if (instruction.op3.IsReplicationGuide)
+            {
+                Validity.Assert(instruction.op3.RawIntValue == 0);
+                core.replicationGuides.Add(new List<ReplicationGuide> {});
+            }
+
             ++pc;
         }
 
@@ -6452,7 +6470,7 @@ namespace ProtoCore.DSASM
                     // GC anonymous variables in the return stmt
                     if (null != Properties.executingGraphNode && !Properties.executingGraphNode.IsSSANode())
                     {
-                        GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression);
+                        GCSymbols(Properties.executingGraphNode.symbolListWithinExpression);
                         Properties.executingGraphNode.symbolListWithinExpression.Clear();
                     }
                 }
@@ -6969,8 +6987,6 @@ namespace ProtoCore.DSASM
         //    end
         //    SetupDependencyGraph()
         //end
-
-
         private void DEP_Handler(Instruction instruction)
         {
             // This expression ID of this instruction
@@ -7022,8 +7038,18 @@ namespace ProtoCore.DSASM
                         if (!Properties.executingGraphNode.IsSSANode())
                         {
                             bool isSetter = Properties.executingGraphNode.updateNodeRefList[0].nodeList.Count > 1;
+                            var symbols = Properties.executingGraphNode.symbolListWithinExpression;
 
-                            GCAnonymousSymbols(Properties.executingGraphNode.symbolListWithinExpression, isSetter);
+                            if (isSetter)
+                            {
+                                int count = symbols.Count;
+                                if (count > 0)
+                                {
+                                    symbols = symbols.Take(count - 1).ToList();
+                                }
+                            }
+
+                            GCSymbols(symbols);
                             Properties.executingGraphNode.symbolListWithinExpression.Clear();
                         }
                     }
@@ -7041,12 +7067,64 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-            UpdateGraph(exprID, modBlkID, isSSA);
 
-            // Get the next graph to be executed
-            SetupNextExecutableGraph(fi, ci);
+            // Find dependent nodes and mark them dirty
+            int reachableNodes = UpdateGraph(exprID, modBlkID, isSSA);
 
+            if (core.Options.ApplyUpdate)
+            {
+                // Go to the first dirty pc
+                SetupNextExecutableGraph(fi, ci);
+            }
+            else
+            {
+                // Go to the next pc
+                pc++;
+
+                // Given the next pc, get the next graphnode to execute and mark it clean
+                if (core.Options.IsDeltaExecution)
+                {
+                    // On delta execution, it is possible that the next graphnode is clean
+                    // Retrieve the next dirty graphnode given the pc
+                    // Associative update is handled when ApplyUpdate = true
+                    Properties.executingGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(pc, ci, fi);
+                }
+                else
+                {
+                    // On normal execution, just retrieve the graphnode associated with pc
+                    // Associative update is handled in jdep
+                    Properties.executingGraphNode = istream.dependencyGraph.GetGraphNode(pc, ci, fi);
+                }
+
+                if (Properties.executingGraphNode != null)
+                {
+                    Properties.executingGraphNode.isDirty = false;
+                    pc = Properties.executingGraphNode.updateBlock.startpc;
+                }
+            }
             GC();
+            return;
+        }
+
+        private void JDEP_Handler(Instruction instruction)
+        {
+            // The current function and class scope
+            int ci = DSASM.Constants.kInvalidIndex;
+            int fi = DSASM.Constants.kGlobalScope;
+            bool isInFunction = IsInsideFunction();
+
+            if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
+            {
+                Validity.Assert(core.DebugProps.DebugStackFrame.Count > 0);
+                isInFunction = core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun);
+            }
+
+            if (isInFunction)
+            {
+                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            }
+            SetupNextExecutableGraph(fi, ci);
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
@@ -7304,6 +7382,7 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+
             pc++;
         }
 
@@ -7642,6 +7721,12 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
+                case OpCode.JDEP:
+                    {
+                        JDEP_Handler(instruction);
+                        return;
+                    }
+
                 case OpCode.CAST:
                     {
                         CAST_Handler();
@@ -7689,9 +7774,29 @@ namespace ProtoCore.DSASM
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
             var gcRoots = new List<StackValue>();
+
+            // Now garbage collection only happens on the top most block. 
+            // We will loose this limiation soon.
+            if (blockId != 0 || 
+                rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
+            {
+                return;
+            }
+
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+            var isInNestedImperativeBlock = frames.Any(f =>
+                {
+                    var callerBlockId = f.FunctionCallerBlock;
+                    var cbn = core.CompleteCodeBlockList[callerBlockId];
+                    return cbn.language == Language.kImperative;
+                });
+
+            if (isInNestedImperativeBlock)
+            {
+                return;
+            }
 
             foreach (var stackFrame in frames)
             {
@@ -7699,25 +7804,70 @@ namespace ProtoCore.DSASM
                 var functionScope = stackFrame.FunctionScope;
                 var classScope = stackFrame.ClassScope;
 
-                IEnumerable<SymbolNode> symbols;
+                IEnumerable<SymbolNode> symbolsInScope;
                 if (blockId == 0)
                 {
+                    ICollection<SymbolNode> symbols;
                     if (classScope == Constants.kGlobalScope)
                     {
-                        symbols = exe.runtimeSymbols[blockId].symbolList.Values.Where(s => s.functionIndex == functionScope);
+                        symbols = exe.runtimeSymbols[blockId].symbolList.Values;
                     }
                     else
                     {
-                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values.Where( s => s.functionIndex == functionScope);
+                        symbols = core.ClassTable.ClassNodes[classScope].symbols.symbolList.Values;
                     }
+
+                    symbolsInScope = symbols.Where(s => s.functionIndex == functionScope);
                 }
                 else
                 {
-                    // Call some language block
-                    symbols = exe.runtimeSymbols[blockId].symbolList.Values;
+                    // Call some language block, so symbols should come from
+                    // the corresponding language block. 
+                    var symbols = exe.runtimeSymbols[blockId]
+                                     .symbolList
+                                     .Values
+                                     .Where(s => s.absoluteFunctionIndex == functionScope &&
+                                                 s.absoluteClassScope == classScope);
+
+                    List<SymbolNode> blockSymbols = new List<SymbolNode>();
+                    blockSymbols.AddRange(symbols);
+
+                    // One kind of block is construct block. This kind of block
+                    // is not true block because the VM doesn't push a stack
+                    // frame for it, and all variables defined in construct
+                    // block are visible in language block. For example, 
+                    // if-else, for-loop
+                    var workingList = new Stack<int>();
+                    workingList.Push(blockId);
+
+                    while (workingList.Any())
+                    {
+                        blockId = workingList.Pop();
+                        var block = core.CompleteCodeBlockList[blockId];
+
+                        foreach (var child in block.children)
+                        {
+                            if (child.blockType != CodeBlockType.kConstruct)
+                            {
+                                continue;
+                            }
+
+                            var childBlockId = child.codeBlockId;
+                            workingList.Push(childBlockId);
+
+                            var childSymbols = exe.runtimeSymbols[childBlockId]
+                                                  .symbolList
+                                                  .Values
+                                                  .Where(s => s.absoluteFunctionIndex == functionScope && 
+                                                              s.absoluteClassScope == classScope);
+                            blockSymbols.AddRange(childSymbols);
+                        }
+                    }
+
+                    symbolsInScope = blockSymbols;
                 }
 
-                foreach (var symbol in symbols)
+                foreach (var symbol in symbolsInScope)
                 {
                     StackValue value = rmem.GetSymbolValueOnFrame(symbol, currentFramePointer);
                     if (value.IsReferenceType)
@@ -7735,6 +7885,8 @@ namespace ProtoCore.DSASM
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
+
+            gcRoots.Add(RX);
 
             rmem.GC(gcRoots, this);
         }

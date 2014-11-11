@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Xml;
 
 using Dynamo.DSEngine;
@@ -186,7 +187,13 @@ namespace Dynamo.Nodes
                 var xmlAttribute = nodeElement.Attributes["assembly"];
                 if (xmlAttribute != null)
                     assembly = xmlAttribute.Value;
-                function = nodeElement.Attributes["function"].Value;
+
+                string xmlSignature = nodeElement.Attributes["function"].Value;
+
+                string hintedSigniture =
+                        this.engineController.LibraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+
+                function = hintedSigniture == null ? xmlSignature : hintedSigniture;
             }
 
             var engine = this.engineController;

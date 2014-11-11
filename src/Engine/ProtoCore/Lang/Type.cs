@@ -416,7 +416,12 @@ namespace ProtoCore
                 //walk over the structure converting each othe elements
 
                 var hpe = core.Heap.GetHeapElement(sv);
+#if GC_REFERENCE_COUNTING
                 var isTemporary = hpe.Active && hpe.Refcount == 0;
+#else
+                var isTemporary = false;
+#endif
+
                 if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
                 {
                     return sv;
@@ -527,7 +532,9 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type == (int)PrimitiveType.kTypeDouble)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
+                            //TODO(lukechurch): Once the API is improved (MAGN-5174)
+                            //Replace this with a log entry notification
+                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
                         }
                         return sv.ToInteger();
                     }

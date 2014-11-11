@@ -16,6 +16,24 @@ namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
+        protected LibraryServices libraryServices = null;
+        protected ProtoCore.Core libraryServicesCore = null;
+
+        public override void Init()
+        {
+            base.Init();
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            libraryServices = new LibraryServices(libraryServicesCore);
+        }
+
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
@@ -126,7 +144,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
 
             var data = mirror.GetData();
-            Assert.IsTrue(data.IsCollection);
+            Assert.IsTrue(data.IsCollection, "preview data is not a list");
             Assert.AreEqual(count, data.GetElements().Count);
         }
 
@@ -209,9 +227,15 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
+            libraryServices = null;
+
             base.Cleanup();
-            Dynamo.DSEngine.LibraryServices.DestroyInstance();
-            GraphToDSCompiler.GraphUtilities.Reset();
+            DynamoUtilities.DynamoPathManager.DestroyInstance();
         }
     }
 
@@ -1133,6 +1157,25 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "foobar.dyn");
 
             Assert.DoesNotThrow(() => RunModel(openPath));
+        }
+
+        [Test]
+        public void Regress_Magn_4837()
+        {
+            // Test nested custom node: run and reset engine and re-run.
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+
+            RunModel(dynFilePath);
+ 
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            ViewModel.Model.ResetEngine(true);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
     }
 }

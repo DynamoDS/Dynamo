@@ -84,13 +84,16 @@
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;GC_REFERENCE_COUNTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;GC_MARK_AND_SWEEP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE;GC_REFERENCE_COUNTING</DefineConstants>
+    <DefineConstants>TRACE;GC_MARK_AND_SWEEP</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />

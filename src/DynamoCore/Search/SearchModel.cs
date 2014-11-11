@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Collections.ObjectModel;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
@@ -11,7 +12,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Search
 {
-    public class SearchModel
+    public class SearchModel : NotificationObject
     {
         #region Events 
 
@@ -122,18 +123,6 @@ namespace Dynamo.Search
             this.AddRootCategory("Units");
             this.AddRootCategory("Office");
             this.AddRootCategory("Migration");
-        }
-
-        #endregion
-
-        #region Destructor
-
-        ~SearchModel()
-        {
-            if (DynamoModel != null)
-            {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
-            }
         }
 
         #endregion

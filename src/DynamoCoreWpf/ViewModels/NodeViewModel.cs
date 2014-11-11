@@ -108,33 +108,6 @@ namespace Dynamo.ViewModels
             set { nodeLogic.NickName = value; }
         }
 
-        public string OldValue
-        {
-            get
-            {
-                if (nodeLogic.Workspace is CustomNodeWorkspaceModel)
-                    return "Not available in custom nodes";
-
-                var variableName = nodeLogic.AstIdentifierBase;
-
-                string previewValue = "<null>";
-                if (!string.IsNullOrEmpty(variableName))
-                {
-                    try
-                    {
-                        var engine = DynamoViewModel.Model.EngineController;
-                        previewValue = engine.GetStringValue(variableName);
-                    }
-                    catch (Exception ex)
-                    {
-                        DynamoViewModel.Model.Logger.Log(ex.Message);
-                    }
-                }
-
-                return previewValue;
-            }
-        }
-
         public ElementState State
         {
             get { return nodeLogic.State; }
@@ -219,14 +192,7 @@ namespace Dynamo.ViewModels
 
         public bool ShowsVisibilityToggles
         {
-            get
-            {
-                //if the node is a Function, show the visibility toggles
-                //if any of it's internal nodes is drawable.
-
-                //return nodeLogic.OldValue!=null;
-                return true;
-            }
+            get { return true; }
         }
 
         public bool IsPreviewInsetVisible
@@ -280,6 +246,11 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.Model.DebugSettings.ShowDebugASTs = value;
             }
+        }
+
+        public bool WillForceReExecuteOfNode
+        {
+            get { return NodeModel.ForceReExecuteOfNode; }
         }
 
         #endregion
@@ -437,10 +408,6 @@ namespace Dynamo.ViewModels
                 case "NickName":
                     RaisePropertyChanged("NickName");
                     break;
-                case "OldValue":
-                    RaisePropertyChanged("OldValue");
-                    RaisePropertyChanged("CanDisplayLabels");
-                    break;
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
@@ -484,6 +451,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
+                    break;
+                case "ForceReExecuteOfNode":
+                    RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;
             }
         }

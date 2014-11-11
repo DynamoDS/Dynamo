@@ -220,8 +220,8 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Call this method to format user codes in the following ways:
         /// 
-        /// 1. Heading and trailing whitespaces are removed from the original 
-        ///    string. Characters that quality as "whitespaces" are: '\n', '\t'
+        /// 1. Leading and trailing whitespaces are removed from the original 
+        ///    string. Characters that qualify as "whitespaces" are: '\n', '\t'
         ///    and ' '.
         /// 
         /// 2. Multiple statements on a single line will be broken down further 
@@ -229,7 +229,7 @@ namespace Dynamo.Utilities
         ///    broken down into two lines: "a = 1;\nb = 2;" (line break denoted 
         ///    by the new \n character).
         /// 
-        /// 3. Heading whitespaces will be removed ony for the first line. This 
+        /// 3. Leading whitespaces will be removed ony for the first line. This 
         ///    is to preserve the indentation for lines other than the first.
         /// 
         /// 4. If the resulting codes do not end with a closing curly bracket '}',
@@ -310,6 +310,348 @@ namespace Dynamo.Utilities
 
             return inputCode;
         }
+
+    }
+
+    /// <summary>
+    /// This class exposes utility methods to:
+    /// 1. extract variable types from variable declarations such as 'Point' from a : Point;
+    /// 2. extract the string to autocomplete on from a block of code
+    /// </summary>
+    internal class CodeCompletionParser
+    {
+        #region private members
+
+        private readonly string text;
+
+        // This should match with production for identifier in language parser
+        // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
+        private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+
+        private static string spacesOrNonePattern = @"(\s*)";
+        private static string colonPattern = ":";
+
+        // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
+        private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
+
+        // Maintains a stack of symbols in a nested expression being typed
+        // where the symbols are nested based on brackets, braces or parentheses
+        // An expression like: x[y[z.foo(). will be stacked up as follows:
+        // z.foo().
+        // y[
+        // x[
+        // The stack is then popped upon closing the brackets, and the popped value is transferred to the top:
+        // y[z.foo()].
+        // x[
+        // So at any given time the top of the stack will contain the string to be completed
+        private Stack<string> expressionStack = new Stack<string>();
+
+        /// <summary>
+        /// Expression to autocomplete on is on top of 'expressionStack'
+        /// </summary>
+        private string strPrefix = String.Empty;
+
+        /// <summary>
+        /// Function call being currently typed
+        /// </summary>
+        private string functionName = String.Empty;
+
+        private int argCount = 0;
+
+        /// <summary>
+        /// Identifier or Class name on which function being typed currently is invoked
+        /// </summary>
+        private string functionPrefix = String.Empty;
+
+        private string type = string.Empty;
+
+        // Context of string being typed for completion
+        private bool isInSingleComment = false;
+        private bool isInString = false;
+        private bool isInChar = false;
+        private bool isInMultiLineComment = false;
+
+        #endregion
+
+        public CodeCompletionParser(string text)
+        {
+            this.text = text;
+        }
+
+        #region public members
+
+        /// <summary>
+        /// Parses given block of code and declared variable,
+        /// returns the type of the variable: e.g. in:
+        /// "a : Point;" returns 'Point'
+        /// </summary>
+        /// <param name="code"> block of code being parsed </param>
+        /// <param name="variableName">input declared variable: 'a' in example </param>
+        /// <returns> returns Point in example </returns>
+        public static string GetVariableType(string code, string variableName)
+        {
+            var symbolTable = FindVariableTypes(code);
+
+            string type = null;
+            symbolTable.TryGetValue(variableName, out type);
+
+            return type;
+        }
+
+        /// <summary>
+        /// Given the code that's currently being typed in a CBN,
+        /// this function extracts the expression that needs to be code-completed
+        /// e.g. given "abc.X[{xyz.b.foo((abc" it returns "abc"
+        /// which is the "thing" that needs to be queried for completions
+        /// </summary>
+        /// <param name="code"></param>
+        public static string GetStringToComplete(string code)
+        {
+            var codeParser = new CodeCompletionParser(code);
+            // TODO: Discard complete code statements terminated by ';'
+            // and extract only the current line being typed
+            for (int i = 0; i < code.Length; ++i)
+            {
+                codeParser.ParseStringToComplete(code[i]);
+            }
+            return codeParser.strPrefix;
+        }
+
+        /// <summary>
+        /// Given a block of code that's currently being typed 
+        /// this returns the method name and the type name on which it is invoked
+        /// e.g. "Point.ByCoordinates" returns 'ByCoordinates' as the functionName and 'Point' as functionPrefix
+        /// "abc.X[{xyz.b.foo" returns 'foo' as the functionName and 'xyz.b' as the "functionPrefix" on which it is invoked
+        /// </summary>
+        /// <param name="code"> input code block </param>
+        /// <param name="functionName"> output function name </param>
+        /// <param name="functionPrefix"> output type or variable on which fn is invoked </param>
+        public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
+        {
+            var codeParser = new CodeCompletionParser(code);
+            // TODO: Discard complete code statements terminated by ';'
+            // and extract only the current line being typed
+            for (int i = 0; i < code.Length; ++i)
+            {
+                codeParser.ParseStringToComplete(code[i]);
+            }
+            functionName = codeParser.functionName;
+            functionPrefix = codeParser.functionPrefix;
+        }
+
+        /// <summary>
+        /// Parse text to determine if string being typed at caretPos is in 
+        /// the context of a comment or string or character
+        /// </summary>
+        /// <param name="text"> input block of code </param>
+        /// <param name="caretPos"> caret position in text at which to determine context </param>
+        /// <returns> True if any of above context is true </returns>
+        public static bool IsInsideCommentOrString(string text, int caretPos)
+        {
+            var lexer = new CodeCompletionParser(text);
+            lexer.ParseContext(caretPos);
+            return
+                lexer.isInSingleComment ||
+                    lexer.isInString ||
+                    lexer.isInChar ||
+                    lexer.isInMultiLineComment;
+        }
+
+        #endregion
+
+        #region private methods
+
+        private static Dictionary<string, string> FindVariableTypes(string code)
+        {
+            // Contains pairs of variable names and their types
+            Dictionary<string, string> variableTypes = new Dictionary<string, string>();
+
+            // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
+            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
+
+            var varDeclarations = Regex.Matches(code, pattern);
+            for (int i = 0; i < varDeclarations.Count; i++)
+            {
+                var match = varDeclarations[i].Value;
+                match = Regex.Replace(match, @"\s", "");
+                var groups = match.Split(':');
+
+                // Overwrite variable type for a redefinition
+                if (variableTypes.ContainsKey(groups[0]))
+                {
+                    variableTypes[groups[0]] = groups[1];
+                }
+                else
+                    variableTypes.Add(groups[0], groups[1]);
+            }
+
+            return variableTypes;
+        }
+
+        private string ParseStringToComplete(char currentChar)
+        {
+            string prefix = string.Empty;
+            switch (currentChar)
+            {
+                case ']':
+                    strPrefix = PopFromExpressionStack(']');
+                    break;
+                case '[':
+                    if (!string.IsNullOrEmpty(strPrefix))
+                    {
+                        strPrefix += '[';
+                        expressionStack.Push(strPrefix);
+                        strPrefix = string.Empty;
+                    }
+                    break;
+                case '}':
+                    strPrefix = PopFromExpressionStack('}');
+                    break;
+                case '{':
+                    {
+                        strPrefix = string.Empty;
+                        strPrefix += '{';
+                        expressionStack.Push(strPrefix);
+                        strPrefix = string.Empty;
+                    }
+                    break;
+                case ')':
+                    argCount = 0;
+                    strPrefix = PopFromExpressionStack(')');
+                    break;
+                case '(':
+                    argCount = 1;
+                    if (!string.IsNullOrEmpty(strPrefix))
+                    {
+                        // function call
+                        // Auto-complete function signature  
+                        // Class/Type and function name must be known at this point
+                        functionName = GetMemberIdentifier();
+                        if (string.Equals(strPrefix, functionName))
+                            functionPrefix = string.Empty;
+                        else
+                            functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
+
+                        expressionStack.Push(strPrefix + @"(");
+                    }
+                    else
+                    {
+                        // simple expression
+                        expressionStack.Push(@"(");
+                    }
+                    strPrefix = string.Empty;
+                    break;
+                case '.':
+                    strPrefix += '.';
+                    break;
+                case ' ':
+                    break;
+                case '=':
+                    strPrefix = string.Empty;
+                    expressionStack.Clear();
+                    break;
+                case ';':
+                    strPrefix = string.Empty;
+                    expressionStack.Clear();
+                    break;
+                default:
+                    if (char.IsLetterOrDigit(currentChar))
+                    {
+                        strPrefix += currentChar;
+
+                        if (strPrefix.IndexOf('.') != -1)
+                        {
+                            // If type exists, extract string after previous '.'                            
+                            string identToComplete = GetMemberIdentifier();
+                            // Auto-completion happens over type, search for identToComplete in type's auto-complete list
+                        }
+
+                    }
+                    else
+                    {
+                        strPrefix = PopFromExpressionStack(currentChar);
+                        expressionStack.Push(strPrefix);
+
+                        strPrefix = string.Empty;
+                    }
+                    break;
+            }
+            return strPrefix;
+        }
+
+        private void ParseContext(int caretPos)
+        {
+            for (int i = 0; i < caretPos; i++)
+            {
+                char ch = text[i];
+                char lookAhead = i + 1 < text.Length ? text[i + 1] : '\0';
+                switch (ch)
+                {
+                    case '/':
+                        if (isInString || isInChar || isInSingleComment || isInMultiLineComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInSingleComment = true;
+                        }
+                        if (lookAhead == '*')
+                        {
+                            isInMultiLineComment = true;
+                            i++;
+                        }
+                        break;
+                    case '*':
+                        if (isInString || isInChar || isInSingleComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInMultiLineComment = false;
+                        }
+                        break;
+                    case '\n':
+                    case '\r':
+                        isInSingleComment = false;
+                        isInString = false;
+                        isInChar = false;
+                        break;
+                    case '\\':
+                        if (isInString || isInChar)
+                            i++;
+                        break;
+                    case '"':
+                        if (isInSingleComment || isInMultiLineComment || isInChar)
+                            break;
+                        isInString = !isInString;
+                        break;
+                    case '\'':
+                        if (isInSingleComment || isInMultiLineComment || isInString)
+                            break;
+                        isInChar = !isInChar;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private string GetMemberIdentifier()
+        {
+            return strPrefix.Split('.').Last();
+        }
+
+        private string PopFromExpressionStack(char currentChar)
+        {
+            string prefix = string.Empty;
+            if (expressionStack.Count > 0)
+            {
+                prefix = expressionStack.Pop();
+            }
+            return prefix + strPrefix + currentChar;
+        }
+        #endregion
+
     }
 
 }

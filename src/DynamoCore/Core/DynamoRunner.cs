@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 using DSNodeServices;
@@ -169,9 +170,11 @@ namespace Dynamo.Core
 
                 dynamoModel.EngineController.GenerateGraphSyncData(workspace.Nodes);
 
-                //No additional work needed
                 if (dynamoModel.EngineController.HasPendingGraphSyncData)
+                {
+                    ExecutionEvents.OnGraphPreExecution();
                     Eval(workspace);
+                }
             }
             catch (Exception ex)
             {
@@ -195,7 +198,20 @@ namespace Dynamo.Core
                     string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
-            dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
+            // When evaluation is completed, we mark all
+            // nodes as ForceReexecuteOfNode = false to prevent
+            // cyclical graph updates. It is therefore the responsibility 
+            // of the node implementor to mark this flag = true, if they
+            // want to require update.
+            foreach (var n in workspace.Nodes)
+            {
+                n.ForceReExecuteOfNode = false;
+            }
+
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            dynamoModel.OnEvaluationCompleted(this, e);
+            ExecutionEvents.OnGraphPostExecution();
         }
 
         private void Eval(HomeWorkspaceModel workspaceModel)

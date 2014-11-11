@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="750" CommandIntervalInMs="20">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="8630afc1-3d59-4e76-9fca-faa12e6973ea" NodeName="Code Block" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <UpdateModelValueCommand ModelGuid="8630afc1-3d59-4e76-9fca-faa12e6973ea" Name="Code" Value="a=1;&#xD;&#xA;b=2;&#xD;&#xA;c=3;" />
   <CreateNodeCommand NodeId="90841beb-9dbe-4a75-9d26-19bd9bea8906" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />

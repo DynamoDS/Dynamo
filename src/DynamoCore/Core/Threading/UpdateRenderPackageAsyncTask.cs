@@ -4,8 +4,6 @@ using System;
 using System.Collections;
 using System.Linq;
 
-using GraphLayout;
-
 using ProtoCore.Mirror;
 using System.Collections.Generic;
 
@@ -37,6 +35,8 @@ namespace Dynamo.Core.Threading
     {
         #region Class Data Members and Properties
 
+        protected Guid nodeGuid;
+
         private int maxTesselationDivisions;
         private bool displayLabels;
         private bool isNodeSelected;
@@ -50,6 +50,11 @@ namespace Dynamo.Core.Threading
             get { return renderPackages; }
         }
 
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
+        }
+
         #endregion
 
         #region Public Class Operational Methods
@@ -57,6 +62,7 @@ namespace Dynamo.Core.Threading
         internal UpdateRenderPackageAsyncTask(DynamoScheduler scheduler)
             : base(scheduler)
         {
+            nodeGuid = Guid.Empty;
             renderPackages = new List<IRenderPackage>();
         }
 
@@ -84,6 +90,8 @@ namespace Dynamo.Core.Threading
             maxTesselationDivisions = initParams.MaxTesselationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
+
+            nodeGuid = nodeModel.GUID;
             return true;
         }
 
@@ -91,8 +99,14 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
+            if (nodeGuid == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "UpdateRenderPackageAsyncTask.Initialize not called");
+            }
+
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
                        into mirror
@@ -139,6 +153,28 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskCompletionCore()
         {
+        }
+
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateRenderPackageAsyncTask;
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            // If the two UpdateRenderPackageAsyncTask are for different nodes,
+            // then there is no comparison to be made, keep both the tasks.
+            // 
+            if (nodeGuid != theOtherTask.nodeGuid)
+                return TaskMergeInstruction.KeepBoth;
+
+            // Comparing to another NotifyRenderPackagesReadyAsyncTask, the one 
+            // that gets scheduled more recently stay, while the earlier one 
+            // gets dropped. If this task has a higher tick count, keep this.
+            // 
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
         }
 
         #endregion

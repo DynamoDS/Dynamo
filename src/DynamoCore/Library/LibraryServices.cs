@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
-
+using Dynamo.Models;
 using DynamoUtilities;
-
-using GraphToDSCompiler;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
-
 using ProtoFFI;
 
 using Operator = ProtoCore.DSASM.Operator;
@@ -25,38 +25,44 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    internal class LibraryServices
+    public class LibraryServices: IDisposable
     {
-        /// <summary>
-        ///     lock object to prevent races on establishing the singleton
-        /// </summary>
-        private static readonly Object singletonMutex = new object();
-
-        private static LibraryServices _libraryServices; // new LibraryServices();
-
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
 
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private List<string> libraries;
+        private List<string> importedLibraries = new List<string>();
 
-        private LibraryServices()
+        private readonly ProtoCore.Core libraryManagementCore;
+
+        private Dictionary<string, string> priorNameHints =
+            new Dictionary<string, string>();
+
+        public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
-            PreloadLibraries();
+            this.libraryManagementCore = libraryManagementCore;
 
+            PreloadLibraries();
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
         }
 
+        public void Dispose()
+        {
+            builtinFunctionGroups.Clear();
+            importedFunctionGroups.Clear();
+            importedLibraries.Clear();
+        }
+
         /// <summary>
         ///     Get a list of imported libraries.
         /// </summary>
-        public IEnumerable<string> Libraries
+        public IEnumerable<string> ImportedLibraries
         {
-            get { return libraries; }
+            get { return importedLibraries; }
         }
 
         /// <summary>
@@ -80,43 +86,53 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        public static LibraryServices GetInstance()
-        {
-            lock (singletonMutex)
-            {
-                return _libraryServices ?? (_libraryServices = new LibraryServices());
-            }
-        }
-
-        public static void DestroyInstance()
-        {
-            lock (singletonMutex)
-            {
-                _libraryServices = null;
-            }
-        }
-
-        /// <summary>
-        ///     Reset the whole library services. Note it should only be used in
-        ///     testing.
-        /// </summary>
-        public void Reset()
-        {
-            importedFunctionGroups.Clear();
-            builtinFunctionGroups.Clear();
-
-            PreloadLibraries();
-
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreloadLibraries();
-        }
-
         private void PreloadLibraries()
         {
-            GraphUtilities.Reset();
-            libraries = DynamoPathManager.Instance.PreloadLibraries;
-            GraphUtilities.PreloadAssembly(libraries);
+            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+
+            foreach (var library in importedLibraries)
+            {
+                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library); 
+            }
+        }
+
+        public string NicknameFromFunctionSignatureHint(string functionSignature)
+        {
+            string[] splitted = functionSignature.Split('@');
+
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            string newName = priorNameHints[qualifiedFunction];
+
+            splitted = newName.Split('.');
+
+            if (splitted.Length < 2)
+                return null;
+
+            return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
+        }
+
+        public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        {
+            string[] splitted = functionSignature.Split('@');
+
+            if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            string newName = priorNameHints[qualifiedFunction];
+
+            return newName + "@" + splitted[1];
         }
 
         /// <summary>
@@ -186,6 +202,17 @@ namespace Dynamo.DSEngine
                     : null;
         }
 
+        /// <summary>
+        /// Checks if a given library is already loaded or not.
+        /// Only unique assembly names are allowed to be loaded
+        /// </summary>
+        /// <param name="library"> can be either the full path or the assembly name </param>
+        /// <returns> true even if the same library name is loaded from different paths </returns>
+        public bool IsLibraryLoaded(string library)
+        {
+            return importedFunctionGroups.ContainsKey(library);
+        }
+
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
         {
             return null != partialName && null != fullName && partialName.Count <= fullName.Count
@@ -245,16 +272,21 @@ namespace Dynamo.DSEngine
 
             try
             {
-                int globalFunctionNumber = GraphUtilities.GetGlobalMethods(string.Empty).Count;
-
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-                IList<ClassNode> importedClasses = GraphUtilities.GetClassesForAssembly(library);
 
-                if (GraphUtilities.BuildStatus.ErrorCount > 0)
+                var functionTable = libraryManagementCore.CodeBlockList[0].procedureTable;
+                var classTable = libraryManagementCore.ClassTable;
+
+                int functionNumber = functionTable.procList.Count;
+                int classNumber = classTable.ClassNodes.Count;
+
+                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
+
+                if (libraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
                     logger.LogWarning(errorMessage, WarningLevel.Moderate);
-                    foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
+                    foreach (ErrorEntry error in libraryManagementCore.BuildStatus.Errors)
                     {
                         logger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
@@ -264,15 +296,17 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                foreach (ClassNode classNode in importedClasses)
+                var loadedClasses = classTable.ClassNodes.Skip(classNumber);
+                foreach (var classNode in loadedClasses)
+                {
                     ImportClass(library, classNode);
+                }
 
-                // GraphUtilities.GetGlobalMethods() ignores input and just 
-                // return all global functions. The workaround is to get 
-                // new global functions after importing this assembly.
-                List<ProcedureNode> globalFunctions = GraphUtilities.GetGlobalMethods(string.Empty);
-                for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
-                    ImportProcedure(library, globalFunctions[i]);
+                var loadedFunctions = functionTable.procList.Skip(functionNumber);
+                foreach (var globalFunction in loadedFunctions)
+                {
+                    ImportProcedure(library, globalFunction);
+                }
             }
             catch (Exception e)
             {
@@ -283,10 +317,60 @@ namespace Dynamo.DSEngine
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
         }
 
+        private void ParseLibraryMigrations(string library)
+        {
+            string fullLibraryName = library;
+
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+                return;
+
+            string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
+                Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
+
+            if (!File.Exists(migrationsXMLFile))
+                return;
+
+            var foundPriorNameHints = new Dictionary<string, string>();
+
+            try
+            {
+                using (var reader = XmlReader.Create(migrationsXMLFile))
+                {
+                    while (reader.Read())
+                    {
+                        reader.ReadToFollowing("priorNameHint");
+
+                        if (!reader.Read())
+                            break;
+
+                        reader.ReadToFollowing("oldName");
+                        string oldName = reader.ReadElementContentAsString();
+                        reader.ReadToFollowing("newName");
+                        string newName = reader.ReadElementContentAsString();
+
+                        foundPriorNameHints[oldName] = newName;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return; // if the XML file is badly formatted, return like it doesn't exist
+            }
+
+            // if everything parsed correctly, then add these names to the priorNameHints
+
+            foreach (string key in foundPriorNameHints.Keys)
+            {
+                priorNameHints[key] = foundPriorNameHints[key];
+            }
+        }
+
         private void AddImportedFunctions(string library, IEnumerable<FunctionDescriptor> functions)
         {
             if (null == library || null == functions)
                 throw new ArgumentNullException();
+
+            ParseLibraryMigrations(library);
 
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
@@ -335,7 +419,14 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            IEnumerable<FunctionDescriptor> functions = from method in GraphUtilities.BuiltInMethods
+            var builtins = libraryManagementCore.CodeBlockList[0]
+                                                .procedureTable
+                                                .procList
+                                                .Where(p =>
+                    !p.name.StartsWith(Constants.kInternalNamePrefix) &&
+                    !p.name.Equals("Break"));
+
+            IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
@@ -418,7 +509,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
-            foreach (ClassNode classNode in GraphUtilities.ClassTable.ClassNodes)
+            foreach (ClassNode classNode in libraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
@@ -446,7 +537,7 @@ namespace Dynamo.DSEngine
 
             if (classScope != ProtoCore.DSASM.Constants.kGlobalScope)
             {
-                var classNode = GraphUtilities.GetCore().ClassTable.ClassNodes[classScope];
+                var classNode = libraryManagementCore.ClassTable.ClassNodes[classScope];
 
                 classAttribute = classNode.ClassAttributes;
                 className = classNode.name;
@@ -559,7 +650,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            libraries.Add(e.LibraryPath);
+            importedLibraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)

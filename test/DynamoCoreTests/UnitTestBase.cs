@@ -23,21 +23,8 @@ namespace Dynamo
         {
             try
             {
-                EmptyTempFolder();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        public void EmptyTempFolder()
-        {
-            try
-            {
                 var directory = new DirectoryInfo(TempFolder);
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+                directory.Delete(true);
             }
             catch (Exception ex)
             {
@@ -47,7 +34,12 @@ namespace Dynamo
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
         {
-            return Path.Combine(TempFolder, Guid.NewGuid().ToString() + "." + fileExtension);
+            var guid = Guid.NewGuid().ToString();
+            return Path.Combine(
+                TempFolder,
+                string.IsNullOrWhiteSpace(fileExtension) 
+                    ? guid 
+                    : Path.ChangeExtension(guid, fileExtension));
         }
 
         public string GetTestDirectory()
@@ -72,12 +64,10 @@ namespace Dynamo
             ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string tempPath = Path.GetTempPath();
 
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+            TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
 
             if (!Directory.Exists(TempFolder))
                 Directory.CreateDirectory(TempFolder);
-            else
-                EmptyTempFolder();
         }
     }
 }

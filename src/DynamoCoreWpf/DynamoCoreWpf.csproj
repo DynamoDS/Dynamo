@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -167,9 +167,12 @@
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CodeBlockCompletionData.cs" />
     <Compile Include="Views\CodeBlockEditor.xaml.cs">
       <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="Views\CodeBlockEditorUtils.cs" />
     <Compile Include="Views\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>

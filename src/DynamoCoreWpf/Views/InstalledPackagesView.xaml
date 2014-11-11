@@ -115,10 +115,11 @@
                                                 
                                             </StackPanel>
 
-                                            <StackPanel Visibility="{Binding Path=HasAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                                 
-                                                <Label Content="Assemblies" FontWeight="Bold" Foreground="Gray"></Label>
-                                                <ListBox Name="Assemblies" ItemsSource="{Binding Path=Model.LoadedAssemblyNames}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                                <Label Content="Node Libraries" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="NodeLibraries" ItemsSource="{Binding Path=Model.LoadedAssemblies}" BorderThickness="0" Padding="0" 
+                                                         Margin="10,0,0,0" Background="Transparent" >
 
                                                     <ListBox.ItemContainerStyle>
                                                         <Style TargetType="ListBoxItem">
@@ -131,12 +132,47 @@
 
                                                     <ListBox.ItemTemplate>
                                                         <DataTemplate>
-                                                            <TextBlock Text="{Binding Path=Name}" Foreground="White" />
+                                                            <TextBlock Name="Label" Text="{Binding Path=Name}" Foreground="White" />
+                                                            
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="false">
+                                                                    <Setter TargetName="Label" Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
                                                         </DataTemplate>
                                                     </ListBox.ItemTemplate>
 
                                                 </ListBox>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                                 
+                                                <Label Content="Additional Libraries" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="AddAssemblies" ItemsSource="{Binding Path=Model.LoadedAssemblies}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Name="Label" Text="{Binding Path=Name}" Foreground="White" />
+
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="true">
+                                                                    <Setter TargetName="Label" Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+
                                             </StackPanel>
 
                                             <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">

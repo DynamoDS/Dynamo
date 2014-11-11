@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using DSCore;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -47,8 +48,11 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
-
+            //var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
+            var functionCall =
+                AstFactory.BuildFunctionCall(
+                    new Func<Color, Color, double, Color>(Color.BuildColorFromRange),
+                    inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)

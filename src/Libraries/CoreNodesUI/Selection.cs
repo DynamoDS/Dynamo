@@ -50,10 +50,13 @@ namespace Dynamo.Nodes
                 if (dirty)
                 {
                     selectionResults = value.ToList();
+                    ForceReExecuteOfNode = true;
                     RequiresRecalc = true;
                 }
                 else
                     selectionResults = null;
+
+                SetSelectionNodeState();
 
                 RaisePropertyChanged("SelectionResults");
                 RaisePropertyChanged("Text");
@@ -115,6 +118,8 @@ namespace Dynamo.Nodes
 
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);
             Prefix = prefix;
+
+            State = ElementState.Warning;
         }
 
         #endregion
@@ -133,9 +138,23 @@ namespace Dynamo.Nodes
             SelectionResults = new List<TResult>();
         }
 
+        public override void ClearRuntimeError()
+        {
+            //do nothing as the errors for the selection nodes
+            //are not created when running the graph
+        }
+
         #endregion
 
         #region private methods
+
+        private void SetSelectionNodeState()
+        {
+            if (null == selectionResults || selectionResults.Count == 0)
+                State = ElementState.Warning;
+            else if (State == ElementState.Warning)
+                State = ElementState.Active;
+        }
 
         protected bool CanBeginSelect(object parameter)
         {

@@ -16,6 +16,70 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Returns the VM Graphnodes associated with the input ASTs
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public static List<AssociativeGraph.GraphNode> GetGraphNodesFromAST(ProtoCore.DSASM.Executable exe, List<AST.AssociativeAST.AssociativeNode> astList)
+        {
+            List<AssociativeGraph.GraphNode> deltaGraphNodes = new List<AssociativeGraph.GraphNode>();
+
+            // Get nodes at global scope
+            int classIndex = Constants.kInvalidIndex;
+            int procIndex = Constants.kGlobalScope;
+            int blockScope = (int)Executable.OffsetConstants.kInstrStreamGlobalScope;
+            AssociativeGraph.DependencyGraph dependencyGraph = exe.instrStreamList[blockScope].dependencyGraph;
+            List<AssociativeGraph.GraphNode> graphNodesInScope = dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+
+
+            // Get a list of AST guids 
+            List<Guid> astGuidList = new List<Guid>();
+            foreach (AST.AssociativeAST.AssociativeNode ast in astList)
+            {
+                AST.AssociativeAST.BinaryExpressionNode bnode = ast as AST.AssociativeAST.BinaryExpressionNode;
+                if (!astGuidList.Contains(bnode.guid))
+                {
+                    astGuidList.Add(bnode.guid);
+                }
+            }
+
+            // For every graphnode in scope, find the graphodes that have the same guid as the guids in astList
+            foreach (AssociativeGraph.GraphNode graphNode in graphNodesInScope)
+            {
+                foreach (Guid guid in astGuidList)
+                {
+                    if (graphNode.guid == guid)
+                    {
+                        deltaGraphNodes.Add(graphNode);
+                    }
+                }
+            }
+            return deltaGraphNodes;
+        }
+
+        /// <summary>
+        /// Gets the number of dirty VM graphnodes at the global scope
+        /// </summary>
+        /// <param name="exe"></param>
+        /// <returns></returns>
+        public static int GetDirtyNodeCountAtGlobalScope(Executable exe)
+        {
+            Validity.Assert(exe != null);
+            int dirtyNodes = 0;
+            var graph = exe.instrStreamList[0].dependencyGraph;
+            var graphNodes = graph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
+            {
+                if (graphNode.isDirty)
+                {
+                    ++dirtyNodes;
+                }
+            }
+            return dirtyNodes;
+        }
+
+        /// <summary>
         /// Find and return all graphnodes that can be reached by executingGraphNode
         /// </summary>
         /// <param name="executingGraphNode"></param>
@@ -35,6 +99,7 @@ namespace ProtoCore.AssociativeEngine
             bool isSSAAssign,
             bool executeSSA,
             int languageBlockID,
+            bool recursiveSearch,
             bool propertyChanged = false)
         {
             InterpreterProperties Properties = executive.Properties;
@@ -103,7 +168,7 @@ namespace ProtoCore.AssociativeEngine
                     if (graphNode.isLanguageBlock)
                     {
                         List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
-                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId);
+                            executingGraphNode, executive, exprUID, modBlkId, isSSAAssign, executeSSA, graphNode.languageBlockId, recursiveSearch);
                         if (subGraphNodes.Count > 0)
                         {
                             reachableGraphNodes.Add(graphNode);
@@ -248,6 +313,25 @@ namespace ProtoCore.AssociativeEngine
                                 reachableGraphNodes.Add(firstGraphNode);
                                 
                             }
+
+                            // When a graphnode is dirty, recursively search of other graphnodes that may be affected
+                            // Recursive search is only done statically 
+                            if (recursiveSearch)
+                            {
+                                List<AssociativeGraph.GraphNode> subGraphNodes = ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                                    graphNode,
+                                    executive,
+                                    graphNode.exprUID,
+                                    graphNode.modBlkUID,
+                                    graphNode.IsSSANode(),
+                                    executeSSA,
+                                    graphNode.languageBlockId,
+                                    recursiveSearch);
+                                if (subGraphNodes.Count > 0)
+                                {
+                                    reachableGraphNodes.AddRange(subGraphNodes);
+                                }
+                            }
                         }
                     }
                 }
@@ -287,9 +371,7 @@ namespace ProtoCore.AssociativeEngine
             if (gnode.UID >= executingNode.UID // for previous graphnodes
                 || gnode.updateNodeRefList.Count == 0
                 || gnode.updateNodeRefList.Count != executingNode.updateNodeRefList.Count
-                || gnode.isAutoGenerated
-                || !gnode.isActive  // If the graphnode is inactive there is no need to update it
-                )
+                || gnode.isAutoGenerated)
             {
                 return wasGraphNodeDependencyUpdated;
             }
@@ -298,12 +380,6 @@ namespace ProtoCore.AssociativeEngine
             {
                 if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
                 {
-                    return wasGraphNodeDependencyUpdated;
-                }
-
-                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                {
-                    // These nodes are within the same expression, no redifinition can occur
                     return wasGraphNodeDependencyUpdated;
                 }
             }
@@ -464,17 +540,19 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Finds all graphnodes associated with each AST and marks them dirty
+        ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="nodeList"></param>
-        /// <summary>
         /// <returns></returns>
-        public static void MarkGraphNodesDirty(Core core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirty(Core core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
-                return;
+            {
+                return null;
+            }
 
-            bool setEntryPoint = false;
+            AssociativeGraph.GraphNode firstDirtyNode = null;
             foreach (var node in nodeList)
             {
                 var bNode = node as AST.AssociativeAST.BinaryExpressionNode;
@@ -487,20 +565,21 @@ namespace ProtoCore.AssociativeEngine
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
-                        if (!setEntryPoint)
+                        if (firstDirtyNode == null)
                         {
-                            setEntryPoint = true;
-                            core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                            firstDirtyNode = gnode;
                         }
                         gnode.isDirty = true;
                         gnode.isActive = true;
                     }
                 }
             }
+            return firstDirtyNode;
         }
 
         public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
+            bool entrypointSet = false;
             foreach (var node in fnodeList)
             {
                 var fnode = node as AST.AssociativeAST.FunctionDefinitionNode;
@@ -521,7 +600,11 @@ namespace ProtoCore.AssociativeEngine
                                 if (Constants.kInvalidIndex == exprId)
                                 {
                                     exprId = gnode.exprUID;
-                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    if (!entrypointSet)
+                                    {
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        entrypointSet = true;
+                                    }
                                 }
                                 gnode.isDirty = true;
                             }
@@ -572,6 +655,7 @@ namespace ProtoCore.AssociativeGraph
         public List<UpdateNode> dimensionNodeList { get; set; }
         public List<UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
+        public bool isDeferred { get; set; }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }              // Function that this graph resides in
         public int classIndex { get; set; }             // Class index that this graph resides in
@@ -641,6 +725,7 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<UpdateNodeRef>();
             isDirty = true;
+            isDeferred = false;
             isReturn = false;
             procIndex = Constants.kGlobalScope;
             classIndex = Constants.kInvalidIndex;
@@ -1225,6 +1310,54 @@ namespace ProtoCore.AssociativeGraph
                 return graphList;
             }
         }
+
+        /// <summary>
+        /// Gets the graphnode of the given pc and scope
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetFirstDirtyGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {

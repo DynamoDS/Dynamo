@@ -90,7 +90,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestMigration_InputOutput_Hardware()
         {
             TestMigration("TestMigration_InputOutput_Hardware.dyn");
@@ -1875,6 +1874,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestWriteText()
         {
             OpenModel(GetDynPath("TestWriteFile.dyn"));

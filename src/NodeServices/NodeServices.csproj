@@ -38,8 +38,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Attributes.cs" />
     <Compile Include="DisposeLogic.cs" />
+    <Compile Include="ExecutionEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceSupport.cs" />
     <Compile Include="Validity.cs" />

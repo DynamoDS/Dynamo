@@ -214,7 +214,7 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
-            var parameters = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierForPreview.Value: x.InputSymbol);
+            var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
@@ -237,33 +237,11 @@ namespace Dynamo
                 return n as AssociativeNode;
             });
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-            var initParams = new CompileCustomNodeParams()
-            {
-                EngineController = controller,
-                Definition = this,
-                Nodes = WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
-                Parameters = parameters,
-                Outputs = outputNodes
-            };
-
-            // Schedule the compilation of CustomNodeDefinition, we are 
-            // not interested in when it will be completed, so no callback.
-            var scheduler = dynamoModel.Scheduler;
-            var task = new CompileCustomNodeAsyncTask(scheduler);
-            if (task.Initialize(initParams))
-                scheduler.ScheduleForExecution(task);
-
-#else
-
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 outputNodes,
                 parameters);
-
-#endif
 
             // Not update graph until Run 
             // if (success)

@@ -1,9 +1,14 @@
 ﻿using System;
-using Revit.Elements;
+
 using NUnit.Framework;
+
+using Revit.Elements;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices
+namespace RevitNodesTests.Elements
 {
     [TestFixture]
     public class FamilySymbolTests : RevitNodeTestBase

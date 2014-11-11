@@ -39,7 +39,10 @@
         public const string Protected = "protected";
         public const string Private = "private";
         public const string Static = "static";
+        public const string Associative = "Associative";
+        public const string Imperative = "Imperative";
         public const string Dispose = "_Dispose";
+        public const string GetType = "GetType";
         public const string Invalid = "__invalid";
         public static string[] KeywordList = {Native, Class, Constructor, Def, External, Extend, Heap,
                                         If, Elseif, Else, While, For, Import, From, Break,

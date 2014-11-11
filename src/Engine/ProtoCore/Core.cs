@@ -146,6 +146,7 @@ namespace ProtoCore
     {
         public Options()
         {
+            ApplyUpdate = false;
 
             DumpByteCode = false;
             Verbose = false;
@@ -155,7 +156,7 @@ namespace ProtoCore
             ExecuteSSA = true;
             GCTempVarsOnDebug = true;
 
-            DumpFunctionResolverLogic = false;
+            DumpFunctionResolverLogic = false; 
             DumpOperatorToMethodByteCode = false;
             SuppressBuildOutput = false;
             BuildOptWarningAsError = false;
@@ -197,6 +198,7 @@ namespace ProtoCore
 
         }
 
+        public bool ApplyUpdate { get; set; }
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }
         public bool GenerateSSA { get; set; }
@@ -922,6 +924,15 @@ namespace ProtoCore
 
     public class Core
     {
+        #region RUNTIME_PROPERTIES
+
+        /// <summary>
+        ///  These are the list of symbols updated by the VM after an execution cycle
+        /// </summary>
+        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
+
+        #endregion
+
         public const int FIRST_CORE_ID = 0;
 
         public int ID { get; private set; }
@@ -1277,6 +1288,8 @@ namespace ProtoCore
         /// </summary>
         public void ResetForDeltaExecution()
         {
+            Options.ApplyUpdate = false;
+
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
@@ -1328,6 +1341,12 @@ namespace ProtoCore
 
             ExpressionUID = 0;
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+        }
+
+
+        private void ResetAllRuntimeProperties()
+        {
+            UpdatedSymbols = new HashSet<SymbolNode>();
         }
 
         private void ResetAll(Options options)
@@ -1753,6 +1772,7 @@ namespace ProtoCore
         public Core(Options options)
         {
             ResetAll(options);
+            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)

@@ -67,6 +67,14 @@ namespace Dynamo.Nodes
                     return true; // UpdateValueCore handled.
                 case "Min":
                     Min = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    if (Value >= Max)
+                    {
+                        this.Max = Value;
+                    }
+                    if (Value <= Min)
+                    {
+                        this.Min = Value;
+                    }
                     return true; // UpdateValueCore handled.
             }
 

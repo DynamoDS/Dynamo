@@ -104,6 +104,7 @@ namespace ProtoCore.DSASM
         public const string jlz = "jlz";
         public const string jgz = "jgz";
         public const string jz = "jz";
+        public const string jdep = "jdep";
         public const string label = "label";
         public const string bounce = "bounce";
         public const string alloca = "alloca";
@@ -448,8 +449,10 @@ namespace ProtoCore.DSASM
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;
         public const string kImportData = "ImportData";
+        public const string kTempVarForNonAssignment = "temp_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
+        public const string kSingleUnderscore = "_";
     }
 
     public enum MemoryRegion

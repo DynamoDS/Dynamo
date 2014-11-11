@@ -6,12 +6,15 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
+using Dynamo.UI.Commands;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI
 {
     public abstract class PackageItemViewModel : NotificationObject
     {
+
         public abstract ObservableCollection<PackageItemViewModel> Items { get; set; }
 
         /// <summary>
@@ -86,7 +89,7 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        public ToggleIsExpandedCommand _toggleIsExpanded;
+        private ToggleIsExpandedCommand _toggleIsExpanded;
         public ToggleIsExpandedCommand ToggleIsExpanded
         {
             get
@@ -108,7 +111,7 @@ namespace Dynamo.PackageManager.UI
 
             public void Execute(object parameters)
             {
-                var endState = !_viewModel.IsExpanded;
+                var endState = !_viewModel.IsExpanded; 
                 _viewModel.IsExpanded = endState;
             }
 
@@ -138,7 +141,7 @@ namespace Dynamo.PackageManager.UI
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {
-                    return Assembly.GetName().Name + ".dll";
+                    return Assembly.Name + ".dll";
                 }
                 else
                 {
@@ -177,9 +180,25 @@ namespace Dynamo.PackageManager.UI
 
         public bool AlreadyDiscovered { get; set; }
         public DependencyType DependencyType { get; protected set; }
-        public Assembly Assembly { get; protected set; }
+        
         public FileInfo FileInfo { get; protected set; }
         public CustomNodeDefinition Definition { get; protected set; }
+
+        public PackageAssembly Assembly { get; protected set; }
+      
+        public bool IsNodeLibrary         
+        {
+            get
+            {
+                if (Assembly == null) return false;
+                return Assembly.IsNodeLibrary;
+            }
+            set
+            {
+                this.Assembly.IsNodeLibrary = value;
+                RaisePropertyChanged("IsNodeLibrary");
+            }
+        }
 
     }
 }
