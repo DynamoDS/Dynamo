@@ -611,7 +611,7 @@ namespace ProtoFFI
             if (null != marshaler)
                 return marshaler.Marshal(obj, context, dsi, expectedDSType);
 
-           //4. Didn't get the marshaler, could be a pointer or var type, check from map
+            //4. Didn't get the marshaler, could be a pointer or var type, check from map
             StackValue retVal;
             if (CLRObjectMap.TryGetValue(obj, out retVal))
                 return retVal;
@@ -1185,7 +1185,7 @@ namespace ProtoFFI
         private object CreateCLRObject(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type)
         {
             //Must be a user defined type, and expecting a var object
-            if (type == typeof(object) && (dsObject.IsPointer || dsObject.IsFunctionPointer))
+            if (type == typeof(object) && dsObject.IsPointer)
             {
                 //TOD: Fix GC issue, don't know how/when this will get GCed??
                 dsi.runtime.rmem.Heap.IncRefCount(dsObject);
