@@ -398,7 +398,6 @@ namespace Dynamo.UI.Views
             }
 
             var nextSelectedCategory = GetListItemByIndex(categoryListView, categoryIndex);
-            var nextselectedCategoryContent = nextSelectedCategory.Content as SearchCategory;
 
             if (e.Key == Key.Up)
             {
