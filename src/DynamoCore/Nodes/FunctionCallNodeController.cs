@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -15,7 +14,8 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller for nodes that act as function calls.
     /// </summary>
-    public abstract class FunctionCallNodeController<T> : LogSourceBase where T : IFunctionDescriptor
+    public abstract class FunctionCallNodeController<T> : LogSourceBase 
+        where T : IFunctionDescriptor
     {
         //private T definition;
 

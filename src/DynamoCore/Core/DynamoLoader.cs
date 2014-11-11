@@ -1,18 +1,12 @@
-﻿//#define __NO_SAMPLES_MENU
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.Core;
-using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using System.Reflection;
 using System.IO;
-using Autodesk.DesignScript.Runtime;
-
-using Dynamo.PackageManager;
 
 using DynamoUtilities;
 
@@ -29,7 +23,7 @@ namespace Dynamo.Utilities
         #region Properties/Fields
 
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
-        public readonly HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
+        private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
         #endregion
 
@@ -43,7 +37,7 @@ namespace Dynamo.Utilities
 
             public AssemblyLoadedEventArgs(Assembly assembly)
             {
-                this.Assembly = assembly;
+                Assembly = assembly;
             }
         }
 
@@ -51,8 +45,6 @@ namespace Dynamo.Utilities
 
         private void OnAssemblyLoaded(Assembly assem)
         {
-            LoadedAssemblies.Add(assem);
-
             if (AssemblyLoaded != null)
             {
                 AssemblyLoaded(new AssemblyLoadedEventArgs(assem));
@@ -62,16 +54,16 @@ namespace Dynamo.Utilities
         #endregion
         
         #region Methods
-
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
         /// the bin/nodes directory. Add the types to the searchviewmodel and
         /// the controller's dictionaries.
         /// </summary>
-        public List<TypeLoadData> LoadNodeModels()
+        /// <param name="context"></param>
+        public List<TypeLoadData> LoadNodeModels(string context)
         {
-            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
-            var allLoadedAssemblies = new Dictionary<string, Assembly>();
+            var loadedAssembliesByPath = new Dictionary<string, Assembly>();
+            var loadedAssembliesByName = new Dictionary<string, Assembly>();
 
             // cache the loaded assembly information
             foreach (
@@ -80,8 +72,8 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    allLoadedAssembliesByPath[assembly.Location] = assembly;
-                    allLoadedAssemblies[assembly.FullName] = assembly;
+                    loadedAssembliesByPath[assembly.Location] = assembly;
+                    loadedAssembliesByName[assembly.FullName] = assembly;
                 }
                 catch { }
             }
@@ -98,12 +90,14 @@ namespace Dynamo.Utilities
             ResolveEventHandler resolver = 
                 (sender, args) =>
                 {
-                    Assembly result;
-                    allLoadedAssemblies.TryGetValue(args.Name, out result);
-                    return result;
+                    Assembly resolvedAssembly;
+                    loadedAssembliesByName.TryGetValue(args.Name, out resolvedAssembly);
+                    return resolvedAssembly;
                 };
 
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            var result = new List<TypeLoadData>();
 
             foreach (var assemblyPath in allDynamoAssemblyPaths)
             {
@@ -119,29 +113,33 @@ namespace Dynamo.Utilities
 
                 LoadedAssemblyNames.Add(fn);
 
-                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                else
+                try
                 {
-                    try
+                    Assembly assembly;
+                    if (!loadedAssembliesByPath.TryGetValue(assemblyPath, out assembly))
                     {
-                        var assembly = Assembly.LoadFrom(assemblyPath);
-                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly);
+                        assembly = Assembly.LoadFrom(assemblyPath);
+                        loadedAssembliesByName[assembly.GetName().Name] = assembly;
+                        loadedAssembliesByPath[assemblyPath] = assembly;
                     }
-                    catch (BadImageFormatException)
-                    {
-                        //swallow these warnings.
-                    }
-                    catch (Exception e)
-                    {
-                        Log(e);
-                    }
+
+                    result.AddRange(LoadNodesFromAssembly(assembly, context));
+                    loadedAssemblies.Add(assembly);
+                    OnAssemblyLoaded(assembly);
+                }
+                catch (BadImageFormatException)
+                {
+                    //swallow these warnings.
+                }
+                catch (Exception e)
+                {
+                    Log(e);
                 }
             }
 
-            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+
+            return result;
         }
 
         /// <summary>
@@ -168,92 +166,16 @@ namespace Dynamo.Utilities
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-        public List<Type> LoadNodesFromAssembly(Assembly assembly)
+        public IEnumerable<TypeLoadData> LoadNodesFromAssembly(Assembly assembly, string context)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            var searchViewModel = dynamoModel.SearchModel;
-
-            var result = new List<Type>();
+            Type[] loadedTypes = null;
 
             try
             {
-                var loadedTypes = assembly.GetTypes();
-
-                foreach (var t in loadedTypes)
-                {
-                    try
-                    {
-                        //only load types that are in the right namespace, are not abstract
-                        //and have the elementname attribute
-                        var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                        var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
-                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
-                        var isDSCompatible =
-                            t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
-
-                        bool isHidden = false;
-                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Any())
-                        {
-                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
-                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
-                            {
-                                isHidden = true;
-                            }
-                        }
-
-                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
-                            continue;
-
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(Context.NONE))
-                        {
-
-                            object[] platformExclusionAttribs =
-                                t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
-                            {
-                                string[] exclusions =
-                                    (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the Model
-                                //then skip loading this type.
-                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
-                                    continue;
-                            }
-                        }
-                        string typeName;
-
-                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
-                        {
-                            searchViewModel.Add(t);
-                            typeName = (attribs[0] as NodeNameAttribute).Name;
-                        }
-                        else
-                            typeName = t.Name;
-
-                        AssemblyPathToTypesLoaded[assembly.Location].Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
-
-                        if (!dynamoModel.BuiltInTypesByName.ContainsKey(t.FullName))
-                            dynamoModel.BuiltInTypesByName.Add(t.FullName, data);
-                        else
-                            Log("Duplicate type encountered: " + typeName);
-
-                        OnAssemblyLoaded(assembly);
-                    }
-                    catch (Exception e)
-                    {
-                        Log("Failed to load type from " + assembly.FullName);
-                        Log("The type was " + t.FullName);
-                        Log(e);
-                    }
-
-                }
+                loadedTypes = assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException e)
             {
@@ -271,10 +193,60 @@ namespace Dynamo.Utilities
                 Log(e);
             }
 
-            return AssemblyPathToTypesLoaded[assembly.Location];
+            foreach (var t in (loadedTypes ?? Enumerable.Empty<Type>()))
+            {
+                TypeLoadData data;
+                try
+                {
+                    //var attribs = t.GetCustomAttributes<NodeNameAttribute>(false);
+                    //var isDeprecated = t.GetCustomAttributes<NodeDeprecatedAttribute>(true).Any();
+                    //var isMetaNode = t.GetCustomAttributes<IsMetaNodeAttribute>(false).Any();
+                    //var isDSCompatible =
+                    //    t.GetCustomAttributes<IsDesignScriptCompatibleAttribute>(true).Any();
+
+                    //bool isHidden =
+                    //    t.GetCustomAttributes<IsVisibleInDynamoLibraryAttribute>(true)
+                    //        .Any(attr => attr.Visible);
+
+                    //only load types that are in the right namespace, are not abstract
+                    //and have the elementname attribute
+                    if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes")
+                        continue;
+
+                    //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                    //if available, to discern whether we should load this type
+                    if (!context.Equals(Context.NONE)
+                        && t.GetCustomAttributes<DoNotLoadOnPlatformsAttribute>(false)
+                            .SelectMany(attr => attr.Values)
+                            .Any(e => e.Contains(context)))
+                    {
+                        continue;
+                    }
+
+                    //string typeName;
+
+                    //if (attribs.Any() && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+                    //{
+                    //    typeName = attribs.First().Name;
+                    //}
+                    //else
+                    //    typeName = t.Name;
+
+                    data = new TypeLoadData(t);
+                }
+                catch (Exception e)
+                {
+                    Log("Failed to load type from " + assembly.FullName);
+                    Log("The type was " + t.FullName);
+                    Log(e);
+                    data = null;
+                }
+
+                if (data != null)
+                    yield return data;
+            }
         }
 
         #endregion
-
     }
 }

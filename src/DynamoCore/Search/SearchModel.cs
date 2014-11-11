@@ -583,6 +583,7 @@ namespace Dynamo.Search
 
             searchEle.SetSearchable(searchable);
 
+            //TODO(Steve): These should be handled better...
             attribs = t.GetCustomAttributes(typeof(NotSearchableInHomeWorkspace), false);
             if (attribs.Length > 0)
             {
@@ -593,6 +594,7 @@ namespace Dynamo.Search
                 }
             }
 
+            //TODO(Steve): These should be handled better...
             attribs = t.GetCustomAttributes(typeof(NotSearchableInCustomNodeWorkspace), false);
             if (attribs.Length > 0)
             {

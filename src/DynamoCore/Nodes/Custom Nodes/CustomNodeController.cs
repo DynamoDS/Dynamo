@@ -13,11 +13,10 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller that synchronizes a node with a custom node definition.
     /// </summary>
-    public class CustomNodeController : FunctionCallNodeController<CustomNodeDefinition>
+    public class CustomNodeController<T> : FunctionCallNodeController<T>
+        where T : CustomNodeDefinition
     {
-        public CustomNodeController(CustomNodeDefinition def)
-            : base(def)
-        { }
+        public CustomNodeController(T def) : base(def) { }
 
         //private bool watchingDefForChanges;
 

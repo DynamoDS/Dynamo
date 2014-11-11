@@ -32,7 +32,7 @@ namespace Dynamo.DSEngine
         private readonly DynamoModel dynamoModel;
 
         private readonly LiveRunnerServices liveRunnerServices;
-        private readonly LibraryServices libraryServices;
+        private static LibraryServices LibraryServices { get { return LibraryServices.Instance; } }
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
@@ -44,14 +44,13 @@ namespace Dynamo.DSEngine
         {
             this.dynamoModel = dynamoModel;
 
-            libraryServices = LibraryServices.Instance;
-            libraryServices.LibraryLoading += LibraryLoading;
-            libraryServices.LibraryLoadFailed += LibraryLoadFailed;
-            libraryServices.LibraryLoaded += LibraryLoaded;
-            libraryServices.MessageLogged += dynamoModel.Logger.Log;
+            LibraryServices.LibraryLoading += LibraryLoading;
+            LibraryServices.LibraryLoadFailed += LibraryLoadFailed;
+            LibraryServices.LibraryLoaded += LibraryLoaded;
+            LibraryServices.MessageLogged += dynamoModel.Logger.Log;
 
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(LibraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
@@ -64,10 +63,10 @@ namespace Dynamo.DSEngine
             dynamoModel.NodeDeleted -= NodeDeleted;
             liveRunnerServices.Dispose();
 
-            libraryServices.LibraryLoading -= LibraryLoading;
-            libraryServices.LibraryLoadFailed -= LibraryLoadFailed;
-            libraryServices.LibraryLoaded -= LibraryLoaded;
-            libraryServices.MessageLogged -= dynamoModel.Logger.Log;
+            LibraryServices.LibraryLoading -= LibraryLoading;
+            LibraryServices.LibraryLoadFailed -= LibraryLoadFailed;
+            LibraryServices.LibraryLoaded -= LibraryLoaded;
+            LibraryServices.MessageLogged -= dynamoModel.Logger.Log;
         }
 
         #region Function Groups
@@ -77,8 +76,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
-            return libraryServices.BuiltinFunctionGroups.Union(
-                       libraryServices.Libraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
+            return LibraryServices.BuiltinFunctionGroups.Union(
+                       LibraryServices.Libraries.SelectMany(lib => LibraryServices.GetFunctionGroups(lib)));
         }
 
         /// <summary>
@@ -87,7 +86,7 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         public void ImportLibrary(string library)
         {
-            libraryServices.ImportLibrary(library);
+            LibraryServices.ImportLibrary(library);
         }
 
         #endregion
@@ -443,18 +442,20 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         /// <param name="managledName"></param>
         /// <returns></returns>
+        [Obsolete("Access LibraryServices.Instance.GetFunctionDescriptor directly.", true)]
         public FunctionDescriptor GetFunctionDescriptor(string library, string managledName)
         {
-            return libraryServices.GetFunctionDescriptor(library, managledName);
+            return LibraryServices.GetFunctionDescriptor(library, managledName);
         }
 
         /// <summary>
         /// Get function descriptor from managed function name.
         /// </summary>
         /// <param name="managledName"></param>
+        [Obsolete("Access LibraryServices.Instance.GetFunctionDescriptor directly.", true)]
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
-            return libraryServices.GetFunctionDescriptor(managledName);
+            return LibraryServices.GetFunctionDescriptor(managledName);
         }
 
         internal ClassMirror GetClassType(string className)
@@ -490,10 +491,10 @@ namespace Dynamo.DSEngine
             string newLibrary = e.LibraryPath;
 
             // Load all functions defined in that library.
-            dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
+            dynamoModel.SearchModel.Add(LibraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+            liveRunnerServices.ReloadAllLibraries(LibraryServices.Libraries.ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.

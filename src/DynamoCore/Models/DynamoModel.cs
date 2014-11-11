@@ -106,7 +106,8 @@ namespace Dynamo.Models
         #endregion
 
         #region public properties
-
+        //TODO(Steve): Attempt to make the majority of these readonly fields
+        
         /// <summary>
         /// TODO
         /// </summary>
@@ -135,12 +136,7 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public PackageLoader PackageLoader { get; private set; }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public ZeroTouchNodeLoader ZeroTouchLoader { get; private set; }
-
+        
         /// <summary>
         /// TODO
         /// </summary>
@@ -174,17 +170,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        public EngineController EngineController
-        {
-            get { return engine; }
-            private set
-            {
-                engine = value;
-                //TODO(Steve): Remove this once there will only ever be a single instance of EngineController
-                ZeroTouchLoader.EngineController = value; 
-            }
-        }
-        private EngineController engine;
+        public EngineController EngineController { get; private set; }
 
         /// <summary>
         /// TODO
@@ -492,8 +478,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            ZeroTouchLoader = new ZeroTouchNodeLoader(EngineController);
-            NodeFactory.AddLoader(ZeroTouchLoader);
+            NodeFactory.AddLoader(new ZeroTouchNodeLoader());
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
             // Reset virtual machine to avoid a race condition by causing a 
@@ -526,10 +511,10 @@ namespace Dynamo.Models
             //Loader.ClearCachedAssemblies();
 
             // Load NodeModels
-            foreach (var type in Loader.LoadNodeModels())
+            foreach (var type in Loader.LoadNodeModels(Context))
             {
                 NodeFactory.AddLoader(type.Type, type.AlsoKnownAs);
-                AddNodeTypeToSearch(type.Type);
+                AddNodeTypeToSearch(type);
             }
 
             // Import Zero Touch libs
@@ -550,9 +535,12 @@ namespace Dynamo.Models
             }
         }
 
-        private void AddNodeTypeToSearch(Type t)
+        private void AddNodeTypeToSearch(TypeLoadData t)
         {
-            //TODO(Steve)
+            if (!t.IsDSCompatible || t.IsDeprecated || t.IsHidden || t.IsMetaNode)
+                return;
+
+            //TODO(Steve): Construct SearchEntry, add to SearchModel
             throw new NotImplementedException();
         }
 

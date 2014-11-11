@@ -10,13 +10,16 @@ namespace Dynamo.Utilities
     public static class TypeExtensions
     {
         /// <summary>
-        /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
+        /// TODO
         /// </summary>
-        /// <param name="type">The type on which the method was invoked.</param>
-        /// <returns>An instance of the <paramref name="type"/>.</returns>
-        public static object GetInstance(this Type type)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetCustomAttributes<T>(this Type type, bool inherit) 
+            where T : Attribute
         {
-            return GetInstance<TypeToIgnore>(type, null);
+            return type.GetCustomAttributes(inherit).OfType<T>();
         }
 
         /// <summary>
@@ -46,6 +49,15 @@ namespace Dynamo.Utilities
                 throw new ArgumentException(msg, "type");
             }
             return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
+        }
+        /// <summary>
+        /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
+        /// </summary>
+        /// <param name="type">The type on which the method was invoked.</param>
+        /// <returns>An instance of the <paramref name="type"/>.</returns>
+        public static object GetInstance(this Type type)
+        {
+            return GetInstance<TypeToIgnore>(type, null);
         }
 
         /// <summary>

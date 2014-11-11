@@ -12,9 +12,10 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Base class for NodeModels representing zero-touch-imported-function calls.
     /// </summary>
-    public abstract class DSFunctionBase : FunctionCallBase<ZeroTouchNodeController, FunctionDescriptor>
+    public abstract class DSFunctionBase 
+        : FunctionCallBase<ZeroTouchNodeController<FunctionDescriptor>, FunctionDescriptor>
     {
-        protected DSFunctionBase(ZeroTouchNodeController controller)
+        protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
@@ -92,11 +93,9 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller that synchronizes a node with a zero-touch function definition.
     /// </summary>
-    public class ZeroTouchNodeController : FunctionCallNodeController<FunctionDescriptor>
+    public class ZeroTouchNodeController<T> : FunctionCallNodeController<T> where T : FunctionDescriptor
     {
-        public ZeroTouchNodeController(FunctionDescriptor zeroTouchDef)
-            : base(zeroTouchDef)
-        { }
+        public ZeroTouchNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
         /// <summary>
         ///     Description of function, taken from Definition.

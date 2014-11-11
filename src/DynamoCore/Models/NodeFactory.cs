@@ -299,13 +299,6 @@ namespace Dynamo.Models
     /// </summary>
     public class ZeroTouchNodeLoader : INodeLoader<DSFunctionBase>
     {
-        public EngineController EngineController { get; set; }
-
-        public ZeroTouchNodeLoader(EngineController engine)
-        {
-            EngineController = engine;
-        }
-
         public DSFunctionBase CreateNodeFromXml(XmlElement nodeElement)
         {
             string assembly = null;
@@ -353,12 +346,12 @@ namespace Dynamo.Models
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
-                EngineController.ImportLibrary(assembly);
-                descriptor = EngineController.GetFunctionDescriptor(assembly, function);
+                LibraryServices.Instance.ImportLibrary(assembly);
+                descriptor = LibraryServices.Instance.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                descriptor = EngineController.GetFunctionDescriptor(function);
+                descriptor = LibraryServices.Instance.GetFunctionDescriptor(function);
             }
 
             if (null == descriptor)

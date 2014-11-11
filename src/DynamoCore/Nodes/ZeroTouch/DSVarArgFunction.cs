@@ -18,10 +18,8 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase
     {
-        public DSVarArgFunction() : this(null) { }
-
         public DSVarArgFunction(FunctionDescriptor descriptor)
-            : base(new ZeroTouchVarArgNodeController(descriptor))
+            : base(new ZeroTouchVarArgNodeController<FunctionDescriptor>(descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
         }
@@ -64,7 +62,7 @@ namespace Dynamo.Nodes
         #region VarInput Controller
         private sealed class ZeroTouchVarInputController : VariableInputNodeController
         {
-            private readonly ZeroTouchNodeController nodeController;
+            private readonly ZeroTouchNodeController<FunctionDescriptor> nodeController;
 
             public ZeroTouchVarInputController(DSFunctionBase model)
                 : base(model)
@@ -90,9 +88,10 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller that extends Zero Touch synchronization with VarArg function compilation.
     /// </summary>
-    public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
+    public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T> 
+        where T : FunctionDescriptor
     {
-        public ZeroTouchVarArgNodeController(FunctionDescriptor zeroTouchDef)
+        public ZeroTouchVarArgNodeController(T zeroTouchDef)
             : base(zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)

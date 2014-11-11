@@ -101,7 +101,7 @@ namespace Dynamo.Controls
         {
             this.nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
 
-            foreach (var assem in DynamoLoader.LoadedAssemblies)
+            foreach (var assem in dynamoViewModel.Model.Loader.LoadedAssemblies)
             {
                 this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
             }
@@ -445,7 +445,7 @@ namespace Dynamo.Controls
             if (_installedPkgsView == null)
             {
                 _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel, 
-                    dynamoViewModel.Model.Loader.PackageLoader));
+                    dynamoViewModel.Model.PackageLoader));
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
@@ -632,12 +632,12 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
-                {
-                    error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
+                //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
+                //{
+                //    error = "A built-in node with the given name already exists.";
+                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                //                                   MessageBoxImage.Error);
+                //}
                 else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
@@ -665,7 +665,7 @@ namespace Dynamo.Controls
             // because DynamoModel should stay long enough for verification
             // code to verify data much later than the window closing).
             // 
-            if (DynamoModel.IsTestMode)
+            if (dynamoViewModel.Model.IsTestMode)
                 return;
 
             var sp = new DynamoViewModel.ShutdownParams(

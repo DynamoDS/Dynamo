@@ -18,10 +18,11 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public class Function : FunctionCallBase<CustomNodeController, CustomNodeDefinition>
+    public class Function 
+        : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
-        protected internal Function(CustomNodeDefinition def)
-            : base(new CustomNodeController(def))
+        public Function(CustomNodeDefinition def)
+            : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
@@ -41,15 +42,7 @@ namespace Dynamo.Nodes
         {
             get { return Definition.FunctionId.ToString(); }
         }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public new CustomNodeController Controller
-        {
-            get { return base.Controller as CustomNodeController; }
-        }
-
+        
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -272,7 +265,7 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-        
+
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             Controller.Definition = def;
