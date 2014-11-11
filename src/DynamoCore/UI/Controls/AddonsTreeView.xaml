@@ -11,58 +11,15 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
+
+        <!-- Region Converters -->
+        
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
-
-        <!-- Region DataTemplates -->
-
-        <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
-                                  ItemsSource="{Binding Path=Items}">
-            <Border Height="30">
-                <TextBlock Foreground="#989898"
-                           FontSize="13"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
-            </Border>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
-                                  ItemsSource="{Binding Path=Items}">
-            <Border Height="30">
-                <TextBlock Foreground="#DDD"
-                           FontSize="13"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
-            </Border>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
+        
         <!--EndRegion-->
 
         <!-- Region Styles -->
@@ -417,7 +374,136 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="AddonsContextMenu"
+               TargetType="{x:Type ContextMenu}">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="HasDropShadow"
+                    Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <Border x:Name="Border"
+                                Background="#414141"
+                                Padding="1,5,1,5">
+                            <StackPanel IsItemsHost="True"
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+               TargetType="Separator">
+            <Setter Property="Height"
+                    Value="1" />
+            <Setter Property="Margin"
+                    Value="10,2,10,2" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border BorderBrush="#494949"
+                                BorderThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type MenuItem}">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="#00000000" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                 Color="#00000000" />
+            </Style.Resources>
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="Foreground"
+                    Value="#989898" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border x:Name="Border"
+                                MinWidth="150">
+                            <ContentPresenter Margin="15,5,5,5"
+                                              ContentSource="Header"
+                                              RecognizesAccessKey="True" />
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#343434" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!--EndRegion-->
+
+        <!-- Region DataTemplates -->
+
+        <HierarchicalDataTemplate DataType="{x:Type search:BrowserRootElement}"
+                                  ItemsSource="{Binding Path=Items}">
+            <Border Height="30">
+                <Border.ContextMenu>
+                    <ContextMenu Style="{StaticResource AddonsContextMenu}">
+                        <MenuItem Header="Remove" />
+                        <MenuItem Header="Move" />
+                        <Separator />
+                        <MenuItem Header="Locate in Disk.." />
+                    </ContextMenu>
+                </Border.ContextMenu>
+                <TextBlock Foreground="#989898"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
+            </Border>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
+                                  ItemsSource="{Binding Path=Items}">
+            <Border Height="30">
+                <TextBlock Foreground="#DDD"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
+            </Border>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
+                <Border Height="30">
+                    <TextBlock Foreground="#DDD"
+                               FontSize="13"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                </Border>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
+                <Border Height="30">
+                    <TextBlock Foreground="#DDD"
+                               FontSize="13"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                </Border>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <!--EndRegion-->
+
     </UserControl.Resources>
     <StackPanel>
         <Border Background="#353535"
