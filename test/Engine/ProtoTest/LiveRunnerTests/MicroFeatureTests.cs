@@ -5232,7 +5232,7 @@ a = p.UpdateCount;
             var added = new List<Subtree>();
 
             var guid1 = Guid.NewGuid();
-            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer();";
+            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
             added.Add(CreateSubTreeFromCode(guid1, code1));
 
             var guid2 = Guid.NewGuid();
