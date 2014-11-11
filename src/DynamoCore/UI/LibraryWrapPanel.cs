@@ -42,7 +42,7 @@ namespace Dynamo.Controls
 
         private void OnLibraryWrapPanelMouseDown(object sender, MouseButtonEventArgs e)
         {
-            isMouseDown = true; 
+            e.Handled = true; 
         }
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -231,17 +231,7 @@ namespace Dynamo.Controls
 
             if (selectedClassProspectiveIndex == translatedIndex)
                 return;
-
-            if (isMouseDown)
-            {
-                selectedClassProspectiveIndex = translatedIndex;
-            }
-            else
-            {
-                // Class information cannot be selected, leave last selected class index as selected index.
-                (sender as ListView).SelectedIndex = selectedClassProspectiveIndex;
-                selectedIndex = selectedClassProspectiveIndex;
-            }
+            selectedClassProspectiveIndex = translatedIndex;
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
@@ -261,7 +251,6 @@ namespace Dynamo.Controls
 
             currentClass = collection[selectedIndex] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
-            isMouseDown = false;
         }
 
         /// <summary>
