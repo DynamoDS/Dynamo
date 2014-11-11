@@ -31,11 +31,22 @@ namespace SamplesLibraryUI
     /// properties on our class and our custom UI.
     /// 
     /// </summary>
+     
+    // The NodeName attribute is what will display on 
+    // top of the node in Dynamo
     [NodeName("Hello Dynamo")]
+
+    // The NodeCategory attribute determines how your
+    // node will be organized in the library. You can
+    // specify your own category or use one of the 
+    // built-ins provided in BuiltInNodeCategories.
     [NodeCategory("Sample Nodes")]
+
+    // The description will display in the tooltip
+    // and in the help window for the node.
     [NodeDescription("A sample UI node which displays custom UI.")]
+
     [IsDesignScriptCompatible]
-    [IsVisibleInDynamoLibrary(true)]
     public class HelloDynamo : NodeModel, IWpfNode
     {
         #region private members
