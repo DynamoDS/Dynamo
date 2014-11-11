@@ -684,16 +684,14 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
-                                                    <WrapPanel Orientation="Horizontal"
+                                                    <TextBlock Foreground="#989898"
+                                                               FontSize="12"
                                                                Margin="16,8,0,8">
-                                                        <TextBlock Text="{Binding Prefix}"
-                                                                   Foreground="#989898"
-                                                                   FontSize="12"
-                                                                   MouseLeftButtonDown="OnPrefixTextBlockMouseDown" />
-                                                        <TextBlock Text="{Binding GroupName}"
-                                                                   FontSize="12">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="{x:Type TextBlock}">
+                                                            <Run Text="{Binding Prefix, Mode=OneWay}"
+                                                                 MouseDown="OnPrefixTextBlockMouseDown" />
+                                                            <Run Text="{Binding GroupName, Mode=OneWay}">
+                                                                <Run.Style>
+                                                                   <Style TargetType="{x:Type Run}">
                                                                     <Setter Property="Foreground"
                                                                             Value="#989898" />
                                                                     <Style.Triggers>
@@ -703,10 +701,10 @@
                                                                                     Value="#aaaaaa" />
                                                                         </Trigger>
                                                                     </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
-                                                    </WrapPanel>
+                                                                </Style> 
+                                                                </Run.Style>
+                                                            </Run>
+                                                    </TextBlock>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"

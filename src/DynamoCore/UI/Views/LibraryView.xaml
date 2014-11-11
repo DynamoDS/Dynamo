@@ -619,6 +619,22 @@
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                           Value="true" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="false" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Background"
+                                                                        Value="#404040" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+
                                                         <DataTrigger Value="true">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"

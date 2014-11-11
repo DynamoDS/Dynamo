@@ -100,7 +100,7 @@ namespace Dynamo.UI.Views
 
         private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!(e.OriginalSource is TextBlock)) return;
+            if (!(e.OriginalSource is System.Windows.Documents.Run)) return;
 
             var memberGroup = sender as FrameworkElement;
             var memberGroupContext = memberGroup.DataContext as SearchMemberGroup;
@@ -109,7 +109,7 @@ namespace Dynamo.UI.Views
             memberGroupContext.ExpandAllMembers();
 
             // Make textblock underlined.
-            var textBlock = e.OriginalSource as TextBlock;
+            var textBlock = e.OriginalSource as System.Windows.Documents.Run;
             textBlock.TextDecorations = TextDecorations.Underline;
         }
 
