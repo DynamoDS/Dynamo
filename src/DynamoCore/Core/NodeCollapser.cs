@@ -5,6 +5,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Microsoft.Practices.Prism;
+using System.Xml;
 
 namespace Dynamo.Utilities
 {
@@ -17,22 +18,23 @@ namespace Dynamo.Utilities
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="args"></param>
-        public static void Collapse(DynamoModel dynamoModel, IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args = null)
+        public static void Collapse(DynamoModel dynamoModel, 
+                                    IEnumerable<NodeModel> selectedNodes, 
+                                    WorkspaceModel currentWorkspace, 
+                                    FunctionNamePromptEventArgs args = null)
         {
-            var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
-
             if (args == null || !args.Success)
             {
                 args = new FunctionNamePromptEventArgs();
                 dynamoModel.OnRequestsFunctionNamePrompt(null, args);
 
-                
                 if (!args.Success)
                 {
                     return;
                 }
             }
 
+            var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             // Note that undoable actions are only recorded for the "currentWorkspace", 
             // the nodes which get moved into "newNodeWorkspace" are not recorded for undo,
             // even in the new workspace. Their creations will simply be treated as part of
@@ -48,7 +50,6 @@ namespace Dynamo.Utilities
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
             using (undoRecorder.BeginActionGroup())
             {
-
                 var newNodeWorkspace = new CustomNodeWorkspaceModel(
                     dynamoModel,
                     args.Name,
@@ -216,6 +217,16 @@ namespace Dynamo.Utilities
                     undoRecorder.RecordDeletionForUndo(ele);
                     ele.SaveResult = false;
                     currentWorkspace.Nodes.Remove(ele);
+
+                    // VisualizationManager and EngineController subscribe
+                    // NodeDeleted event, so notify them that this node has
+                    // been deleted.
+                    dynamoModel.OnNodeDeleted(ele);
+
+                    // Assign a new guid to this node, otherwise when node is
+                    // compiled to AST, literally it is still in global scope
+                    // instead of in function scope.
+                    ele.GUID = Guid.NewGuid();
                     ele.Workspace = newNodeWorkspace;
                 }
 
