@@ -471,7 +471,6 @@ namespace Dynamo.UI.Views
             }
             else // Otherwise, Up was pressed. So, we have to move to top result.
             {
-                //var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
                 HighlightedItem = FindFirstChildListItem(this, "topResultListBox");
             }
 
