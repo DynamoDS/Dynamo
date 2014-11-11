@@ -1,8 +1,11 @@
 ﻿using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI;
-using Dynamo.Models;
 
-namespace Dynamo.Nodes
+using DSCoreNodesUI;
+
+using Dynamo.Models;
+using Dynamo.Nodes;
+
+namespace SamplesLibraryUI
 {
     public enum TomDickHarry
     {

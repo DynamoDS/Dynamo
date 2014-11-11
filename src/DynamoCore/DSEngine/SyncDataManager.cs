@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Specialized;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoScript.Runners;
@@ -16,7 +17,11 @@ namespace Dynamo.DSEngine
     {
         private readonly LinkedListOfList<Guid, AssociativeNode> nodes = new LinkedListOfList<Guid, AssociativeNode>();
 
-        private readonly Dictionary<Guid, State> states = new Dictionary<Guid, State>();
+        // states :: Dictionary<Guid, State>
+        // It is a dictionary for the state of each UI node. We use 
+        // OrderedDictionary here is because we want to keep the order of
+        // state change. 
+        private OrderedDictionary states = new OrderedDictionary();
 
         /// <summary>
         ///     Return graph sync data that will be executed by LiveRunner.
@@ -24,9 +29,9 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public GraphSyncData GetSyncData()
         {
-            List<Subtree> added = GetSubtrees(State.Added);
-            List<Subtree> modified = GetSubtrees(State.Modified);
-            List<Subtree> deleted = GetSubtrees(State.Deleted);
+            var added = GetSubtrees(State.Added).ToList();
+            var modified = GetSubtrees(State.Modified).ToList();
+            var deleted = GetSubtrees(State.Deleted).ToList();
             return new GraphSyncData(deleted, added, modified);
         }
 
@@ -36,15 +41,19 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void ResetStates()
         {
-            // Remove all thoses deleted nodes, so if a node is deleted and undo,
-            // its state is "Added" instead of "RequestSync".
-            var deletedKeys = states.Keys.Where(k => states[k] == State.Deleted).ToList();
-            foreach (var key in deletedKeys)
+            // Remove all thoses deleted nodes and mark the states of remaining
+            // nodes as clean.
+            var newStates = new OrderedDictionary();
+            foreach (Guid guid in states.Keys)
             {
-                states.Remove(key);
+                State state = (State)states[guid];
+                if (state != State.Deleted)
+                {
+                    newStates.Add(guid, State.Clean);
+                }
             }
-     
-            states.Keys.ToList().ForEach(key => states[key] = State.Clean);
+
+            states = newStates;
         }
 
         /// <summary>
@@ -53,10 +62,14 @@ namespace Dynamo.DSEngine
         /// <param name="guid"></param>
         public void MarkForAdding(Guid guid)
         {
-            if (states.ContainsKey(guid))
+            if (states.Contains(guid))
+            {
                 states[guid] = State.Modified;
+            }
             else
+            {
                 states[guid] = State.Added;
+            }
             nodes.Removes(guid);
         }
 
@@ -80,11 +93,12 @@ namespace Dynamo.DSEngine
             nodes.Removes(guid);
         }
 
-        private List<Subtree> GetSubtrees(State state)
+        private IEnumerable<Subtree> GetSubtrees(State state)
         {
-            List<Guid> guids = states.Where(x => x.Value == state).Select(x => x.Key).ToList();
-
-            return guids.Select(guid => new Subtree(nodes.GetItems(guid), guid)).ToList();
+            return states.Keys
+                         .Cast<Guid>()
+                         .Where(guid => (State)states[guid] == state)
+                         .Select(guid => new Subtree(nodes.GetItems(guid), guid));
         }
 
         internal enum State

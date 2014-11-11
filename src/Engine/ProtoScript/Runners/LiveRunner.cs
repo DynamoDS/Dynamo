@@ -142,7 +142,13 @@ namespace ProtoScript.Runners
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+            
+            // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
+
+            // Mark all graphnodes dependent on the removed function as dirty
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.RemovedFunctionDefNodesFromModification);
+
             // Mark all graphnodes dependent on the modified functions as dirty
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
         }
@@ -530,14 +536,21 @@ namespace ProtoScript.Runners
                         {
                             // Only update the cached ASTs if it is not ForceExecution
 
-                            // Cache the functions that were re-defined
-                            // The changeSetApplier will remove the previous definition of these functions given the function signature
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions.Where(n => n is FunctionDefinitionNode));
-
-                            // Update the current subtree list
                             List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+
+                            // Get all the unomodified ASTs and append them to the cached ast list 
                             newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+
+                            // Append all the modified ASTs to the cached ast list 
                             newCachedASTList.AddRange(modifiedASTList);
+
+                            // ================================================================================
+                            // Get a list of functions that were removed
+                            // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
+                            // This will passed to the changeset applier to handle removed functions in the VM
+                            // ================================================================================
+                            IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
 
                             st.AstNodes.Clear();
                             st.AstNodes.AddRange(newCachedASTList);
