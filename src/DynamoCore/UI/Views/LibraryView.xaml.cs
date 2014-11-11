@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.UI.Views
 {
@@ -60,6 +61,14 @@ namespace Dynamo.UI.Views
         private void OnSubCategoryListViewPreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void OnTreeViewItemPreviewMouseLeftButton(object sender, MouseButtonEventArgs e)
+        {
+            if (!((sender as TreeViewItem).DataContext is BrowserRootElement))
+                return;
+
+            var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
         }
     }
 }

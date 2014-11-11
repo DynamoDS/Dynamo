@@ -136,7 +136,7 @@
                                   Height="27"
                                   BorderBrush="#353535"
                                   BorderThickness="0,0,0,1" />
-                    
+
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
                                       DockPanel.Dock="Bottom">
@@ -443,7 +443,7 @@
                                                                          Path=IsChecked}"
                                                    Value="False" />
                                     </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
+                                    <MultiDataTrigger.Setters>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
                                                 Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
@@ -545,13 +545,13 @@
                                                               ClickMode="Press"
                                                               IsChecked="{Binding IsExpanded, Mode=OneWay}" />
 
-                                                    <ContentPresenter Grid.Row="0"
-                                                                      Grid.Column="1"
-                                                                      Grid.ColumnSpan="2"
-                                                                      ContentSource="Header" />
-                                                    
+                                                <ContentPresenter Grid.Row="0"
+                                                                  Grid.Column="1"
+                                                                  Grid.ColumnSpan="2"
+                                                                  ContentSource="Header" />
+
                                             </Grid>
-                                            
+
                                             <Border.Style>
                                                 <Style TargetType="{x:Type Border}">
                                                     <Style.Triggers>
@@ -570,7 +570,7 @@
                                                                         Value="#222222" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-                                                        
+
                                                         <DataTrigger Value="false">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
@@ -653,6 +653,8 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnTreeViewItemPreviewMouseLeftButton" />
             </Style>
 
             <Style x:Key="LibraryTreeView"
