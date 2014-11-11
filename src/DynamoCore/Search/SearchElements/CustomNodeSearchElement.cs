@@ -25,78 +25,27 @@ namespace Dynamo.Search.SearchElements
 
         public override string Type { get { return "Custom Node"; } }
 
-        private XmlNode xmlNode;
+        List<Tuple<string, string>> inputParameters;
+        List<string> outputParameters;
 
         protected override List<Tuple<string, string>> GenerateInputParameters()
         {
-            List<Tuple<string, string>> inputPar = new List<Tuple<string, string>>();
-            List<string> inputs = new List<string>();
+            TryLoadDocumentation();
 
-            if (xmlNode == null)
-            {
-                xmlNode = TryLoadDocumentation();
+            if(!inputParameters.Any())
+                inputParameters.Add(Tuple.Create("", "none"));
 
-                // If we couldn't load xml with information about node, just return none.
-                if (xmlNode == null)
-                {
-                    inputPar.Add(Tuple.Create("", "none"));
-                    return inputPar;
-                }
-            }
-
-            foreach (XmlNode elNode in xmlNode.ChildNodes)
-            {
-                foreach (var subNode in
-                    elNode.ChildNodes.Cast<XmlNode>()
-                        .Where(subNode =>
-                            ((subNode.Name == "Symbol") && 
-                            (subNode.ParentNode.Name == "Dynamo.Nodes.Symbol")||
-                            (subNode.ParentNode.Name == "Dynamo.Nodes.dynSymbol"))))
-                {
-                    inputs.Add(subNode.Attributes[0].Value);
-                }
-            }
-
-            foreach (var parameter in inputs)
-            {
-                if (parameter != string.Empty)
-                    inputPar.Add(Tuple.Create(parameter, ""));
-            }
-
-            return inputPar;
+            return inputParameters;
         }
 
         protected override List<string> GenerateOutputParameters()
         {
-            List<string> outputPar = new List<string>();
+            TryLoadDocumentation();
 
-            if (xmlNode == null)
-            {
-                xmlNode = TryLoadDocumentation();
+            if (!outputParameters.Any())
+                outputParameters.Add("none");
 
-                // If we couldn't load xml with information about node, just return none.
-                if (xmlNode == null)
-                {
-                    outputPar.Add("none");
-                    return outputPar;
-                }
-            }
-
-            foreach (XmlNode elNode in xmlNode.ChildNodes)
-            {
-                foreach (var subNode in
-                    elNode.ChildNodes.Cast<XmlNode>()
-                        .Where(subNode =>
-                            ((subNode.Name == "Symbol") &&
-                            (subNode.ParentNode.Name == "Dynamo.Nodes.Output") ||
-                            (subNode.ParentNode.Name == "Dynamo.Nodes.dynOutput"))))
-                {
-                    if (subNode.Attributes[0].Value != string.Empty)
-                        outputPar.Add(subNode.Attributes[0].Value);
-                }
-            }
-
-            return outputPar;
+            return outputParameters;
         }
 
         public CustomNodeSearchElement(CustomNodeInfo info, SearchElementGroup group)
@@ -143,8 +92,14 @@ namespace Dynamo.Search.SearchElements
             return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
         }
 
-        private XmlNode TryLoadDocumentation()
+        private void TryLoadDocumentation()
         {
+            if (inputParameters != null || (outputParameters != null))
+                return;
+
+            inputParameters = new List<Tuple<string, string>>();
+            outputParameters = new List<string>();
+
             try
             {
                 XmlDocument xmlDoc = new XmlDocument();
@@ -155,11 +110,29 @@ namespace Dynamo.Search.SearchElements
                     elNodes = xmlDoc.GetElementsByTagName("dynElements");
 
                 XmlNode elNodesList = elNodes[0];
-                return elNodesList;
+
+                foreach (XmlNode elNode in elNodesList.ChildNodes)
+                {
+                    foreach (var subNode in
+                        elNode.ChildNodes.Cast<XmlNode>()
+                            .Where(subNode =>(subNode.Name == "Symbol")))
+                    {
+                        var parameter = subNode.Attributes[0].Value;
+                        if (parameter != string.Empty)
+                        {
+                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Symbol") ||
+                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynSymbol"))
+                                inputParameters.Add(Tuple.Create(parameter, ""));
+
+                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Output") ||
+                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynOutput"))
+                                outputParameters.Add(parameter);
+                        }
+                    }
+                }
             }
             catch
             {
-                return null;
             }
         }
 
