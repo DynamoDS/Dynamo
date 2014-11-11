@@ -34,7 +34,7 @@ namespace Dynamo.Search.SearchElements
 
             if (xmlNode == null)
             {
-                xmlNode = TryToLoadXmlNode();
+                xmlNode = TryLoadDocumentation();
 
                 // If we couldn't load xml with information about node, just return none.
                 if (xmlNode == null)
@@ -72,7 +72,7 @@ namespace Dynamo.Search.SearchElements
 
             if (xmlNode == null)
             {
-                xmlNode = TryToLoadXmlNode();
+                xmlNode = TryLoadDocumentation();
 
                 // If we couldn't load xml with information about node, just return none.
                 if (xmlNode == null)
@@ -143,7 +143,7 @@ namespace Dynamo.Search.SearchElements
             return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
         }
 
-        private XmlNode TryToLoadXmlNode()
+        private XmlNode TryLoadDocumentation()
         {
             try
             {
