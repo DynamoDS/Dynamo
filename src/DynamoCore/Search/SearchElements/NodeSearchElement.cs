@@ -53,6 +53,18 @@ namespace Dynamo.Search.SearchElements
             } 
         }
 
+
+        public bool HasDescription
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_description))
+                    return false;
+
+                return true;
+            }
+        }
+
         /// <summary>
         /// Group property </summary>
         /// <value>
