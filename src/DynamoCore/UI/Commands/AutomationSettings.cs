@@ -112,6 +112,35 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// When "DynamoModel.DynamicRunEnabled" is set to true, "HomeWorkspace"
+        /// starts its internal "DispatcherTimer" whenever its content is being 
+        /// modified. This timer starts a round of evaluation after a predefined 
+        /// amount of time has ellapsed, preventing modifications in quick 
+        /// succession from triggering too many evaluations. However, the timer 
+        /// does not always have a chance to tick. This is especially true when 
+        /// AutomationSettings exhausted all available commands in its list and 
+        /// is ready to end the current test run. The shutdown timer that  
+        /// AutomationSettings kicks start may tick before the evaluation timer 
+        /// in WorkspaceModel has a chance to tick. When this happens, validation
+        /// code at the end of the recorded test ends up with invalid evaluation
+        /// results, failing the test case.
+        /// </summary>
+        /// <returns>Returns true if there is a pending evaluation and that the 
+        /// shutdown process should be deferred.</returns>
+        /// 
+        private bool HasPendingEvaluation
+        {
+            get
+            {
+                var homeWorkspace = owningDynamoModel.HomeSpace;
+                if (homeWorkspace == null)
+                    return false;
+
+                return homeWorkspace.IsEvaluationPending;
+            }
+        }
+
         #endregion
 
         #region Class Operational Methods
@@ -396,6 +425,19 @@ namespace Dynamo.ViewModels
         private void OnShutdownTimerTick(object sender, EventArgs e)
         {
             this.playbackTimer.Stop();
+
+            if (HasPendingEvaluation) // See method for documentation.
+            {
+                // When shutdown timer ticks and there is still an outstanding 
+                // evaluation, then let the timer ticks away so it checks back 
+                // later. Here the interval is updated to 20ms -- something that
+                // is independent of the predefined shutdown interval.
+                // 
+                playbackTimer.Interval = TimeSpan.FromMilliseconds(20);
+                playbackTimer.Start();
+                return;
+            }
+
             this.playbackTimer = null;
             ChangeStateInternal(State.Stopped);
 

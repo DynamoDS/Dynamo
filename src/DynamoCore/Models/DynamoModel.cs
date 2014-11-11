@@ -137,6 +137,7 @@ namespace Dynamo.Models
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
         public bool ShutdownRequested { get; internal set; }
+        public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         /// The application version string for analytics reporting APIs
@@ -326,6 +327,7 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            this.MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -551,6 +553,12 @@ namespace Dynamo.Models
                 RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
+            else
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
         }
 
         /// <summary>
@@ -607,7 +615,10 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            OnEvaluationCompleted(this, EventArgs.Empty);
+            
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
         }
 
         /// <summary>

@@ -34,7 +34,12 @@ namespace Dynamo
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
         {
-            return Path.Combine(TempFolder, Guid.NewGuid().ToString() + "." + fileExtension);
+            var guid = Guid.NewGuid().ToString();
+            return Path.Combine(
+                TempFolder,
+                string.IsNullOrWhiteSpace(fileExtension) 
+                    ? guid 
+                    : Path.ChangeExtension(guid, fileExtension));
         }
 
         public string GetTestDirectory()

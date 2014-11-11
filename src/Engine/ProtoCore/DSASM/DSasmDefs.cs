@@ -449,6 +449,7 @@ namespace ProtoCore.DSASM
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;
         public const string kImportData = "ImportData";
+        public const string kTempVarForNonAssignment = "temp_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";

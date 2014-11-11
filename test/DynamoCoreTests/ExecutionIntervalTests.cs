@@ -21,8 +21,11 @@ namespace Dynamo.Tests
 
             int runCount = 0;
 
-            ViewModel.Model.EvaluationCompleted += delegate
+            ViewModel.Model.EvaluationCompleted += (sender, e) =>
             {
+                if (!e.EvaluationTookPlace)
+                    return;
+
                 runCount++;
                 if (runCount == 2)
                 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
@@ -10,16 +7,18 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitTestServices;
+
 using RTF.Framework;
 
 using Arc = Autodesk.DesignScript.Geometry.Arc;
 using Line = Autodesk.DesignScript.Geometry.Line;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace RevitTestServices.GeometryConversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    class CurveUtilsTests : GeometricRevitNodeTest
+    class CurveUtilsTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]
