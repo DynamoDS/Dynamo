@@ -11,6 +11,14 @@ namespace ProtoCore.DSASM
             functionPointerDictionary = new BiDictionaryOneToOne<int, FunctionPointerNode>();
         }
 
+        /// <summary>
+        /// Try to get the original procedure node that the function pointer
+        /// points to. 
+        /// </summary>
+        /// <param name="functionPointer">Function pointer</param>
+        /// <param name="core">Core</param>
+        /// <param name="procNode">Procedure node</param>
+        /// <returns></returns>
         public bool TryGetFunction(StackValue functionPointer, Core core, out ProcedureNode procNode)
         {
             procNode = null;
