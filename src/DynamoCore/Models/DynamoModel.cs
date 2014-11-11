@@ -759,6 +759,7 @@ namespace Dynamo.Models
             Loader.LoadCustomNodes();
 
             this.SearchModel.RemoveEmptyCategories();
+            this.SearchModel.SortRootCategories();
             this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");

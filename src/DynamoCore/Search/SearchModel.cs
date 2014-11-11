@@ -245,6 +245,10 @@ namespace Dynamo.Search
                 category.AddMemberToGroup(node);
                 category.AddClassToGroup(node);
             }
+
+            // Order found categories by name.
+            _searchRootCategories = new ObservableCollection<SearchCategory>(_searchRootCategories.OrderBy(x => x.Name));
+            SortSearchCategoriesChildren();
         }
 
         private void ClearSearchCategories()
@@ -327,10 +331,21 @@ namespace Dynamo.Search
             addonCategoriesBuilder.RemoveEmptyCategories();
         }
 
+        internal void SortRootCategories()
+        {
+            browserCategoriesBuilder.SortCategoryItems();
+            addonCategoriesBuilder.SortCategoryItems();
+        }
+
         internal void SortCategoryChildren()
         {
             browserCategoriesBuilder.SortCategoryChildren();
             addonCategoriesBuilder.SortCategoryChildren();
+        }
+
+        internal void SortSearchCategoriesChildren()
+        {
+            _searchRootCategories.ToList().ForEach(x => x.SortChildren());
         }
 
         #endregion
