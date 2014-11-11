@@ -25,11 +25,41 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+        private ListView classListView;
+
+        internal bool IsSelected()
+        {
+            return currentClass != null;
+        }
+
+        internal BrowserInternalElement SelectedItem()
+        {
+            return currentClass;
+        }
+
+        internal bool Contains(BrowserInternalElement item)
+        {
+            return collection.Contains(item);
+        }
+
+        internal void Select(BrowserInternalElement item)
+        {
+            var index = collection.IndexOf(item);
+            if (index == -1)
+                return;
+
+            classListView.SelectedIndex = index;
+        }
+
+        internal void UnselectAll()
+        {
+            classListView.SelectedIndex = -1;
+        }
 
         protected override void OnInitialized(EventArgs e)
         {
             // ListView should never be null.
-            var classListView = WPF.FindUpVisualTree<ListView>(this);
+            classListView = WPF.FindUpVisualTree<ListView>(this);
             collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
             collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
@@ -238,7 +268,10 @@ namespace Dynamo.Controls
             if (selectedClassProspectiveIndex == -1)
             {
                 if (classInfoIndex != -1)
+                {
                     (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
+                    currentClass = null;
+                }
                 OrderListItems();
                 return;
             }
