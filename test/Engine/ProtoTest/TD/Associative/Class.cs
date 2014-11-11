@@ -1225,7 +1225,7 @@ result3 = instance.val1;//2";
             thisTest.Verify("result2", 1.0);
             thisTest.Verify("result3", 2);
         }
-
+    
         [Test]
         [Category("SmokeTest")]
         public void T052_Inherit_defaultproperty()
@@ -4260,6 +4260,56 @@ class Test{	x : int;	y : int;	constructor Test(m:int, n:int = 2)	{		x = m;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("i", 2);
         }
+        [Test]
+        [Category("SmokeTest")]
+        [Category("Failure")]
+        public void T04967_defaultArgconstructor03()
+        {
+            string code = @"
+ class Test
+{
+    x : int;
+    constructor Test(m:int = 1)
+    {
+        x = m;
+    }
+}
+
+p = Test.Test(); 
+i = p.x; // Expected: 2
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 1);
+
+        }
+        [Test]
+        [Category("SmokeTest")]
+        [Category("Failure")]
+        public void T04967_defaultArgconstructor04()
+        {
+            string code = @"
+ class Test
+{
+    x : int;
+    constructor Test(m:int = 1,n:int=5)
+    {
+        x = m;
+        y=n;
+    }
+}
+
+p = Test.Test(); 
+i = p.x; //  Expected: 1
+j = p.y; //  Expected: 5
+";
+            
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 1);
+            thisTest.Verify("i", 5);
+
+        }
+       
+
 
     }
 }
