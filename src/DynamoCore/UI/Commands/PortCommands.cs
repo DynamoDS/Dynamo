@@ -5,9 +5,9 @@ namespace Dynamo.ViewModels
     public partial class PortViewModel
     {
         private DelegateCommand _connectCommand;
-        private DelegateCommand _rectangleMouseEnterCommand;
-        private DelegateCommand _rectangleMouseLeaveCommand;
-        private DelegateCommand _rectangleMouseLeftButtonCommand;
+        private DelegateCommand portMouseEnterCommand;
+        private DelegateCommand portMouseLeaveCommand;
+        private DelegateCommand portMouseLeftButtonCommand;
         public DelegateCommand ConnectCommand
         {
             get
@@ -23,10 +23,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_rectangleMouseEnterCommand == null)
-                    _rectangleMouseEnterCommand = new DelegateCommand(OnRectangleMouseEnter, CanConnect);
+                if (portMouseEnterCommand == null)
+                    portMouseEnterCommand = new DelegateCommand(OnRectangleMouseEnter, CanConnect);
 
-                return _rectangleMouseEnterCommand;
+                return portMouseEnterCommand;
             }
         }
 
@@ -34,10 +34,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_rectangleMouseLeaveCommand == null)
-                    _rectangleMouseLeaveCommand = new DelegateCommand(OnRectangleMouseLeave, CanConnect);
+                if (portMouseLeaveCommand == null)
+                    portMouseLeaveCommand = new DelegateCommand(OnRectangleMouseLeave, CanConnect);
 
-                return _rectangleMouseLeaveCommand;
+                return portMouseLeaveCommand;
             }
         }
 
@@ -45,10 +45,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_rectangleMouseLeftButtonCommand == null)
-                    _rectangleMouseLeftButtonCommand = new DelegateCommand(OnRectangleMouseLeftButtonDown, CanConnect);
+                if (portMouseLeftButtonCommand == null)
+                    portMouseLeftButtonCommand = new DelegateCommand(OnRectangleMouseLeftButtonDown, CanConnect);
 
-                return _rectangleMouseLeftButtonCommand;
+                return portMouseLeftButtonCommand;
             }
         }
 
