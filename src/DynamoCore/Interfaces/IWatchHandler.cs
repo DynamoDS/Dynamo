@@ -8,6 +8,7 @@ using Dynamo.ViewModels;
 using DynamoUnits;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
 
 namespace Dynamo.Interfaces
 {
@@ -80,17 +81,7 @@ namespace Dynamo.Interfaces
 
                 if (stackValue.IsFunctionPointer)
                 {
-                    ProcedureNode procNode;
-                    if (core.FunctionPointerTable.TryGetFunction(stackValue, core, out procNode))
-                    {
-                        string className = String.Empty;
-
-                        if (procNode.classScope != Constants.kGlobalScope)
-                        {
-                            className = core.ClassTable.GetTypeName(procNode.classScope);
-                        }
-                        typeName = typeName + ": " + className + "." + procNode.name;
-                    }
+                    typeName = StringUtils.GetStringValue(stackValue, core);
                 }
                 node = new WatchViewModel(visualizationManager, typeName, tag);
             }

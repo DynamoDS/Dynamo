@@ -30,7 +30,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    procNode = core.ProcTable.procList[functionIndex];
+                    procNode = core.CompleteCodeBlockList[blockId].procedureTable.procList[functionIndex];
                 }
 
                 return true;
