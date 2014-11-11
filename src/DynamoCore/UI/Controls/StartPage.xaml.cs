@@ -470,6 +470,11 @@ namespace Dynamo.UI.Controls
             {
                 // Note that you can have more than one file.
                 var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+                if (dynamoViewModel.Model.HomeSpace.HasUnsavedChanges && 
+                    !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(dynamoViewModel.Model.HomeSpace))
+                {
+                    return;
+                }
 
                 if (files != null && (files.Length > 0))
                 {
