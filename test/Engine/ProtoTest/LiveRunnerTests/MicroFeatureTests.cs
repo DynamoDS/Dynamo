@@ -5444,7 +5444,6 @@ a = p.UpdateCount;
         }
 
         [Test]
-        [Category("Failure")]
         public void RegressMAGN5353()
         {
             // This test case tries to verify that when a FFI object is deleted, 
