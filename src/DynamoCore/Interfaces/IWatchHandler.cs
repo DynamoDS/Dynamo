@@ -76,14 +76,19 @@ namespace Dynamo.Interfaces
             else if (core != null && value is StackValue)
             {
                 StackValue stackValue = (StackValue)value;
-                int typeId = core.TypeSystem.GetType(stackValue);
-                string typeName = core.TypeSystem.classTable.GetTypeName(typeId);
+                string stringValue = string.Empty;
 
                 if (stackValue.IsFunctionPointer)
                 {
-                    typeName = StringUtils.GetStringValue(stackValue, core);
+                    stringValue = StringUtils.GetStringValue(stackValue, core);
                 }
-                node = new WatchViewModel(visualizationManager, typeName, tag);
+                else
+                {
+                    int typeId = core.TypeSystem.GetType(stackValue);
+                    ClassMirror classMirror = new ClassMirror(typeId, core);
+                    stringValue = classMirror.ClassName;
+                }
+                node = new WatchViewModel(visualizationManager, stringValue, tag);
             }
             else
             {
