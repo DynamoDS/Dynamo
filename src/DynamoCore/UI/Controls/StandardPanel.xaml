@@ -114,11 +114,11 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+    <UserControl.Visibility>
+        <Binding Path="ClassDetailsVisibility"
+                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+    </UserControl.Visibility>
     <Border Padding="0,10,0,10">
-        <Border.Visibility>
-            <Binding Path="ClassDetailsVisibility"
-                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-        </Border.Visibility>
         <Border.Background>
             <Binding Path="IsRootCategoryDetails"
                      Converter="{StaticResource BooleanToBrushConverter}" />
