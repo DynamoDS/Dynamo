@@ -13,13 +13,14 @@
     <UserControl.Resources>
 
         <!-- Region Converters -->
-        
+
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
-        
+        <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+
         <!--EndRegion-->
 
         <!-- Region Styles -->
@@ -117,10 +118,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
@@ -133,10 +134,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="True" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
@@ -149,10 +150,10 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
+                                                                 Path=IsMouseOver}"
                                                Value="False" />
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
+                                                                 Path=IsChecked}"
                                                Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
@@ -280,6 +281,21 @@
                                                                     Value="#222222" />
                                                         </MultiDataTrigger.Setters>
                                                     </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                       Value="true" />
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource ElementTypeToBoolConverter}}"
+                                                                       Value="false" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Background"
+                                                                    Value="#595959" />
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
@@ -328,6 +344,15 @@
                                                 <Setter Property="Padding"
                                                         Value="0,0,0,0" />
                                             </DataTrigger>
+                                            <DataTrigger Value="false">
+                                                <DataTrigger.Binding>
+                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                             Path="DataContext"
+                                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Padding"
+                                                        Value="0,0,0,0" />
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
@@ -370,6 +395,25 @@
                             </uicontrols:DynamoToolTip>
                         </Setter.Value>
                     </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CategoryTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="#989898" />
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Style.Triggers>
+                <DataTrigger Value="True">
+                    <DataTrigger.Binding>
+                        <Binding Path="IsExpanded"
+                                 RelativeSource="{RelativeSource FindAncestor, 
+                                                                 AncestorType={x:Type TreeViewItem}}" />
+                    </DataTrigger.Binding>
+                    <Setter Property="TextBlock.FontWeight"
+                            Value="SemiBold" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -461,8 +505,7 @@
                         <MenuItem Header="Locate in Disk.." />
                     </ContextMenu>
                 </Border.ContextMenu>
-                <TextBlock Foreground="#989898"
-                           FontSize="13"
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
                            Text="{Binding Path=Name}"
                            VerticalAlignment="Center" />
             </Border>
@@ -471,34 +514,28 @@
         <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
                                   ItemsSource="{Binding Path=Items}">
             <Border Height="30">
-                <TextBlock Foreground="#DDD"
-                           FontSize="13"
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
                            Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center">
+                </TextBlock>
             </Border>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png" />
-                <Border Height="30">
-                    <TextBlock Foreground="#DDD"
-                               FontSize="13"
-                               Text="{Binding Path=Name}"
-                               VerticalAlignment="Center" />
-                </Border>
+            <StackPanel Orientation="Horizontal"
+                        Height="40">
+                <StackPanel.Width>
+                    <Binding Path="ActualWidth"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                </StackPanel.Width>
+                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png"
+                       Margin="30,0,0,0"
+                       Width="30"
+                       Height="30" />
+                <TextBlock Foreground="#DDD"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center" />
             </StackPanel>
         </HierarchicalDataTemplate>
 

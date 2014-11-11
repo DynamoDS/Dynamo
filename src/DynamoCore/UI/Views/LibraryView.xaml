@@ -182,7 +182,7 @@
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Background"
-                                    Value="#01000000" />
+                                    Value="Transparent" />
                             <Setter Property="Margin"
                                     Value="3,0,0,0" />
                             <Setter Property="Width">
@@ -671,13 +671,6 @@
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
-                                                </DataTrigger>
-                                                <DataTrigger Value="false">
-                                                    <DataTrigger.Binding>
-                                                        <Binding RelativeSource="{RelativeSource Self}"
-                                                                 Path="DataContext"
-                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
-                                                    </DataTrigger.Binding>
                                                     <Setter Property="Padding"
                                                             Value="0,0,0,10" />
                                                 </DataTrigger>
