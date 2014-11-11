@@ -503,11 +503,7 @@ namespace Dynamo.UI.Views
         private void OnTopResultTargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (sender is ListBox)
-            {
-                var topResultList = sender as ListBox;
-                topResultList.SelectedIndex = 0;
-                //HighlightedItem = WPF.FindChild<ListBoxItem>(topResultList, "");
-            }
+                (sender as ListBox).SelectedIndex = 0;
         }
 
         private void OnTopResultLostFocus(object sender, RoutedEventArgs e)
