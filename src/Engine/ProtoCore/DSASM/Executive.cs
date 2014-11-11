@@ -3013,6 +3013,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
+                    core.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -3030,6 +3031,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
+                    core.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
