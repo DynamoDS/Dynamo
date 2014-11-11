@@ -382,12 +382,6 @@ namespace ProtoCore.AssociativeEngine
                 {
                     return wasGraphNodeDependencyUpdated;
                 }
-
-                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
-                {
-                    // These nodes are within the same expression, no redifinition can occur
-                    return wasGraphNodeDependencyUpdated;
-                }
             }
 
             //if (executingNode.dependentList.Count > 0)
