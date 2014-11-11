@@ -452,8 +452,8 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Down)
             {
                 //Unselect top result.
-                var topResultElement = e.OriginalSource as ListBox;
-                topResultElement.UnselectAll();
+                if (e.OriginalSource is ListBox)
+                    (e.OriginalSource as ListBox).UnselectAll();
 
                 var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
 #if SEARCH_SHOW_CLASSES

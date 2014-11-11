@@ -199,6 +199,7 @@ namespace Dynamo.Search
                     break;
 
                 case Key.Down:
+                case Key.Up:
                     {
                         var key = e.Key;                    // Key to send
                         PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
