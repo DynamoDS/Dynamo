@@ -205,6 +205,7 @@ namespace Dynamo.Search
                         PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
                         var routedEvent = Keyboard.KeyDownEvent; // Event to send
 
+                        // For the first time set top result as HighlightedItem. 
                         if (target == null)
                         {
                             librarySearchView.HighlightedItem = WPF.FindChild<ListBox>(this, "");
