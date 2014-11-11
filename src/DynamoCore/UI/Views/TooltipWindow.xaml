@@ -138,23 +138,6 @@
                                              Path="DataContext"
                                              Converter="{StaticResource NodeTypeToColorConverter}" />
                                 </TextBlock.Foreground>
-                                <!--<TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Foreground"
-                                                Value="#777777" />
-                                        <Style.Triggers>
-                                            <DataTrigger Value="true">
-                                                <DataTrigger.Binding>
-                                                    <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
-                                                             Path="DataContext"
-                                                             Converter="{StaticResource CustomNodeToBoolConverter}" />
-                                                </DataTrigger.Binding>
-                                                <Setter Property="Foreground"
-                                                        Value="#cccccc" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>-->
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
