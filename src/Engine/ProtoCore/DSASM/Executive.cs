@@ -325,8 +325,8 @@ namespace ProtoCore.DSASM
                 int fi = Constants.kInvalidIndex;
                 if (!isGlobScope)
                 {
-                    ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
                 }
 
                 if (fepRun)
@@ -2569,8 +2569,8 @@ namespace ProtoCore.DSASM
                 int fi = Constants.kInvalidIndex;
                 if (!isGlobScope)
                 {
-                    ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
                 }
 
                 if (fepRun)
