@@ -179,8 +179,9 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
-    <Compile Include="Nodes\CodeBlockCompletionData.cs" />
-    <Compile Include="Nodes\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="PackageManager\PackageFileInfo.cs" />
+    <Compile Include="UI\CodeBlockCompletionData.cs" />
+    <Compile Include="UI\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -188,7 +189,6 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
-    <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -727,6 +727,10 @@ limitations under the License.
     <Page Include="UI\Views\ToolTipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+	</Page>
+    <Page Include="UI\Views\SampleData\PackageManagerSearchViewModelSampleData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\SampleData\PublishPackageViewModelSampleData.xaml">
       <SubType>Designer</SubType>
@@ -937,6 +941,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\keyword.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

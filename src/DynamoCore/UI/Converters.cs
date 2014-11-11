@@ -47,6 +47,29 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PrettyDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var dateString = value as string;
+            if (dateString != null) return PrettyDate(dateString);
+
+            return "Unknown date format";
+        }
+
+        private string PrettyDate(string json_string)
+        {
+            var d = DateTime.Parse(json_string);
+
+            return d.ToString("d MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -70,7 +93,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
                 {
-                    return "Synchronizing package list with server...";
+                    return "Syncing with server...";
                 }
             }
 
@@ -1784,13 +1807,16 @@ namespace Dynamo.Controls
     }
 
     // This converter is used to change color of output parameters for custom node.
-    public class CustomNodeToBoolConverter : IValueConverter
+    public class NodeTypeToColorConverter : IValueConverter
     {
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is CustomNodeSearchElement)
-                return true;
-            return false;
+                return TrueBrush;
+            return FalseBrush;
         }
 
         public object ConvertBack(

@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ProtoCore.AST;
+
 namespace Dynamo
 {
     using TaskState = TaskStateChangedEventArgs.State;
@@ -45,13 +47,18 @@ namespace Dynamo
     {
         private DynamoScheduler scheduler;
 
+        internal bool Initialized { get; private set; }
+        internal bool Destroyed { get; private set; }
+
         public void Initialize(DynamoScheduler owningScheduler)
         {
             scheduler = owningScheduler;
+            Initialized = true;
         }
 
         public void Shutdown()
         {
+            Destroyed = true;
         }
 
         internal void GetSchedulerToProcessTasks()
@@ -285,6 +292,8 @@ namespace Dynamo
     internal class FakeAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
     {
         private readonly FakeAsyncTaskData data;
+
+        internal Guid TargetedNodeId { set { targetedNodeId = value; } }
 
         internal FakeAggregateRenderPackageAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
@@ -520,6 +529,27 @@ namespace Dynamo
         #endregion
 
         #region Scheduler Related Test Cases
+
+        /// <summary>
+        /// Ensure that DynamoScheduler.Shutdown properly initializes
+        /// and destroys the associated ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test, Category("UnitTests")]
+        public void TestSchedulerCreationDestruction()
+        {
+            var schedulerThread = new SampleSchedulerThread();
+            Assert.IsFalse(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            var scheduler = new DynamoScheduler(schedulerThread);
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            scheduler.Shutdown();
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
 
         /// <summary>
         /// Test scenario when various task types are interleaving one another.
@@ -886,6 +916,42 @@ namespace Dynamo
 
         #region Integration Test Cases
 
+        /// <summary>
+        /// Test that shutting down DynamoModel correctly shuts down the
+        /// DynamoScheduler, which in turn shuts down ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test]
+        public void TestShutdownWithDynamoModel00()
+        {
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            dynamoModel.ShutDown(false); // Shutting down Dynamo scenario.
+            dynamoModel = null; // Nullify so we don't shutdown twice.
+
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
+
+        /// <summary>
+        /// Test that shutting down DynamoModel correctly shuts down the
+        /// DynamoScheduler, which in turn shuts down ISchedulerThread.
+        /// </summary>
+        /// 
+        [Test]
+        public void TestShutdownWithDynamoModel01()
+        {
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsFalse(schedulerThread.Destroyed);
+
+            dynamoModel.ShutDown(true); // Shutting down host scenario.
+            dynamoModel = null; // Nullify so we don't shutdown twice.
+
+            Assert.IsTrue(schedulerThread.Initialized);
+            Assert.IsTrue(schedulerThread.Destroyed);
+        }
+
         [Test]
         public void TestTaskQueuePreProcessing00()
         {
@@ -901,7 +967,7 @@ namespace Dynamo
 
                 // These older tasks are to be dropped.
                 MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
 
                 // This higher priority task moves to the front.
                 MakeUpdateGraphAsyncTask(),
@@ -915,7 +981,7 @@ namespace Dynamo
 
                 // These newer tasks will be kept.
                 MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(),
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
             };
 
             var scheduler = dynamoModel.Scheduler;
@@ -955,7 +1021,7 @@ namespace Dynamo
                 MakeSetTraceDataAsyncTask(),                        // Highest
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
-                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
                 MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
@@ -998,7 +1064,7 @@ namespace Dynamo
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
                 MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
-                MakeAggregateRenderPackageAsyncTask(),              // Normal
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeSetTraceDataAsyncTask(),                        // Highest
@@ -1021,6 +1087,55 @@ namespace Dynamo
                 "FakeNotifyRenderPackagesReadyAsyncTask: 1",
                 "FakeDelegateBasedAsyncTask: 2",
                 "FakeAggregateRenderPackageAsyncTask: 3",
+            };
+
+            Assert.AreEqual(expected.Count, results.Count);
+
+            int index = 0;
+            foreach (var actual in results)
+            {
+                Assert.AreEqual(expected[index++], actual);
+            }
+        }
+
+        [Test]
+        public void TestTaskQueuePreProcessing03()
+        {
+            var specificGuid = Guid.NewGuid();
+
+            // Everything is scheduled in reversed order of priority.
+            var tasksToSchedule = new List<AsyncTask>()
+            {
+                MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
+                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
+                MakeDelegateBasedAsyncTask(),                       // Normal
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
+                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
+                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
+                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
+                MakeUpdateGraphAsyncTask(),                         // Above normal
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal
+                MakeSetTraceDataAsyncTask(),                        // Highest
+            };
+
+            var scheduler = dynamoModel.Scheduler;
+            foreach (var stubAsyncTask in tasksToSchedule)
+            {
+                scheduler.ScheduleForExecution(stubAsyncTask);
+            }
+
+            schedulerThread.GetSchedulerToProcessTasks();
+
+            var expected = new List<string>
+            {
+                "FakeSetTraceDataAsyncTask: 9",
+                "FakeUpdateGraphAsyncTask: 7",
+                "FakeCompileCustomNodeAsyncTask: 8",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
+                "FakeDelegateBasedAsyncTask: 2",
+                "FakeAggregateRenderPackageAsyncTask: 5",
+                "FakeAggregateRenderPackageAsyncTask: 6",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1089,9 +1204,12 @@ namespace Dynamo
 
         #region AsyncTask Class Creation Methods
 
-        private AsyncTask MakeAggregateRenderPackageAsyncTask()
+        private AsyncTask MakeAggregateRenderPackageAsyncTask(Guid nodeGuid)
         {
-            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData());
+            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData())
+            {
+                TargetedNodeId = nodeGuid
+            };
         }
 
         private AsyncTask MakeCompileCustomNodeAsyncTask()

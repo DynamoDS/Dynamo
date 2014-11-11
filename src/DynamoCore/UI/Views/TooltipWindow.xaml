@@ -16,7 +16,12 @@
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:CustomNodeToBoolConverter x:Key="CustomNodeToBoolConverter" />
+            <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
+                                               TrueBrush="#cccccc"
+                                               FalseBrush="#777777" />
+            <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
+                                              TrueBrush="#cccccc"
+                                              FalseBrush="#666666" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -51,21 +56,10 @@
                                FontSize="13"
                                Margin="0,0,10,0"
                                TextWrapping="WrapWithOverflow">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Foreground"
-                                        Value="#cccccc" />
-                                <Style.Triggers>
-                                    <DataTrigger Value="No description available"
-                                                 Binding="{Binding Description}">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Foreground"
-                                                    Value="#666666" />
-                                        </DataTrigger.Setters>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
+                        <TextBlock.Foreground>
+                            <Binding Path="HasDescription"
+                                     Converter="{StaticResource DescriptionToColorConverter}" />
+                        </TextBlock.Foreground>
                     </TextBlock>
                     <Image Grid.Row="0"
                            Grid.Column="1"
@@ -139,23 +133,11 @@
                         <DataTemplate>
                             <TextBlock FontSize="13"
                                        Text="{Binding}">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Foreground"
-                                                Value="#777777" />
-                                        <Style.Triggers>
-                                            <DataTrigger Value="true">
-                                                <DataTrigger.Binding>
-                                                    <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
-                                                             Path="DataContext"
-                                                             Converter="{StaticResource CustomNodeToBoolConverter}" />
-                                                </DataTrigger.Binding>
-                                                <Setter Property="Foreground"
-                                                        Value="#cccccc" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
+                                <TextBlock.Foreground>
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
+                                             Path="DataContext"
+                                             Converter="{StaticResource NodeTypeToColorConverter}" />
+                                </TextBlock.Foreground>
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

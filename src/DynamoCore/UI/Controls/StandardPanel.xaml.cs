@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
 
 namespace Dynamo.UI.Controls
 {
@@ -21,7 +20,7 @@ namespace Dynamo.UI.Controls
         private const string ActionHeaderText = "ACTIONS";
         private const string ActionHeaderTag = "Action";
         private const string QueryHeaderTag = "Query";
-        private const int TruncatedMembersCount = 4;
+        private const int TruncatedMembersCount = 5;
 
         #endregion
 
@@ -125,8 +124,8 @@ namespace Dynamo.UI.Controls
 
             // Set default values.
             castedDataContext.PrimaryHeaderText = CreateHeaderText;
-            castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
-            castedDataContext.SecondaryHeaderRightText = ActionHeaderText;
+            castedDataContext.SecondaryHeaderLeftText = ActionHeaderText;
+            castedDataContext.SecondaryHeaderRightText = QueryHeaderText;
 
             castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
@@ -139,25 +138,24 @@ namespace Dynamo.UI.Controls
                 castedDataContext.IsPrimaryHeaderVisible = true;
                 primaryMembers.ItemsSource = castedDataContext.CreateMembers;
 
-                if (hasQueryMembers)
-                {
-                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
-
-                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-                }
-
                 if (hasActionMembers)
                 {
-                    castedDataContext.IsSecondaryHeaderRightVisible = true;
-
-                    if (!hasQueryMembers)
-                        secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
+                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
+                    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
 
                     castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
                 }
 
                 if (hasQueryMembers)
-                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                {
+                    castedDataContext.IsSecondaryHeaderRightVisible = true;
+
+                    if (!hasActionMembers)
+                    {
+                        secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+                        castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                    }
+                }
 
                 TruncateSecondaryMembers();
                 return;
@@ -175,6 +173,7 @@ namespace Dynamo.UI.Controls
                 if (hasQueryMembers)
                 {
                     castedDataContext.IsSecondaryHeaderLeftVisible = true;
+                    castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
                     castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
@@ -207,9 +206,12 @@ namespace Dynamo.UI.Controls
 
         private void TruncateSecondaryMembers()
         {
-            IEnumerable<BrowserInternalElement> collection = castedDataContext.QueryMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Action)
-                collection = castedDataContext.ActionMembers;
+            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.None)
+                return;
+
+            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Query)
+                collection = castedDataContext.QueryMembers;
 
             secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
 

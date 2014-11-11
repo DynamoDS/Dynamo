@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,
                     functionItem.DisplayName, functionItem.Assembly,
-                    functionItem.InputParameters, new List<string>{functionItem.ReturnType})
+                    functionItem.InputParameters, new List<string>() {functionItem.ReturnType})
         {
             _displayString = displayString;
             FunctionDescriptor = functionItem;
@@ -91,11 +91,7 @@ namespace Dynamo.Search.SearchElements
         protected override List<string> GenerateOutputParameters()
         {
             if (FunctionDescriptor.Type == FunctionType.Constructor)
-            {
-                var outputs = new List<string>();
-                outputs.Add(FunctionDescriptor.UnqualifedClassName);
-                return outputs;
-            }
+                return new List<string>() { FunctionDescriptor.UnqualifedClassName };
 
             return base.GenerateOutputParameters();
         }

@@ -1,14 +1,17 @@
 ﻿using System.Linq;
-using Autodesk.DesignScript.Geometry;
+
 using NUnit.Framework;
 using Revit.Elements;
 using Revit.GeometryConversion;
+
+using RevitTestServices;
+
 using RTF.Framework;
 
-namespace RevitTestServices.GeometryConversion
+namespace RevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoFaceTests : GeometricRevitNodeTest
+    internal class RevitToProtoFaceTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Revolve.rfa")]
