@@ -50,9 +50,8 @@ namespace Dynamo.Applications.Models
         {
             get
             {
-                return Process.GetCurrentProcess().ProcessName + "-R" +  
-                    DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild +  "-"
-                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+                return base.AppVersion + 
+                    "-R" + DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild;
             }
         }
      
