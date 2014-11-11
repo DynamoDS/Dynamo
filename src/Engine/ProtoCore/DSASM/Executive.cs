@@ -319,10 +319,17 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
+                // Get the class and function scope if the current scope is not global
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+                if (!isGlobScope)
+                {
+                    ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -330,7 +337,7 @@ namespace ProtoCore.DSASM
                     if (!core.Options.IsDeltaExecution)
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc);
+                        SetupGraphEntryPoint(pc, ci, fi);
                     }
                     else
                     {
@@ -341,7 +348,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            SetupGraphEntryPoint(pc);
+                            SetupGraphEntryPoint(pc, ci, fi);
                         }
                     }
                 }
@@ -1419,16 +1426,16 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void SetupGraphEntryPoint(int entrypoint)
+        private void SetupGraphEntryPoint(int entrypoint, int classScope, int functionScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
             if (core.Options.ApplyUpdate)
             {
-                // Getting the entry point only graphnodes at the global scope
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
 
-                // Set the default entry point on ApplyUpdate  is the first graphNode
                 Validity.Assert(graphNodeList.Count > 0);
+
+                // The default entry point on ApplyUpdate is the first graphNode
                 entrypoint = graphNodeList[0].updateBlock.startpc;
             }
             else
@@ -2556,10 +2563,17 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
+                // Get the class and function scope if the current scope is not global
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+                if (!isGlobScope)
+                {
+                    ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -2568,7 +2582,7 @@ namespace ProtoCore.DSASM
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
                     }
-                    SetupGraphEntryPoint(pc);
+                    SetupGraphEntryPoint(pc, ci, fi);
                 }
             }
 
