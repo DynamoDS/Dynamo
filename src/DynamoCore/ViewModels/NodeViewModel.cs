@@ -548,8 +548,10 @@ namespace Dynamo.ViewModels
             NodeLogic.ArgumentLacing = strategy;
 
             RaisePropertyChanged("ArgumentLacing");
+            dynamo.CurrentWorkspace.HasUnsavedChanges = true;
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            
         }
 
         private bool CanSetLacingType(object param)
