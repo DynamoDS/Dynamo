@@ -91,11 +91,7 @@ namespace Dynamo.Search.SearchElements
         protected override List<string> GenerateOutputParameters()
         {
             if (FunctionDescriptor.Type == FunctionType.Constructor)
-            {
-                var outputs = new List<string>();
-                outputs.Add(FunctionDescriptor.UnqualifedClassName);
-                return outputs;
-            }
+                return new List<string>() { FunctionDescriptor.UnqualifedClassName };
 
             return base.GenerateOutputParameters();
         }
