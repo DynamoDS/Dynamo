@@ -15,6 +15,7 @@ namespace Dynamo.Tests
         {
             // Details are available in defect
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3996
+            // PolyCurve.ByJoinedCurves should be able to accept PolyCurves as an input
             
             DynamoModel model = ViewModel.Model;
 
@@ -44,6 +45,7 @@ namespace Dynamo.Tests
         {
             // Details are available in defect
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4578
+            // Context CoordinateSystem is incorrect for Cuboids after a transform
 
             DynamoModel model = ViewModel.Model;
 
@@ -74,6 +76,7 @@ namespace Dynamo.Tests
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4924
+            // Curves cannot be extracted from many surfaces
 
             DynamoModel model = ViewModel.Model;
 
@@ -105,6 +108,8 @@ namespace Dynamo.Tests
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5029
+            /* Cutting and pasting Curve.PointAtParameter in run automatically 
+             * causes "variable has not yet been defined" warning message */
 
             DynamoModel model = ViewModel.Model;
 
@@ -156,6 +161,8 @@ namespace Dynamo.Tests
         {
             // Details are available in defect
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5041
+            // Curve.Extend, Curve.ExtendEnd, Curve.ExtendStart returns null for 
+            // distance = 0 on NurbsCurves
 
             DynamoModel model = ViewModel.Model;
 
