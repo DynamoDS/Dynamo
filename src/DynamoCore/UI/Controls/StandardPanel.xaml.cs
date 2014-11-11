@@ -146,16 +146,17 @@ namespace Dynamo.UI.Controls
                     castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
                 }
 
-                if (hasQueryMembers)
+                if (hasQueryMembers && !hasActionMembers)
                 {
-                    castedDataContext.IsSecondaryHeaderRightVisible = true;
+                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
+                    castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
+                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
 
-                    if (!hasActionMembers)
-                    {
-                        secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-                        castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
-                    }
+                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
+
+                if (hasActionMembers && hasQueryMembers)
+                    castedDataContext.IsSecondaryHeaderRightVisible = true;
 
                 TruncateSecondaryMembers();
                 return;
