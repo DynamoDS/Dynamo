@@ -40,9 +40,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource DynamoWindowBrush}"
-          PreviewKeyDown="OnLibraryContainerViewPreviewKeyDown"
-          KeyDown="OnSearchTextBoxKeyUp">
+    <Grid Background="{StaticResource DynamoWindowBrush}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
