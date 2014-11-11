@@ -222,16 +222,19 @@ namespace Dynamo.DSEngine
         /// 
         internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> updatedNodes)
         {
-            if ((updatedNodes == null) || !updatedNodes.Any())
+            if (updatedNodes == null)
                 return null;
 
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
-
             if (activeNodes.Any())
+            {
                 astBuilder.CompileToAstNodes(activeNodes, true);
+            }
 
             if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
+            {
                 return null;
+            }
 
             return graphSyncDataQueue.Dequeue();
         }

@@ -22,6 +22,7 @@ namespace TestServices
         public void Setup()
         {
             AssemblyResolver.Setup();
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }

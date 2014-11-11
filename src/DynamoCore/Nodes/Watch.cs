@@ -226,7 +226,7 @@ namespace Dynamo.Nodes
 
 #if ENABLE_DYNAMO_SCHEDULER
 
-        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
