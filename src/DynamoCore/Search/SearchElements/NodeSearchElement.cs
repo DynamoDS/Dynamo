@@ -43,10 +43,13 @@ namespace Dynamo.Search.SearchElements
         /// A string describing what the node does</value>
         private string _description;
         public override string Description 
-        { 
-            get 
+        {
+            get
             {
-                return "" != _description ? _description : Dynamo.UI.Configurations.NoDescriptionAvailable;
+                if (string.IsNullOrEmpty(_description))
+                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+
+                return _description;
             } 
         }
 
