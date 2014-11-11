@@ -25,7 +25,6 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
-        private bool isMouseDown = false;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -227,11 +226,13 @@ namespace Dynamo.Controls
             // necessary. Here we determine if the "translatedIndex" is the same as
             // "selectedClassProspectiveIndex", if so simply returns to avoid a repainting.
             var translatedIndex = TranslateSelectionIndex(selectedIndex);
-            int classInfoIndex = GetClassInformationIndex();
 
             if (selectedClassProspectiveIndex == translatedIndex)
                 return;
+
             selectedClassProspectiveIndex = translatedIndex;
+
+            int classInfoIndex = GetClassInformationIndex();
 
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
