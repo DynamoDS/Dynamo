@@ -611,12 +611,18 @@ namespace ProtoFFI
             if (null != marshaler)
                 return marshaler.Marshal(obj, context, dsi, expectedDSType);
 
-            //4. Didn't get the marshaler, could be a pointer or var type, check from map
+           //4. Didn't get the marshaler, could be a pointer or var type, check from map
             StackValue retVal;
             if (CLRObjectMap.TryGetValue(obj, out retVal))
                 return retVal;
 
-            //5. Seems like a new object create a new DS object and bind it.
+            //5. If it is a StackValue, simply return it.
+            if (obj is StackValue)
+            {
+                return (StackValue)obj;
+            }
+
+            //6. Seems like a new object create a new DS object and bind it.
             return CreateDSObject(obj, context, dsi);
         }
 
@@ -642,11 +648,16 @@ namespace ProtoFFI
             Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
-
+            
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
             if (DSObjectMap.TryGetValue(dsObject, out clrObject))
                 return clrObject;
+
+            if (dsObject.IsFunctionPointer)
+            {
+                return dsObject;
+            }
 
             return CreateCLRObject(dsObject, context, dsi, expectedCLRType);
         }
