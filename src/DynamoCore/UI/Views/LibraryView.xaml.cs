@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Nodes.Search;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -65,7 +68,13 @@ namespace Dynamo.UI.Views
 
         private void OnTreeViewItemPreviewMouseLeftButton(object sender, MouseButtonEventArgs e)
         {
-            if (!((sender as TreeViewItem).DataContext is BrowserRootElement))
+            var categoryButton = sender as TreeViewItem;
+            if (!(categoryButton.DataContext is BrowserRootElement))
+                return;
+
+            var wrapPanels = new List<LibraryWrapPanel>();
+            WPF.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
+            if (wrapPanels.Count == 0)
                 return;
 
             var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;

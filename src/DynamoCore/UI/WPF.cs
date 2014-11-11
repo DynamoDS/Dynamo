@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Dynamo.Utilities
@@ -70,5 +71,40 @@ namespace Dynamo.Utilities
             return foundChild;
         }
 
+        /// <summary>
+        /// Finds children of a given item in the visual tree.
+        /// </summary>
+        /// <param name="parent">A direct parent of the queried item.</param>
+        /// <typeparam name="T">The type of the queried item.</typeparam>
+        /// <param name="childName">x:Name or Name of children. </param>
+        /// <param name="foundChildren">All found children. </param>
+        public static void FindChildren<T>(DependencyObject parent, string childName, List<T> foundChildren)
+           where T : DependencyObject
+        {
+            if (parent == null) return;
+            if (foundChildren == null) return;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                T childType = child as T;
+                if (childType == null)
+                {
+                    FindChildren<T>(child, childName, foundChildren);
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                        foundChildren.Add((T)child);
+                }
+                else
+                {
+                    foundChildren.Add((T)child);
+                }
+            }
+        }
     }
 }
