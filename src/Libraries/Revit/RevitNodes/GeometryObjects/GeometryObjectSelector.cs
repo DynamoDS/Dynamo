@@ -33,6 +33,7 @@ namespace Revit.GeometryObjects
                         .CurrentDBDocument.GetElement(elRef);
 
                 var geob = ele.GetGeometryObjectFromReference(elRef);
+                if (geob == null) return null;
                 
                 var familyInstance = ele as FamilyInstance;
                 if (familyInstance != null && RequiresTransform(familyInstance))
