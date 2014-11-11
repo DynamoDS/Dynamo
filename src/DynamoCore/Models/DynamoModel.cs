@@ -30,7 +30,7 @@ using DynamoUnits;
 using DynamoUtilities;
 
 using Microsoft.Practices.Prism;
-
+using ProtoScript.Runners;
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
@@ -62,6 +62,24 @@ namespace Dynamo.Models
             {
                 WorkspaceSaved(model);
             }
+        }
+
+        public event NodesColorHandler GetGraphSyncData;
+        internal GraphSyncData OnGetGraphSyncData()
+        {
+            var task = new PreviewGraphAsyncTask(scheduler);
+            if (task.Initialize(EngineController, HomeSpace))
+            {
+                task.Completed += OnPreviewGraphCompleted;               
+                scheduler.ScheduleForExecution(task);
+            }
+
+            return null;
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            String message = "test";
         }
 
         /// <summary>

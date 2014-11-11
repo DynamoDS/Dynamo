@@ -35,6 +35,7 @@ namespace Dynamo.DSEngine
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
+        private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>(); 
         private int shortVarCounter = 0;
         private readonly DynamoModel dynamoModel;
         private readonly ProtoCore.Core libraryCore;
@@ -43,7 +44,7 @@ namespace Dynamo.DSEngine
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;
-
+            this.dynamoModel.GetGraphSyncData += OnGetGraphSyncData;
             // Create a core which is used for parsing code and loading libraries
             libraryCore = new ProtoCore.Core(new Options()
             {
@@ -68,6 +69,8 @@ namespace Dynamo.DSEngine
 
             dynamoModel.NodeDeleted += NodeDeleted;
         }
+
+       
 
         public void Dispose()
         {
@@ -207,6 +210,11 @@ namespace Dynamo.DSEngine
             }
         }
 
+        private GraphSyncData OnGetGraphSyncData()
+        {
+            return this.syncDataManager.GetSyncData();
+        }
+
 
 #if ENABLE_DYNAMO_SCHEDULER
 
@@ -236,6 +244,33 @@ namespace Dynamo.DSEngine
             }
 
             return graphSyncDataQueue.Dequeue();
+        }
+
+        internal List<Guid> PreviewGraphSyncData(IEnumerable<NodeModel> updatedNodes)
+        {
+            if (updatedNodes == null)
+                return null;
+
+            var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
+            if (activeNodes.Any())
+            {
+                astBuilder.CompileToAstNodes(activeNodes, true);
+            }
+
+            //if (previewGraphQueue.Count <= 0)
+            //{
+            //    return null;
+            //}
+        
+            GraphSyncData data = syncDataManager.GetSyncData();
+            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(data);
+
+             lock (previewGraphQueue)
+             {
+                 previewGraphQueue.Enqueue(previewGraphData);
+             }
+            
+            return previewGraphQueue.Dequeue();
         }
 
 #endif

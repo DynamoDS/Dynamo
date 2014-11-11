@@ -15,6 +15,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
+using ProtoScript.Runners;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Utils = Dynamo.Nodes.Utilities;
@@ -52,7 +53,7 @@ namespace Dynamo.Models
         #region events
 
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
-
+       
         public event NodeEventHandler RequestNodeCentered;
         public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
@@ -91,8 +92,7 @@ namespace Dynamo.Models
         }
 
         public event Action OnModified;
-        public event WorkspaceSavedEvent WorkspaceSaved;
-
+        public event WorkspaceSavedEvent WorkspaceSaved;       
         #endregion
 
         #region Properties
@@ -412,11 +412,12 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
-            WorkspaceSaved += OnWorkspaceSaved;
+            WorkspaceSaved += OnWorkspaceSaved;       
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
         }
 
+     
         #endregion
 
         #region public methods
@@ -660,7 +661,7 @@ namespace Dynamo.Models
 
         public void FindAndColorTheNodes()
         {
-            
+           GraphSyncData data =  DynamoModel.OnGetGraphSyncData();
         }
 
         #endregion
