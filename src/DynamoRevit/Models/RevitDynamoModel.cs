@@ -46,7 +46,7 @@ namespace Dynamo.Applications.Models
         #region Properties/Fields
         public RevitServicesUpdater RevitServicesUpdater { get; private set; }
 
-        public override string AppVersion
+        internal override string AppVersion
         {
             get
             {

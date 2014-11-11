@@ -141,7 +141,7 @@ namespace Dynamo.Models
         /// <summary>
         /// The application version string for analytics reporting APIs
         /// </summary>
-        public virtual String AppVersion { 
+        internal virtual String AppVersion { 
             get {
                 return Process.GetCurrentProcess().ProcessName + "-"
                     + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
