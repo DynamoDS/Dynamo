@@ -196,7 +196,28 @@ namespace Dynamo.Search
 
                 case Key.Tab:
                     viewModel.PopulateSearchTextWithSelectedResult();
-                    break;                                    
+                    break;
+
+                case Key.Down:
+                    {
+                        var key = e.Key;                    // Key to send
+                        PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
+                        var routedEvent = Keyboard.KeyDownEvent; // Event to send
+
+                        if (target == null)
+                        {
+                            librarySearchView.HighlightedItem = WPF.FindChild<ListBox>(this, "");
+                            target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
+                        }
+
+
+                        librarySearchView.HighlightedItem.RaiseEvent(new KeyEventArgs(
+                                                                            Keyboard.PrimaryDevice,
+                                                                            target,
+                                                                            0,
+                                                                            key) { RoutedEvent = routedEvent });
+                        break;
+                    }
             }
         }
 
@@ -324,16 +345,16 @@ namespace Dynamo.Search
 
         private void OnSearchTextBoxKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Down) return;
-            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-            if (topResult != null) topResult.Focus();
+            //if (e.Key != Key.Down) return;
+            //var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+            //if (topResult != null) topResult.Focus();
         }
 
         private void OnLibraryContainerViewPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Up) return;
-            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-            if ((topResult != null) && (topResult.IsFocused)) SearchTextBox.Focus();
+            //if (e.Key != Key.Up) return;
+            //var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
+            //if ((topResult != null) && (topResult.IsFocused)) SearchTextBox.Focus();
         }
 
         private void OnLibraryViewPreviewKeyDown(object sender, KeyEventArgs e)
