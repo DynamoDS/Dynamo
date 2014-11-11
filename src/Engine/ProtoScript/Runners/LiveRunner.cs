@@ -545,10 +545,12 @@ namespace ProtoScript.Runners
                             newCachedASTList.AddRange(modifiedASTList);
 
                             // ================================================================================
-                            // Get a list of functions that were removed. 
+                            // Get a list of functions that were removed
+                            // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
                             // This will passed to the changeset applier to handle removed functions in the VM
                             // ================================================================================
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(GetRemovedFunctions(oldSubTree.AstNodes, st.AstNodes));
+                            IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
 
                             st.AstNodes.Clear();
                             st.AstNodes.AddRange(newCachedASTList);
@@ -813,35 +815,6 @@ namespace ProtoScript.Runners
                 }
             }
             return existingList;
-        }
-
-        /// <summary>
-        /// Returns the list of functions that exist in prevASTList and no longer exist in newASTList
-        /// </summary>
-        /// <param name="prevASTList"></param>
-        /// <param name="newASTList"></param>
-        /// <returns></returns>
-        private List<AssociativeNode> GetRemovedFunctions(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
-        {
-            List<AssociativeNode> removedFunctions = new List<AssociativeNode>();
-
-            // If any function in the prev ast list no longer exist in newASTList, then add it to the removed function list
-            foreach (AssociativeNode prevNode in prevASTList)
-            {
-                FunctionDefinitionNode fNode = prevNode as FunctionDefinitionNode;
-                if (fNode == null)
-                {
-                    continue;
-                }
-
-                // Check if the function 'fNode' exists in the newASTList
-                if (newASTList.Find(f => f.Equals(fNode)) == null)
-                {
-                    // The function doesnt exist, add it to the removed list
-                    removedFunctions.Add(fNode);
-                }
-            }
-            return removedFunctions;
         }
 
         /// <summary>
