@@ -246,7 +246,7 @@ namespace Dynamo.ViewModels
             }
 
             RaisePropertyChanged("SearchAddonsVisibility");
-            RaisePropertyChanged(() => Model.SearchRootCategories);
+            RaisePropertyChanged("Model");
 
             // SearchResults doesn't used everywhere.
             // It is populated for making connected tests as successful.
