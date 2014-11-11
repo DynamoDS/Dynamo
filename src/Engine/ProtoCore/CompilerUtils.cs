@@ -1,4 +1,5 @@
 ﻿using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -345,7 +346,7 @@ namespace ProtoCore.Utils
             bool parseSuccess = false;
             try
             {
-                return ParseUserCodeCore(core, expression, postfixGuid, ref parseSuccess);
+                return ParseUserCodeCore(core, expression, ref parseSuccess);
             }
             catch
             {
@@ -357,11 +358,11 @@ namespace ProtoCore.Utils
                 core.ResetForPrecompilation();
 
                 // Use manual parsing for invalid functional associative statement errors like for "a+b;"
-                return ParseNonAssignments(core, expression, postfixGuid);
+                return ParseNonAssignments(core, expression);
             }
         }
 
-        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression, string postfixGuid, ref bool parseSuccess)
+        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression, ref bool parseSuccess)
         {
             List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
@@ -411,9 +412,10 @@ namespace ProtoCore.Utils
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
-                            string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                            string name = Constants.kTempVarForNonAssignment + index.ToString();
                             BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
                             astNodes.Add(newNode);
+                            index++;
                         }
                         else
                         {
@@ -424,16 +426,17 @@ namespace ProtoCore.Utils
                     else
                     {
                         // These nodes are non-assignment nodes
-                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                        string name = Constants.kTempVarForNonAssignment + index.ToString();
                         BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
                         astNodes.Add(newNode);
+                        index++;
                     }
                 }
             }
             return astNodes;
         }
 
-        private static IEnumerable<AST.Node> ParseNonAssignments(Core core, string expression, string postfixGuid)
+        private static IEnumerable<AST.Node> ParseNonAssignments(Core core, string expression)
         {
             List<string> compiled = new List<string>();
 
@@ -462,7 +465,7 @@ namespace ProtoCore.Utils
 
                     if (!IsNotAssigned(newStatement))
                     {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
+                        string name = Constants.kTempVarForNonAssignment + i.ToString();
                         newStatement = name + " = " + newStatement;
                     }
                     compiled[i] = newlines + newStatement;
@@ -471,7 +474,7 @@ namespace ProtoCore.Utils
                 {
                     if (!IsNotAssigned(compiled[i]))
                     {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
+                        string name = Constants.kTempVarForNonAssignment + i.ToString();
                         compiled[i] = name + " = " + compiled[i];
                     }
                 }
