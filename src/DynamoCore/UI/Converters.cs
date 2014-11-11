@@ -1807,13 +1807,16 @@ namespace Dynamo.Controls
     }
 
     // This converter is used to change color of output parameters for custom node.
-    public class CustomNodeToBoolConverter : IValueConverter
+    public class NodeTypeToColorConverter : IValueConverter
     {
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is CustomNodeSearchElement)
-                return true;
-            return false;
+                return TrueBrush;
+            return FalseBrush;
         }
 
         public object ConvertBack(

@@ -16,7 +16,9 @@
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:CustomNodeToBoolConverter x:Key="CustomNodeToBoolConverter" />
+            <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
+                                               TrueBrush="#cccccc"
+                                               FalseBrush="#777777" />
             <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
                                               TrueBrush="#cccccc"
                                               FalseBrush="#666666" />
@@ -131,7 +133,12 @@
                         <DataTemplate>
                             <TextBlock FontSize="13"
                                        Text="{Binding}">
-                                <TextBlock.Style>
+                                <TextBlock.Foreground>
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Grid}"
+                                             Path="DataContext"
+                                             Converter="{StaticResource NodeTypeToColorConverter}" />
+                                </TextBlock.Foreground>
+                                <!--<TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Setter Property="Foreground"
                                                 Value="#777777" />
@@ -147,7 +154,7 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>
+                                </TextBlock.Style>-->
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
