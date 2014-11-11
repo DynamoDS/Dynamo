@@ -13,14 +13,14 @@
     <UserControl.Resources>
 
         <!-- Region Converters -->
-        
+
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-        
+
         <!--EndRegion-->
 
         <!-- Region Styles -->
@@ -399,6 +399,25 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="CategoryTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="#989898" />
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Style.Triggers>
+                <DataTrigger Value="True">
+                    <DataTrigger.Binding>
+                        <Binding Path="IsExpanded"
+                                 RelativeSource="{RelativeSource FindAncestor, 
+                                                                 AncestorType={x:Type TreeViewItem}}" />
+                    </DataTrigger.Binding>
+                    <Setter Property="TextBlock.FontWeight"
+                            Value="SemiBold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="AddonsContextMenu"
                TargetType="{x:Type ContextMenu}">
             <Setter Property="OverridesDefaultStyle"
@@ -486,51 +505,18 @@
                         <MenuItem Header="Locate in Disk.." />
                     </ContextMenu>
                 </Border.ContextMenu>
-                <TextBlock Foreground="#989898"
-                           FontSize="13"
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
                            Text="{Binding Path=Name}"
-                           VerticalAlignment="Center">
-                    <TextBlock.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <Binding Path="IsExpanded"
-                                                 RelativeSource="{RelativeSource FindAncestor, 
-                                                                                 AncestorType={x:Type TreeViewItem}}" />
-                                    </DataTrigger.Binding>
-                                    <Setter Property="TextBlock.FontWeight"
-                                            Value="SemiBold" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                           VerticalAlignment="Center" />
             </Border>
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate DataType="{x:Type search:BrowserInternalElement}"
                                   ItemsSource="{Binding Path=Items}">
             <Border Height="30">
-                <TextBlock Foreground="#989898"
-                           FontSize="13"
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
                            Text="{Binding Path=Name}"
                            VerticalAlignment="Center">
-                    <TextBlock.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <Binding Path="IsExpanded"
-                                                 RelativeSource="{RelativeSource FindAncestor, 
-                                                                                 AncestorType={x:Type TreeViewItem}}" />
-                                    </DataTrigger.Binding>
-                                    <Setter Property="TextBlock.FontWeight"
-                                            Value="SemiBold" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
                 </TextBlock>
             </Border>
         </HierarchicalDataTemplate>
