@@ -141,6 +141,8 @@ namespace Dynamo.UI
         public static double NodeButtonHeight = 32; // Height of node button.
         public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
         public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
+        public static string NoDescriptionAvailable = "No description available";
+
         #endregion
 
         #region Library Item Tooltip
@@ -219,6 +221,8 @@ namespace Dynamo.UI
         public const string CategoryGroupQuery = "Query";
         public const char CategoryDelimiter = '.';
         public const char ShortenedCategoryDelimiter = '>';
+
+        public const string ClassesDefaultName = "Classes";
 
         #endregion
 

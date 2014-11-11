@@ -54,8 +54,11 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
-
+            //var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
+            var functionCall =
+                AstFactory.BuildFunctionCall(
+                    new Func<Color, Color, double, Color>(DSCore.Color.BuildColorFromRange),
+                    inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
@@ -128,13 +131,13 @@ namespace DSCoreNodesUI
                         }
                     }
 
-                    Color startColor = start as Color;
-                    Color endColor = end as Color;
-                    if (null != startColor && null != endColor)
-                    {
-                        WriteableBitmap bmp = CompleteColorScale(startColor, endColor);
-                        drawPlane.Source = bmp;
-                    }
+                    var startColor = start as DSCore.Color;
+                    var endColor = end as DSCore.Color;
+
+                    if (startColor == null ||  endColor == null) return;
+
+                    WriteableBitmap bmp = CompleteColorScale(startColor, endColor);
+                    drawPlane.Source = bmp;
                 });
             };
         }

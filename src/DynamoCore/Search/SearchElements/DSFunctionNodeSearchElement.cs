@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,
                     functionItem.DisplayName, functionItem.Assembly,
-                    functionItem.InputParameters, functionItem.ReturnType)
+                    functionItem.InputParameters, new List<string>() {functionItem.ReturnType})
         {
             _displayString = displayString;
             FunctionDescriptor = functionItem;
@@ -88,10 +88,10 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected override string GenerateOutputParameters()
+        protected override List<string> GenerateOutputParameters()
         {
-            if (FunctionDescriptor.Type == FunctionType.Constructor) 
-                return FunctionDescriptor.UnqualifedClassName;
+            if (FunctionDescriptor.Type == FunctionType.Constructor)
+                return new List<string>() { FunctionDescriptor.UnqualifedClassName };
 
             return base.GenerateOutputParameters();
         }
@@ -106,7 +106,7 @@ namespace Dynamo.Search.SearchElements
             vartype = className.Split('.').Last();
             varname = vartype[0].ToString().ToLowerInvariant();
 
-            List<Tuple<string, string>>  inputParameters = new List<Tuple<string, string>>();
+            List<Tuple<string, string>> inputParameters = new List<Tuple<string, string>>();
             inputParameters.Add(Tuple.Create(varname, vartype));
 
             return inputParameters;

@@ -2063,8 +2063,8 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-            var taskId = (long) parameters;
-            this.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId,null));
+            Debug.WriteLine("Requesting branch update for background preview.");
+            VisualizationManager.RequestBranchUpdate(null);
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -2085,6 +2085,8 @@ namespace Dynamo.ViewModels
         {
             this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
+
+        public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
     }

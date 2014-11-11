@@ -95,11 +95,6 @@ namespace Dynamo.DSEngine
             liveRunner.ResetVMAndResyncGraph(libraries);
         }
 
-        internal ClassMirror GetClassType(string className)
-        {
-            return liveRunner.GetClassType(className);
-        }
-
         /// <summary>
         /// GraphUpdateReady event handler.
         /// </summary>

@@ -66,6 +66,18 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        private void OnMemberMouseEnter(object sender, MouseEventArgs e)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            libraryToolTipPopup.PlacementTarget = fromSender;
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+        }
+
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null);
+        }
+
         private void OnTreeViewItemPreviewMouseLeftButton(object sender, MouseButtonEventArgs e)
         {
             var categoryButton = sender as TreeViewItem;

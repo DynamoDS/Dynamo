@@ -10,10 +10,12 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.DSEngine;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {
-    public class SearchModel
+    public class SearchModel : NotificationObject
     {
         #region Events
 
@@ -35,7 +37,10 @@ namespace Dynamo.Search
         #region Properties/Fields
 
         private CategoryBuilder browserCategoriesBuilder;
+        internal CategoryBuilder BrowserCategoriesBuilder { get { return browserCategoriesBuilder; } }
+
         private CategoryBuilder addonCategoriesBuilder;
+        internal CategoryBuilder AddonCategoriesBuilder { get { return addonCategoriesBuilder; } }
 
         /// <summary>
         /// Leaves of the browser - used for navigation
@@ -240,6 +245,10 @@ namespace Dynamo.Search
                 category.AddMemberToGroup(node);
                 category.AddClassToGroup(node);
             }
+
+            // Order found categories by name.
+            _searchRootCategories = new ObservableCollection<SearchCategory>(_searchRootCategories.OrderBy(x => x.Name));
+            SortSearchCategoriesChildren();
         }
 
         private void ClearSearchCategories()
@@ -322,10 +331,21 @@ namespace Dynamo.Search
             addonCategoriesBuilder.RemoveEmptyCategories();
         }
 
+        internal void SortRootCategories()
+        {
+            browserCategoriesBuilder.SortCategoryItems();
+            addonCategoriesBuilder.SortCategoryItems();
+        }
+
         internal void SortCategoryChildren()
         {
             browserCategoriesBuilder.SortCategoryChildren();
             addonCategoriesBuilder.SortCategoryChildren();
+        }
+
+        internal void SortSearchCategoriesChildren()
+        {
+            _searchRootCategories.ToList().ForEach(x => x.SortChildren());
         }
 
         #endregion

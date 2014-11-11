@@ -173,12 +173,16 @@ namespace Dynamo.Controls
 
             double x = 0, y = 0, currentRowHeight = 0;
 
-            int itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
+            var itemsPerRow = (int)Math.Floor(finalSize.Width / classObjectWidth);
             double sizeBetweenItems = (finalSize.Width - itemsPerRow * classObjectWidth) / (itemsPerRow + 1);
-
 
             foreach (UIElement child in this.Children)
             {
+                var classInformation = (child as FrameworkElement).DataContext as ClassInformation;
+                // Hidden StandardPanel shouldn't be arranged.
+                if (classInformation != null && !classInformation.ClassDetailsVisibility)
+                    continue;
+
                 var desiredSize = child.DesiredSize;
                 if ((x + desiredSize.Width) > finalSize.Width)
                 {
@@ -187,9 +191,9 @@ namespace Dynamo.Controls
                     currentRowHeight = 0;
                 }
 
-                if ((child as FrameworkElement).DataContext is ClassInformation)
-                //Then it's Standard panel, we do not need margin it.
+                if (classInformation != null)
                 {
+                    // Then it's Standard panel, we do not need margin it.
                     child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
                     x = x + desiredSize.Width;
                 }

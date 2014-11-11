@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -21,7 +22,7 @@ namespace Dynamo.UI.Controls
     /// See "Action" enumeration below for more details of each item sub-type.
     /// </summary>
     /// 
-    public class StartPageListItem
+    public class StartPageListItem : NotificationObject
     {
         private ImageSource icon = null;
 

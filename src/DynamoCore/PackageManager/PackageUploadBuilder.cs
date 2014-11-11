@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Greg.Requests;
@@ -13,39 +12,40 @@ namespace Dynamo.PackageManager
 {
     static class PackageUploadBuilder
     {
-
         public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, "MIT", l.Contents, "dynamo",
-                                                         engineVersion, engineMetadata, l.Group, l.Dependencies );
-        }
+            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, "dynamo",
+                                                         engineVersion, engineMetadata, l.Group, l.Dependencies, 
+                                                         l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName) ); 
+        } 
 
         public static PackageUpload NewPackage(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
-            return BuildPackageUpload(pkg.Header, zipPath);
+            var header = NewPackageHeader(pkg);
+            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, header, pkg, files, uploadHandle);
+            return new PackageUpload(header, zipPath);
         }
 
         public static PackageVersionUpload NewPackageVersion(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
-            return BuildPackageVersionUpload(pkg.Header, zipPath);
+            var header = NewPackageHeader(pkg);
+            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, header, pkg, files, uploadHandle);
+            return new PackageVersionUpload(header, zipPath);
         }
-
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        private static string DoPackageFileOperationsAndZip(DynamoModel dynamoModel, PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
             DirectoryInfo rootDir, dyfDir, binDir, extraDir;
             FormPackageDirectory(dynamoModel.Loader.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
-            WritePackageHeader(pkg.Header, rootDir);
+            WritePackageHeader(header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir); 
             RemapCustomNodeFilePaths(dynamoModel.CustomNodeManager, files, dyfDir.FullName);
@@ -71,42 +71,9 @@ namespace Dynamo.PackageManager
             return zipPath;
         }
 
-
-        private static PackageVersionUpload BuildPackageVersionUpload(PackageUploadRequestBody pkgHeader, string zipPath )
-        {
-            return new PackageVersionUpload(  pkgHeader.name,
-                                                pkgHeader.version,
-                                                pkgHeader.description,
-                                                pkgHeader.keywords,
-                                                pkgHeader.contents,
-                                                "dynamo",
-                                                pkgHeader.engine_version,
-                                                pkgHeader.engine_metadata,
-                                                pkgHeader.group,
-                                                zipPath,
-                                                pkgHeader.dependencies);    
-        }
-
-        private static PackageUpload BuildPackageUpload(PackageUploadRequestBody pkgHeader, string zipPath)
-        {
-            return new PackageUpload(pkgHeader.name,
-                                        pkgHeader.version,
-                                        pkgHeader.description,
-                                        pkgHeader.keywords,
-                                        pkgHeader.license,
-                                        pkgHeader.contents,
-                                        "dynamo",
-                                        pkgHeader.engine_version,
-                                        pkgHeader.engine_metadata,
-                                        pkgHeader.group,
-                                        zipPath,
-                                        pkgHeader.dependencies);
-        }
-
         private static void RemapCustomNodeFilePaths( CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot )
         {
-
-            var defList= filePaths
+            var defList = filePaths
                 .Where(x => x.EndsWith(".dyf"))
                 .Select(customNodeManager.GuidFromPath)
                 .Select(customNodeManager.GetFunctionDefinition)
@@ -229,7 +196,6 @@ namespace Dynamo.PackageManager
         }
 
 #endregion
-
 
     }
 }

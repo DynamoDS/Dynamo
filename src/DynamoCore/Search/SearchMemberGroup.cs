@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Dynamo.Nodes.Search;
 using System.Linq;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Microsoft.Practices.Prism.ViewModel;
@@ -9,7 +9,7 @@ namespace Dynamo.Search
 {
     public class SearchMemberGroup : NotificationObject
     {
-        private readonly List<BrowserInternalElement> members;
+        private List<BrowserInternalElement> members;
 
         public string FullyQualifiedName { get; private set; }
 
@@ -17,11 +17,16 @@ namespace Dynamo.Search
         {
             get
             {
-                var fullName = FullyQualifiedName;
+                if (string.IsNullOrEmpty(FullyQualifiedName))
+                    return string.Empty;
 
-                // Skip past the last delimiter and get the group name.
-                var delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
-                return fullName.Substring(0, fullName.LastIndexOf(delimiter) + delimiter.Length);
+                int index = FullyQualifiedName.IndexOf(delimiter);
+                var name = index > -1 ? FullyQualifiedName.Substring(index + delimiter.Length)
+                                      : FullyQualifiedName;
+
+                index = name.LastIndexOf(delimiter);
+                return index > -1 ? name.Substring(0, index + delimiter.Length)
+                                  : string.Empty;
             }
         }
 
@@ -29,8 +34,10 @@ namespace Dynamo.Search
         {
             get
             {
-                int startIndexOfGroupType = FullyQualifiedName.LastIndexOf(Configurations.ShortenedCategoryDelimiter) + 2;
-                return FullyQualifiedName.Substring(startIndexOfGroupType);
+                // Skip past the last delimiter and get the group name.
+                int index = FullyQualifiedName.LastIndexOf(delimiter);
+                return index > -1 ? FullyQualifiedName.Substring(index + delimiter.Length)
+                                  : string.Empty;
             }
         }
 
@@ -55,6 +62,7 @@ namespace Dynamo.Search
         }
 
         private bool showAllMembers = false;
+        private string delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
 
         internal SearchMemberGroup(string fullyQualifiedName)
         {
@@ -71,13 +79,18 @@ namespace Dynamo.Search
 
         public bool ContainsMember(BrowserInternalElement member)
         {
-           return Members.Contains(member);
+            return Members.Contains(member);
         }
 
         public void ExpandAllMembers()
         {
             showAllMembers = true;
             RaisePropertyChanged("Members");
+        }
+
+        public void Sort()
+        {
+            members = members.OrderBy(x => x.Name).ToList();
         }
     }
 }

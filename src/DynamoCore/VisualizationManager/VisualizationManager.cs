@@ -18,14 +18,17 @@ using Dynamo.DSEngine;
 
 namespace Dynamo
 {
+    #region event handlers
+
     public delegate void RenderCompleteEventHandler(object sender, RenderCompletionEventArgs e);
 
     public delegate void RenderFailedEventHandler(object sender, RenderFailedEventArgs e);
 
-
     public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
 
     public delegate void VisualizerDelegate(NodeModel node, object geom, string tag, RenderDescription target, Octree.OctreeSearch.Octree octree);
+
+    #endregion
 
     /// <summary>
     /// Visualization manager consolidates functionality for creating visualizations 
@@ -112,7 +115,7 @@ namespace Dynamo
                     if (!drawToAlternateContext)
                     {
                         drawToAlternateContext = value;
-                        QueueRenderTask();
+                        OnRenderComplete(this, new RenderCompletionEventArgs(-1));
                     }
                 }
                 RaisePropertyChanged("DrawToAlternateContext");
@@ -128,7 +131,11 @@ namespace Dynamo
             set { alternateContextName = value; }
         }
 
-        public int MaxTesselationDivisions { get; set; }
+        public int MaxTesselationDivisions
+        {
+            get { return this.dynamoModel.MaxTesselationDivisions; }
+            set { this.dynamoModel.MaxTesselationDivisions = value; }
+        }
 
         public Object CurrentTaskIdMutex = new object();
         public long CurrentTaskId
@@ -223,8 +230,6 @@ namespace Dynamo
 
         public VisualizationManager(DynamoModel dynamoModel)
         {
-            MaxTesselationDivisions = 128;
-
             this.dynamoModel = dynamoModel;
 
 #if !ENABLE_DYNAMO_SCHEDULER
@@ -267,7 +272,7 @@ namespace Dynamo
         /// </summary>
         public void UnPause()
         {
-            UnPause(this, EventArgs.Empty);
+            UnPauseAndUpdate(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -321,10 +326,9 @@ namespace Dynamo
 
                 OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            allPackages, string.Empty, CurrentTaskId));
+                            allPackages, Guid.Empty, CurrentTaskId));
             }
         }
-
 
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
@@ -360,14 +364,14 @@ namespace Dynamo
                     // if there are packages, send any that aren't empty
                     OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty, tag.TaskId));
+                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), Guid.Empty, tag.TaskId));
                 }
                 else
                 {
                     // if there are no packages, still trigger an update
                     // so the view gets redrawn
                     OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty, tag.TaskId));
+                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), Guid.Empty, tag.TaskId));
                 }
 
             }
@@ -379,7 +383,7 @@ namespace Dynamo
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(tag.Node.Inputs, 0).ToList();
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID,tag.TaskId));
             }
 
             
@@ -400,6 +404,27 @@ namespace Dynamo
             //renderManager.RequestRenderAsync(new RenderTask());
             
             //renderManager.Render(null,false);
+        }
+
+        /// <summary>
+        /// Request updated visuals for a branch of the graph.
+        /// </summary>
+        /// <param name="node">The node whose branch you want updated visuals for, or null to return everything.</param>
+        public void RequestBranchUpdate(NodeModel node)
+        {
+            var scheduler = dynamoModel.Scheduler;
+            if (scheduler == null) // Shutdown has begun.
+                return;
+
+            // Schedule a AggregateRenderPackageAsyncTask here so that the 
+            // background geometry preview gets refreshed.
+            // 
+            var task = new AggregateRenderPackageAsyncTask(scheduler);
+            if (task.Initialize(dynamoModel.CurrentWorkspace, node))
+            {
+                task.Completed += OnRenderPackageAggregationCompleted;
+                scheduler.ScheduleForExecution(task);
+            }
         }
 
         #endregion
@@ -437,7 +462,7 @@ namespace Dynamo
         {
             UpdatingPaused = false;
             RegisterEventListeners();
-            QueueRenderTask();
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1)); ;
         }
 
         /// <summary>
@@ -494,7 +519,7 @@ namespace Dynamo
                 renderManager.RequestRenderAsync(new RenderTask());
 #else
             if (updateVisualization)
-                RequestNodeVisualUpdate(null);
+                RequestNodeVisualUpdateAsync(null);
 #endif
         }
 
@@ -506,9 +531,7 @@ namespace Dynamo
             if (updatingPaused)
                 return;
 
-            // For a selection event, we need only to trigger a new rendering for 
-            // the background preview.
-            AggregateUpstreamRenderPackages(new RenderTag(CurrentTaskId, null));
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1)); ;
         }
 
         /// <summary>
@@ -580,10 +603,16 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
+            // do nothing if it has come on EvaluationCompleted
+            // and no evaluation was
+            var args = e as EvaluationCompletedEventArgs;
+            if (args != null && !args.EvaluationTookPlace)
+                return;
+
 #if !ENABLE_DYNAMO_SCHEDULER
             renderManager.RequestRenderAsync(new RenderTask());
 #else
-            RequestNodeVisualUpdate(null);
+            RequestNodeVisualUpdateAsync(null);
 #endif
         }
 
@@ -591,21 +620,21 @@ namespace Dynamo
 
         protected virtual void HandleRenderPackagesReadyCore()
         {
-            // The base VisualizationManager does nothing here.
+            // Default visualization manager does nothing here.
         }
 
-        private void RequestNodeVisualUpdate(NodeModel nodeModel)
+        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel)
         {
             if (nodeModel != null)
             {
                 // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdate(MaxTesselationDivisions);
+                nodeModel.RequestVisualUpdateAsync(MaxTesselationDivisions);
             }
             else
             {
                 // Get each node in workspace to update their visuals.
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdate(MaxTesselationDivisions);
+                    node.RequestVisualUpdateAsync(MaxTesselationDivisions);
             }
 
             // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
@@ -616,16 +645,6 @@ namespace Dynamo
             var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
             notifyTask.Completed += OnNodeModelRenderPackagesReady;
             scheduler.ScheduleForExecution(notifyTask);
-
-            // Schedule a AggregateRenderPackageAsyncTask here so that the 
-            // background geometry preview gets refreshed.
-            // 
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(dynamoModel.CurrentWorkspace, null))
-            {
-                task.Completed += OnRenderPackageAggregationCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
         }
 
         private void OnNodeModelRenderPackagesReady(AsyncTask asyncTask)
@@ -636,6 +655,13 @@ namespace Dynamo
             // method, *do not* dispatch the following call here as derived 
             // handler may need it to remain on the ISchedulerThread's context.
             // 
+
+            // Fire event to tell render targets to request their visuals
+            OnRenderComplete(this, new RenderCompletionEventArgs(-1));
+
+            // Call overridden method on visualization manager to
+            // process whatever internal logic there is around
+            // drawing a visualization.
             HandleRenderPackagesReadyCore();
         }
 
@@ -646,7 +672,9 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            var e = new VisualizationEventArgs(rps, string.Empty, -1);
+            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
+
+            var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);
         }
 
@@ -655,25 +683,8 @@ namespace Dynamo
         private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
-            QueueRenderTask();
             Cleanup();
         }
-
-        /// <summary>
-        /// Increment the render task id and fire the render completed event.
-        /// </summary>
-        private void QueueRenderTask(bool increment = true)
-        {
-            if (increment)
-            {
-                CurrentTaskId++;
-            }
-            
-            Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
-            TaskList.Add(CurrentTaskId);
-            OnRenderComplete(this, new RenderCompletionEventArgs(CurrentTaskId));
-        } 
-
         
         /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
@@ -692,20 +703,13 @@ namespace Dynamo
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
-                if (pair.Value == null)
+                if (pair.Value == null || (pair.Value.Item2 == null))
                     continue;
 
                 NodeModel node = pair.Value.Item2;
-
-                //We no longer depend on OldValue, as long as the given node has
-                //registered it's render description with Visualization manager
-                //we will be able to visualize the given node. -Sharad
-                if (node != null)
+                lock (node.RenderPackagesMutex)
                 {
-                    lock (node.RenderPackagesMutex)
-                    {
-                        packages.AddRange(node.RenderPackages);
-                    }
+                    packages.AddRange(node.RenderPackages);
                 }
 
                 if (node.IsUpstreamVisible)
@@ -742,11 +746,11 @@ namespace Dynamo
         /// <summary>
         /// The id of the view for which the description belongs.
         /// </summary>
-        public string Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         public long TaskId { get; internal set; }
 
-        public VisualizationEventArgs(IEnumerable<RenderPackage> description, string viewId, long taskId)
+        public VisualizationEventArgs(IEnumerable<RenderPackage> description, Guid viewId, long taskId)
         {
             Packages = description;
             Id = viewId;

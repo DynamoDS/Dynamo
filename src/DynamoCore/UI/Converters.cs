@@ -47,6 +47,29 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PrettyDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var dateString = value as string;
+            if (dateString != null) return PrettyDate(dateString);
+
+            return "Unknown date format";
+        }
+
+        private string PrettyDate(string json_string)
+        {
+            var d = DateTime.Parse(json_string);
+
+            return d.ToString("d MMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -70,7 +93,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
                 {
-                    return "Synchronizing package list with server...";
+                    return "Syncing with server...";
                 }
             }
 
@@ -1671,7 +1694,7 @@ namespace Dynamo.Controls
 
             var input = value as string;
             if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
-                return NoneString;
+                return input;
 
             if (shouldPrefixColon)
                 return String.Concat(ColonString, SpaceString, input);
@@ -1761,6 +1784,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is NodeSearchElement) 
+                return false;
             if (value is BrowserInternalElement)
                 return true;
             if (value is BrowserInternalElementForClasses)
@@ -1772,6 +1797,26 @@ namespace Dynamo.Controls
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
             return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // This converter is used to change color of output parameters for custom node.
+    public class NodeTypeToColorConverter : IValueConverter
+    {
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CustomNodeSearchElement)
+                return TrueBrush;
+            return FalseBrush;
         }
 
         public object ConvertBack(
@@ -1858,10 +1903,10 @@ namespace Dynamo.Controls
         {
             var incomingString = value as string;
 
-            if (string.IsNullOrEmpty(incomingString)) return new Thickness(0, 0, 0, 0);
+            if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
 
             var numberOfPoints = incomingString.Count(x => x == '.');
-            return new Thickness(10 * numberOfPoints, 0, 0, 0);
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
         }
 
         public object ConvertBack(

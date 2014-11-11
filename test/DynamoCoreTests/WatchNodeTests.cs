@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using System.IO;
@@ -148,6 +149,22 @@ namespace Dynamo.Tests
 
             //Validate using vecotr node connected to watch node.
             AssertWatchContent(node, vectorNode);
+        }
+
+        [Test]
+        public void WatchFunctionObject()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.Model.RunExpression();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue,
+                ViewModel.Model.EngineController.LiveRunnerCore,
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+
+            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
         }
     }
 }

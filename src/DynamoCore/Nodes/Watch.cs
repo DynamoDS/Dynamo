@@ -209,15 +209,24 @@ namespace Dynamo.Nodes
             var inputVar = IsPartiallyApplied
                 ? AstIdentifierForPreview.Name
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
-            
-            return Root != null
-                ? dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar, Root.ShowRawData)
-                : dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, inputVar);
+
+            var core = Workspace.DynamoModel.EngineController.LiveRunnerCore;
+
+            if (Root != null)
+            {
+                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    CachedValue,
+                    core,
+                    inputVar,
+                    Root.ShowRawData);
+            }
+            else
+                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
 #if ENABLE_DYNAMO_SCHEDULER
 
-        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
