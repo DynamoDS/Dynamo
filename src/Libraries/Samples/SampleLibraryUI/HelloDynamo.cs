@@ -92,6 +92,10 @@ namespace SamplesLibraryUI
             }
         }
 
+        /// <summary>
+        /// DelegateCommand objects allow you to bind
+        /// UI interaction to methods on your data context.
+        /// </summary>
         public DelegateCommand MessageCommand { get; set; }
 
         #endregion
