@@ -86,12 +86,8 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\DynamoCore.dll $(ProjectDir)extern\DynamoCore.dll
-copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\ProtoCore.dll $(ProjectDir)extern\ProtoCore.dll
-
-copy $(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.dll $(ProjectDir)extern\ProtoGeometry.dll
-copy $(SolutionDir)..\extern\ProtoGeometry\ProtoInterface.dll $(ProjectDir)extern\ProtoInterface.dll
-copy $(SolutionDir)..\extern\prism\Microsoft.Practices.Prism.dll $(ProjectDir)extern\Microsoft.Practices.Prism.dll</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
