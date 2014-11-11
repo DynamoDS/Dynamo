@@ -44,6 +44,7 @@ namespace Dynamo.UI.Views
             if (classButton == null) return;
 
             classButton.IsSelected = !classButton.IsSelected;
+            classButton.BringIntoView();
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
