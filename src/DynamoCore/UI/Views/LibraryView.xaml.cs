@@ -91,10 +91,14 @@ namespace Dynamo.UI.Views
                 return;
 
             var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
+            // Continue work with real class: not null, child of BrowserInternalElementForClasses.
             if (selectedClass == null || selectedClass is NodeSearchElement ||
                 !(selectedClass.Parent is BrowserInternalElementForClasses))
                 return;
 
+            // Go through all available for current top category LibraryWrapPanel.
+            // Select class if wrapPanel contains selectedClass.
+            // Unselect class in other case.
             foreach (var wrapPanel in wrapPanels)
             {
                 if (wrapPanel.HasSelectedItem)
