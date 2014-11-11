@@ -929,16 +929,7 @@ namespace ProtoCore
         /// <summary>
         ///  These are the list of symbols updated by the VM after an execution cycle
         /// </summary>
-        public List<SymbolNode> UpdatedSymbols { get; private set; }
-        
-        public void AddUpdatedSymbol(SymbolNode symbol) 
-        {
-            Validity.Assert(symbol != null);
-            if (!UpdatedSymbols.Contains(symbol))
-            {
-                UpdatedSymbols.Add(symbol);
-            }
-        }
+        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
 
         #endregion
 
@@ -1355,7 +1346,7 @@ namespace ProtoCore
 
         private void ResetAllRuntimeProperties()
         {
-            UpdatedSymbols = new List<SymbolNode>();
+            UpdatedSymbols = new HashSet<SymbolNode>();
         }
 
         private void ResetAll(Options options)

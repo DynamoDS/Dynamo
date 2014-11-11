@@ -107,7 +107,7 @@ namespace ProtoCore
             public Guid GraphNodeGuid;
             public int AstID;
             public string FileName;
-            public SymbolNode symbol;
+            public SymbolNode UnboundVariableSymbolNode;
         }
     }
 
@@ -453,12 +453,12 @@ namespace ProtoCore
         /// Remove unbound variable warnings that match all symbols in the symbolList
         /// </summary>
         /// <param name="symbolList"></param>
-        public void RemoveUnboundVariableWarnings(List<SymbolNode> symbolList)
+        public void RemoveUnboundVariableWarnings(HashSet<SymbolNode> symbolList)
         {
             foreach (SymbolNode symbol in symbolList)
             {
                 // Remove all warnings that match the symbol
-                warnings.RemoveAll(w => w.ID == BuildData.WarningID.kIdUnboundIdentifier && w.symbol != null && w.symbol.Equals(symbol));
+                warnings.RemoveAll(w => w.ID == BuildData.WarningID.kIdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
             }
         }
 
@@ -619,7 +619,7 @@ namespace ProtoCore
                 GraphNodeGuid = graphNode == null ? default(Guid) : graphNode.guid,
                 AstID = graphNode == null? DSASM.Constants.kInvalidIndex : graphNode.OriginalAstID,
                 FileName = fileName,
-                symbol = associatedSymbol
+                UnboundVariableSymbolNode = associatedSymbol
             };
             warnings.Add(entry);
 
