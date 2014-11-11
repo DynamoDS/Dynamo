@@ -31,7 +31,7 @@ namespace SamplesLibraryUI
     /// properties on our class and our custom UI.
     /// 
     /// </summary>
-     
+    /// 
     // The NodeName attribute is what will display on 
     // top of the node in Dynamo
     [NodeName("Hello Dynamo")]
@@ -161,6 +161,11 @@ namespace SamplesLibraryUI
             // for generating the abstract syntax tree (AST) nodes which
             // specify what methods are called, or how your data is passed
             // when execution occurs.
+
+            // WARNING!!!
+            // Do not throw an exception during AST creation. If you
+            // need to convey a failure of this node, then use
+            // AstFactory.BuildNullNode to pass out null.
             
             // Using the AstFactory class, we can build AstNode objects
             // that assign doubles, assign function calls, build expression lists, etc.
