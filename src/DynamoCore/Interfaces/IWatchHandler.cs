@@ -74,8 +74,24 @@ namespace Dynamo.Interfaces
             }
             else if (core != null && value is StackValue)
             {
-                int typeId = core.TypeSystem.GetType((StackValue)value);
+                StackValue stackValue = (StackValue)value;
+                int typeId = core.TypeSystem.GetType(stackValue);
                 string typeName = core.TypeSystem.classTable.GetTypeName(typeId);
+
+                if (stackValue.IsFunctionPointer)
+                {
+                    ProcedureNode procNode;
+                    if (core.FunctionPointerTable.TryGetFunction(stackValue, core, out procNode))
+                    {
+                        string className = String.Empty;
+
+                        if (procNode.classScope != Constants.kGlobalScope)
+                        {
+                            className = core.ClassTable.GetTypeName(procNode.classScope);
+                        }
+                        typeName = typeName + ": " + className + "." + procNode.name;
+                    }
+                }
                 node = new WatchViewModel(visualizationManager, typeName, tag);
             }
             else
