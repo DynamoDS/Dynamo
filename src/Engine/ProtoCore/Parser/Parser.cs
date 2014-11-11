@@ -261,6 +261,35 @@ public Node root { get; set; }
         return false;
 	}
 
+    private bool IsNonAssignmentStatement()
+    {
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+            if (_ident == pt.kind)
+            {
+                pt = scanner.Peek();
+                if (pt.val == "=")
+                {
+                    scanner.ResetPeek();
+                    return false;
+                }
+                else if (_period == pt.kind)
+                {
+                    pt = scanner.Peek();
+                    continue;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        scanner.ResetPeek();
+        return true;
+    }
+
     private bool IsAssignmentStatement()
     {
         Token pt = la;
@@ -911,8 +940,12 @@ public Node root { get; set; }
 	void Associative_Statement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		while (!(StartOf(2))) {SynErr(76); Get();}
 		if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); 
-		node = null; 
-		if (IsFunctionCallStatement()) {
+		node = null;
+        if (core.ParsingMode == ParseMode.AllowNonAssignment && IsNonAssignmentStatement())
+        {
+            Associative_FunctionCallStatement(out node);
+        }
+		else if (IsFunctionCallStatement()) {
 			Associative_FunctionCallStatement(out node);
 		} else if (la.kind == 1 || la.kind == 10 || la.kind == 47) {
 			Associative_FunctionalStatement(out node);
@@ -1100,9 +1133,9 @@ public Node root { get; set; }
 		bool allowIdentList = core.Options.GenerateSSA && rightNode is ProtoCore.AST.AssociativeAST.IdentifierListNode;
 		
 		//Try to make a false binary expression node.
-		if (rightNode is ProtoCore.AST.AssociativeAST.FunctionDotCallNode 
-		   || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
-		   || allowIdentList)
+        //if (rightNode is ProtoCore.AST.AssociativeAST.FunctionDotCallNode 
+        //   || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
+        //   || allowIdentList)
 		
 		{
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
