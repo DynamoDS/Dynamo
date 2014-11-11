@@ -6,6 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 using Dynamo.Models;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Tests
 {
@@ -25,6 +26,10 @@ namespace Dynamo.Tests
             var node = model.CurrentWorkspace.NodeFromWorkspace("c0e4b4ef-49f2-4bbc-9cbe-a8cc651ac17e");
             Assert.AreEqual(node.State, ElementState.AstBuildBroken);
             AssertPreviewValue("c0e4b4ef-49f2-4bbc-9cbe-a8cc651ac17e", null);
+
+            var formatString = AstBuilder.StringConstants.AstBuildBrokenMessage;
+            var expectedToolTip = String.Format(formatString, "Dummy error message.");
+            Assert.AreEqual(expectedToolTip, node.ToolTipText);
         }
     }
 }
