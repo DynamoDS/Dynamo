@@ -184,7 +184,7 @@ namespace Revit.AnalysisDisplay
                 // then create a new SFM
                 if (sfm.NumberOfMeasurements != numValuesPerAnalysisPoint)
                 {
-                    DocumentManager.Instance.CurrentDBDocument.Delete(sfm);
+                    DocumentManager.Instance.CurrentDBDocument.Delete(sfm.Id);
                     sfm = SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
                 }
             }

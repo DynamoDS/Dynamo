@@ -587,6 +587,19 @@ namespace ProtoCore
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
 
+            public ClassMirror(int classIndex, ProtoCore.Core core)
+            {
+                if (classIndex == Constants.kInvalidIndex)
+                {
+                    throw new ArgumentException("classIndex is invalid");
+                }
+
+                ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
+                classNode = classTable.ClassNodes[classIndex];
+                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
+                ClassName = classNode.name;
+            }
+
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,
                 LibraryMirror libraryMirror = null)
                 : base(core, classNode.name)

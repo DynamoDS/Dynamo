@@ -162,7 +162,19 @@ namespace ProtoCore.DSASM.Mirror
                     else
                         return "{ " + arrTrace + " }";
                 case AddressType.FunctionPointer:
-                    return "fptr: " + val.opdata.ToString();
+                    ProcedureNode procNode;
+                    if (core.FunctionPointerTable.TryGetFunction(val, core, out procNode))
+                    {
+                        string className = String.Empty;
+                        if (procNode.classScope != Constants.kGlobalScope)
+                        {
+                            className = core.ClassTable.GetTypeName(procNode.classScope).Split('.').Last() + ".";
+                        }
+
+                        return "function: " + className + procNode.name; 
+                    }
+                    return "function: " + val.opdata.ToString();
+
                 case AddressType.Boolean:
                     return (val.opdata == 0) ? "false" : "true";
                 case AddressType.String:

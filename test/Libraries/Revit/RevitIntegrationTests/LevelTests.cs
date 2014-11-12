@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+
+using NUnit.Framework;
 
 using RTF.Framework;
 
@@ -36,5 +38,48 @@ namespace RevitSystemTests
 
             Assert.Inconclusive("Porting : DoubleInput");
         }
+
+        [Test]
+        [Category("IntegrationTests")]
+        [TestModel(@".\empty.rfa")]
+        public void CreateLevelsUsingAllLevelCreationNodes()
+        {
+            /* This Test Case serves as a perpose of Smoke Test For Level creation. 
+             Curently it is marked as Integration Tests */
+
+            var model = ViewModel.Model;
+
+            string samplePath = Path.Combine(workingDirectory, @".\Level\Levels.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            var levelByElevationAndName = GetPreviewValue
+                                    ("f004b19e-f67a-4422-8e4e-5fd4eeea4dff") as Revit.Elements.Level;
+            Assert.IsNotNull(levelByElevationAndName);
+
+            var levelByLevelAndOffset = GetPreviewValue
+                                    ("bc16e986-6b1e-4e50-845c-970782509145") as Revit.Elements.Level;
+            Assert.IsNotNull(levelByLevelAndOffset);
+
+            var levelByLevelOffsetAndName = GetPreviewValue
+                                    ("c3894b49-270a-4936-8d68-8ede789fe9f2") as Revit.Elements.Level;
+            Assert.IsNotNull(levelByLevelOffsetAndName);
+
+            var levelByElevation = GetPreviewValue
+                                    ("eb310915-91b0-481e-ae45-3764207c8b95") as Revit.Elements.Level;
+            Assert.IsNotNull(levelByElevation);
+
+        }
+
+
     }
 }

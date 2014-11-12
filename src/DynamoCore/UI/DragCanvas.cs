@@ -185,6 +185,22 @@ namespace Dynamo.Controls
 
         #region Overrides
 
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+           //Release the mouse capture on left button up.
+           //this will allow window selection to continue when mouse accidentally moves beyond the canvas
+           if(this.IsMouseCaptured)
+               this.ReleaseMouseCapture();
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            //if the mouse is released outside the canvas then remove the selection 
+            object dataContext = this.owningWorkspace.DataContext;
+            WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
+            wvm.HandleFocusChanged(this, false);
+        }
+
         protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             // If the focus falls on a node's text box, or a slider's thumb, 
@@ -216,7 +232,9 @@ namespace Dynamo.Controls
 
             if (wvm.HandleLeftButtonDown(this, e))
             {
-                base.OnMouseLeftButtonDown(e);
+                //capture the mouse input even if the mouse is dragged outside the canvas
+                this.CaptureMouse();
+                base.OnMouseLeftButtonDown(e);               
                 e.Handled = true;
             }
         }

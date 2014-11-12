@@ -25,7 +25,7 @@ namespace Dynamo.PackageManager.UI
             this.BuildDependencies(new HashSet<object>());
         }
 
-        public PackageItemRootViewModel(Assembly assembly)
+        public PackageItemRootViewModel(PackageAssembly assembly)
         {
             this.Height = 32;
             this.DependencyType = DependencyType.Assembly;
