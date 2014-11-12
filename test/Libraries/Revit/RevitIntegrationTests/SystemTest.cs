@@ -51,13 +51,5 @@ namespace RevitSystemTests
                 emptyModelPath1 = Path.Combine(workingDirectory, "empty1.rfa");
             }
         }
-
-        public void OpenModel(string relativeFilePath)
-        {
-            string samplePath = Path.Combine(samplesPath, relativeFilePath);
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
-        }
     }
 }

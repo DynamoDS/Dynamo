@@ -135,6 +135,32 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
+        /// <summary>
+        /// Open and run a Dynamo definition given a relative
+        /// path from the working directory.
+        /// </summary>
+        /// <param name="subPath"></param>
+        protected void OpenAndRunDynamoDefinition(string subPath)
+        {
+            OpenAndRunDynamoDefinition(subPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+        }
+
+        /// <summary>
+        /// Open a Dynamo definition given a relative
+        /// path from the working directory
+        /// </summary>
+        /// <param name="relativeFilePath"></param>
+        public void OpenDynamoDefinition(string relativeFilePath)
+        {
+            string samplePath = Path.Combine(workingDirectory, relativeFilePath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
+
+            ViewModel.OpenCommand.Execute(testPath);
+        }
+
         #endregion
 
         #region Utility functions

@@ -1135,7 +1135,7 @@ namespace RevitSystemTests
         public void Geometry_Solids()
         {
             var model = ViewModel.Model;
-            OpenModel(@".\Geometry\Geometry_Solids.dyn");
+            OpenDynamoDefinition(@".\Geometry\Geometry_Solids.dyn");
 
             AssertNoDummyNodes();
 
@@ -1167,7 +1167,7 @@ namespace RevitSystemTests
         public void Geometry_Surfaces()
         {
             var model = ViewModel.Model;
-            OpenModel(@".\Geometry\Geometry_Surfaces.dyn");
+            OpenDynamoDefinition(@".\Geometry\Geometry_Surfaces.dyn");
 
             AssertNoDummyNodes();
 
