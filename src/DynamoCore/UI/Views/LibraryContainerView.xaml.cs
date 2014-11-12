@@ -138,10 +138,6 @@ namespace Dynamo.Search
 
             switch (e.Key)
             {
-                case Key.Return:
-                    viewModel.Execute();
-                    break;
-
                 case Key.Delete:
                     if (DynamoSelection.Instance.Selection.Count > 0)
                     {
@@ -198,8 +194,7 @@ namespace Dynamo.Search
                     viewModel.PopulateSearchTextWithSelectedResult();
                     break;
 
-                case Key.Down:
-                case Key.Up:
+                case Key.Down: case Key.Up: case Key.Enter:
                     {
                         var key = e.Key;                    // Key to send
                         PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
