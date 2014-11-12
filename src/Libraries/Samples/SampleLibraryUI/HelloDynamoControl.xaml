@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="SamplesLibraryUI.HelloDynamoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Name="CustomUIGrid">
+        <StackPanel>
+            <Button Command="{Binding MessageCommand}" Height="60" Margin="5" Background="LightGreen" >
+                <TextBlock Text="{Binding Message}"></TextBlock>
+            </Button>
+            <Slider Margin="5" Minimum="0" Maximum="11" Value="{Binding Awesome, Mode=TwoWay}">
+                <Slider.ToolTip>
+                    <TextBlock Text="Slide this to crank up the awesome."></TextBlock>
+                </Slider.ToolTip>
+            </Slider>
+        </StackPanel>
+    </Grid>
+</UserControl>
