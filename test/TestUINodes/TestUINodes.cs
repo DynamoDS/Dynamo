@@ -17,8 +17,8 @@ namespace TestUINodes
         public NodeWithFailingASTOutput(WorkspaceModel workspaceModel)
             : base(workspaceModel)
         {
-            InPortData.Add(new PortData("dummyInput", "dummy"));
-            OutPortData.Add(new PortData("dummyOutput", "Result"));
+            InPortData.Add(new PortData("input", "dummy input"));
+            OutPortData.Add(new PortData("result", "dummy result"));
             RegisterAllPorts();
         }
 
