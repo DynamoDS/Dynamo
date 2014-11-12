@@ -8,6 +8,7 @@ using Dynamo.ViewModels;
 using DynamoUnits;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
 
 namespace Dynamo.Interfaces
 {
@@ -74,9 +75,20 @@ namespace Dynamo.Interfaces
             }
             else if (core != null && value is StackValue)
             {
-                int typeId = core.TypeSystem.GetType((StackValue)value);
-                string typeName = core.TypeSystem.classTable.GetTypeName(typeId);
-                node = new WatchViewModel(visualizationManager, typeName, tag);
+                StackValue stackValue = (StackValue)value;
+                string stringValue = string.Empty;
+
+                if (stackValue.IsFunctionPointer)
+                {
+                    stringValue = StringUtils.GetStringValue(stackValue, core);
+                }
+                else
+                {
+                    int typeId = core.TypeSystem.GetType(stackValue);
+                    ClassMirror classMirror = new ClassMirror(typeId, core);
+                    stringValue = classMirror.ClassName;
+                }
+                node = new WatchViewModel(visualizationManager, stringValue, tag);
             }
             else
             {

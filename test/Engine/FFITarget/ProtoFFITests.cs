@@ -423,6 +423,11 @@ namespace FFITarget
             };
         }
 
+        public static object ReturnObject(object x)
+        {
+            return x;
+        }
+
         public static int GetDepth(IList arr)
         {
             int maxSubListDepth = 0;
