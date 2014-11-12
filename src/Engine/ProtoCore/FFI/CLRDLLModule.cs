@@ -26,7 +26,7 @@ namespace ProtoFFI
         /// Private constructor to create empty CLRModuleType.
         /// </summary>
         /// <param name="type">System.Type</param>
-        private CLRModuleType(Type type)
+        internal CLRModuleType(Type type)
         {
             CLRType = type;
             string classname = CLRObjectMarshler.GetTypeName(type);
@@ -92,6 +92,7 @@ namespace ProtoFFI
         {
             return GetTypes(isEmpty);
         }
+
 
         /// <summary>
         /// Gets all the types for the given predicate.
@@ -199,6 +200,14 @@ namespace ProtoFFI
             }
         }
 
+        public Dictionary<MethodInfo, object[]> GetterAttributes
+        {
+            get
+            {
+                return mGetterAttributes;
+            }
+        }
+
         public static bool TryGetImportedDSType(Type type, out ProtoCore.Type dsType)
         {
             return mTypeMaps.TryGetValue(type, out dsType);
@@ -255,6 +264,8 @@ namespace ProtoFFI
         private ProtoCore.Type? mProtoCoreType;
 
         readonly Dictionary<string, List<FFIFunctionPointer>> mFunctionPointers = new Dictionary<string, List<FFIFunctionPointer>>();
+
+        private Dictionary<MethodInfo, object[]> mGetterAttributes = new Dictionary<MethodInfo, object[]>();
 
         private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>();
 
@@ -365,6 +376,14 @@ namespace ProtoFFI
             if (isDerivedClass) //has base class
                 flags |= BindingFlags.DeclaredOnly; //for derived class, parse only class declared methods.
 
+            PropertyInfo[] properties = type.GetProperties(flags);
+            foreach (var p in properties)
+            {
+                AssociativeNode node = ParseProperty(p);
+                if (null != node)
+                    classnode.varlist.Add(node);
+            }
+
             bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
             MethodInfo[] methods = type.GetMethods(flags);
             bool hasDisposeMethod = false;
@@ -420,14 +439,6 @@ namespace ProtoFFI
                 FunctionDefinitionNode func = ParseFieldAccessor(f);
                 if (null != func)
                     RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
-            }
-
-            PropertyInfo[] properties = type.GetProperties(flags);
-            foreach (var p in properties)
-            {
-                AssociativeNode node = ParseProperty(p);
-                if (null != node)
-                    classnode.varlist.Add(node);
             }
 
             FFIClassAttributes cattrs = new FFIClassAttributes(type);
@@ -542,6 +553,10 @@ namespace ProtoFFI
 
         private ProtoCore.AST.AssociativeAST.AssociativeNode ParseProperty(PropertyInfo p)
         {
+            MethodInfo m = p.GetAccessors(false)[0];
+            var attribs = p.GetCustomAttributes(false);
+            mGetterAttributes.Add(m, attribs);
+
             if (null == p || SupressesImport(p))
                 return null;
 
@@ -550,7 +565,6 @@ namespace ProtoFFI
             if (null != indexParams && indexParams.Length > 0)
                 return null;
 
-            MethodInfo m = p.GetAccessors(false)[0];
             //If this method hides the base class accessor method by signature
             if (m.IsHideBySig)
             {
@@ -571,7 +585,7 @@ namespace ProtoFFI
             return varDeclNode;
         }
 
-        public static bool SupressesImport(MemberInfo member)
+        public bool SupressesImport(MemberInfo member)
         {
             if (null == member)
                 return true;
@@ -579,9 +593,9 @@ namespace ProtoFFI
             object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
-            if (method != null)
+            if (method != null && mGetterAttributes.ContainsKey(method))
             {
-                var propAtts = FFIMethodAttributes.TryGetAttributesFromProperty(method);
+                var propAtts = mGetterAttributes[method];
                 if (propAtts != null)
                     atts = propAtts;
             }
@@ -648,7 +662,7 @@ namespace ProtoFFI
             bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
 
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
+            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, this);
             if (method.IsStatic &&
                 method.DeclaringType == method.ReturnType &&
                 !propaccessor &&
@@ -963,9 +977,11 @@ namespace ProtoFFI
 #else
             foreach (var type in types)
             {
+                CLRModuleType cType = new CLRModuleType(type);
                 //For now there is no support for generic type.
-                if (!type.IsGenericType && type.IsPublic && !exttype.IsAssignableFrom(type) && !CLRModuleType.SupressesImport(type))
+                if (!type.IsGenericType && type.IsPublic && !exttype.IsAssignableFrom(type) && !cType.SupressesImport(type))
                 {
+
                     CLRModuleType importedType = CLRModuleType.GetInstance(type, this, alias);
                     Type[] nestedTypes = type.GetNestedTypes();
                     if (null != nestedTypes && nestedTypes.Length > 0)
@@ -1223,30 +1239,40 @@ namespace ProtoFFI
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
 
-        public FFIMethodAttributes(MethodInfo method)
+        public FFIMethodAttributes(MethodInfo method, CLRModuleType clrType)
         {
-            if (method == null)
-                throw new ArgumentNullException("method");
-            
-            FFIClassAttributes baseAttributes = null;
-            Type type = method.DeclaringType;
-            if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
-            {
-                baseAttributes = new FFIClassAttributes(type);
-                CLRModuleType.SetTypeAttributes(type, baseAttributes);
-            }
+            //var atts = TryGetAttributesFromProperty(method);
 
-            if (null != baseAttributes)
-            {
-                HiddenInLibrary = baseAttributes.HiddenInLibrary;
-            }
+            //if (atts != null)
+            //    attributes = atts.Cast<Attribute>().ToArray();
 
-            attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-            
-            var atts = TryGetAttributesFromProperty(method);
-            if (atts != null)
+            if (clrType != null && clrType.GetterAttributes.ContainsKey(method))
+            {
+                var atts =  clrType.GetterAttributes[method];
                 attributes = atts.Cast<Attribute>().ToArray();
+            }
+            else
+            {
 
+                if (method == null)
+                    throw new ArgumentNullException("method");
+
+                FFIClassAttributes baseAttributes = null;
+                Type type = method.DeclaringType;
+                if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
+                {
+                    baseAttributes = new FFIClassAttributes(type);
+                    CLRModuleType.SetTypeAttributes(type, baseAttributes);
+                }
+
+                if (null != baseAttributes)
+                {
+                    HiddenInLibrary = baseAttributes.HiddenInLibrary;
+                }
+
+                attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+            }
+            
             foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
