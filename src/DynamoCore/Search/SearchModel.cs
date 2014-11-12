@@ -524,6 +524,7 @@ namespace Dynamo.Search
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
+            nodeEle.ElementType = nodeInfo.ElementType;
 
             if (SearchDictionary.Contains(nodeEle))
             {

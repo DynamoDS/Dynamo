@@ -293,7 +293,11 @@ namespace Dynamo.Utilities
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x));
+            loadedNodes.ForEach(x =>
+            {
+                //x.ElementType = SearchModel.ElementType.CustomNode;
+                searchModel.Add(x);
+            });
 
             // update search view
             searchModel.OnRequestSync();

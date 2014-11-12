@@ -15,6 +15,7 @@ using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
+using Dynamo.Search;
 
 namespace Dynamo.Utilities
 {
@@ -23,13 +24,15 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path, 
+            SearchModel.ElementType elementType = SearchModel.ElementType.CustomNode)
         {
             Guid = guid;
             Name = name;
             Category = category;
             Description = description;
             Path = path;
+            ElementType = elementType;
         }
 
         public Guid Guid { get; set; }
@@ -37,6 +40,7 @@ namespace Dynamo.Utilities
         public string Category { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public SearchModel.ElementType ElementType { get; set; }
     }
 
     public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
