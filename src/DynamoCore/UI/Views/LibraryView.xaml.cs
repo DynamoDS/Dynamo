@@ -1,6 +1,11 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Controls;
+using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -72,6 +77,33 @@ namespace Dynamo.UI.Views
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             libraryToolTipPopup.SetDataContext(null);
+        }
+
+        private void OnTreeViewItemPreviewMouseLeftButton(object sender, MouseButtonEventArgs e)
+        {
+            var categoryButton = sender as TreeViewItem;
+            if (!(categoryButton.DataContext is BrowserRootElement))
+                return;
+
+            var wrapPanels = new List<LibraryWrapPanel>();
+            WPF.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
+            if (wrapPanels.Count == 0)
+                return;
+
+            var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
+            // Continue work with real class: not null, child of BrowserInternalElementForClasses.
+            if (selectedClass == null || selectedClass is NodeSearchElement ||
+                !(selectedClass.Parent is BrowserInternalElementForClasses))
+                return;
+
+            // Go through all available for current top category LibraryWrapPanel.
+            // Select class if wrapPanel contains selectedClass.
+            // Unselect class in other case.
+            foreach (var wrapPanel in wrapPanels)
+            {
+                if (wrapPanel.MakeOrClearSelection(selectedClass))
+                    e.Handled = true;
+            }
         }
     }
 }

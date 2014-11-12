@@ -716,6 +716,8 @@
 
                 <EventSetter Event="Expanded"
                              Handler="OnExpanderCollapsed" />
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnTreeViewItemPreviewMouseLeftButton" />
             </Style>
 
             <Style x:Key="LibraryTreeView"

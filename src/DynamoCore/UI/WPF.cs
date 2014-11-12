@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Dynamo.Utilities
@@ -70,5 +71,45 @@ namespace Dynamo.Utilities
             return foundChild;
         }
 
+        /// <summary>
+        /// Call this method to find child elements in a visual tree of a specific type,
+        /// given the parent visual element.
+        /// </summary>
+        /// <param name="parent">The parent visual element from which child visual elements 
+        /// are to be located.</param>
+        /// <typeparam name="T">The type of child visual element to look for.</typeparam>
+        /// <param name="childName">The name of child element to look for. This value can 
+        /// be an empty string if child element name is not a search criteria.</param>
+        /// <param name="foundChildren">A list of child elements that match the search criteria, 
+        /// or an empty list if none is found.</param>
+        /// 
+        public static void FindChildren<T>(DependencyObject parent, string childName, List<T> foundChildren)
+           where T : DependencyObject
+        {
+            if (parent == null) return;
+            if (foundChildren == null) return;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                T childType = child as T;
+                if (childType == null)
+                {
+                    FindChildren<T>(child, childName, foundChildren);
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                        foundChildren.Add((T)child);
+                }
+                else
+                {
+                    foundChildren.Add((T)child);
+                }
+            }
+        }
     }
 }
