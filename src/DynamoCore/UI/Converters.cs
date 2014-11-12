@@ -1738,7 +1738,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 2)
+            if (values.Length != 2 && parameter == null)
                 return new ArgumentException();
 
             var isSecondaryHeaderRightVisible = (bool)values[1];
@@ -1747,9 +1747,6 @@ namespace Dynamo.Controls
                 return 1.0;
 
             var displayMode = (ClassInformation.DisplayMode)values[0];
-
-            if (parameter == null)
-                return 0.0;
 
             if (displayMode.ToString() == parameter.ToString())
                 return 1.0;
