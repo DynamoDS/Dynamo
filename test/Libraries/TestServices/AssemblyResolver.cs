@@ -14,17 +14,14 @@ namespace RevitNodesTests
         private static bool resolverSetup;
 
         /// <summary>
-        /// Setup the assembly resolver with a default core path.
+        /// Setup the assembly resolver using the base path 
+        /// specified in the config file.
         /// </summary>
         public static void Setup()
         {
             if (resolverSetup) return;
 
-            var basePath = "";
-            if (!OpenAndReadDynamoBasePath(ref basePath))
-            {
-                basePath = GetDynamoRootDirectory();
-            }
+            var basePath = OpenAndReadDynamoBasePath();
 
             DynamoPathManager.Instance.InitializeCore(basePath);
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
@@ -55,35 +52,35 @@ namespace RevitNodesTests
 
         #region private helper methods
 
-        private static bool OpenAndReadDynamoBasePath(ref string basePath)
+        /// <summary>
+        /// Read the Dynamo base directory from a config file. If the 
+        /// path is empty in the config file, then use the directory
+        /// of the executing assembly.
+        /// </summary>
+        /// <returns></returns>
+        private static string OpenAndReadDynamoBasePath()
         {
             var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configPath = Path.Combine(assDir, "RevitTestServices.dll");
+            var configPath = Path.Combine(assDir, "TestServices.dll");
             if (!File.Exists(configPath))
             {
-                return false;
+                return assDir;
             }
 
-            try
+            var config = ConfigurationManager.OpenExeConfiguration(configPath);
+            var dir = GetAppSetting(config, "DynamoBasePath");
+
+            if (string.IsNullOrEmpty(dir))
             {
-                var config = ConfigurationManager.OpenExeConfiguration(configPath);
-                var value = GetAppSetting(config, "DynamoBasePath");
-
-                if (string.IsNullOrEmpty(value))
-                    return false;
-
-                if (!Directory.Exists(value))
-                {
-                    return false;
-                }
-
-                basePath = value;
-                return true;
+                return assDir;
             }
-            catch (Exception ex)
+
+            if (!Directory.Exists(dir))
             {
-                return false;
+                throw new Exception("The DynamoBasePath key specified in the config file does not exist.");
             }
+
+            return dir;
         }
 
         private static string GetAppSetting(Configuration config, string key)

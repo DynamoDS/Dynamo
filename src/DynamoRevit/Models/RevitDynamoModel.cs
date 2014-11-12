@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -44,6 +45,15 @@ namespace Dynamo.Applications.Models
 
         #region Properties/Fields
         public RevitServicesUpdater RevitServicesUpdater { get; private set; }
+
+        internal override string AppVersion
+        {
+            get
+            {
+                return base.AppVersion + 
+                    "-R" + DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild;
+            }
+        }
      
         #endregion
 
@@ -153,11 +163,13 @@ namespace Dynamo.Applications.Models
         private void SubscribeRevitServicesUpdaterEvents()
         {
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified += RevitServicesUpdater_ElementsModified;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified -= RevitServicesUpdater_ElementsModified;
         }
 
         private void SubscribeTransactionManagerEvents()
@@ -424,7 +436,7 @@ namespace Dynamo.Applications.Models
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
-
+            
             IEnumerable<FailureMessageAccessor> query =
                 from fail in failList
                 where fail.GetSeverity() == FailureSeverity.Warning
@@ -442,65 +454,34 @@ namespace Dynamo.Applications.Models
             if (!deleted.Any())
                 return;
 
-            var workspace = this.CurrentWorkspace;
+            var nodes = ElementBinder.GetNodesFromElementIds(deleted, CurrentWorkspace, EngineController);
+            foreach (var node in nodes)
+            {
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
+            }
+        }
 
-            ProtoCore.Core core = null;
-            var engine = this.EngineController;
-            if (engine != null && (engine.LiveRunnerCore != null))
-                core = engine.LiveRunnerCore;
-
-            if (core == null) // No execution yet as of this point.
+        private void RevitServicesUpdater_ElementsModified(IEnumerable<string> updated)
+        {
+            var updatedIds = updated.Select(x =>
+            {
+                Element ret;
+                ElementUtils.TryGetElement(DocumentManager.Instance.CurrentDBDocument, x, out ret);
+                return ret;
+            }).Select(x => x.Id);
+            
+            if (!updatedIds.Any())
                 return;
 
-            // Selecting all nodes that are either a DSFunction,
-            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-            var nodeGuids = workspace.Nodes.Where((n) =>
+            var nodes = ElementBinder.GetNodesFromElementIds(updatedIds, CurrentWorkspace, EngineController);
+            foreach (var node in nodes)
             {
-                return (n is DSFunction
-                    || (n is DSVarArgFunction)
-                    || (n is CodeBlockNodeModel));
-            }).Select((n) => n.GUID);
-
-            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
-
-            foreach (Guid guid in nodeTraceDataList.Keys)
-            {
-                foreach (CallSite cs in nodeTraceDataList[guid])
-                {
-                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
-                    {
-                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
-
-                        foreach (ISerializable thingy in traceData)
-                        {
-                            SerializableId sid = thingy as SerializableId;
-
-                            foreach (ElementId eid in deleted)
-                            {
-
-                                if (sid != null)
-                                {
-                                    if (sid.IntID == eid.IntegerValue)
-                                    {
-                                        NodeModel inm =
-                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-
-                                        Validity.Assert(inm != null, "The bound node has disappeared");
-
-                                        inm.RequiresRecalc = true;
-                                        inm.ForceReExecuteOfNode = true;
-
-                                        //FOUND IT!
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
             }
         }
 
         #endregion
-
     }
 }

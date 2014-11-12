@@ -268,10 +268,10 @@ namespace Dynamo.Models
             /// <summary>
             /// Derived classes must implement this method to perform the actual
             /// command execution. A typical implementation of this method involves
-            /// calling a corresponding method on DynamoViewModel by passing itself
-            /// as the only argument.
+            /// calling a corresponding method on DynamoModel by passing itself as
+            /// the only argument.
             /// </summary>
-            /// <param name="dynamoViewModel">The DynamoViewModel object on which 
+            /// <param name="dynamoModel">The DynamoModel object on which 
             /// this command should be executed.</param>
             /// 
             protected abstract void ExecuteCore(DynamoModel dynamoModel);
@@ -1377,40 +1377,38 @@ namespace Dynamo.Models
 
             #endregion
         }
-
-        // Template for creating new recordable command.
-        // [DataContract]
-        // public class XxxYyyCommand : RecordableCommand
-        // {
-        //     #region Public Class Methods
-        // 
-        //     internal XxxYyyCommand()
-        //     {
-        //     }
-        // 
-        //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
-        //     {
-        //         throw new NotImplementedException();
-        //     }
-        // 
-        //     #endregion
-        // 
-        //     #region Public Command Properties
-        //     #endregion
-        // 
-        //     #region Protected Overridable Methods
-        // 
-        //     protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
-        //     {
-        //         throw new NotImplementedException();
-        //     }
-        // 
-        //     protected override void SerializeCore(XmlElement element)
-        //     {
-        //         throw new NotImplementedException();
-        //     }
-        // 
-        //     #endregion
-        // }
     }
+
+    // public class XxxYyyCommand : RecordableCommand
+    // {
+    //     #region Public Class Methods
+    // 
+    //     internal XxxYyyCommand()
+    //     {
+    //     }
+    // 
+    //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
+    //     #endregion
+    // 
+    //     #region Public Command Properties
+    //     #endregion
+    // 
+    //     #region Protected Overridable Methods
+    // 
+    //     protected override void ExecuteCore(DynamoModel dynamoModel)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
+    //     protected override void SerializeCore(XmlElement element)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
+    //     #endregion
+    // }
 }

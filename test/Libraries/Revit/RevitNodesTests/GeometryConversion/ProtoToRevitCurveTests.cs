@@ -264,6 +264,34 @@ namespace RevitNodesTests.GeometryConversion
 
         [Test]
         [TestModel(@".\empty.rfa")]
+        public void Arc_Tilted()
+        {
+            var p1 = Point.ByCoordinates(4.3957, 7.96146, 0);
+            var p2 = Point.ByCoordinates(6.49355, 5.98396, 2.28352);
+            var p3 = Point.ByCoordinates(7.11897, 2.70101, 3.81878);
+
+
+            var arc = Arc.ByThreePoints(p1, p2, p3);
+
+            var revitCurve = arc.ToRevitType(false);
+
+            Assert.NotNull(revitCurve);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.Arc>(revitCurve);
+
+            var revitArc = (Autodesk.Revit.DB.Arc)revitCurve;
+
+            revitArc.Center.X.ShouldBeApproximately(2, 0.0001);
+            revitArc.Center.Y.ShouldBeApproximately(2, 0.0001);
+            revitArc.Center.Z.ShouldBeApproximately(0, 0.0001);
+
+            arc.CenterPoint.ShouldBeApproximately(revitArc.Center.ToPoint(false));
+            arc.Radius.ShouldBeApproximately(revitArc.Radius);
+            Math.Abs(arc.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
         public void Line_Basic()
         {
             var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint( Point.ByCoordinates(1, 2, 3), Point.ByCoordinates(2,4,6));

@@ -7,9 +7,13 @@ using System.Linq;
 using System.Text;
 using DSCore.IO;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using Color = DSCore.Color;
+using Directory = System.IO.Directory;
+using File = DSCore.IO.File;
 using Image = DSCore.IO.Image;
 
 namespace Dynamo.Tests
@@ -61,7 +65,7 @@ namespace Dynamo.Tests
         public void File_FromPath()
         {
             var fn = GetNewFileNameOnTempPath(".txt");
-            Assert.AreEqual(new FileInfo(fn).FullName, DSCore.IO.File.FromPath(fn).FullName);
+            Assert.AreEqual(new FileInfo(fn).FullName, File.FromPath(fn).FullName);
         }
 
         [Test, Category("UnitTests")]
@@ -70,8 +74,8 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             System.IO.File.WriteAllText(fn, contents);
-            var fnInfo = DSCore.IO.File.FromPath(fn);
-            Assert.AreEqual(contents, DSCore.IO.File.ReadText(fnInfo));
+            var fnInfo = File.FromPath(fn);
+            Assert.AreEqual(contents, File.ReadText(fnInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -83,11 +87,11 @@ namespace Dynamo.Tests
             Assert.IsTrue(System.IO.File.Exists(fn));
 
             var dest = GetNewFileNameOnTempPath(".txt");
-            var destInfo = DSCore.IO.File.FromPath(dest);
-            DSCore.IO.File.Move(fn, dest);
+            var destInfo = File.FromPath(dest);
+            File.Move(fn, dest);
             Assert.IsTrue(System.IO.File.Exists(dest));
             Assert.IsFalse(System.IO.File.Exists(fn));
-            Assert.AreEqual(contents, DSCore.IO.File.ReadText(destInfo));
+            Assert.AreEqual(contents, File.ReadText(destInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -98,7 +102,7 @@ namespace Dynamo.Tests
             System.IO.File.WriteAllText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
 
-            DSCore.IO.File.Delete(fn);
+            File.Delete(fn);
             Assert.IsFalse(System.IO.File.Exists(fn));
         }
 
@@ -107,17 +111,17 @@ namespace Dynamo.Tests
         {
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
-            var fnInfo = DSCore.IO.File.FromPath(fn);
+            var fnInfo = File.FromPath(fn);
             System.IO.File.WriteAllText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
 
             var dest = GetNewFileNameOnTempPath(".txt");
-            var destInfo = DSCore.IO.File.FromPath(dest);
-            DSCore.IO.File.Copy(fnInfo, dest);
+            var destInfo = File.FromPath(dest);
+            File.Copy(fnInfo, dest);
             Assert.IsTrue(System.IO.File.Exists(dest));
             Assert.IsTrue(System.IO.File.Exists(fn));
-            Assert.AreEqual(contents, DSCore.IO.File.ReadText(fnInfo));
-            Assert.AreEqual(contents, DSCore.IO.File.ReadText(destInfo));
+            Assert.AreEqual(contents, File.ReadText(fnInfo));
+            Assert.AreEqual(contents, File.ReadText(destInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -136,7 +140,7 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             Assert.IsFalse(System.IO.File.Exists(fn));
-            DSCore.IO.File.WriteText(fn, contents);
+            File.WriteText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
             Assert.AreEqual(contents, System.IO.File.ReadAllText(fn));
         }
@@ -147,7 +151,7 @@ namespace Dynamo.Tests
         public void Directory_FromPath()
         {
             var tmp = GetNewFileNameOnTempPath("");
-            Assert.IsFalse(System.IO.Directory.Exists(tmp));
+            Assert.IsFalse(Directory.Exists(tmp));
             var info = DSCore.IO.Directory.FromPath(tmp);
             Assert.AreEqual(tmp, info.FullName);
             Assert.IsTrue(info.Exists);
@@ -162,9 +166,9 @@ namespace Dynamo.Tests
         public void Directory_Move()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            System.IO.Directory.CreateDirectory(tmpSrc);
+            Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            DSCore.IO.File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
             DSCore.IO.Directory.Move(tmpSrc, tmpDest);
@@ -172,8 +176,8 @@ namespace Dynamo.Tests
             Assert.IsTrue(DSCore.IO.Directory.Exists(tmpDest));
 
             var destFileName = FilePath.Combine(tmpDest, fileName);
-            Assert.IsTrue(DSCore.IO.File.Exists(destFileName));
-            Assert.AreEqual("test", DSCore.IO.File.ReadText(DSCore.IO.File.FromPath(destFileName)));
+            Assert.IsTrue(File.Exists(destFileName));
+            Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
 
         [Test, Category("UnitTests")]
@@ -182,7 +186,7 @@ namespace Dynamo.Tests
             var tmpSrc = GetNewFileNameOnTempPath("");
             var tmpSrcInfo = DSCore.IO.Directory.FromPath(tmpSrc);
             const string fileName = @"temp.txt";
-            DSCore.IO.File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
             DSCore.IO.Directory.Copy(tmpSrcInfo, tmpDest);
@@ -190,24 +194,24 @@ namespace Dynamo.Tests
             Assert.IsTrue(DSCore.IO.Directory.Exists(tmpDest));
 
             var destFileName = FilePath.Combine(tmpDest, fileName);
-            Assert.IsTrue(DSCore.IO.File.Exists(destFileName));
-            Assert.AreEqual("test", DSCore.IO.File.ReadText(DSCore.IO.File.FromPath(destFileName)));
+            Assert.IsTrue(File.Exists(destFileName));
+            Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
 
         [Test, Category("UnitTests")]
         public void Directory_Delete()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            System.IO.Directory.CreateDirectory(tmpSrc);
+            Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            DSCore.IO.File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
             Assert.Throws<IOException>(() => DSCore.IO.Directory.Delete(tmpSrc));
             DSCore.IO.Directory.Delete(tmpSrc, recursive: true);
             Assert.IsFalse(DSCore.IO.Directory.Exists(tmpSrc));
 
             var tmpSrc2 = GetNewFileNameOnTempPath("");
-            System.IO.Directory.CreateDirectory(tmpSrc2);
+            Directory.CreateDirectory(tmpSrc2);
             DSCore.IO.Directory.Delete(tmpSrc2);
             Assert.IsFalse(DSCore.IO.Directory.Exists(tmpSrc2));
         }
@@ -219,11 +223,11 @@ namespace Dynamo.Tests
             var tmpSrcInfo = DSCore.IO.Directory.FromPath(tmpSrc);
             const string fileName = @"temp.txt";
             var newFile = FilePath.Combine(tmpSrc, fileName);
-            DSCore.IO.File.WriteText(newFile, "test");
+            File.WriteText(newFile, "test");
 
             const string dirName = @"subDir";
             var newDir = FilePath.Combine(tmpSrc, dirName);
-            System.IO.Directory.CreateDirectory(newDir);
+            Directory.CreateDirectory(newDir);
 
             var contents = DSCore.IO.Directory.Contents(tmpSrcInfo);
             Assert.AreEqual(new[] { newFile }, contents["files"]);
@@ -235,7 +239,7 @@ namespace Dynamo.Tests
         {
             var tmp = GetNewFileNameOnTempPath("");
             Assert.IsFalse(DSCore.IO.Directory.Exists(tmp), "Directory hasn't been created yet.");
-            System.IO.Directory.CreateDirectory(tmp);
+            Directory.CreateDirectory(tmp);
             Assert.IsTrue(DSCore.IO.Directory.Exists(tmp), "Directory has been created.");
         }
         #endregion
@@ -253,7 +257,7 @@ namespace Dynamo.Tests
         {
             foreach (var file in GetTestImageFiles())
             {
-                Image.ReadFromFile(DSCore.IO.File.FromPath(file));
+                Image.ReadFromFile(File.FromPath(file));
                 Assert.DoesNotThrow(
                     () => 
                     {
@@ -288,7 +292,7 @@ namespace Dynamo.Tests
             const int size = 50;
             
             var rectPixels =
-                Enumerable.Repeat(Enumerable.Repeat(DSCore.Color.ByColor(Color.Blue), size).ToArray(), size)
+                Enumerable.Repeat(Enumerable.Repeat(Color.ByColor(System.Drawing.Color.Blue), size).ToArray(), size)
                     .ToArray();
 
             var bmpFromRect = Image.FromPixels(rectPixels);
@@ -343,7 +347,7 @@ namespace Dynamo.Tests
             System.IO.File.WriteAllText(fn, string.Join("\n", data.Select(row => string.Join(",", row))));
 
             //Now read it
-            var fnInfo = DSCore.IO.File.FromPath(fn);
+            var fnInfo = File.FromPath(fn);
             Assert.AreEqual(data, CSV.ReadFromFile(fnInfo));
         }
 
@@ -359,7 +363,7 @@ namespace Dynamo.Tests
             CSV.WriteToFile(fn, data);
 
             //Confirm it's correct
-            Assert.AreEqual(data, CSV.ReadFromFile(DSCore.IO.File.FromPath(fn)));
+            Assert.AreEqual(data, CSV.ReadFromFile(File.FromPath(fn)));
         }
         #endregion
     }
@@ -379,13 +383,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 
-            var path = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
-            string fullPath = Path.Combine(TempFolder, "filewriter.txt");
-            path.Value = fullPath;
+            var path = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
+            path.Value = GetNewFileNameOnTempPath(".txt");
 
             ViewModel.Model.RunExpression();
-
-            AssertPreviewValue("48c04164-6435-4124-9fe6-b3319ef177da", true);
         }
 
         [Test]
@@ -397,17 +398,13 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
-            var filename = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
-            var path = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
-            path.Value = TempFolder;
+            var filename = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
+            filename.Value = GetNewFileNameOnTempPath(".png");
 
             ViewModel.Model.RunExpression();
-
-            AssertPreviewValue("48c04164-6435-4124-9fe6-b3319ef177da", true);
         }
     }
 

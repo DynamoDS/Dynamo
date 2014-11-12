@@ -209,7 +209,7 @@ namespace Dynamo.Core
             }
 
             // Notify handlers that evaluation took place.
-            var e = new EvaluationCompletedEventArgs(true); 
+            var e = new EvaluationCompletedEventArgs(true);
             dynamoModel.OnEvaluationCompleted(this, e);
             ExecutionEvents.OnGraphPostExecution();
         }

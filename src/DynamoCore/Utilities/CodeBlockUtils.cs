@@ -377,9 +377,17 @@ namespace Dynamo.Utilities
     {
         #region private members
 
+        private readonly string text;
+
+        // This should match with production for identifier in language parser
+        // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
         private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+
         private static string spacesOrNonePattern = @"(\s*)";
         private static string colonPattern = ":";
+
+        // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
+        private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
 
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses
@@ -403,19 +411,30 @@ namespace Dynamo.Utilities
         /// </summary>
         private string functionName = String.Empty;
 
+        private int argCount = 0;
+
         /// <summary>
         /// Identifier or Class name on which function being typed currently is invoked
         /// </summary>
         private string functionPrefix = String.Empty;
 
         private string type = string.Empty;
-        private int argCount = 0;
+
+        // Context of string being typed for completion
+        private bool isInSingleComment = false;
+        private bool isInString = false;
+        private bool isInChar = false;
+        private bool isInMultiLineComment = false;
 
         #endregion
 
+        public CodeCompletionParser(string text)
+        {
+            this.text = text;
+        }
+
         #region public members
 
-        
         /// <summary>
         /// Parses given block of code and declared variable,
         /// returns the type of the variable: e.g. in:
@@ -443,7 +462,7 @@ namespace Dynamo.Utilities
         /// <param name="code"></param>
         public static string GetStringToComplete(string code)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -464,7 +483,7 @@ namespace Dynamo.Utilities
         /// <param name="functionPrefix"> output type or variable on which fn is invoked </param>
         public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -475,7 +494,27 @@ namespace Dynamo.Utilities
             functionPrefix = codeParser.functionPrefix;
         }
 
+        /// <summary>
+        /// Parse text to determine if string being typed at caretPos is in 
+        /// the context of a comment or string or character
+        /// </summary>
+        /// <param name="text"> input block of code </param>
+        /// <param name="caretPos"> caret position in text at which to determine context </param>
+        /// <returns> True if any of above context is true </returns>
+        public static bool IsInsideCommentOrString(string text, int caretPos)
+        {
+            var lexer = new CodeCompletionParser(text);
+            lexer.ParseContext(caretPos);
+            return
+                lexer.isInSingleComment ||
+                    lexer.isInString ||
+                    lexer.isInChar ||
+                    lexer.isInMultiLineComment;
+        }
+
         #endregion
+
+        #region private methods
 
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
@@ -483,7 +522,7 @@ namespace Dynamo.Utilities
             Dictionary<string, string> variableTypes = new Dictionary<string, string>();
 
             // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
-            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + variableNamePattern;
+            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
 
             var varDeclarations = Regex.Matches(code, pattern);
             for (int i = 0; i < varDeclarations.Count; i++)
@@ -543,7 +582,7 @@ namespace Dynamo.Utilities
                         // Auto-complete function signature  
                         // Class/Type and function name must be known at this point
                         functionName = GetMemberIdentifier();
-                        if(string.Equals(strPrefix, functionName))
+                        if (string.Equals(strPrefix, functionName))
                             functionPrefix = string.Empty;
                         else
                             functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
@@ -595,7 +634,63 @@ namespace Dynamo.Utilities
             return strPrefix;
         }
 
-        #region private utility methods
+        private void ParseContext(int caretPos)
+        {
+            for (int i = 0; i < caretPos; i++)
+            {
+                char ch = text[i];
+                char lookAhead = i + 1 < text.Length ? text[i + 1] : '\0';
+                switch (ch)
+                {
+                    case '/':
+                        if (isInString || isInChar || isInSingleComment || isInMultiLineComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInSingleComment = true;
+                        }
+                        if (lookAhead == '*')
+                        {
+                            isInMultiLineComment = true;
+                            i++;
+                        }
+                        break;
+                    case '*':
+                        if (isInString || isInChar || isInSingleComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInMultiLineComment = false;
+                        }
+                        break;
+                    case '\n':
+                    case '\r':
+                        isInSingleComment = false;
+                        isInString = false;
+                        isInChar = false;
+                        break;
+                    case '\\':
+                        if (isInString || isInChar)
+                            i++;
+                        break;
+                    case '"':
+                        if (isInSingleComment || isInMultiLineComment || isInChar)
+                            break;
+                        isInString = !isInString;
+                        break;
+                    case '\'':
+                        if (isInSingleComment || isInMultiLineComment || isInString)
+                            break;
+                        isInChar = !isInChar;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         private string GetMemberIdentifier()
         {
             return strPrefix.Split('.').Last();

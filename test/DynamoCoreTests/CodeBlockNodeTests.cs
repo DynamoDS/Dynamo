@@ -845,9 +845,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
             var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
@@ -861,9 +861,9 @@ b = c[w][x][y][z];";
             string ffiTargetClass = "CodeCompletionClass";
 
             // Assert that the class name is indeed a class
-            var type = new ClassMirror(ffiTargetClass, libraryServicesCore);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
 
             var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
@@ -942,6 +942,40 @@ b = c[w][x][y][z];";
             code = @"a : Point = Point.ByCoordinates();";
             Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionForFullyQualifiedVariableType()
+        {
+            string code = "a : FFITarget.FirstNamespace.ClassWithNameConflict;";
+            string variableName = "a";
+
+            string type1 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.FirstNamespace.ClassWithNameConflict", type1);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(type1, libraryServicesCore));
+
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] { "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
+
+            code = @"b : FFITarget.SecondNamespace.ClassWithNameConflict;";
+            variableName = "b";
+            string type2 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.SecondNamespace.ClassWithNameConflict", type2);
+
+            // Assert that the class name is indeed a class
+            Assert.DoesNotThrow(() => type = new ClassMirror(type2, libraryServicesCore));
+
+            members = type.GetInstanceMembers();
+
+            expected = new string[] { "PropertyD", "PropertyE", "PropertyF" };
+            AssertCompletions(members, expected);
+        }
+
 
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
@@ -1099,6 +1133,247 @@ b = c[w][x][y][z];";
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "SampleClassB" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
+            // is set to false. We verify that this class does not appear in code completion results
+            string code = "sam";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 2 completion items
+            Assert.AreEqual(2, completions.Count());
+
+            string[] expected = { "SampleClassA", "SampleClassC" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenConflictingClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "SecondNamespace.AnotherClassWithNameConflict" is defined in FFITarget library with "IsVisibleInDynamoLibrary" 
+            // attribute set to false. We verify that this class does not appear in code completion results
+            // and that only "FirstNamespace.AnotherClassWithNameConflict" appears in code completion results with
+            // fully qualified name so that it can be resolved against "SecondNamespace.AnotherClassWithNameConflict" 
+            string code = "ano";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 1 completion items
+            Assert.AreEqual(1, completions.Count());
+
+            string[] expected = { "FFITarget.FirstNamespace.AnotherClassWithNameConflict" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror("FirstNamespace.AnotherClassWithNameConflict", libraryServicesCore));
+
+            var members = type.GetMembers();
+
+            expected = new string[] { "AnotherClassWithNameConflict", "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineCommentContext()
+        {
+            string code = "abc = { /* first entry */ 1, 2, /* last entry */ 3 };";
+
+            // find the context at the caret position inside the second multiline-comments
+            int caretPos = 45;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 28;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForSingleLineCommentContext()
+        {
+            string code = "abc = { // first entry " + "\n" + " 1, 2, 3 };";
+
+            int caretPos = 15;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 30;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForStringContext()
+        {
+            string code = @"abc = { ""first entry"", 1, 2, 3 };";
+
+            int caretPos = 15;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 30;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForCharContext()
+        {
+            string code = @"abc = { 'c', 1, 2, 3 };";
+
+            int caretPos = 9;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 15;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineStringContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={""aparajit""}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1};
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the string in the above text block
+            int caretPos = code.IndexOf('"');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves outside the string
+            caretPos += 6;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineCodeCommentContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={/*aparajit*/}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1};
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the comment in the above text block
+            int caretPos = code.IndexOf('*');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves outside the comment
+            caretPos += 6;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineSingleCommentContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={1, 2, 3}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1}; // comments 
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the comment in the above text block
+            int caretPos = code.IndexOf('/');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves to the next line and outside the comment
+            caretPos += 15;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForAllMultiLineContexts()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; // comments 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={""Aparajit""}; 
+    /*d:char [][]= {'c'};
+    x1= test.test();*/
+    e:test [][]= {x1}; 
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position within the first single line comment in the above text block
+            int caretPos = code.IndexOf('/');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Find the caret position inside the string 
+            caretPos = code.IndexOf('"');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves inside the multi-line comment
+            caretPos = code.IndexOf('*');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves to the next line and outside the multi-line comment
+            caretPos += 40;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
     }
 
 }
