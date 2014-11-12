@@ -38,13 +38,13 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
+        private void OnClassButtonMouseUp(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
-            if ((classButton == null) || !classButton.IsSelected) return;
+            if (classButton == null) return;
 
-            classButton.IsSelected = false;
-            e.Handled = true;
+            classButton.IsSelected = !classButton.IsSelected;
+            classButton.BringIntoView();
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
