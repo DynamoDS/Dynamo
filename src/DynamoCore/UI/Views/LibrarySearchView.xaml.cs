@@ -143,15 +143,7 @@ namespace Dynamo.UI.Views
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-
-            FrameworkElement selectedElement = null;
-
-            if (selectedElement != null)
-            {
-                var scope = FocusManager.GetFocusScope(selectedElement);
-                FocusManager.SetFocusedElement(scope, null); // Clear logical focus.
-            }
-
+            HighlightedItem = new FrameworkElement();
             ShowTooltip(sender);
         }
 
