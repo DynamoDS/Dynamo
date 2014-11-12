@@ -328,7 +328,7 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated != false)
+                if (isUpdated)
                 {
                     // When a NodeModel is updated, its
                     // cached data should be invalidated.
