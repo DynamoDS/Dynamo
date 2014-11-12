@@ -277,8 +277,7 @@
                           ScrollViewer.CanContentScroll="False"
                           ScrollViewer.IsDeferredScrollingEnabled="False"
                           ItemsSource="{Binding Path=Items}"
-                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown"
-                          SelectionMode="Single">
+                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <controls:LibraryWrapPanel Background="Transparent">
@@ -298,8 +297,8 @@
                                                  Color="#00000000" />
                             </Style.Resources>
 
-                            <EventSetter Event="MouseUp"
-                                         Handler="OnClassButtonMouseUp" />
+                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                         Handler="OnClassButtonCollapse" />
 
                             <Setter Property="Template">
                                 <Setter.Value>

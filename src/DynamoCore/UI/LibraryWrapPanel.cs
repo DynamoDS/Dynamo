@@ -64,14 +64,8 @@ namespace Dynamo.Controls
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
             this.KeyDown += OnLibraryWrapPanelKeyDown;
-            this.PreviewMouseDown += OnLibraryWrapPanelMouseDown;
 
             base.OnInitialized(e);
-        }
-
-        private void OnLibraryWrapPanelMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true; 
         }
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
