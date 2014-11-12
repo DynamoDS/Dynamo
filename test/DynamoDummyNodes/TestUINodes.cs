@@ -6,16 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DynamoDummyNodes
+namespace TestUINodes 
 {
-    [NodeName("DynamoDummyErrorNode")]
-    [NodeCategory("DynamoDummyNodes")]
-    [NodeDescription("A test node which will throw an excpetion when it is compiled to AST node.")]
-    [IsDesignScriptCompatible]
+    [NodeName("NodeWithFailingASTOutput")]
+    [NodeCategory("TestUINodes")]
+    [NodeDescription("A test UI node which will throw an excpetion when it is compiled to AST node.")]
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoDummyErrorNode: NodeModel
+    public class NodeWithFailingASTOutput: NodeModel
     {
-        public DynamoDummyErrorNode(WorkspaceModel workspaceModel)
+        public NodeWithFailingASTOutput(WorkspaceModel workspaceModel)
             : base(workspaceModel)
         {
             InPortData.Add(new PortData("dummyInput", "dummy"));

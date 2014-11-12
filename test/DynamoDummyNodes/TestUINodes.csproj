@@ -9,8 +9,8 @@
     <ProjectGuid>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoDummyNodes</RootNamespace>
-    <AssemblyName>DynamoDummyNodes</AssemblyName>
+    <RootNamespace>TestUINodes</RootNamespace>
+    <AssemblyName>TestUINodes</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
