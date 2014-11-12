@@ -540,17 +540,13 @@ namespace Dynamo.ViewModels
             // Record the state of this node before changes.
             DynamoModel dynamo = DynamoViewModel.Model;
             dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
-
-            LacingStrategy strategy = LacingStrategy.Disabled;
-            if (!Enum.TryParse(param.ToString(), out strategy))
-                strategy = LacingStrategy.Disabled;
-
-            NodeLogic.ArgumentLacing = strategy;
-
-            RaisePropertyChanged("ArgumentLacing");
-            dynamo.CurrentWorkspace.HasUnsavedChanges = true;
+          
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
+            this.DynamoViewModel.ExecuteCommand(
+               new DynamoModel.UpdateModelValueCommand(
+                     this.NodeModel.GUID,"ArgumentLacing", param.ToString()));
             
         }
 
