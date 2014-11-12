@@ -53,7 +53,7 @@ namespace DynamoWebServer.Messages
             {
                 // Get each node in workspace to update their visuals.
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdate(dynamoModel.MaxTesselationDivisions);
+                    node.RequestVisualUpdateAsync(dynamoModel.MaxTesselationDivisions);
 
                 var task = new DelegateBasedAsyncTask(dynamoModel.Scheduler);
                 task.Initialize(() => nextRunAllowed.Set());
