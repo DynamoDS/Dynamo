@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -12,12 +13,24 @@ using DynamoUtilities;
 
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+using TestServices;
+
+namespace SystemTestServices
 {
-    public class DynamoTestUIBase
+    /// <summary>
+    /// SystemTestBase is the base class for all 
+    /// Dynamo system tests.
+    /// </summary>
+    public abstract class SystemTestBase
     {
+        protected string workingDirectory;
+
+        #region protected properties
+
         protected DynamoViewModel ViewModel { get; set; }
+
         protected DynamoView View { get; set; }
+
         protected DynamoModel Model { get; set; }
 
         protected string ExecutingDirectory
@@ -27,11 +40,21 @@ namespace DynamoCoreUITests
 
         protected string TempFolder { get; private set; }
 
+        #endregion
+
+        #region public methods
+
         [SetUp]
-        public virtual void Start()
+        public virtual void Setup()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            AssemblyResolver.Setup();
+
+            SetupCore();
+
+            if (string.IsNullOrEmpty(workingDirectory))
+            {
+                workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            }
 
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
@@ -41,6 +64,16 @@ namespace DynamoCoreUITests
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
+            StartDynamo();
+        }
+
+        public virtual void SetupCore()
+        {
+
+        }
+
+        public virtual void StartDynamo()
+        {
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
@@ -61,7 +94,7 @@ namespace DynamoCoreUITests
         }
 
         [TearDown]
-        public void Exit()
+        public virtual void TearDown()
         {
             //Ensure that we leave the workspace marked as
             //not having changes.
@@ -72,8 +105,7 @@ namespace DynamoCoreUITests
 
             if (ViewModel != null)
             {
-                var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(false, false);
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel = null;
@@ -96,12 +128,14 @@ namespace DynamoCoreUITests
         }
 
         [TestFixtureTearDown]
-        public void FinalTearDown()
+        public virtual void FinalTearDown()
         {
             // Fix for COM exception on close
             // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
+
+        #endregion
 
         #region Utility functions
 

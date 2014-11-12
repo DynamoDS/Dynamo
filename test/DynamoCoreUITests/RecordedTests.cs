@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+
+using SystemTestServices;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
@@ -648,7 +651,7 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 

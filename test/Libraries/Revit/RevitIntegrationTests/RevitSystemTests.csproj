@@ -169,6 +169,11 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
       <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
       <Name>RevitNodesTests</Name>

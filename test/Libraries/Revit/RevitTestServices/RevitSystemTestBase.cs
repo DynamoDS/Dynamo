@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
+using SystemTestServices;
+
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
@@ -17,8 +19,6 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
-
-using RevitNodesTests;
 
 using RevitServices.Persistence;
 using RevitServices.Threading;
@@ -40,38 +40,20 @@ namespace RevitTestServices
     }
 
     [TestFixture]
-    public abstract class SystemTestBase
+    public abstract class RevitSystemTestBase : SystemTestBase
     {
-        protected DynamoViewModel ViewModel;
-        protected string workingDirectory;
+        #region public methods
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            AssemblyResolver.Setup();
-
-            SetupCore();
-
-            if (string.IsNullOrEmpty(workingDirectory))
-            {
-                workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            }
-
-            StartDynamo();
+            base.Setup();
 
             DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
         }
 
-        /// <summary>
-        /// Implement this method to do any setup neceessary for your tests.
-        /// </summary>
-        protected virtual void SetupCore()
-        {
-            
-        }
-
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 
@@ -81,12 +63,7 @@ namespace RevitTestServices
             TransactionManager.Instance.ForceCloseTransaction();
         }
 
-        protected void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
-        {
-            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
-        }
-
-        protected void StartDynamo()
+        public override void StartDynamo()
         {
             try
             {
@@ -119,6 +96,15 @@ namespace RevitTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+        }
+
+        #endregion
+
+        #region protected methods
+
+        protected void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
+        {
+            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
         }
 
         /// <summary>
@@ -199,6 +185,8 @@ namespace RevitTestServices
 
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
+
+        #endregion
 
         #region Revit unit test helper methods
 

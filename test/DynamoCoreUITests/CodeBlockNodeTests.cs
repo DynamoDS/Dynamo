@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+
+using SystemTestServices;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -227,7 +230,7 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 

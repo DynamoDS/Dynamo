@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 
+using SystemTestServices;
+
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -12,7 +14,7 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class VisualizationManagerUITests : DynamoTestUIBase
+    public class VisualizationManagerUITests : SystemTestBase
     {
         private Watch3DView BackgroundPreview
         {
