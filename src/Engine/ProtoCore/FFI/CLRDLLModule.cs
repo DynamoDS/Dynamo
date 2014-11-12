@@ -1296,34 +1296,5 @@ namespace ProtoFFI
             }
         }
 
-        /// <summary>
-        /// Check if method is a getter belonging to a property
-        /// If so, get the corresponding PropertyInfo and check for any attributes 
-        /// on it. Apply those attributes to the getter (method)
-        /// </summary>
-        internal static object[] TryGetAttributesFromProperty(MethodInfo method)
-        {
-            object[] atts = null;
-            string getterPrefix = "get_";
-            if (method.Name.StartsWith(getterPrefix))
-            {
-                string propertyName = method.Name.Substring(getterPrefix.Length);
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    var type = method.DeclaringType;
-                    var properties = type.GetProperties();
-                    if (properties.Any())
-                    {
-                        var matches = properties.Where(p => p.Name == propertyName && p.DeclaringType == type);
-                        if (matches.Any())
-                        {
-                            var property = matches.First();
-                            atts = property.GetCustomAttributes(false);
-                        }
-                    }
-                }
-            }
-            return atts;
-        }
     }
 }
