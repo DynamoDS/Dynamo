@@ -72,12 +72,17 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Finds children of a given item in the visual tree.
+        /// Call this method to find child elements in a visual tree of a specific type,
+        /// given the parent visual element.
         /// </summary>
-        /// <param name="parent">A direct parent of the queried item.</param>
-        /// <typeparam name="T">The type of the queried item.</typeparam>
-        /// <param name="childName">x:Name or Name of children. </param>
-        /// <param name="foundChildren">All found children. </param>
+        /// <param name="parent">The parent visual element from which child visual elements 
+        /// are to be located.</param>
+        /// <typeparam name="T">The type of child visual element to look for.</typeparam>
+        /// <param name="childName">The name of child element to look for. This value can 
+        /// be an empty string if child element name is not a search criteria.</param>
+        /// <returns>Returns a list of child elements that match the search criteria, or 
+        /// an empty list if none is found.</returns>
+        /// 
         public static void FindChildren<T>(DependencyObject parent, string childName, List<T> foundChildren)
            where T : DependencyObject
         {

@@ -101,26 +101,8 @@ namespace Dynamo.UI.Views
             // Unselect class in other case.
             foreach (var wrapPanel in wrapPanels)
             {
-                if (wrapPanel.HasSelectedItem)
-                {
-                    if (wrapPanel.SelectedItem != selectedClass)
-                    {
-                        if (wrapPanel.Contains(selectedClass))
-                            wrapPanel.Select(selectedClass);
-                        else
-                            wrapPanel.UnselectAll();
-
-                        e.Handled = true;
-                    }
-                }
-                else
-                {
-                    if (wrapPanel.Contains(selectedClass))
-                    {
-                        wrapPanel.Select(selectedClass);
-                        e.Handled = true;
-                    }
-                }
+                if (wrapPanel.MakeOrClearSelection(selectedClass))
+                    e.Handled = true;
             }
         }
     }

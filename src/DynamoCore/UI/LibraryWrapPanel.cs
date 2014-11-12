@@ -27,33 +27,32 @@ namespace Dynamo.Controls
         private BrowserInternalElement currentClass;
         private ListView classListView;
 
-        internal bool HasSelectedItem
+        internal bool MakeOrClearSelection(BrowserInternalElement selectedClass)
         {
-            get { return currentClass != null; }
-        }
+            if (currentClass != null)
+            {
+                if (currentClass != selectedClass)
+                {
+                    // If 'itemIndex' is '-1', then the selection will be cleared,
+                    // otherwise the selection is set to the same as 'itemIndex'.
+                    var itemIndex = collection.IndexOf(selectedClass);
+                    classListView.SelectedIndex = itemIndex;
+                    return true; // The call is handled.
+                }
+            }
+            else
+            {
+                // No selection, if item is within collection, select it.
+                var itemIndex = collection.IndexOf(selectedClass);
+                if (itemIndex != -1)
+                {
+                    classListView.SelectedIndex = itemIndex;
+                    return true; // The call is handled.
+                }
+            }
 
-        internal BrowserInternalElement SelectedItem
-        {
-            get { return currentClass; }
-        }
-
-        internal bool Contains(BrowserInternalElement item)
-        {
-            return collection.Contains(item);
-        }
-
-        internal void Select(BrowserInternalElement item)
-        {
-            var index = collection.IndexOf(item);
-            if (index == -1)
-                return;
-
-            classListView.SelectedIndex = index;
-        }
-
-        internal void UnselectAll()
-        {
-            classListView.SelectedIndex = -1;
+            // The call is not handled.
+            return false;
         }
 
         protected override void OnInitialized(EventArgs e)
