@@ -202,9 +202,11 @@
                                 <TextDecoration.Pen>
                                     <Pen Brush="#777777">
                                         <Pen.Thickness>
-                                            <Binding Path="CurrentDisplayMode"
-                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                     ConverterParameter="Action" />
+                                            <MultiBinding Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                          ConverterParameter="Action">
+                                                <Binding Path="CurrentDisplayMode" />
+                                                <Binding Path="IsSecondaryHeaderRightVisible" />
+                                            </MultiBinding>
                                         </Pen.Thickness>
                                     </Pen>
                                 </TextDecoration.Pen>
@@ -239,9 +241,11 @@
                                 <TextDecoration.Pen>
                                     <Pen Brush="#777777">
                                         <Pen.Thickness>
-                                            <Binding Path="CurrentDisplayMode"
-                                                     Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                     ConverterParameter="Query" />
+                                            <MultiBinding Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
+                                                          ConverterParameter="Query">
+                                                <Binding Path="CurrentDisplayMode" />
+                                                <Binding Path="IsSecondaryHeaderRightVisible" />
+                                            </MultiBinding>
                                         </Pen.Thickness>
                                     </Pen>
                                 </TextDecoration.Pen>
