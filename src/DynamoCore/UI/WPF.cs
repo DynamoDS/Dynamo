@@ -80,8 +80,8 @@ namespace Dynamo.Utilities
         /// <typeparam name="T">The type of child visual element to look for.</typeparam>
         /// <param name="childName">The name of child element to look for. This value can 
         /// be an empty string if child element name is not a search criteria.</param>
-        /// <returns>Returns a list of child elements that match the search criteria, or 
-        /// an empty list if none is found.</returns>
+        /// <param name="foundChildren">A list of child elements that match the search criteria, 
+        /// or an empty list if none is found.</param>
         /// 
         public static void FindChildren<T>(DependencyObject parent, string childName, List<T> foundChildren)
            where T : DependencyObject
