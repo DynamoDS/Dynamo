@@ -325,6 +325,7 @@ namespace ProtoCore.DSASM
                 int fi = Constants.kInvalidIndex;
                 if (!isGlobScope)
                 {
+                    Validity.Assert(rmem.CurrentStackFrame != null);
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
                 }
@@ -2569,6 +2570,7 @@ namespace ProtoCore.DSASM
                 int fi = Constants.kInvalidIndex;
                 if (!isGlobScope)
                 {
+                    Validity.Assert(rmem.CurrentStackFrame != null);
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
                 }
