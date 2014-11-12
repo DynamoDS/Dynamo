@@ -295,7 +295,7 @@ namespace Dynamo.Utilities
             // add nodes to search
             loadedNodes.ForEach(x =>
             {
-                //x.ElementType = SearchModel.ElementType.CustomNode;
+                x.ElementType = SearchModel.ElementType.Package;
                 searchModel.Add(x);
             });
 

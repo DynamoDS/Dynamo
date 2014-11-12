@@ -263,7 +263,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger);
+                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger, SearchModel.ElementType.Package);
             }
 
             // load the node model assemblies
