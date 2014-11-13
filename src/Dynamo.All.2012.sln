@@ -194,6 +194,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitSystemTests", "..\test\Libraries\Revit\RevitIntegrationTests\RevitSystemTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUINodes", "..\test\TestUINodes\TestUINodes.csproj", "{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1BA70EC3-123C-4785-AD4C-237CAB78FA61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryZeroTouch", "Libraries\Samples\SampleLibraryZeroTouch\SampleLibraryZeroTouch.csproj", "{BD13C4DC-9045-4E49-B637-B6182B0E3A7F}"
