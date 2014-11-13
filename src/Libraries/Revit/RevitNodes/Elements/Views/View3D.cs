@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Revit.Elements.Views
 {
@@ -139,6 +140,10 @@ namespace Revit.Elements.Views
                 view.HideElements(toHide);
 
             DocumentManager.Regenerate();
+
+            // After a regeneration, we need to ensure that a 
+            // transaction is re-opened.
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
             if (view.IsPerspective)
             {
