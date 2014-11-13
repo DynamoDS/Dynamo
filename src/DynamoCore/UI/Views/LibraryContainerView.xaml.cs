@@ -194,7 +194,9 @@ namespace Dynamo.Search
                     viewModel.PopulateSearchTextWithSelectedResult();
                     break;
 
-                case Key.Down: case Key.Up: case Key.Enter:
+                case Key.Down:
+                case Key.Up:
+                case Key.Enter:
                     {
                         var key = e.Key;                    // Key to send
                         PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
