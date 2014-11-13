@@ -17,14 +17,17 @@ namespace SamplesLibraryUI
     /// stored on our test class.
     /// 
     /// IMPORTANT! 
-    /// In order for these tests to work, your test dll needs to be 
-    /// located in the dynamo core directory. Set your build
-    /// output path to your Dynamo folder, or add a copy step that
+    /// System tests have dependencies on Dynamo core dlls. In 
+    /// order for these tests to work, your test dll needs to be 
+    /// located in the Dynamo core directory. Set your build
+    /// output path to your Dynamo core directory, or add a copy step that
     /// moves the output from this project to the Dynamo core directory.
     /// </summary>
     [TestFixture]
     public class HelloDynamoSystemTests : SystemTestBase
     {
+        // The RequiresSTA attribute is required by
+        // NUNit to run tests that use the UI.
         [Test, RequiresSTA]
         public void HelloDynamoTest()
         {
