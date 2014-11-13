@@ -537,18 +537,13 @@ namespace Dynamo.ViewModels
         }
 
         private void SetLacingType(object param)
-        {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+        {           
+            this.DynamoViewModel.ExecuteCommand(
+              new DynamoModel.UpdateModelValueCommand(
+                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
           
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-
-            this.DynamoViewModel.ExecuteCommand(
-               new DynamoModel.UpdateModelValueCommand(
-                     this.NodeModel.GUID,"ArgumentLacing", param.ToString()));
-            
         }
 
         private bool CanSetLacingType(object param)

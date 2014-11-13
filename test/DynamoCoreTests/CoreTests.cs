@@ -388,11 +388,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
 
-            // Calling the method with a null argument.
-            workspace.RecordModelsForModification(null);
-            Assert.AreEqual(false, workspace.CanUndo);
-            Assert.AreEqual(false, workspace.CanRedo);
-
             //Assert HasUnsavedChanges is false 
             Assert.AreEqual(false, workspace.HasUnsavedChanges);
 
@@ -401,7 +396,7 @@ namespace Dynamo.Tests
             //Get the first node and assert the lacing strategy
             var node = ViewModel.Model.Nodes[0];
             Assert.IsNotNull(node);
-            Assert.AreEqual("Shortest", node.ArgumentLacing.ToString());
+            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
 
             var workSpaceViewModel = ViewModel.CurrentSpaceViewModel;
             var nodes = workSpaceViewModel.Nodes;
@@ -409,6 +404,7 @@ namespace Dynamo.Tests
             
             //change the lacing strategy
             nodeViewModel.SetLacingTypeCommand.Execute("Longest");
+            Assert.AreEqual(LacingStrategy.Longest, node.ArgumentLacing);
           
             Assert.AreEqual(true, workspace.HasUnsavedChanges);
         }
