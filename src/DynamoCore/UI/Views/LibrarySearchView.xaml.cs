@@ -179,6 +179,7 @@ namespace Dynamo.UI.Views
             }
         }
 
+        // Generates keydown event on currently selected item.
         public void SelectNext(Key key)
         {
             PresentationSource target;
@@ -288,13 +289,13 @@ namespace Dynamo.UI.Views
         // handles this message. If none of these two list boxes are handling the key 
         // message, that means the currently selected list box item is the first/last item
         // in these two list boxes. When key message arrives here, it is then the 'StackPanel'
-        // responsibility to move the focus on to the adjacent list box.
+        // responsibility to move the selection on to the adjacent list box.
         private void OnCategoryContentKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            // Member in focus(in this scenario) can be only first/last member button or first/last class button.
+            // Selected member(in this scenario) can be only first/last member button or first/last class button.
             var selectedMember = HighlightedItem as FrameworkElement;
             var searchCategoryElement = sender as FrameworkElement;
 
@@ -374,7 +375,7 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
+            // Selected member(in this scenario) can be only first/last member button or class button at the first row.
             var selectedMember = HighlightedItem;
             var selectedMemberContext = selectedMember.DataContext as BrowserInternalElement;
             var categoryListView = sender as ListView;
@@ -445,8 +446,8 @@ namespace Dynamo.UI.Views
         /// on which element should the focus go (depending on the navigational key).
         /// This typically happens during the following scenarios:
         /// 
-        /// 1. Up/down key is pressed when focus in on "topResultListBox"
-        /// 2. Up key is pressed when focus is on first row of first category
+        /// 1. Up/down key is pressed when selected item is on "topResultListBox"
+        /// 2. Up key is pressed when selected item is on first row of first category
         /// </summary>
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
         {
@@ -473,7 +474,7 @@ namespace Dynamo.UI.Views
                     return;
                 }
 #endif
-                // Otherwise, set focus on the first method button.
+                // Otherwise, set selection on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
                 UpdateHighlightedItem(FindFirstChildListItem(firstMemberGroup, "MembersListBox"));
             }
