@@ -274,7 +274,7 @@ namespace Dynamo.Applications.Models
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
             AsyncTaskCompletedHandler handler = HandleResetEngineCompletion;
-            if (markNodesAsDirty)
+            if (markNodesAsDirty || DynamicRunEnabled)
                 handler = OnResetMarkNodesAsDirty;
 
             IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal, handler);
