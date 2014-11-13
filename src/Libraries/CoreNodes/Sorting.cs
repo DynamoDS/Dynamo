@@ -10,7 +10,8 @@ namespace DSCore
     /// Utility methods for sorting by keys. These should be suppressed from becoming nodes, instead
     /// they will be wrapped by DS implementations that accept a key mapping function.
     /// </summary>
-    internal static class Sorting
+    [IsVisibleInDynamoLibrary(false)]
+    public static class Sorting
     {
         public static object minByKey(
             [ArbitraryDimensionArrayImport] IList list,

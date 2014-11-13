@@ -7,7 +7,8 @@ namespace DSCore
     /// <summary>
     ///     Comparison methods.
     /// </summary>
-    internal static class Compare
+    [IsVisibleInDynamoLibrary(false)]
+    public static class Compare
     {
         /// <summary>
         ///     Returns true if a is greater than b.
