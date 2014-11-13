@@ -492,6 +492,32 @@ b = c[w][x][y][z];";
         {
             // Create the initial code block node.
             var codeBlockNode = CreateCodeBlockNode();
+            string code = "c + d; \n z = 2;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "x%2 == 0 ? x : -x; \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "f(x); \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Parse_NonAssignmentFollowedByAssignment()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
             string code = "List.IsEmpty(result)?result:List.FirstItem(result);";
 
             UpdateCodeBlockNodeContent(codeBlockNode, code);
