@@ -24,6 +24,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -163,7 +164,7 @@ namespace Dynamo.Models
             get { return state; }
             set
             {
-                if (value != ElementState.Error)
+                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
                 state = value;
@@ -173,6 +174,17 @@ namespace Dynamo.Models
                 // as connectors are deleted.
                 if (IsReportingModifications)
                     RaisePropertyChanged("State");
+            }
+        }
+
+        /// <summary>
+        ///   If the state of node is Error or AstBuildBroken
+        /// </summary>
+        public bool IsInErrorState
+        {
+            get
+            {
+                return state == ElementState.AstBuildBroken || state == ElementState.Error;
             }
         }
 
@@ -692,7 +704,35 @@ namespace Dynamo.Models
         {
             OnBuilt();
 
-            var result = BuildOutputAst(inputAstNodes);
+            IEnumerable<AssociativeNode> result = null;
+
+            try
+            {
+                result = BuildOutputAst(inputAstNodes);
+            }
+            catch (Exception e)
+            {
+                // If any exception from BuildOutputAst(), we emit
+                // a function call "var_guid = %nodeAstFailed(full.node.name)"
+                // for this node, set the state of node to AstBuildBroken and
+                // disply the corresponding error message. 
+                // 
+                // The return value of function %nodeAstFailed() is always 
+                // null.
+                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var fullMsg = String.Format(errorMsg, e.Message);
+                this.NotifyAstBuildBroken(fullMsg);
+
+                var fullName = this.GetType().ToString();
+                var astNodeFullName = AstFactory.BuildStringNode(fullName);
+                var arguments = new List<AssociativeNode> { astNodeFullName };
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+
+                return new []
+                {
+                    AstFactory.BuildAssignment(AstIdentifierForPreview, func)
+                };
+            }
 
             if (OutPortData.Count == 1)
             {
@@ -1029,6 +1069,17 @@ namespace Dynamo.Models
         public void Warning(string p)
         {
             State = ElementState.Warning;
+            ToolTipText = p;
+        }
+
+        /// <summary>
+        /// Change the state of node to ElementState.AstBuildBroken and display
+        /// "p" in tooltip window. 
+        /// </summary>
+        /// <param name="p"></param>
+        public void NotifyAstBuildBroken(string p)
+        {
+            State = ElementState.AstBuildBroken;
             ToolTipText = p;
         }
 
@@ -1887,7 +1938,8 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
-        Error
+        Error,
+        AstBuildBroken
     };
 
 
