@@ -142,7 +142,7 @@ namespace SystemTestServices
         /// <param name="subPath"></param>
         protected void OpenAndRunDynamoDefinition(string subPath)
         {
-            OpenAndRunDynamoDefinition(subPath);
+            OpenDynamoDefinition(subPath);
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
