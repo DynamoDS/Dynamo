@@ -105,5 +105,10 @@ namespace Dynamo.UI.Views
                     e.Handled = true;
             }
         }
+
+        private void OnAddonButtonMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Import addon.");
+        }
     }
 }

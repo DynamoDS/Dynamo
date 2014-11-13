@@ -861,6 +861,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
@@ -879,6 +880,31 @@
                                  Converter="{StaticResource IntToVisibilityConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="#666666"
+                            BorderThickness="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Name="AddonButton"
+                            MouseDown="OnAddonButtonMouseDown">
+                        <TextBlock Foreground="#666666"
+                                   Text="Import add-on"
+                                   HorizontalAlignment="Center"
+                                   Margin="7,5,7,5"/>
+                    </Border>
+                </Grid>
             </Grid>
         </ScrollViewer>
 
