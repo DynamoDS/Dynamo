@@ -439,6 +439,7 @@ namespace ProtoCore.DSASM
         public const string kInlineConditionalMethodName = "%inlineconditional";
         public const string kInlineCondition = "%InlineCondition";
         public const string kGetTypeMethodName = "%get_type";
+        public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
         public const string kSSATempPrefix = "%tSSA_";
         public const string kGlobalInstanceNamePrefix = "%globalInstanceFunction_";
