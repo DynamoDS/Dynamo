@@ -31,7 +31,7 @@ namespace RevitNodesTests.Elements.Views
             var famInst = FamilyInstance.ByPoint(famSym, pt);
 
             object element = famInst.BoundingBox;
-            var view = AxonometricView.ByEyePointAndTarget(eye, target, element, name, false);
+            var view = AxonometricView.ByEyePointAndTarget(eye, target, name);
 
             Assert.NotNull(view);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
@@ -51,7 +51,7 @@ namespace RevitNodesTests.Elements.Views
             var famInst = FamilyInstance.ByPoint(famSym, pt);
 
             object element = famInst;
-            var view = AxonometricView.ByEyePointAndTarget(eye, target, element, name, false);
+            var view = AxonometricView.ByEyePointAndTarget(eye, target, name);
 
             Assert.NotNull(view);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
@@ -66,10 +66,7 @@ namespace RevitNodesTests.Elements.Views
             var target = Point.ByCoordinates(0, 1, 2);
             var name = "treeView";
 
-            Assert.Throws(typeof(ArgumentNullException), () =>
-            {
-                AxonometricView.ByEyePointAndTarget(eye, target, null, name, false);
-            });
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointAndTarget(eye, target, name));
         }
 
         [Test]
@@ -121,7 +118,7 @@ namespace RevitNodesTests.Elements.Views
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
 
-            var view = AxonometricView.ByEyePointTargetAndElement(eye, target, famInst, name, false);
+            var view = AxonometricView.ByEyePointTargetAndElement(eye, target, name, famInst, false);
 
             Assert.NotNull(view);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
@@ -140,10 +137,10 @@ namespace RevitNodesTests.Elements.Views
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
 
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(null, target, famInst, name, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, null, famInst, name, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, null, name, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, famInst, null, false));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(null, target, name, famInst, false));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, null, name, famInst, false));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, name, null, false));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, null, famInst, false));
         }
     }
 }

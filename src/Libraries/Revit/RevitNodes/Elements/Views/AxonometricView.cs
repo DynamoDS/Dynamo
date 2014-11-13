@@ -32,7 +32,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private AxonometricView(XYZ eye, XYZ target, BoundingBoxXYZ bbox, string name, bool isolate)
+        private AxonometricView(XYZ eye, XYZ target, BoundingBoxXYZ bbox, string name = "", bool isolate = false)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldEle =
@@ -78,7 +78,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private AxonometricView(XYZ eye, XYZ target, Autodesk.Revit.DB.Element element, string name, bool isolate)
+        private AxonometricView(XYZ eye, XYZ target, string name, Autodesk.Revit.DB.Element element, bool isolate = false)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldEle =
@@ -89,14 +89,7 @@ namespace Revit.Elements.Views
             {
                 InternalSetView3D(oldEle);
                 InternalSetOrientation(BuildOrientation3D(eye, target));
-                if (isolate)
-                {
-                    InternalIsolateInView(element);
-                }
-                else
-                {
-                    InternalRemoveIsolation();
-                }
+                InternalSetIsolation(element, isolate);
                 InternalSetName(name);
                 return;
             }
@@ -106,14 +99,7 @@ namespace Revit.Elements.Views
 
             var vd = Create3DView(BuildOrientation3D(eye, target), name, false);
             InternalSetView3D(vd);
-            if (isolate)
-            {
-                InternalIsolateInView(element);
-            }
-            else
-            {
-                InternalRemoveIsolation();
-            }
+            InternalSetIsolation(element, isolate);
             InternalSetName(name);
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -121,82 +107,63 @@ namespace Revit.Elements.Views
             ElementBinder.SetElementForTrace(this.InternalElement);
         }
 
+        private void InternalSetIsolation(Autodesk.Revit.DB.Element element, bool isolate)
+        {
+            if (isolate && element != null)
+                InternalIsolateInView(element);
+            else
+                InternalRemoveIsolation();
+        }
         #endregion
 
         #region Public static constructors
 
         /// <summary>
-        /// Create a Revit Axonometric (isometric) View from an Eye position, 
-        /// a target position, and either an Element or BoundingBox.
+        /// Create a Revit Axonometric (isometric) View from an eye position
+        /// and a target position.
         /// </summary>
         /// <param name="eyePoint">A Point representing the eye point in meters.</param>
         /// <param name="target">A Point representing the target of view in meters.</param>
+        /// <param name="name">The name of the view.</param>
+        /// <returns>An AxonometricView object.</returns>
+        public static AxonometricView ByEyePointAndTarget(
+            Autodesk.DesignScript.Geometry.Point eyePoint,
+            Autodesk.DesignScript.Geometry.Point target, string name)
+        {
+            if (eyePoint == null)
+                throw new ArgumentNullException("eyePoint");
+
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            return ByEyePointTargetAndElement(eyePoint,
+                    target, name);
+        }
+
+        /// <summary>
+        /// Create a Revit Axonometric (isometric) View from an Eye position and target position and Element
+        /// </summary>
+        /// <param name="eyePoint">A Point representing the eye point.</param>
+        /// <param name="target">A Point representing the target of view.</param>
         /// <param name="element">This argument cannot be null, and it has to be either a 
         /// Revit.Elements.Element or  Revit.GeometryObjectsBoundingBox.</param>
         /// <param name="name">The name of the view.</param>
         /// <param name="isolateElement">If this argument is set to true, the element or 
         /// bounding box will be isolated in the current view by creating a minimum size
         /// crop box around it.</param>
-        /// <returns>Returns the resulting AxonometricView object.</returns>
-        /// 
-        public static AxonometricView ByEyePointAndTarget(
-            Autodesk.DesignScript.Geometry.Point eyePoint,
-            Autodesk.DesignScript.Geometry.Point target,
-            object element, string name, bool isolateElement)
-        {
-            if (element == null)
-                throw new ArgumentNullException("element");
-
-            if (eyePoint == null)
-                throw new ArgumentNullException("eyePoint");
-
-            if (target == null)
-                throw new ArgumentNullException("target");
-
-            if (element == null)
-                throw new ArgumentNullException("element");
-
-            if (name == null)
-                throw new ArgumentNullException("name");
-
-            Element abstractElement = element as Element;
-            if (abstractElement != null)
-            {
-                return ByEyePointTargetAndElement(eyePoint,
-                    target, abstractElement, name, isolateElement);
-            }
-
-            BoundingBox boundingBox = element as BoundingBox;
-            if (boundingBox != null)
-            {
-                return ByEyePointTargetAndBoundingBox(eyePoint,
-                    target, boundingBox, name, isolateElement);
-            }
-
-            string message = string.Format("Argument is expected to be of type " +
-                "'Revit.Elements.AbstractElement' or ' Revit.GeometryObjectsBoundingBox', " +
-                "but found to be of type '{0}'", element.GetType());
-
-            throw new ArgumentException(message, "element");
-        }
-
-        /// <summary>
-        /// Create a Revit Axonometric (isometric) View from an Eye position and target position and Element
-        /// </summary>
-        /// <param name="eyePoint">Eye point in meters</param>
-        /// <param name="target">Target of view in meters</param>
-        /// <param name="element"></param>
-        /// <param name="name"></param>
-        /// <param name="isolateElement"></param>
-        /// <returns></returns>
+        /// <returns>An AxonometricView object.</returns>
         public static AxonometricView ByEyePointTargetAndElement(
             Autodesk.DesignScript.Geometry.Point eyePoint, 
-            Autodesk.DesignScript.Geometry.Point target, 
-            Element element, 
-            string name, bool isolateElement)
+            Autodesk.DesignScript.Geometry.Point target,
+            string name, 
+            Element element = null, 
+            bool isolateElement = false)
         {
-            if (element == null)
-                throw new ArgumentNullException("element");
+            //if (element == null)
+                //throw new ArgumentNullException("element");
 
             if (eyePoint == null)
                 throw new ArgumentNullException("eyePoint");
@@ -204,26 +171,44 @@ namespace Revit.Elements.Views
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            if (element == null)
-                throw new ArgumentNullException("element");
-
             if (name == null)
                 throw new ArgumentNullException("name");
 
-
-            return new AxonometricView(eyePoint.ToXyz(true), target.ToXyz(true), element.InternalElement, name, isolateElement);
+            if (element == null)
+            {
+                return new AxonometricView(
+                    eyePoint.ToXyz(true),
+                    target.ToXyz(true),
+                    name,
+                    null,
+                    isolateElement);
+            }
+            else
+            {
+                return new AxonometricView(
+                    eyePoint.ToXyz(true),
+                    target.ToXyz(true),
+                    name,
+                    element.InternalElement,
+                    isolateElement);
+            }
+            
         }
 
         /// <summary>
         /// Create a Revit Axonometric (isometric) View from an Eye position and target position and Bounding Box
         /// </summary>
-        /// <param name="eyePoint">Eye point in meters</param>
-        /// <param name="target">Target of view in meters</param>
-        /// <param name="boundingBox">Bounding box represented in meters</param>
-        /// <param name="name"></param>
-        /// <param name="isolateElement"></param>
-        /// <returns></returns>
-        public static AxonometricView ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, Autodesk.DesignScript.Geometry.BoundingBox boundingBox, string name, bool isolateElement)
+        /// <param name="eyePoint">A Point representing the eye point.</param>
+        /// <param name="target">A Point representing the target of view.</param>
+        /// <param name="boundingBox">A BoundingBox. The view will be cropped to this bounding box</param>
+        /// <param name="name">The name of the view.</param>
+        /// <param name="isolateElement">If this argument is set to true, the element or 
+        /// bounding box will be isolated in the current view by creating a minimum size
+        /// crop box around it.</param>
+        /// <returns>An AxonometricView object.</returns>
+        public static AxonometricView ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point eyePoint, 
+            Autodesk.DesignScript.Geometry.Point target, Autodesk.DesignScript.Geometry.BoundingBox boundingBox, 
+            string name, bool isolateElement)
         {
             if (boundingBox == null)
             {
