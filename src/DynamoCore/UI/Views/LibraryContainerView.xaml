@@ -40,8 +40,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource DynamoWindowBrush}"
-          PreviewKeyDown="OnLibraryContainerViewPreviewKeyDown">
+    <Grid Background="{StaticResource DynamoWindowBrush}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -159,7 +158,6 @@
                          TextChanged="OnSearchTextBoxTextChanged"
                          GotKeyboardFocus="TextBoxGotKeyboardFocus"
                          LostKeyboardFocus="TextBoxLostKeyboardFocus"
-                         KeyUp="OnSearchTextBoxKeyUp"
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
@@ -224,7 +222,8 @@
         <!-- LIBRARYSEARCH VIEW -->
         <views:LibrarySearchView Grid.Row="2"
                                  DataContext="{Binding}"
-                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown">
+                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown"
+                                 x:Name="librarySearchView">
             <views:LibrarySearchView.Visibility>
                 <Binding Path="CurrentMode"
                          Converter="{StaticResource ViewModeToVisibilityConverter}"

@@ -303,7 +303,7 @@
                                 <Setter Property="Background"
                                         Value="#444444" />
                             </Trigger>
-                            <Trigger Property="IsFocused"
+                            <Trigger Property="IsSelected"
                                      Value="True">
                                 <Setter Property="Background"
                                         Value="#444444" />
@@ -710,7 +710,8 @@
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                              ItemsSource="{Binding Members}"
-                                                             Name="MembersListBox">
+                                                             Name="MembersListBox"
+                                                             KeyDown="OnMembersListBoxKeyDown">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <ContentControl Template="{StaticResource MemberControlTemplate}" />

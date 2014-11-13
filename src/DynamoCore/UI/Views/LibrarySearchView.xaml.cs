@@ -17,6 +17,24 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
+        FrameworkElement highlightedItem = new FrameworkElement();
+        public FrameworkElement HighlightedItem
+        {
+            get { return highlightedItem; }
+            set
+            {
+                // Unselect old value.
+                if (highlightedItem is ListBoxItem)
+                    (highlightedItem as ListBoxItem).IsSelected = false;
+
+                highlightedItem = value;
+
+                // Select new value.
+                if (highlightedItem is ListBoxItem)
+                    (highlightedItem as ListBoxItem).IsSelected = true;
+            }
+        }
+
         public LibrarySearchView()
         {
             InitializeComponent();
@@ -123,11 +141,11 @@ namespace Dynamo.UI.Views
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
 
-            var focusedElement = Keyboard.FocusedElement as FrameworkElement;
-            
-            if (focusedElement != null)
+            FrameworkElement selectedElement = null;
+
+            if (selectedElement != null)
             {
-                var scope = FocusManager.GetFocusScope(focusedElement);
+                var scope = FocusManager.GetFocusScope(selectedElement);
                 FocusManager.SetFocusedElement(scope, null); // Clear logical focus.
             }
 
@@ -169,6 +187,37 @@ namespace Dynamo.UI.Views
         // When element can't move further, it notifies its' parent about that.
         // And then parent decides what to do with it.
 
+        // This event is used to move inside members.
+        private void OnMembersListBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
+            var membersListBox = sender as ListBox;
+            var members = membersListBox.Items;
+
+            int selectedMemberIndex = 0;
+            for (int i = 0; i < members.Count; i++)
+            {
+                var member = members[i] as BrowserInternalElement;
+                if (member.Equals(selectedMember))
+                {
+                    selectedMemberIndex = i;
+                    break;
+                }
+            }
+
+            int nextselectedMemberIndex = selectedMemberIndex;
+            if (e.Key == Key.Down)
+                nextselectedMemberIndex++;
+            if (e.Key == Key.Up)
+                nextselectedMemberIndex--;
+
+            if (nextselectedMemberIndex < 0 || nextselectedMemberIndex > members.Count - 1)
+                return;
+
+            HighlightedItem = GetListItemByIndex(membersListBox, nextselectedMemberIndex);
+            e.Handled = true;
+
+        }
 
         // This event is raised only, when we can't go down, to next member.
         // I.e. we are now at the last member button and we have to move to next member group.
@@ -177,41 +226,41 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            var memberInFocus = (Keyboard.FocusedElement as ListBoxItem).Content as BrowserInternalElement;
+            var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
             var memberGroups = (sender as ListBox).Items;
             var memberGroupListBox = sender as ListBox;
 
-            int focusedMemberGroupIndex = 0;
+            int selectedMemberGroupIndex = 0;
 
-            // Find out to which memberGroup focused member belong.
+            // Find out to which memberGroup selected member belong.
             for (int i = 0; i < memberGroups.Count; i++)
             {
                 var memberGroup = memberGroups[i] as SearchMemberGroup;
-                if (memberGroup.ContainsMember(memberInFocus))
+                if (memberGroup.ContainsMember(selectedMember))
                 {
-                    focusedMemberGroupIndex = i;
+                    selectedMemberGroupIndex = i;
                     break;
                 }
             }
 
-            int nextFocusedMemberGroupIndex = focusedMemberGroupIndex;
+            int nextSelectedMemberGroupIndex = selectedMemberGroupIndex;
             // If user presses down, then we need to set focus to the next member group.
             // Otherwise to previous.
             if (e.Key == Key.Down)
-                nextFocusedMemberGroupIndex++;
+                nextSelectedMemberGroupIndex++;
             if (e.Key == Key.Up)
-                nextFocusedMemberGroupIndex--;
+                nextSelectedMemberGroupIndex--;
 
             // The member group list box does not attempt to process the key event if it 
             // has moved beyond its available list of member groups. In this case, the 
             // key event is considered not handled and will be left to the parent visual 
             // (e.g. class button or another category) to handle.
             e.Handled = false;
-            if (nextFocusedMemberGroupIndex < 0 || nextFocusedMemberGroupIndex > memberGroups.Count - 1)
+            if (nextSelectedMemberGroupIndex < 0 || nextSelectedMemberGroupIndex > memberGroups.Count - 1)
                 return;
 
-            var item = GetListItemByIndex(memberGroupListBox, nextFocusedMemberGroupIndex);
-            var nextFocusedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
+            var item = GetListItemByIndex(memberGroupListBox, nextSelectedMemberGroupIndex);
+            var nextSelectedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
 
             // When moving on to the next member group list below (by pressing down arrow),
             // the focus should moved on to the first member in the member group list. Likewise,
@@ -219,16 +268,17 @@ namespace Dynamo.UI.Views
             // the last member in that list.
             var itemIndex = 0;
             if (e.Key == Key.Up)
-                itemIndex = nextFocusedMembers.Items.Count - 1;
+                itemIndex = nextSelectedMembers.Items.Count - 1;
 
-            GetListItemByIndex(nextFocusedMembers, itemIndex).Focus();
+
+            HighlightedItem = GetListItemByIndex(nextSelectedMembers, itemIndex);
 
             e.Handled = true;
         }
 
         // The 'StackPanel' that contains 'SubCategoryListView' and 'MemberGroupsListBox'
         // handles this message. If none of these two list boxes are handling the key 
-        // message, that means the currently focused list box item is the first/last item
+        // message, that means the currently selected list box item is the first/last item
         // in these two list boxes. When key message arrives here, it is then the 'StackPanel'
         // responsibility to move the focus on to the adjacent list box.
         private void OnCategoryContentKeyDown(object sender, KeyEventArgs e)
@@ -237,11 +287,11 @@ namespace Dynamo.UI.Views
                 return;
 
             // Member in focus(in this scenario) can be only first/last member button or first/last class button.
-            var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
+            var selectedMember = HighlightedItem as FrameworkElement;
             var searchCategoryElement = sender as FrameworkElement;
 
-            // memberInFocus is method button.
-            if (memberInFocus.DataContext is NodeSearchElement)
+            // selectedMember is method button.
+            if (selectedMember.DataContext is NodeSearchElement)
             {
                 var searchCategoryContent = searchCategoryElement.DataContext as SearchCategory;
 
@@ -270,8 +320,8 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            // memberInFocus is class button.
-            if (memberInFocus.DataContext is BrowserInternalElement)
+            // selectedMember is class button.
+            if (selectedMember.DataContext is BrowserInternalElement)
             {
                 // We are at the first row of class list. User presses up, we have to move to previous category.
                 // We handle it further.
@@ -282,7 +332,9 @@ namespace Dynamo.UI.Views
                 var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryElement, "MemberGroupsListBox");
                 var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
                 if (listItem != null)
-                    listItem.Focus();
+                {
+                    HighlightedItem = listItem;
+                }
 
                 e.Handled = true;
                 return;
@@ -315,15 +367,15 @@ namespace Dynamo.UI.Views
                 return;
 
             // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
-            var memberInFocus = Keyboard.FocusedElement as FrameworkElement;
-            var memberInFocusContext = memberInFocus.DataContext as BrowserInternalElement;
+            var selectedMember = HighlightedItem;
+            var selectedMemberContext = selectedMember.DataContext as BrowserInternalElement;
             var categoryListView = sender as ListView;
 
             int categoryIndex = 0;
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
                 var category = categoryListView.Items[i] as SearchCategory;
-                if (category.ContainsClassOrMember(memberInFocusContext))
+                if (category.ContainsClassOrMember(selectedMemberContext))
                 {
                     categoryIndex = i;
                     break;
@@ -345,36 +397,35 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            var nextFocusedCategory = GetListItemByIndex(categoryListView, categoryIndex);
-            var nextFocusedCategoryContent = nextFocusedCategory.Content as SearchCategory;
+            var nextSelectedCategory = GetListItemByIndex(categoryListView, categoryIndex);
 
             if (e.Key == Key.Up)
             {
-                var memberGroupsList = WPF.FindChild<ListBox>(nextFocusedCategory, "MemberGroupsListBox");
+                var memberGroupsList = WPF.FindChild<ListBox>(nextSelectedCategory, "MemberGroupsListBox");
                 var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
                 var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
 
                 // If key is up, then we have to select the last method button.
-                GetListItemByIndex(membersList, membersList.Items.Count - 1).Focus();
+                HighlightedItem = GetListItemByIndex(membersList, membersList.Items.Count - 1);
             }
             else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
 #if SEARCH_SHOW_CLASSES
-                if (nextFocusedCategoryContent.Classes.Count > 0)
+                if (nextselectedCategoryContent.Classes.Count > 0)
                 {
                     // If classes are presented, then focus on first class.
-                    FindFirstChildListItem(nextFocusedCategory, "SubCategoryListView").Focus();
+                    FindFirstChildListItem(nextselectedCategory, "SubCategoryListView").Focus();
                 }
                 else
                 {
                     // If there are no classes, then focus on first method.
-                    var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
+                    var memberGroupsList = FindFirstChildListItem(nextselectedCategory, "MemberGroupsListBox");
                     FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
                 }
 #else
                 // If there are no classes, then focus on first method.
-                var memberGroupsList = FindFirstChildListItem(nextFocusedCategory, "MemberGroupsListBox");
-                FindFirstChildListItem(memberGroupsList, "MembersListBox").Focus();
+                var memberGroupsList = FindFirstChildListItem(nextSelectedCategory, "MemberGroupsListBox");
+                HighlightedItem = FindFirstChildListItem(memberGroupsList, "MembersListBox");
 #endif
             }
             e.Handled = true;
@@ -400,8 +451,8 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Down)
             {
                 //Unselect top result.
-                var topResultElement = e.OriginalSource as ListBox;
-                topResultElement.UnselectAll();
+                if (e.OriginalSource is ListBox)
+                    (e.OriginalSource as ListBox).UnselectAll();
 
                 var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
 #if SEARCH_SHOW_CLASSES
@@ -416,12 +467,11 @@ namespace Dynamo.UI.Views
 #endif
                 // Otherwise, set focus on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
-                FindFirstChildListItem(firstMemberGroup, "MembersListBox").Focus();
+                HighlightedItem = FindFirstChildListItem(firstMemberGroup, "MembersListBox");
             }
             else // Otherwise, Up was pressed. So, we have to move to top result.
             {
-                var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-                topResult.Focus();
+                HighlightedItem = FindFirstChildListItem(this, "topResultListBox");
             }
 
             e.Handled = true;
