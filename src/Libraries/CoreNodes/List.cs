@@ -862,7 +862,28 @@ namespace DSCore
             {
                 try
                 {
-                    return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                    switch (x.GetTypeCode())
+                    {
+                        case TypeCode.Boolean:
+                            if (y.GetTypeCode() == TypeCode.Boolean)
+                                return Convert.ToBoolean(x).Equals(Convert.ToBoolean(y));
+                            else
+                                return false;
+
+                        case TypeCode.Char:
+                            if (y.GetTypeCode() == TypeCode.Char)
+                                return Convert.ToChar(x).Equals(Convert.ToChar(y));
+                            else
+                                return false;
+
+                        case TypeCode.String:
+                            if (y.GetTypeCode() == TypeCode.String)
+                                return Convert.ToString(x).Equals(Convert.ToString(y));
+                            else
+                                return false;
+                        default:
+                            return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                    }
                 }
                 catch
                 {
