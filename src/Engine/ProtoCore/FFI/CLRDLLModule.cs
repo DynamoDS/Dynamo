@@ -257,7 +257,7 @@ namespace ProtoFFI
 
         readonly Dictionary<string, List<FFIFunctionPointer>> mFunctionPointers = new Dictionary<string, List<FFIFunctionPointer>>();
 
-        private Dictionary<MethodInfo, object[]> mGetterAttributes = new Dictionary<MethodInfo, object[]>();
+        private Dictionary<MethodInfo, Attribute[]> mGetterAttributes = new Dictionary<MethodInfo, Attribute[]>();
 
         private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>();
 
@@ -546,7 +546,7 @@ namespace ProtoFFI
         private ProtoCore.AST.AssociativeAST.AssociativeNode ParseProperty(PropertyInfo p)
         {
             MethodInfo m = p.GetAccessors(false)[0];
-            var attribs = p.GetCustomAttributes(false);
+            var attribs = p.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             mGetterAttributes.Add(m, attribs);
 
             if (null == p || SupressesImport(p))
@@ -582,7 +582,7 @@ namespace ProtoFFI
             return SupressesImport(member, null);
         }
 
-        private static bool SupressesImport(MemberInfo member, Dictionary<MethodInfo, object[]> getterAttributes)
+        private static bool SupressesImport(MemberInfo member, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
             if (null == member)
                 return true;
@@ -592,7 +592,7 @@ namespace ProtoFFI
             var method = member as MethodInfo;
             if (method != null && getterAttributes != null)
             {
-                object[] propAtts = null;
+                Attribute[] propAtts = null;
                 if(getterAttributes.TryGetValue(method, out propAtts))
                     atts = propAtts;
             }
@@ -1235,12 +1235,12 @@ namespace ProtoFFI
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
 
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, object[]> getterAttributes)
+        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
-            object[] atts = null;
+            Attribute[] atts = null;
             if (getterAttributes.TryGetValue(method, out atts))
             {
-                attributes = atts.Cast<Attribute>().ToArray();
+                attributes = atts;
             }
             else
             {
