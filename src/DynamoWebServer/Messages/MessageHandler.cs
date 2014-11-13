@@ -103,6 +103,10 @@ namespace DynamoWebServer.Messages
             {
                 ExecuteCommands(dynamo, message, sessionId);
             }
+            else if (message is UpdateNodeMessage)
+            {
+                UpdateValue(message as UpdateNodeMessage);
+            }
             else if (message is GetLibraryItemsMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
@@ -161,7 +165,7 @@ namespace DynamoWebServer.Messages
         private WorkspaceModel GetWorkspaceByGuid(string guidStr)
         {
             Guid guidValue;
-            if (!Guid.TryParse(guidStr, out guidValue))
+            if (!Guid.TryParse(guidStr, out guidValue) || guidValue.Equals(Guid.Empty))
                 return dynamoModel.HomeSpace;
 
             var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
@@ -340,6 +344,45 @@ namespace DynamoWebServer.Messages
                         dynamo.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
                     }
                 }
+            }
+        }
+
+        private void UpdateValue(UpdateNodeMessage message)
+        {
+            var workspace = GetWorkspaceByGuid(message.WorkspaceGuid);
+            var nodeGuid = Guid.Parse(message.NodeId);
+            var node = workspace.Nodes.First(n => n.GUID == nodeGuid);
+
+            switch (message.ParameterName)
+            {
+                case "Replication":
+                    // Flood values:
+                    //   applyShortest - Shortest
+                    //   applyLongest - Longest
+                    //   applyCartesian - CrossProduct
+                    switch (message.ParameterValue)
+                    {
+                        case "applyShortest":
+                            node.ArgumentLacing = LacingStrategy.Shortest;
+                            break;
+                        case "applyLongest":
+                            node.ArgumentLacing = LacingStrategy.Longest;
+                            break;
+                        case "applyCartesian":
+                            node.ArgumentLacing = LacingStrategy.CrossProduct;
+                            break;
+                        default:
+                            node.ArgumentLacing = LacingStrategy.Longest;
+                            break;
+                    }
+                    break;
+                case "IgnoreDefaults":
+                    var arr = message.ParameterValue.Split(';');
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        node.InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                    }
+                    break;
             }
         }
 
