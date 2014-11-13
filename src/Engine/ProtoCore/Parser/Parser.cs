@@ -279,7 +279,8 @@ public Node root { get; set; }
                 scanner.ResetPeek();
                 return false;
             }
-
+			else if (pt.val == ";")
+                break;
 
             pt = scanner.Peek();
         }
