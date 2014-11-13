@@ -16,10 +16,9 @@ using Face = Autodesk.Revit.DB.Face;
 
 namespace Revit.GeometryConversion
 {
-    [SupressImportIntoVM]
-    public static class RevitToProtoFace
+    internal static class RevitToProtoFace
     {
-        public static IEnumerable<Surface> ToProtoType(this Autodesk.Revit.DB.Face revitFace,
+        internal static IEnumerable<Surface> ToProtoType(this Autodesk.Revit.DB.Face revitFace,
           bool performHostUnitConversion = true, Reference referenceOverride = null)
         {
             if (revitFace == null) throw new ArgumentNullException("revitFace");

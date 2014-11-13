@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B"
+  <Product Id="F295EB3F-AAD2-4514-B466-6F0375AAEEE5"
            Name="Dynamo 0.7.4"
            Language="1033"
            Version="0.7.4"
@@ -30,7 +30,7 @@
     </CustomAction>
 
     <InstallExecuteSequence>
-      <Custom Action="UninstallDynamo07" After="InstallInitialize">NOT Installed</Custom>
+      <Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>
     </InstallExecuteSequence>
 
     <Property Id='ARPNOMODIFY'>1</Property>
