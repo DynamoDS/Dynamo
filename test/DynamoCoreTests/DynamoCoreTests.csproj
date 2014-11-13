@@ -88,6 +88,7 @@
     <Compile Include="Nodes\FormulaTests.cs" />
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
+    <Compile Include="AstBuildFailTest.cs" />
     <Compile Include="PackageManager\PackageLoaderTests.cs" />
     <Compile Include="PackageManager\PackageManagerClientTests.cs" />
     <Compile Include="ScopedNodeTest.cs" />

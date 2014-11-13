@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
+    <Compile Include="RevitLibraryTests.cs" />
     <Compile Include="SystemTest.cs" />
     <Compile Include="SiteLocationTests.cs" />
     <Compile Include="RenderingAsAServiceTests.cs" />

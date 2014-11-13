@@ -876,7 +876,11 @@ namespace Dynamo.Models
             CurrentWorkspace.ClearUndoRecorder();
             currentWorkspace.ResetWorkspace();
 
-            this.ResetEngine();
+            // Don't bother resetting the engine during shutdown (especially 
+            // since ResetEngine destroys and recreates a new EngineController).
+            if (!ShutdownRequested)
+                this.ResetEngine();
+
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
