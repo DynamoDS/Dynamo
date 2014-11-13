@@ -200,6 +200,10 @@ namespace ProtoFFI
             }
         }
 
+        /// <summary>
+        /// Map of getter accessor methods and a list of attributes 
+        /// assigned to their corresponding properties
+        /// </summary>
         public Dictionary<MethodInfo, object[]> GetterAttributes
         {
             get
