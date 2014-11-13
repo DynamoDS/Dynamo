@@ -65,6 +65,10 @@ namespace ProtoCore.AST.AssociativeAST
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
+            if (otherNode == null)
+            {
+                return false;
+            }
 
             // Compare language block properties
             bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);
@@ -1439,9 +1443,10 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
             }
 
-            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
-                   ReturnType.Equals(otherNode.ReturnType) &&
-                   Attributes.SequenceEqual(otherNode.Attributes);
+            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) 
+                && ReturnType.Equals(otherNode.ReturnType) 
+                && Attributes.SequenceEqual(otherNode.Attributes)
+                && Name.Equals(otherNode.Name);
 
             bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
 

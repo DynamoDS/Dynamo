@@ -410,11 +410,7 @@ namespace ProtoCore
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
                 return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
-                    Where(x =>
-                        {
-                            bool hidden = x.ClassAttributes == null ? false : x.ClassAttributes.HiddenInLibrary;
-                            return !hidden && !CoreUtils.StartsWithSingleUnderscore(x.name);
-                        }).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -548,7 +544,14 @@ namespace ProtoCore
                     }
                     return classNode;
                 }
+            }
 
+            public bool IsHiddenInLibrary
+            {
+                get
+                {
+                    return ClassNode.ClassAttributes == null ? false : ClassNode.ClassAttributes.HiddenInLibrary;
+                }
             }
 
             public ClassMirror(ProtoCore.Type type, ProtoCore.Core core)
@@ -582,6 +585,19 @@ namespace ProtoCore
                         throw new Exception(String.Format("Class {0} not defined", className));
                 }
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
+            }
+
+            public ClassMirror(int classIndex, ProtoCore.Core core)
+            {
+                if (classIndex == Constants.kInvalidIndex)
+                {
+                    throw new ArgumentException("classIndex is invalid");
+                }
+
+                ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
+                classNode = classTable.ClassNodes[classIndex];
+                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
+                ClassName = classNode.name;
             }
 
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,

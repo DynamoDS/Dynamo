@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.ViewModels;
 
 namespace Dynamo.PackageManager.UI

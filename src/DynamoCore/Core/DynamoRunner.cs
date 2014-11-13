@@ -208,7 +208,9 @@ namespace Dynamo.Core
                 n.ForceReExecuteOfNode = false;
             }
 
-            dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            dynamoModel.OnEvaluationCompleted(this, e);
             ExecutionEvents.OnGraphPostExecution();
         }
 
