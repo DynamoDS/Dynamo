@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.UILibrary</id>
-    <version>0.7.4</version>
+    <version>0.7.4.01</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -14,5 +14,11 @@
     <dependencies>
       <dependency id="NUnit" version="2.6.3" />
     </dependencies>
+    <frameworkAssemblies>
+        <frameworkAssembly assemblyName="System.Xaml"/>
+        <frameworkAssembly assemblyName="WindowsBase"/>
+        <frameworkAssembly assemblyName="PresentationCore"/>
+        <frameworkAssembly assemblyName="PresentationFramework"/>
+    </frameworkAssemblies>
   </metadata>
 </package>
