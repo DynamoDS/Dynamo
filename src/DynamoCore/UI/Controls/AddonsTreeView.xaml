@@ -490,9 +490,23 @@
                         <MenuItem Header="Locate in Disk.." />
                     </ContextMenu>
                 </Border.ContextMenu>
-                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
+                <DockPanel LastChildFill="True">
+                    <TextBlock DockPanel.Dock="Left"
+                               Style="{StaticResource CategoryTextBlockStyle}"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                    <TextBlock DockPanel.Dock="Right"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"
+                               FontSize="10"
+                               Foreground="#989898">UPD</TextBlock>
+                    <TextBlock DockPanel.Dock="Right"
+                               VerticalAlignment="Center"
+                               FontSize="10"
+                               Margin="0,0,10,0"
+                               Foreground="#989898">PKG</TextBlock>
+                    <Control></Control>
+                </DockPanel>
             </Border>
         </HierarchicalDataTemplate>
 
