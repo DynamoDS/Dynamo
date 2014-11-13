@@ -383,8 +383,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
             ViewModel.OpenCommand.Execute(openPath);
 
-            WorkspaceModel workspace = ViewModel.CurrentSpace;
-            var dynamoModel = ViewModel.Model;
+            WorkspaceModel workspace = ViewModel.CurrentSpace;            
             Assert.AreEqual(false, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
 
