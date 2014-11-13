@@ -85,6 +85,20 @@ namespace DSCoreNodesTests
             Assert.AreEqual(new ArrayList { true },
                 List.UniqueItems(new ArrayList { true, true, true, true, true}));
         }
+
+        [Test]
+        public static void UniqueInNullList()
+        {
+            Assert.AreEqual(new ArrayList { null },
+                List.UniqueItems(new ArrayList { null, null, null, null }));
+        }
+
+        [Test]
+        public static void UniqueInCombineList()
+        {
+            Assert.AreEqual(new ArrayList { true, null, 'a', "foo"},
+                List.UniqueItems(new ArrayList { true, true, null, null, 'a', 'a', "foo", "foo" }));
+        }
         #endregion
 
         [Test]
