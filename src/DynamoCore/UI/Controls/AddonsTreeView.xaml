@@ -14,12 +14,13 @@
 
         <!-- Region Converters -->
 
-        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+        <controls:ElementTypeToAddonShortcutConverter x:Key="ElementTypeToAddonShortcutConverter" />
 
         <!--EndRegion-->
 
@@ -193,8 +194,7 @@
             <Setter Property="Visibility">
                 <Setter.Value>
                     <Binding Path="Visibility"
-                             Converter="{StaticResource BoolToVisibilityConverter}"
-                             ConverterParameter="Collapse" />
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -495,16 +495,27 @@
                                Style="{StaticResource CategoryTextBlockStyle}"
                                Text="{Binding Path=Name}"
                                VerticalAlignment="Center" />
+                    <Image DockPanel.Dock="Right"
+                           VerticalAlignment="Center"
+                           Margin="10,0,10,0"
+                           Width="11"
+                           Height="13"
+                           Source="/DynamoCore;component/UI/Images/addon_update_available.png">
+                        <Image.Visibility>
+                            <Binding Path="IsUpdateAvailable"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </Image.Visibility>
+                    </Image>
                     <TextBlock DockPanel.Dock="Right"
                                VerticalAlignment="Center"
-                               Margin="0,0,10,0"
                                FontSize="10"
-                               Foreground="#989898">UPD</TextBlock>
-                    <TextBlock DockPanel.Dock="Right"
-                               VerticalAlignment="Center"
-                               FontSize="10"
-                               Margin="0,0,10,0"
-                               Foreground="#989898">PKG</TextBlock>
+                               Margin="10,0,10,0"
+                               Foreground="#989898">
+                        <TextBlock.Text>
+                            <Binding Path="LibraryType"
+                                     Converter="{StaticResource ElementTypeToAddonShortcutConverter}" />
+                        </TextBlock.Text>
+                    </TextBlock>
                     <Control></Control>
                 </DockPanel>
             </Border>

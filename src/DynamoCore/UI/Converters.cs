@@ -23,6 +23,7 @@ using DynamoUnits;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
+using Dynamo.Search;
 
 namespace Dynamo.Controls
 {
@@ -1995,6 +1996,35 @@ namespace Dynamo.Controls
                 textBlock.Foreground);
 
             return formattedText.Width;
+        }
+    }
+
+    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    public class ElementTypeToAddonShortcutConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var elementType = (SearchModel.ElementType)value;
+
+            switch (elementType)
+            {
+                case SearchModel.ElementType.Package:
+                    return "PKG";
+                case SearchModel.ElementType.CustomDll:
+                    return "DLL";
+                case SearchModel.ElementType.CustomNode:
+                    return "CTGRY";
+                default:
+                    return "NIL";
+                    //TODO: as logic of specifying BrowserRootElement.LibraryType is implemented
+                    //      next line should be used.
+                    //throw new Exception("Incorrect value provided to converter");
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
