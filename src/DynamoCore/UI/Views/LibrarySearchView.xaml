@@ -303,11 +303,6 @@
                                 <Setter Property="Background"
                                         Value="#444444" />
                             </Trigger>
-                            <Trigger Property="IsFocused"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#444444" />
-                            </Trigger>
                             <Trigger Property="IsSelected"
                                      Value="True">
                                 <Setter Property="Background"
