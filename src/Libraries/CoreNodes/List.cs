@@ -844,6 +844,11 @@ namespace DSCore
 
             bool IEqualityComparer<object>.Equals(object x, object y)
             {
+                // If both x and y are null, we can't compare null == null. 
+                // See: http://stackoverflow.com/questions/4730648/c-sharp-nullable-equality-operations-why-does-null-null-resolve-as-false
+                if (ReferenceEquals(x, null) && ReferenceEquals(y, null))
+                    return true;
+
                 return Eq(x as dynamic, y as dynamic);
             }
 
