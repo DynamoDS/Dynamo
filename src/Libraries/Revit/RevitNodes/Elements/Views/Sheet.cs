@@ -93,7 +93,7 @@ namespace Revit.Elements.Views
         /// <param name="sheetNumber"></param>
         /// <param name="titleBlockFamilySymbol"></param>
         /// <param name="views"></param>
-        public Sheet(string sheetName, string sheetNumber, Autodesk.Revit.DB.FamilySymbol titleBlockFamilySymbol, IEnumerable<Autodesk.Revit.DB.View> views)
+        private Sheet(string sheetName, string sheetNumber, Autodesk.Revit.DB.FamilySymbol titleBlockFamilySymbol, IEnumerable<Autodesk.Revit.DB.View> views)
         {
 
             //Phase 1 - Check to see if the object exists

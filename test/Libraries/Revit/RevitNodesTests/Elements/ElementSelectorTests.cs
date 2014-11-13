@@ -45,7 +45,7 @@ namespace RevitNodesTests.Elements
 
             // use the element factory to do the same by unique id
             var famUniqueId = family.UniqueId;
-            var famFromFact = Revit.Elements.ElementSelector.ByUniqueId(famUniqueId, true);
+            var famFromFact = Revit.Elements.ElementSelector.ByUniqueId(famUniqueId);
 
             Assert.NotNull(famFromFact);
             Assert.IsAssignableFrom(typeof(Family), famFromFact);
@@ -95,7 +95,7 @@ namespace RevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymUniqueId = symbol.UniqueId;
-            var famSymFromFact = Revit.Elements.ElementSelector.ByUniqueId(famSymUniqueId, true);
+            var famSymFromFact = Revit.Elements.ElementSelector.ByUniqueId(famSymUniqueId);
 
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(FamilySymbol), famSymFromFact);
