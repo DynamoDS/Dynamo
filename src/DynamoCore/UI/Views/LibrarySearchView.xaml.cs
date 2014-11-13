@@ -31,7 +31,10 @@ namespace Dynamo.UI.Views
 
                 // Select new value.
                 if (highlightedItem is ListBoxItem)
+                {
                     (highlightedItem as ListBoxItem).IsSelected = true;
+                    ShowTooltip(highlightedItem as ListBoxItem);
+                }
             }
         }
 
@@ -140,15 +143,7 @@ namespace Dynamo.UI.Views
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-
-            FrameworkElement selectedElement = null;
-
-            if (selectedElement != null)
-            {
-                var scope = FocusManager.GetFocusScope(selectedElement);
-                FocusManager.SetFocusedElement(scope, null); // Clear logical focus.
-            }
-
+            HighlightedItem = new FrameworkElement();
             ShowTooltip(sender);
         }
 
@@ -488,28 +483,24 @@ namespace Dynamo.UI.Views
             return null;
         }
 
-        // Everytime, when top result gets focus, we have to select one first item.
-        private void OnTopResultGotFocus(object sender, RoutedEventArgs e)
-        {
-            if (sender is ListBox)
-            {
-                var topResultList = sender as ListBox;
-                topResultList.SelectedIndex = 0;
-                ShowTooltip(GetListItemByIndex(topResultList, 0));
-            }
-        }
 
         // Everytime, when top result is updated, we have to select one first item.
         private void OnTopResultTargetUpdated(object sender, DataTransferEventArgs e)
         {
+            // If we turn to regular view, we have to hide tooltip immediately.
+            if ((DataContext as SearchViewModel).CurrentMode !=
+                Dynamo.ViewModels.SearchViewModel.ViewMode.LibrarySearchView)
+            {
+                libraryToolTipPopup.DataContext = null;
+                return;
+            }
             if (sender is ListBox)
-                (sender as ListBox).SelectedIndex = 0;
-        }
-
-        private void OnTopResultLostFocus(object sender, RoutedEventArgs e)
-        {
-            // Hide tooltip immediately.
-            libraryToolTipPopup.DataContext = null;
+            {
+                var topResultListBox = sender as ListBox;
+                topResultListBox.SelectedIndex = 0;
+                libraryToolTipPopup.PlacementTarget = topResultListBox;
+                libraryToolTipPopup.SetDataContext(topResultListBox.SelectedItem);
+            }
         }
 
         #endregion

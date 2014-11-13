@@ -48,6 +48,13 @@
     <SolidColorBrush x:Key="outerBorderError" Color="#c14c49" />
     <SolidColorBrush x:Key="bodyBackgroundError" Color="#f8bcbd" />
 
+    <!-- Node colors in ast build broken state -->
+    <SolidColorBrush x:Key="headerBackgroundBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="headerForegroundBroken" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="outerBorderBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="bodyBackgroundBroken" Color="#f8bcbd" />
+
     <!-- Node colors in selected state -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 

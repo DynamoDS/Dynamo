@@ -320,10 +320,6 @@
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
-            <EventSetter Event="GotFocus"
-                         Handler="OnListBoxItemGotFocus" />
-            <EventSetter Event="LostFocus"
-                         Handler="OnListBoxItemLostFocus" />
         </Style>
 
         <!--Style for found MemberGroup-->
@@ -537,8 +533,6 @@
                              ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
-                             GotFocus="OnTopResultGotFocus"
-                             LostFocus="OnTopResultLostFocus"
                              KeyDown="OnMemberButtonKeyDown"
                              TargetUpdated="OnTopResultTargetUpdated">
                         <ListBox.ItemTemplate>

@@ -13,7 +13,7 @@ namespace Revit.GeometryConversion
 {
 #if DEBUG
 
-    public static class SolidDebugging
+    internal static class SolidDebugging
     {
         public static IEnumerable<Autodesk.Revit.DB.Solid> GetRevitSolids(Element ele)
         {

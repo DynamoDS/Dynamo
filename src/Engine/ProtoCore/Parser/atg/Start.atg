@@ -186,6 +186,34 @@ COMPILER DesignScriptParser
         return false;
 	}
 
+	private bool IsNonAssignmentStatement()
+    {
+		if (core.ParsingMode != ParseMode.AllowNonAssignment)
+            return false;
+
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+            if (pt.val == ";" && la.val == ";")
+            {
+                scanner.ResetPeek();
+                return false;
+            }
+            else if (pt.val == "=")
+            {
+                scanner.ResetPeek();
+                return false;
+            }
+			else if (pt.val == ";")
+                break;
+
+            pt = scanner.Peek();
+        }
+
+        scanner.ResetPeek();
+        return true;
+    }
+
     private bool IsAssignmentStatement()
     {
         Token pt = la;
