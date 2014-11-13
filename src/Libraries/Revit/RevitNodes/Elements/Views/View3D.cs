@@ -45,8 +45,24 @@ namespace Revit.Elements.Views
         {
             var globalUp = XYZ.BasisZ;
             var direction = target.Subtract(eyePoint);
+
+            // If the direction is zero length (ex. the eye and target
+            // points are coincident) than set the direction to look
+            // along the x axis by default. Otherwise, the call to
+            // create a ViewOrientation3D object will fail.
+            if (direction.IsZeroLength())
+            {
+                direction = XYZ.BasisX;
+            }
+
             var up = direction.CrossProduct(globalUp).CrossProduct(direction);
-            return new ViewOrientation3D(eyePoint, up, direction);
+
+            // If up is zero length (ex. the direction vector is the z axis),
+            // set the up to be along the Z axis.
+            return up.IsZeroLength() ? 
+                new ViewOrientation3D(eyePoint, XYZ.BasisZ, direction) : 
+                new ViewOrientation3D(eyePoint, up, direction);
+            
         }
 
         /// <summary>
