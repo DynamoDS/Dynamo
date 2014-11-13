@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -11,6 +13,8 @@ namespace Revit.Elements.Views
     //[SupressImportIntoVM]
     public abstract class View3D : View
     {
+        [IsVisibleInDynamoLibrary(false)]
+        public const string DEFAULT_VIEW_NAME = "dynamo3D";
 
         #region Internal properties
 
@@ -44,7 +48,7 @@ namespace Revit.Elements.Views
         protected static ViewOrientation3D BuildOrientation3D(XYZ eyePoint, XYZ target)
         {
             var globalUp = XYZ.BasisZ;
-            var direction = target.Subtract(eyePoint);
+            var direction = target.Subtract(eyePoint).Normalize();
 
             // If the direction is zero length (ex. the eye and target
             // points are coincident) than set the direction to look
@@ -55,14 +59,25 @@ namespace Revit.Elements.Views
                 direction = XYZ.BasisX;
             }
 
+            // If the direction points along Z, then 
+            // switch the global up to Y
+            if (direction.IsAlmostEqualTo(globalUp) ||
+                (direction.Negate().IsAlmostEqualTo(globalUp)))
+            {
+                globalUp = XYZ.BasisY;
+            }
+
             var up = direction.CrossProduct(globalUp).CrossProduct(direction);
+
+            if (up.IsZeroLength())
+            {
+                up = XYZ.BasisZ;
+            }
 
             // If up is zero length (ex. the direction vector is the z axis),
             // set the up to be along the Z axis.
-            return up.IsZeroLength() ? 
-                new ViewOrientation3D(eyePoint, XYZ.BasisZ, direction) : 
-                new ViewOrientation3D(eyePoint, up, direction);
-            
+            return new ViewOrientation3D(eyePoint, up, direction);
+
         }
 
         /// <summary>

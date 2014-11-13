@@ -18,8 +18,6 @@ namespace Revit.Elements.Views
     [RegisterForTrace]
     public class AxonometricView : View3D
     {
-        private const string defaultViewName = "dynamo_axon";
-
         #region Private constructors
 
         /// <summary>
@@ -33,7 +31,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private AxonometricView(XYZ eye, XYZ target, BoundingBoxXYZ bbox, string name = defaultViewName, bool isolate = false)
+        private AxonometricView(XYZ eye, XYZ target, BoundingBoxXYZ bbox, string name = DEFAULT_VIEW_NAME, bool isolate = false)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldEle =
@@ -79,7 +77,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private AxonometricView(XYZ eye, XYZ target, string name = defaultViewName, Autodesk.Revit.DB.Element element = null, bool isolate = false)
+        private AxonometricView(XYZ eye, XYZ target, string name = DEFAULT_VIEW_NAME, Autodesk.Revit.DB.Element element = null, bool isolate = false)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldEle =
@@ -129,13 +127,19 @@ namespace Revit.Elements.Views
         /// <returns>An AxonometricView object.</returns>
         public static AxonometricView ByEyePointAndTarget(
             Autodesk.DesignScript.Geometry.Point eyePoint,
-            Autodesk.DesignScript.Geometry.Point target, string name = defaultViewName)
+            Autodesk.DesignScript.Geometry.Point target, 
+            string name = DEFAULT_VIEW_NAME)
         {
             if (eyePoint == null)
                 throw new ArgumentNullException("eyePoint");
 
             if (target == null)
                 throw new ArgumentNullException("target");
+
+            if (name == null)
+            {
+                name = DEFAULT_VIEW_NAME;
+            }
 
             return ByEyePointTargetAndElement(eyePoint,
                     target, name);
@@ -156,7 +160,7 @@ namespace Revit.Elements.Views
         public static AxonometricView ByEyePointTargetAndElement(
             Autodesk.DesignScript.Geometry.Point eyePoint, 
             Autodesk.DesignScript.Geometry.Point target,
-            string name = defaultViewName, 
+            string name = DEFAULT_VIEW_NAME, 
             Element element = null, 
             bool isolateElement = false)
         {
@@ -165,6 +169,11 @@ namespace Revit.Elements.Views
 
             if (target == null)
                 throw new ArgumentNullException("target");
+
+            if (name == null)
+            {
+                name = DEFAULT_VIEW_NAME;
+            }
 
             if (element == null)
             {
@@ -199,8 +208,10 @@ namespace Revit.Elements.Views
         /// crop box around it.</param>
         /// <returns>An AxonometricView object.</returns>
         public static AxonometricView ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point eyePoint, 
-            Autodesk.DesignScript.Geometry.Point target, Autodesk.DesignScript.Geometry.BoundingBox boundingBox, 
-            string name = defaultViewName, bool isolateElement = false)
+            Autodesk.DesignScript.Geometry.Point target, 
+            Autodesk.DesignScript.Geometry.BoundingBox boundingBox, 
+            string name = DEFAULT_VIEW_NAME, 
+            bool isolateElement = false)
         {
             if (boundingBox == null)
             {
@@ -214,7 +225,9 @@ namespace Revit.Elements.Views
                 throw new ArgumentNullException("target");
 
             if (name == null)
-                throw new ArgumentNullException("name");
+            {
+                name = DEFAULT_VIEW_NAME;
+            }
 
             return new AxonometricView(eyePoint.ToXyz(true), target.ToXyz(true), boundingBox.ToRevitType(true), name, isolateElement);
         }

@@ -66,7 +66,19 @@ namespace RevitNodesTests.Elements.Views
             var target = Point.ByCoordinates(0, 1, 2);
             var name = "treeView";
 
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointAndTarget(eye, target, name));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointAndTarget(eye, null, name));
+            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointAndTarget(null, target, name));
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt")]
+        public void ByEyePointAndTarget_DefaultArgs()
+        {
+            var eye = Point.ByCoordinates(100, 100, 100);
+            var target = Point.ByCoordinates(0, 1, 2);
+
+            var v = AxonometricView.ByEyePointAndTarget(eye, target);
+            Assert.AreEqual(v.InternalElement.Name, View3D.DEFAULT_VIEW_NAME);
         }
 
         [Test]
@@ -103,7 +115,23 @@ namespace RevitNodesTests.Elements.Views
             Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndBoundingBox(null, target, famInst.BoundingBox, name, false));
             Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndBoundingBox(eye, null, famInst.BoundingBox, name, false));
             Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndBoundingBox(eye, target, null, name, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndBoundingBox(eye, target, famInst.BoundingBox, null, false));
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt")]
+        public void ByEyePointTargetAndBoundingBox_DefaultArgs()
+        {
+            var eye = Point.ByCoordinates(100, 100, 100);
+            var target = Point.ByCoordinates(0, 1, 2);
+
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
+            var pt = Point.ByCoordinates(0, 1, 2);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
+
+            var v = AxonometricView.ByEyePointTargetAndBoundingBox(eye, target, famInst.BoundingBox);
+            var view = (Autodesk.Revit.DB.View3D)v.InternalElement;
+            Assert.AreEqual(view.Name, View3D.DEFAULT_VIEW_NAME);
+            Assert.False(view.CropBoxActive);
         }
 
         [Test]
@@ -139,8 +167,23 @@ namespace RevitNodesTests.Elements.Views
 
             Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(null, target, name, famInst, false));
             Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, null, name, famInst, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, name, null, false));
-            Assert.Throws(typeof(ArgumentNullException), () => AxonometricView.ByEyePointTargetAndElement(eye, target, null, famInst, false));
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt")]
+        public void ByEyePointTargetAndElement_DefaultArgs()
+        {
+            var eye = Point.ByCoordinates(100, 100, 100);
+            var target = Point.ByCoordinates(0, 1, 2);
+
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
+            var pt = Point.ByCoordinates(0, 1, 2);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
+
+            var v = AxonometricView.ByEyePointTargetAndBoundingBox(eye, target, famInst.BoundingBox);
+            var view = (Autodesk.Revit.DB.View3D)v.InternalElement;
+            Assert.AreEqual(view.Name, View3D.DEFAULT_VIEW_NAME);
+            Assert.False(view.CropBoxActive);
         }
     }
 }
