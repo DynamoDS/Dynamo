@@ -1,0 +1,13 @@
+<Workspace Version="0.7.4.3160" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f0a49984-d9b8-4043-a082-4dc390910748" nickname="List.UniqueItems" x="313" y="153.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.UniqueItems@var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fb645c25-793f-487f-8f40-b9810df8df35" nickname="Code Block" x="48" y="152" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{null, null, null};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="32b09fc5-2b70-4456-bab9-873062add98b" nickname="Code Block" x="51" y="288" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{null, 1, null};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a9294859-8279-4e3e-bede-645e09daa4d8" nickname="List.UniqueItems" x="314" y="308.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.UniqueItems@var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fb645c25-793f-487f-8f40-b9810df8df35" start_index="0" end="f0a49984-d9b8-4043-a082-4dc390910748" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="32b09fc5-2b70-4456-bab9-873062add98b" start_index="0" end="a9294859-8279-4e3e-bede-645e09daa4d8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

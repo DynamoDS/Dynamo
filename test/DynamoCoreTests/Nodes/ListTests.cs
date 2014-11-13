@@ -2488,5 +2488,21 @@ namespace Dynamo.Tests
             RunModel(openPath);
         }
         #endregion
+
+        #region UniqueItems
+        [Test]
+        public void TestUniqueItemsForNullList()
+        {
+            // This is regression test for defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5323
+            // Where List.UniqueItems throws out error for a list of nulls.
+
+            var openPath = Path.Combine(GetTestDirectory(), @"core\list\testUniqueItemsForNullList.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("f0a49984-d9b8-4043-a082-4dc390910748", new object[] { null });
+            AssertPreviewValue("a9294859-8279-4e3e-bede-645e09daa4d8", new object[] { null, 1});
+        }
+        #endregion
     }
 }
