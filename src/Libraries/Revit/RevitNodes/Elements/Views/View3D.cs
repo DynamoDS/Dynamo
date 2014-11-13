@@ -136,7 +136,6 @@ namespace Revit.Elements.Views
             }
         }
 
-
         /// <summary>
         /// Make a single element appear in a particular view
         /// </summary>
