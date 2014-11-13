@@ -23,9 +23,8 @@ namespace DSCore.File
             };
 
             if (openDialog.ShowDialog() == DialogResult.OK)
-            {
                 model.Value = openDialog.SelectedPath;
-            }
         }
+
     }
 }

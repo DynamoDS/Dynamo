@@ -63,9 +63,7 @@
     <Compile Include="Input\DoubleSlider.cs" />
     <Compile Include="Input\DoubleSliderNodeViewCustomization.cs" />
     <Compile Include="Input\File.cs" />
-    <Compile Include="Input\Filename.cs" />
     <Compile Include="Input\FilenameNodeViewCustomization.cs" />
-    <Compile Include="Input\FileSystemBrowser.cs" />
     <Compile Include="Input\FileSystemBrowserNodeViewCustomization.cs" />
     <Compile Include="Input\Integer.cs" />
     <Compile Include="Input\IntegerSliderNodeViewCustomization.cs" />
@@ -95,7 +93,6 @@
     <Compile Include="Input\BasicInteractive.cs" />
     <Compile Include="Input\BoolSelector.cs" />
     <Compile Include="Input\BoolSelectorNodeViewCustomization.cs" />
-    <Compile Include="Input\Directory.cs" />
     <Compile Include="Logic\AndOr.cs" />
     <Compile Include="Input\IntegerSlider.cs" />
     <Compile Include="Logic\If.cs" />
