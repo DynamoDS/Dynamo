@@ -84,6 +84,9 @@ namespace Revit.Elements.Views
             var oldEle =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.View3D>(Document);
 
+            //Phase 2 - There was no existing Element, create new one
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
             // Rebind to Element
             if (oldEle != null)
             {
@@ -93,9 +96,6 @@ namespace Revit.Elements.Views
                 InternalSetName(name);
                 return;
             }
-
-            //Phase 2 - There was no existing Element, create new one
-            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var vd = Create3DView(BuildOrientation3D(eye, target), name, false);
             InternalSetView3D(vd);
