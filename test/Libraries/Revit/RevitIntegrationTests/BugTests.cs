@@ -497,7 +497,9 @@ namespace RevitSystemTests
             
             string samplePath = Path.Combine(workingDirectory, @".\Bugs\MarkerData.dyn");
             string testPath = Path.GetFullPath(samplePath);
-
+            
+            AssertNoDummyNodes();
+            
             ViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
@@ -513,6 +515,8 @@ namespace RevitSystemTests
             string samplePath2 = Path.Combine(workingDirectory, @".\Bugs\mobius2.dyn");
             string testPath = Path.GetFullPath(samplePath);
             string testPath2 = Path.GetFullPath(samplePath2);
+
+            AssertNoDummyNodes();
 
             ViewModel.OpenCommand.Execute(testPath);
             ViewModel.DynamicRunEnabled = true;

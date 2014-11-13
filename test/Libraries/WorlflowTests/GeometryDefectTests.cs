@@ -196,5 +196,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(curveExtendEnd.Length, nurbsCurve.Length);
             Assert.AreEqual(curveExtendStart.Length, nurbsCurve.Length);
         }
+        [Test]
+        public void IndexOutsideBounds_3399()
+        {
+            // This will test user workflow which contains many nodes.
+            // Crash with "Index was outside the bounds of the array"
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
+
+            var FARId = "c03065ec-fe54-40de-8c27-8089c7fe1b73";
+            Assert.DoesNotThrow(() => RunModel(openPath));
+
+        }
     }
 }

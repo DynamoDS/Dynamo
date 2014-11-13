@@ -1041,8 +1041,12 @@ namespace Dynamo.Tests
         }
         [Test]
         [Category("RegressionTests")]
-        public void CBN_warning_5357()
+        public void CBN_warning_5236()
         {
+            // Functions does not work in the code block node but works if expanded as a graph
+            // This test regression - issue is described in detail in the bug
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
+
             var model = ViewModel.Model;
 
             RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
@@ -1052,6 +1056,17 @@ namespace Dynamo.Tests
             Assert.IsTrue(node.State != Models.ElementState.Warning);
 
 
+        }
+        [Test]
+        [Category("RegressionTests")]
+        public void DoubleToInt_NoWarning_5109()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5109
+            //verify  Warning converting double to int is removed
+            RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
+            var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
        
 
@@ -1192,32 +1207,6 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-        [Test]
-        [Category("RegressionTests")]
-        public void CBN_warning_5236()
-        {
-            // Functions does not work in the code block node but works if expanded as a graph
-            // This test regression - issue is described in detail in the bug
-            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
-                        
-            var model = ViewModel.Model;
-
-            RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
-            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
-            var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State != Models.ElementState.Warning);
-
-
-        }
-        [Test]
-        [Category("RegressionTests")]
-        public void DoubleToInt_NoWarning_5109()
-        {
-            RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
-            var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State != Models.ElementState.Warning);
-        }
+       
     }
 }
