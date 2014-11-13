@@ -25,23 +25,47 @@ namespace Dynamo.Controls
         private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
+        private ListView classListView;
+
+        internal bool MakeOrClearSelection(BrowserInternalElement selectedClass)
+        {
+            if (currentClass != null)
+            {
+                if (currentClass != selectedClass)
+                {
+                    // If 'itemIndex' is '-1', then the selection will be cleared,
+                    // otherwise the selection is set to the same as 'itemIndex'.
+                    var itemIndex = collection.IndexOf(selectedClass);
+                    classListView.SelectedIndex = itemIndex;
+                    return true; // The call is handled.
+                }
+            }
+            else
+            {
+                // No selection, if item is within collection, select it.
+                var itemIndex = collection.IndexOf(selectedClass);
+                if (itemIndex != -1)
+                {
+                    classListView.SelectedIndex = itemIndex;
+                    return true; // The call is handled.
+                }
+            }
+
+            // The call is not handled.
+            return false;
+        }
 
         protected override void OnInitialized(EventArgs e)
         {
             // ListView should never be null.
-            var classListView = WPF.FindUpVisualTree<ListView>(this);
+            classListView = WPF.FindUpVisualTree<ListView>(this);
             collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
             collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
+
             this.KeyDown += OnLibraryWrapPanelKeyDown;
-            this.PreviewMouseDown += OnLibraryWrapPanelMouseDown;
 
             base.OnInitialized(e);
-        }
-
-        private void OnLibraryWrapPanelMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true; 
         }
 
         private void OnLibraryWrapPanelKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -244,7 +268,10 @@ namespace Dynamo.Controls
             if (selectedClassProspectiveIndex == -1)
             {
                 if (classInfoIndex != -1)
+                {
                     (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
+                    currentClass = null;
+                }
                 OrderListItems();
                 return;
             }

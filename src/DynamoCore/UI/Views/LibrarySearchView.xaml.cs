@@ -186,8 +186,8 @@ namespace Dynamo.UI.Views
         private void OnMembersListBoxKeyDown(object sender, KeyEventArgs e)
         {
             var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
-            var members = (sender as ListBox).Items;
             var membersListBox = sender as ListBox;
+            var members = membersListBox.Items;
 
             int selectedMemberIndex = 0;
             for (int i = 0; i < members.Count; i++)

@@ -1734,22 +1734,27 @@ namespace Dynamo.Controls
     /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
     /// To know for which TextBlock the converter works the parameter used.
     /// Converter is used on StandardPanel.
-    public class DisplayModeToTextDecorationsConverter : IValueConverter
+    public class DisplayModeToTextDecorationsConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var displayMode = (ClassInformation.DisplayMode)value;
+            if (values.Length != 2 && parameter == null)
+                return new ArgumentException();
 
-            if (parameter == null)
-                return 0;
+            var isSecondaryHeaderRightVisible = (bool)values[1];
+            // If only left header is presented, it should be selected.
+            if (!isSecondaryHeaderRightVisible)
+                return 1.0;
+
+            var displayMode = (ClassInformation.DisplayMode)values[0];
 
             if (displayMode.ToString() == parameter.ToString())
-                return 1;
+                return 1.0;
 
-            return 0;
+            return 0.0;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

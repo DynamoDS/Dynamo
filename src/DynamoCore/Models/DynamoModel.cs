@@ -139,6 +139,16 @@ namespace Dynamo.Models
         public bool ShutdownRequested { get; internal set; }
         public int MaxTesselationDivisions { get; set; }
 
+        /// <summary>
+        /// The application version string for analytics reporting APIs
+        /// </summary>
+        internal virtual String AppVersion { 
+            get {
+                return Process.GetCurrentProcess().ProcessName + "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
+
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
 

@@ -10,6 +10,42 @@ namespace ProtoCore.DSASM
         {
             functionPointerDictionary = new BiDictionaryOneToOne<int, FunctionPointerNode>();
         }
+
+        /// <summary>
+        /// Try to get the original procedure node that the function pointer
+        /// points to. 
+        /// </summary>
+        /// <param name="functionPointer">Function pointer</param>
+        /// <param name="core">Core</param>
+        /// <param name="procNode">Procedure node</param>
+        /// <returns></returns>
+        public bool TryGetFunction(StackValue functionPointer, Core core, out ProcedureNode procNode)
+        {
+            procNode = null;
+
+            int index = (int)functionPointer.RawIntValue;
+            FunctionPointerNode fptrNode;
+
+            if (functionPointerDictionary.TryGetByFirst(index, out fptrNode))
+            {
+                var blockId = fptrNode.blockId;
+                var classScope = fptrNode.classScope;
+                var functionIndex = fptrNode.procId;
+
+                if (classScope != Constants.kGlobalScope)
+                {
+                    procNode = core.ClassTable.ClassNodes[classScope].vtable.procList[functionIndex];
+                }
+                else
+                {
+                    procNode = core.CompleteCodeBlockList[blockId].procedureTable.procList[functionIndex];
+                }
+
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public struct FunctionPointerNode

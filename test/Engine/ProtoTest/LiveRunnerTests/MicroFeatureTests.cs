@@ -1285,7 +1285,6 @@ r = Equals(x, {41, 42});
 
 
         [Test]
-        [Category("Failure")]
         public void TestFunctionModification04()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161
@@ -3693,6 +3692,64 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
         }
 
+        [Test]
+        public void TestReExecuteRecursiveFunction01()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = 1;
+", 
+
+@"
+    def f(x)
+    {
+        i = [Imperative]
+        {
+            if(x == 1)
+            {
+                return = [Associative]
+                {
+                   return = 10;
+                }
+            }
+            else
+            {
+                return = [Associative]
+                {
+                    return = 20;
+                }
+            }
+        }
+        return = i;
+    }	
+    b = f(a);
+",
+
+@"
+    a = 2;
+",
+
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 10);
+
+            // Modify
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 20);
+        }
 
         [Test]
         public void ReproMAGN3551()
@@ -5444,7 +5501,49 @@ a = p.UpdateCount;
         }
 
         [Test]
-        [Category("Failure")]
+        public void TestUnboundVariableWarning01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code = 
+            @"
+            a = b; 
+            b = 1;
+            ";
+        
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
+
+        [Test]
+        public void TestUnboundVariableWarning02()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+            a = b; 
+            b = c; 
+            c = 1;
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
+
+        [Test]
         public void RegressMAGN5353()
         {
             // This test case tries to verify that when a FFI object is deleted, 
@@ -5454,7 +5553,7 @@ a = p.UpdateCount;
             var added = new List<Subtree>();
 
             var guid1 = Guid.NewGuid();
-            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer();";
+            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
             added.Add(CreateSubTreeFromCode(guid1, code1));
 
             var guid2 = Guid.NewGuid();
