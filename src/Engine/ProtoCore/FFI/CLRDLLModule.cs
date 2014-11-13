@@ -26,7 +26,7 @@ namespace ProtoFFI
         /// Private constructor to create empty CLRModuleType.
         /// </summary>
         /// <param name="type">System.Type</param>
-        internal CLRModuleType(Type type)
+        private CLRModuleType(Type type)
         {
             CLRType = type;
             string classname = CLRObjectMarshler.GetTypeName(type);
@@ -197,18 +197,6 @@ namespace ProtoFFI
                     mProtoCoreType = CLRObjectMarshler.GetUserDefinedType(CLRType);
 
                 return mProtoCoreType.Value;
-            }
-        }
-
-        /// <summary>
-        /// Map of getter accessor methods and a list of attributes 
-        /// assigned to their corresponding properties
-        /// </summary>
-        public Dictionary<MethodInfo, object[]> GetterAttributes
-        {
-            get
-            {
-                return mGetterAttributes;
             }
         }
 
@@ -394,7 +382,7 @@ namespace ProtoFFI
 
             foreach (var m in methods)
             {
-                if (SupressesImport(m))
+                if (SupressesImport(m, mGetterAttributes))
                     continue;
 
                 if (isStaticClass && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
@@ -589,7 +577,12 @@ namespace ProtoFFI
             return varDeclNode;
         }
 
-        public bool SupressesImport(MemberInfo member)
+        public static bool SupressesImport(MemberInfo member)
+        {
+            return SupressesImport(member, null);
+        }
+
+        private static bool SupressesImport(MemberInfo member, Dictionary<MethodInfo, object[]> getterAttributes)
         {
             if (null == member)
                 return true;
@@ -597,10 +590,10 @@ namespace ProtoFFI
             object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
-            if (method != null && mGetterAttributes.ContainsKey(method))
+            if (method != null && getterAttributes != null)
             {
-                var propAtts = mGetterAttributes[method];
-                if (propAtts != null)
+                object[] propAtts = null;
+                if(getterAttributes.TryGetValue(method, out propAtts))
                     atts = propAtts;
             }
 
@@ -666,7 +659,7 @@ namespace ProtoFFI
             bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
 
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, this);
+            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes);
             if (method.IsStatic &&
                 method.DeclaringType == method.ReturnType &&
                 !propaccessor &&
@@ -981,9 +974,8 @@ namespace ProtoFFI
 #else
             foreach (var type in types)
             {
-                CLRModuleType cType = new CLRModuleType(type);
                 //For now there is no support for generic type.
-                if (!type.IsGenericType && type.IsPublic && !exttype.IsAssignableFrom(type) && !cType.SupressesImport(type))
+                if (!type.IsGenericType && type.IsPublic && !exttype.IsAssignableFrom(type) && !CLRModuleType.SupressesImport(type))
                 {
 
                     CLRModuleType importedType = CLRModuleType.GetInstance(type, this, alias);
@@ -1243,16 +1235,11 @@ namespace ProtoFFI
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
 
-        public FFIMethodAttributes(MethodInfo method, CLRModuleType clrType)
+        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, object[]> getterAttributes)
         {
-            //var atts = TryGetAttributesFromProperty(method);
-
-            //if (atts != null)
-            //    attributes = atts.Cast<Attribute>().ToArray();
-
-            if (clrType != null && clrType.GetterAttributes.ContainsKey(method))
+            object[] atts = null;
+            if (getterAttributes.TryGetValue(method, out atts))
             {
-                var atts =  clrType.GetterAttributes[method];
                 attributes = atts.Cast<Attribute>().ToArray();
             }
             else
