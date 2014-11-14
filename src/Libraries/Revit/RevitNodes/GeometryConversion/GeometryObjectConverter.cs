@@ -19,15 +19,17 @@ namespace Revit.GeometryConversion
         /// </summary>
         /// <param name="geom"></param>
         /// <param name="reference"></param>
+        /// <param name="transform"></param>
         /// <returns>A Geometry type.  Null if there's no suitable conversion.</returns>
-        public static object Convert(this Autodesk.Revit.DB.GeometryObject geom, Autodesk.Revit.DB.Reference reference = null)
+        public static object Convert(this Autodesk.Revit.DB.GeometryObject geom, Autodesk.Revit.DB.Reference reference = null, 
+            Autodesk.DesignScript.Geometry.CoordinateSystem transform = null)
         {
             if (geom == null) return null;
 
             dynamic dynGeom = geom;
             try
             {
-                return Tag( InternalConvert(dynGeom), reference);
+                return Tag(Transform(InternalConvert(dynGeom), transform), reference);
             }
             catch (RuntimeBinderException)
             {
@@ -38,6 +40,23 @@ namespace Revit.GeometryConversion
 
         #region Tagging
 
+        private static IEnumerable<Autodesk.DesignScript.Geometry.Geometry> Transform(IEnumerable<Autodesk.DesignScript.Geometry.Geometry> geom, CoordinateSystem coordinateSystem)
+        {
+            if (coordinateSystem == null) return geom;
+            return geom.Select(x => Transform(x, coordinateSystem));
+        }
+
+        private static Autodesk.DesignScript.Geometry.Geometry Transform(Autodesk.DesignScript.Geometry.Geometry geom, CoordinateSystem coordinateSystem)
+        {
+            if (coordinateSystem == null) return geom;
+            return geom.Transform(coordinateSystem);
+        }
+
+        private static object Transform(object geom, CoordinateSystem coordinateSystem)
+        {
+            return geom;
+        }
+        
         private static Autodesk.DesignScript.Geometry.Curve Tag(Autodesk.DesignScript.Geometry.Curve curve,
             Autodesk.Revit.DB.Reference reference)
         {
