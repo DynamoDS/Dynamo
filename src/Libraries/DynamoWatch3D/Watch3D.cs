@@ -38,6 +38,16 @@ namespace Dynamo.Nodes
         {
             this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
+            model.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
+            View = new Watch3DView(model.GUID, model)
+            {
+                Width = model.WatchWidth,
+                Height = model.WatchHeight
+            };
+
+            View.View.Camera.Position = model.CameraPosition;
+            View.View.Camera.LookDirection = model.LookDirection;
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
@@ -45,19 +55,6 @@ namespace Dynamo.Nodes
             mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
-
-            //add a 3D viewport to the input grid
-            //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
-            //_watchView = new WatchView();
-            View = new Watch3DView(model.GUID)
-            {
-                DataContext = model,
-                Width = model.WatchWidth,
-                Height = model.WatchHeight
-            };
-
-            View.View.Camera.Position = model.CameraPosition;
-            View.View.Camera.LookDirection = model.LookDirection;
 
             var backgroundRect = new Rectangle
             {
@@ -171,8 +168,6 @@ namespace Dynamo.Nodes
         
         public bool IsBackgroundPreview { get { return false; } }
 
-        public Watch3DView View { get; private set; }
-
         public bool CanNavigateBackground
         {
             get
@@ -188,7 +183,11 @@ namespace Dynamo.Nodes
 
         public DynamoViewModel ViewModel { get; set; }
 
-        public IVisualizationManager VisualizationManager { get; private set; }
+        public IVisualizationManager VisualizationManager
+        {
+            get { return ViewModel.VisualizationManager; }
+            
+        }
 
         #endregion
 
@@ -255,41 +254,6 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        #region private methods
-
-        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
-        {
-            if (data is IGraphicItem)
-                yield return data as IGraphicItem;
-            else if (data is IEnumerable)
-            {
-                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
-                foreach (var g in graphics)
-                    yield return g;
-            }
-        }
-
-        private RenderPackage PackageRenderData(IGraphicItem gItem)
-        {
-            var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, this.ViewModel.VisualizationManager.MaxTesselationDivisions);
-            renderPackage.ItemsCount++;
-            return renderPackage;
-        }
-
-        private void RenderData(object data)
-        {
-            View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID, -1));
-        }
-
-        private void mi_Click(object sender, RoutedEventArgs e)
-        {
-            View.View.ZoomExtents();
-        }
-
-        #endregion
-
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             base.SaveNode(xmlDoc, nodeElement, context);
@@ -301,20 +265,19 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", Width);
             viewHelper.SetAttribute("height", Height);
 
-            //Bail out early if the view hasn't been created.
-            if (View == null)
-                return;
+            // the view stores the latest position
+            OnRequestUpdateLatestCameraPosition();
 
             var camElement = xmlDoc.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
-            camHelper.SetAttribute("pos_x", View.View.Camera.Position.X);
-            camHelper.SetAttribute("pos_y", View.View.Camera.Position.Y);
-            camHelper.SetAttribute("pos_z", View.View.Camera.Position.Z);
-            camHelper.SetAttribute("look_x", View.View.Camera.LookDirection.X);
-            camHelper.SetAttribute("look_y", View.View.Camera.LookDirection.Y);
-            camHelper.SetAttribute("look_z", View.View.Camera.LookDirection.Z);
+            camHelper.SetAttribute("pos_x", CameraPosition.X);
+            camHelper.SetAttribute("pos_y", CameraPosition.Y);
+            camHelper.SetAttribute("pos_z", CameraPosition.Z);
+            camHelper.SetAttribute("look_x", LookDirection.X);
+            camHelper.SetAttribute("look_y", LookDirection.Y);
+            camHelper.SetAttribute("look_z", LookDirection.Z);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
