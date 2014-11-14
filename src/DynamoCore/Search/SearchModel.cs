@@ -656,6 +656,8 @@ namespace Dynamo.Search
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
             if (SearchDictionary.Contains(nodeEle))
             {
+                // Second node with the same GUID should rewrite the original node. 
+                // Original node is removed from tree.
                 return this.Refactor(nodeInfo);
             }
 
