@@ -406,9 +406,12 @@ namespace Dynamo.ViewModels
         {
             switch (portViewModel.EventType)
             {
-                case PortEventType.MouseEnter:
-                case PortEventType.MouseLeave:
+                case PortEventType.MouseEnter:                    
                     IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
+                    this.portViewModel = portViewModel;
+                    break;
+                case PortEventType.MouseLeave:
+                     IsSnapping = false;
                     this.portViewModel = portViewModel;
                     break;
                 case PortEventType.MouseLeftButtonDown:
