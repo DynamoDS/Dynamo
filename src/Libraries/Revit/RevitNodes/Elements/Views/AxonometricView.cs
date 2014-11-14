@@ -45,28 +45,14 @@ namespace Revit.Elements.Views
             {
                 InternalSetView3D(oldEle);
                 InternalSetOrientation(BuildOrientation3D(eye, target));
-                if (isolate)
-                {
-                    InternalIsolateInView(bbox);
-                }
-                else
-                {
-                    InternalRemoveIsolation();
-                }
+                InternalSetIsolation(bbox, isolate);
                 InternalSetName(name);
                 return;
             }
 
             var vd = Create3DView(BuildOrientation3D(eye, target), name, false);
             InternalSetView3D(vd);
-            if (isolate)
-            {
-                InternalIsolateInView(bbox);
-            }
-            else
-            {
-                InternalRemoveIsolation();
-            }
+            InternalSetIsolation(bbox, isolate);
             InternalSetName(name);
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -113,6 +99,15 @@ namespace Revit.Elements.Views
             else
                 InternalRemoveIsolation();
         }
+
+        private void InternalSetIsolation(Autodesk.Revit.DB.BoundingBoxXYZ bbox, bool isolate)
+        {
+            if (isolate && bbox != null)
+                InternalIsolateInView(bbox);
+            else
+                InternalRemoveIsolation();
+        }
+
         #endregion
 
         #region Public static constructors
