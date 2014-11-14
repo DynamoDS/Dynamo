@@ -57,6 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="GeometricTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
