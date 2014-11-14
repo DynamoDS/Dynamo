@@ -260,7 +260,7 @@ namespace Dynamo.UI.Controls
                     if (insightWindow != null)
                         insightWindow.Close();
                 }
-                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
                 {
                     // Begin completion while typing only if the previous character already typed in
                     // is a white space or non-alphanumeric character
@@ -298,6 +298,10 @@ namespace Dynamo.UI.Controls
 
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+            if (completionWindow != null)
+            {
+                completionWindow.Close();
+            }
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
@@ -320,11 +324,12 @@ namespace Dynamo.UI.Controls
             foreach (var completion in completions)
                 data.Add(completion);
 
-            completionWindow.Show();
             completionWindow.Closed += delegate
             {
                 completionWindow = null;
             };
+
+            completionWindow.Show();
         }
 
         private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)
