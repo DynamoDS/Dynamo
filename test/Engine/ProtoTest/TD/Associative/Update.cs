@@ -2130,7 +2130,6 @@ q = a;
 
         [Test]
         [Category("Update")]
-        [Category("Failure")]
         public void T036_Defect_1467491()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4033
