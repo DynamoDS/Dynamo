@@ -24,10 +24,14 @@ namespace SignDynamo
                 return;
             }
 
+            //First try at LocalMachine store location, if certificate is not installed check at CurrentUser
+            //store location.
             var cert = Utils.FindCertificateForCurrentUser(keyContainerName, StoreLocation.LocalMachine);
             if (cert == null)
             {
-                return;
+                cert = Utils.FindCertificateForCurrentUser(keyContainerName, StoreLocation.CurrentUser);
+                if (null == cert)
+                    return;
             }
 
             privateBlob = Utils.GetPrivateKeyFromCertificate(cert);
