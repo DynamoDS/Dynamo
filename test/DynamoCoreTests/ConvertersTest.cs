@@ -1,6 +1,7 @@
 ﻿using Dynamo.Controls;
 using NUnit.Framework;
 using System.Windows;
+using System;
 
 namespace Dynamo
 {
@@ -13,6 +14,7 @@ namespace Dynamo
             int numberOfFoundSearchCategories = 0;
             bool addonsVisibility = false;
             string searchText = "";
+            object result;
 
             object[] array = { numberOfFoundSearchCategories, addonsVisibility, searchText };
 
@@ -26,7 +28,7 @@ namespace Dynamo
             //8. There are some search categories. Addons are visible. Search text is empty.
 
             // 1 case
-            object result = converter.Convert(array, null, null, null);
+            result = converter.Convert(array, null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
 
             // 2 case
@@ -81,6 +83,73 @@ namespace Dynamo
         [Test]
         public void FullyQualifiedNameToDisplayConverterTest()
         {
+            string name = "";
+            string parameter = "";
+            FullyQualifiedNameToDisplayConverter converter = new FullyQualifiedNameToDisplayConverter();
+            object result;
+
+            //1. Class name is "ClassA.ForTooltip". Parameter is "ToolTip".
+            //2. Class name is "ClassWithReallyLoooooongName.ForTooltip". Parameter is "ToolTip".
+            //3. Class name is "ClassA". Parameter is "ClassButton".
+            //4. Class name is "ClAaB". Parameter is "ClassButton".
+            //5. Class name is "ClassLongName". Parameter is "ClassButton".
+            //6. Class name is "ClassWithReallyLongName". Parameter is "ClassButton".
+            //7. Class name is empty. Parameter is "ToolTip".
+            //8. Class name is empty. Parameter is "ClassButton".
+            //9. Class name is empty. Parameter is empty.
+            
+            // 1 case
+            name = "ClassA.ForTooltip";
+            parameter = "ToolTip";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("ClassA.ForTooltip", result);
+
+            // 2 case
+            name = "ClassWithReallyLoooooongName.ForTooltip";
+            parameter = "ToolTip";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("ClassWithReallyLoooooongName.\nForTooltip", result);
+
+            // 3 case
+            name = "ClassA";
+            parameter = "ClassButton";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("Class A", result);
+
+            // 4 case
+            name = "ClAaB";
+            parameter = "ClassButton";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("Cl Aa B", result);
+
+            // 5 case
+            name = "ClassLongName";
+            parameter = "ClassButton";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("Class \nLong Name", result);
+
+            // 6 case
+            name = "ClassWithReallyLongName";
+            parameter = "ClassButton";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("Class \nWith Really ..", result);
+
+            // 7 case
+            name = "";
+            parameter = "ToolTip";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("", result);
+
+            // 8 case
+            name = "";
+            parameter = "ClassButton";
+            result = converter.Convert(name, null, parameter, null);
+            Assert.AreEqual("", result);
+
+            // 9 case
+            name = "";
+            parameter = "";
+            Assert.Throws<NotImplementedException>(delegate { converter.Convert(name, null, parameter, null); });
         }
 
         [Test]
