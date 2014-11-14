@@ -320,12 +320,15 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
-                // Get the class and function scope if the current scope is not global
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-                if (!isGlobScope)
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null || 
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
                 {
-                    Validity.Assert(rmem.CurrentStackFrame != null);
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
                 }
@@ -339,7 +342,7 @@ namespace ProtoCore.DSASM
                     if (!core.Options.IsDeltaExecution)
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc, ci, fi);
+                        SetupGraphEntryPoint(pc, isGlobalScope);
                     }
                     else
                     {
@@ -350,7 +353,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            SetupGraphEntryPoint(pc, ci, fi);
+                            SetupGraphEntryPoint(pc, isGlobalScope);
                         }
                     }
                 }
@@ -1428,12 +1431,12 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void SetupGraphEntryPoint(int entrypoint, int classScope, int functionScope)
+        private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
-            if (core.Options.ApplyUpdate)
+            if (core.Options.ApplyUpdate && isGlobalScope)
             {
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
 
                 Validity.Assert(graphNodeList.Count > 0);
 
@@ -2565,12 +2568,15 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
-                // Get the class and function scope if the current scope is not global
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-                if (!isGlobScope)
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null ||
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
                 {
-                    Validity.Assert(rmem.CurrentStackFrame != null);
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
                 }
@@ -2585,7 +2591,7 @@ namespace ProtoCore.DSASM
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
                     }
-                    SetupGraphEntryPoint(pc, ci, fi);
+                    SetupGraphEntryPoint(pc, isGlobalScope);
                 }
             }
 
