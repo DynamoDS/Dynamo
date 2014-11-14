@@ -531,6 +531,28 @@ namespace Dynamo
         [Test]
         public void IntToVisibilityConverterTest()
         {
+            IntToVisibilityConverter converter = new IntToVisibilityConverter();
+            object result;
+
+            //1. Number is null.
+            //2. Number < 0.
+            //3. Number == 0.
+            //4. Number >0.
+
+            // 1 case
+            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+
+            // 2 case
+            result = converter.Convert(-1, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 3 case
+            result = converter.Convert(0, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 4 case
+            result = converter.Convert(1, null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
         }
 
         [Test]
