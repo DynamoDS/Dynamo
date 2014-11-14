@@ -472,6 +472,19 @@ namespace Dynamo
         [Test]
         public void NullValueToCollapsedConverterTest()
         {
+            NullValueToCollapsedConverter converter = new NullValueToCollapsedConverter();
+            object result;
+
+            //1. Value is null.
+            //2. Value is not null.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 2 case
+            result = converter.Convert("not null", null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
         }
 
         [Test]
