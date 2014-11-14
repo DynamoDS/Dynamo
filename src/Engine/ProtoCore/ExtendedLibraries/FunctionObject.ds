@@ -502,7 +502,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(keyProjector, list[_index]);
         }
         return = Sorting.groupByKey(list, _keys);
     };

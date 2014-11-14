@@ -5,22 +5,14 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ProtoCore.DSDefinitions;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -237,6 +229,9 @@ namespace Dynamo.UI.Controls
 
                 if (e.Text == ".")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
                     var completions = this.GetCompletionData(code, stringToComplete);
@@ -249,6 +244,9 @@ namespace Dynamo.UI.Controls
                 // Complete function signatures
                 else if (e.Text == "(")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
                     string functionName;
                     string functionPrefix;
                     CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
@@ -262,11 +260,14 @@ namespace Dynamo.UI.Controls
                     if (insightWindow != null)
                         insightWindow.Close();
                 }
-                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
                 {
                     // Begin completion while typing only if the previous character already typed in
                     // is a white space or non-alphanumeric character
                     if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
                         return;
 
                     // Autocomplete as you type
@@ -297,6 +298,10 @@ namespace Dynamo.UI.Controls
 
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+            if (completionWindow != null)
+            {
+                completionWindow.Close();
+            }
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
@@ -319,11 +324,12 @@ namespace Dynamo.UI.Controls
             foreach (var completion in completions)
                 data.Add(completion);
 
-            completionWindow.Show();
             completionWindow.Closed += delegate
             {
                 completionWindow = null;
             };
+
+            completionWindow.Show();
         }
 
         private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)

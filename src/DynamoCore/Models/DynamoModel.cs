@@ -137,6 +137,17 @@ namespace Dynamo.Models
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
         public bool ShutdownRequested { get; internal set; }
+        public int MaxTesselationDivisions { get; set; }
+
+        /// <summary>
+        /// The application version string for analytics reporting APIs
+        /// </summary>
+        internal virtual String AppVersion { 
+            get {
+                return Process.GetCurrentProcess().ProcessName + "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -316,6 +327,7 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            this.MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -541,6 +553,12 @@ namespace Dynamo.Models
                 RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
+            else
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
         }
 
         /// <summary>
@@ -597,7 +615,10 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            OnEvaluationCompleted(this, EventArgs.Empty);
+            
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
         }
 
         /// <summary>
@@ -855,7 +876,11 @@ namespace Dynamo.Models
             CurrentWorkspace.ClearUndoRecorder();
             currentWorkspace.ResetWorkspace();
 
-            this.ResetEngine();
+            // Don't bother resetting the engine during shutdown (especially 
+            // since ResetEngine destroys and recreates a new EngineController).
+            if (!ShutdownRequested)
+                this.ResetEngine();
+
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
@@ -1104,7 +1129,11 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                        {
+                            var tld = Utils.GetDataForType(this, type);
+                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(
+                                tld, nickname, signature, guid);
+                        }
 
                         if (el != null)
                         {
@@ -1139,8 +1168,9 @@ namespace Dynamo.Models
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
+                        var tld = Utils.GetDataForType(this, type);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(tld, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 
