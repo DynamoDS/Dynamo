@@ -239,6 +239,53 @@ namespace Dynamo
         [Test]
         public void DisplayModeToTextDecorationsConverterTest()
         {
+            DisplayModeToTextDecorationsConverter converter = new DisplayModeToTextDecorationsConverter();
+            bool isSecondaryHeaderRightVisible = false;
+            Dynamo.Nodes.Search.ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
+            string parameter = "";
+            object[] array = { displayMode, isSecondaryHeaderRightVisible };
+            object result;
+
+            //1. Array is null.
+            //2. Parameter is null.
+            //3. Right secondary header is invisible. Display mode is "None". Parameter is empty.
+            //4. Right secondary header is invisible. Display mode is "Query". Parameter is empty.
+            //5. Right secondary header is invisible. Display mode is "Action". Parameter is empty.
+            //6. Right secondary header is visible. Display mode is "Action". Parameter is "Action".
+            //7. Right secondary header is visible. Display mode is "Action". Parameter is "None".
+
+            // 1 case
+            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+
+            // 2 case
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(1, result);
+
+            // 3 case
+            result = converter.Convert(array, null, parameter, null);
+            Assert.AreEqual(1, result);
+
+            // 4 case
+            array[0] = ClassInformation.DisplayMode.Query;
+            result = converter.Convert(array, null, parameter, null);
+            Assert.AreEqual(1, result);
+
+            // 5 case
+            array[0] = ClassInformation.DisplayMode.Action;
+            result = converter.Convert(array, null, parameter, null);
+            Assert.AreEqual(1, result);
+
+            // 6 case
+            parameter = "Action";
+            isSecondaryHeaderRightVisible = true;
+            array[1] = isSecondaryHeaderRightVisible;
+            result = converter.Convert(array, null, parameter, null);
+            Assert.AreEqual(1, result);
+
+            // 7 case
+            parameter = "None";
+            result = converter.Convert(array, null, parameter, null);
+            Assert.AreEqual(0, result);
         }
 
         [Test]
