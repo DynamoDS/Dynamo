@@ -1597,7 +1597,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")]
         public void TestNonBrowsableClass()
         {
             string code = @"
@@ -1612,7 +1612,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")] 
         public void TestImportNonBrowsableClass()
         {
             string code = @"
@@ -1627,7 +1627,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")] 
         public void TestImportBrowsableClass()
         {
             string code = @"
@@ -1635,7 +1635,7 @@ p11;
                 ";
             TestFrameWork theTest = new TestFrameWork();
             ExecutionMirror mirror = theTest.RunScriptSource(code);
-            //This import must import BSplineCurve and related classes.
+            //This import must import NurbsCurve and related classes.
             Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
             Assert.IsTrue(theTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
             Assert.IsTrue(theTest.GetClassIndex("Vector") != ProtoCore.DSASM.Constants.kInvalidIndex);
@@ -1654,7 +1654,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")] 
         public void TestNonBrowsableInterfaces()
         {
             string code = @"
@@ -1701,7 +1701,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("ProtoGeometry")] 
         public void TestDefaultConstructorNotAvailableOnAbstractClass()
         {
             string code = @"

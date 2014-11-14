@@ -309,6 +309,7 @@ namespace DSOffice
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
         #region Helper methods
@@ -439,6 +440,7 @@ namespace DSOffice
 
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkBook
     {
         /// <summary>

@@ -4338,39 +4338,8 @@ namespace ProtoAssociative
             {
                 if (symbolnode == null)
                 {
-                    if (isAllocated)
-                    {
-                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Value);
-                        if (localProcedure != null && localProcedure.isStatic)
-                        {
-                            SymbolNode tempSymbolNode;
-
-                            VerifyAllocation(
-                                t.Name,
-                                globalClassIndex,
-                                Constants.kGlobalScope,
-                                out tempSymbolNode,
-                                out isAccessible);
-
-                            if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
-                            {
-                                message = String.Format(WarningMessage.kUsingNonStaticMemberInStaticContext, t.Value);
-                            }
-                        }
-                        buildStatus.LogWarning(
-                            WarningID.kAccessViolation, 
-                            message, 
-                            core.CurrentDSFileName, 
-                            t.line, 
-                            t.col, 
-                            graphNode);
-                    }
-                    else
-                    {
-                        string message = String.Format(WarningMessage.kUnboundIdentifierMsg, t.Value);
-                        buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
-                    }
-
+                    // The variable is unbound
+                    ProtoCore.DSASM.SymbolNode unboundVariable = null;
                     if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.ExecMode)
                     {
                         inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
@@ -4394,11 +4363,11 @@ namespace ProtoAssociative
                         ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
-                        ProtoCore.DSASM.SymbolNode symnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
+                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                             false, ProtoCore.Compiler.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, t.line, t.col, graphNode);
-                        Validity.Assert(symnode != null);
+                        Validity.Assert(unboundVariable != null);
 
-                        int symbolindex = symnode.symbolTableIndex;
+                        int symbolindex = unboundVariable.symbolTableIndex;
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex)
                         {
                             symbolnode = core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[symbolindex];
@@ -4409,7 +4378,7 @@ namespace ProtoAssociative
                         }
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
-                        EmitPopForSymbol(symnode);
+                        EmitPopForSymbol(unboundVariable);
 
 
                         nullAssignGraphNode.PushSymbolReference(symbolnode);
@@ -4450,6 +4419,39 @@ namespace ProtoAssociative
 
                         codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode);
                         */
+                    }
+
+                    if (isAllocated)
+                    {
+                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Value);
+                        if (localProcedure != null && localProcedure.isStatic)
+                        {
+                            SymbolNode tempSymbolNode;
+
+                            VerifyAllocation(
+                                t.Name,
+                                globalClassIndex,
+                                Constants.kGlobalScope,
+                                out tempSymbolNode,
+                                out isAccessible);
+
+                            if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
+                            {
+                                message = String.Format(WarningMessage.kUsingNonStaticMemberInStaticContext, t.Value);
+                            }
+                        }
+                        buildStatus.LogWarning(
+                            WarningID.kAccessViolation,
+                            message,
+                            core.CurrentDSFileName,
+                            t.line,
+                            t.col,
+                            graphNode);
+                    }
+                    else
+                    {
+                        string message = String.Format(WarningMessage.kUnboundIdentifierMsg, t.Value);
+                        buildStatus.LogUnboundVariableWarning(unboundVariable, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
 

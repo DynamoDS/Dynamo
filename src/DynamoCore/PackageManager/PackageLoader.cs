@@ -165,7 +165,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(Assembly t)
         {
-            return LocalPackages.Any(package => package.LoadedAssemblies.Contains(t));
+            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t ));
         }
 
         public Package GetPackageFromRoot(string path)
