@@ -73,12 +73,14 @@ namespace Dynamo.UI
 
         private static BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
-            var name = string.Format(@"Dynamo.UI.Images.CodeBlock.{0}", resourceFileName);
+            var name = string.Format(@"Dynamo.Wpf.UI.Images.CodeBlock.{0}", resourceFileName);
 
+
+            var s = assembly.GetManifestResourceNames();
             var bitmapImage = new BitmapImage();
 
             bitmapImage.BeginInit();
-            var resources = assembly.GetManifestResourceNames();
+   
             bitmapImage.StreamSource = assembly.GetManifestResourceStream(name);
 
             bitmapImage.EndInit();

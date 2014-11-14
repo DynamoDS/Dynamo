@@ -140,7 +140,7 @@ namespace Dynamo.UI.Controls
         private void InitializeSyntaxHighlighter()
         {
             var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+                "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
             this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
