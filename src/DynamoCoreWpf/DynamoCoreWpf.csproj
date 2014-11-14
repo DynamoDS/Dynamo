@@ -978,12 +978,12 @@
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\CodeBlock\class.png" />
-    <Resource Include="UI\Images\CodeBlock\constructor.png" />
-    <Resource Include="UI\Images\CodeBlock\keyword.png" />
-    <Resource Include="UI\Images\CodeBlock\method.png" />
-    <Resource Include="UI\Images\CodeBlock\property.png" />
-    <Resource Include="UI\Images\CodeBlock\variable.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\keyword.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

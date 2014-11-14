@@ -75,8 +75,6 @@ namespace Dynamo.UI
         {
             var name = string.Format(@"Dynamo.Wpf.UI.Images.CodeBlock.{0}", resourceFileName);
 
-
-            var s = assembly.GetManifestResourceNames();
             var bitmapImage = new BitmapImage();
 
             bitmapImage.BeginInit();
