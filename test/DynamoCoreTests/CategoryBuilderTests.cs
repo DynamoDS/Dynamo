@@ -151,6 +151,14 @@ namespace Dynamo.Tests
             Assert.IsTrue(addonCatBuilder.ContainsCategory("Peter.Boyer"));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddBrowserCategory()
+        {
+            browserCatBuilder.AddCategory("TopCategory.SubCategory");
+            Assert.IsTrue(browserCatBuilder.ContainsCategory("TopCategory.Classes.SubCategory"));
+        }
+
         #endregion
 
         #region Remove Categories
