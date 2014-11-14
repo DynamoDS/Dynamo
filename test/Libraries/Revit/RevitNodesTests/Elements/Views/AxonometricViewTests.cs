@@ -50,8 +50,7 @@ namespace RevitNodesTests.Elements.Views
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
 
-            object element = famInst;
-            var view = AxonometricView.ByEyePointAndTarget(eye, target, name);
+            var view = AxonometricView.ByEyePointTargetAndElement(eye, target, name, famInst);
 
             Assert.NotNull(view);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
