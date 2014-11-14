@@ -108,7 +108,7 @@ namespace Dynamo
             //7. Class name is empty. Parameter is "ToolTip".
             //8. Class name is empty. Parameter is "ClassButton".
             //9. Class name is empty. Parameter is empty.
-            
+
             // 1 case
             name = "ClassA.ForTooltip";
             parameter = "ToolTip";
@@ -357,7 +357,7 @@ namespace Dynamo
             // 3 case
             result = converter.Convert(BIE, null, null, null);
             Assert.AreEqual(true, result);
-            
+
             // 4 case
             result = converter.Convert(BIEFC, null, null, null);
             Assert.AreEqual(true, result);
@@ -385,7 +385,7 @@ namespace Dynamo
             Assert.AreEqual(falseBrush, result);
 
             // 2 case
-            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new CustomNodeInfo(new Guid(),"name","cat","desc","path"), SearchElementGroup.Action);
+            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action);
             result = converter.Convert(CNE, null, null, null);
             Assert.AreEqual(trueBrush, result);
         }
