@@ -388,9 +388,6 @@ namespace Dynamo.Applications
             finally
             {
                 args.Handled = true;
-
-                // KILLDYNSETTINGS - this is suspect
-                revitDynamoModel.Logger.Dispose();
                 DynamoRevitApp.DynamoButton.Enabled = true;
             }
         }
