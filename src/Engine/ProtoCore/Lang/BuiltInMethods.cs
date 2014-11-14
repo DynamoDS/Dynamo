@@ -2,6 +2,7 @@
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using System.Linq;
 
 namespace ProtoCore.Lang
 {
@@ -67,7 +68,8 @@ namespace ProtoCore.Lang
             kRemoveKey,
             kContainsKey,
             kEvaluate,
-            kTryGetValueFromNestedDictionaries
+            kTryGetValueFromNestedDictionaries,
+            kNodeAstFailed
         }
 
         private static string[] methodNames = new string[]
@@ -130,6 +132,7 @@ namespace ProtoCore.Lang
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
+            Constants.kNodeAstFailed   // kNodeAstFailed
         };
 
         public static string GetMethodName(MethodID id)
@@ -899,7 +902,18 @@ namespace ProtoCore.Lang
                     },
                     ID = MethodID.kTryGetValueFromNestedDictionaries,
                     MethodAttributes = new MethodAttributes(true),
-                }
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new []
+                    {
+                        new KeyValuePair<string, Type>("nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                    }.ToList(),
+                    ID = MethodID.kNodeAstFailed,
+                    MethodAttributes = new MethodAttributes(true),
+                 }
             };
         }
     }
