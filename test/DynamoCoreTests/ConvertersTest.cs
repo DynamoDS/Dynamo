@@ -2,6 +2,7 @@
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Search;
+using Dynamo.ViewModels;
 
 using NUnit.Framework;
 using System.Windows;
@@ -291,6 +292,38 @@ namespace Dynamo
         [Test]
         public void ViewModeToVisibilityConverterTest()
         {
+            ViewModeToVisibilityConverter converter = new ViewModeToVisibilityConverter();
+            string parameter = "";
+            SearchViewModel.ViewMode viewMode = SearchViewModel.ViewMode.LibraryView;
+            object result;
+
+            //1. Parameter is null.
+            //2. View mode is null.
+            //3. View mode is LibraryView. Parameter is empty.
+            //4. View mode is LibraryView. Parameter is "LibraryView".
+            //5. View mode is LibraryView. Parameter is "LibrarySearchView".
+
+            // 1 case
+            result = converter.Convert(viewMode, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 2 case
+            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, parameter, null); });
+
+            // 3 case
+            result = converter.Convert(viewMode, null, parameter, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 4 case
+            parameter = "LibraryView";
+            result = converter.Convert(viewMode, null, parameter, null);
+            Assert.AreEqual(Visibility.Visible, result);
+
+            // 5 case
+            parameter = "LibrarySearchView";
+            result = converter.Convert(viewMode, null, parameter, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
         }
 
         [Test]
