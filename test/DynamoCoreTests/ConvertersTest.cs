@@ -3,11 +3,13 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Search;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 
 using NUnit.Framework;
 using System.Windows;
 using System;
 using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace Dynamo
 {
@@ -365,6 +367,24 @@ namespace Dynamo
         [Test]
         public void NodeTypeToColorConverterTest()
         {
+            NodeTypeToColorConverter converter = new NodeTypeToColorConverter();
+            SolidColorBrush trueBrush = new SolidColorBrush(Colors.Green);
+            SolidColorBrush falseBrush = new SolidColorBrush(Colors.Red);
+            converter.FalseBrush = falseBrush;
+            converter.TrueBrush = trueBrush;
+            object result;
+
+            //1. Element is null.
+            //2. Element is CustomNodeSearchElement.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(falseBrush, result);
+
+            // 2 case
+            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new CustomNodeInfo(new Guid(),"name","cat","desc","path"), SearchElementGroup.Action);
+            result = converter.Convert(CNE, null, null, null);
+            Assert.AreEqual(trueBrush, result);
         }
 
         [Test]
