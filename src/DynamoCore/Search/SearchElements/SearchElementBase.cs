@@ -156,7 +156,7 @@ namespace Dynamo.Search.SearchElements
             Searchable = node.Searchable;
             Weight = node.Weight;
             Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
-            
+
             PopulateKeysAndParameters(dynamoModel);
         }
 
@@ -192,16 +192,9 @@ namespace Dynamo.Search.SearchElements
                 }
             }
 
-            if (newElement != null)
-            {
-                Parameters = newElement.InPorts.Select(elem => elem.PortName);
-                ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-                DefaultValues = newElement.InPortData.Select(elem => elem.DefaultValue);
-            }
-            else
-            {
-                throw new NullReferenceException("Element not found!");
-            }
+            Parameters = newElement.InPorts.Select(elem => elem.PortName);
+            ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
+            DefaultValues = newElement.InPortData.Select(elem => elem.DefaultValue);
         }
     }
 }
