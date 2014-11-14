@@ -330,8 +330,7 @@ namespace Dynamo.Utilities
             var searchModel = dynamoModel.SearchModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            customNodeLoader.AddDirectoryToSearchPath(path);
-
+            
             // add nodes to search
             loadedNodes.ForEach(x => searchModel.Add(x));
 
