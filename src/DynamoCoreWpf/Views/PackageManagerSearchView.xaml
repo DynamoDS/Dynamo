@@ -163,11 +163,11 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
                                                     <Setter Property="Visibility" Value="Visible"/>
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -177,7 +177,7 @@
 
                                 <StackPanel Orientation="Horizontal" Margin="1" Width="440">
 
-                                    <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666">
+                                    <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#666">
                                         <Grid Width="40" Height="64">
                                             <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
                                             <Ellipse
@@ -189,55 +189,55 @@
                                         </Grid>
                                     </Button>
 
-                                    <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpanded}" Background="#333">
+                                    <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
 
                                         <StackPanel Width="350" Height="75" IsHitTestVisible="True" >
-                                            <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+                                            <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
 
                                             <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
                                                 <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                     <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path=Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
+                                                    <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path= Model.Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                     <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path=LatestVersion}" Foreground="Gray"  />
+                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersion}" Foreground="Gray"  />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                     <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path=Downloads}" Foreground="Gray"  />
+                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.Downloads}" Foreground="Gray"  />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Margin="5" Width="75">
                                                     <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
+                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
                                                 </StackPanel>
 
                                             </StackPanel>
 
-                                            <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                            <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
 
                                         </StackPanel>
                                     </Button>
 
                                     <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
                                         <Button Name="UpvoteButton" FontSize="10" ToolTip="Vote in support of this package"  Content="▲" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
-                                        <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                        <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                         <Button Name="DownvoteButton" FontSize="10" ToolTip="Downvote to voice lack of support for this package" Foreground="Gray" Content="▼" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
                                     </StackPanel>
                                 </StackPanel>
 
-                                <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+                                <StackPanel Visibility="{Binding Path= Model.IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
                                     <TextBlock FontSize="11" FontWeight="Bold" Text="Description" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
-                                    <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
+                                    <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 
-                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Model.Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                                         <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                        <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
+                                        <TextBlock FontSize="11" Text="{Binding Path=Model.Keywords}" Foreground="WhiteSmoke" />
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
@@ -266,8 +266,8 @@
                                         </ListBox>
                                     </StackPanel>
 
-                                    <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
-                                    <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
+                                    <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=Model.SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
+                                    <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=Model.RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
 
                                 </StackPanel>
 

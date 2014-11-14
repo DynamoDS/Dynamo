@@ -14,20 +14,20 @@ namespace Dynamo.PackageManager.ViewModels
 {
     public class PackageManagerSearchElementViewModel : BrowserItemViewModel
     {
-        public ICommand DownloadLatest { get; set; }
+        public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
         public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
 
-        public PackageManagerSearchElement Model { get; private set; }
+        public new PackageManagerSearchElement Model { get; private set; }
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element) : base(element)
         {
             this.Model = element;
 
-            this.DownloadLatest = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
-            this.DownloadLatest = new DelegateCommand((Action)Model.Execute);
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
+            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
             this.UpvoteCommand = new DelegateCommand((Action)Model.Upvote, Model.CanUpvote);
             this.DownvoteCommand = new DelegateCommand((Action)Model.Downvote, Model.CanDownvote);
             this.VisitSiteCommand =
