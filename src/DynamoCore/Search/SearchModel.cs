@@ -654,12 +654,12 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
-            nodeEle.Executed += this.OnExecuted;
-
             if (SearchDictionary.Contains(nodeEle))
             {
                 return this.Refactor(nodeInfo);
             }
+
+            nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
