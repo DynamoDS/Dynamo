@@ -409,6 +409,32 @@ namespace Dynamo
         [Test]
         public void HasParentRootElementTest()
         {
+            HasParentRootElement converter = new HasParentRootElement();
+            BrowserRootElement BRE = new BrowserRootElement("BRE");
+            BrowserInternalElement BIE = new BrowserInternalElement();
+            object result;
+
+            //1. Element is null.
+            //2. Element is BrowserRootElement.
+            //3. Element is not child of BrowserRootElement.
+            //4. Element is child of BrowserRootElement.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 2 case
+            result = converter.Convert(BRE, null, null, null);
+            Assert.AreEqual(true, result);
+
+            // 3 case
+            result = converter.Convert(BIE, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 4 case
+            BRE.AddChild(BIE);
+            result = converter.Convert(BIE, null, null, null);
+            Assert.AreEqual(true, result);
         }
 
         [Test]
