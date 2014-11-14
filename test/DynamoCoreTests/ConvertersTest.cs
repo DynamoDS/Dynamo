@@ -390,6 +390,20 @@ namespace Dynamo
         [Test]
         public void RootElementToBoolConverterTest()
         {
+            RootElementToBoolConverter converter = new RootElementToBoolConverter();
+            BrowserRootElement BRE = new BrowserRootElement("BRE");
+            object result;
+
+            //1. Element is null.
+            //2. Element is BrowserRootElement.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 2 case
+            result = converter.Convert(BRE, null, null, null);
+            Assert.AreEqual(true, result);
         }
 
         [Test]
