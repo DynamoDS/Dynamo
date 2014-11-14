@@ -13,6 +13,7 @@ using ProtoCore.Mirror;
 using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.UI;
 
 namespace Dynamo.Tests
 {
@@ -194,6 +195,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(true, refVarNames.Contains("z"));
         }
 #endif
+        protected double tolerance = 1e-4;
 
         [Test]
         [Category("RegressionTests")]
@@ -445,6 +447,89 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode, "pt = Point.ByCoordinates(0,0,0);\nCircle.ByCenterPointRadius(pt,5)");
 
             Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void OutPort_WithCommentNonAssignment_Alignment()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "// comment \n // comment \n a+b;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+            
+            code = "c+ \n d; \n /* comment \n */ \n a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(4, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            // The first output port should be at the first line
+            Assert.AreEqual(0 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+
+            // The second output port should be at the 4th line, which is also 3 lines below the first
+            Assert.AreEqual(3 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[1].VerticalMargin, tolerance);
+            
+            code = "/*comment \n */ \n a[0]+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void InPort_WithInlineConditionNonAssignment_Creation()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "c + d; \n z = 2;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "x%2 == 0 ? x : -x; \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "f(x); \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Parse_NonAssignmentFollowedByAssignment()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "List.IsEmpty(result)?result:List.FirstItem(result);";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            code = "x%2 == 0 ? x : -x;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
         #region CodeBlockUtils Specific Tests
