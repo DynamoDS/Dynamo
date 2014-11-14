@@ -323,12 +323,43 @@ namespace Dynamo
             parameter = "LibrarySearchView";
             result = converter.Convert(viewMode, null, parameter, null);
             Assert.AreEqual(Visibility.Collapsed, result);
-
         }
 
         [Test]
         public void ElementTypeToBoolConverterTest()
         {
+            ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
+            NodeSearchElement NSE = new NodeSearchElement("name", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
+            BrowserInternalElement BIE = new BrowserInternalElement();
+            BrowserInternalElementForClasses BIEFC = new BrowserInternalElementForClasses("name", BIE);
+            BrowserRootElement BRE = new BrowserRootElement("name");
+            object result;
+
+            //1. Element is null.
+            //2. Element is NodeSearchElement.
+            //3. Element is BrowserInternalElement.
+            //4. Element is BrowserInternalElementForClasses.
+            //5. Element is BrowserRootElement.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 2 case
+            result = converter.Convert(NSE, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 3 case
+            result = converter.Convert(BIE, null, null, null);
+            Assert.AreEqual(true, result);
+            
+            // 4 case
+            result = converter.Convert(BIEFC, null, null, null);
+            Assert.AreEqual(true, result);
+
+            // 5 case
+            result = converter.Convert(BRE, null, null, null);
+            Assert.AreEqual(true, result);
         }
 
         [Test]
