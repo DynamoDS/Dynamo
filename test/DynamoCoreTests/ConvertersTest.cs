@@ -440,6 +440,33 @@ namespace Dynamo
         [Test]
         public void MultiBoolToVisibilityConverterTest()
         {
+            MultiBoolToVisibilityConverter converter = new MultiBoolToVisibilityConverter();
+            object[] array = { false, false, false };
+            object result;
+
+            //1. Incoming array is null.
+            //2. All are false.
+            //3. One is true.
+            //4. All are true.
+
+            // 1 case
+            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+
+            // 2 case
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 3 case
+            array[0] = true;
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            // 4 case
+            array[0] = true;
+            array[1] = true;
+            array[2] = true;
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
         }
 
         [Test]
