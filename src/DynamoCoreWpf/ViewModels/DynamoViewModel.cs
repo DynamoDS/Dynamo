@@ -1056,7 +1056,7 @@ namespace Dynamo.ViewModels
         internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
             // crash sould always allow save as
-            if (workspace.FileName != String.Empty && !DynamoModel.IsCrashing)
+            if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
                 workspace.Save();
             }
