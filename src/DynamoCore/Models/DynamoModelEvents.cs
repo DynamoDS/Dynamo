@@ -220,17 +220,20 @@ namespace Dynamo.Models
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
-        public event EventHandler EvaluationCompleted;
-        public virtual void OnEvaluationCompleted(object sender, EventArgs e)
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        public virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            // When evaluation is completed, we mark all
-            // nodes as ForceReexecuteOfNode = false to prevent
-            // cyclical graph updates. It is therefore the responsibility 
-            // of the node implementor to mark this flag = true, if they
-            // want to require update.
-            foreach (var n in HomeSpace.Nodes)
+            if (e.EvaluationTookPlace)
             {
-                n.ForceReExecuteOfNode = false;
+                // When evaluation is completed, we mark all
+                // nodes as ForceReexecuteOfNode = false to prevent
+                // cyclical graph updates. It is therefore the responsibility 
+                // of the node implementor to mark this flag = true, if they
+                // want to require update.
+                foreach (var n in HomeSpace.Nodes)
+                {
+                    n.ForceReExecuteOfNode = false;
+                }
             }
 
             if (EvaluationCompleted != null)
@@ -238,5 +241,15 @@ namespace Dynamo.Models
         }
 
         #endregion
+    }
+
+    public class EvaluationCompletedEventArgs : EventArgs
+    {
+        public EvaluationCompletedEventArgs(bool evaluationTookPlace)
+        {
+            EvaluationTookPlace = evaluationTookPlace;
+        }
+
+        public bool EvaluationTookPlace { get; private set; }
     }
 }

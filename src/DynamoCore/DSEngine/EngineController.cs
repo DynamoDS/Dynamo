@@ -198,7 +198,7 @@ namespace Dynamo.DSEngine
         {
             lock (macroMutex)
             {
-                var activeNodes = nodes.Where(n => n.State != ElementState.Error);
+                var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
                     astBuilder.CompileToAstNodes(activeNodes, true);
@@ -224,7 +224,7 @@ namespace Dynamo.DSEngine
             if (updatedNodes == null)
                 return null;
 
-            var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
+            var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
                 astBuilder.CompileToAstNodes(activeNodes, true);
