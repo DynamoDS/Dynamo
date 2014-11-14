@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Revit.Elements.Views
 {
     //[SupressImportIntoVM]
     public abstract class View3D : View
     {
+        [IsVisibleInDynamoLibrary(false)]
+        public const string DEFAULT_VIEW_NAME = "dynamo3D";
 
         #region Internal properties
 
@@ -43,9 +48,36 @@ namespace Revit.Elements.Views
         protected static ViewOrientation3D BuildOrientation3D(XYZ eyePoint, XYZ target)
         {
             var globalUp = XYZ.BasisZ;
-            var direction = target.Subtract(eyePoint);
+            var direction = target.Subtract(eyePoint).Normalize();
+
+            // If the direction is zero length (ex. the eye and target
+            // points are coincident) than set the direction to look
+            // along the x axis by default. Otherwise, the call to
+            // create a ViewOrientation3D object will fail.
+            if (direction.IsZeroLength())
+            {
+                direction = XYZ.BasisX;
+            }
+
+            // If the direction points along Z, then 
+            // switch the global up to Y
+            if (direction.IsAlmostEqualTo(globalUp) ||
+                (direction.Negate().IsAlmostEqualTo(globalUp)))
+            {
+                globalUp = XYZ.BasisY;
+            }
+
             var up = direction.CrossProduct(globalUp).CrossProduct(direction);
+
+            if (up.IsZeroLength())
+            {
+                up = XYZ.BasisZ;
+            }
+
+            // If up is zero length (ex. the direction vector is the z axis),
+            // set the up to be along the Z axis.
             return new ViewOrientation3D(eyePoint, up, direction);
+
         }
 
         /// <summary>
@@ -119,7 +151,6 @@ namespace Revit.Elements.Views
             }
         }
 
-
         /// <summary>
         /// Make a single element appear in a particular view
         /// </summary>
@@ -139,6 +170,10 @@ namespace Revit.Elements.Views
                 view.HideElements(toHide);
 
             DocumentManager.Regenerate();
+
+            // After a regeneration, we need to ensure that a 
+            // transaction is re-opened.
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
             if (view.IsPerspective)
             {
@@ -233,16 +268,8 @@ namespace Revit.Elements.Views
             view.SetOrientation(orient);
             view.SaveOrientationAndLock();
 
-            try
-            {
-                //will fail if name is not unique
-                view.Name = name;
-            }
-            catch
-            {
-                view.Name = CreateUniqueViewName(name);
-            }
 
+            view.Name = CreateUniqueViewName(name);
 
             return view;
         }
@@ -250,33 +277,23 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Determines whether a view with the provided name already exists.
         /// If a view exists with the provided name, and new view is created with
-        /// an incremented name. Otherwise, the original view name is returned.
+        /// a unique name. Otherwise, the original view name is returned.
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>The original name if it is already unique, or 
+        /// a unique version of the name.</returns>
         public static string CreateUniqueViewName(string name)
         {
-            string viewName = name;
-            bool found = false;
-
             var collector = new FilteredElementCollector(Document);
             collector.OfClass(typeof(Autodesk.Revit.DB.View));
 
-            if (collector.ToElements().Count(x => x.Name == name) == 0)
+            // If the name is already unique then return it.
+            if (collector.All(x => x.Name != name))
                 return name;
 
-            int count = 0;
-            while (!found)
-            {
-                string[] nameChunks = viewName.Split('_');
-
-                viewName = string.Format("{0}_{1}", nameChunks[0], count.ToString(CultureInfo.InvariantCulture));
-
-                if (collector.ToElements().ToList().Any(x => x.Name == viewName))
-                    count++;
-                else
-                    found = true;
-            }
+            // Create a unique name by appending a guid to
+            // the end of the view name
+            var viewName = string.Format("{0}_{1}", name, Guid.NewGuid());
 
             return viewName;
         }
@@ -449,6 +466,12 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         protected void InternalSetName(string name)
         {
+            if (name == DEFAULT_VIEW_NAME && InternalView3D.Name.Contains(DEFAULT_VIEW_NAME + "_"))
+            {
+                // Assume that this has already been set unique.
+                return;
+            }
+
             if (!this.InternalView3D.Name.Equals(name))
                 this.InternalView3D.Name = CreateUniqueViewName(name);
         }
@@ -459,7 +482,7 @@ namespace Revit.Elements.Views
         /// <param name="orient"></param>
         protected void InternalSetOrientation( ViewOrientation3D orient)
         {
-            if (this.InternalView3D.ViewDirection.IsAlmostEqualTo(orient.ForwardDirection) &&
+            if (this.InternalView3D.ViewDirection.IsAlmostEqualTo(-orient.ForwardDirection) &&
                 this.InternalView3D.Origin.IsAlmostEqualTo(orient.EyePosition)) return;
 
             this.InternalView3D.Unlock();

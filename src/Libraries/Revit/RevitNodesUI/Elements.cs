@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Data;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -57,25 +59,58 @@ namespace DSRevitNodesUI
             get { return forceReExecuteOfNode; }
         }
 
-        private void Updater_ElementsAdded(IEnumerable<string> updated)
+        protected virtual void Updater_ElementsAdded(IEnumerable<string> updated)
         {
+            if (!updated.Any()) return;
+
+#if DEBUG
+            Debug.WriteLine("There are {0} updated elements", updated.Count());
+            DebugElements(updated);
+#endif
             forceReExecuteOfNode = true;
             RequiresRecalc = true;
         }
 
 
-        protected void Updater_ElementsModified(IEnumerable<string> updated)
+        protected virtual void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            if (!updated.Any()) return;
+#if DEBUG
+            Debug.WriteLine("There are {0} modified elements", updated.Count());
+            DebugElements(updated);
+#endif
             forceReExecuteOfNode = true;
             RequiresRecalc = true;
 
         }
 
-        protected void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        protected virtual void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
+            if (!deleted.Any()) return;
+#if DEBUG
+            Debug.WriteLine("There are {0} deleted elements", deleted.Count());
+            DebugElements(deleted);
+#endif
             forceReExecuteOfNode = true;
             RequiresRecalc = true;
 
+        }
+
+        private static void DebugElements(IEnumerable<string> updated)
+        {
+            var els = updated.Select(
+                id => DocumentManager.Instance.CurrentDBDocument.GetElement(id));
+            foreach (var el in els.Where(el => el != null))
+                Debug.WriteLine(string.Format("\t{0}", el.Name));
+        }
+
+        private static void DebugElements(IEnumerable<ElementId> updated)
+        {
+            var els = updated.Select(
+                id => DocumentManager.Instance.CurrentDBDocument.GetElement(id));
+            foreach (var el in els.Where(el => el != null)) {
+                Debug.WriteLine(string.Format("\t{0}", el.Name));
+            }
         }
 
         protected override bool ShouldDisplayPreviewCore()
@@ -181,7 +216,7 @@ namespace DSRevitNodesUI
     }
 
     [NodeName("All Elements In Active View"), NodeCategory(BuiltinNodeCategories.REVIT_VIEW),
-     NodeDescription("Gat all the elements which are visible in the active view."),
+     NodeDescription("Get all the elements which are visible in the active view."),
      IsDesignScriptCompatible]
     public class ElementsInView : RevitNodeModel
     {
