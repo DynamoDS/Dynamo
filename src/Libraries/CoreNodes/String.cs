@@ -20,7 +20,24 @@ namespace DSCore
         /// <search>tostring,2string,number2string,numbertostring</search>
         public static string FromObject(object obj)
         {
-            return obj.ToString();
+            return ReferenceEquals(obj, null) ? "null" : obj.ToString();
+        }
+
+        /// <summary>
+        ///     Converts an array to a string representation.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static string FromArray(IList array)
+        {
+            if (ReferenceEquals(array, null))
+            {
+                return null;
+            }
+
+            var eles = array.Cast<object>().Select(e =>
+                (e is IList) ? FromArray(e as IList) : FromObject(e));
+            return "{" + string.Join(",", eles) + "}"; 
         }
 
         /// <summary>
