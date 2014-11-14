@@ -4,12 +4,15 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
+using Dynamo.Models;
+using Dynamo.Interfaces;
 
 using NUnit.Framework;
 using System.Windows;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace Dynamo
 {
@@ -558,6 +561,45 @@ namespace Dynamo
         [Test]
         public void SearchHighlightMarginConverterTest()
         {
+            SearchHighlightMarginConverter converter = new SearchHighlightMarginConverter();
+            TextBlock textBlock = new TextBlock();
+            textBlock.Width = 50;
+            textBlock.Height = 10;
+
+            # region dynamoViewModel and searchModel
+            var model = DynamoModel.Start();
+            var vizManager = new VisualizationManager(model);
+            var watchHandler = new DefaultWatchHandler(vizManager, model.PreferenceSettings);
+            DynamoViewModel dynamoViewModel = DynamoViewModel.Start();
+            SearchModel searchModel = new SearchModel();
+            # endregion
+
+            SearchViewModel searhViewModel = new SearchViewModel(dynamoViewModel, searchModel);
+            object[] array = { textBlock, searhViewModel };
+            Thickness thickness = new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+            object result;
+
+            //1. Array is null.
+            //2. TextBlock.Text is empty.
+            //3. TextBlock contains highlighted phrase.
+
+            // 1 case
+            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+
+            // 2 case
+            textBlock.Text = "";
+            array[0] = textBlock;
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(thickness, result);
+
+            // 3 case
+            // This case we can't check properly, because TextBlock.ActualWidth and TextBlock.ActualHeight equals 0. 
+            textBlock.Text = "abcd";
+            array[0] = textBlock;
+            searhViewModel.SearchText = "a";
+            thickness = new Thickness(0, 0, -6.6733333333333338, 0);
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(thickness, result);
         }
     }
 }
