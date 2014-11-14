@@ -490,6 +490,42 @@ namespace Dynamo
         [Test]
         public void FullCategoryNameToMarginConverterTest()
         {
+            FullCategoryNameToMarginConverter converter = new FullCategoryNameToMarginConverter();
+            string name = "";
+            Thickness thickness = new Thickness(5, 0, 0, 0);
+            object result;
+
+            //1. Name is null.
+            //2. Name is empty.
+            //3. Name is "Category".
+            //4. Name is "Category.NestedClass1".
+            //5. Name is "Category.NestedClass1.NestedClass2".
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(thickness, result);
+
+            // 2 case
+            result = converter.Convert(name, null, null, null);
+            Assert.AreEqual(thickness, result);
+
+            // 3 case
+            name = "Category";
+            thickness = new Thickness(5, 0, 20, 0);
+            result = converter.Convert(name, null, null, null);
+            Assert.AreEqual(thickness, result);
+
+            // 4 case
+            name = "Category.NestedClass1";
+            thickness = new Thickness(25, 0, 20, 0);
+            result = converter.Convert(name, null, null, null);
+            Assert.AreEqual(thickness, result);
+
+            // 5 case
+            name = "Category.NestedClass1.NestedClass2";
+            thickness = new Thickness(45, 0, 20, 0);
+            result = converter.Convert(name, null, null, null);
+            Assert.AreEqual(thickness, result);
         }
 
         [Test]
