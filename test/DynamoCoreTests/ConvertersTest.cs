@@ -1,7 +1,12 @@
 ﻿using Dynamo.Controls;
+using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.Search;
+
 using NUnit.Framework;
 using System.Windows;
 using System;
+using System.Collections.Generic;
 
 namespace Dynamo
 {
@@ -203,6 +208,32 @@ namespace Dynamo
         [Test]
         public void BrowserRootElementToSubclassesConverterTest()
         {
+            BrowserRootElement BRE = new BrowserRootElement("BRE");
+            NodeSearchElement NSE1 = new NodeSearchElement("name1", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
+            NodeSearchElement NSE2 = new NodeSearchElement("name2", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
+            BrowserInternalElement BIE = new BrowserInternalElement();
+
+            BrowserRootElementToSubclassesConverter converter = new BrowserRootElementToSubclassesConverter();
+            object result;
+
+            //1. BRE contains only node elemnts.
+            //2. BRE contains node elements and internal element.
+            //3. BRE is null.
+
+            // 1 case
+            BRE.AddChild(NSE1);
+            BRE.AddChild(NSE2);
+            result = converter.Convert(BRE, null, null, null);
+            Assert.AreEqual(BRE.ClassDetails, result);
+
+            // 2 case
+            BRE.AddChild(BIE);
+            result = converter.Convert(BRE, null, null, null);
+            Assert.AreEqual(BRE, result);
+
+            // 3 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(null, result);
         }
 
         [Test]
