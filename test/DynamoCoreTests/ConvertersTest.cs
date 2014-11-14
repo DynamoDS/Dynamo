@@ -155,6 +155,49 @@ namespace Dynamo
         [Test]
         public void InOutParamTypeConverterTest()
         {
+            string input = "";
+            string parameter = "";
+            InOutParamTypeConverter converter = new InOutParamTypeConverter();
+            object result;
+
+            //1. Input is empty. Parameter is empty.
+            //2. Input is "input". Parameter is empty.
+            //3. Input is "none". Parameter is empty.
+            //4. Input is "none". Parameter is "inputParam".
+            //5. Input is "someInput". Parameter is "inputParam".
+            //6. Input is "someInput". Parameter is "someParam".
+
+            // 1 case
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual("", result);
+
+            // 2 case
+            input = "input";
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual("input", result);
+
+            // 3 case
+            input = "none";
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual("none", result);
+
+            // 4 case
+            input = "none";
+            parameter = "inputParam";
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual("none", result);
+
+            // 5 case
+            input = "someInput";
+            parameter = "inputParam";
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual(": someInput", result);
+
+            // 6 case
+            input = "someInput";
+            parameter = "someParam";
+            result = converter.Convert(input, null, parameter, null);
+            Assert.AreEqual("someInput", result);
         }
 
         [Test]
