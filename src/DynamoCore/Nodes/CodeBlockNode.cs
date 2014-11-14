@@ -28,7 +28,12 @@ namespace Dynamo.Nodes
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
 
-        public bool ShouldFocus { get; set; }
+        private bool shouldFocus = true;
+        public bool ShouldFocus
+        {
+            get { return shouldFocus;  }
+            internal set { shouldFocus = value; }
+        }
 
         private readonly DynamoLogger logger;
 
@@ -46,14 +51,15 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode) 
+        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode)
             : this(workspace)
         {
             code = userCode;
             ProcessCodeDirect();
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos) : base(workspace)
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos)
+            : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.X = xPos;
@@ -67,7 +73,6 @@ namespace Dynamo.Nodes
         /// <summary>
         ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
-        /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
             previewVariable = null;
@@ -226,7 +231,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", ShouldFocus);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -235,7 +240,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
             ProcessCodeDirect();
-            ShouldFocus = helper.ReadBoolean("ShouldFocus");
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
         protected override bool UpdateValueCore(string name, string value)
@@ -279,7 +284,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", ShouldFocus);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -288,7 +293,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                ShouldFocus = helper.ReadBoolean("ShouldFocus");
+                shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
                 ProcessCodeDirect();
             }
@@ -305,8 +310,8 @@ namespace Dynamo.Nodes
             var resultNodes = new List<AssociativeNode>();
 
             // Define unbound variables if necessary
-            if (inputIdentifiers != null && 
-                inputAstNodes != null && 
+            if (inputIdentifiers != null &&
+                inputAstNodes != null &&
                 inputIdentifiers.Count == inputAstNodes.Count)
             {
                 var initStatments = inputIdentifiers.Zip(inputAstNodes,
@@ -476,7 +481,7 @@ namespace Dynamo.Nodes
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach(var parsedNode in parsedNodes.Reverse())
+            foreach (var parsedNode in parsedNodes.Reverse())
             {
                 var statement = parsedNode as BinaryExpressionNode;
                 if (null == statement)
@@ -588,7 +593,7 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
-                
+
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom,
@@ -801,7 +806,7 @@ namespace Dynamo.Nodes
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
                     && !tempVariables.Contains(ident)
                     && !identNode.Equals(this.identifier))
                 {
@@ -1106,6 +1111,7 @@ namespace Dynamo.Nodes
 
         #endregion
     }
+
 
     public class Variable
     {

@@ -98,7 +98,7 @@ namespace Dynamo.UI.Controls
             return "";
         }
 
-        internal bool Focus()
+        internal new bool Focus()
         {
             return InternalEditor.Focus();
         }
