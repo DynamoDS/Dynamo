@@ -101,6 +101,10 @@
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="DSCoreNodes.Migrations.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
