@@ -633,8 +633,14 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.PerformShutdownSequence(sp))
             {
+                //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+            }
+            else
+            {
+                //Shutdown was cancelled
+                e.Cancel = true;
             }
         }
 
