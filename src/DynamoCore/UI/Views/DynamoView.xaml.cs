@@ -442,8 +442,7 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
-                e.Success = true;
+                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
