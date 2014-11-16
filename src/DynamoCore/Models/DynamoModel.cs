@@ -529,8 +529,10 @@ namespace Dynamo.Models
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
+        /// <param name="completionHandler">Optional parameter representing the 
+        /// callback function to be invoked when run expression completes.</param>
         /// 
-        public void RunExpression()
+        public void RunExpression(AsyncTaskCompletedHandler completionHandler = null)
         {
             var traceData = HomeSpace.PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
@@ -550,6 +552,15 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, HomeSpace))
             {
                 task.Completed += OnUpdateGraphCompleted;
+
+                // If the caller wishes to be notified of task completion, then
+                // register the event handler *after* the internal handler. This 
+                // is because the default handler schedules value queries and 
+                // render package updates for each node, among other things.
+                // 
+                if (completionHandler != null)
+                    task.Completed += completionHandler;
+
                 RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
