@@ -142,6 +142,7 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
