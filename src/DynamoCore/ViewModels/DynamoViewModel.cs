@@ -1041,21 +1041,29 @@ namespace Dynamo.ViewModels
         ///     workspace does not already have a path associated with it
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
-        internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
+        /// <returns>true if save was successful, false otherwise</returns>
+        internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
             // crash sould always allow save as
             if (workspace.FileName != String.Empty && !DynamoModel.IsCrashing)
             {
                 workspace.Save();
+                return true;
             }
             else
             {
+                //TODO(ben): We still add a cancel button to the save dialog if we're crashing
+                // sadly it's not usually possible to cancel a crash
+
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
                     workspace.SaveAs(fd.FileName);
+                    return true;
                 }
             }
+
+            return false;
         }
 
         internal bool CanVisibilityBeToggled(object parameters)
