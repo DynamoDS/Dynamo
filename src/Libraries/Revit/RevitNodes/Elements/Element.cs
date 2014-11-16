@@ -55,7 +55,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Name of the Element
         /// </summary>
-        internal string Name
+        public string Name
         {
             get
             {
@@ -92,7 +92,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Element Unique Id for this element
         /// </summary>
-        internal string UniqueId
+        public string UniqueId
         {
             get
             {
