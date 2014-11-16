@@ -7,7 +7,7 @@ using Dynamo.Services;
 
 namespace Dynamo.Core.Threading
 {
-    internal delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
+    public delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
 
     /// <summary>
     /// DynamoScheduler makes use of this comparer class to sort its internal 
@@ -24,7 +24,7 @@ namespace Dynamo.Core.Threading
         }
     }
 
-    internal abstract class AsyncTask
+    public abstract class AsyncTask
     {
         #region Private Class Data Members
 
@@ -42,7 +42,7 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Merge instruction obtained from a call to AsyncTask.CanMergeWith.
         /// </summary>
-        internal enum TaskMergeInstruction
+        public enum TaskMergeInstruction
         {
             /// <summary>
             /// Both the AsyncTask objects in comparison should be kept.
