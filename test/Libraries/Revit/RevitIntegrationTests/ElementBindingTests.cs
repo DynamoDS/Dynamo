@@ -20,29 +20,18 @@ namespace RevitSystemTests
         /// <summary>
         /// This function gets all the model curves in the current Revit document
         /// </summary>
-        /// <param name="startNewTransaction">whether do the filtering in a new transaction</param>
         /// <returns>the model curves</returns>
-        private static IList<Autodesk.Revit.DB.ModelCurve> GetAllModelCurves(bool startNewTransaction)
+        private static IList<Autodesk.Revit.DB.ModelCurve> GetAllModelCurves()
         {
-            if (startNewTransaction)
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "FilteringElements"))
             {
-                using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "FilteringElements"))
-                {
-                    trans.Start();
+                trans.Start();
 
-                    ElementClassFilter ef = new ElementClassFilter(typeof(Autodesk.Revit.DB.CurveElement));
-                    FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-                    fec.WherePasses(ef);
-
-                    trans.Commit();
-                    return fec.ToElements().OfType<Autodesk.Revit.DB.ModelCurve>().ToList();
-                }
-            }
-            else
-            {
                 ElementClassFilter ef = new ElementClassFilter(typeof(Autodesk.Revit.DB.CurveElement));
                 FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
                 fec.WherePasses(ef);
+
+                trans.Commit();
                 return fec.ToElements().OfType<Autodesk.Revit.DB.ModelCurve>().ToList();
             }
         }
@@ -571,7 +560,7 @@ namespace RevitSystemTests
             //Change the slider value to 10
             slider.Value = 10;
             Assert.DoesNotThrow(() => model.RunExpression());
-            var curves = GetAllModelCurves(true);
+            var curves = GetAllModelCurves();
             Assert.AreEqual(1, curves.Count());
 
             var curve = curves.ElementAt(0);
@@ -589,7 +578,7 @@ namespace RevitSystemTests
             slider.Value = 5;
             Assert.DoesNotThrow(() => model.RunExpression());
 
-            curves = GetAllModelCurves(true);
+            curves = GetAllModelCurves();
             Assert.AreEqual(1, curves.Count());
 
             curve = curves.ElementAt(0);
@@ -601,7 +590,7 @@ namespace RevitSystemTests
             slider.Value = 8;
             Assert.DoesNotThrow(() => model.RunExpression());
 
-            curves = GetAllModelCurves(true);
+            curves = GetAllModelCurves();
             Assert.AreEqual(1, curves.Count());
 
             curve = curves.ElementAt(0);
