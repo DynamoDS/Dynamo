@@ -75,7 +75,7 @@
       <HintPath>$(DYNAMOAPI)\DynamoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="..\..\..\src\DynamoRevit\DynamoRevit.csproj">
+    <ProjectReference Include="$(SolutionDir)DynamoRevit\DynamoRevit.csproj">
       <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
       <Name>DynamoRevit</Name>
       <Private>False</Private>
@@ -96,7 +96,7 @@
       <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="..\..\..\src\Libraries\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="$(SolutionDir)Libraries\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
       <Private>False</Private>

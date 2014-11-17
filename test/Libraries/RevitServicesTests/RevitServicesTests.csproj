@@ -74,12 +74,12 @@ limitations under the License.
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\DynamoRevit\DynamoRevit.csproj">
+    <ProjectReference Include="$(SolutionDir)DynamoRevit\DynamoRevit.csproj">
       <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
       <Name>DynamoRevit</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="$(SolutionDir)Libraries\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>
