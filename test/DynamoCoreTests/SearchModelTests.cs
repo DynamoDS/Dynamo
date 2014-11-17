@@ -462,6 +462,72 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Move Nodes
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementWithValidInput()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "BestNode", "TopCategory.Destination", "", ""));
+            var destination = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Destination");
+
+            Assert.AreEqual(1, destination.Items.Count);
+
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode1", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode2", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode3", "TopCategory.Source", "", ""));
+            var source = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Source");
+
+            Assert.AreEqual(3, source.Items.Count);
+
+            search.AddonCategoriesBuilder.MoveElementChildren(source, destination);
+
+            Assert.AreEqual(4, destination.Items.Count);
+            Assert.AreEqual(0, source.Items.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementWithInvalidInput()
+        {
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(null, null);
+
+            var source = search.AddonCategoriesBuilder.AddCategory("TopCategory.Source");
+            var destination = search.AddonCategoriesBuilder.AddCategory("TopCategory.Destination");
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(null, destination);
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(source, null);
+
+            Assert.AreEqual(0, source.Items.Count);
+            Assert.AreEqual(0, destination.Items.Count);
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(source, destination);
+
+            Assert.AreEqual(0, source.Items.Count);
+            Assert.AreEqual(0, destination.Items.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementSourceDestinationAreSame()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode1", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode2", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode3", "TopCategory.Source", "", ""));
+            var source = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Source");
+
+            search.AddonCategoriesBuilder.MoveElementChildren(source, source);
+
+            Assert.AreEqual(3, source.Items.Count);
+        }
+
+        #endregion
+
         #region Remove Nodes
 
         [Test]

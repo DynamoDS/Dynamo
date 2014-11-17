@@ -81,6 +81,28 @@ namespace Dynamo.Tests
             cat.Items.Add(new BrowserInternalElement("Child", cat));
             Assert.IsNull(addonCatBuilder.TryGetSubCategory(cat, "Purple"));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ContainsClassWithValidInput()
+        {
+            browserCatBuilder.AddCategory("TopCategory.SubCategory.SomeClass");
+            Assert.IsNotNull(browserCatBuilder.GetCategoryByName("TopCategory.SubCategory.Classes.SomeClass"));
+            Assert.IsTrue(browserCatBuilder.ContainsClass("TopCategory.SubCategory", "SomeClass"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ContainsClassWithInvalidInput()
+        {
+            Assert.IsNull(browserCatBuilder.GetCategoryByName("TopCategory.SubCategory.Classes"));
+            Assert.IsFalse(browserCatBuilder.ContainsClass("TopCategory.SubCategory", "NotRealClass"));
+
+            browserCatBuilder.AddCategory("TopCategory.SubCategory.SomeClass");
+            Assert.IsNotNull(browserCatBuilder.GetCategoryByName("TopCategory.SubCategory.Classes.SomeClass"));
+            Assert.IsFalse(browserCatBuilder.ContainsClass("TopCategory.SubCategory", "NeededClass"));
+        }
+
         #endregion
 
         #region Add Categories
