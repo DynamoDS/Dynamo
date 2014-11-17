@@ -613,6 +613,12 @@ namespace Dynamo.Models
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             
@@ -1129,7 +1135,11 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                        {
+                            var tld = Utils.GetDataForType(this, type);
+                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(
+                                tld, nickname, signature, guid);
+                        }
 
                         if (el != null)
                         {
@@ -1164,8 +1174,9 @@ namespace Dynamo.Models
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
+                        var tld = Utils.GetDataForType(this, type);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(tld, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 

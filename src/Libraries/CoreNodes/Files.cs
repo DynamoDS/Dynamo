@@ -151,6 +151,44 @@ namespace DSCore.IO
         {
             System.IO.File.WriteAllText(filePath, text);
         }
+
+        #region Obsolete Methods
+
+        [Obsolete("Use Image.Pixels node instead.")]
+        public static Color[] ReadImage(string path, int xSamples, int ySamples)
+        {
+            var info = FromPath(path);
+            var image = Image.ReadFromFile(info);
+            return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
+        }
+
+        [Obsolete("Use Image.ReadFromFile node instead.")]
+        public static Bitmap LoadImageFromPath(string path)
+        {
+            return Image.ReadFromFile(FromPath(path));
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static string ReadText(string path)
+        {
+            return ReadText(FromPath(path));
+        }
+
+        [Obsolete("Use Image.WriteToFile node instead.")]
+        public static bool WriteImage(string filePath, string fileName, Bitmap image)
+        {
+            fileName = Path.ChangeExtension(fileName, "png");
+            Image.WriteToFile(Path.Combine(filePath, fileName), image);
+            return true;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static void ExportToCSV(string filePath, object[][] data)
+        {
+            CSV.WriteToFile(filePath, data);
+        }
+
+        #endregion
     }
 
     /// <summary>
