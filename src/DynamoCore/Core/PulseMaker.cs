@@ -6,8 +6,10 @@ using Dynamo.Models;
 
 namespace Dynamo.Core
 {
-    class PulseMaker
+    public class PulseMaker
     {
+        #region Class Data Members and Properties
+
         private readonly Timer internalTimer;
         private readonly DynamoModel dynamoModel;
 
@@ -16,6 +18,18 @@ namespace Dynamo.Core
         private bool evaluationInProgress = false;
         private bool evaluationRequestPending = false;
 
+        internal int TimerPeriod { get; private set; }
+
+        #endregion
+
+        #region Public Class Operational Methods
+
+        /// <summary>
+        /// An internal constructor to ensure PulseMaker object can only
+        /// be instantiated from within DynamoModel (i.e. DynamoCore.dll).
+        /// </summary>
+        /// <param name="dynamoModel">The owning DynamoModel object.</param>
+        /// 
         internal PulseMaker(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
@@ -35,6 +49,7 @@ namespace Dynamo.Core
             if (milliseconds <= 0)
                 throw new ArgumentOutOfRangeException("milliseconds");
 
+            TimerPeriod = milliseconds;
             internalTimer.Change(0, milliseconds);
         }
 
@@ -48,10 +63,13 @@ namespace Dynamo.Core
         {
             lock (stateMutex)
             {
+                TimerPeriod = 0;
                 evaluationRequestPending = false;
                 internalTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
+
+        #endregion
 
         #region Time Critical Methods
 
