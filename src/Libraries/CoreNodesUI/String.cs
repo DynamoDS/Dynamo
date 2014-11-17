@@ -25,7 +25,7 @@ namespace DSCoreNodesUI.StringNodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("__ToStringForObject", inputAstNodes);
+            var functionCall = AstFactory.BuildFunctionCall("__ToStringFromObject", inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
@@ -52,7 +52,7 @@ namespace DSCoreNodesUI.StringNodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("__ToStringForArray", inputAstNodes);
+            var functionCall = AstFactory.BuildFunctionCall("__ToStringFromArray", inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)

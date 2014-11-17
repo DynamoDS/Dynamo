@@ -58,8 +58,8 @@ namespace ProtoCore.Lang
             kReorder,
             kRangeExpression,
             kSum,
-            kToStringForObject,
-            kToStringForArray,
+            kToStringFromObject,
+            kToStringFromArray,
             kTranspose,
             kUnion,
             kInlineConditional,
@@ -122,8 +122,8 @@ namespace ProtoCore.Lang
             "Reorder",                  // kReorder
             Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
-            "__ToStringForObject",      // kToStringForObject
-            "__ToStringForArray",       // kToStringForArray
+            "__ToStringFromObject",     // kToStringFromObject
+            "__ToStringFromArray",      // kToStringFromArray
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
@@ -812,7 +812,7 @@ namespace ProtoCore.Lang
                     {
                         new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kToStringForObject,
+                    ID = BuiltInMethods.MethodID.kToStringFromObject,
                 },
 
                 new BuiltInMethod
@@ -823,7 +823,7 @@ namespace ProtoCore.Lang
                     {
                         new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                     }.ToList(),
-                    ID = BuiltInMethods.MethodID.kToStringForArray
+                    ID = BuiltInMethods.MethodID.kToStringFromArray
                 },
 
                 new BuiltInMethod
