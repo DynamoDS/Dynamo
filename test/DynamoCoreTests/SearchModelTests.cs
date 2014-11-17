@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
@@ -431,7 +432,112 @@ namespace Dynamo.Tests
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
 
+        // Test for nested structure:
+        // 
+        // TheAssembly
+        //    SubCategory1
+        //       SubSubCategory
+        //          SSCNode1
+        //       BestNode1
+        //       BestNode2
+        //       
+        // Test checks if has one BrowserInternalElementForClasses, one "SubCategory1"
+        // 
+        // Makes sense what added first: "SubSubCategory" class or "BestNode1" node.
+
+        /// <summary>
+        /// Flow when class is added first.
+        /// </summary>
         [Test]
+        [Category("UnitTests")]
+        public void AddCategoryNestedStructNamspaceDualityClassAddedFirst()
+        {
+            // Node "TheAssembly.SubCategory1.SubSubCategory.SSCNode1" adding.
+            DSEngine.FunctionGroup functionGroup =
+                new DSEngine.FunctionGroup("SubCategory1.SubSubCategory.SSCNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            DSEngine.FunctionDescriptor functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1.SubSubCategory",
+                    "SSCNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode1" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode2" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode2");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode2", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            var subCategory1 = search.BrowserCategoriesBuilder.GetCategoryByName("TheAssembly.SubCategory1");
+
+            Assert.IsNotNull(subCategory1);
+            Assert.AreEqual(3, subCategory1.Items.Count);
+            Assert.IsTrue(subCategory1.Items[0] is BrowserInternalElementForClasses);
+        }
+
+        /// <summary>
+        /// Flow when members are added first.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void AddCategoryNestedStructNamspaceDualityMemberAddedFirst()
+        {
+            // Node "TheAssembly.SubCategory1.BestNode1" adding.
+            DSEngine.FunctionGroup functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            DSEngine.FunctionDescriptor functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode2" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode2");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor = new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                "BestNode2", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.SubSubCategory.SSCNode1" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.SubSubCategory.SSCNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            functionDescriptor = new DSEngine.FunctionDescriptor("TheAssembly",
+                "SubCategory1.SubSubCategory", "SSCNode1", null, null,
+                DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            var subCategory1 = search.BrowserCategoriesBuilder.GetCategoryByName("TheAssembly.SubCategory1");
+
+            Assert.IsNotNull(subCategory1);
+            Assert.AreEqual(3, subCategory1.Items.Count);
+            Assert.IsTrue(subCategory1.Items[0] is BrowserInternalElementForClasses);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ProcessNodeCategoryTests()
         {
             SearchElementGroup group = SearchElementGroup.None;
