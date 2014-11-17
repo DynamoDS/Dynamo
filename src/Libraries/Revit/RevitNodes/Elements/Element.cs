@@ -178,6 +178,34 @@ namespace Revit.Elements
             return GetType().Name;
         }
 
+        /// <summary>
+        /// Implement Equals() method. 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override bool Equals(object obj)
+        {
+            Element otherElement = obj as Element;
+            if (otherElement == null)
+            {
+                return false;
+            }
+
+            return UniqueId.Equals(otherElement.UniqueId);
+        }
+
+        /// <summary>
+        /// Get hash code.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override int GetHashCode()
+        {
+            return UniqueId.GetHashCode();
+        }
+
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             // As a default, return the standard string representation.
