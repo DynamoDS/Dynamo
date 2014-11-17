@@ -520,6 +520,9 @@ namespace RevitSystemTests
 
             var model = ViewModel.Model;
             ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
             Assert.DoesNotThrow(() => model.RunExpression());
             
             var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "7cc9bd94-7f46-4520-8a47-60baf4419087"));
