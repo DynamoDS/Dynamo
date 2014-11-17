@@ -18,6 +18,25 @@ namespace RevitSystemTests
     internal class ElementBindingTests : SystemTest
     {
         /// <summary>
+        /// This function gets all the model curves in the current Revit document
+        /// </summary>
+        /// <returns>the model curves</returns>
+        private static IList<Autodesk.Revit.DB.ModelCurve> GetAllModelCurves()
+        {
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "FilteringElements"))
+            {
+                trans.Start();
+
+                ElementClassFilter ef = new ElementClassFilter(typeof(Autodesk.Revit.DB.CurveElement));
+                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+                fec.WherePasses(ef);
+
+                trans.Commit();
+                return fec.ToElements().OfType<Autodesk.Revit.DB.ModelCurve>().ToList();
+            }
+        }
+
+        /// <summary>
         /// This function gets all the reference points in the current Revit document
         /// </summary>
         /// <param name="startNewTransaction">whether do the filtering in a new transaction</param>
@@ -75,6 +94,28 @@ namespace RevitSystemTests
                 fec.WherePasses(ef);
                 return fec.ToElements();
             }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="curve">The curve element which is one arc</param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Arc GetArcFromArcCurveElement(ModelCurve curve)
+        {
+            Options gOptions = new Options() { ComputeReferences = true };
+            var gElement = curve.get_Geometry(gOptions);
+
+            if (null == gElement)
+                return null;
+
+            foreach (GeometryObject geob in gElement)
+            {
+                var arc = geob as Autodesk.Revit.DB.Arc;
+                if (null != arc)
+                    return arc;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -468,6 +509,67 @@ namespace RevitSystemTests
             //Check the number of family instances
             instances = GetAllFamilyInstances(true);
             Assert.AreEqual(8, instances.Count);
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void RecoveringNodesFromErrorToNormal()
+        {
+            string dynFilePath = Path.Combine(workingDirectory, @".\ElementBinding\ErrorToNormal.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+
+            var model = ViewModel.Model;
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            Assert.DoesNotThrow(() => model.RunExpression());
+            
+            var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "7cc9bd94-7f46-4520-8a47-60baf4419087"));
+            Assert.IsTrue(selNodes.Any());
+            var node = selNodes.First();
+            var slider = node as IntegerSlider;
+
+            //Change the slider value to 10
+            slider.Value = 10;
+            Assert.DoesNotThrow(() => model.RunExpression());
+            var curves = GetAllModelCurves();
+            Assert.AreEqual(1, curves.Count());
+
+            var curve = curves.ElementAt(0);
+            var arc = GetArcFromArcCurveElement(curve);
+            Assert.IsNotNull(arc);
+
+            //Change the slider value to 0 to cause a warning/error
+            slider.Value = 0;
+            Assert.DoesNotThrow(() => model.RunExpression());
+
+            //Check that the ModelCurve node has a warning/error
+            Assert.IsTrue(IsNodeInErrorOrWarningState("bebfd220-3c77-4f06-8a8a-143ac07974a3"));
+
+            //Change the slider value to 5
+            slider.Value = 5;
+            Assert.DoesNotThrow(() => model.RunExpression());
+
+            curves = GetAllModelCurves();
+            Assert.AreEqual(1, curves.Count());
+
+            curve = curves.ElementAt(0);
+            arc = GetArcFromArcCurveElement(curve);
+            Assert.IsNotNull(arc);
+            IsFuzzyEqual(5, arc.Radius, 1.0e-6);
+
+            //Change the slider value to 8
+            slider.Value = 8;
+            Assert.DoesNotThrow(() => model.RunExpression());
+
+            curves = GetAllModelCurves();
+            Assert.AreEqual(1, curves.Count());
+
+            curve = curves.ElementAt(0);
+            arc = GetArcFromArcCurveElement(curve);
+            Assert.IsNotNull(arc);
+            IsFuzzyEqual(8, arc.Radius, 1.0e-6);
         }
     }
 }
