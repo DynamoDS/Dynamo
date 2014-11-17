@@ -13,7 +13,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Revit</RootNamespace>
     <AssemblyName>RevitNodes</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
@@ -23,7 +22,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,7 +31,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,12 +48,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
@@ -72,7 +69,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AnalysisDisplay\FaceAnalysisDisplay.cs" />
@@ -165,30 +162,22 @@
     <Compile Include="Transaction\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>NodeServices</Name>
+    <Reference Include="DSNodeServices">
+      <HintPath>$(DYNAMOAPI)\DSNodeServices.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Analysis\Analysis.csproj">
-      <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
-      <Name>Analysis</Name>
+    </Reference>
+	<Reference Include="Analysis">
+      <HintPath>$(DYNAMOAPI)\Analysis.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
+    </Reference>
+    <Reference Include="DSCoreNodes">
+      <HintPath>$(DYNAMOAPI)\DSCoreNodes.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
+    </Reference>
+    <Reference Include="DynamoUnits">
+      <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
-      <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
-      <Name>RevitServices</Name>
-    </ProjectReference>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="RevitNodes_DynamoCustomization.xml" />
@@ -198,6 +187,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
+      <Name>RevitServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
