@@ -322,7 +322,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    if (!DynamoViewModel.Model.Loader.IsNodeSubType(t) && 
+                    if (!Nodes.Utilities.IsNodeSubType(t) && 
                         t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
