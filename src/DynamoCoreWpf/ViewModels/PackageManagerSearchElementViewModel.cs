@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
 using Greg.Responses;
@@ -20,6 +17,8 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownloadLatest { get; set; }
         public ICommand UpvoteCommand { get; set; }
         public ICommand DownvoteCommand { get; set; }
+        public ICommand VisitSiteCommand { get; set; }
+        public ICommand VisitRepositoryCommand { get; set; }
 
         public PackageManagerSearchElement Model { get; private set; }
 
@@ -28,8 +27,36 @@ namespace Dynamo.PackageManager.ViewModels
             this.Model = element;
 
             this.DownloadLatest = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
-            this.UpvoteCommand = new DelegateCommand(element.Upvote);
-            this.DownvoteCommand = new DelegateCommand(element.Downvote);
+            this.DownloadLatest = new DelegateCommand((Action)Model.Execute);
+            this.UpvoteCommand = new DelegateCommand((Action)Model.Upvote, Model.CanUpvote);
+            this.DownvoteCommand = new DelegateCommand((Action)Model.Downvote, Model.CanDownvote);
+            this.VisitSiteCommand =
+                new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
+            this.VisitRepositoryCommand =
+                new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+        }
+
+
+        private static string FormatUrl(string url)
+        {
+            var lurl = url.ToLower();
+
+            // if not preceded by http(s), process start will fail
+            if (!lurl.StartsWith(@"http://") && !lurl.StartsWith(@"https://"))
+            {
+                return @"http://" + url;
+            }
+
+            return url;
+        }
+
+        private static void GoToUrl(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                Process.Start(sInfo);
+            }
         }
 
         public List<Tuple<PackageVersion, DelegateCommand>> Versions

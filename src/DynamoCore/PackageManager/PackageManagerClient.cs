@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -51,9 +52,16 @@ namespace Dynamo.PackageManager
         private readonly string rootPkgDir;
         private readonly CustomNodeManager customNodeManager;
 
+        [Obsolete]
+        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+
+        [Obsolete]
+        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+
+
         public bool HasAuthenticator
         {
-            get { return RequestAuthentication != null; }
+            get { return this.RequestAuthentication != null; }
         }
 
         /// <summary>
@@ -108,6 +116,8 @@ namespace Dynamo.PackageManager
 
         #endregion
 
+        private static readonly string serverUrl = "https://www.dynamopackages.com/";
+        
         public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
             this.rootPkgDir = rootPkgDir;
@@ -217,7 +227,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
+        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion)
         {
             this.OnRequestAuthentication();
 
@@ -230,7 +240,7 @@ namespace Dynamo.PackageManager
                     "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
-            var packageUploadHandle = new PackageUploadHandle(l.Header);
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
             return PublishPackage(isNewVersion, l, files, packageUploadHandle);
 
         }
@@ -240,7 +250,6 @@ namespace Dynamo.PackageManager
                                                     List<string> files,
                                                     PackageUploadHandle packageUploadHandle )
         {
-
             Task.Factory.StartNew(() =>
             {
                 try

@@ -13,13 +13,6 @@ namespace Dynamo.PackageManager.UI
 
         public PackageItemViewModel Parent { get; set; }
 
-        public PackageItemInternalViewModel(Assembly assembly, PackageItemViewModel parent)
-        {
-            this.DependencyType = DependencyType.Assembly;
-            this.Assembly = assembly;
-            this.Parent = parent;
-        }
-
         public PackageItemInternalViewModel(CustomNodeDefinition def, PackageItemViewModel parent)
         {
             this.DependencyType = DependencyType.CustomNode;

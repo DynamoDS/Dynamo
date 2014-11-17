@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,14 +11,9 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.UI;
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -48,7 +44,7 @@ namespace Dynamo.Nodes
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             //_watchView = new WatchView();
-            View = new Watch3DView(model.GUID.ToString())
+            View = new Watch3DView(model.GUID)
             {
                 DataContext = model,
                 Width = model.WatchWidth,
@@ -93,7 +89,7 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID.ToString(), -1));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID, -1));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -144,7 +140,6 @@ namespace Dynamo.Nodes
 
         public delegate void VoidHandler();
         public event VoidHandler RequestUpdateLatestCameraPosition;
-
         private void OnRequestUpdateLatestCameraPosition()
         {
             if (RequestUpdateLatestCameraPosition != null)
@@ -153,18 +148,25 @@ namespace Dynamo.Nodes
             }
         }
 
+        #region public properties
+
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
+        
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
             get
             {
-                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
+                return this.ViewModel.ToggleCanNavigateBackgroundCommand;
             }
         }
-
+        
         public bool WatchIsResizable { get; set; }
+        
         public bool IsBackgroundPreview { get { return false; } }
+
+        public Watch3DView View { get; private set; }
 
         public bool CanNavigateBackground
         {
@@ -179,13 +181,19 @@ namespace Dynamo.Nodes
             }
         }
 
-        public Watch3D(WorkspaceModel workspace)
-            : base(workspace)
+        public DynamoViewModel ViewModel { get; set; }
+
+        public IVisualizationManager VisualizationManager { get; private set; }
+
+        #endregion
+
+        #region constructors
+
+        public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
 
-            SetupDefaults();
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -195,20 +203,87 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
-        private void SetupDefaults()
-        {
-            _canNavigateBackground = true;
-            WatchWidth = 200;
-            WatchHeight = 200;
-            CameraPosition = new Point3D(10, 10, 10);
-            LookDirection = new Vector3D(-1, -1, -1);
-        }
+        #endregion
+
+        #region public methods
 
         public override void Dispose()
         {
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
+        
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode
+                            {
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                            },
+                            2,
+                            new[] { 0 },
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildStringNode(GUID.ToString()),
+                                AstFactory.BuildNullNode()
+                            }))
+                };
+            }
+
+            var resultAst = new[]
+            {
+                //AstFactory.BuildAssignment(
+                //    GetAstIdentifierForOutputIndex(0),
+                //    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
+            };
+
+            return resultAst;
+        }
+
+        #endregion
+
+        #region private methods
+
+        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        {
+            if (data is IGraphicItem)
+                yield return data as IGraphicItem;
+            else if (data is IEnumerable)
+            {
+                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                foreach (var g in graphics)
+                    yield return g;
+            }
+        }
+
+        private RenderPackage PackageRenderData(IGraphicItem gItem)
+        {
+            var renderPackage = new RenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, this.ViewModel.VisualizationManager.MaxTesselationDivisions);
+            renderPackage.ItemsCount++;
+            return renderPackage;
+        }
+
+        private void RenderData(object data)
+        {
+            View.RenderDrawables(
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID, -1));
+        }
+
+        private void mi_Click(object sender, RoutedEventArgs e)
+        {
+            View.View.ZoomExtents();
+        }
+
+        #endregion
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -221,19 +296,20 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", Width);
             viewHelper.SetAttribute("height", Height);
 
-            // the view stores the latest position
-            OnRequestUpdateLatestCameraPosition();
+            //Bail out early if the view hasn't been created.
+            if (View == null)
+                return;
 
             var camElement = xmlDoc.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
-            camHelper.SetAttribute("pos_x", CameraPosition.X);
-            camHelper.SetAttribute("pos_y", CameraPosition.Y);
-            camHelper.SetAttribute("pos_z", CameraPosition.Z);
-            camHelper.SetAttribute("look_x", LookDirection.X);
-            camHelper.SetAttribute("look_y", LookDirection.Y);
-            camHelper.SetAttribute("look_z", LookDirection.Z);
+            camHelper.SetAttribute("pos_x", View.View.Camera.Position.X);
+            camHelper.SetAttribute("pos_y", View.View.Camera.Position.Y);
+            camHelper.SetAttribute("pos_z", View.View.Camera.Position.Z);
+            camHelper.SetAttribute("look_x", View.View.Camera.LookDirection.X);
+            camHelper.SetAttribute("look_y", View.View.Camera.LookDirection.Y);
+            camHelper.SetAttribute("look_z", View.View.Camera.LookDirection.Z);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -276,7 +352,7 @@ namespace Dynamo.Nodes
 
 #if ENABLE_DYNAMO_SCHEDULER
 
-        protected override void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
@@ -291,47 +367,17 @@ namespace Dynamo.Nodes
 
 #endif
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        protected override bool ShouldDisplayPreviewCore()
         {
-            if (IsPartiallyApplied)
-            {
-                return new[]
-                {
-                    AstFactory.BuildAssignment(
-                        GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionObject(
-                            new IdentifierListNode
-                            {
-                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier("BridgeData")
-                            },
-                            2,
-                            new[] { 0 },
-                            new List<AssociativeNode>
-                            {
-                                AstFactory.BuildStringNode(GUID.ToString()),
-                                AstFactory.BuildNullNode()
-                            }))
-                };
-            }
-
-            var resultAst = new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
-            };
-
-            return resultAst;
+            return false; // Previews are not shown for this node type.
         }
 
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
         {
-            var taskId = (long)parameters;
-            this.DynamoViewModel.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
+            Debug.WriteLine(string.Format("Requesting branch update for {0}", GUID));
+            ViewModel.VisualizationManager.RequestBranchUpdate(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -346,14 +392,9 @@ namespace Dynamo.Nodes
 
         private void CheckForLatestRender(object obj)
         {
-            this.DynamoViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+            this.ViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
         #endregion
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
     }
 }

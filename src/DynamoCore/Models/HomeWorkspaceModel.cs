@@ -8,22 +8,35 @@ namespace Dynamo.Models
     {
         public HomeWorkspaceModel()
             : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        { }
+
+        private readonly DispatcherTimer runExpressionTimer;
+
+        internal bool IsEvaluationPending
         {
+            get
+            {
+                if (runExpressionTimer == null)
+                    return false;
+
+                return runExpressionTimer.IsEnabled;
+            }
         }
 
         public HomeWorkspaceModel(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
             : base("Home", e, c, x, y)
         {
+            runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            runExpressionTimer.Tick += OnRunExpression;
         }
 
         private void OnRunExpression(object sender, EventArgs e)
         {
+// ReSharper disable once PossibleNullReferenceException
             (sender as DispatcherTimer).Stop();
-
             this.dynamoModel.RunExpression();
         }
 
-        private DispatcherTimer runExpressionTimer;
 
         protected override void OnModified()
         {
@@ -34,7 +47,6 @@ namespace Dynamo.Models
             // shutting down so we check that shutdown has not been requested.
             if (this.dynamoModel.DynamicRunEnabled && !dynamoModel.ShutdownRequested)
             {
-
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 
                 // a short time frame. E.g., when we delete some nodes with a 
@@ -48,38 +60,14 @@ namespace Dynamo.Models
                 //
                 // We use DispatcherTimer so that the update of graph happens on
                 // the main UI thread.
-                if (null == runExpressionTimer)
-                {
-                    runExpressionTimer = new DispatcherTimer();
-                    runExpressionTimer.Interval += new TimeSpan(0, 0, 0, 0, 100);
-                    runExpressionTimer.Tick += OnRunExpression;
-                }
-
                 runExpressionTimer.Stop();
                 runExpressionTimer.Start(); // reset timer
-
             }
         }
 
         protected override void ResetWorkspaceCore()
         {
-            // It is possible for a timer to be started (due to the workspace 
-            // being modified) immediately before the DynamoModel gets destroyed.
-            // This is especially true for cases where multiple DynamoModel are
-            // re-created in a single app domain (e.g. across unit test cases, 
-            // or hosted scenario). Here OnRunExpression is unregistered from the
-            // DispatcherTimer so that it will never be called anymore after the 
-            // owning WorkspaceModel is destroyed.
-            // 
-            if (runExpressionTimer != null)
-            {
-                if (runExpressionTimer.IsEnabled)
-                    runExpressionTimer.Stop();
-
-                runExpressionTimer.Tick -= OnRunExpression;
-                runExpressionTimer = null;
-            }
-
+            runExpressionTimer.Stop();
             base.ResetWorkspaceCore();
         }
     }

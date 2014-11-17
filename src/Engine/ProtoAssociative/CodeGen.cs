@@ -2228,19 +2228,44 @@ namespace ProtoAssociative
                 string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
                 if (classNames.Length > 1)
                 {
-                    string message = string.Format(WarningMessage.kMultipleSymbolFound, identList.LeftNode.ToString(), classNames[0]);
-                    for(int i = 1; i < classNames.Length; ++i)
-                        message += ", " + classNames[i];
-                    this.core.BuildStatus.LogWarning(WarningID.kMultipleSymbolFound, message);
-                }
+                    // There is a namespace conflict
 
-                if(classNames.Length == 1)
+                    // TODO Jun: Move this warning handler to after the SSA transform
+                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
+                }
+                else if(classNames.Length == 1)
                 {
+                    // A matching class has been found
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
                     SSAIdentList(leftNode, ref ssaStack, ref astlist);
                 }
                 else
                 {
+                    // There is no matching class name, continue traversing the identlist
+
+                    // Check if the lhs is an identifier and if it has any namespace conflicts
+                    // We want to handle this here because we know ident lists can potentially contain namespace resolving
+                    var ident = identList.LeftNode as IdentifierNode; 
+
+                    // Check if this is the last ident in the identlist
+                    if(ident != null)
+                    {
+                        // TODO Jun: Move this warning handler to after the SSA transform
+                        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                        classNames = core.ClassTable.GetAllMatchingClasses(ident.Value);
+                        if (classNames.Length > 1)
+                        {
+                            // There is a namespace conflict
+                            buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
+
+                            // Continue traversing the expression even after a namespace conflict
+                            // TODO: Determine if we want to terminate traversal of this identlist
+                            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+
+                        }
+                    }
+
                     // Recursively traversse the left of the ident list
                     SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
                 }
@@ -4313,39 +4338,8 @@ namespace ProtoAssociative
             {
                 if (symbolnode == null)
                 {
-                    if (isAllocated)
-                    {
-                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Value);
-                        if (localProcedure != null && localProcedure.isStatic)
-                        {
-                            SymbolNode tempSymbolNode;
-
-                            VerifyAllocation(
-                                t.Name,
-                                globalClassIndex,
-                                Constants.kGlobalScope,
-                                out tempSymbolNode,
-                                out isAccessible);
-
-                            if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
-                            {
-                                message = String.Format(WarningMessage.kUsingNonStaticMemberInStaticContext, t.Value);
-                            }
-                        }
-                        buildStatus.LogWarning(
-                            WarningID.kAccessViolation, 
-                            message, 
-                            core.CurrentDSFileName, 
-                            t.line, 
-                            t.col, 
-                            graphNode);
-                    }
-                    else
-                    {
-                        string message = String.Format(WarningMessage.kUnboundIdentifierMsg, t.Value);
-                        buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
-                    }
-
+                    // The variable is unbound
+                    ProtoCore.DSASM.SymbolNode unboundVariable = null;
                     if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.ExecMode)
                     {
                         inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
@@ -4369,11 +4363,11 @@ namespace ProtoAssociative
                         ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
-                        ProtoCore.DSASM.SymbolNode symnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
+                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                             false, ProtoCore.Compiler.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, t.line, t.col, graphNode);
-                        Validity.Assert(symnode != null);
+                        Validity.Assert(unboundVariable != null);
 
-                        int symbolindex = symnode.symbolTableIndex;
+                        int symbolindex = unboundVariable.symbolTableIndex;
                         if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex)
                         {
                             symbolnode = core.ClassTable.ClassNodes[globalClassIndex].symbols.symbolList[symbolindex];
@@ -4384,7 +4378,7 @@ namespace ProtoAssociative
                         }
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
-                        EmitPopForSymbol(symnode);
+                        EmitPopForSymbol(unboundVariable);
 
 
                         nullAssignGraphNode.PushSymbolReference(symbolnode);
@@ -4425,6 +4419,39 @@ namespace ProtoAssociative
 
                         codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode);
                         */
+                    }
+
+                    if (isAllocated)
+                    {
+                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Value);
+                        if (localProcedure != null && localProcedure.isStatic)
+                        {
+                            SymbolNode tempSymbolNode;
+
+                            VerifyAllocation(
+                                t.Name,
+                                globalClassIndex,
+                                Constants.kGlobalScope,
+                                out tempSymbolNode,
+                                out isAccessible);
+
+                            if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
+                            {
+                                message = String.Format(WarningMessage.kUsingNonStaticMemberInStaticContext, t.Value);
+                            }
+                        }
+                        buildStatus.LogWarning(
+                            WarningID.kAccessViolation,
+                            message,
+                            core.CurrentDSFileName,
+                            t.line,
+                            t.col,
+                            graphNode);
+                    }
+                    else
+                    {
+                        string message = String.Format(WarningMessage.kUnboundIdentifierMsg, t.Value);
+                        buildStatus.LogUnboundVariableWarning(unboundVariable, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
 
@@ -5648,6 +5675,7 @@ namespace ProtoAssociative
                         graphNode.modBlkUID = bNode.modBlkUID;
                         graphNode.procIndex = globalProcIndex;
                         graphNode.classIndex = globalClassIndex;
+                        graphNode.languageBlockId = codeBlock.codeBlockId;
                         graphNode.isAutoGenerated = true;
                         bNode.IsProcedureOwned = graphNode.ProcedureOwned = true;
 
@@ -7503,26 +7531,42 @@ namespace ProtoAssociative
                     }
                 }
 
-
-                // For each property modified
-                foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
+                if (firstProc.classScope == Constants.kGlobalScope)
                 {
-                    int index = graphNode.firstProcRefIndex;
-
-
-                    // Is it a global function
-                    if (ProtoCore.DSASM.Constants.kGlobalScope == firstProc.classScope)
+                    graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
+                }
+                else
+                {
+                    // For each property modified
+                    foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.updatedProperties)
                     {
-                        graphNode.updateNodeRefList.AddRange(firstProc.updatedGlobals);
-                    }
-                    else if (ProtoCore.DSASM.Constants.kInvalidIndex != index && ProtoCore.DSASM.Constants.kGlobalScope != firstProc.classScope)
-                    {
-                        if (core.Options.GenerateSSA)
+                        int index = graphNode.firstProcRefIndex;
+
+                        // Is it a global function
+                        if (ProtoCore.DSASM.Constants.kInvalidIndex != index)
                         {
-                            foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                            if (core.Options.GenerateSSA)
+                            {
+                                foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
+                                {
+                                    // Do this only if first proc is a member function...
+                                    ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                    autogenRef = autogenRef.GetUntilFirstProc();
+
+                                    // ... and the first symbol is an instance of a user-defined type
+                                    int last = autogenRef.nodeList.Count - 1;
+                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
+                                    if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
+                                    {
+                                        autogenRef.PushUpdateNodeRef(updateRef);
+                                        graphNode.updateNodeRefList.Add(autogenRef);
+                                    }
+                                }
+                            }
+                            else
                             {
                                 // Do this only if first proc is a member function...
-                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
+                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
                                 autogenRef = autogenRef.GetUntilFirstProc();
 
                                 // ... and the first symbol is an instance of a user-defined type
@@ -7533,21 +7577,6 @@ namespace ProtoAssociative
                                     autogenRef.PushUpdateNodeRef(updateRef);
                                     graphNode.updateNodeRefList.Add(autogenRef);
                                 }
-                            }
-                        }
-                        else
-                        {
-                            // Do this only if first proc is a member function...
-                            ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
-                            autogenRef = autogenRef.GetUntilFirstProc();
-
-                            // ... and the first symbol is an instance of a user-defined type
-                            int last = autogenRef.nodeList.Count - 1;
-                            Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod && null != autogenRef.nodeList[last].symbol);
-                            if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.kMaxPrimitives)
-                            {
-                                autogenRef.PushUpdateNodeRef(updateRef);
-                                graphNode.updateNodeRefList.Add(autogenRef);
                             }
                         }
                     }

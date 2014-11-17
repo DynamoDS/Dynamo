@@ -38,7 +38,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestProtoASTExecute_Assign02()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             // Build the AST tree
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
@@ -59,7 +58,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestProtoASTExecute_Assign03()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             /*b = 20;*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -112,7 +110,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestProtoASTExecute_Assign04()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -171,7 +168,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestProtoASTExecute_Assign05()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -1204,7 +1200,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestCodeGenDS_Assign02()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             // Build the AST tree
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
@@ -1227,8 +1222,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestCodeGenDS_Assign03()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
-
             /*b = 20;*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -1284,7 +1277,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestCodeGenDS_Assign04()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -1347,7 +1339,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestCodeGenDS_Assign05()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -1396,7 +1387,6 @@ namespace ProtoTest.ProtoAST
         [Test]
         public void TestCodeGenDS_FunctionDefNode1()
         {
-            GraphToDSCompiler.GraphCompiler gc = GraphToDSCompiler.GraphCompiler.CreateInstance();
             ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),

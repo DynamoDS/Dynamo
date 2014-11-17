@@ -446,25 +446,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property", true)]
-        public bool HasUnconnectedInput()
-        {
-            return IsPartiallyApplied;
-        }
-
-        /// <summary>
-        ///     Flags this node as dirty.
-        /// </summary>
-        [Obsolete("Use RequiresRecalc = true", true)]
-        public void ResetOldValue()
-        {
-            RequiresRecalc = true;
-        }
-
-        /// <summary>
         ///     Get the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
@@ -830,7 +811,6 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void OnBuilt()
         {
-            
         }
 
         /// <summary>
@@ -968,7 +948,10 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        public void ClearError()
+        /// <summary>
+        /// Clears the errors/warnings that are generated when running the graph
+        /// </summary>
+        public virtual void ClearRuntimeError()
         {
             State = ElementState.Dead;
             ClearTooltipText();
@@ -1512,12 +1495,35 @@ namespace Dynamo.Models
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
         [Obsolete("Call OnModified() instead", true)]
-        public virtual bool ForceReExecuteOfNode { get; set; }
+        public virtual bool ForceReExecuteOfNode
+        {
+            get
+            {
+                return forceReExec;
+            }
+            set
+            {
+                forceReExec = value;
+                RaisePropertyChanged("ForceReExecuteOfNode");
+            }
+        }
         #endregion
 
         #region Visualization Related Methods
 
 #if ENABLE_DYNAMO_SCHEDULER
+
+        /// <summary>
+        /// Call this method to asynchronously update the cached MirrorData for 
+        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
+        /// being accessed within this method, therefore the method is typically
+        /// called from the main/UI thread.
+        /// </summary>
+        /// 
+        public void RequestValueUpdateAsync()
+        {
+            // TODO(Ben): Update cachedMirrorData asynchronously.
+        }
 
         /// <summary>
         /// Call this method to asynchronously regenerate render package for 
@@ -1527,9 +1533,12 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        public void RequestVisualUpdate(int maxTesselationDivisions)
+        public void RequestVisualUpdateAsync(int maxTesselationDivisions)
         {
-            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
+            if (Workspace.DynamoModel == null)
+                return;
+
+            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
             // called in quick succession from the UI thread -- the first task may 
             // be updating '_renderPackages' when the second call gets here. In 
             // this case '_renderPackages' should be protected against concurrent 
@@ -1546,7 +1555,7 @@ namespace Dynamo.Models
             if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
                 return;
 
-            RequestVisualUpdateCore(maxTesselationDivisions);
+            RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
 
         /// <summary>
@@ -1559,7 +1568,7 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected virtual void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             var initParams = new UpdateRenderPackageParams()
             {

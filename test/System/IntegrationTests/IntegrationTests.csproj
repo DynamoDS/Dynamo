@@ -108,6 +108,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="CallsiteRegen.cs" />
     <Compile Include="ExecutionEventsObserver.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
@@ -116,13 +119,13 @@
     <Compile Include="TestWrapperCleanup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
-      <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
-      <Name>GraphToDSCompiler</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>

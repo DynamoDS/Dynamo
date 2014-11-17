@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,26 +18,14 @@ using String = System.String;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageFileInfo
+    public class PackageAssembly
     {
-        public FileInfo Model { get; private set; }
-        private readonly string packageRoot;
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
 
-        /// <summary>
-        /// Filename relative to the package root directory
-        /// </summary>
-        public string RelativePath
+        public string Name
         {
-            get
-            {
-                return Model.FullName.Substring(packageRoot.Length);
-            }
-        }
-
-        public PackageFileInfo(string packageRoot, string filename)
-        {
-            this.packageRoot = packageRoot;
-            Model = new FileInfo(filename);
+            get { return Assembly.GetName().Name; }
         }
     }
 
@@ -63,7 +50,7 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; set; }
+        public bool Loaded { get; private set; }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -112,41 +99,52 @@ namespace Dynamo.PackageManager
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
-        public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this); } }
+
+        /// <summary>
+        ///     Determines if there are binaries in the package
+        /// </summary>
+        internal bool ContainsBinaries
+        {
+            get { return this.LoadedAssemblies.Any(); }
+        }
+
+        /// <summary>
+        ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
+        /// </summary>
+        internal IEnumerable<Assembly> NodeLibraries
+        {
+            get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
+        } 
+
+        public String SiteUrl { get; set; }
+        public String RepositoryUrl { get; set; }
 
         public ObservableCollection<Type> LoadedTypes { get; private set; }
-        public ObservableCollection<Assembly> LoadedAssemblies { get; private set; }
-        public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; private set; }
+        public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
 
+        /// <summary>
+        ///     A header used to create the package, this data does not reflect runtime
+        ///     changes to the package, but instead reflects how the package was formed.
+        /// </summary>
+        public PackageUploadRequestBody Header { get; internal set; }
+
         #endregion
 
-        public Package(string directory, string name, string versionName)
+        public Package(string directory, string name, string versionName, string license)
         {
-            Loaded = false;
-            RootDirectory = directory;
-            Name = name;
-            VersionName = versionName;
-            LoadedTypes = new ObservableCollection<Type>();
-            LoadedAssemblies = new ObservableCollection<Assembly>();
-            LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
-            Dependencies = new ObservableCollection<PackageDependency>();
-            LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
-            AdditionalFiles = new ObservableCollection<PackageFileInfo>();
-
-            LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
-
-        }
-
-        private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            LoadedAssemblyNames.Clear();
-            foreach (var ass in LoadedAssemblies)
-            {
-                LoadedAssemblyNames.Add(ass.GetName());
-            }
+            this.RootDirectory = directory;
+            this.Name = name;
+            this.License = license;
+            this.VersionName = versionName;
+            this.LoadedTypes = new ObservableCollection<Type>();
+            this.LoadedAssemblies = new ObservableCollection<PackageAssembly>();
+            this.Dependencies = new ObservableCollection<PackageDependency>();
+            this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+            this.AdditionalFiles = new ObservableCollection<PackageFileInfo>();
+            this.Header = PackageUploadBuilder.NewPackageHeader(this);
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -164,19 +162,17 @@ namespace Dynamo.PackageManager
                 if (body.name == null || body.version == null)
                     throw new Exception("The header is missing a name or version field.");
 
-                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version)
-                {
-                    Group = body.@group,
-                    Description = body.description,
-                    Keywords = body.keywords,
-                    VersionName = body.version,
-                    License = body.license,
-                    EngineVersion = body.engine_version,
-                    Contents = body.contents
-                };
-
-                foreach (var dep in body.dependencies)
-                    pkg.Dependencies.Add(dep);
+                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version, body.license);
+                pkg.Group = body.group;
+                pkg.Description = body.description;
+                pkg.Keywords = body.keywords;
+                pkg.VersionName = body.version;
+                pkg.EngineVersion = body.engine_version;
+                pkg.Contents = body.contents;
+                pkg.SiteUrl = body.site_url;
+                pkg.RepositoryUrl = body.repository_url;
+                body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
+                pkg.Header = body;
 
                 return pkg;
             }
@@ -189,14 +185,22 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void LoadIntoDynamo(DynamoLoader loader)
+        /// <summary>
+        /// Load the Package into Dynamo.  
+        /// </summary>
+        /// <param name="loader"></param>
+        /// <param name="logger"></param>
+        /// <param name="libraryServices"></param>
+        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
+            // Prevent duplicate loads
+            if (Loaded) return;
+
             try
             {
-                LoadAssembliesIntoDynamo(loader);
-                LoadCustomNodesIntoDynamo(loader);
-                EnumerateAdditionalFiles();
-
+                this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
+                this.LoadCustomNodesIntoDynamo( loader );
+                this.EnumerateAdditionalFiles();
                 Loaded = true;
             }
             catch (Exception e)
@@ -222,7 +226,7 @@ namespace Dynamo.PackageManager
             AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
-        public IEnumerable<string> EnumerateAssemblyFiles()
+        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
                 return new List<string>();
@@ -235,7 +239,7 @@ namespace Dynamo.PackageManager
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo(DynamoLoader loader)
+        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             var assemblies = LoadAssembliesInBinDirectory();
 
@@ -243,7 +247,8 @@ namespace Dynamo.PackageManager
             var zeroTouchAssemblies = new List<Assembly>();
             var nodeModelAssemblies = new List<Assembly>();
 
-            foreach (var assem in assemblies)
+            // categorize the assemblies to load, skipping the ones that are not identified as node libraries
+            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
             {
                 if (loader.ContainsNodeModelSubType(assem))
                 {
@@ -258,7 +263,7 @@ namespace Dynamo.PackageManager
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
             {
-                LibraryServices.Instance.ImportLibrary(zeroTouchAssem.Location);
+                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger);
             }
 
             // load the node model assemblies
@@ -269,17 +274,61 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
+        /// <summary>
+        ///     Add assemblies at runtime to the package.  Does not load the assembly into the node library.
+        ///     If the package is already present in LoadedAssemblies, this will mutate it's IsNodeLibrary property.
+        /// </summary>
+        /// <param name="assems">A list of assemblies</param>
+        internal void AddAssemblies(IEnumerable<PackageAssembly> assems)
         {
-            if (!Directory.Exists(BinaryDirectory))
-                return new List<Assembly>();
+            foreach (var assem in assems)
+            {
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.FullName == assem.Assembly.FullName);
+                if (existingAssem != null)
+                {
+                    existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
+                }
+                else
+                {
+                    this.LoadedAssemblies.Add(assem);
+                }
+            }
+        }
 
-            var assemblies = (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+        /// <summary>
+        /// Loads all possible assemblies in node library and returns the list of loaded node library assemblies
+        /// </summary>
+        /// <returns>The list of all node library assemblies</returns>
+        private IEnumerable<PackageAssembly> LoadAssembliesInBinDirectory()
+        {
+            var assemblies = new List<PackageAssembly>();
+
+            if (!Directory.Exists(BinaryDirectory))
+                return assemblies;
+
+            // use the pkg header to determine which assemblies to load
+            var nodeLibraries = this.Header.node_libraries;
+
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            {
+                Assembly assem;
+
+                // dll files may be un-managed, skip those
+                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                if (result)
+                {
+                    assemblies.Add(new PackageAssembly()
+                    {
+                        Assembly = assem,
+                        IsNodeLibrary = (nodeLibraries == null || nodeLibraries.Contains(assem.FullName))
+                    });
+                }
+            }
 
             foreach (var assem in assemblies)
-                LoadedAssemblies.Add(assem);
+            {
+                this.LoadedAssemblies.Add( assem );
+            }
 
             return assemblies;
         }

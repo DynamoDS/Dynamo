@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Collections.ObjectModel;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
@@ -11,7 +12,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Search
 {
-    public class SearchModel
+    public class SearchModel : NotificationObject
     {
         #region Events
 
@@ -94,15 +95,15 @@ namespace Dynamo.Search
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            AddRootCategory(BuiltinNodeCategories.CORE);
-            AddRootCategory(LibraryServices.Categories.BuiltIns);
-            AddRootCategory(LibraryServices.Categories.Operators);
-            AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            AddRootCategory(BuiltinNodeCategories.REVIT);
-            AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            AddRootCategory("Units");
-            AddRootCategory("Office");
-            AddRootCategory("Migration");
+            this.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
+            this.AddRootCategory(LibraryServices.Categories.Operators);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.AddRootCategory("Units");
+            this.AddRootCategory("Office");
+            this.AddRootCategory("Migration");
         }
 
         #endregion

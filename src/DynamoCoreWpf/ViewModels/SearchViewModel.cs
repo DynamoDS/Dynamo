@@ -205,15 +205,6 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        #region Destruction
-
-        ~SearchViewModel()
-        {
-            this.Model.LibraryUpdated -= this.ModelOnRequestSync;
-        }
-
-        #endregion
-
         #region Search
 
         internal void SortCategoryChildren()
@@ -583,6 +574,5 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
-
     }
 }

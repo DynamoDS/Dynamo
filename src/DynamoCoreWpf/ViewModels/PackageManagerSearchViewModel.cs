@@ -128,7 +128,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     This property is observed by SearchView to see the search results
         /// </value>
-        public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; private set; }
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
         /// <summary>
         ///     MaxNumSearchResults property
@@ -170,6 +170,8 @@ namespace Dynamo.PackageManager
         /// </value>
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+
+
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
 
         /// <summary>
@@ -202,13 +204,8 @@ namespace Dynamo.PackageManager
 
 #endregion Properties & Fields
 
-        /// <summary>
-        ///     The class constructor.
-        /// </summary>
-        public PackageManagerSearchViewModel(PackageManagerClientViewModel client)
+        internal PackageManagerSearchViewModel()
         {
-            this.PackageManagerClientViewModel = client;
-
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             MaxNumSearchResults = 35;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
@@ -216,11 +213,19 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
-            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
             SortingKey = PackageSortingKey.LAST_UPDATE;
             SortingDirection = PackageSortingDirection.ASCENDING;
+        }
+
+        /// <summary>
+        ///     The class constructor.
+        /// </summary>
+        public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
+        {
+            this.PackageManagerClientViewModel = client;
+            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
         }
 
         /// <summary>
@@ -230,17 +235,24 @@ namespace Dynamo.PackageManager
         {
             var list = this.SearchResults.AsEnumerable().ToList();
             Sort(list, this.SortingKey);
-            this.SearchResults.Clear();
 
             if (SortingDirection == PackageSortingDirection.DESCENDING)
             {
                 list.Reverse();
             }
 
+            // temporarily hide binding
+            var temp = this.SearchResults;
+            this.SearchResults = null;
+
+            temp.Clear();
+
             foreach (var ele in list)
             {
-                this.SearchResults.Add(ele);
+                temp.Add(ele);
             }
+
+            this.SearchResults = temp;
         }
 
         /// <summary>
@@ -405,6 +417,11 @@ namespace Dynamo.PackageManager
 
             this.SearchResults.Clear();
         }
+        
+        private string JoinPackageNames(IEnumerable<Package> pkgs)
+        {
+            return String.Join(", ", pkgs.Select(x => x.Name));
+        } 
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
         {
@@ -413,15 +430,13 @@ namespace Dynamo.PackageManager
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-            var dynamoViewModel = this.PackageManagerClientViewModel.DynamoViewModel;
-
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
                 var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
                 {
                     PackageHeader pkgHeader;
-                    var res = dynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                    var res = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
 
                     if (!res.Success)
                         MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
@@ -438,9 +453,28 @@ namespace Dynamo.PackageManager
 
                 var allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
 
+                // determine if any of the packages contain binaries or python scripts.  
+                var containsBinaries =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) || x.Item2.contains_binaries);
+
+                var containsPythonScripts =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+
+                // if any do, notify user and allow cancellation
+                if (containsBinaries || containsPythonScripts)
+                {
+                    var res = MessageBox.Show("The package or one of its dependencies contains Python scripts or binaries. " +
+                        "Do you want to continue?", "Package Download",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel) return;
+                }
+
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
-                var dynamoVersion = dynamoViewModel.Model.Version;
+                var dynamoVersion = this.PackageManagerClientViewModel.DynamoViewModel.Model.Version;
                 var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
                 var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
 
@@ -473,26 +507,65 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
+                var localPkgs = this.PackageManagerClientViewModel.DynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
+
+                var uninstallsRequiringRestart = new List<Package>();
+                var uninstallRequiringUserModifications = new List<Package>();
+                var immediateUninstalls = new List<Package>();
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
                 foreach (var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)))
                 {
                     if (localPkg == null) continue;
-                    string msg;
 
-                    // if the package is in use, we will not be able to uninstall it.  
-                    if (!localPkg.InUse(this.PackageManagerClientViewModel.DynamoViewModel.Model))
+                    if (localPkg.LoadedAssemblies.Any())
                     {
-                        msg = "Dynamo needs to uninstall " + element.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
-                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                        MessageBoxImage.Error);
-                        return;
+                        uninstallsRequiringRestart.Add(localPkg);
+                        continue;
                     }
 
+                    if (localPkg.InUse(this.PackageManagerClientViewModel.DynamoViewModel.Model))
+                    {
+                        uninstallRequiringUserModifications.Add(localPkg);
+                        continue;
+                    }
+
+                    immediateUninstalls.Add(localPkg);
+                }
+
+                string msg;
+
+                if (uninstallRequiringUserModifications.Any())
+                {
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallRequiringUserModifications) +
+                        " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (uninstallsRequiringRestart.Any())
+                {
+                    // mark for uninstallation
+                    uninstallsRequiringRestart.ForEach(
+                        x =>
+                            x.MarkForUninstall(
+                                this.PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings));
+
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallsRequiringRestart) +
+                        " to continue but it contains binaries already loaded into Dynamo.  It's now marked " +
+                        "for removal, but you'll need to first restart Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (immediateUninstalls.Any())
+                {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + element.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    msg = "Dynamo has already installed " + JoinPackageNames(immediateUninstalls) +
+                        ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
                     if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
@@ -501,9 +574,10 @@ namespace Dynamo.PackageManager
                 allPackageVersions
                         .Select(x => new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
-                        .ForEach(x =>  dynamoViewModel.PackageManagerClientViewModel.DownloadAndInstall(x));
+                        .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
+
             }
-            
+
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -538,6 +612,8 @@ namespace Dynamo.PackageManager
 
         public bool CanClearCompleted()
         {
+            if (PackageManagerClientViewModel == null) return false;
+
             return PackageManagerClientViewModel.Downloads
                                        .Any(x => x.DownloadState == PackageDownloadHandle.State.Installed 
                                            || x.DownloadState == PackageDownloadHandle.State.Error);
@@ -551,22 +627,25 @@ namespace Dynamo.PackageManager
         {
             this.SearchText = query;
 
-            Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(() => Search(query)
+            var t = Search(query);
 
-            ).ContinueWith((t) =>
-                {
+            var currentResults = this.SearchResults;
 
-                lock (SearchResults)
-                {
-                    SearchResults.Clear();
-                    foreach (var result in t.Result)
-                    {
-                        SearchResults.Add(result);
-                    }
-                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
-                }
+            // stop WPF from listening to the changes that we're about
+            // to perform
+            this.SearchResults = null;
+
+            currentResults.Clear();
+            foreach (var result in t)
+            {
+                currentResults.Add(result);
             }
-            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+
+            // cause WPF to rebind--but only once instead of once for
+            // each ele
+            SearchResults = currentResults;
+
+            SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
         }
 
         /// <summary>

@@ -1192,15 +1192,68 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("g", null);
         }
         /* 
-[Test]         [Category("Type System")]         public void TS076_UserDefinedCovariance_Imperative()         {             string code =                 @" class A                     {                             a:int;                             constructor A (b:int)                             {                                 a=b;                             }                     }                     class B extends A                     {                             b:int;                             constructor B (c:int)                             {                                 b=c;                             }                     }                     [Imperative]{                                        a:A[]=A.A(1);                     a1=a.a;                     b:A[]=B.B(2);                     b1=b.b;                     b2=b.a;                     c:B[]=A.A(3);                     c1=c.b;                     c2=c.a;                     }";             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";             thisTest.RunScriptSource(code, error);             thisTest.Verify("a1", new object []{1});             thisTest.Verify("b1", new object []{2});             thisTest.Verify("b2", new object []{0});             thisTest.Verify("c", null);             thisTest.Verify("c1", null);             thisTest.Verify("c2", null);         }*/
+[Test]
+         [Category("Type System")]
+         public void TS076_UserDefinedCovariance_Imperative()
+         {
+             string code =
+                 @" class A
+                     {
+                             a:int;
+                             constructor A (b:int)
+                             {
+                                 a=b;
+                             }
+                     }
+                     class B extends A
+                     {
+                             b:int;
+                             constructor B (c:int)
+                             {
+                                 b=c;
+                             }
+                     }
+                     [Imperative]{
+                   
+                     a:A[]=A.A(1);
+                     a1=a.a;
+                     b:A[]=B.B(2);
+                     b1=b.b;
+                     b2=b.a;
+                     c:B[]=A.A(3);
+                     c1=c.b;
+                     c2=c.a;
+                     }";
+             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+             thisTest.RunScriptSource(code, error);
+             thisTest.Verify("a1", new object []{1});
+             thisTest.Verify("b1", new object []{2});
+             thisTest.Verify("b2", new object []{0});
+             thisTest.Verify("c", null);
+             thisTest.Verify("c1", null);
+             thisTest.Verify("c2", null);
+         }*/
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TS078_userdefinedToUserdefinedArray_Imperative()
         {
             string code =
-                @"class A                    {                                a:int;                                constructor A (b:int)                                {                                        a=b;                            }                    }a1;                [Imperative]                {                        a : A[] =  A.A(1) ;                        a1 = a.a;                }";
+                @"class A
+                    {
+                                a:int;
+                                constructor A (b:int)
+                                {
+                                        a=b;
+                            }
+                    }
+a1;
+                [Imperative]
+                {
+                        a : A[] =  A.A(1) ;
+                        a1 = a.a;
+                }";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
             thisTest.RunScriptSource(code);
             thisTest.Verify("a1", new object[] { 1 });
@@ -1210,7 +1263,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void indexintoarray_left_1467462_1_imperative()
         {
             string code =
-                @"x;                [Imperative]                {                    x : var[] = { 1, 2, 3, 4 };                    x[2..3] = { 1, 2 };                }                ";
+                @"x;
+                [Imperative]
+                {
+                    x : var[] = { 1, 2, 3, 4 };
+                    x[2..3] = { 1, 2 };
+                }
+                ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
         }
@@ -1219,7 +1278,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void indexintoarray_left_1467462_2_imperative()
         {
             string code =
-                @"x;                [Imperative]                {                    x : int[] = { 1, 2, 3, 4 };                    x[2..3] = { 1, 2 };                }                ";
+                @"x;
+                [Imperative]
+                {
+                    x : int[] = { 1, 2, 3, 4 };
+                    x[2..3] = { 1, 2 };
+                }
+                ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
         }
@@ -1228,7 +1293,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void indexintoarray_left_1467462_3_imperative()
         {
             string code =
-                @"x;                [Imperative]                {                x : int[] = { 1, 2, 3, 4 };                x[2..3] = { 1, 2 };                }                ";
+                @"x;
+                [Imperative]
+                {
+                x : int[] = { 1, 2, 3, 4 };
+                x[2..3] = { 1, 2 };
+                }
+                ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
         }
@@ -1237,7 +1308,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void indexintoarray_left_1467462_4_imperative()
         {
             string code =
-                @"x;                [Imperative]                {                    x : bool[] = { true, false, true, false };                    x[2..3] = { true, 2 };                }                ";
+                @"x;
+                [Imperative]
+                {
+                    x : bool[] = { true, false, true, false };
+                    x[2..3] = { true, 2 };
+                }
+                ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, true });
         }
@@ -1246,7 +1323,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void indexintoarray_left_1467462_5_imperative()
         {
             string code =
-                @"x;                [Imperative]                {                    x : var[] = { 1, false,""q"", 1.3 };//jagged                    x[2..3] = { true, 2 };                }                ";
+                @"x;
+                [Imperative]
+                {
+                    x : var[] = { 1, false,""q"", 1.3 };//jagged
+                    x[2..3] = { true, 2 };
+                }
+                ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, false, true, 2 });
         }
@@ -1256,10 +1339,19 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS0189_TypeConversion_conditionals_1465293_1_imperative()
         {
             string code =
-                @"a;
+                @"
+a;
 b;
 c;
-d;                 [Imperative]                 {                  a=2==null;                    b=2!=null;                  c=null==null;                  d=null!=null;                 }                 ";
+d;
+                 [Imperative]
+                 {
+                  a=2==null;  
+                  b=2!=null;
+                  c=null==null;
+                  d=null!=null;
+                 }
+                 ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", false);
@@ -1273,7 +1365,23 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0189_TypeConversion_class_member_1467599()
         {
             string code =
-                @"                 class test                    {                        t : double;                                constructor test()                        {                            [Imperative]                            {                                t = true;                            }                        }                    }                    a = test.test();                    b=a.t;                                                      ";
+                @"
+                 class test
+                    {
+                        t : double;
+        
+                        constructor test()
+                        {
+                            [Imperative]
+                            {
+                                t = true;
+                            }
+                        }
+                    }
+                    a = test.test();
+                    b=a.t;
+                                     
+                 ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             //TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch);
@@ -1286,7 +1394,26 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0190_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"myValue = 2;c = 0;[Imperative]{    while( myValue <  8)    {        [Associative]         {            a = 1;            b = a + myValue;                        c = c + b;            Print(""b : "" + b);        }                myValue = myValue + 2.5;         Print(""myValue : "" + myValue);     }}                              ";
+                @"
+myValue = 2;
+c = 0;
+[Imperative]
+{
+    while( myValue <  8)
+    {
+        [Associative] 
+        {
+            a = 1;
+            b = a + myValue;            
+            c = c + b;
+            Print(""b : "" + b);
+        }
+        
+        myValue = myValue + 2.5; 
+        Print(""myValue : "" + myValue); 
+    }
+}             
+                 ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("c", 16.5);
@@ -1297,7 +1424,31 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0191_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"myValue = 9; // (1) myValue is a variable which is initially defined as an int myIntRangeExpression = 0..180..#5;             myRangeExpressionResult = myIntRangeExpression * myValue; //(2) myValue is used with an array of ints            Print(myRangeExpressionResult); // (3) and the results are more ints.. so far so good![Imperative]{    while( myValue < 10) // (5) but inside an Imperative whle loop    {        [Associative] // (6) and then inside an associative block        {            myIntRangeExpression = 0..180..#5;                        myRangeExpressionResult = myIntRangeExpression * myValue; // (7) myValue is still be treated as an int                        Print(myRangeExpressionResult); // (8) because the variable myRangeExpressionResult are all ints!!        }                myValue = myValue + 0.2; // (3) but by adding  a decimal fraction.. it become a double        //Print(""P_myValue : "" + myValue); // (4) as the output from this 'Print' shows.. what is going on?    }}                             ";
+                @"
+myValue = 9; // (1) myValue is a variable which is initially defined as an int 
+myIntRangeExpression = 0..180..#5; 
+            
+myRangeExpressionResult = myIntRangeExpression * myValue; //(2) myValue is used with an array of ints
+            
+Print(myRangeExpressionResult); // (3) and the results are more ints.. so far so good!
+[Imperative]
+{
+    while( myValue < 10) // (5) but inside an Imperative whle loop
+    {
+        [Associative] // (6) and then inside an associative block
+        {
+            myIntRangeExpression = 0..180..#5;
+            
+            myRangeExpressionResult = myIntRangeExpression * myValue; // (7) myValue is still be treated as an int
+            
+            Print(myRangeExpressionResult); // (8) because the variable myRangeExpressionResult are all ints!!
+        }
+        
+        myValue = myValue + 0.2; // (3) but by adding  a decimal fraction.. it become a double
+        //Print(""P_myValue : "" + myValue); // (4) as the output from this 'Print' shows.. what is going on?
+    }
+}            
+                 ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0.0, 449.99999999999983, 899.99999999999966, 1349.9999999999995, 1799.9999999999993 });
@@ -1308,7 +1459,22 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0192_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"myValue = 1; myIntRangeExpression = 0..2;             myRangeExpressionResult ; [Imperative]{    while( myValue < 2)     {        [Associative]         {            myIntRangeExpression = 0..2;                        myRangeExpressionResult = myIntRangeExpression * myValue;                     }                myValue = myValue + 0.5;            }} ";
+                @"
+myValue = 1; 
+myIntRangeExpression = 0..2;             
+myRangeExpressionResult ; 
+[Imperative]
+{
+    while( myValue < 2) 
+    {
+        [Associative] 
+        {
+            myIntRangeExpression = 0..2;            
+            myRangeExpressionResult = myIntRangeExpression * myValue;             
+        }        
+        myValue = myValue + 0.5;        
+    }
+} ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0.0, 1.5, 3.0 });
@@ -1319,10 +1485,27 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0193_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"myValue:int = 1; myIntRangeExpression = 0..2;             myRangeExpressionResult ; [Imperative]{    c = 1;    while( c <= 2 )     {        [Associative]         {            myIntRangeExpression = 0..2;                        myRangeExpressionResult = myIntRangeExpression * myValue;                     }                myValue = myValue - 0.5;        c = c + 1;            }}";
+                @"
+myValue:int = 1; 
+myIntRangeExpression = 0..2;             
+myRangeExpressionResult ; 
+[Imperative]
+{
+    c = 1;
+    while( c <= 2 ) 
+    {
+        [Associative] 
+        {
+            myIntRangeExpression = 0..2;            
+            myRangeExpressionResult = myIntRangeExpression * myValue;             
+        }        
+        myValue = myValue - 0.5;
+        c = c + 1;        
+    }
+}";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(2);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0, 1, 2 });
         }
 
@@ -1331,7 +1514,22 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0194_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"myValue = 1; myIntRangeExpression = 0..2;             myRangeExpressionResult ; [Imperative]{    while( myValue > 0.25)     {        [Associative]         {            myIntRangeExpression = 0..2;                        myRangeExpressionResult = myIntRangeExpression * myValue;                     }                myValue = myValue * 0.5;            }} ";
+                @"
+myValue = 1; 
+myIntRangeExpression = 0..2;             
+myRangeExpressionResult ; 
+[Imperative]
+{
+    while( myValue > 0.25) 
+    {
+        [Associative] 
+        {
+            myIntRangeExpression = 0..2;            
+            myRangeExpressionResult = myIntRangeExpression * myValue;             
+        }        
+        myValue = myValue * 0.5;        
+    }
+} ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0.0, 0.5, 1.0 });
@@ -1342,7 +1540,31 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0195_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"class A{    myValue = 1;    x;    constructor A()    {                myIntRangeExpression = 0..2;                     [Imperative]        {            while( myValue < 2)             {                [Associative]                 {                    myIntRangeExpression = 0..2;                                x = myIntRangeExpression * myValue;                             }                        myValue = myValue + 0.5;                    }        }    }}a = A.A();t1 = a.myValue;t2 = a.x;";
+                @"
+class A
+{
+    myValue = 1;
+    x;
+    constructor A()
+    {        
+        myIntRangeExpression = 0..2;             
+        [Imperative]
+        {
+            while( myValue < 2) 
+            {
+                [Associative] 
+                {
+                    myIntRangeExpression = 0..2;            
+                    x = myIntRangeExpression * myValue;             
+                }        
+                myValue = myValue + 0.5;        
+            }
+        }
+    }
+}
+a = A.A();
+t1 = a.myValue;
+t2 = a.x;";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("t1", 2.000000);
@@ -1354,7 +1576,32 @@ d;                 [Imperative]                 {                  a=2==null;
         public void TS0196_TypeConversion_nested_block_1467568()
         {
             string code =
-                @"class A{    myValue = 1;    x;    def foo()    {                myIntRangeExpression = 0..2;                     [Imperative]        {            while( myValue < 2)             {                [Associative]                 {                    myIntRangeExpression = 0..2;                                x = myIntRangeExpression * myValue;                             }                        myValue = myValue + 0.5;                    }        }    }}a = A.A();a.foo();t1 = a.myValue;t2 = a.x;";
+                @"
+class A
+{
+    myValue = 1;
+    x;
+    def foo()
+    {        
+        myIntRangeExpression = 0..2;             
+        [Imperative]
+        {
+            while( myValue < 2) 
+            {
+                [Associative] 
+                {
+                    myIntRangeExpression = 0..2;            
+                    x = myIntRangeExpression * myValue;             
+                }        
+                myValue = myValue + 0.5;        
+            }
+        }
+    }
+}
+a = A.A();
+a.foo();
+t1 = a.myValue;
+t2 = a.x;";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("t1", 2.000000);
@@ -1362,4 +1609,3 @@ d;                 [Imperative]                 {                  a=2==null;
         }
     }
 }
-

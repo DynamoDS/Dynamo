@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -159,7 +160,7 @@ namespace Dynamo.ViewModels
         {
             this.CachedPackageList =
                     this.Model.ListAll()
-                               .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
+                               .Select((header) => new PackageManagerSearchElement(this.Model, header))
                                .ToList();
 
             return CachedPackageList;
@@ -168,7 +169,7 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             return Model.Search(search, maxNumSearchResults)
-                               .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
+                               .Select((header) => new PackageManagerSearchElement(this.Model, header))
                                .ToList();
         }
 
@@ -181,8 +182,12 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
+            
+
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             this.Downloads.Add(packageDownloadHandle);
+
+            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
 
             Task.Factory.StartNew(() =>
             {
@@ -191,7 +196,7 @@ namespace Dynamo.ViewModels
                     var response = Model.Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
 
-                    DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
+                    dynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
                     {
                         try
                         {
@@ -199,7 +204,7 @@ namespace Dynamo.ViewModels
 
                             Package dynPkg;
 
-                            var firstOrDefault = DynamoViewModel.Model.Loader.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                            var firstOrDefault = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                             if (firstOrDefault != null)
                             {
                                 var dynModel = this.dynamoViewModel.Model;
@@ -217,9 +222,13 @@ namespace Dynamo.ViewModels
                             if (packageDownloadHandle.Extract(this.dynamoViewModel.Model, out dynPkg))
                             {
                                 var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model.Logger);
-                                downloadPkg.LoadIntoDynamo(this.dynamoViewModel.Model.Loader, this.dynamoViewModel.Model.Logger);
 
-                                DynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
+                                var loader = dynamoViewModel.Model.Loader;
+                                var logger = dynamoViewModel.Model.Logger;
+                                var libraryServices = dynamoViewModel.Model.EngineController.LibraryServices;
+                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices);
+
+                                dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
                         }

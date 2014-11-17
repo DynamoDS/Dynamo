@@ -134,7 +134,8 @@ namespace Dynamo.Models
 
             if (!string.IsNullOrEmpty(signature))
             {
-                node.NickName = LibraryServices.Instance.NicknameFromFunctionSignatureHint(signature);
+                var libraryServices = dynamoModel.EngineController.LibraryServices;
+                node.NickName = libraryServices.NicknameFromFunctionSignatureHint(signature);
             }
             else if (!string.IsNullOrEmpty(nickName)) 
             {
@@ -299,6 +300,13 @@ namespace Dynamo.Models
     /// </summary>
     public class ZeroTouchNodeLoader : INodeLoader<DSFunctionBase>
     {
+        private readonly LibraryServices libraryServices;
+
+        public ZeroTouchNodeLoader(LibraryServices libraryServices)
+        {
+            this.libraryServices = libraryServices;
+        }
+
         public DSFunctionBase CreateNodeFromXml(XmlElement nodeElement)
         {
             string assembly = null;
@@ -334,7 +342,7 @@ namespace Dynamo.Models
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
-                    LibraryServices.Instance
+                    libraryServices
                         .FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
                 function = hintedSigniture ?? xmlSignature;
@@ -346,12 +354,12 @@ namespace Dynamo.Models
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
-                LibraryServices.Instance.ImportLibrary(assembly);
-                descriptor = LibraryServices.Instance.GetFunctionDescriptor(assembly, function);
+                libraryServices.ImportLibrary(assembly);
+                descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                descriptor = LibraryServices.Instance.GetFunctionDescriptor(function);
+                descriptor = libraryServices.GetFunctionDescriptor(function);
             }
 
             if (null == descriptor)

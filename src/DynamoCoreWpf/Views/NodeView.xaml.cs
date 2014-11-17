@@ -71,8 +71,8 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            Loaded += new RoutedEventHandler(OnNodeViewLoaded);
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Loaded += OnNodeViewLoaded;
+            Unloaded += OnNodeViewUnloaded;
             inputGrid.Loaded += NodeViewReady;
 
             this.nodeBorder.SizeChanged += OnSizeChanged;
@@ -81,7 +81,7 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(this, 1);
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Node view unloaded.");
 

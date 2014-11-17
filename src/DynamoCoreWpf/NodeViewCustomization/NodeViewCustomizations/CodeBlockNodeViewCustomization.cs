@@ -31,7 +31,7 @@ namespace Dynamo.Wpf
 
             if (model.ShouldFocus)
             {
-                cbe.FocusEditor();
+                cbe.Focus();
                 model.ShouldFocus = false;
             }
         }

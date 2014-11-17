@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
@@ -16,6 +17,8 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Interactivity;
+
+using RevitServices.Elements;
 using RevitServices.Persistence;
 
 using DividedSurface = Autodesk.Revit.DB.DividedSurface;
@@ -266,25 +269,36 @@ namespace Dynamo.Nodes
         protected override void Updater_ElementsDeleted(
             Document document, IEnumerable<ElementId> deleted)
         {
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
+            if (!SelectionResults.Any() || 
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any())
+            {
+                return;
+            }
 
-            var uuids =
-                deleted.Select(document.GetElement)
-                    .Where(el => el != null)
-                    .Select(el => el.UniqueId);
+            // We are given a set of ElementIds, but because the elements
+            // have already been deleted from Revit, we can't get the 
+            // corresponding GUID. Instead, we just go through the collection of
+            // elements and get the ones that are still valid.
 
-            UpdateSelection(Selection.Where(x => !uuids.Contains(x.UniqueId)));
+            var validEls = Selection.Where(el => el.IsValidObject).ToList();
+
+            UpdateSelection(validEls);
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            // If nothing has been updated, then return
+
             if (!updated.Any())
                 return;
 
-            var updatedSet = new HashSet<string>(updated);
-
-            if (!SelectionResults.Select(x => x.UniqueId).Any(updatedSet.Contains))
+            // If the updated list doesn't include any objects in the current selection
+            // then return;
+            if (!SelectionResults.Where(x => x.IsValidObject).Select(x => x.UniqueId).Any(updated.Contains))
+            {
                 return;
+            }
 
             UpdateSelection(Selection);
         }
@@ -399,25 +413,49 @@ namespace Dynamo.Nodes
             // If an element is deleted, ensure all references which refer
             // to that element are removed from the selection
 
-            if (!SelectionResults.Any() || !document.Equals(SelectionOwner)) return;
+            // If there is no selection, or the doc of the deleted
+            // elements is not this doc, or if there is nothing
+            // in the deleted set, then return
 
-            UpdateSelection(SelectionResults.Where(x => !deleted.Contains(x.ElementId)));
+            if (!SelectionResults.Any() ||
+                !document.Equals(SelectionOwner) ||
+                !deleted.Any() ||
+                !SelectionResults.Any(x=>deleted.Contains(x.ElementId))) return;
 
-            RaisePropertyChanged("SelectionResults");
-            RaisePropertyChanged("Text");
-            RequiresRecalc = true;
+            // The new selections is everything in the current selection
+            // that is not in the deleted collection as well
+            var newSelection = SelectionResults.Where(x => !deleted.Contains(x.ElementId));
+
+            UpdateSelection(newSelection);
         }
 
         protected override void Updater_ElementsModified(IEnumerable<string> updated)
         {
+            // If there is nothing modified or the SelectionResults
+            // collection is null, then return
+            if (!updated.Any() || SelectionResults == null)
+            {
+                return;
+            }
+
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
-            // If an element is modified, require recalc
-            if (SelectionResults == null
-                || !SelectionResults.Select(r => doc.GetElement(r).UniqueId).Any(updated.Contains))
-                return;
+            // If this modification is being parsed as part of a document
+            // update that also contains a deletion, then we need to try to 
+            // get the elements first to see if they are valid. 
+            var validIds = SelectionResults.Select(doc.GetElement).Where(x=>x != null).Select(x=>x.UniqueId);
 
+            // If none of the updated elements are included in the 
+            // list of valid ids in the selection, then return.
+            if (!validIds.Any(updated.Contains))
+            {
+                return;
+            }
+                
+            // We want this modification to trigger a graph reevaluation
+            // and we want the AST for this node to be regenerated.
             RequiresRecalc = true;
+            ForceReExecuteOfNode = true;
         }
 
         protected override IEnumerable<Reference> ExtractSelectionResults(Reference selection)

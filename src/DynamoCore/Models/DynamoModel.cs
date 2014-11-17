@@ -1,5 +1,6 @@
 ﻿using DSNodeServices;
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -156,6 +157,10 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public DynamoRunner Runner { get; protected set; }
+
+        private DynamoScheduler scheduler;
+        public DynamoScheduler Scheduler { get { return scheduler; } }
+        public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         /// TODO
@@ -363,6 +368,7 @@ namespace Dynamo.Models
             if (scheduler != null)
             {
                 scheduler.Shutdown();
+                scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler = null;
             }
 #endif
@@ -420,8 +426,7 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
-            Workspaces = new ObservableCollection<WorkspaceModel>();
-            ClipBoard = new ObservableCollection<ModelBase>();
+            this.MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -436,6 +441,12 @@ namespace Dynamo.Models
             Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+
+#if ENABLE_DYNAMO_SCHEDULER
+            var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
+            scheduler = new DynamoScheduler(thread);
+            scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+#endif
 
             Runner = runner;
             Runner.RunStarted += Runner_RunStarted;
@@ -479,6 +490,8 @@ namespace Dynamo.Models
             NodeFactory.MessageLogged += LogMessage;
             NodeFactory.AddLoader(new ZeroTouchNodeLoader());
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+
+            UpdateManager.UpdateManager.CheckForProductUpdate();
 
             // Reset virtual machine to avoid a race condition by causing a 
             // thread join inside the vm exec. Since DynamoModel is being called 
@@ -688,12 +701,145 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     
+        /// This method is typically called from the main application thread (as 
+        /// a result of user actions such as button click or node UI changes) to
+        /// schedule an update of the graph. This call may or may not represent 
+        /// an actual update. In the event that the user action does not result 
+        /// in actual graph update (e.g. moving of node on UI), the update task 
+        /// will not be scheduled for execution.
         /// </summary>
         [Obsolete("Running is now handled on HomeWorkspaceModel", true)]
         public void RunExpression()
         {
-            Runner.RunExpression(HomeSpace, EngineController, IsTestMode);
+            var traceData = HomeSpace.PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
+            // If one or more custom node have been updated, make sure they
+            // are compiled first before the home workspace gets evaluated.
+            // 
+            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+
+            var task = new UpdateGraphAsyncTask(scheduler);
+            if (task.Initialize(EngineController, HomeSpace))
+            {
+                task.Completed += OnUpdateGraphCompleted;
+                RunEnabled = false; // Disable 'Run' button.
+                scheduler.ScheduleForExecution(task);
+            }
+            else
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
+        }
+
+        /// <summary>
+        /// This callback method is invoked in the context of ISchedulerThread 
+        /// when UpdateGraphAsyncTask is completed.
+        /// </summary>
+        /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
+        private void OnUpdateGraphCompleted(AsyncTask task)
+        {
+            var updateTask = task as UpdateGraphAsyncTask;
+            var messages = new Dictionary<Guid, string>();
+
+            // Runtime warnings take precedence over build warnings.
+            foreach (var warning in updateTask.RuntimeWarnings)
+            {
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            foreach (var warning in updateTask.BuildWarnings)
+            {
+                // If there is already runtime warnings for 
+                // this node, then ignore the build warnings.
+                if (messages.ContainsKey(warning.Key))
+                    continue;
+
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            var workspace = updateTask.TargetedWorkspace;
+            foreach (var message in messages)
+            {
+                var guid = message.Key;
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node == null)
+                    continue;
+
+                node.Warning(message.Value); // Update node warning message.
+            }
+
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
+            // 
+            if (task.Exception != null && (DynamoModel.IsTestMode == false))
+            {
+                Action showFailureMessage = () =>
+                    Utils.DisplayEngineFailureMessage(this, task.Exception);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
+            // Notify listeners (optional) of completion.
+            RunEnabled = true; // Re-enable 'Run' button.
+
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
+        }
+
+        /// <summary>
+        /// This event handler is invoked when DynamoScheduler changes the state 
+        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
+        /// details of these state changes.
+        /// </summary>
+        /// <param name="sender">The scheduler which raised the event.</param>
+        /// <param name="e">Task state changed event argument.</param>
+        /// 
+        private void OnAsyncTaskStateChanged(
+            DynamoScheduler sender,
+            TaskStateChangedEventArgs e)
+        {
+            switch (e.CurrentState)
+            {
+                case TaskStateChangedEventArgs.State.ExecutionStarting:
+                    if (e.Task is UpdateGraphAsyncTask)
+                        ExecutionEvents.OnGraphPreExecution();
+                    break;
+
+                case TaskStateChangedEventArgs.State.ExecutionCompleted:
+                    if (e.Task is UpdateGraphAsyncTask)
+                    {
+                        // Record execution time for update graph task.
+                        long start = e.Task.ExecutionStartTime.TickCount;
+                        long end = e.Task.ExecutionEndTime.TickCount;
+                        var executionTimeSpan = new TimeSpan(end - start);
+
+                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                            e.Task.GetType().Name, executionTimeSpan);
+
+                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        ExecutionEvents.OnGraphPostExecution();
+                    }
+                    break;
+            }
         }
 
         [Obsolete("Running is now handled on HomeWorksapceModel", true)]
@@ -1398,14 +1544,22 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                Dispatcher.CurrentDispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        sw.Stop();
-                        Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                    }));
+                // We don't want to put this action into Dispatcher's queue 
+                // in test mode because it would never get a chance to execute.
+                // As Dispatcher is a static object, DynamoModel instance will 
+                // be referenced by Dispatcher until nunit finishes all test 
+                // cases. 
+                if (!IsTestMode)
+                {
+                    // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
+                        DispatcherPriority.Background,
+                        new Action(() =>
+                        {
+                            sw.Stop();
+                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                        }));
+                }
 
                 #endregion
 

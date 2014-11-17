@@ -42,7 +42,19 @@ namespace Dynamo.Nodes
         {
             get { return Definition.FunctionId.ToString(); }
         }
-        
+
+        //TODO(Steve): Remove if possible
+        public new string Category
+        {
+            get
+            {
+                var infos = Workspace.DynamoModel.CustomNodeManager.NodeInfos;
+                return infos.ContainsKey(Definition.FunctionId)
+                    ? infos[Definition.FunctionId].Category
+                    : "Custom Nodes";
+            }
+        }
+
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -306,20 +318,9 @@ namespace Dynamo.Nodes
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            return string.IsNullOrEmpty(InputSymbol)
-                ? AstIdentifierForPreview
-                : AstFactory.BuildIdentifier(InputSymbol);
-        }
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            if (name == "InputSymbol")
-            {
-                InputSymbol = value;
-                return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(name, value);
+            return
+                AstFactory.BuildIdentifier(
+                    InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -341,7 +342,6 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
     }
 
     [NodeName("Output")]
@@ -412,18 +412,5 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            if (name == "Symbol")
-            {
-                Symbol = value;
-                return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(name, value);
-        }
-
     }
 }

@@ -554,7 +554,7 @@ namespace Dynamo.Models
         /// <returns>Returns the created NodeModel, or null if the operation has 
         /// failed.</returns>
         [Obsolete("Use AddNode(NodeModel)", true)]
-        public NodeModel AddNode(Guid nodeId, string nodeName, double xPos, double yPos, bool useDefaultPos, bool transformCoordinates, NodeFactory factory, EngineController engine, CustomNodeManager customNodeManager, XmlNode xmlNode = null)
+        public NodeModel AddNode(Guid nodeId, string nodeName, double xPos, double yPos, bool useDefaultPos, bool transformCoordinates, NodeFactory factory, EngineController engine, CustomNodeManager customNodeManager, XmlElement xmlNode = null)
         {
             if (nodeId == Guid.Empty)
                 throw new ArgumentException(@"Node ID must be specified", "nodeId");
@@ -567,6 +567,28 @@ namespace Dynamo.Models
                 return null;
             }
 
+            AddNode(node, nodeId, x, y, useDefaultPos, transformCoordinates, xmlNode);
+            return node;
+        }
+
+        [Obsolete("Use AddNode(NodeModel)", true)]
+        public void AddNode(
+            NodeModel node, Guid nodeId, double xPos, double yPos,
+            bool useDefaultPos, bool transformCoordinates, XmlElement xmlNode = null)
+        {
+            // Fix for: 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5045
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4767
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4946
+            // 
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = xPos;
@@ -578,20 +600,20 @@ namespace Dynamo.Models
             if (null != xmlNode)
                 node.Load(xmlNode);
 
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
-
-            ModelEventArgs args = !useDefaultPos
-                ? new ModelEventArgs(node, xPos, yPos, transformCoordinates)
-                : new ModelEventArgs(node, transformCoordinates);
+            ModelEventArgs args = null;
+            if (!useDefaultPos)
+                args = new ModelEventArgs(node, x, y, transformCoordinates);
+            else
+            {
+                // The position of the new node has not been specified.
+                args = new ModelEventArgs(node, transformCoordinates);
+            }
 
             OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
             OnNodeAdded(node);
-
-            return node;
         }
 
         [Obsolete("Use AddConnection(ConnectorModel) instead", true)]

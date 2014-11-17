@@ -13,13 +13,11 @@ namespace Dynamo.Tests
     class LibraryTests : DSEvaluationViewModelUnitTest
     {
         protected static bool LibraryLoaded { get; set; }
-        protected LibraryServices libraryServices;
 
         [SetUp]
         public override void Init()
         {
             base.Init();
-            libraryServices = LibraryServices.Instance;
             RegisterEvents();
         }
 
@@ -27,7 +25,6 @@ namespace Dynamo.Tests
         public override void Cleanup()
         {
             UnRegisterEvents();
-            libraryServices = null;
             base.Cleanup();
         }
 

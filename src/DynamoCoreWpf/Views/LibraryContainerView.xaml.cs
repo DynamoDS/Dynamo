@@ -31,7 +31,7 @@ namespace Dynamo.Search
 
             InitializeComponent();
             Loaded += OnSearchViewLoaded;
-            Dispatcher.ShutdownStarted += OnDispatcherShutdownStarted;
+            Unloaded += OnSearchViewUnloaded;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -45,7 +45,7 @@ namespace Dynamo.Search
             };
         }
 
-        private void OnDispatcherShutdownStarted(object sender, EventArgs e)
+        private void OnSearchViewUnloaded(object sender, EventArgs e)
         {
             this.viewModel.RequestFocusSearch -= OnSearchViewModelRequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch -= OnSearchViewModelRequestReturnFocusToSearch;
@@ -64,7 +64,6 @@ namespace Dynamo.Search
 
             this.viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
-
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)

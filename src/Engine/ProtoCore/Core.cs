@@ -932,6 +932,15 @@ namespace ProtoCore
 
     public class Core
     {
+        #region RUNTIME_PROPERTIES
+
+        /// <summary>
+        ///  These are the list of symbols updated by the VM after an execution cycle
+        /// </summary>
+        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
+
+        #endregion
+
         public const int FIRST_CORE_ID = 0;
 
         public int ID { get; private set; }
@@ -1131,8 +1140,6 @@ namespace ProtoCore
 
         public int newEntryPoint { get; private set; }
 
-        public int DeferredUpdates { get; set; }
-
         public void SetNewEntryPoint(int pc)
         {
             newEntryPoint = pc;
@@ -1290,7 +1297,6 @@ namespace ProtoCore
         public void ResetForDeltaExecution()
         {
             Options.ApplyUpdate = false;
-            DeferredUpdates = 0; 
 
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
@@ -1343,6 +1349,12 @@ namespace ProtoCore
 
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
+        }
+
+
+        private void ResetAllRuntimeProperties()
+        {
+            UpdatedSymbols = new HashSet<SymbolNode>();
         }
 
         private void ResetAll(Options options)
@@ -1766,6 +1778,7 @@ namespace ProtoCore
         public Core(Options options)
         {
             ResetAll(options);
+            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)

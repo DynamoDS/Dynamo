@@ -28,7 +28,6 @@ namespace ProtoTest.LiveRunner
         [SetUp]
         public void Setup()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "ProtoGeometry.dll" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
         }
@@ -36,7 +35,6 @@ namespace ProtoTest.LiveRunner
         [TearDown]
         public void CleanUp()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
         }
 
         [Test]
@@ -773,8 +771,7 @@ namespace ProtoTest.LiveRunner
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
@@ -1926,6 +1923,45 @@ r = Equals(x, {41, 42});
 
         }
 
+        [Test]
+        [Category("Failure")]
+        public void TestFunctionOverloadRedefinitionOnUnmodifiedNode03()
+        {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5370
+            List<string> codes = new List<string>() 
+            {
+                "def foo(i:int) { return = i;}",
+                "def bar : double(x:int) { return = x;}",
+                "r = foo(bar(2));",
+                "def foo(d:double) { return = d;}"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create function foo, bar and a statement that uses them
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 2);
+
+
+            // Add overload foo
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 2.0);
+
+        }
+
+
         public void TestFunctionOverloadOnNewNode01()
         {
             List<string> codes = new List<string>() 
@@ -1962,10 +1998,191 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        public void TestFunctionRedefinitionOfArguments01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = 1;}",
+                "x = f();",
+                "def f(a : int) { return = 1; }"
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no loger find the function
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestFunctionRedefinitionOfArguments02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f(a) { return = a;}",
+                "x = f(1);",
+                "def f(a, b) { return = a + b; }"
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestRedefineFunctionName01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = 1;}",
+                "x = f();",
+                "def g() { return = 1;}",
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestRedefineFunctionName02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = 1;} def f(i:int) { return = i;}",
+                "x = f();y = f(2);",
+                "def g() { return = 1;} def f(i:int) { return = i;}",
+            };
+
+            // Create 2 CBNs 
+            List<Subtree> added = new List<Subtree>();
+
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+            AssertValue("y", 2);
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
+            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+            // Verify that 'y' was not affected and retains its old value
+            AssertValue("y", 2);
+
+        }
+
+        [Test]
         public void TestFunctionObjectInApply()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "FunctionObject.ds" });
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
@@ -5033,6 +5250,131 @@ a = p.UpdateCount;
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestTransactionUpdate04()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
+                "x = 1;",
+                "p = TestUpdateCount.Ctor(x,0);",
+                "a = p.UpdateCount;",
+                "x = 10;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN1 for import
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create CBN1 for import
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            // Create CBN2 for x and y
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            // Create CBN3 for TestCount constructor
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            // Create CBN4 for UpdateCount
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+
+            // Verify that UpateCount is only called once
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+
+            // Modify CBN2 
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[4]);
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(subtree);
+
+            // Modify CBN3 with same contents with ForceExecution flag set
+            subtree = CreateSubTreeFromCode(guid3, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestUnboundVariableWarning01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code = 
+            @"
+            a = b; 
+            b = 1;
+            ";
+        
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
+
+        [Test]
+        public void TestUnboundVariableWarning02()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+            a = b; 
+            b = c; 
+            c = 1;
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+        }
+
+        [Test]
+        public void RegressMAGN5353()
+        {
+            // This test case tries to verify that when a FFI object is deleted, 
+            // the corresponding _Dispose() should be invoked.
+            //
+            // It is for defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5353
+            var added = new List<Subtree>();
+
+            var guid1 = Guid.NewGuid();
+            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
+            added.Add(CreateSubTreeFromCode(guid1, code1));
+
+            var guid2 = Guid.NewGuid();
+            var code2 = "y = DisposeTracer.DisposeCount;";
+            added.Add(CreateSubTreeFromCode(guid2, code2));
+
+            // Verify that UpateCount is only called once
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("y", 0);
+
+            // Modify CBN2 
+            Subtree subtree = new Subtree(new List<AssociativeNode>{}, guid1);
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(subtree);
+
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("y", 1);
         }
     }
 

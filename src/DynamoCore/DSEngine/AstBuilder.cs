@@ -134,20 +134,15 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(!inputAstNodes.Any((n) => n == null), 
+            Validity.Assert(inputAstNodes.All(n => n != null), 
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = null;
             var scopedNode = node as ScopedNodeModel;
-            if (scopedNode != null)
-            {
-                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
-            }
-            else
-            {
-                astNodes = node.BuildAst(inputAstNodes);
-            }
+            IEnumerable<AssociativeNode> astNodes = 
+                scopedNode != null
+                    ? scopedNode.BuildAstInScope(inputAstNodes)
+                    : node.BuildAst(inputAstNodes);
             
             if (dynamoModel.DebugSettings.VerboseLogging)
             {
@@ -237,7 +232,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="def"></param>
         /// <param name="funcBody"></param>
-        /// <param name="outputs"></param>
+        /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         public void CompileCustomNodeDefinition(
             CustomNodeDefinition def,
@@ -361,7 +356,7 @@ namespace Dynamo.DSEngine
         internal class StringConstants
         {
             public const string ParamPrefix = @"p_";
-            public const string FunctionPrefix = @"func_";
+            public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";
