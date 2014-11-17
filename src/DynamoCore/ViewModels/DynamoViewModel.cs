@@ -257,6 +257,17 @@ namespace Dynamo.ViewModels
             get { return model.Logger.LogText; }
         }
 
+        public string PeriodicEvaluationText
+        {
+            get
+            {
+                if (model.EvaluationPeriod == 0)
+                    return "Set Timer";
+
+                return string.Format("Timer: {0}ms", model.EvaluationPeriod);
+            }
+        }
+
         public int ConsoleHeight
         {
             get
@@ -621,6 +632,23 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void SetPeriodicTimer(object parameter)
+        {
+            if (model == null)
+                return;
+
+            if (model.EvaluationPeriod != 0)
+            {
+                model.StopPeriodicEvaluation();
+            }
+            else
+            {
+                model.StartPeriodicEvaluation(100);
+            }
+
+            RaisePropertyChanged("PeriodicEvaluationText");
+        }
+        
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);

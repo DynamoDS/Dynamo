@@ -41,6 +41,7 @@ namespace Dynamo.ViewModels
             PasteCommand = new DelegateCommand(model.Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
+            SetPeriodicTimerCommand = new DelegateCommand(SetPeriodicTimer, CanCancelRunCmd);
             RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, CanRunExprCmd);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
@@ -114,6 +115,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
+        public DelegateCommand SetPeriodicTimerCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
