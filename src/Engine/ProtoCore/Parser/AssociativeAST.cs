@@ -65,6 +65,10 @@ namespace ProtoCore.AST.AssociativeAST
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
+            if (otherNode == null)
+            {
+                return false;
+            }
 
             // Compare language block properties
             bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);
@@ -1244,9 +1248,12 @@ namespace ProtoCore.AST.AssociativeAST
     public class ClassAttributes 
     {
         public bool HiddenInLibrary { get; protected set; }
-        public ClassAttributes() 
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+        public ClassAttributes(string msg = "")
         {
-            HiddenInLibrary = false;
+            ObsoleteMessage = msg;
+            HiddenInLibrary = IsObsolete;
         }
     }
 
@@ -1261,10 +1268,13 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
         protected List<string> returnKeys;
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
         
-        public MethodAttributes(bool hiddenInLibrary = false)
+        public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
+            ObsoleteMessage = msg;
         }
     }
 
@@ -1439,9 +1449,10 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
             }
 
-            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
-                   ReturnType.Equals(otherNode.ReturnType) &&
-                   Attributes.SequenceEqual(otherNode.Attributes);
+            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) 
+                && ReturnType.Equals(otherNode.ReturnType) 
+                && Attributes.SequenceEqual(otherNode.Attributes)
+                && Name.Equals(otherNode.Name);
 
             bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
 

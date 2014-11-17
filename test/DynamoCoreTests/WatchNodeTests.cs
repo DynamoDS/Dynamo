@@ -8,6 +8,7 @@ using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using Dynamo.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynamo.Tests
 {
@@ -165,6 +166,24 @@ namespace Dynamo.Tests
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
             Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+        }
+
+        [Test]
+        public void WatchFunctionPointer()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchFunctionPointer.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.Model.RunExpression();
+
+            var watchNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>();
+            foreach (var watchNode in watchNodes)
+            {
+                var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    watchNode.CachedValue,
+                    ViewModel.Model.EngineController.LiveRunnerCore,
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
+            }
         }
     }
 }

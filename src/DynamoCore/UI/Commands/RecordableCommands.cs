@@ -214,10 +214,10 @@ namespace Dynamo.Models
             /// <summary>
             /// Derived classes must implement this method to perform the actual
             /// command execution. A typical implementation of this method involves
-            /// calling a corresponding method on DynamoViewModel by passing itself
-            /// as the only argument.
+            /// calling a corresponding method on DynamoModel by passing itself as
+            /// the only argument.
             /// </summary>
-            /// <param name="dynamoViewModel">The DynamoViewModel object on which 
+            /// <param name="dynamoModel">The DynamoModel object on which 
             /// this command should be executed.</param>
             /// 
             protected abstract void ExecuteCore(DynamoModel dynamoModel);
@@ -1088,7 +1088,7 @@ namespace Dynamo.Models
     // 
     //     #region Protected Overridable Methods
     // 
-    //     protected override void ExecuteCore(DynamoViewModel DynamoViewModel)
+    //     protected override void ExecuteCore(DynamoModel dynamoModel)
     //     {
     //         throw new NotImplementedException();
     //     }

@@ -16,8 +16,7 @@ using UV = Autodesk.DesignScript.Geometry.UV;
 
 namespace Revit.GeometryConversion
 {
-    [SupressImportIntoVM]
-    public static class RevitToProtoSolid
+    internal static class RevitToProtoSolid
     {
         public static Autodesk.DesignScript.Geometry.Solid ToProtoType(this Autodesk.Revit.DB.Solid solid, 
             bool performHostUnitConversion = true)

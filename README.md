@@ -1,5 +1,5 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
-Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
+Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 
 ## Get Dynamo ##
@@ -19,7 +19,23 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+###0.7.3 ###
+
+#### New features
+- Autocomplete in Code Block Nodes
+- Share user-created binaries (.dll files) through the Package Manager 
+- Share sample content (.rvt, .rfa, .dyn files and more) through the Package Manager 
+
+#### Bug fixes
+- Improvements to the core threading model (Scheduler)
+- Reduced incidence of unresponsive graph
+- Better error messages 
+- clearing and updating error messages
+- Many small geometry improvements/fixes
+
+
 ###0.7.2 ###
+
 ####Incremental Release with:####
 - Significant Stability Improvements
 - More robust interaction with Revit elements
@@ -69,20 +85,6 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 - MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability  
 - Separation from Revit dependencies for easier porting of Dynamo to new applications
 - Recursion:  ScopeIf node for use in recursive custom node workflows (experimental)
-
-
-###0.7.1 ###
-- Package Manager is back
-- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
-- Library Loading (Experimental)
-- Stability Improvments
-- Revit Elements created and Selected during a session will be rememebered in later sessions.
-- Visualization Performance improvments
-- 3d/Graph Navigation Improvements
-- Automated graph organization
-- Node UI Enhancements
-- Preview Bubble overhaul
-- New Sample content and better first experience- 
 
 
 ###Older Releases###

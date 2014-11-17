@@ -13760,7 +13760,6 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
-        [Category("Failure")]
         public void IDE_DebuggerRefCount_ReplicatedFunctionCall()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
