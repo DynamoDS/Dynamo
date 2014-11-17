@@ -29,7 +29,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
@@ -42,7 +41,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
@@ -53,26 +51,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamoRaaSHelper">
-      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaSHelper.dll</HintPath>
+      <HintPath>$(DynamoExternPath)\DynamoRaaS\DynamoRaaSHelper.dll</HintPath>
     </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+      <HintPath>$(DynamoExternPath)\greg\Greg.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GregRevitAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\GregRevitAuth.dll</HintPath>
+      <HintPath>$(DynamoExternPath)\greg\GregRevitAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -82,11 +80,11 @@
     </Reference>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface">
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <HintPath>$(DYNAMOAPI)\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
@@ -110,8 +108,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+    <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="DynamoRevitApp.cs" />
     <Compile Include="Models\RevitDynamoModel.cs" />
@@ -147,58 +145,54 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
+    <Reference Include="ProtoCore">
+      <HintPath>$(DYNAMOAPI)\ProtoCore.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\DSIronPython\IronPythonEval.csproj">
-      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>IronPythonEval</Name>
+    </Reference>
+    <Reference Include="DSIronPython">
+      <HintPath>$(DYNAMOAPI)\DSIronPython.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
+    </Reference>
+    <Reference Include="DynamoUnits">
+      <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\Revit\RevitNodes\RevitNodes.csproj">
-      <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
-      <Name>RevitNodes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoCore</Name>
+    </Reference>
+    <Reference Include="DynamoCore">
+      <HintPath>$(DYNAMOAPI)\DynamoCore.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
-      <Name>DynamoUtilities</Name>
+    </Reference>
+    <Reference Include="DynamoUtilities">
+      <HintPath>$(DYNAMOAPI)\DynamoUtilities.dll</HintPath>
       <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\Revit\RevitServices\RevitServices.csproj">
-      <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
-      <Name>RevitServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeServices\NodeServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>NodeServices</Name>
+    </Reference>
+    <Reference Include="DSNodeServices">
+      <HintPath>$(DYNAMOAPI)\DSNodeServices.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\logo_square_32x32.png" />
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\RevitNodes\RevitNodes.csproj">
+      <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
+      <Name>RevitNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\RevitServices\RevitServices.csproj">
+      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
+      <Name>RevitServices</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll.config" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\DynamoRaaS.dll" "$(OutputPath)\nodes\DynamoRaaS.dll"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\SimpleRaaS.dll" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\JobMonitor.dll" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\SDF.dll" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\*_DynamoCustomization.xml" "$(OutputPath)"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(DynamoExternPath)\DynamoRaaS\RevitRaaS.dll.config" "$(OutputPath)"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\DynamoRaaS.dll" "$(OutputPath)\nodes\DynamoRaaS.dll"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\SimpleRaaS.dll" "$(OutputPath)"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\JobMonitor.dll" "$(OutputPath)"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\RevitRaaS.dll" "$(OutputPath)"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\SDF.dll" "$(OutputPath)"
+copy /Y "$(DynamoExternPath)\DynamoRaaS\*_DynamoCustomization.xml" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
