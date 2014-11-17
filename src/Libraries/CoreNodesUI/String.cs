@@ -5,16 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DSCoreNodesUI
+namespace DSCoreNodesUI.StringNodes
 {
-    [NodeName("String.FromObject")]
-    [NodeDescription("Convert an object to a string representation")]
-    [NodeCategory("Core.String")]
+    [NodeName("FromObject")]
+    [NodeDescription("Convert an object to a string representation.")]
+    [NodeCategory("Core.String.Actions")]
     [IsDesignScriptCompatible]
-    public class StringFromObject: NodeModel
+    public class FromObject: NodeModel
     {
-        public StringFromObject(WorkspaceModel workspace) : base(workspace)
+        public FromObject(WorkspaceModel workspace)
+            : base(workspace)
         {
+            NickName = "String.FromObject";
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("obj", "Object to be serialized"));
             OutPortData.Add(new PortData("str", "String representation of the object"));
@@ -31,14 +33,16 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("String.FromArray")]
-    [NodeDescription("Convert an array to a string representation")]
-    [NodeCategory("Core.String")]
+    [NodeName("FromArray")]
+    [NodeDescription("Convert an array to a string representation.")]
+    [NodeCategory("Core.String.Actions")]
     [IsDesignScriptCompatible]
-    public class StringFromArray : NodeModel
+    public class FromArray : NodeModel
     {
-        public StringFromArray(WorkspaceModel workspace) : base(workspace)
+        public FromArray(WorkspaceModel workspace)
+            : base(workspace)
         {
+            NickName = "String.FromArray";
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("arr", "The array of object to be serialized"));
             OutPortData.Add(new PortData("str", "String representation of the array"));
