@@ -1354,6 +1354,21 @@ namespace Dynamo.Models
                 return true;
             }
 
+            if (name == "UsingDefaultValue")
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return true;
+
+                // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                var arr = value.Split(';');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                }
+
+                return true;
+            }
+
             return base.UpdateValueCore(name, value);
         }
 
