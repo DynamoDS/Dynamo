@@ -235,6 +235,7 @@ namespace Dynamo.Controls
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
             var vm = DataContext as IWatchViewModel;
+            
             //check this for null so the designer can load the preview
             if (vm != null)
             {

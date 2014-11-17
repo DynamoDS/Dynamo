@@ -30,17 +30,15 @@ namespace Dynamo.Nodes
 {
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
-        private DynamoViewModel dynamoViewModel;
         private Watch3D watch3dModel;
         public Watch3DView View { get; private set; }
 
         public void CustomizeView(Watch3D model, dynNodeView nodeUI)
         {
-            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            model.ViewModel = nodeUI.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
-            model.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
 
-            View = new Watch3DView(model.GUID, model)
+            View = new Watch3DView(model.GUID, watch3dModel)
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight
@@ -114,7 +112,7 @@ namespace Dynamo.Nodes
         private RenderPackage PackageRenderData(IGraphicItem gItem)
         {
             var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, this.dynamoViewModel.VisualizationManager.MaxTesselationDivisions);
+            gItem.Tessellate(renderPackage, -1.0, this.watch3dModel.ViewModel.VisualizationManager.MaxTesselationDivisions);
             renderPackage.ItemsCount++;
             return renderPackage;
         }
@@ -133,12 +131,11 @@ namespace Dynamo.Nodes
     public class Watch3D : NodeModel, IWatchViewModel
     {
         public bool _canNavigateBackground { get; private set; }
+
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
         public Point3D CameraPosition { get; internal set; }
         public Vector3D LookDirection { get; internal set; }
-
-        public DynamoViewModel DynamoViewModel { get; set; }
 
         public delegate void VoidHandler();
         public event VoidHandler RequestUpdateLatestCameraPosition;
@@ -205,6 +202,11 @@ namespace Dynamo.Nodes
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             WatchIsResizable = true;
+
+            WatchWidth = 200;
+            WatchHeight = 200;
+            CameraPosition = new Point3D(10, 10, 10);
+            LookDirection = new Vector3D(-1, -1, -1);
         }
 
         #endregion
