@@ -33,6 +33,7 @@ namespace Dynamo.Core
         internal PulseMaker(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
+            this.dynamoModel.EvaluationCompleted += OnRunExpressionCompleted;
 
             stateMutex = new object();
             internalTimer = new Timer(OnTimerTicked);
@@ -93,7 +94,8 @@ namespace Dynamo.Core
             }
         }
 
-        private void OnRunExpressionCompleted(AsyncTask task)
+        private void OnRunExpressionCompleted(object sender,
+            EvaluationCompletedEventArgs evaluationCompletedEventArgs)
         {
             lock (stateMutex)
             {
@@ -116,10 +118,8 @@ namespace Dynamo.Core
         private void BeginRunExpression()
         {
             evaluationInProgress = true;
-            dynamoModel.OnRequestDispatcherBeginInvoke(() =>
-            {
-                dynamoModel.RunExpression(OnRunExpressionCompleted);
-            });            
+            dynamoModel.OnRequestDispatcherBeginInvoke(
+                () => dynamoModel.RunExpression());            
         }
 
         #endregion

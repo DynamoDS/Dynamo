@@ -458,10 +458,7 @@ namespace Dynamo.Models
 
             // If there exists a PulseMaker, disable it first.
             if (pulseMaker != null)
-            {
                 pulseMaker.Stop();
-                pulseMaker = null;
-            }
 
             OnShutdownStarted(); // Notify possible event handlers.
 
@@ -539,35 +536,30 @@ namespace Dynamo.Models
         /// is an on-going periodic evaluation, an exception will be thrown.
         /// </summary>
         /// <param name="milliseconds">The desired amount of time between two 
-        /// evaluations in milliseconds.
-        /// </param>
+        /// evaluations in milliseconds.</param>
         /// 
         public void StartPeriodicEvaluation(int milliseconds)
         {
-            if (pulseMaker != null)
+            if (pulseMaker == null)
+                pulseMaker = new PulseMaker(this);
+
+            if (pulseMaker.TimerPeriod != 0)
             {
                 throw new InvalidOperationException(
                     "Periodic evaluation cannot be started without stopping");
             }
 
-            pulseMaker = new PulseMaker(this);
             pulseMaker.Start(milliseconds);
         }
 
         /// <summary>
-        /// Stop the on-going periodic evaluation.
+        /// Stop the on-going periodic evaluation, if there is any.
         /// </summary>
         /// 
         public void StopPeriodicEvaluation()
         {
-            if (pulseMaker == null)
-            {
-                throw new InvalidOperationException(
-                    "Periodic evalation has not been started");
-            }
-
-            pulseMaker.Stop();
-            pulseMaker = null;
+            if (pulseMaker != null && (pulseMaker.TimerPeriod != 0))
+                pulseMaker.Stop();
         }
 
         /// <summary>
@@ -578,10 +570,8 @@ namespace Dynamo.Models
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        /// <param name="completionHandler">Optional parameter representing the 
-        /// callback function to be invoked when run expression completes.</param>
         /// 
-        public void RunExpression(AsyncTaskCompletedHandler completionHandler = null)
+        public void RunExpression()
         {
             var traceData = HomeSpace.PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
@@ -601,15 +591,6 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, HomeSpace))
             {
                 task.Completed += OnUpdateGraphCompleted;
-
-                // If the caller wishes to be notified of task completion, then
-                // register the event handler *after* the internal handler. This 
-                // is because the default handler schedules value queries and 
-                // render package updates for each node, among other things.
-                // 
-                if (completionHandler != null)
-                    task.Completed += completionHandler;
-
                 RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
