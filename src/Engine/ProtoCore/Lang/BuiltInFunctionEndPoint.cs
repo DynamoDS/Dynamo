@@ -407,7 +407,8 @@ namespace ProtoCore.Lang
                     }
 
                     return StackValue.BuildInt(typeUID);
-                case BuiltInMethods.MethodID.kToString:
+                case BuiltInMethods.MethodID.kToStringForObject:
+                case BuiltInMethods.MethodID.kToStringForArray:
                     ret = StringUtils.ConvertToString(formalParameters[0], core, core.Rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
