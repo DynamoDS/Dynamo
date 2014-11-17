@@ -99,6 +99,7 @@ namespace Dynamo.Models
 
         #region internal members
 
+        private PulseMaker pulseMaker;
         private DynamoScheduler scheduler;
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
@@ -248,6 +249,11 @@ namespace Dynamo.Models
             }
         }
         public bool RunInDebug { get; set; }
+
+        public int EvaluationPeriod
+        {
+            get { return pulseMaker == null ? 0 : pulseMaker.TimerPeriod; }
+        }
 
         /// <summary>
         /// All nodes in all workspaces. 
@@ -450,6 +456,13 @@ namespace Dynamo.Models
 
             ShutdownRequested = true;
 
+            // If there exists a PulseMaker, disable it first.
+            if (pulseMaker != null)
+            {
+                pulseMaker.Stop();
+                pulseMaker = null;
+            }
+
             OnShutdownStarted(); // Notify possible event handlers.
 
             PreShutdownCore(shutdownHost);
@@ -520,6 +533,42 @@ namespace Dynamo.Models
         }
 
 #else
+
+        /// <summary>
+        /// Start periodic evaluation by the given amount of time. If there
+        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// </summary>
+        /// <param name="milliseconds">The desired amount of time between two 
+        /// evaluations in milliseconds.
+        /// </param>
+        /// 
+        public void StartPeriodicEvaluation(int milliseconds)
+        {
+            if (pulseMaker != null)
+            {
+                throw new InvalidOperationException(
+                    "Periodic evaluation cannot be started without stopping");
+            }
+
+            pulseMaker = new PulseMaker(this);
+            pulseMaker.Start(milliseconds);
+        }
+
+        /// <summary>
+        /// Stop the on-going periodic evaluation.
+        /// </summary>
+        /// 
+        public void StopPeriodicEvaluation()
+        {
+            if (pulseMaker == null)
+            {
+                throw new InvalidOperationException(
+                    "Periodic evalation has not been started");
+            }
+
+            pulseMaker.Stop();
+            pulseMaker = null;
+        }
 
         /// <summary>
         /// This method is typically called from the main application thread (as 
