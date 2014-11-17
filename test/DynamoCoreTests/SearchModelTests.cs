@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -534,6 +535,19 @@ namespace Dynamo.Tests
             results = search.Search("Peter");
 
             Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveEmptyCategoryIfNodeExists()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "BestNode", "TopCategory.Category",
+                "description", ""));
+            var results = search.Search("BestNode");
+            Assert.AreEqual(1, results.Count());
+
+            search.AddonCategoriesBuilder.RemoveEmptyCategory("TopCategory.Category");
+            Assert.AreEqual(1, results.Count());
         }
 
         #endregion

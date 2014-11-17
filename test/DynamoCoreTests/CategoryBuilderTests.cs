@@ -200,6 +200,46 @@ namespace Dynamo.Tests
             Assert.IsNull(addonCatBuilder.GetCategoryByName("Peter.Rabbit"));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveEmptyCategoryDoesntExist()
+        {
+            addonCatBuilder.RemoveEmptyCategory("Some.Category.Which.Doesnt.Exist");
+            Assert.IsNull(addonCatBuilder.GetCategoryByName("Some.Category.Which.Doesnt.Exist"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveEmptyCategoryNotEmpty()
+        {
+            addonCatBuilder.AddCategory("TopCategory.SubCategory.SubSubCategory");
+
+            addonCatBuilder.RemoveEmptyCategory("TopCategory.SubCategory");
+            Assert.IsNotNull(addonCatBuilder.GetCategoryByName("TopCategory.SubCategory"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveEmptyBrowserCategory()
+        {
+            browserCatBuilder.AddCategory("TopCategory.SubCategory.SomeClass");
+            Assert.IsNotNull(
+                browserCatBuilder.GetCategoryByName("TopCategory.SubCategory.Classes.SomeClass"));
+
+            browserCatBuilder.RemoveEmptyCategory("TopCategory.SubCategory.Classes.SomeClass");
+            Assert.IsNull(browserCatBuilder.
+                GetCategoryByName("TopCategory.SubCategory.Classes.SomeClass"));
+
+            browserCatBuilder.RemoveEmptyCategory("TopCategory.SubCategory.Classes");
+            Assert.IsNull(browserCatBuilder.GetCategoryByName("TopCategory.SubCategory.Classes"));
+
+            browserCatBuilder.RemoveEmptyCategory("TopCategory.SubCategory");
+            Assert.IsNull(browserCatBuilder.GetCategoryByName("TopCategory.SubCategory"));
+
+            browserCatBuilder.RemoveEmptyCategory("TopCategory");
+            Assert.IsNull(browserCatBuilder.GetCategoryByName("TopCategory"));
+        }
+
         #endregion
 
         #region Categories Search
