@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RevitVersionNumber Condition=" '$(RevitVersionNumber)' == '' ">2014</RevitVersionNumber>
+	<REVIT_VERSION>Revit_$(RevitVersionNumber)</REVIT_VERSION>
+	<DYNAMOTESTAPI Condition=" '$(DYNAMOTESTAPI)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)</DYNAMOTESTAPI>
+	<OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)\$(REVIT_VERSION)</OutputPath>
+    <DYNAMOAPI  Condition=" '$(DYNAMOAPI)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)</DYNAMOAPI>
+	<TestOutputPath Condition=" '$(TestOutputPath)' == '' ">$(OutputPath)</TestOutputPath>
+  </PropertyGroup>
+</Project>
