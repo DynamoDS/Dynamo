@@ -261,7 +261,7 @@ namespace Dynamo.Tests
             // Surface and Poly Surface area should be same as they are generating same Surface
             // after lofting.
 
-            Assert.AreEqual(surface.Area, polySurface.Area);
+            Assert.AreEqual(surface.Area, polySurface.Area, 0.000001);
         }
 
         [Test]
@@ -303,13 +303,9 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), 
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5365_WrongFunctionPassingToWatchCrashingDynamo.dyn");
 
-            RunModel(openPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             AssertNoDummyNodes();
-
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // As test cases reaches here are Asserts are validated, it means there is no
             // crash while running the graph. No more verification needed.
@@ -365,8 +361,8 @@ namespace Dynamo.Tests
 
             for (int i = 0; i <= 1; i++)
             {
-                var allCurves = GetPreviewValueAtIndex(groupedObjects, i) as Point;
-                Assert.IsNotNull(allCurves);
+                var allPoints = GetPreviewValueAtIndex(groupedObjects, i) as Point;
+                Assert.IsNotNull(allPoints);
             }
 
             var groupedObjects1 = "ca293efd-5e4d-47f4-ab70-1278876dea36";
@@ -374,8 +370,8 @@ namespace Dynamo.Tests
 
             for (int i = 0; i <= 1; i++)
             {
-                var allCurves = GetPreviewValueAtIndex(groupedObjects1, i) as Point;
-                Assert.IsNotNull(allCurves);
+                var allPoints1 = GetPreviewValueAtIndex(groupedObjects1, i) as Point;
+                Assert.IsNotNull(allPoints1);
             }
         }
 
@@ -403,8 +399,8 @@ namespace Dynamo.Tests
 
             for (int i = 0; i <= 1; i++)
             {
-                var allCurves = GetPreviewValueAtIndex(groupPoints, i) as Point;
-                Assert.IsNotNull(allCurves);
+                var allPOints = GetPreviewValueAtIndex(groupPoints, i) as Point;
+                Assert.IsNotNull(allPOints);
             }
 
             var groupLines = "ca34f933-8431-4c52-b2db-a3e096a6269e";
@@ -412,8 +408,8 @@ namespace Dynamo.Tests
 
             for (int i = 0; i <= 1; i++)
             {
-                var allCurves = GetPreviewValueAtIndex(groupLines, i) as Line;
-                Assert.IsNotNull(allCurves);
+                var allLines = GetPreviewValueAtIndex(groupLines, i) as Line;
+                Assert.IsNotNull(allLines);
             }
         }
     }
