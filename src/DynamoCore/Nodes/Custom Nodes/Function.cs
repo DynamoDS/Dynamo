@@ -311,7 +311,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes.\n\nYou can specify the type of parameter. For example: x:var[]..[]")]
+    [NodeDescription("A function parameter, use with custom nodes.")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
