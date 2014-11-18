@@ -1,1 +1,0 @@
-start /B ..\..\bin\AnyCPU\Debug\NodeDumper.exe .\
