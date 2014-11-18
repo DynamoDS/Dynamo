@@ -108,8 +108,8 @@ namespace Dynamo.Tests
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5029
-            /* Cutting and pasting Curve.PointAtParameter in run automatically 
-             * causes "variable has not yet been defined" warning message */
+            // Cutting and pasting Curve.PointAtParameter in run automatically 
+            // causes "variable has not yet been defined" warning message 
 
             DynamoModel model = ViewModel.Model;
 
@@ -189,12 +189,228 @@ namespace Dynamo.Tests
             var curveExtendStart = GetPreviewValue("1da11460-3a04-4d1a-beb8-a434c0fd206c") as Curve;
             Assert.IsNotNull(curveExtendStart);
 
-            /* Checking length of Extended Curve is same as 
-                original Nurbs Curve as extend distance is 0 */
+            // Checking length of Extended Curve is same as 
+            // original Nurbs Curve as extend distance is 0 
 
             Assert.AreEqual(curveExtend.Length, nurbsCurve.Length);
             Assert.AreEqual(curveExtendEnd.Length, nurbsCurve.Length);
             Assert.AreEqual(curveExtendStart.Length, nurbsCurve.Length);
+        }
+
+        [Test]
+        public void MAGN_5155_CrashCurveDivideByLengthFromParameter()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5155
+            // Crash passing polycurve to Curve.DivideByLengthFromParameter
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(),
+    @"core\WorkflowTestFiles\GeometryDefects\MAGN_5155_CrashCurveDivideByLengthFromParameter.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+
+            var curves = "0503d40e-812b-47ae-8198-d4ed0ee91c91";
+            AssertPreviewCount(curves, 41);
+
+            // output will be 41 Curves, so putting verification 
+            // for all Extracted Curve to make sure there is no missing Curves or Null
+            for (int i = 0; i <= 40; i++)
+            {
+                var allCurves = GetPreviewValueAtIndex(curves, i) as Curve;
+                Assert.IsNotNull(allCurves);
+            }
+        }
+
+        [Test]
+        public void MAGN_5177_LofByGuideCurvesForSurfaceAndSolid()
+        {
+            // Details are available in defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5177
+            // Surface and Solid.byLoft ignores guide curve
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(),
+        @"core\WorkflowTestFiles\GeometryDefects\MAGN_5177_LofByGuideCurvesForSurfaceAndSolid.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(31, model.CurrentWorkspace.Connectors.Count);
+
+            var surface = GetPreviewValue("3d0b5d5b-4100-442f-b94d-b33184e4829d") as Surface;
+            Assert.IsNotNull(surface);
+
+            var polySurface = GetPreviewValue("ddaf06ec-8db4-48f1-b7a0-e44322aaeafa") as PolySurface;
+            Assert.IsNotNull(polySurface);
+
+            var solid = GetPreviewValue("7b3339c2-9de7-4330-ae0a-de23b3891524") as Solid;
+            Assert.IsNotNull(solid);
+
+            // Surface and Poly Surface area should be same as they are generating same Surface
+            // after lofting.
+
+            Assert.AreEqual(surface.Area, polySurface.Area, 0.000001);
+        }
+
+        [Test]
+        public void MAGN_5323_ListUniqueNotWorkingWithNull()
+        {
+            // Details are available in defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5323
+            // List.UniqueItems will not work on lists with null values
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(),
+            @"core\WorkflowTestFiles\GeometryDefects\MAGN_5323_ListUniqueNotWorkingWithNull.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+
+            var point = GetPreviewValueAtIndex("7f3fe860-9f4b-4bbf-848f-1a18606eb5f8", 0) as Point;
+            // below count will confirm that List.Unique performed and returnd correct number.
+            AssertPreviewCount("7f3fe860-9f4b-4bbf-848f-1a18606eb5f8", 5);
+            Assert.IsNotNull(point);
+            Assert.AreEqual(0, point.X, 0.000001);
+        }
+
+        [Test]
+        public void MAGN_5365_WrongFunctionPassingToWatchCrashingDynamo()
+        {
+            // Details are available in defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5365
+            // Crash with either Point.Origin or Vector.ZAxis wired to Watch node
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(), 
+            @"core\WorkflowTestFiles\GeometryDefects\MAGN_5365_WrongFunctionPassingToWatchCrashingDynamo.dyn");
+
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            AssertNoDummyNodes();
+
+            // As test cases reaches here are Asserts are validated, it means there is no
+            // crash while running the graph. No more verification needed.
+        }
+
+        [Test]
+        public void MAGN_5397_ListScanWithPolygon()
+        {
+            // Details are available in defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5397
+            // List.Scan is not working in attached example. 
+            // This is a regression from last release.
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(),
+                @"core\WorkflowTestFiles\GeometryDefects\MAGN_5397_ListScanWithPolygon.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            var finalSolid = GetPreviewValue("7ad36ecb-21f3-41f0-acb9-15017c48a19d") as Solid;
+            Assert.IsNotNull(finalSolid);
+        }
+
+        [Test]
+        public void MAGN_5407_GroupByKeyWithListOfPoints()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5407
+            // Crash passing polycurve to Curve.DivideByLengthFromParameter
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(), 
+            @"core\WorkflowTestFiles\GeometryDefects\MAGN_5407_GroupByKeyWithListOfPoints.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            var groupedObjects = "3c2f5adb-7967-47ca-962a-a4d24aaea8a9";
+            AssertPreviewCount(groupedObjects, 2);
+
+            for (int i = 0; i <= 1; i++)
+            {
+                var allPoints = GetPreviewValueAtIndex(groupedObjects, i) as Point;
+                Assert.IsNotNull(allPoints);
+            }
+
+            var groupedObjects1 = "ca293efd-5e4d-47f4-ab70-1278876dea36";
+            AssertPreviewCount(groupedObjects1, 2);
+
+            for (int i = 0; i <= 1; i++)
+            {
+                var allPoints1 = GetPreviewValueAtIndex(groupedObjects1, i) as Point;
+                Assert.IsNotNull(allPoints1);
+            }
+        }
+
+        [Test]
+        public void MAGN_5408_ListUniqueOnGeometryObjects()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5408
+            // Few things from Defects are working and few are not, adding tests for Point and Line.
+
+            DynamoModel model = ViewModel.Model;
+
+            string openPath = Path.Combine(GetTestDirectory(),
+            @"core\WorkflowTestFiles\GeometryDefects\MAGN_5408_ListUniqueOnGeometryObjects.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            var groupPoints = "de1cd6bd-6afd-4fc5-aefe-ecec6be87a7c";
+            AssertPreviewCount(groupPoints, 2);
+
+            for (int i = 0; i <= 1; i++)
+            {
+                var allPOints = GetPreviewValueAtIndex(groupPoints, i) as Point;
+                Assert.IsNotNull(allPOints);
+            }
+
+            var groupLines = "ca34f933-8431-4c52-b2db-a3e096a6269e";
+            AssertPreviewCount(groupLines, 2);
+
+            for (int i = 0; i <= 1; i++)
+            {
+                var allLines = GetPreviewValueAtIndex(groupLines, i) as Line;
+                Assert.IsNotNull(allLines);
+            }
         }
     }
 }
