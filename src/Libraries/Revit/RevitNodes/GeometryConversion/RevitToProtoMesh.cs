@@ -7,7 +7,6 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Revit.GeometryConversion
 {
-    [IsVisibleInDynamoLibrary(false)]
     [SupressImportIntoVM]
     public static class RevitToProtoMesh
     {

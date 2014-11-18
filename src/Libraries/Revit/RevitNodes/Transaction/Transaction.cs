@@ -30,6 +30,7 @@ namespace Revit.Transaction
         public static object End(object input)
         {
             TransactionManager.Instance.ForceCloseTransaction();
+            DocumentManager.Instance.CurrentUIDocument.RefreshActiveView();
             return input;
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ProtoCore.DSASM;
 
 namespace ProtoCore
 {
@@ -106,6 +107,7 @@ namespace ProtoCore
             public Guid GraphNodeGuid;
             public int AstID;
             public string FileName;
+            public SymbolNode UnboundVariableSymbolNode;
         }
     }
 
@@ -447,6 +449,19 @@ namespace ProtoCore
             this.MessageHandler = new ConsoleOutputStream();
         }
 
+        /// <summary>
+        /// Remove unbound variable warnings that match all symbols in the symbolList
+        /// </summary>
+        /// <param name="symbolList"></param>
+        public void RemoveUnboundVariableWarnings(HashSet<SymbolNode> symbolList)
+        {
+            foreach (SymbolNode symbol in symbolList)
+            {
+                // Remove all warnings that match the symbol
+                warnings.RemoveAll(w => w.ID == BuildData.WarningID.kIdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
+            }
+        }
+
         public void SetStream(System.IO.TextWriter writer)
         {
             //  flush the stream first
@@ -567,12 +582,33 @@ namespace ProtoCore
             LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
         }
 
+        /// <summary>
+        /// Logs the unbound variable warning and sets the unbound symbol
+        /// </summary>
+        /// <param name="unboundSymbol"></param>
+        /// <param name="message"></param>
+        /// <param name="fileName"></param>
+        /// <param name="line"></param>
+        /// <param name="col"></param>
+        /// <param name="graphNode"></param>
+        public void LogUnboundVariableWarning(
+                                SymbolNode unboundSymbol,  
+                                string message, 
+                                string fileName = null, 
+                                int line = -1, 
+                                int col = -1, 
+                                AssociativeGraph.GraphNode graphNode = null)
+        {
+            LogWarning(BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, line, col, graphNode, unboundSymbol);
+        }
+
         public void LogWarning(BuildData.WarningID warningID, 
                                string message, 
                                string fileName = null, 
                                int line = -1, 
                                int col = -1, 
-                               AssociativeGraph.GraphNode graphNode = null)
+                               AssociativeGraph.GraphNode graphNode = null,
+                               SymbolNode associatedSymbol = null)
         { 
             var entry = new BuildData.WarningEntry 
             { 
@@ -582,7 +618,8 @@ namespace ProtoCore
                 Column = col, 
                 GraphNodeGuid = graphNode == null ? default(Guid) : graphNode.guid,
                 AstID = graphNode == null? DSASM.Constants.kInvalidIndex : graphNode.OriginalAstID,
-                FileName = fileName 
+                FileName = fileName,
+                UnboundVariableSymbolNode = associatedSymbol
             };
             warnings.Add(entry);
 

@@ -1,4 +1,5 @@
 ﻿using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -342,26 +343,18 @@ namespace ProtoCore.Utils
 
             expression = expression.Replace("\r\n", "\n");
 
-            bool parseSuccess = false;
             try
             {
-                return ParseUserCodeCore(core, expression, postfixGuid, ref parseSuccess);
+                return ParseUserCodeCore(core, expression);
             }
             catch
             {
                 // For modifier blocks, language blocks, etc. that are currently ignored
-                if (parseSuccess)
-                    return astNodes;
-
-                // Reset core above as we don't wish to propagate these errors - pratapa
-                core.ResetForPrecompilation();
-
-                // Use manual parsing for invalid functional associative statement errors like for "a+b;"
-                return ParseNonAssignments(core, expression, postfixGuid);
+                return astNodes;
             }
         }
 
-        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression, string postfixGuid, ref bool parseSuccess)
+        private static IEnumerable<AST.Node> ParseUserCodeCore(Core core, string expression)
         {
             List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
@@ -370,7 +363,6 @@ namespace ProtoCore.Utils
             core.ParsingMode = ParseMode.AllowNonAssignment;
 
             ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(expression, core);
-            parseSuccess = true;
             List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
             Validity.Assert(nodes != null);
 
@@ -411,9 +403,10 @@ namespace ProtoCore.Utils
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
-                            string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                            string name = Constants.kTempVarForNonAssignment + index.ToString();
                             BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
                             astNodes.Add(newNode);
+                            index++;
                         }
                         else
                         {
@@ -424,106 +417,14 @@ namespace ProtoCore.Utils
                     else
                     {
                         // These nodes are non-assignment nodes
-                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                        string name = Constants.kTempVarForNonAssignment + index.ToString();
                         BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
                         astNodes.Add(newNode);
+                        index++;
                     }
                 }
             }
             return astNodes;
-        }
-
-        private static IEnumerable<AST.Node> ParseNonAssignments(Core core, string expression, string postfixGuid)
-        {
-            List<string> compiled = new List<string>();
-
-            string[] expr = GetStatementsString(expression);
-            foreach (string s in expr)
-                compiled.Add(s);
-
-            for (int i = 0; i < compiled.Count(); i++)
-            {
-                if (compiled[i].StartsWith("\n"))
-                {
-                    string newlines = string.Empty;
-                    int lastPosButOne = 0;
-                    string original = compiled[i];
-                    for (int j = 0; j < original.Length; j++)
-                    {
-                        if (!original[j].Equals('\n'))
-                        {
-                            lastPosButOne = j;
-                            break;
-                        }
-                        else
-                            newlines += original[j];
-                    }
-                    string newStatement = original.Substring(lastPosButOne);
-
-                    if (!IsNotAssigned(newStatement))
-                    {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
-                        newStatement = name + " = " + newStatement;
-                    }
-                    compiled[i] = newlines + newStatement;
-                }
-                else
-                {
-                    if (!IsNotAssigned(compiled[i]))
-                    {
-                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
-                        compiled[i] = name + " = " + compiled[i];
-                    }
-                }
-            }
-            StringBuilder newCode = new StringBuilder();
-            compiled.ForEach(x => newCode.Append(x));
-
-            try
-            {
-                ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(newCode.ToString(), core);
-                return ParserUtils.GetAstNodes(codeBlockNode);
-            }
-            catch (Exception)
-            {
-                return new List<ProtoCore.AST.Node>();
-            }
-        }
-
-        /*Given a block of code that has only usual statements and Modifier Stacks*/
-        private static string[] GetStatementsString(string input)
-        {
-            var expr = new List<string>();
-
-            expr.AddRange(GetBinaryStatementsList(input));
-            return expr.ToArray();
-        }
-
-        /*attempt*/
-        /*Given a block of code that has only usual binary statements*/
-        private static List<string> GetBinaryStatementsList(string input)
-        {
-            var expr = new List<string>();
-            int index = 0;
-            int oldIndex = 0;
-            do
-            {
-                index = input.IndexOf(";", oldIndex);
-                if (index != -1)
-                {
-                    string sub;
-                    if (index < input.Length - 1)
-                    {
-                        if (input[index + 1].Equals('\n'))
-                            index += 1;
-                    }
-                    sub = input.Substring(oldIndex, index - oldIndex + 1);
-                    expr.Add(sub);
-                    //index++;
-                    oldIndex = index + 1;
-                }
-            } while (index != -1);
-            return expr;
         }
 
         private static bool IsNotAssigned(string code)

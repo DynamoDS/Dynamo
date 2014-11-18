@@ -377,6 +377,37 @@ namespace Dynamo.Tests
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
         }
 
+        [Test]
+        public void TestFileDirtyOnLacingChange()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
+            ViewModel.OpenCommand.Execute(openPath);
+
+            WorkspaceModel workspace = ViewModel.CurrentSpace;            
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+
+            //Assert HasUnsavedChanges is false 
+            Assert.AreEqual(false, workspace.HasUnsavedChanges);
+
+            Assert.AreEqual(5, workspace.Nodes.Count);          
+            
+            //Get the first node and assert the lacing strategy
+            var node = ViewModel.Model.Nodes[0];
+            Assert.IsNotNull(node);
+            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
+
+            var workSpaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var nodes = workSpaceViewModel.Nodes;
+            var nodeViewModel = nodes.First(x => x.NodeLogic == node);
+            
+            //change the lacing strategy
+            nodeViewModel.SetLacingTypeCommand.Execute("Longest");
+            Assert.AreEqual(LacingStrategy.Longest, node.ArgumentLacing);
+          
+            Assert.AreEqual(true, workspace.HasUnsavedChanges);
+        }
+
         // SaveImage
 
         //[Test]
@@ -553,6 +584,10 @@ namespace Dynamo.Tests
             models.Add(null);
             workspace.RecordAndDeleteModels(models);
             Assert.AreEqual(false, workspace.CanUndo);
+
+            NodeModel node = ViewModel.Model.Nodes[0];
+            
+
         }
 
         [Test]
