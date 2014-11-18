@@ -364,7 +364,7 @@ namespace DSOffice
                         }
                         else
                         {
-                            output[i, j] = item;
+                            output[i, j] = item.ToString();
                         }
                     }
                         
