@@ -83,6 +83,15 @@ namespace Dynamo.Core.Threading
             if (!nodeModel.IsUpdated && (!nodeModel.RequiresRecalc))
                 return false; // Not has not been updated at all.
 
+            // If a node is in either of the following states, then it will not 
+            // produce any geometric output. Bail after clearing the render packages.
+            if (nodeModel.IsInErrorState || !nodeModel.IsVisible)
+                return false;
+
+            // Without AstIdentifierForPreview, a node cannot have MirrorData.
+            if (string.IsNullOrEmpty(nodeModel.AstIdentifierForPreview.Value))
+                return false;
+
             drawableIds = initParams.DrawableIds;
             if (!drawableIds.Any())
                 return false; // Nothing to be drawn.

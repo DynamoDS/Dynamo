@@ -302,6 +302,14 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        public void TransposeEmpty2DArray()
+        {
+            string code = @"x = {{}}; y = Transpose(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("y", new object[] { });
+        }
+
+        [Test]
         //Test "LoadCSV"
         public void BIM23_LoadCSV()
         {

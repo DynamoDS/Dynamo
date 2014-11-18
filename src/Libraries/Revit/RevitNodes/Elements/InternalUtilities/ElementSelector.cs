@@ -8,7 +8,6 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
-    //[SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
     public class ElementSelector
     {
@@ -18,7 +17,7 @@ namespace Revit.Elements
         /// <typeparam name="T">The type of the Revit element to select</typeparam>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static IEnumerable<Element> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
+        internal static IEnumerable<Element> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
         {
             return DocumentManager.Instance.ElementsOfType<T>().Select(x => x.ToDSType(isRevitOwned));
         }
@@ -61,7 +60,7 @@ namespace Revit.Elements
         /// <param name="uniqueId">The unique id of the element to select</param>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static Element ByUniqueId(string uniqueId, bool isRevitOwned)
+        public static Element ByUniqueId(string uniqueId, bool isRevitOwned = true)
         {
             var ele = InternalGetElementByUniqueId(uniqueId);
 

@@ -52,6 +52,11 @@
         HeaderBorderError="{StaticResource headerBorderError}"
         OuterBorderError="{StaticResource outerBorderError}"
         BodyBackgroundError="{StaticResource bodyBackgroundError}"
+        HeaderBackgroundBroken="{StaticResource headerBackgroundBroken}"
+        HeaderForegroundBroken="{StaticResource headerForegroundBroken}"
+        HeaderBorderBroken="{StaticResource headerBorderBroken}"
+        OuterBorderBroken="{StaticResource outerBorderBroken}"
+        BodyBackgroundBroken="{StaticResource bodyBackgroundBroken}"
         OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
 

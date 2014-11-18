@@ -1285,7 +1285,6 @@ r = Equals(x, {41, 42});
 
 
         [Test]
-        [Category("Failure")]
         public void TestFunctionModification04()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161
@@ -3729,7 +3728,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
 @"
     a = 2;
-",
+"
 
             };
 
@@ -3750,6 +3749,85 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("b", 20);
+        }
+
+        [Test]
+        public void TestReExecuteRecursiveFunction02()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = 1;
+", 
+
+@"
+    def f(x)
+    {
+        i = [Imperative]
+        {
+            if(x == 1)
+            {
+                return = [Associative]
+                {
+                   return = 10;
+                }
+            }
+            else if (x == 2)
+            {
+                return = [Associative]
+                {
+                    return = 20;
+                }
+            }
+            else 
+            {
+                return = [Associative]
+                {
+                    return = 30;
+                }
+            }
+        }
+        return = i;
+    }	
+    b = f(a);
+",
+
+@"
+    a = 2;
+",
+
+@"
+    a = 3;
+"
+
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 10);
+
+            // Modify
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 20);
+
+
+            // Modify
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid1, codes[3]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 30);
         }
 
         [Test]
