@@ -80,9 +80,9 @@
                the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
                as no mouse events are generated.This happens only for codeblock node. 
             -->
-            <Rectangle Fill="Transparent" Margin="-25,0,-25,0"                      
+            <Rectangle Fill="Transparent" Margin="-25,-10,-25,-10"                      
                        SnapsToDevicePixels="True"
-                       MinWidth="26"
+                       MinWidth="26"                       
                        IsHitTestVisible="True"
                        >
                 <interactivity:Interaction.Triggers>
@@ -95,22 +95,7 @@
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
-                </interactivity:Interaction.Triggers>
-                <!--<Rectangle.Style>
-                    <Style TargetType="{x:Type Rectangle}">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">                                
-                                <Setter Property="Panel.ZIndex" Value="99999"/>
-                                <Setter Property="Fill" Value="Orange"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="False">
-                                <Setter Property="Panel.ZIndex" Value="-1"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Rectangle.Style>-->
+                </interactivity:Interaction.Triggers>               
             </Rectangle>
             <Rectangle Name="highlightOverlay"
                        Fill="White"
@@ -131,8 +116,7 @@
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Opacity"
-                                        Value="1.0"></Setter>
-                               
+                                        Value="1.0"></Setter>                               
                             </Trigger>
                             <Trigger Property="IsMouseOver"
                                      Value="False">
