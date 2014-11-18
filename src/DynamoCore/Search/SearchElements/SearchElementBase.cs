@@ -119,15 +119,33 @@ namespace Dynamo.Search.SearchElements
         [DataMember]
         public double Weight { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of words used for element search.
+        /// </summary>
         [DataMember]
         public IEnumerable<string> Keywords { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of node inputs.
+        /// </summary>
         [DataMember]
         public IEnumerable<string> Parameters { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of node outputs.
+        /// </summary>
         [DataMember]
         public IEnumerable<string> ReturnKeys { get; private set; }
-        
+
+        /// <summary>
+        /// This property represents the default value for each of the input parameters.
+        /// It can potentially contain primitive value types such as 'int', 'double', 'bool'
+        /// and 'string'. If no default value is given to an input parameter, then it has 
+        /// the corresponding entry in 'DefaultValues' as 'null'.
+        /// </summary>
+        [DataMember]
+        public IEnumerable<object> DefaultValues { get; private set; }
+
         public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
         {
             Category = node.FullCategoryName;
@@ -138,7 +156,7 @@ namespace Dynamo.Search.SearchElements
             Searchable = node.Searchable;
             Weight = node.Weight;
             Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
-            
+
             PopulateKeysAndParameters(dynamoModel);
         }
 
@@ -174,16 +192,9 @@ namespace Dynamo.Search.SearchElements
                 }
             }
 
-            if (newElement != null)
-            {
-                Parameters = newElement.InPorts.Select(elem => elem.PortName);
-                ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-            }
-            else
-            {
-                Parameters = new[] { "Input" };
-                ReturnKeys = new[] { "Output" };
-            }
+            Parameters = newElement.InPorts.Select(elem => elem.PortName);
+            ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
+            DefaultValues = newElement.InPortData.Select(elem => elem.DefaultValue);
         }
     }
 }

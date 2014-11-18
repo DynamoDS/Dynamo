@@ -8,12 +8,10 @@ using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
-using Dynamo.Core;
 using Dynamo.Core.Threading;
 
 namespace DynamoWebServer.Messages
@@ -29,7 +27,7 @@ namespace DynamoWebServer.Messages
         private AutoResetEvent nextRunAllowed = new AutoResetEvent(false);
         private bool evaluationTookPlace = false;
         private int maxMsToWait = 20000;
-        
+
         public MessageHandler(DynamoModel dynamoModel)
         {
             jsonSettings = new JsonSerializerSettings
@@ -147,7 +145,7 @@ namespace DynamoWebServer.Messages
             {
                 if (!Guid.TryParse(nodePos.ModelId, out nodeId))
                     continue;
-                
+
                 node = workspaceToUpdate.Nodes.FirstOrDefault(n => n.GUID == nodeId);
                 if (node != null)
                 {
@@ -161,7 +159,7 @@ namespace DynamoWebServer.Messages
         private WorkspaceModel GetWorkspaceByGuid(string guidStr)
         {
             Guid guidValue;
-            if (!Guid.TryParse(guidStr, out guidValue))
+            if (!Guid.TryParse(guidStr, out guidValue) || guidValue.Equals(Guid.Empty))
                 return dynamoModel.HomeSpace;
 
             var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
