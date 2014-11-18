@@ -259,7 +259,7 @@ namespace Dynamo.Utilities
                         else
                             dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
 
-                        OnAssemblyLoaded(assembly);
+                        
                     }
                     catch (Exception e)
                     {
@@ -268,6 +268,7 @@ namespace Dynamo.Utilities
                         dynamoModel.Logger.Log(e);
                     }
 
+                    OnAssemblyLoaded(assembly);
                 }
             }
             catch (Exception e)
