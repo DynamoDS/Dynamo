@@ -260,6 +260,20 @@ namespace DSCore
                 item //Add item to the end of cloned list.
             };
         }
+        
+        /// <summary>
+        ///     Inserts an item into a list at a specified index.
+        /// </summary>
+        /// <param name="item">Item to be inserted.</param>
+        /// <param name="list">List to insert in to.</param>
+        /// <param name="index">Index to insert item at.</param>
+        /// <search>insert,add,item</search>
+        public static IList InsertItemAtIndex(object item, IList list, int index)
+        {
+            var result = new ArrayList(list);
+            result.Insert(index, item);
+            return result;
+        }
 
         /// <summary>
         ///     Fetches an amount of items from the start of the list.
