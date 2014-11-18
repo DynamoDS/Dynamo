@@ -1,6 +1,0 @@
-[Imperative]
-{
-    for (i in 0..2000000)
-    {
-    }
-}

@@ -1,4 +1,0 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <PausePlaybackCommand Tag="OpenFile" PauseDurationInMs="20" />
-  <PausePlaybackCommand Tag="CheckButtonIsDisabled" PauseDurationInMs="20" />
-</Commands>
