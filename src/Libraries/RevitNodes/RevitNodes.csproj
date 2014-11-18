@@ -196,7 +196,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="$(SolutionDir)RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>

@@ -13,7 +13,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Applications</RootNamespace>
     <AssemblyName>DynamoRevitDS</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -34,7 +33,6 @@
     <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>618</NoWarn>
-    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoRevitDS.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
   </PropertyGroup>
@@ -175,11 +173,11 @@
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\RevitNodes\RevitNodes.csproj">
+    <ProjectReference Include="$(SolutionDir)Libraries\RevitNodes\RevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>RevitNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="$(SolutionDir)Libraries\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>

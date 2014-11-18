@@ -13,7 +13,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RevitNodesTests</RootNamespace>
     <AssemblyName>RevitNodesTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -140,7 +139,7 @@
       <HintPath>$(DYNAMOTESTAPI)\TestServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="..\RevitTestServices\RevitTestServices.csproj">
+    <ProjectReference Include="$(SolutionDir)..\test\Libraries\RevitTestServices\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
       <Name>RevitTestServices</Name>
       <Private>False</Private>

@@ -13,7 +13,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RevitSystemTests</RootNamespace>
     <AssemblyName>RevitSystemTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -168,12 +167,12 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
+    <ProjectReference Include="$(SolutionDir)..\test\Libraries\RevitNodesTests\RevitNodesTests.csproj">
       <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
       <Name>RevitNodesTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\RevitTestServices\RevitTestServices.csproj">
+    <ProjectReference Include="$(SolutionDir)..\test\Libraries\RevitTestServices\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
       <Name>RevitTestServices</Name>
       <Private>False</Private>
