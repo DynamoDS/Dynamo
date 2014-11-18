@@ -8,7 +8,7 @@ using System.Text;
 namespace DSCoreNodesUI.StringNodes
 {
     [NodeName("FromObject")]
-    [NodeDescription("Convert an object to a string representation.")]
+    [NodeDescription("Convert an object to a string representation.\n\n__ToStringFromObject(obj:var):string")]
     [NodeCategory("Core.String.Actions")]
     [IsDesignScriptCompatible]
     public class FromObject: NodeModel
@@ -34,7 +34,7 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("FromArray")]
-    [NodeDescription("Convert an array to a string representation.")]
+    [NodeDescription("Convert an array to a string representation.\n\n__ToStringFromArray(arr:var[]..[]):string")]
     [NodeCategory("Core.String.Actions")]
     [IsDesignScriptCompatible]
     public class FromArray : NodeModel
