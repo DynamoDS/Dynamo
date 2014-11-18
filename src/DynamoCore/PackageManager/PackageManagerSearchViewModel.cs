@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 using Dynamo.Search;
@@ -442,6 +443,9 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
+            // if last sync isn't populated, we can't search
+            if (LastSync == null) return;
+
             this.SearchText = query;
 
             var t = Search(query);
@@ -505,17 +509,17 @@ namespace Dynamo.PackageManager
         /// <param name="search"> The search query </param>
         internal IEnumerable<PackageManagerSearchElement> Search(string query)
         {
+            if (LastSync == null) return new List<PackageManagerSearchElement>();
+
             if (!String.IsNullOrEmpty(query))
             {
                 return SearchDictionary.Search( query, MaxNumSearchResults);
             }
-            else
-            {
-                // with null query, don't show deprecated packages
-                List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
-                Sort(list, this.SortingKey);
-                return list;
-            }
+
+            // with null query, don't show deprecated packages
+            List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
+            Sort(list, this.SortingKey);
+            return list;
         }
 
         /// <summary>
