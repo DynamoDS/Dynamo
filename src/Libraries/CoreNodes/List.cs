@@ -274,6 +274,20 @@ namespace DSCore
             result.Insert(index, item);
             return result;
         }
+        
+        /// <summary>
+        ///     Replaces an item into a list at a specified index.
+        /// </summary>
+        /// <param name="newItem">Item to be used as a replacement.</param>
+        /// <param name="list">A list.</param>
+        /// <param name="index">Index to replace item at.</param>
+        /// <search>replace,swap</search>
+        public static IList ReplaceItemAtIndex(object newItem, IList list, int index)
+        {
+            var result = new ArrayList(list);
+            result[index] = newItem;
+            return result;
+        }
 
         /// <summary>
         ///     Fetches an amount of items from the start of the list.
