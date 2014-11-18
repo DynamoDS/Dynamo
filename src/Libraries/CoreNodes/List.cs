@@ -322,6 +322,8 @@ namespace DSCore
         /// <search>get,item,index,fetch</search>
         public static object GetItemAtIndex(IList list, int index)
         {
+            while (index < 0)
+                index += list.Count;
             return list[index];
         }
 
