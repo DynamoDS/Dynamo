@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -1395,6 +1395,15 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "ArgumentLacing")
+            {
+                LacingStrategy strategy = LacingStrategy.Disabled;
+                if (!Enum.TryParse(value, out strategy))
+                    strategy = LacingStrategy.Disabled;
+                this.ArgumentLacing = strategy;
                 return true;
             }
 
