@@ -103,6 +103,7 @@ namespace Dynamo.Models
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
+        private Visibility processingImageVisible = Visibility.Hidden;
         #endregion
 
         #region Static properties
@@ -248,6 +249,16 @@ namespace Dynamo.Models
             }
         }
         public bool RunInDebug { get; set; }
+
+        public Visibility ProcessingImageEnabled
+        {
+            get { return processingImageVisible; }
+            set
+            {
+                processingImageVisible = value;
+                RaisePropertyChanged("ProcessingImageEnabled");
+            }
+        }
 
         /// <summary>
         /// All nodes in all workspaces. 
@@ -551,6 +562,7 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunEnabled = false; // Disable 'Run' button.
+                ProcessingImageEnabled = Visibility.Visible;
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -621,6 +633,7 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
+           // ProcessingImageEnabled = Visibility.Hidden;
             
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);

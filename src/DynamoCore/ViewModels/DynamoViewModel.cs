@@ -75,6 +75,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public Visibility ProcessingImageEnabled
+        {
+            get { return model.ProcessingImageEnabled; }
+            set { model.ProcessingImageEnabled = value; }
+        }
+
         public virtual bool CanRunDynamically
         {
             get
@@ -759,6 +765,8 @@ namespace Dynamo.ViewModels
             }
             else if (e.PropertyName == "RunEnabled")
                 RaisePropertyChanged("RunEnabled");
+            else if (e.PropertyName == "ProcessingImageEnabled")
+                RaisePropertyChanged("ProcessingImageEnabled");
         }
 
         private void CleanUp(DynamoModel dynamoModel)
