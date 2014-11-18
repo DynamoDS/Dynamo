@@ -12,7 +12,8 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryConversion
 {
-    internal static class GeometryObjectConverter
+    [SupressImportIntoVM]
+    public static class GeometryObjectConverter
     {
         /// <summary>
         /// Convert a GeometryObject to an applicable ProtoGeometry type.
