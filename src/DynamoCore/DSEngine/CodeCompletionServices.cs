@@ -126,6 +126,33 @@ namespace Dynamo.DSEngine.CodeCompletion
             return completions;
         }
 
+        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete, Guid guid)
+        {
+            List<CompletionData> completions = new List<CompletionData>();
+
+            // Add matching Classes
+            var groups = StaticMirror.GetAllTypes(core)
+                                     .Where(x => x.Alias.ToLower().StartsWith(stringToComplete.ToLower()))
+                                     .GroupBy(x => x.Alias);
+
+            // For those class names that have collisions, list their fully qualified names in completion window
+            foreach (var group in groups)
+            {
+                if (group.Count() > 1)
+                {
+                    completions.AddRange(group.
+                        Where(x => !x.IsHiddenInLibrary).
+                        Select(x => CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true)));
+                }
+                else
+                    completions.AddRange(group.
+                        Where(x => !x.IsHiddenInLibrary).
+                        Select(x => CompletionData.ConvertMirrorToCompletionData(x)));
+            }
+
+            return completions;
+        }
+
         /// <summary>
         /// Returns the list of function signatures of all overloads of a given method
         /// </summary>

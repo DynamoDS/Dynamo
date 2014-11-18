@@ -414,6 +414,13 @@ namespace ProtoCore
                     Select(x => new ClassMirror(core, x));
             }
 
+            public static IEnumerable<ClassMirror> GetAllTypes(Core core)
+            {
+                return core.ClassTable.ClassNodes.
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Select(x => new ClassMirror(core, x));
+            }
+
             public static IEnumerable<StaticMirror> GetGlobals(Core core)
             {
                 List<StaticMirror> members = new List<StaticMirror>();

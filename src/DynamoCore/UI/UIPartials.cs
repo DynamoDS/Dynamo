@@ -507,21 +507,14 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(InputSymbol)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
+            var input = new ParameterEditor(nodeUI.ViewModel);
 
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
+            nodeUI.inputGrid.Children.Add(input);
+            Grid.SetColumn(input, 0);
+            Grid.SetRow(input, 0);
 
-            tb.DataContext = this;
-            tb.BindToProperty(
+            input.DataContext = this;
+            input.SetBinding(ParameterEditor.ParameterProperty, 
                 new Binding("InputSymbol")
                 {
                     Mode = BindingMode.TwoWay,
