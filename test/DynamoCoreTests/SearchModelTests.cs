@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -430,7 +432,112 @@ namespace Dynamo.Tests
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
 
+        // Test for nested structure:
+        // 
+        // TheAssembly
+        //    SubCategory1
+        //       SubSubCategory
+        //          SSCNode1
+        //       BestNode1
+        //       BestNode2
+        //       
+        // Test checks if has one BrowserInternalElementForClasses, one "SubCategory1"
+        // 
+        // Makes sense what added first: "SubSubCategory" class or "BestNode1" node.
+
+        /// <summary>
+        /// Flow when class is added first.
+        /// </summary>
         [Test]
+        [Category("UnitTests")]
+        public void AddCategoryNestedStructNamspaceDualityClassAddedFirst()
+        {
+            // Node "TheAssembly.SubCategory1.SubSubCategory.SSCNode1" adding.
+            DSEngine.FunctionGroup functionGroup =
+                new DSEngine.FunctionGroup("SubCategory1.SubSubCategory.SSCNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            DSEngine.FunctionDescriptor functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1.SubSubCategory",
+                    "SSCNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode1" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode2" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode2");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode2", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            var subCategory1 = search.BrowserCategoriesBuilder.GetCategoryByName("TheAssembly.SubCategory1");
+
+            Assert.IsNotNull(subCategory1);
+            Assert.AreEqual(3, subCategory1.Items.Count);
+            Assert.IsTrue(subCategory1.Items[0] is BrowserInternalElementForClasses);
+        }
+
+        /// <summary>
+        /// Flow when members are added first.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void AddCategoryNestedStructNamspaceDualityMemberAddedFirst()
+        {
+            // Node "TheAssembly.SubCategory1.BestNode1" adding.
+            DSEngine.FunctionGroup functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            DSEngine.FunctionDescriptor functionDescriptor =
+                new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                    "BestNode1", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.BestNode2" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.BestNode2");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+            functionDescriptor = new DSEngine.FunctionDescriptor("TheAssembly", "SubCategory1",
+                "BestNode2", null, null, DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            // Node "TheAssembly.SubCategory1.SubSubCategory.SSCNode1" adding.
+            functionGroup = new DSEngine.FunctionGroup("SubCategory1.SubSubCategory.SSCNode1");
+            functionGroup.ElementType = SearchModel.ElementType.Regular;
+
+            functionDescriptor = new DSEngine.FunctionDescriptor("TheAssembly",
+                "SubCategory1.SubSubCategory", "SSCNode1", null, null,
+                DSEngine.FunctionType.InstanceMethod);
+
+            functionGroup.AddFunctionDescriptor(functionDescriptor);
+            search.Add(new List<DSEngine.FunctionGroup> { functionGroup });
+
+            var subCategory1 = search.BrowserCategoriesBuilder.GetCategoryByName("TheAssembly.SubCategory1");
+
+            Assert.IsNotNull(subCategory1);
+            Assert.AreEqual(3, subCategory1.Items.Count);
+            Assert.IsTrue(subCategory1.Items[0] is BrowserInternalElementForClasses);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ProcessNodeCategoryTests()
         {
             SearchElementGroup group = SearchElementGroup.None;
@@ -457,6 +564,72 @@ namespace Dynamo.Tests
             category = "Core.List.Create";
             Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
             Assert.AreEqual(SearchElementGroup.Create, group);
+        }
+
+        #endregion
+
+        #region Move Nodes
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementWithValidInput()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "BestNode", "TopCategory.Destination", "", ""));
+            var destination = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Destination");
+
+            Assert.AreEqual(1, destination.Items.Count);
+
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode1", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode2", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode3", "TopCategory.Source", "", ""));
+            var source = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Source");
+
+            Assert.AreEqual(3, source.Items.Count);
+
+            search.AddonCategoriesBuilder.MoveElementChildren(source, destination);
+
+            Assert.AreEqual(4, destination.Items.Count);
+            Assert.AreEqual(0, source.Items.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementWithInvalidInput()
+        {
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(null, null);
+
+            var source = search.AddonCategoriesBuilder.AddCategory("TopCategory.Source");
+            var destination = search.AddonCategoriesBuilder.AddCategory("TopCategory.Destination");
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(null, destination);
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(source, null);
+
+            Assert.AreEqual(0, source.Items.Count);
+            Assert.AreEqual(0, destination.Items.Count);
+
+            // No exception expected.
+            search.AddonCategoriesBuilder.MoveElementChildren(source, destination);
+
+            Assert.AreEqual(0, source.Items.Count);
+            Assert.AreEqual(0, destination.Items.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MoveElementSourceDestinationAreSame()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode1", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode2", "TopCategory.Source", "", ""));
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "SourceNode3", "TopCategory.Source", "", ""));
+            var source = search.AddonCategoriesBuilder.GetCategoryByName("TopCategory.Source");
+
+            search.AddonCategoriesBuilder.MoveElementChildren(source, source);
+
+            Assert.AreEqual(3, source.Items.Count);
         }
 
         #endregion
@@ -534,6 +707,19 @@ namespace Dynamo.Tests
             results = search.Search("Peter");
 
             Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanRemoveEmptyCategoryIfNodeExists()
+        {
+            search.Add(new CustomNodeInfo(Guid.NewGuid(), "BestNode", "TopCategory.Category",
+                "description", ""));
+            var results = search.Search("BestNode");
+            Assert.AreEqual(1, results.Count());
+
+            search.AddonCategoriesBuilder.RemoveEmptyCategory("TopCategory.Category");
+            Assert.AreEqual(1, results.Count());
         }
 
         #endregion

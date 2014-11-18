@@ -78,9 +78,9 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
-            if (parameters.Any())
+            if (Parameters.Any())
             {
-                InputParameters = parameters.Select(
+                InputParameters = Parameters.Select(
                     par =>
                     {
                         return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
