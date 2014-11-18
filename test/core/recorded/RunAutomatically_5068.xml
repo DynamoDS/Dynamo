@@ -1,0 +1,9 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath="C:\DDSGit\Dynamo\test\core\recorded\var.dyn" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="File1" PauseDurationInMs="20" />
+  <OpenFileCommand XmlFilePath="C:\DDSGit\Dynamo\test\core\recorded\var2.dyn" />
+  <PausePlaybackCommand Tag="File2" PauseDurationInMs="20" />
+  <OpenFileCommand XmlFilePath="C:\DDSGit\Dynamo\test\core\recorded\var3.dyn" />
+  <PausePlaybackCommand Tag="File3" PauseDurationInMs="20" />
+</Commands>
