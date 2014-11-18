@@ -133,7 +133,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;

@@ -7,9 +7,10 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Revit.GeometryConversion
 {
-    internal static class RevitToProtoMesh
+    [SupressImportIntoVM]
+    public static class RevitToProtoMesh
     {
-        internal static Autodesk.DesignScript.Geometry.Mesh ToProtoType(this Autodesk.Revit.DB.Mesh mesh, 
+        public static Autodesk.DesignScript.Geometry.Mesh ToProtoType(this Autodesk.Revit.DB.Mesh mesh, 
             bool performHostUnitConversion = true)
         {
             var pts = mesh.Vertices.Select(x => x.ToPoint(performHostUnitConversion));
@@ -22,7 +23,7 @@ namespace Revit.GeometryConversion
 
         }
 
-        internal static Autodesk.DesignScript.Geometry.Mesh[] ToProtoType(this Autodesk.Revit.DB.MeshArray meshArray,
+        public static Autodesk.DesignScript.Geometry.Mesh[] ToProtoType(this Autodesk.Revit.DB.MeshArray meshArray,
             bool performHostUnitConversion = true)
         {
             return meshArray.Cast<Autodesk.Revit.DB.Mesh>().Select(x => x.ToProtoType(performHostUnitConversion)).ToArray();
