@@ -537,5 +537,35 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeCategoryExpandStateTest()
+        {
+            // No exception expected.
+            search.ChangeCategoryExpandState(null, false);
+
+            // No exception expected.
+            search.ChangeCategoryExpandState("", false);
+
+            // No exception expected.
+            search.ChangeCategoryExpandState("Category.Which.Doesnt.Exist", true);
+
+            search.BrowserCategoriesBuilder.AddCategory("TopCategory.SubCategory.SomeClass");
+
+            search.ChangeCategoryExpandState("TopCategory.SubCategory", true);
+            Assert.IsTrue(search.BrowserCategoriesBuilder.
+                GetCategoryByName("TopCategory.SubCategory").IsExpanded);
+
+            search.ChangeCategoryExpandState("TopCategory.SubCategory", false);
+            Assert.IsFalse(search.BrowserCategoriesBuilder.
+                GetCategoryByName("TopCategory.SubCategory").IsExpanded);
+
+            search.AddonCategoriesBuilder.AddCategory("AddonCategory.SubCategory.SomeClass");
+
+            search.ChangeCategoryExpandState("AddonCategory.SubCategory", true);
+            Assert.IsTrue(search.AddonCategoriesBuilder.
+                GetCategoryByName("AddonCategory.SubCategory").IsExpanded);
+        }
     }
 }

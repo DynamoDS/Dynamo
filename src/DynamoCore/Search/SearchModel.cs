@@ -637,7 +637,7 @@ namespace Dynamo.Search
             if (category == null)
                 category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
 
-            if (category != null || category.IsExpanded != isExpanded)
+            if (category != null && category.IsExpanded != isExpanded)
                 category.IsExpanded = isExpanded;
         }
 
