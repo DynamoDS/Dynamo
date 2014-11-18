@@ -7,9 +7,8 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="450"
-             Background="#01000000"
-             MaxWidth="320">
+             d:DesignWidth="335"
+             Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
@@ -28,7 +27,7 @@
             Opacity=".95"
             Background="#333333"
             Padding="10">
-        <Grid>
+        <Grid Width="325">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -38,9 +37,9 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="202*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="133*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <!-- Use this to hold the description and the icon -->
@@ -48,10 +47,9 @@
                   Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="96"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Path=Description}"
-                           Grid.Column="0"
                            FontSize="13"
                            Margin="0,0,10,0"
                            TextWrapping="WrapWithOverflow">
@@ -60,11 +58,10 @@
                                  Converter="{StaticResource DescriptionToColorConverter}" />
                     </TextBlock.Foreground>
                 </TextBlock>
-                <Image Grid.Row="0"
-                       Grid.Column="1"
-                       Grid.ColumnSpan="2"
+                <Image Grid.Column="1"
                        Height="96"
                        Width="96"
+                       HorizontalAlignment="Right"
                        Source="{Binding Path=LargeIcon}"
                        Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}" />
             </Grid>
@@ -91,16 +88,15 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock FontSize="13"
-                                   Margin="-1">
+                        <TextBlock FontSize="13">
                             <Run Foreground="#cccccc"
                                  Text="{Binding Item1, Mode=OneWay}" /> 
                             <Run Foreground="#777777">
                                 <Run.Text>
-                                <Binding Path="Item2"
-                                         Mode="OneWay"
-                                         Converter="{StaticResource InOutParamTypeConverter}"
-                                         ConverterParameter="inputParam" />
+                                    <Binding Path="Item2"
+                                             Mode="OneWay"
+                                             Converter="{StaticResource InOutParamTypeConverter}"
+                                             ConverterParameter="inputParam" />
                                 </Run.Text>
                             </Run>
                         </TextBlock>
@@ -175,7 +171,7 @@
                     <TextBlock Name="code"
                                FontSize="13"
                                FontFamily="Consolas Regular"
-                               Foreground=" #777777"
+                               Foreground="#777777"
                                Margin="3,0,10,0">
                         <TextBlock.Text>
                             <Binding Path="FullName"
@@ -232,7 +228,6 @@
                             Web Reference
                         </Hyperlink>
                     </TextBlock>-->
-
             </Grid>
         </Grid>
     </Border>
