@@ -2143,7 +2143,7 @@ namespace ProtoCore.Lang
             }
             bool is2DArray = false;
             var svarr = ArrayUtils.GetValues(sv, runtime.runtime.Core);
-            int numOfCols = 1;
+            int numOfCols = 0;
             int numOfRows = svarr.Count();
             foreach(StackValue element in svarr)
                 if (element.IsArray)
