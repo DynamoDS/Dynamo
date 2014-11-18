@@ -90,7 +90,8 @@ namespace Dynamo.UI.Views
             if (wrapPanels.Count == 0)
                 return;
 
-            var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
+            var selectedElement = e.OriginalSource as FrameworkElement;
+            var selectedClass = selectedElement.DataContext as BrowserInternalElement;
             // Continue work with real class: not null, child of BrowserInternalElementForClasses.
             if (selectedClass == null || selectedClass is NodeSearchElement ||
                 !(selectedClass.Parent is BrowserInternalElementForClasses))
@@ -102,7 +103,10 @@ namespace Dynamo.UI.Views
             foreach (var wrapPanel in wrapPanels)
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
+                {
                     e.Handled = true;
+                    selectedElement.BringIntoView();
+                }
             }
         }
     }
