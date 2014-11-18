@@ -33,9 +33,9 @@ namespace Dynamo.Nodes
         private Watch3D watch3dModel;
         public Watch3DView View { get; private set; }
 
-        public void CustomizeView(Watch3D model, dynNodeView nodeUI)
+        public void CustomizeView(Watch3D model, dynNodeView nodeView)
         {
-            model.ViewModel = nodeUI.ViewModel.DynamoViewModel;
+            model.ViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
 
             View = new Watch3DView(model.GUID, watch3dModel)
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
 
-            nodeUI.MainContextMenu.Items.Add(mi);
+            nodeView.MainContextMenu.Items.Add(mi);
 
             var backgroundRect = new Rectangle
             {
@@ -67,14 +67,14 @@ namespace Dynamo.Nodes
             var backgroundBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
             backgroundRect.Fill = backgroundBrush;
 
-            nodeUI.PresentationGrid.Children.Add(backgroundRect);
-            nodeUI.PresentationGrid.Children.Add(View);
-            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.PresentationGrid.Children.Add(backgroundRect);
+            nodeView.PresentationGrid.Children.Add(View);
+            nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
                 model.GUID.ToString(),
                 obj =>
-                    nodeUI.Dispatcher.Invoke(
+                    nodeView.Dispatcher.Invoke(
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
                         obj));

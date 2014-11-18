@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {
-        public void CustomizeView(ColorRange model, dynNodeView view)
+        public void CustomizeView(ColorRange model, dynNodeView nodeView)
         {
             var drawPlane = new Image
             {
@@ -26,7 +26,7 @@ namespace DSCoreNodesUI
 
             var dm = model.Workspace.DynamoModel;
 
-            view.inputGrid.Children.Add(drawPlane);
+            nodeView.inputGrid.Children.Add(drawPlane);
 
             model.RequestChangeColorRange += delegate
             {

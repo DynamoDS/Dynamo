@@ -12,9 +12,9 @@ namespace DSCoreNodesUI
 {
     public class CreateListNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<CreateList>
     {
-        public void CustomizeView(CreateList model, Dynamo.Controls.dynNodeView view)
+        public void CustomizeView(CreateList model, Dynamo.Controls.dynNodeView nodeView)
         {
-            base.CustomizeView(model, view);
+            base.CustomizeView(model, nodeView);
         }
     }
 

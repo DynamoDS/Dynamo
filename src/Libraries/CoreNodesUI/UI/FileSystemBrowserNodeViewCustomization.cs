@@ -12,7 +12,7 @@ namespace DSCore.File
 {
     public abstract class FileSystemBrowserNodeViewCustomization : INodeViewCustomization<FileSystemBrowser>
     {
-        public void CustomizeView(FileSystemBrowser model, dynNodeView view)
+        public void CustomizeView(FileSystemBrowser model, dynNodeView nodeView)
         {
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
@@ -41,14 +41,14 @@ namespace DSCore.File
             tb.TextChanged += delegate
             {
                 tb.ScrollToHorizontalOffset(double.PositiveInfinity);
-                view.ViewModel.DynamoViewModel.ReturnFocusToSearch();
+                nodeView.ViewModel.DynamoViewModel.ReturnFocusToSearch();
             };
             tb.Margin = new Thickness(0, 5, 0, 5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
             sp.Children.Add(tb);
-            view.inputGrid.Children.Add(sp);
+            nodeView.inputGrid.Children.Add(sp);
 
             tb.DataContext = model;
             var bindingVal = new Binding("Value")

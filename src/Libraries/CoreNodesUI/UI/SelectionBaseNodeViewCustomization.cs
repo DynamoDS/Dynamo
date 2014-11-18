@@ -8,10 +8,10 @@ namespace Dynamo.Nodes
     public abstract class SelectionBaseNodeViewCustomization<TSelection, TResult>
         : INodeViewCustomization<SelectionBase<TSelection, TResult>>
     {
-        public void CustomizeView(SelectionBase<TSelection, TResult> model, dynNodeView nodeUI)
+        public void CustomizeView(SelectionBase<TSelection, TResult> model, dynNodeView nodeView)
         {
             var selectionControl = new ElementSelectionControl { DataContext = model };
-            nodeUI.inputGrid.Children.Add(selectionControl);
+            nodeView.inputGrid.Children.Add(selectionControl);
         }
 
         public void Dispose()

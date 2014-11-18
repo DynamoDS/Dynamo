@@ -9,10 +9,10 @@ namespace DSCore.File
     {
         private Filename model;
 
-        public void CustomizeView(Filename model, Dynamo.Controls.dynNodeView view)
+        public void CustomizeView(Filename nodeModel, Dynamo.Controls.dynNodeView nodeView)
         {
-            this.model = model;
-            base.CustomizeView(model, view); 
+            base.CustomizeView(nodeModel, nodeView);
+            this.model = nodeModel;
         }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
@@ -27,6 +27,5 @@ namespace DSCore.File
                 model.Value = openDialog.FileName;
             }
         }
-
     }
 }

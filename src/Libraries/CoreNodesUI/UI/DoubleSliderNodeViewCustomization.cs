@@ -15,9 +15,9 @@ namespace Dynamo.Nodes
 {
     public class DoubleSliderNodeViewCustomization : INodeViewCustomization<DoubleSlider>
     {
-        public void CustomizeView(DoubleSlider model, dynNodeView nodeUI)
+        public void CustomizeView(DoubleSlider model, dynNodeView nodeView)
         {
-            BuildSliderUI(nodeUI, model, model.Value, model.Value.ToString(CultureInfo.InvariantCulture),
+            BuildSliderUI(nodeView, model, model.Value, model.Value.ToString(CultureInfo.InvariantCulture),
                           new DoubleSliderSettingsControl() { DataContext = model }, new DoubleDisplay());
         }
 

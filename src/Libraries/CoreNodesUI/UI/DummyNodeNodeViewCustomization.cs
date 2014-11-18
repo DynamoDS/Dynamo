@@ -8,7 +8,7 @@ namespace DSCoreNodesUI
 {
     public class DummyNodeNodeViewCustomization : INodeViewCustomization<DummyNode>
     {
-        public void CustomizeView(DummyNode model, Dynamo.Controls.dynNodeView nodeUI)
+        public void CustomizeView(DummyNode model, Dynamo.Controls.dynNodeView nodeView)
         {
             var fileName = "DeprecatedNode.png";
             if (model.NodeNature == DummyNode.Nature.Unresolved)
@@ -22,7 +22,7 @@ namespace DSCoreNodesUI
                 Source = new BitmapImage(new Uri(src, UriKind.Relative))
             };
 
-            nodeUI.inputGrid.Children.Add(dummyNodeImage);
+            nodeView.inputGrid.Children.Add(dummyNodeImage);
             model.Warning(model.GetDescription());
         }
 

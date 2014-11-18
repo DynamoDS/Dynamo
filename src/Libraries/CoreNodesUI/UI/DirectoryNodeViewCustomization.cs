@@ -9,10 +9,10 @@ namespace DSCore.File
     {
         private Directory model;
 
-        public void CustomizeView(Directory model, Dynamo.Controls.dynNodeView view)
+        public void CustomizeView(Directory model, Dynamo.Controls.dynNodeView nodeView)
         {
+            base.CustomizeView(model, nodeView);
             this.model = model;
-            base.CustomizeView(model, view);
         }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)

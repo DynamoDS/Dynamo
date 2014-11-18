@@ -11,7 +11,7 @@ namespace DSCoreNodesUI
 {
     public class FormulaNodeViewCustomization : INodeViewCustomization<Formula>
     {
-        public void CustomizeView(Formula model, dynNodeView view)
+        public void CustomizeView(Formula model, dynNodeView nodeView)
         {
             var tb = new DynamoTextBox(model.FormulaString)
             {
@@ -20,7 +20,7 @@ namespace DSCoreNodesUI
                 Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            view.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 

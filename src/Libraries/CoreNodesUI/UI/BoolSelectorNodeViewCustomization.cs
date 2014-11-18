@@ -19,9 +19,9 @@ namespace DSCoreNodesUI
             dynamoViewModel.ReturnFocusToSearch();
         }
 
-        public void CustomizeView(BoolSelector model, dynNodeView nodeUI)
+        public void CustomizeView(BoolSelector model, dynNodeView nodeView)
         {
-            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             //add a text box to the input grid of the control
             var rbTrue = new RadioButton();
@@ -49,7 +49,7 @@ namespace DSCoreNodesUI
 
             wp.Children.Add(rbTrue);
             wp.Children.Add(rbFalse);
-            nodeUI.inputGrid.Children.Add(wp);
+            nodeView.inputGrid.Children.Add(wp);
 
             //rbFalse.IsChecked = true;
             rbTrue.Checked += OnRadioButtonClicked;
@@ -71,7 +71,7 @@ namespace DSCoreNodesUI
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

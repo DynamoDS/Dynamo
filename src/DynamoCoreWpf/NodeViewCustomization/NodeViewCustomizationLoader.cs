@@ -18,12 +18,12 @@ namespace Dynamo.Wpf
 
             var customizerType = typeof(INodeViewCustomization<>);
 
-            var customizerImps = assem.GetTypes()
-                .Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+            var customizerImps0 = assem.GetTypes();
+            var customizerImps  = customizerImps0.Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
 
             foreach (var customizerImp in customizerImps)
             {
-                var nodeModelType = GetCustomizerTypeParameter(customizerImp);
+                var nodeModelType = GetCustomizerTypeParameters(customizerImp);
 
                 if (nodeModelType == null) continue;
 
@@ -40,42 +40,31 @@ namespace Dynamo.Wpf
             return new NodeViewCustomizations(types);
         }
 
-        private static Type GetCustomizerTypeParameter(Type toCheck)
+        private static Type GetCustomizerTypeParameters(Type toCheck)
         {
-            while (toCheck != null && toCheck != typeof(object))
-            {
-                var genInterf = toCheck.GetInterfaces().FirstOrDefault(
-                    x =>
-                        x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>));
+            var ints = toCheck.GetInterfaces().FirstOrDefault(
+                x =>
+                    x.IsGenericType &&
+                    x.GetGenericTypeDefinition() == typeof (INodeViewCustomization<>) &&
+                    !x.GetGenericArguments()[0].IsAbstract);
 
-                if (genInterf != null)
-                {
-                    return genInterf.GetGenericArguments()[0];
-                }
-                toCheck = toCheck.BaseType;
-            }
-
-            return null;
+            return ints != null ? ints.GetGenericArguments()[0] : null;
         }
 
         private static bool ImplementsGeneric(Type generic, Type toCheck)
         {
-            while (toCheck != null && toCheck != typeof(object))
+            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+
+            var isGenInterf = cur.GetInterfaces().Any(
+                x =>
+                    x.IsGenericType &&
+                        x.GetGenericTypeDefinition() == generic);
+
+            if (generic == cur || isGenInterf)
             {
-                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-
-                var isGenInterf = cur.GetInterfaces().Any(
-                    x =>
-                        x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == generic);
-
-                if (generic == cur || isGenInterf)
-                {
-                    return true;
-                }
-                toCheck = toCheck.BaseType;
+                return true;
             }
+
             return false;
         }
     }

@@ -9,10 +9,10 @@ namespace Dynamo.Nodes
 {
     public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
     {
-        public void CustomizeView(IntegerSlider model, dynNodeView nodeUI)
+        public void CustomizeView(IntegerSlider model, dynNodeView nodeView)
         {
             DoubleSliderNodeViewCustomization.BuildSliderUI(
-                nodeUI, 
+                nodeView, 
                 model, 
                 model.Value, 
                 model.Value.ToString(CultureInfo.InvariantCulture),

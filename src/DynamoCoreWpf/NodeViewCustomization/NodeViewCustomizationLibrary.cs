@@ -20,8 +20,8 @@ namespace Dynamo.Wpf
 
             // We only apply the most specific INodeViewCustomization!
 
-            // By "specific", I mean the INodeViewCustomization<T> whose
-            // generic parameter is closest to the runtime type of the NodeModel
+            // By "specific", we mean the INodeViewCustomization<T> where
+            // T is closest to the runtime type of the NodeModel
 
             Type nodeModelType = model.GetType();
             Type customizableType = null;

@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
         MenuItem lastComItem;
         private Arduino arduinoModel;
 
-        public void CustomizeView(Arduino model, dynNodeView nodeUI)
+        public void CustomizeView(Arduino model, dynNodeView nodeView)
         {
             string[] serialPortNames = SerialPort.GetPortNames();
 
@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
                 }
                 comItem = new MenuItem { Header = portName, IsCheckable = true, IsChecked = true };
                 comItem.Checked += comItem_Checked;
-                nodeUI.MainContextMenu.Items.Add(comItem);
+                nodeView.MainContextMenu.Items.Add(comItem);
 
                 arduinoModel.Port.PortName = portName;
                 lastComItem = comItem;

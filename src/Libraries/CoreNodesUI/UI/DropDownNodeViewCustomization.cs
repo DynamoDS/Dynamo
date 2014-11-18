@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
     {
         private DSDropDownBase model;
 
-        public void CustomizeView(DSDropDownBase model, dynNodeView nodeUI)
+        public void CustomizeView(DSDropDownBase model, dynNodeView nodeView)
         {
             this.model = model;
 
@@ -27,7 +27,7 @@ namespace DSCoreNodesUI
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            nodeUI.inputGrid.Children.Add(combo);
+            nodeView.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
