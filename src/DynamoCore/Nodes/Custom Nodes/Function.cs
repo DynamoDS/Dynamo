@@ -319,6 +319,7 @@ namespace Dynamo.Nodes
     public partial class Symbol : NodeModel
     {
         private string inputSymbol = "";
+        private string typeString = string.Empty;
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -340,6 +341,12 @@ namespace Dynamo.Nodes
             }
         }
 
+        public string TypeString 
+        {
+            get { return typeString; } 
+            set { typeString = value; }
+        }
+
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return
@@ -352,6 +359,7 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement("Symbol");
             outEl.SetAttribute("value", InputSymbol);
+            outEl.SetAttribute("type", TypeString);
             nodeElement.AppendChild(outEl);
         }
 
@@ -362,6 +370,12 @@ namespace Dynamo.Nodes
                     .Where(subNode => subNode.Name == "Symbol"))
             {
                 InputSymbol = subNode.Attributes[0].Value;
+
+                var typeAttr = subNode.Attributes.GetNamedItem("type");
+                if (typeAttr != null)
+                {
+                    typeString = typeAttr.Value;
+                }
             }
 
             ArgumentLacing = LacingStrategy.Disabled;

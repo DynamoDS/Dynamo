@@ -141,20 +141,27 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                if (e.Text.Length > 0 && completionWindow != null)
+                if (e.Text.Length == 0)
                 {
-                    char currentChar = e.Text[0];
-                    // If a completion item is highlighted and the user types
-                    // any of the following characters, only then is it selected and inserted
-                    // and the code completion window closed
+                    return;
+                }
+
+                char currentChar = e.Text[0];
+                if (completionWindow == null)
+                {
+                    if (currentChar == '\n' || currentChar == '\r')
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
                     if (currentChar == '\n' || currentChar == '\r')
                     {
                         completionWindow.CompletionList.RequestInsertion(e);
                     }
                     else if (!char.IsLetterOrDigit(currentChar))
                     {
-                        // In all other cases where what is being typed is not alpha-numeric 
-                        // we want to get rid of the completion window 
                         completionWindow.Close();
                     }
                 }
@@ -184,12 +191,10 @@ namespace Dynamo.UI.Controls
                 if (hasInputType)
                 {
                     var types = this.SearchAllTypes(type, nodeModel.GUID);
-                    if (types == null || !types.Any())
+                    if (types != null && types.Any())
                     {
-                        return;
+                        ShowCompletionWindow(types, type.Length);
                     }
-
-                    ShowCompletionWindow(types, type.Length);
                 }
             }
             catch (System.Exception ex)
@@ -240,9 +245,17 @@ namespace Dynamo.UI.Controls
         {
             this.InnerTextEditor.TextArea.ClearSelection();
 
+            var inputs = this.InnerTextEditor.Text.Split(':');
             this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "InputSymbol", this.InnerTextEditor.Text));
+                    this.nodeViewModel.NodeModel.GUID, "InputSymbol", inputs.First()));
+
+            if (inputs.Length > 1)
+            {
+                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        this.nodeViewModel.NodeModel.GUID, "TypeString", inputs.First()));
+            }
         }
         #endregion
 
