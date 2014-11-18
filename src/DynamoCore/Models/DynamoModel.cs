@@ -772,6 +772,9 @@ namespace Dynamo.Models
             this.SearchModel.SortRootCategories();
             this.SearchModel.SortCategoryChildren();
 
+            // Expand "Geometry" by default.
+            this.SearchModel.ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+
             Logger.Log("Welcome to Dynamo!");
         }
 

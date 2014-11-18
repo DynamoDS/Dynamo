@@ -631,6 +631,16 @@ namespace Dynamo.Search
 
         #endregion
 
+        internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
+            if (category == null)
+                category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
+
+            if (category != null || category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
+        }
+
         /// <summary>
         /// Call this method to assign a default grouping information if a given category 
         /// does not have any. A node category's group can either be "Create", "Query" or
