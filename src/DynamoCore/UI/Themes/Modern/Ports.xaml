@@ -83,7 +83,8 @@
             <Rectangle Fill="Transparent" Margin="-25,0,-25,0"                      
                        SnapsToDevicePixels="True"
                        MinWidth="26"
-                       IsHitTestVisible="True">
+                       IsHitTestVisible="True"
+                       >
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseEnter">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
@@ -95,12 +96,35 @@
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
+                <!--<Rectangle.Style>
+                    <Style TargetType="{x:Type Rectangle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">                                
+                                <Setter Property="Panel.ZIndex" Value="99999"/>
+                                <Setter Property="Fill" Value="Orange"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="False">
+                                <Setter Property="Panel.ZIndex" Value="-1"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>-->
             </Rectangle>
             <Rectangle Name="highlightOverlay"
                        Fill="White"
                        MinWidth="26"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>                   
+                </interactivity:Interaction.Triggers>
                 <Rectangle.Style>
                     <Style TargetType="{x:Type Rectangle}">
                         <Style.Triggers>
@@ -108,11 +132,13 @@
                                      Value="True">
                                 <Setter Property="Opacity"
                                         Value="1.0"></Setter>
+                               
                             </Trigger>
                             <Trigger Property="IsMouseOver"
                                      Value="False">
                                 <Setter Property="Opacity"
                                         Value="0.5"></Setter>
+                               
                             </Trigger>
                         </Style.Triggers>
                     </Style>
