@@ -383,9 +383,7 @@ namespace Dynamo.Search
                     var group = SearchElementGroup.None;
 
                     // Rename category (except for custom nodes, imported libraries).
-                    string category = ProcessNodeCategory(function.Category, ref group);
-                    if (functionGroup.ElementType != ElementType.Regular)
-                        category = function.Category;
+                    string category = ProcessNodeCategory(function.Category, ref group);                    
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -441,9 +439,7 @@ namespace Dynamo.Search
             {
                 var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
                 // Rename category (except for custom nodes, imported libraries).
-                cat = ProcessNodeCategory(catCandidate, ref group);                
-                if (nodeType != ElementType.Regular)
-                    cat = catCandidate;                
+                cat = ProcessNodeCategory(catCandidate, ref group);                               
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -515,7 +511,7 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var group = SearchElementGroup.None;
-            ProcessNodeCategory(nodeInfo.Category, ref group);
+            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
