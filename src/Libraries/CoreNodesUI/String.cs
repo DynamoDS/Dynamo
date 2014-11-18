@@ -7,6 +7,10 @@ using System.Text;
 
 namespace DSCoreNodesUI.StringNodes
 {
+    /// <summary>
+    /// Base class to represent a single input string node. It supports 
+    /// partiallied applied function. 
+    /// </summary>
     public class ToStringNodeBase : NodeModel
     {
         public ToStringNodeBase(WorkspaceModel workspace, string functionName)
