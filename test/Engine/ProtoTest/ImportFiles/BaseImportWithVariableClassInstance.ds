@@ -1,3 +1,0 @@
-import ("T009_BasicImport_TestClassInstanceMethod.ds");
-a = 5;
-b = 2*a;
