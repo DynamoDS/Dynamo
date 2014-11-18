@@ -2993,7 +2993,45 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void RunAutomatically_On_5068()
+        {
+            // If Run Automatically On, third file onwards it executes to null
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5068
 
+            RunCommandsFromFile("RunAutomatically_5068.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                
+
+                if (commandTag == "File1")
+                {
+                    var pt = GetNode("3878d8ca-0f32-4971-a9a7-bfbe159fac41");
+                    Assert.IsNotNull(pt);    
+                    
+                }
+
+                else if (commandTag == "File2")
+                {
+
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    AssertPreviewValue("22318709-d001-45c0-afde-f9a7ff94ed39", 2);
+
+                }
+                else if (commandTag == "File3")
+                {
+
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    AssertPreviewValue("a383d8d7-328b-4515-9e8f-836a2b62341a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+                }
+                
+
+            });
+
+        }
         #endregion
 
         #region Tests moved from FScheme
