@@ -10,7 +10,6 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
@@ -272,12 +271,8 @@ namespace Dynamo.Search
             // When create category, give not only category name, 
             // but also assembly, where icon for category could be found.
 
-            BrowserItem cat;
-            if (nodeType == ElementType.Regular)
-                cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
-            else
-                cat = addonCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
-
+            BrowserItem cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
+            
             cat.AddChild(item);
 
             item.FullCategoryName = category;
