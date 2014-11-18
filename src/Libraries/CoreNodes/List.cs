@@ -270,6 +270,8 @@ namespace DSCore
         /// <search>insert,add,item</search>
         public static IList InsertItemAtIndex(object item, IList list, int index)
         {
+            while (index < 0)
+                index += list.Count;
             var result = new ArrayList(list);
             result.Insert(index, item);
             return result;
@@ -284,6 +286,8 @@ namespace DSCore
         /// <search>replace,swap</search>
         public static IList ReplaceItemAtIndex(object newItem, IList list, int index)
         {
+            while (index < 0)
+                index += list.Count;
             var result = new ArrayList(list);
             result[index] = newItem;
             return result;
@@ -414,7 +418,13 @@ namespace DSCore
         /// <search>index,indices,cull</search>
         public static IList RemoveItemAtIndex(IList list, int[] indices)
         {
-            return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
+            var indexSet = new HashSet<int>(indices.Select(index =>
+            {
+                while (index < 0)
+                    index += list.Count;
+                return index;
+            }));
+            return list.Cast<object>().Where((_, i) => !indexSet.Contains(i)).ToList();
         }
 
         /// <summary>
