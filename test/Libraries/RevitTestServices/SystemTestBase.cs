@@ -349,6 +349,15 @@ namespace RevitTestServices
             return mirror;
         }
 
+        protected bool IsNodeInErrorOrWarningState(string guid)
+        {
+            var model = ViewModel.Model;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.State == Dynamo.Models.ElementState.Error ||
+                    node.State == Dynamo.Models.ElementState.Warning;
+        }
+
         #endregion
 
     }
