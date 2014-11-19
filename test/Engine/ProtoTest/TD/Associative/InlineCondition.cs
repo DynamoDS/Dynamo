@@ -1170,5 +1170,13 @@ z;
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", new Object[] { 2, 1 });
         }
+
+        [Test]
+        public void TestInlineConditionReplication()
+        {
+            string code = @"x = -2..2; y = (x % 2 == 0) ? (-x) : x;";
+            thisTest.VerifyRunScriptSource(code, "");
+            thisTest.Verify("y", new object[] { -2, 1, 0, -1, 2 });
+        }
     }
 }
