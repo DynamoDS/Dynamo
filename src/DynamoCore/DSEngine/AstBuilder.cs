@@ -238,7 +238,8 @@ namespace Dynamo.DSEngine
             CustomNodeDefinition def,
             IEnumerable<NodeModel> funcBody,
             IEnumerable<AssociativeNode> outputNodes,
-            IEnumerable<string> parameters)
+            IEnumerable<string> parameters, 
+            IEnumerable<ProtoCore.Type> types)
         {
             OnAstNodeBuilding(def.FunctionId);
 
@@ -293,8 +294,9 @@ namespace Dynamo.DSEngine
                 Signature =
                     new ArgumentSignatureNode
                     {
-                        Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
+                        Arguments = 
+                            parameters.Zip(types, (p, t) => AstFactory.BuildParamNode(p, t))
+                                      .ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes

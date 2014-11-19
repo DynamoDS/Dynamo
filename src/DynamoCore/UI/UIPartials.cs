@@ -529,11 +529,6 @@ namespace Dynamo.Nodes
                 InputSymbol = value;
                 return true; // UpdateValueCore handled.
             }
-            else if (name.Equals("TypeString"))
-            {
-                TypeString = value;
-                return true;
-            }
 
             return base.UpdateValueCore(name, value);
         }

@@ -7,6 +7,8 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Utils;
+using ProtoCore;
 
 namespace Dynamo.Nodes
 {
@@ -318,8 +320,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
-        private string inputSymbol = "";
-        private string typeString = string.Empty;
+        private string inputSymbol = string.Empty;
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -336,22 +337,40 @@ namespace Dynamo.Nodes
             set
             {
                 inputSymbol = value;
+
+                IdentifierNode identifierNode = new IdentifierNode();
+                if (TryParseInputSymbol(inputSymbol, out identifierNode))
+                {
+                    VariableName = identifier.Value;
+                    Type = identifierNode.datatype;
+                }
+                else
+                {
+                    Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                }
+        
                 ReportModification();
                 RaisePropertyChanged("InputSymbol");
             }
         }
 
-        public string TypeString 
+        public string VariableName
         {
-            get { return typeString; } 
-            set { typeString = value; }
+            get;
+            private set;
+        }
+
+        public ProtoCore.Type Type
+        {
+            get;
+            private set;
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return
                 AstFactory.BuildIdentifier(
-                    InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
+                    VariableName == null ? AstIdentifierBase : VariableName + "__" + AstIdentifierBase);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -359,7 +378,6 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement("Symbol");
             outEl.SetAttribute("value", InputSymbol);
-            outEl.SetAttribute("type", TypeString);
             nodeElement.AppendChild(outEl);
         }
 
@@ -370,15 +388,32 @@ namespace Dynamo.Nodes
                     .Where(subNode => subNode.Name == "Symbol"))
             {
                 InputSymbol = subNode.Attributes[0].Value;
-
-                var typeAttr = subNode.Attributes.GetNamedItem("type");
-                if (typeAttr != null)
-                {
-                    typeString = typeAttr.Value;
-                }
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        private bool TryParseInputSymbol(string inputSymbol, out IdentifierNode identifier)
+        {
+            identifier = null;
+            // workaround: there is an issue in parsing "x:int" format unless 
+            // we create the other parser specially for it. We change it to 
+            // "x:int = dummy;" for parsing. 
+            ParseParam parseParam = new ParseParam(this.GUID, inputSymbol + "=dummy;");
+
+            if (this.Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam) &&
+                parseParam.ParsedNodes != null &&
+                parseParam.ParsedNodes.Any())
+            {
+                var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
+                if (node != null)
+                {
+                    identifier = node.LeftNode as IdentifierNode;
+                    return identifier == null;
+                }
+            }
+
+            return false;
         }
     }
 

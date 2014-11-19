@@ -47,6 +47,11 @@ namespace Dynamo
         public IEnumerable<string> Parameters { get; internal set; }
 
         /// <summary>
+        ///     Types of function parameters
+        /// </summary>
+        public IEnumerable<ProtoCore.Type> ParameterTypes { get; internal set; }
+
+        /// <summary>
         ///     If the function returns a dictionary, it specifies all keys in
         ///     that dictionary.
         /// </summary>
@@ -215,7 +220,7 @@ namespace Dynamo
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
-            Parameters = inputNodes.Select(x => x.InputSymbol);
+            Parameters = inputNodes.Select(x => x.VariableName);
 
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynamoModel.AllNodes

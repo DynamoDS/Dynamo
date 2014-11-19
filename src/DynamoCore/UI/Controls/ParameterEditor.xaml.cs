@@ -244,18 +244,10 @@ namespace Dynamo.UI.Controls
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             this.InnerTextEditor.TextArea.ClearSelection();
-
-            var inputs = this.InnerTextEditor.Text.Split(':');
             this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "InputSymbol", inputs.First()));
-
-            if (inputs.Length > 1)
-            {
-                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        this.nodeViewModel.NodeModel.GUID, "TypeString", inputs.First()));
-            }
+                    this.nodeViewModel.NodeModel.GUID, "InputSymbol", this.InnerTextEditor.Text));
+            
         }
         #endregion
 
