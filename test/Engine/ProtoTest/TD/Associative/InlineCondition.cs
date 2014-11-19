@@ -145,9 +145,9 @@ namespace ProtoTest.TD.Associative
             Object[] b = new Object[] { 1, 2, 3, 4 };
             Object[] c = new Object[] { 1, 2, 3 };
             Object[] d = new Object[] { 1, 2 };
-            Object[] b1 = new Object[] { b, b, b, true };
-            Object[] b2 = new Object[] { c, c, c, true };
-            Object[] b3 = new Object[] { d, d, d, c };
+            Object[] b1 = new Object[] { 1, 2, 3, true };
+            Object[] b2 = new Object[] { 1, 2, 3};
+            Object[] b3 = new Object[] { 1, 2};
             thisTest.Verify("b1", b1);
             thisTest.Verify("b2", b2);
             thisTest.Verify("b3", b3);
@@ -177,7 +177,7 @@ namespace ProtoTest.TD.Associative
             // List<Object> b = new List<object>() { 1, 6, 3, 10, 5 };
             // Assert.IsTrue(mirror.CompareArrays("b", b, typeof(System.Int64)));
             List<Object> c = new List<object>() { 4, 6, 8, 10, 12 };
-            List<Object> d = new List<object>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            List<Object> d = new List<object>() { 1, 2, 3, 4, 5};
             List<Object> e1 = new List<object>() { 2, 3 };
             Assert.IsTrue(mirror.CompareArrays("c", c, typeof(System.Int64)));
             Assert.IsTrue(mirror.CompareArrays("d", d, typeof(System.Int64)));
@@ -197,7 +197,7 @@ namespace ProtoTest.TD.Associative
 	x_1 = x[1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Object[] b1 = new Object[] { new Object[] { 1, 1 }, new Object[] { 1, 1 }, 0, 0 };
+            Object[] b1 = new Object[] { 1, 1};
             thisTest.Verify("x", b1);
         }
 
@@ -249,7 +249,7 @@ number = { 3, -3 };
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
             Object n1 = null;
-            thisTest.Verify("b", new object[] { new object[] { 2, 4, 6 }, new object[] { 2, 4, 6 }, new object[] { 2, 4, 6 } });
+            thisTest.Verify("b", new object[] { 2, 4, 6 });
             thisTest.Verify("a", 10);
             thisTest.Verify("c", 13);
             thisTest.Verify("d", 53);
@@ -561,7 +561,7 @@ x = c > 1 ? a : b;
 test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", 2);
+            thisTest.Verify("x", 1);
         }
 
 
@@ -1174,9 +1174,9 @@ z;
         [Test]
         public void TestInlineConditionReplication()
         {
-            string code = @"x = -2..2; y = (x % 2 == 0) ? (-x) : x;";
+            string code = @"x = -2..2; y = (x % 2 == 0) ? -x : x;";
             thisTest.VerifyRunScriptSource(code, "");
-            thisTest.Verify("y", new object[] { -2, 1, 0, -1, 2 });
+            thisTest.Verify("y", new object[] { 2, -1, 0, 1, -2 });
         }
     }
 }
