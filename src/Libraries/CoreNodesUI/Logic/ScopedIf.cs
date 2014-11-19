@@ -144,7 +144,9 @@ namespace DSCoreNodesUI.Logic
                     Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode> { ifelseStatement }
                 }
             };
-            var assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, outerBlock);
+
+            var thisVariable = GetAstIdentifierForOutputIndex(0);
+            var assignment = AstFactory.BuildAssignment(thisVariable, outerBlock);
 
             return new AssociativeNode[] 
             {
