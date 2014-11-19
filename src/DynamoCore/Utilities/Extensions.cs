@@ -1,22 +1,121 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
+using ICSharpCode.AvalonEdit.Utils; //TODO(Steve): Replace with .NET ImmutableCollections
 
 namespace Dynamo.Utilities
 {
     public static class ExtensionMethods
     {
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public interface IRecursiveGrouping<out T> : IGrouping<T, IRecursiveGrouping<T>> { }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="TLeaf"></typeparam>
+        /// <typeparam name="TNodeKey"></typeparam>
+        /// <param name="entries"></param>
+        /// <param name="keySelector"></param>
+        /// <returns></returns>
+        public static IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> GroupByRecursive<TLeaf, TNodeKey>(
+            this IEnumerable<TLeaf> entries, Func<TLeaf, ICollection<TNodeKey>> keySelector)
+        {
+            var query =
+                entries.Select(
+                    x =>
+                        new KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>(
+                            x,
+                            keySelector(x)
+                                .Reverse()
+                                .Aggregate(
+                                    ImmutableStack<TNodeKey>.Empty,
+                                    (keys, key) => keys.Push(key))));
+            return GroupByRecursive(query);
+        }
+
+        #region GroupByRecursive helpers
+        private static IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> GroupByRecursive
+            <TLeaf, TNodeKey>(IEnumerable<KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>> entries)
+        {
+            return
+                entries.GroupBy(
+                    entry => entry.Value.IsEmpty ? Option.None<TNodeKey>() : Option.Some(entry.Value.Peek()))
+                    .Select(
+                        g =>
+                            g.Key.Match(
+                                key =>
+                                    new RecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>(
+                                        Either.Left<TNodeKey, IEnumerable<TLeaf>>(key),
+                                        GroupByRecursive(
+                                            g.Select(
+                                                kv =>
+                                                    new KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>(
+                                                    kv.Key,
+                                                    kv.Value.Pop())))),
+                                () =>
+                                    new RecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>(
+                                        Either.Right<TNodeKey, IEnumerable<TLeaf>>(g.Select(x => x.Key)),
+                                        Enumerable
+                                            .Empty<
+                                                IRecursiveGrouping<
+                                                    IEither<TNodeKey, IEnumerable<TLeaf>>>>())));
+        }
+
+        private class RecursiveGrouping<T> : IRecursiveGrouping<T>
+        {
+            private readonly IEnumerable<IRecursiveGrouping<T>> source;
+
+            public RecursiveGrouping(T key, IEnumerable<IRecursiveGrouping<T>> source)
+            {
+                Key = key;
+                this.source = source;
+            }
+
+            public IEnumerator<IRecursiveGrouping<T>> GetEnumerator()
+            {
+                return source.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public T Key { get; private set; }
+        }
+        #endregion
+
         public static IEnumerable<T> AsSingleton<T>(this T o)
         {
             yield return o;
         }
 
-        public struct EnumerationIndex<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public interface IIndexed<out T>
         {
-            public int Index;
-            public T Element;
+            T Element { get; }
+            int Index { get; }
+        }
+
+        private struct EnumerationIndex<T> : IIndexed<T>
+        {
+            public int Index { get; private set; }
+            public T Element { get; private set; }
+
+            public static EnumerationIndex<T> Create(T element, int index)
+            {
+                return new EnumerationIndex<T> { Element = element, Index = index };
+            }
         }
 
         public static Collection<T> AddRange<T>(this Collection<T> collection, IEnumerable<T> items)
@@ -32,9 +131,9 @@ namespace Dynamo.Utilities
             return collection;
         }
 
-        public static IEnumerable<EnumerationIndex<T>> Enumerate<T>(this IEnumerable<T> seq)
+        public static IEnumerable<IIndexed<T>> Enumerate<T>(this IEnumerable<T> seq)
         {
-            return seq.Select((x, i) => new EnumerationIndex<T> { Element = x, Index = i });
+            return seq.Select(EnumerationIndex<T>.Create).Cast<IIndexed<T>>();
         }
 
         /// <summary>
