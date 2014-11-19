@@ -2000,7 +2000,7 @@ namespace Dynamo.Controls
     }
 
     // This converter is used to show text label of Addon type in AddonsTreeView control.
-    public class ElementTypeToAddonShortcutConverter : IValueConverter
+    public class ElementTypeToShorthandConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -2009,16 +2009,16 @@ namespace Dynamo.Controls
             switch (elementType)
             {
                 case SearchModel.ElementType.Package:
-                    return "PKG";
+                    return Configurations.ElementTypeShorthandPackage;
                 case SearchModel.ElementType.CustomDll:
-                    return "DLL";
+                    return Configurations.ElementTypeShorthandImportedDll;
                 case SearchModel.ElementType.CustomNode:
-                    return "CTGRY";
+                    return Configurations.ElementTypeShorthandCategory;
                 default:
                     return "NIL";
-                    //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
-                    //      next line should be used.
-                    //throw new Exception("Incorrect value provided to converter");
+                //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
+                //      next line should be used.
+                //throw new Exception("Incorrect value provided to converter");
             }
         }
 

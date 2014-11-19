@@ -81,7 +81,7 @@ namespace Dynamo.UI
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;        
+        public static double PreviewCondensedMaxWidth = 300;
         public static double PreviewCondensedMaxHeight = 200;
         public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMinHeight = 0;
@@ -217,12 +217,16 @@ namespace Dynamo.UI
 
         public const string TopResult = "Top Result";
         public const string CategoryGroupCreate = "Create";
-        public const string CategoryGroupAction = "Actions";        
+        public const string CategoryGroupAction = "Actions";
         public const string CategoryGroupQuery = "Query";
         public const char CategoryDelimiter = '.';
         public const char ShortenedCategoryDelimiter = '>';
 
         public const string ClassesDefaultName = "Classes";
+
+        public const string ElementTypeShorthandCategory = "CTGRY";
+        public const string ElementTypeShorthandPackage = "PKG";
+        public const string ElementTypeShorthandImportedDll = "DLL";
 
         #endregion
 

@@ -20,7 +20,7 @@
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-        <controls:ElementTypeToAddonShortcutConverter x:Key="ElementTypeToAddonShortcutConverter" />
+        <controls:ElementTypeToShorthandConverter x:Key="ElementTypeToShorthandConverter" />
 
         <!--EndRegion-->
 
@@ -513,7 +513,7 @@
                                Foreground="#989898">
                         <TextBlock.Text>
                             <Binding Path="ElementType"
-                                     Converter="{StaticResource ElementTypeToAddonShortcutConverter}" />
+                                     Converter="{StaticResource ElementTypeToShorthandConverter}" />
                         </TextBlock.Text>
                     </TextBlock>
                     <Control></Control>
