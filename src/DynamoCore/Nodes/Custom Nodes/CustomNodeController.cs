@@ -176,10 +176,14 @@ namespace Dynamo.Nodes
         public bool IsInSyncWithNode(NodeModel model)
         {
             return Definition != null
-                && ((Definition.Parameters == null
-                    || (Definition.Parameters.Count() == model.InPortData.Count()
-                        && Definition.Parameters.SequenceEqual(
-                            model.InPortData.Select(p => p.NickName))))
+                    && ((Definition.Parameters == null
+                        || (Definition.Parameters.Count() == model.InPortData.Count()
+                            && Definition.Parameters.SequenceEqual(
+                                model.InPortData.Select(p => p.NickName))))
+                    && (Definition.ParameterTypes == null 
+                        || (Definition.ParameterTypes.Count() == model.InPortData.Count()
+                            && Definition.ParameterTypes.Select(t => t.ToString()).SequenceEqual(
+                                model.InPortData.Select(p => p.ToolTipString))))
                     && (Definition.ReturnKeys == null
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()
                             && Definition.ReturnKeys.SequenceEqual(
