@@ -20,7 +20,6 @@ using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
-using Color = System.Windows.Media.Color;
 using Material = System.Windows.Media.Media3D.Material;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Point = System.Windows.Point;
@@ -52,7 +51,8 @@ namespace Dynamo.Controls
         private LineGeometry3D _grid;
         private RenderTechnique renderTechnique;
         private HelixToolkit.Wpf.SharpDX.Camera camera;
-
+        private SharpDX.Color4 selectionColor = new Color4(0,1,1,1);
+        
         #endregion
 
         #region public properties
@@ -74,21 +74,9 @@ namespace Dynamo.Controls
 
         public PointGeometry3D Points { get; set; }
 
-        public PointGeometry3D PointsSelected { get; set; }
-
         public LineGeometry3D Lines { get; set; }
 
-        public LineGeometry3D XAxes { get; set; }
-
-        public LineGeometry3D YAxes { get; set; }
-
-        public LineGeometry3D ZAxes { get; set; }
-
         public MeshGeometry3D Mesh { get; set; }
-
-        public LineGeometry3D LinesSelected { get; set; }
-
-        public MeshGeometry3D MeshSelected { get; set; }
 
         public BillboardText3D Text { get; set; }
 
@@ -103,8 +91,7 @@ namespace Dynamo.Controls
         /// </summary>
         public int MeshCount { get; set; }
 
-        public PhongMaterial RedMaterial { get; private set; }
-        public PhongMaterial CyanMaterial { get; private set; }
+        public PhongMaterial WhiteMaterial { get; private set; }
         public Vector3 DirectionalLightDirection { get; private set; }
         public Color4 DirectionalLightColor { get; private set; }
         public Color4 AmbientLightColor { get; private set; }
@@ -169,8 +156,7 @@ namespace Dynamo.Controls
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-2, -2, -5);
             this.RenderTechnique = Techniques.RenderPhong;
-            this.RedMaterial = PhongMaterials.Red;
-            this.CyanMaterial = PhongMaterials.Turquoise;
+            this.WhiteMaterial = PhongMaterials.White;
 
             this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
 
@@ -183,14 +169,8 @@ namespace Dynamo.Controls
             };
 
             Mesh = InitMeshGeometry();
-            MeshSelected = InitMeshGeometry();
-
             Lines = InitLineGeometry();
-            LinesSelected = InitLineGeometry();
-
             Points = InitPointGeometry();
-            PointsSelected = InitPointGeometry();
-
             Text = InitText3D();
 
             DrawGrid();
@@ -410,39 +390,17 @@ namespace Dynamo.Controls
             Points = null;
             Lines = null;
             Mesh = null;
-            XAxes = null;
-            YAxes = null;
-            ZAxes = null;
-            PointsSelected = null;
-            LinesSelected = null;
-            MeshSelected = null;
-            //Text = null;
+            Text = null;
             MeshCount = 0;
 
-            //separate the selected packages
-            var packages = e.Packages.Where(x => x.Selected == false)
+            var packages = e.Packages
                 .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
-                .ToArray();
-            var selPackages = e.Packages
-                .Where(x => x.Selected)
-                .Where(rp => rp.TriangleVertices.Count % 9 == 0)
                 .ToArray();
 
             var points = InitPointGeometry();
-            var pointsSelected = InitPointGeometry();
-
             var lines = InitLineGeometry();
-            var linesSel = InitLineGeometry();
-
-            var redLines = new LineGeometry3D();
-            var greenLines = new LineGeometry3D();
-            var blueLines = new LineGeometry3D();
-
-            //pre-size the text collection
             var text = InitText3D(); 
-
             var mesh = InitMeshGeometry();
-            var meshSel = InitMeshGeometry();
 
             foreach (var package in packages)
             {
@@ -451,37 +409,19 @@ namespace Dynamo.Controls
                 ConvertMeshes(package, mesh);
             }
 
-            foreach (var package in selPackages)
-            {
-                ConvertPoints(package, pointsSelected, text);
-                ConvertLines(package, linesSel, text);
-                ConvertMeshes(package, meshSel);
-            }
-
             sw.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
 
             Dispatcher.Invoke(new Action<
                 PointGeometry3D,
-                PointGeometry3D,
                 LineGeometry3D,
-                LineGeometry3D,
-                LineGeometry3D,
-                LineGeometry3D,
-                LineGeometry3D,
-                HelixToolkit.Wpf.SharpDX.MeshGeometry3D,
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D, 
                 BillboardText3D>(SendGraphicsToView), DispatcherPriority.Render,
                                new object[] {
                                    points, 
-                                   pointsSelected, 
                                    lines, 
-                                   linesSel, 
-                                   redLines, 
-                                   greenLines, 
-                                   blueLines, 
                                    mesh, 
-                                   meshSel, text});
+                                   text});
         }
 
         private static LineGeometry3D InitLineGeometry()
@@ -497,8 +437,8 @@ namespace Dynamo.Controls
             lines.Positions.Add(new Vector3());
             lines.Indices.Add(0);
             lines.Indices.Add(1);
-            lines.Colors.Add(new Color4());
-            lines.Colors.Add(new Color4());
+            lines.Colors.Add(SharpDX.Color4.White);
+            lines.Colors.Add(SharpDX.Color4.White);
 
             return lines;
         }
@@ -514,7 +454,7 @@ namespace Dynamo.Controls
 
             points.Positions.Add(new Vector3());
             points.Indices.Add(0);
-            points.Colors.Add(new Color4());
+            points.Colors.Add(SharpDX.Color4.White);
 
             return points;
         }
@@ -555,25 +495,13 @@ namespace Dynamo.Controls
 
         private void SendGraphicsToView(
             PointGeometry3D points,
-            PointGeometry3D pointsSelected,
             LineGeometry3D lines,
-            LineGeometry3D linesSelected,
-            LineGeometry3D redLines,
-            LineGeometry3D greenLines,
-            LineGeometry3D blueLines, 
             HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh,
-            HelixToolkit.Wpf.SharpDX.MeshGeometry3D meshSel,
             BillboardText3D text)
         {
             Points = points;
-            PointsSelected = pointsSelected;
             Lines = lines;
-            LinesSelected = linesSelected;
-            //XAxes = redLines;
-            //YAxes = greenLines;
-            //ZAxes = blueLines;
             Mesh = mesh;
-            MeshSelected = meshSel;
             Text = text;
 
             // Send property changed notifications for everything
@@ -605,7 +533,9 @@ namespace Dynamo.Controls
                 
                 points.Positions.Add(pt);
                 points.Indices.Add(points.Positions.Count);
-                points.Colors.Add(ptColor);
+
+                points.Colors.Add(p.Selected ? selectionColor : ptColor);
+
                 color_idx += 4;
             }
 
@@ -637,7 +567,9 @@ namespace Dynamo.Controls
 
                 geom.Indices.Add(idx);
                 geom.Positions.Add(ptA);
-                geom.Colors.Add(startColor);
+
+                geom.Colors.Add(p.Selected ? selectionColor : startColor);
+
 
                 color_idx += 4;
                 idx += 1;
@@ -678,9 +610,18 @@ namespace Dynamo.Controls
                 mesh.Normals.Add(cn);
                 mesh.Normals.Add(bn);
 
-                mesh.Colors.Add(ca);
-                mesh.Colors.Add(cc);
-                mesh.Colors.Add(cb);
+                if (p.Selected)
+                {
+                    mesh.Colors.Add(selectionColor);
+                    mesh.Colors.Add(selectionColor);
+                    mesh.Colors.Add(selectionColor);
+                }
+                else
+                {
+                    mesh.Colors.Add(ca);
+                    mesh.Colors.Add(cc);
+                    mesh.Colors.Add(cb); 
+                }
 
                 color_idx += 12;
                 pt_idx += 3;
@@ -720,8 +661,8 @@ namespace Dynamo.Controls
                 (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
                 1);
 
-            if (color == new Color4(1, 1, 1, 1))
-                color = new Color4(0.5f, 0.5f, 0.5f, 1);
+            //if (color == new Color4(1, 1, 1, 1))
+            //    color = new Color4(0.5f, 0.5f, 0.5f, 1);
             return color;
         }
 

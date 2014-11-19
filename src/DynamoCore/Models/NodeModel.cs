@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -62,6 +63,7 @@ namespace Dynamo.Models
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
         private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
+        private Color color = System.Drawing.Color.FromArgb(255,255,255,255);
 
         #endregion
 
@@ -499,6 +501,12 @@ namespace Dynamo.Models
 
             string id = AstIdentifierBase + "_out" + outputIndex;
             return AstFactory.BuildIdentifier(id);
+        }
+
+        public System.Drawing.Color UserColor
+        {
+            get { return color; }
+            set { color = value; }
         }
 
         #endregion

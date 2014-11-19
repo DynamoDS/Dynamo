@@ -1,5 +1,5 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
+﻿using System.Drawing;
+#if ENABLE_DYNAMO_SCHEDULER
 using System;
 using System.Collections;
 using System.Linq;
@@ -46,6 +46,7 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<string> drawableIds;
         private readonly List<IRenderPackage> renderPackages;
+        private System.Drawing.Color color;
 
         internal IEnumerable<IRenderPackage> RenderPackages
         {
@@ -101,6 +102,7 @@ namespace Dynamo.Core.Threading
             maxTesselationDivisions = initParams.MaxTesselationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
+            color = nodeModel.UserColor;
 
             nodeGuid = nodeModel.GUID;
             return true;
@@ -153,6 +155,33 @@ namespace Dynamo.Core.Threading
                     {
                         System.Diagnostics.Debug.WriteLine(
                             "PushGraphicItemIntoPackage: " + e);
+                    }
+                    
+                    var rand = new Random();
+                    color = Color.FromArgb(255, rand.Next(255), rand.Next(255), rand.Next(255));
+
+                    for (int i = 0; i < package.TriangleVertexColors.Count; i += 4)
+                    {
+                        package.TriangleVertexColors[i] = color.R;
+                        package.TriangleVertexColors[i+1] = color.G;
+                        package.TriangleVertexColors[i+2] = color.B;
+                        package.TriangleVertexColors[i+3] = color.A;
+                    }
+
+                    for (int i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                    {
+                        package.LineStripVertexColors[i] = color.R;
+                        package.LineStripVertexColors[i + 1] = color.G;
+                        package.LineStripVertexColors[i + 2] = color.B;
+                        package.LineStripVertexColors[i + 3] = color.A;
+                    }
+
+                    for (int i = 0; i < package.PointVertexColors.Count; i += 4)
+                    {
+                        package.PointVertexColors[i] = color.R;
+                        package.PointVertexColors[i + 1] = color.G;
+                        package.PointVertexColors[i + 2] = color.B;
+                        package.PointVertexColors[i + 3] = color.A;
                     }
 
                     package.ItemsCount++;
