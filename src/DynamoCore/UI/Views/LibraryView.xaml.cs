@@ -109,5 +109,10 @@ namespace Dynamo.UI.Views
                 }
             }
         }
+
+        private void OnImportAddonButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Import add-on button is clicked");
+        }
     }
 }
