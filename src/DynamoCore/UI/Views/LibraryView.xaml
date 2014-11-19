@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
@@ -12,6 +13,10 @@
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
             <!-- Region Converters -->
 
             <!--Converter to Make class details not focusable-->
@@ -861,7 +866,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="60" />
                 </Grid.RowDefinitions>
                 <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
@@ -880,31 +885,14 @@
                                  Converter="{StaticResource IntToVisibilityConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="20" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border BorderBrush="#666666"
-                            BorderThickness="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Name="AddonButton"
-                            MouseDown="OnAddonButtonMouseDown">
-                        <TextBlock Foreground="#666666"
-                                   Text="Import add-on"
-                                   HorizontalAlignment="Center"
-                                   Margin="7,5,7,5"/>
-                    </Border>
-                </Grid>
+                <Button Grid.Row="2"
+                        Width="150"
+                        Height="40"
+                        Style="{StaticResource STextButton}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="OnImportAddonButtonClick"
+                        Content="Import add-on" />
             </Grid>
         </ScrollViewer>
 

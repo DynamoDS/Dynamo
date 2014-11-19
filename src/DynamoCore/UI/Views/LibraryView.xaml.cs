@@ -106,9 +106,9 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private void OnAddonButtonMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnImportAddonButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Import addon.");
+            MessageBox.Show("Import add-on button is clicked");
         }
     }
 }
