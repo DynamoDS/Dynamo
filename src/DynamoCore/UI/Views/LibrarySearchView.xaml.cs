@@ -183,8 +183,12 @@ namespace Dynamo.UI.Views
         }
 
         // Generates keydown event on currently selected item.
+        // Only Up, Down and Enter buttons are supported.
         public void SelectNext(Key key)
         {
+            if (key != Key.Up && key != Key.Down && key != Key.Enter)
+                return;
+
             PresentationSource target;
             // For the first time set top result as HighlightedItem. 
             if (HighlightedItem == null)
