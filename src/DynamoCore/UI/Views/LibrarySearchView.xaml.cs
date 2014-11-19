@@ -165,6 +165,9 @@ namespace Dynamo.UI.Views
 
         private void UpdateHighlightedItem(ListBoxItem newItem)
         {
+            if (HighlightedItem == newItem)
+                return;
+
             // Unselect old value.
             if (HighlightedItem is ListBoxItem)
                 (HighlightedItem as ListBoxItem).IsSelected = false;
@@ -280,7 +283,7 @@ namespace Dynamo.UI.Views
                 itemIndex = nextSelectedMembers.Items.Count - 1;
 
 
-           UpdateHighlightedItem(GetListItemByIndex(nextSelectedMembers, itemIndex));
+            UpdateHighlightedItem(GetListItemByIndex(nextSelectedMembers, itemIndex));
 
             e.Handled = true;
         }
