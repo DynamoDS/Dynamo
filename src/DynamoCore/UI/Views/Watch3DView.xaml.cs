@@ -361,35 +361,54 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            //var builder = new HelixToolkit.Wpf.SharpDX.LineBuilder();
             Grid = new LineGeometry3D();
             var positions = new Vector3Collection();
             var indices = new IntCollection();
+            var colors = new Color4Collection();
 
             var size = 50;
 
             for (int x = -size; x <= size; x++)
             {
-                //builder.AddLine(new Vector3(x, -.001f, -size), new Vector3(x, -.001f, size));
                 positions.Add(new Vector3(x, -.001f, -size));
                 indices.Add(positions.Count-1);
                 positions.Add(new Vector3(x, -.001f, size));
                 indices.Add(positions.Count-1);
-                
+
+                if (x%5 == 0)
+                {
+                    colors.Add(Color.DarkGray);
+                    colors.Add(Color.DarkGray);
+                }
+                else
+                {
+                    colors.Add(Color.LightGray);
+                    colors.Add(Color.LightGray);
+                }
             }
 
             for (int y = -size; y <= size; y++)
             {
-                //builder.AddLine(new Vector3(-size, -.001f, y), new Vector3(size, -.001f, y));
                 positions.Add(new Vector3(-size, -.001f, y)); 
                 indices.Add(positions.Count-1);
                 positions.Add(new Vector3(size, -.001f, y));
                 indices.Add(positions.Count-1);
+
+                if (y % 5 == 0)
+                {
+                    colors.Add(Color.DarkGray);
+                    colors.Add(Color.DarkGray);
+                }
+                else
+                {
+                    colors.Add(Color.LightGray);
+                    colors.Add(Color.LightGray);
+                }
             }
 
-            //Grid = builder.ToLineGeometry3D();
             Grid.Positions = positions;
             Grid.Indices = indices;
+            Grid.Colors = colors;
         }
 
         /// <summary>
