@@ -6,6 +6,7 @@ using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Tests;
 
 using NUnit.Framework;
 
@@ -132,7 +133,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -156,12 +157,16 @@ namespace DynamoCoreUITests
             var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
 
+            Assert.NotNull(model);
+            Assert.NotNull(model.CurrentWorkspace);
+            
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-            var watch3D =
-                model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
+            var watch3D = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
+            Assert.NotNull(watch3D);
             var watchView = watch3D.View;
+            Assert.NotNull(watchView);
             Assert.AreEqual(0, watchView.Points.Count);
         }
 

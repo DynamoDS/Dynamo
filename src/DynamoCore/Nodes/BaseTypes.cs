@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -300,6 +303,58 @@ namespace Dynamo.Nodes
                 "might be missing from your workflow.");
 
             return null;
+        }
+
+        public static TypeLoadData GetDataForType(DynamoModel dynamoModel, Type t)
+        {
+            //only load types that are in the right namespace, are not abstract
+            //and have the elementname attribute
+            var obsoleteMsg = "";
+
+            var obsAttrs = t.GetCustomAttributes(typeof(ObsoleteAttribute), true);
+            if (null != obsAttrs && obsAttrs.Any())
+            {
+                var attr = obsAttrs[0] as ObsoleteAttribute;
+                if (null != attr)
+                {
+                    obsoleteMsg = attr.Message;
+                    if (string.IsNullOrEmpty(obsoleteMsg))
+                        obsoleteMsg = "Obsolete";
+                }
+            }
+
+            if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes")
+                return null;
+
+            //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+            //if available, to discern whether we should load this type
+            if (!dynamoModel.Context.Equals(Context.NONE))
+            {
+                object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                if (platformExclusionAttribs.Length > 0)
+                {
+                    string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+
+                    //if the attribute's values contain the context stored on the Model
+                    //then skip loading this type.
+                    if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
+                        return null;
+                }
+            }
+            return new TypeLoadData(t.Assembly, t, obsoleteMsg);
+        }
+        
+        /// <summary>
+        ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
+        ///     out what nodes to load from other libraries (.dlls).
+        /// </summary>
+        /// <parameter>The type</parameter>
+        /// <returns>True if the type is node.</returns>
+        public static bool IsNodeSubType(Type t)
+        {
+            return //t.Namespace == "Dynamo.Nodes" &&
+                   !t.IsAbstract &&
+                   t.IsSubclassOf(typeof(NodeModel));
         }
 
         /// <summary>

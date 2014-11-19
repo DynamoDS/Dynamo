@@ -44,7 +44,7 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor(
             string assembly, string className, string name, IEnumerable<TypedParameter> parameters,
             string returnType, FunctionType type, bool isVisibleInLibrary = true,
-            IEnumerable<string> returnKeys = null, bool isVarArg = false)
+            IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
                 className,
@@ -55,12 +55,13 @@ namespace Dynamo.DSEngine
                 type,
                 isVisibleInLibrary,
                 returnKeys,
-                isVarArg) { }
+                isVarArg,
+                obsoleteMsg) { }
 
         public FunctionDescriptor(
             string assembly, string className, string name, string summary,
             IEnumerable<TypedParameter> parameters, string returnType, FunctionType type,
-            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false)
+            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
             Assembly = assembly;
@@ -93,6 +94,7 @@ namespace Dynamo.DSEngine
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
             IsVisibleInLibrary = isVisibleInLibrary;
+            ObsoleteMessage = obsoleteMsg;
         }
 
         /// <summary>
@@ -131,6 +133,9 @@ namespace Dynamo.DSEngine
         ///     Does the function accept a variable number of arguments?
         /// </summary>
         public bool IsVarArg { get; private set; }
+
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
         ///     Function type.

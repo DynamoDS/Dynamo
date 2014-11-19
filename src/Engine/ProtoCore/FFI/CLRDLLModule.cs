@@ -1215,6 +1215,13 @@ namespace ProtoFFI
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
             }
         }
     }
@@ -1237,30 +1244,29 @@ namespace ProtoFFI
 
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
+            if (method == null)
+                throw new ArgumentNullException("method");
+
+            FFIClassAttributes baseAttributes = null;
+            Type type = method.DeclaringType;
+            if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
+            {
+                baseAttributes = new FFIClassAttributes(type);
+                CLRModuleType.SetTypeAttributes(type, baseAttributes);
+            }
+
+            if (null != baseAttributes)
+            {
+                HiddenInLibrary = baseAttributes.HiddenInLibrary;
+            }
+
             Attribute[] atts = null;
             if (getterAttributes.TryGetValue(method, out atts))
             {
                 attributes = atts;
             }
             else
-            {
-
-                if (method == null)
-                    throw new ArgumentNullException("method");
-
-                FFIClassAttributes baseAttributes = null;
-                Type type = method.DeclaringType;
-                if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
-                {
-                    baseAttributes = new FFIClassAttributes(type);
-                    CLRModuleType.SetTypeAttributes(type, baseAttributes);
-                }
-
-                if (null != baseAttributes)
-                {
-                    HiddenInLibrary = baseAttributes.HiddenInLibrary;
-                }
-
+            {   
                 attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             }
             
@@ -1283,6 +1289,13 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
+                }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
                 }
             }
         }

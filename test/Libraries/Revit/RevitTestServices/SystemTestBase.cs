@@ -3,23 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
-
 using NUnit.Framework;
-
 using ProtoCore.Mirror;
-
 using RevitNodesTests;
-
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
@@ -229,6 +224,17 @@ namespace RevitTestServices
             Assert.AreEqual(count, data.GetElements().Count);
         }
 
+        public NodeModel GetNode<T>(string guid) where T : NodeModel
+        {
+            var allNodes = ViewModel.Model.Nodes;
+            var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);
+            if (nodes.Count() < 1)
+                return null;
+            else if (nodes.Count() > 1)
+                throw new Exception("There are more than one nodes with the same GUID!");
+            return nodes.ElementAt(0) as T;
+        }
+
         public object GetPreviewValue(string guid)
         {
             string varname = GetVarName(guid);
@@ -339,6 +345,15 @@ namespace RevitTestServices
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
             return mirror;
+        }
+
+        protected bool IsNodeInErrorOrWarningState(string guid)
+        {
+            var model = ViewModel.Model;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.State == Dynamo.Models.ElementState.Error ||
+                    node.State == Dynamo.Models.ElementState.Warning;
         }
 
         #endregion
