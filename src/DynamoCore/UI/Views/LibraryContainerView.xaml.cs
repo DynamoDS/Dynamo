@@ -197,26 +197,8 @@ namespace Dynamo.Search
                 case Key.Down:
                 case Key.Up:
                 case Key.Enter:
-                    {
-                        var key = e.Key;                    // Key to send
-                        PresentationSource target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
-                        var routedEvent = Keyboard.KeyDownEvent; // Event to send
-
-                        // For the first time set top result as HighlightedItem. 
-                        if (target == null)
-                        {
-                            librarySearchView.HighlightedItem = WPF.FindChild<ListBox>(this, "");
-                            target = PresentationSource.FromVisual(librarySearchView.HighlightedItem);
-                        }
-
-
-                        librarySearchView.HighlightedItem.RaiseEvent(new KeyEventArgs(
-                                                                            Keyboard.PrimaryDevice,
-                                                                            target,
-                                                                            0,
-                                                                            key) { RoutedEvent = routedEvent });
-                        break;
-                    }
+                    librarySearchView.SelectNext(e.Key);
+                    break;
             }
         }
 
