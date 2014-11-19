@@ -563,14 +563,19 @@ namespace Dynamo.Controls
             int color_idx = 0;
             var idx = geom.Indices.Count;
 
-            for (int i = 0; i < p.LineStripVertices.Count; i += 3)
+            for (int i = 0; i < p.LineStripVertices.Count - 3; i += 3)
             {
-                var x = (float)p.LineStripVertices[i];
-                var y = (float)p.LineStripVertices[i + 1];
-                var z = (float)p.LineStripVertices[i + 2];
+                var x1 = (float)p.LineStripVertices[i];
+                var y1 = (float)p.LineStripVertices[i + 1];
+                var z1 = (float)p.LineStripVertices[i + 2];
+
+                var x2 = (float)p.LineStripVertices[i + 3];
+                var y2 = (float)p.LineStripVertices[i + 4];
+                var z2 = (float)p.LineStripVertices[i + 5];
 
                 // DirectX convention - Y Up
-                var ptA = new Vector3(x,z,y);
+                var ptA = new Vector3(x1, z1, y1);
+                var ptB = new Vector3(x2, z2, y2);
 
                 if (i == 0 && p.DisplayLabels)
                 {
@@ -582,19 +587,31 @@ namespace Dynamo.Controls
                                         (p.LineStripVertexColors[color_idx + 1] / 255.0f),
                                         (p.LineStripVertexColors[color_idx + 2] / 255.0f), 1);
 
+                var endColor = new SharpDX.Color4(
+                                        (p.LineStripVertexColors[color_idx + 3] / 255.0f),
+                                        (p.LineStripVertexColors[color_idx + 4] / 255.0f),
+                                        (p.LineStripVertexColors[color_idx + 5] / 255.0f), 1);
+
                 if (startColor == SharpDX.Color.White)
                 {
                     startColor = SharpDX.Color.Black;
                 }
 
+                if (endColor == SharpDX.Color.White)
+                {
+                    endColor = SharpDX.Color.Black;
+                }
+
                 geom.Indices.Add(idx);
+                geom.Indices.Add(idx+1);
                 geom.Positions.Add(ptA);
+                geom.Positions.Add(ptB);
 
                 geom.Colors.Add(p.Selected ? selectionColor : startColor);
-
+                geom.Colors.Add(p.Selected ? selectionColor : endColor);
 
                 color_idx += 4;
-                idx += 1;
+                idx += 2;
             }
 
         }
