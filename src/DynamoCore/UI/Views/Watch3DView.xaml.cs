@@ -735,14 +735,17 @@ namespace Dynamo.Controls
 
         private static Color4 GetColor(RenderPackage p, int color_idx)
         {
-            var color = new Color4(
-                (float)(p.TriangleVertexColors[color_idx]/255.0),
-                (float)(p.TriangleVertexColors[color_idx + 1]/255.0),
-                (float)(p.TriangleVertexColors[color_idx + 2]/255.0),
-                1);
+            var color = new Color4(1,1,1,1);
 
-            //if (color == new Color4(1, 1, 1, 1))
-            //    color = new Color4(0.5f, 0.5f, 0.5f, 1);
+            if (color_idx < p.TriangleVertexColors.Count)
+            {
+                color = new Color4(
+                (float)(p.TriangleVertexColors[color_idx] / 255.0),
+                (float)(p.TriangleVertexColors[color_idx + 1] / 255.0),
+                (float)(p.TriangleVertexColors[color_idx + 2] / 255.0),
+                1);
+            }
+           
             return color;
         }
 
