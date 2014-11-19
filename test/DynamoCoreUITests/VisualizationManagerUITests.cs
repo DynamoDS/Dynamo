@@ -6,7 +6,6 @@ using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 
 using NUnit.Framework;
 
