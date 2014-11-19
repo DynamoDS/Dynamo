@@ -197,11 +197,6 @@ namespace Dynamo.Controls
                 UpDirection = new Vector3D(0, 1, 0)
             };
 
-            Mesh = InitMeshGeometry();
-            Lines = InitLineGeometry();
-            Points = InitPointGeometry();
-            Text = InitText3D();
-
             DrawGrid();
         }
 
@@ -441,6 +436,18 @@ namespace Dynamo.Controls
             sw.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
 
+            if (!points.Positions.Any())
+                points = null;
+
+            if (!lines.Positions.Any())
+                lines = null;
+
+            if (!text.Positions.Any())
+                text = null;
+
+            if (!mesh.Positions.Any())
+                mesh = null;
+
             Dispatcher.Invoke(new Action<
                 PointGeometry3D,
                 LineGeometry3D,
@@ -462,13 +469,6 @@ namespace Dynamo.Controls
                 Colors = new Color4Collection()
             };
 
-            lines.Positions.Add(new Vector3());
-            lines.Positions.Add(new Vector3());
-            lines.Indices.Add(0);
-            lines.Indices.Add(1);
-            lines.Colors.Add(SharpDX.Color4.White);
-            lines.Colors.Add(SharpDX.Color4.White);
-
             return lines;
         }
 
@@ -480,10 +480,6 @@ namespace Dynamo.Controls
                 Indices = new IntCollection(),
                 Colors = new Color4Collection()
             };
-
-            points.Positions.Add(new Vector3());
-            points.Indices.Add(0);
-            points.Colors.Add(SharpDX.Color4.White);
 
             return points;
         }
@@ -498,27 +494,13 @@ namespace Dynamo.Controls
                 Normals = new Vector3Collection(),
             };
 
-            mesh.Positions.Add(new Vector3());
-            mesh.Positions.Add(new Vector3());
-            mesh.Positions.Add(new Vector3());
-            mesh.Normals.Add(new Vector3(0, 0, 1));
-            mesh.Normals.Add(new Vector3(0, 0, 1));
-            mesh.Normals.Add(new Vector3(0, 0, 1));
-            mesh.Colors.Add(new Color4());
-            mesh.Colors.Add(new Color4());
-            mesh.Colors.Add(new Color4());
-            mesh.Indices.Add(0);
-            mesh.Indices.Add(1);
-            mesh.Indices.Add(2);
-
             return mesh;
         }
 
         private static BillboardText3D InitText3D()
         {
             var text3D = new BillboardText3D();
-            var ti = new TextInfo("o", new Vector3());
-            text3D.TextInfo.Add(ti);
+
             return text3D;
         }
 
