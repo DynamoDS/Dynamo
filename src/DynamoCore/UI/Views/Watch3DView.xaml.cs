@@ -52,7 +52,7 @@ namespace Dynamo.Controls
         private RenderTechnique renderTechnique;
         private HelixToolkit.Wpf.SharpDX.Camera camera;
         private SharpDX.Color4 selectionColor = new Color4(0,1,1,1);
-        
+        private bool showShadows;
         #endregion
 
         #region public properties
@@ -92,10 +92,19 @@ namespace Dynamo.Controls
         public int MeshCount { get; set; }
 
         public PhongMaterial WhiteMaterial { get; private set; }
+        
         public Vector3 DirectionalLightDirection { get; private set; }
+        
         public Color4 DirectionalLightColor { get; private set; }
+        
+        public Vector3 FillLightDirection { get; private set; }
+        
+        public Color4 FillLightColor { get; private set; }
+        
         public Color4 AmbientLightColor { get; private set; }
+        
         public System.Windows.Media.Media3D.Transform3D Model1Transform { get; private set; }
+        
         public RenderTechnique RenderTechnique
         {
             get
@@ -120,6 +129,18 @@ namespace Dynamo.Controls
             {
                 camera = value;
                 NotifyPropertyChanged("Camera");
+            }
+        }
+        
+        public Vector2 ShadowMapResolution { get; private set; }
+
+        public bool ShowShadows
+        {
+            get { return showShadows; }
+            set
+            {
+                showShadows = value;
+                NotifyPropertyChanged("ShowShadows");
             }
         }
 
@@ -151,10 +172,18 @@ namespace Dynamo.Controls
 
         private void SetupScene()
         {
+            this.ShadowMapResolution = new Vector2(2048, 2048);
+            this.ShowShadows = false;
+
             // setup lighting            
             this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
+
             this.DirectionalLightColor = SharpDX.Color.White;
-            this.DirectionalLightDirection = new Vector3(-2, -2, -5);
+            this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
+
+            this.FillLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
+            this.FillLightDirection = new Vector3(0.5f, -1, 0);
+
             this.RenderTechnique = Techniques.RenderPhong;
             this.WhiteMaterial = PhongMaterials.White;
 
