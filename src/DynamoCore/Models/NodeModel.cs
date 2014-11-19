@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -46,9 +46,15 @@ namespace Dynamo.Models
         private const string FailureString = "Node evaluation failed";
         protected IdentifierNode identifier;
 
-        // Data caching related class members.
+        // Data caching related class members. There are multiple parties at
+        // play when it comes to caching MirrorData for a NodeModel, this value
+        // is accessed from UI thread for display (e.g. preview bubble) and it's
+        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
+        // Access to the cached data is guarded by cachedMirrorDataMutex object.
+        // 
         private bool isUpdated = false;
         private MirrorData cachedMirrorData = null;
+        private readonly object cachedMirrorDataMutex = new object();
 
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
@@ -318,23 +324,10 @@ namespace Dynamo.Models
         {
             get
             {
-                if (cachedMirrorData != null)
+                lock (cachedMirrorDataMutex)
+                {
                     return cachedMirrorData;
-
-                // Do not have an identifier for preview right now. For an example,
-                // this can be happening at the beginning of a code block node creation.
-                if (AstIdentifierForPreview.Value == null)
-                    return null;
-
-                cachedMirrorData = null;
-
-                var engine = Workspace.DynamoModel.EngineController;
-                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-                if (runtimeMirror != null)
-                    cachedMirrorData = runtimeMirror.GetData();
-
-                return cachedMirrorData;
+                }
             }
         }
 
@@ -347,10 +340,15 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated != false)      // When a NodeModel is updated, its 
-                    cachedMirrorData = null; // cached data should be invalidated.
-
-                RaisePropertyChanged("IsUpdated");
+                if (isUpdated)
+                {
+                    // When a NodeModel is updated, its
+                    // cached data should be invalidated.
+                    lock (cachedMirrorDataMutex)
+                    {
+                        cachedMirrorData = null;
+                    }
+                }
             }
         }
 
@@ -1044,18 +1042,18 @@ namespace Dynamo.Models
                 });
 
             // This is put in place to solve the crashing issue outlined in 
-            //    // the following defect. ValidateConnections can be called from 
-            //    // a background evaluation thread at any point in time, we do 
-            //    // not want such calls to update UI in anyway while we're here 
-            //    // (the UI update is caused by setting State property which leads
-            //    // to tool-tip update that triggers InfoBubble to update its UI,
-            //    // a problem that is currently being resolved and tested on a 
-            //    // separate branch). When the InfoBubble restructuring gets over,
-            //    // please ensure the following scenario is tested and continue to 
-            //    // work:
-            //    // 
-            //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-            //    // 
+            // the following defect. ValidateConnections can be called from 
+            // a background evaluation thread at any point in time, we do 
+            // not want such calls to update UI in anyway while we're here 
+            // (the UI update is caused by setting State property which leads
+            // to tool-tip update that triggers InfoBubble to update its UI,
+            // a problem that is currently being resolved and tested on a 
+            // separate branch). When the InfoBubble restructuring gets over,
+            // please ensure the following scenario is tested and continue to 
+            // work:
+            // 
+            //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            // 
 
             if (this.Workspace.DynamoModel != null) this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
@@ -1400,6 +1398,15 @@ namespace Dynamo.Models
                 return true;
             }
 
+            if (name == "ArgumentLacing")
+            {
+                LacingStrategy strategy = LacingStrategy.Disabled;
+                if (!Enum.TryParse(value, out strategy))
+                    strategy = LacingStrategy.Disabled;
+                this.ArgumentLacing = strategy;
+                return true;
+            }
+
             return base.UpdateValueCore(name, value);
         }
 
@@ -1534,7 +1541,42 @@ namespace Dynamo.Models
         /// 
         public void RequestValueUpdateAsync()
         {
-            // TODO(Ben): Update cachedMirrorData asynchronously.
+            // A NodeModel should have its cachedMirrorData reset when it is 
+            // requested to update its value. When the QueryMirrorDataAsyncTask 
+            // returns, it will update cachedMirrorData with the latest value.
+            // 
+            lock (cachedMirrorDataMutex)
+            {
+                cachedMirrorData = null;
+            }
+
+            // Do not have an identifier for preview right now. For an example,
+            // this can be happening at the beginning of a code block node creation.
+            var variableName = AstIdentifierForPreview.Value;
+            if (string.IsNullOrEmpty(variableName))
+                return;
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
+            {
+                DynamoScheduler = scheduler,
+                EngineController = Workspace.DynamoModel.EngineController,
+                VariableName = variableName
+            });
+
+            task.Completed += OnNodeValueQueried;
+            scheduler.ScheduleForExecution(task);
+        }
+
+        private void OnNodeValueQueried(AsyncTask asyncTask)
+        {
+            lock (cachedMirrorDataMutex)
+            {
+                var task = asyncTask as QueryMirrorDataAsyncTask;
+                cachedMirrorData = task.MirrorData;
+            }
+
+            RaisePropertyChanged("IsUpdated");
         }
 
         /// <summary>
@@ -1561,11 +1603,6 @@ namespace Dynamo.Models
                 _renderPackages.Clear();
                 HasRenderPackages = false;
             }
-
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
-                return;
 
             RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }

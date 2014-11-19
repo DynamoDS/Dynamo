@@ -544,6 +544,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
+            string obsoleteMessage = "";
             int classScope = proc.classScope;
             string className = string.Empty;
             MethodAttributes methodAttribute = proc.MethodAttribute;
@@ -625,8 +626,13 @@ namespace Dynamo.DSEngine
                 });
 
             IEnumerable<string> returnKeys = null;
-            if (proc.MethodAttribute != null && proc.MethodAttribute.ReturnKeys != null)
-                returnKeys = proc.MethodAttribute.ReturnKeys;
+            if (proc.MethodAttribute != null)
+            {
+                if (proc.MethodAttribute.ReturnKeys != null)
+                    returnKeys = proc.MethodAttribute.ReturnKeys;
+                if (proc.MethodAttribute.IsObsolete)
+                    obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
+            }
 
             var function = new FunctionDescriptor(
                 library,
@@ -637,7 +643,8 @@ namespace Dynamo.DSEngine
                 type,
                 isVisible,
                 returnKeys,
-                proc.isVarArg);
+                proc.isVarArg,
+                obsoleteMessage);
 
             AddImportedFunctions(library, new[] { function });
         }

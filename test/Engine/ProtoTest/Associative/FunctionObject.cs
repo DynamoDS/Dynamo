@@ -14,6 +14,22 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        public void LoopWhile01()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def add1(x) { return = x + 1; }
+def lt10(x) { return = x < 10; }
+add1fo = _SingleFunctionObject(add1, 1, {}, {null}, true);
+lt10fo = _SingleFunctionObject(lt10, 1, {}, {null}, true);
+r = LoopWhile(0, lt10fo, add1fo);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 10);
+        }
+
+        [Test]
         public void TestApply01()
         {
             string code =

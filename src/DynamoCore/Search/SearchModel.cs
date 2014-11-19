@@ -86,7 +86,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return browserCategoriesBuilder.RootCategories; }            
+            get { return browserCategoriesBuilder.RootCategories; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get { return addonCategoriesBuilder.RootCategories; }            
+            get { return addonCategoriesBuilder.RootCategories; }
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
@@ -228,7 +228,7 @@ namespace Dynamo.Search
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
         {
             foreach (NodeSearchElement node in nodes)
-            {   
+            {
                 var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
@@ -269,7 +269,7 @@ namespace Dynamo.Search
             // but also assembly, where icon for category could be found.
 
             BrowserItem cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
-            
+
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -380,7 +380,7 @@ namespace Dynamo.Search
                     var group = SearchElementGroup.None;
 
                     // Rename category (except for custom nodes, imported libraries).
-                    string category = ProcessNodeCategory(function.Category, ref group);                    
+                    string category = ProcessNodeCategory(function.Category, ref group);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -435,8 +435,7 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                // Rename category (except for custom nodes, imported libraries).
-                cat = ProcessNodeCategory(catCandidate, ref group);                               
+                cat = ProcessNodeCategory(catCandidate, ref group);
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -511,12 +510,14 @@ namespace Dynamo.Search
             nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
-            nodeEle.Executed += this.OnExecuted;
-
             if (SearchDictionary.Contains(nodeEle))
             {
+                // Second node with the same GUID should rewrite the original node. 
+                // Original node is removed from tree.
                 return this.Refactor(nodeInfo);
             }
+
+            nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
@@ -578,7 +579,7 @@ namespace Dynamo.Search
             {
                 RemoveNode(nodeName);
                 browserCategoriesBuilder.RemoveEmptyCategory(node);
-                addonCategoriesBuilder.RemoveEmptyCategory(node);                
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
         }
 
@@ -669,4 +670,3 @@ namespace Dynamo.Search
         }
     }
 }
-

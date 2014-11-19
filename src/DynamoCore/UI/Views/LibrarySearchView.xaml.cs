@@ -17,26 +17,7 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
-        FrameworkElement highlightedItem = new FrameworkElement();
-        public FrameworkElement HighlightedItem
-        {
-            get { return highlightedItem; }
-            set
-            {
-                // Unselect old value.
-                if (highlightedItem is ListBoxItem)
-                    (highlightedItem as ListBoxItem).IsSelected = false;
-
-                highlightedItem = value;
-
-                // Select new value.
-                if (highlightedItem is ListBoxItem)
-                {
-                    (highlightedItem as ListBoxItem).IsSelected = true;
-                    ShowTooltip(highlightedItem as ListBoxItem);
-                }
-            }
-        }
+        private FrameworkElement HighlightedItem;
 
         public LibrarySearchView()
         {
@@ -143,7 +124,7 @@ namespace Dynamo.UI.Views
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-            HighlightedItem = new FrameworkElement();
+            UpdateHighlightedItem(null);
             ShowTooltip(sender);
         }
 
@@ -182,6 +163,46 @@ namespace Dynamo.UI.Views
         // When element can't move further, it notifies its' parent about that.
         // And then parent decides what to do with it.
 
+        private void UpdateHighlightedItem(ListBoxItem newItem)
+        {
+            if (HighlightedItem == newItem)
+                return;
+
+            // Unselect old value.
+            if (HighlightedItem is ListBoxItem)
+                (HighlightedItem as ListBoxItem).IsSelected = false;
+
+            HighlightedItem = newItem;
+
+            // Select new value.
+            if (HighlightedItem is ListBoxItem)
+            {
+                (HighlightedItem as ListBoxItem).IsSelected = true;
+                ShowTooltip(HighlightedItem as ListBoxItem);
+            }
+        }
+
+        // Generates keydown event on currently selected item.
+        // Only Up, Down and Enter buttons are supported.
+        public void SelectNext(Key key)
+        {
+            if (key != Key.Up && key != Key.Down && key != Key.Enter)
+                return;
+
+            PresentationSource target;
+            // For the first time set top result as HighlightedItem. 
+            if (HighlightedItem == null)
+                HighlightedItem = WPF.FindChild<ListBox>(this, "");
+
+            target = PresentationSource.FromVisual(HighlightedItem);
+            var routedEvent = Keyboard.KeyDownEvent; // Event to send
+
+            HighlightedItem.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
+                                                                            target,
+                                                                            0,
+                                                                            key) { RoutedEvent = routedEvent });
+        }
+
         // This event is used to move inside members.
         private void OnMembersListBoxKeyDown(object sender, KeyEventArgs e)
         {
@@ -209,7 +230,7 @@ namespace Dynamo.UI.Views
             if (nextselectedMemberIndex < 0 || nextselectedMemberIndex > members.Count - 1)
                 return;
 
-            HighlightedItem = GetListItemByIndex(membersListBox, nextselectedMemberIndex);
+            UpdateHighlightedItem(GetListItemByIndex(membersListBox, nextselectedMemberIndex));
             e.Handled = true;
 
         }
@@ -266,7 +287,7 @@ namespace Dynamo.UI.Views
                 itemIndex = nextSelectedMembers.Items.Count - 1;
 
 
-            HighlightedItem = GetListItemByIndex(nextSelectedMembers, itemIndex);
+            UpdateHighlightedItem(GetListItemByIndex(nextSelectedMembers, itemIndex));
 
             e.Handled = true;
         }
@@ -275,13 +296,13 @@ namespace Dynamo.UI.Views
         // handles this message. If none of these two list boxes are handling the key 
         // message, that means the currently selected list box item is the first/last item
         // in these two list boxes. When key message arrives here, it is then the 'StackPanel'
-        // responsibility to move the focus on to the adjacent list box.
+        // responsibility to move the selection on to the adjacent list box.
         private void OnCategoryContentKeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            // Member in focus(in this scenario) can be only first/last member button or first/last class button.
+            // Selected member(in this scenario) can be only first/last member button or first/last class button.
             var selectedMember = HighlightedItem as FrameworkElement;
             var searchCategoryElement = sender as FrameworkElement;
 
@@ -328,7 +349,7 @@ namespace Dynamo.UI.Views
                 var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
                 if (listItem != null)
                 {
-                    HighlightedItem = listItem;
+                    UpdateHighlightedItem(listItem);
                 }
 
                 e.Handled = true;
@@ -361,7 +382,7 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            // Member in focus(in this scenario) can be only first/last member button or class button at the first row.
+            // Selected member(in this scenario) can be only first/last member button or class button at the first row.
             var selectedMember = HighlightedItem;
             var selectedMemberContext = selectedMember.DataContext as BrowserInternalElement;
             var categoryListView = sender as ListView;
@@ -401,7 +422,7 @@ namespace Dynamo.UI.Views
                 var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
 
                 // If key is up, then we have to select the last method button.
-                HighlightedItem = GetListItemByIndex(membersList, membersList.Items.Count - 1);
+                UpdateHighlightedItem(GetListItemByIndex(membersList, membersList.Items.Count - 1));
             }
             else // Otherwise, Down was pressed, and we have to select first class/method button.
             {
@@ -420,7 +441,7 @@ namespace Dynamo.UI.Views
 #else
                 // If there are no classes, then focus on first method.
                 var memberGroupsList = FindFirstChildListItem(nextSelectedCategory, "MemberGroupsListBox");
-                HighlightedItem = FindFirstChildListItem(memberGroupsList, "MembersListBox");
+                UpdateHighlightedItem(FindFirstChildListItem(memberGroupsList, "MembersListBox"));
 #endif
             }
             e.Handled = true;
@@ -432,8 +453,8 @@ namespace Dynamo.UI.Views
         /// on which element should the focus go (depending on the navigational key).
         /// This typically happens during the following scenarios:
         /// 
-        /// 1. Up/down key is pressed when focus in on "topResultListBox"
-        /// 2. Up key is pressed when focus is on first row of first category
+        /// 1. Up/down key is pressed when selected item is on "topResultListBox"
+        /// 2. Up key is pressed when selected item is on first row of first category
         /// </summary>
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
         {
@@ -460,13 +481,13 @@ namespace Dynamo.UI.Views
                     return;
                 }
 #endif
-                // Otherwise, set focus on the first method button.
+                // Otherwise, set selection on the first method button.
                 var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
-                HighlightedItem = FindFirstChildListItem(firstMemberGroup, "MembersListBox");
+                UpdateHighlightedItem(FindFirstChildListItem(firstMemberGroup, "MembersListBox"));
             }
             else // Otherwise, Up was pressed. So, we have to move to top result.
             {
-                HighlightedItem = FindFirstChildListItem(this, "topResultListBox");
+                UpdateHighlightedItem(FindFirstChildListItem(this, "topResultListBox"));
             }
 
             e.Handled = true;
@@ -492,6 +513,7 @@ namespace Dynamo.UI.Views
                 Dynamo.ViewModels.SearchViewModel.ViewMode.LibrarySearchView)
             {
                 libraryToolTipPopup.DataContext = null;
+                UpdateHighlightedItem(null);
                 return;
             }
             if (sender is ListBox)

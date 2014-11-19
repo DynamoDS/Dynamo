@@ -14,12 +14,13 @@
 
         <!-- Region Converters -->
 
-        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+        <controls:ElementTypeToShorthandConverter x:Key="ElementTypeToShorthandConverter" />
 
         <!--EndRegion-->
 
@@ -193,8 +194,7 @@
             <Setter Property="Visibility">
                 <Setter.Value>
                     <Binding Path="Visibility"
-                             Converter="{StaticResource BoolToVisibilityConverter}"
-                             ConverterParameter="Collapse" />
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -490,9 +490,39 @@
                         <MenuItem Header="Locate in Disk.." />
                     </ContextMenu>
                 </Border.ContextMenu>
-                <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource CategoryTextBlockStyle}"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Margin="10,0,10,0"
+                               FontSize="10"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Foreground="#989898">
+                        <TextBlock.Text>
+                            <Binding Path="ElementType"
+                                     Converter="{StaticResource ElementTypeToShorthandConverter}" />
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Image Grid.Column="2"
+                           Margin="10,0,10,0"
+                           Width="11"
+                           Height="13"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Source="/DynamoCore;component/UI/Images/addon_update_available.png">
+                        <Image.Visibility>
+                            <Binding Path="IsUpdateAvailable"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </Image.Visibility>
+                    </Image>
+                </Grid>
             </Border>
         </HierarchicalDataTemplate>
 
