@@ -27,7 +27,7 @@ namespace Dynamo.Nodes
         protected internal Function(WorkspaceModel workspace, CustomNodeDefinition def)
             : base(workspace, new CustomNodeController(workspace.DynamoModel, def))
         {
-            ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public new string Name
@@ -183,11 +183,6 @@ namespace Dynamo.Nodes
             {
                 RegisterAllPorts();
             }
-
-            //argument lacing on functions should be set to disabled
-            //by default in the constructor, but for any workflow saved
-            //before this was the case, we need to ensure it here.
-            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)

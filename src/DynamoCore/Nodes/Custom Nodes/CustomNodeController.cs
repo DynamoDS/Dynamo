@@ -59,7 +59,10 @@ namespace Dynamo.Nodes
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
             if (!model.IsPartiallyApplied)
+            {
+                model.AppendReplicationGuides(inputAstNodes);
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
+            }
 
             var count = Definition.Parameters.Count();
             return AstFactory.BuildFunctionObject(
