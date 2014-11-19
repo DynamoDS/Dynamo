@@ -406,6 +406,28 @@ namespace Dynamo.Controls
                 }
             }
 
+            // Draw the coordinate axes
+            positions.Add(new Vector3());
+            indices.Add(positions.Count - 1);
+            positions.Add(new Vector3(1,0,0));
+            indices.Add(positions.Count - 1);
+            colors.Add(Color.Red);
+            colors.Add(Color.Red);
+
+            positions.Add(new Vector3());
+            indices.Add(positions.Count - 1);
+            positions.Add(new Vector3(0, 1, 0));
+            indices.Add(positions.Count - 1);
+            colors.Add(Color.Blue);
+            colors.Add(Color.Blue);
+
+            positions.Add(new Vector3());
+            indices.Add(positions.Count - 1);
+            positions.Add(new Vector3(0, 0, 1));
+            indices.Add(positions.Count - 1);
+            colors.Add(Color.Green);
+            colors.Add(Color.Green);
+
             Grid.Positions = positions;
             Grid.Indices = indices;
             Grid.Colors = colors;
