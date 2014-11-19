@@ -301,7 +301,8 @@ namespace Dynamo.DSEngine
             CustomNodeDefinition def,
             IEnumerable<NodeModel> nodes,
             IEnumerable<AssociativeNode> outputs,
-            IEnumerable<string> parameters)
+            IEnumerable<string> parameters, 
+            IEnumerable<ProtoCore.Type> types)
         {
             lock (macroMutex)
             {
@@ -316,7 +317,7 @@ namespace Dynamo.DSEngine
                         "'graphSyncDataQueue' is not empty");
                 }
 
-                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
+                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters, types);
                 if (!VerifyGraphSyncData() || (graphSyncDataQueue.Count == 0))
                     return false;
 

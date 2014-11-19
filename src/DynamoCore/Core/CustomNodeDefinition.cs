@@ -220,7 +220,9 @@ namespace Dynamo
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
+            var types = inputNodes.Select(x => x.Type);
             Parameters = inputNodes.Select(x => x.VariableName);
+            ParameterTypes = types;
 
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynamoModel.AllNodes
@@ -246,7 +248,8 @@ namespace Dynamo
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 outputNodes,
-                parameters);
+                parameters,
+                types);
 
             // Not update graph until Run 
             // if (success)
