@@ -1125,12 +1125,17 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.INPUT, pd, count);
-
+               
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
                 count++;
+                port.SnapRegion = new Thickness(-25, 3, 0, 3);
+                if(count - 1 == 0) //first port
+                    port.SnapRegion = new Thickness(-25, -10, 0, 3);
+                if(count == InPortData.Count ) //last port
+                    port.SnapRegion = new Thickness(-25, 3, 0, -10);
             }
 
             if (inPorts.Count > count)
@@ -1166,6 +1171,11 @@ namespace Dynamo.Models
 
                 portDataDict[port] = pd;
                 count++;
+                port.SnapRegion = new Thickness(0, 3, -25, 3);
+                if (count - 1 == 0) //first port
+                    port.SnapRegion = new Thickness(0, -10, -25, 3);
+                if (count == OutPortData.Count) //last port
+                    port.SnapRegion = new Thickness(0, 3, -25, -10);
             }
 
             if (outPorts.Count > count)

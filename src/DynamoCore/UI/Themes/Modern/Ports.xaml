@@ -80,7 +80,8 @@
                the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
                as no mouse events are generated.This happens only for codeblock node. 
             -->
-            <Rectangle Fill="Transparent" Margin="-25,-10,-25,-10"                      
+            <Rectangle Fill="Red" 
+                       Margin="{Binding Path=SnapRegion}"                     
                        SnapsToDevicePixels="True"
                        MinWidth="26"                       
                        IsHitTestVisible="True"

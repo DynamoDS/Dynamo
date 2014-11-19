@@ -41,6 +41,7 @@ namespace Dynamo.Models
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
         private Thickness marginThickness;
+        private Thickness snapRegion;
 
         #endregion
 
@@ -192,6 +193,16 @@ namespace Dynamo.Models
             }
         }
 
+        public Thickness SnapRegion
+        {
+            get { return snapRegion; }
+            set
+            {
+                snapRegion = value;
+                RaisePropertyChanged("SnapRegion");
+            }
+        }
+
         #endregion
 
         public PortModel(PortType portType, NodeModel owner, PortData data)
@@ -203,7 +214,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-
+           
             if (data.Height == 0)
                 this.Height = Configurations.PortHeightInPixels;
             else

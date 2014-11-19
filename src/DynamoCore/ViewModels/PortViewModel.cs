@@ -89,6 +89,11 @@ namespace Dynamo.ViewModels
 
         public PortEventType EventType { get; set; }
 
+        public Thickness SnapRegion
+        {
+            get { return _port.SnapRegion; }          
+        }
+
         #endregion
 
         #region events
@@ -105,7 +110,7 @@ namespace Dynamo.ViewModels
             _port = port;
 
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;
+            _node.PropertyChanged += _node_PropertyChanged;            
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
