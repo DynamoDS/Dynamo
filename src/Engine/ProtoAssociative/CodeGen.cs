@@ -1,4 +1,5 @@
 //#define ENABLE_INC_DEC_FIX
+//#define __SSA_IDENT_LIST
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -2222,6 +2223,8 @@ namespace ProtoAssociative
             }
             else if (node is IdentifierListNode)
             {
+
+#if  __SSA_IDENT_LIST
                 IdentifierListNode identList = node as IdentifierListNode;
 
                 //Check if the LeftNode for given IdentifierList represents a class.
@@ -2234,7 +2237,7 @@ namespace ProtoAssociative
                     // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
                     buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
                 }
-                else if(classNames.Length == 1)
+                else if (classNames.Length == 1)
                 {
                     // A matching class has been found
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
@@ -2246,10 +2249,10 @@ namespace ProtoAssociative
 
                     // Check if the lhs is an identifier and if it has any namespace conflicts
                     // We want to handle this here because we know ident lists can potentially contain namespace resolving
-                    var ident = identList.LeftNode as IdentifierNode; 
+                    var ident = identList.LeftNode as IdentifierNode;
 
                     // Check if this is the last ident in the identlist
-                    if(ident != null)
+                    if (ident != null)
                     {
                         // TODO Jun: Move this warning handler to after the SSA transform
                         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
@@ -2356,6 +2359,130 @@ namespace ProtoAssociative
                 {
                     EmitSSAArrayIndex(rhsIdentList, ssaStack, ref astlist, true);
                 }
+#else
+                IdentifierListNode identList = node as IdentifierListNode;
+
+                // Build the rhs identifier list containing the temp pointer
+                IdentifierListNode rhsIdentList = new IdentifierListNode();
+                rhsIdentList.Optr = Operator.dot;
+
+                // Check if identlist matches any namesapce
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
+                if (classNames.Length == 1)
+                {
+                    //
+                    // The identlist is a class name and should not be SSA'd
+                    // such as:
+                    //  p = Obj.Create()
+                    //
+                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
+                    rhsIdentList.LeftNode = leftNode;
+                }
+                else if (classNames.Length > 0)
+                {
+                    // There is a resolution conflict
+                    // identList resolved to multiple classes 
+
+                    // TODO Jun: Move this warning handler to after the SSA transform
+                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
+
+                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
+                    rhsIdentList.LeftNode = leftNode;
+                }
+                else
+                {
+                    // identList unresolved
+                    // Continue to transform this identlist into SSA
+
+                    // Recursively traversse the left of the ident list
+                    SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
+
+                    AssociativeNode lhsNode = ssaStack.Pop();
+                    if (lhsNode is BinaryExpressionNode)
+                    {
+                        rhsIdentList.LeftNode = (lhsNode as BinaryExpressionNode).LeftNode;
+                    }
+                    else
+                    {
+                        rhsIdentList.LeftNode = lhsNode;
+                    }
+                }
+
+                ArrayNode arrayDimension = null;
+
+                AssociativeNode rnode = null;
+                if (identList.RightNode is IdentifierNode)
+                {
+                    IdentifierNode identNode = identList.RightNode as IdentifierNode;
+                    arrayDimension = identNode.ArrayDimensions;
+                    rnode = identNode;
+                }
+                else if (identList.RightNode is FunctionCallNode)
+                {
+                    FunctionCallNode fcNode = new FunctionCallNode(identList.RightNode as FunctionCallNode);
+                    arrayDimension = fcNode.ArrayDimensions;
+
+                    List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
+                    for (int idx = 0; idx < fcNode.FormalArguments.Count; idx++)
+                    {
+                        AssociativeNode arg = fcNode.FormalArguments[idx];
+                        var replicationGuides = GetReplicationGuides(arg);
+                        if (replicationGuides == null)
+                        {
+                            replicationGuides = new List<AssociativeNode> { };
+                        }
+                        else
+                        {
+                            RemoveReplicationGuides(arg);
+                        }
+
+                        DFSEmitSSA_AST(arg, ssaStack, ref astlistArgs);
+
+                        var argNode = ssaStack.Pop();
+                        var argBinaryExpr = argNode as BinaryExpressionNode;
+                        if (argBinaryExpr != null)
+                        {
+                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode);
+                            (newArgNode as IdentifierNode).ReplicationGuides = replicationGuides;
+                            fcNode.FormalArguments[idx] = newArgNode;
+                        }
+                        else
+                        {
+                            fcNode.FormalArguments[idx] = argNode;
+                        }
+                        astlist.AddRange(astlistArgs);
+                        astlistArgs.Clear();
+                    }
+
+                    astlist.AddRange(astlistArgs);
+                    rnode = fcNode;
+                }
+                else
+                {
+                    Validity.Assert(false);
+                }
+
+                Validity.Assert(null != rnode);
+                rhsIdentList.RightNode = rnode;
+
+                if (null == arrayDimension)
+                {
+                    // New SSA expr for the current dot call
+                    string ssatemp = ProtoCore.Utils.CoreUtils.BuildSSATemp(core);
+                    var tmpIdent = nodeBuilder.BuildIdentfier(ssatemp);
+                    BinaryExpressionNode bnode = new BinaryExpressionNode(tmpIdent, rhsIdentList, Operator.assign);
+                    bnode.isSSAPointerAssignment = true;
+                    astlist.Add(bnode);
+                    //ssaStack.Push(tmpIdent);
+                    ssaStack.Push(bnode);
+                }
+                else
+                {
+                    EmitSSAArrayIndex(rhsIdentList, ssaStack, ref astlist, true);
+                }
+
+#endif 
             }
         }
 
@@ -8166,8 +8293,20 @@ namespace ProtoAssociative
                                 }
                                 else
                                 {
-                                    // This function is a member function, store the functioncall node
+#if __SSA_IDENT_LIST
+
                                     ssaPointerList.Add(dotcall.FunctionCall);
+#else
+                                    string className = dotcall.DotCall.FormalArguments[0].Name;
+                                    string fullyQualifiedClassName = string.Empty;
+                                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
+                                    bool isConstructorCall = isClassName ? true : false;
+                                    if (!isConstructorCall)
+                                    {
+                                        // This function is a member function, store the functioncall node
+                                        ssaPointerList.Add(dotcall.FunctionCall);
+                                    }
+#endif
                                 }
                             }
                             else if (bnode.RightNode is FunctionCallNode)
