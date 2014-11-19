@@ -53,6 +53,7 @@ namespace Dynamo.Controls
         private HelixToolkit.Wpf.SharpDX.Camera camera;
         private SharpDX.Color4 selectionColor = new Color4(0,1,1,1);
         private bool showShadows;
+
         #endregion
 
         #region public properties
@@ -538,9 +539,9 @@ namespace Dynamo.Controls
                 }
 
                 var ptColor = new SharpDX.Color4(
-                                        (float)(p.PointVertexColors[color_idx] / 255),
-                                        (float)(p.PointVertexColors[color_idx + 1] / 255),
-                                        (float)(p.PointVertexColors[color_idx + 2] / 255), 1);
+                                        (p.PointVertexColors[color_idx] / 255.0f),
+                                        (p.PointVertexColors[color_idx + 1] / 255.0f),
+                                        (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
                 
                 points.Positions.Add(pt);
                 points.Indices.Add(points.Positions.Count);
@@ -572,9 +573,9 @@ namespace Dynamo.Controls
                 }
 
                 var startColor = new SharpDX.Color4(
-                                        (float)(p.LineStripVertexColors[color_idx] / 255),
-                                        (float)(p.LineStripVertexColors[color_idx + 1] / 255),
-                                        (float)(p.LineStripVertexColors[color_idx + 2] / 255), 1);
+                                        (p.LineStripVertexColors[color_idx] / 255.0f),
+                                        (p.LineStripVertexColors[color_idx + 1] / 255.0f),
+                                        (p.LineStripVertexColors[color_idx + 2] / 255.0f), 1);
 
                 geom.Indices.Add(idx);
                 geom.Positions.Add(ptA);
