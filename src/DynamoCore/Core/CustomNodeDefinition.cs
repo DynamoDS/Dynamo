@@ -223,6 +223,7 @@ namespace Dynamo
             var types = inputNodes.Select(x => x.Type);
             Parameters = inputNodes.Select(x => x.VariableName);
             ParameterTypes = types;
+            var paramList = parameters.Zip(types, (p, t) => Tuple.Create(p, t));
 
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynamoModel.AllNodes
@@ -248,8 +249,7 @@ namespace Dynamo
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 outputNodes,
-                parameters,
-                types);
+                paramList);
 
             // Not update graph until Run 
             // if (success)
