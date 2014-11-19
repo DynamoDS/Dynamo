@@ -195,6 +195,15 @@ namespace Dynamo.UI.Views
                 HighlightedItem = WPF.FindChild<ListBox>(this, "");
 
             target = PresentationSource.FromVisual(HighlightedItem);
+            if (target == null)
+            {
+                // HighlightedItem is {DisconnectedItem}.
+                // It means he is not a part of DataContext collection now.
+                // We should get HighlightedItem again.
+                HighlightedItem = WPF.FindChild<ListBox>(this, "");
+                target = PresentationSource.FromVisual(HighlightedItem);
+            }
+
             var routedEvent = Keyboard.KeyDownEvent; // Event to send
 
             HighlightedItem.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
