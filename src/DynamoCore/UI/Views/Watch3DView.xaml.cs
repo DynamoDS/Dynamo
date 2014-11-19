@@ -542,7 +542,12 @@ namespace Dynamo.Controls
                                         (p.PointVertexColors[color_idx] / 255.0f),
                                         (p.PointVertexColors[color_idx + 1] / 255.0f),
                                         (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
-                
+
+                if (ptColor == SharpDX.Color.Red)
+                {
+                    ptColor = SharpDX.Color.Black;
+                }
+
                 points.Positions.Add(pt);
                 points.Indices.Add(points.Positions.Count);
 
@@ -576,6 +581,11 @@ namespace Dynamo.Controls
                                         (p.LineStripVertexColors[color_idx] / 255.0f),
                                         (p.LineStripVertexColors[color_idx + 1] / 255.0f),
                                         (p.LineStripVertexColors[color_idx + 2] / 255.0f), 1);
+
+                if (startColor == SharpDX.Color.White)
+                {
+                    startColor = SharpDX.Color.Black;
+                }
 
                 geom.Indices.Add(idx);
                 geom.Positions.Add(ptA);
