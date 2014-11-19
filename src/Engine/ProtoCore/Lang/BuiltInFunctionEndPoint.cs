@@ -291,65 +291,64 @@ namespace ProtoCore.Lang
                         StackValue svTrue = formalParameters[1];
                         StackValue svFalse = formalParameters[2];
 
-                        // If run in delta execution environment, we don't 
-                        // create language blocks for true and false branch, 
-                        // so directly return the value.
-                        if (core.Options.IsDeltaExecution)
+                        if (core.Options.GenerateSSA)
                         {
                             return svCondition.RawBooleanValue ? svTrue : svFalse;
                         }
-
-                        Validity.Assert(svTrue.IsInteger);
-                        Validity.Assert(svFalse.IsInteger);
-                        int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
-
-                        ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                        int oldRunningBlockId = core.RunningBlock;
-                        core.RunningBlock = blockId;
-
-                        int returnAddr = stackFrame.ReturnPC;
-
-                        int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
-                        int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
-                        if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
-                        {
-                            ci = stackFrame.ClassScope;
-                            fi = stackFrame.FunctionScope;
-                        }
-                        StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
-                        // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
-
-
-                        int blockDecl = 0;
-                        int blockCaller = oldRunningBlockId;
-                        StackFrameType type = StackFrameType.kTypeLanguage;
-                        int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-                        int framePointer = core.Rmem.FramePointer;
-                        List<StackValue> registers = new List<StackValue>();
-
-                        // Comment Jun: Calling convention data is stored on the TX register
-                        StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                        interpreter.runtime.TX = svCallconvention;
-
-                        interpreter.runtime.SaveRegisters(registers);
-
-                        // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = stackFrame.StackFrameType;
-
-                        if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
-                        {
-                            blockCaller = core.DebugProps.CurrentBlockId;
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
-                        }
                         else
                         {
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, bounceStackFrame);
-                        }
+                            Validity.Assert(svTrue.IsInteger);
+                            Validity.Assert(svFalse.IsInteger);
+                            int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
-                        core.RunningBlock = oldRunningBlockId;
-                        break;
+                            ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
+                            int oldRunningBlockId = core.RunningBlock;
+                            core.RunningBlock = blockId;
+
+                            int returnAddr = stackFrame.ReturnPC;
+
+                            int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
+                            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
+                            if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
+                            {
+                                ci = stackFrame.ClassScope;
+                                fi = stackFrame.FunctionScope;
+                            }
+                            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+                            // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
+
+
+                            int blockDecl = 0;
+                            int blockCaller = oldRunningBlockId;
+                            StackFrameType type = StackFrameType.kTypeLanguage;
+                            int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
+                            int framePointer = core.Rmem.FramePointer;
+                            List<StackValue> registers = new List<StackValue>();
+
+                            // Comment Jun: Calling convention data is stored on the TX register
+                            StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                            interpreter.runtime.TX = svCallconvention;
+
+                            interpreter.runtime.SaveRegisters(registers);
+
+                            // Comment Jun: the caller type is the current type in the stackframe
+                            StackFrameType callerType = stackFrame.StackFrameType;
+
+                            if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
+                            {
+                                blockCaller = core.DebugProps.CurrentBlockId;
+                                StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+                                ret = core.Bounce(blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
+                            }
+                            else
+                            {
+                                StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+                                ret = core.Bounce(blockId, 0, context, bounceStackFrame);
+                            }
+
+                            core.RunningBlock = oldRunningBlockId;
+                            break;
+                        }
                     }
 
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kDot:
