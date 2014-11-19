@@ -114,8 +114,8 @@
                 </HelixToolkit:LightVisual3D>
                 <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=Points, Mode=TwoWay}"/>
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=Lines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:PointsVisual3D Size="8" Color="Blue" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:PointsVisual3D Size="8" Color="#4192D9" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="3" Color="#4192D9" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <GeometryModel3D Geometry="{Binding Mesh}">
