@@ -6633,6 +6633,8 @@ namespace ProtoAssociative
                         {
                             name = ident.Value;
                         }
+
+#if __SSA_IDENT_LIST
                         if (core.Options.GenerateSSA)
                         {
                             // For SSA'd ident lists, the lhs (class name) is stored in fnode.StaticLHSIdent
@@ -6641,6 +6643,7 @@ namespace ProtoAssociative
                                 name = fnode.StaticLHSIdent.Name;
                             }
                         }
+#endif
 
                         ci = core.ClassTable.IndexOf(name);
                         NodeUtils.SetNodeStartLocation(bnode, fnode.DotCall);
