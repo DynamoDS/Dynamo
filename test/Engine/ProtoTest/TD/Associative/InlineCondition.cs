@@ -561,7 +561,7 @@ x = c > 1 ? a : b;
 test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", 1);
+            thisTest.Verify("x", new [] {2, 2});
         }
 
 
