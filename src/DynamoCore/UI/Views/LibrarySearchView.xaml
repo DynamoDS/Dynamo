@@ -303,7 +303,7 @@
                                 <Setter Property="Background"
                                         Value="#444444" />
                             </Trigger>
-                            <Trigger Property="IsFocused"
+                            <Trigger Property="IsSelected"
                                      Value="True">
                                 <Setter Property="Background"
                                         Value="#444444" />
@@ -320,10 +320,6 @@
                          Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
-            <EventSetter Event="GotFocus"
-                         Handler="OnListBoxItemGotFocus" />
-            <EventSetter Event="LostFocus"
-                         Handler="OnListBoxItemLostFocus" />
         </Style>
 
         <!--Style for found MemberGroup-->
@@ -537,8 +533,6 @@
                              ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
-                             GotFocus="OnTopResultGotFocus"
-                             LostFocus="OnTopResultLostFocus"
                              KeyDown="OnMemberButtonKeyDown"
                              TargetUpdated="OnTopResultTargetUpdated">
                         <ListBox.ItemTemplate>
@@ -710,7 +704,8 @@
                                                              ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                              ItemsSource="{Binding Members}"
-                                                             Name="MembersListBox">
+                                                             Name="MembersListBox"
+                                                             KeyDown="OnMembersListBoxKeyDown">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <ContentControl Template="{StaticResource MemberControlTemplate}" />

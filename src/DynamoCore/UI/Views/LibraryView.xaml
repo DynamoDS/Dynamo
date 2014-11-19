@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
@@ -12,6 +13,10 @@
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
             <!-- Region Converters -->
 
             <!--Converter to Make class details not focusable-->
@@ -277,8 +282,7 @@
                           ScrollViewer.CanContentScroll="False"
                           ScrollViewer.IsDeferredScrollingEnabled="False"
                           ItemsSource="{Binding Path=Items}"
-                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown"
-                          SelectionMode="Single">
+                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <controls:LibraryWrapPanel Background="Transparent">
@@ -298,8 +302,8 @@
                                                  Color="#00000000" />
                             </Style.Resources>
 
-                            <EventSetter Event="MouseUp"
-                                         Handler="OnClassButtonMouseUp" />
+                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                         Handler="OnClassButtonCollapse" />
 
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -862,6 +866,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="60" />
                 </Grid.RowDefinitions>
                 <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
@@ -880,6 +885,14 @@
                                  Converter="{StaticResource IntToVisibilityConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
+                <Button Grid.Row="2"
+                        Width="150"
+                        Height="40"
+                        Style="{StaticResource STextButton}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="OnImportAddonButtonClick"
+                        Content="Import add-on" />
             </Grid>
         </ScrollViewer>
 

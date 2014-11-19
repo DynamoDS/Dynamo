@@ -30,6 +30,10 @@ namespace Revit.Elements
 
         internal ImportInstance(string satPath, XYZ translation = null)
         {
+            var instance = ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ImportInstance>(Document);
+            if (null != instance)
+                DocumentManager.Instance.DeleteElement(new ElementUUID(instance.UniqueId));
+
             translation = translation ?? XYZ.Zero;
 
             TransactionManager.Instance.EnsureInTransaction(Document);

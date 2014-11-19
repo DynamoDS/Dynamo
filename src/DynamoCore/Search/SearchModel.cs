@@ -87,7 +87,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return browserCategoriesBuilder.RootCategories; }            
+            get { return browserCategoriesBuilder.RootCategories; }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Dynamo.Search
         /// </summary>        
         public ObservableCollection<BrowserRootElement> AddonRootCategories
         {
-            get { return addonCategoriesBuilder.RootCategories; }            
+            get { return addonCategoriesBuilder.RootCategories; }
         }
 
         private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
@@ -442,9 +442,9 @@ namespace Dynamo.Search
             {
                 var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
                 // Rename category (except for custom nodes, imported libraries).
-                cat = ProcessNodeCategory(catCandidate, ref group);                
+                cat = ProcessNodeCategory(catCandidate, ref group);
                 if (nodeType != ElementType.Regular)
-                    cat = catCandidate;                
+                    cat = catCandidate;
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -519,13 +519,16 @@ namespace Dynamo.Search
             ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
-            nodeEle.Executed += this.OnExecuted;
-            nodeEle.ElementType = nodeInfo.ElementType;
-
             if (SearchDictionary.Contains(nodeEle))
             {
-                return true;//this.Refactor(nodeInfo);
+                // Second node with the same GUID should rewrite the original node. 
+                // Original node is removed from tree.
+                return this.Refactor(nodeInfo);
+
             }
+
+            nodeEle.ElementType = nodeInfo.ElementType;
+            nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
@@ -587,7 +590,7 @@ namespace Dynamo.Search
             {
                 RemoveNode(nodeName);
                 browserCategoriesBuilder.RemoveEmptyCategory(node);
-                addonCategoriesBuilder.RemoveEmptyCategory(node);                
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
         }
 
@@ -627,6 +630,16 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
+            if (category == null)
+                category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
+
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
+        }
 
         /// <summary>
         /// Call this method to assign a default grouping information if a given category 
@@ -668,4 +681,3 @@ namespace Dynamo.Search
         }
     }
 }
-

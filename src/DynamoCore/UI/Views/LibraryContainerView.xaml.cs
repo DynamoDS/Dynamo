@@ -138,10 +138,6 @@ namespace Dynamo.Search
 
             switch (e.Key)
             {
-                case Key.Return:
-                    viewModel.Execute();
-                    break;
-
                 case Key.Delete:
                     if (DynamoSelection.Instance.Selection.Count > 0)
                     {
@@ -196,7 +192,13 @@ namespace Dynamo.Search
 
                 case Key.Tab:
                     viewModel.PopulateSearchTextWithSelectedResult();
-                    break;                                    
+                    break;
+
+                case Key.Down:
+                case Key.Up:
+                case Key.Enter:
+                    librarySearchView.SelectNext(e.Key);
+                    break;
             }
         }
 
@@ -320,20 +322,6 @@ namespace Dynamo.Search
                 else
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
             }
-        }
-
-        private void OnSearchTextBoxKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key != Key.Down) return;
-            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-            if (topResult != null) topResult.Focus();
-        }
-
-        private void OnLibraryContainerViewPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key != Key.Up) return;
-            var topResult = WPF.FindChild<ListBox>(this, "topResultListBox");
-            if ((topResult != null) && (topResult.IsFocused)) SearchTextBox.Focus();
         }
 
         private void OnLibraryViewPreviewKeyDown(object sender, KeyEventArgs e)

@@ -23,6 +23,7 @@ using DynamoUnits;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
+using Dynamo.Search;
 
 namespace Dynamo.Controls
 {
@@ -504,6 +505,11 @@ namespace Dynamo.Controls
         public SolidColorBrush HeaderBorderError { get; set; }
         public SolidColorBrush OuterBorderError { get; set; }
         public SolidColorBrush BodyBackgroundError { get; set; }
+        public SolidColorBrush HeaderBackgroundBroken { get; set; }
+        public SolidColorBrush HeaderForegroundBroken { get; set; }
+        public SolidColorBrush HeaderBorderBroken { get; set; }
+        public SolidColorBrush OuterBorderBroken { get; set; }
+        public SolidColorBrush BodyBackgroundBroken { get; set; }
         public SolidColorBrush OuterBorderSelection { get; set; }
 
         public enum NodePart
@@ -548,6 +554,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderBackgroundActive;
                 case ElementState.Warning: return HeaderBackgroundWarning;
                 case ElementState.Error: return HeaderBackgroundError;
+                case ElementState.AstBuildBroken: return HeaderBackgroundBroken;
             }
 
             throw new NotImplementedException();
@@ -561,6 +568,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderForegroundActive;
                 case ElementState.Warning: return HeaderForegroundWarning;
                 case ElementState.Error: return HeaderForegroundError;
+                case ElementState.AstBuildBroken: return HeaderForegroundBroken;
             }
 
             throw new NotImplementedException();
@@ -574,6 +582,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderBorderActive;
                 case ElementState.Warning: return HeaderBorderWarning;
                 case ElementState.Error: return HeaderBorderError;
+                case ElementState.AstBuildBroken: return HeaderBorderBroken;
             }
 
             throw new NotImplementedException();
@@ -587,6 +596,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return OuterBorderActive;
                 case ElementState.Warning: return OuterBorderWarning;
                 case ElementState.Error: return OuterBorderError;
+                case ElementState.AstBuildBroken: return OuterBorderBroken;
             }
 
             throw new NotImplementedException();
@@ -600,6 +610,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return BodyBackgroundActive;
                 case ElementState.Warning: return BodyBackgroundWarning;
                 case ElementState.Error: return BodyBackgroundError;
+                case ElementState.AstBuildBroken: return BodyBackgroundBroken;
             }
 
             throw new NotImplementedException();
@@ -1985,6 +1996,35 @@ namespace Dynamo.Controls
                 textBlock.Foreground);
 
             return formattedText.Width;
+        }
+    }
+
+    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    public class ElementTypeToShorthandConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var elementType = (SearchModel.ElementType)value;
+
+            switch (elementType)
+            {
+                case SearchModel.ElementType.Package:
+                    return Configurations.ElementTypeShorthandPackage;
+                case SearchModel.ElementType.CustomDll:
+                    return Configurations.ElementTypeShorthandImportedDll;
+                case SearchModel.ElementType.CustomNode:
+                    return Configurations.ElementTypeShorthandCategory;
+                default:
+                    return "NIL";
+                //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
+                //      next line should be used.
+                //throw new Exception("Incorrect value provided to converter");
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -168,6 +168,12 @@ namespace DSOffice
             return WorkBook.ReadExcelFile(file.FullName);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook ReadExcelFile(string file)
+        {
+            return WorkBook.ReadExcelFile(file);
+        }
+
         /// <summary>
         /// Returns a list of all the worksheets present in the given Excel workbook
         /// </summary>
@@ -272,6 +278,12 @@ namespace DSOffice
             return ws.Data;
         }
 
+        [Obsolete("Use Excel.ReadFromFile node instead.")]
+        public static object[][] Read(string filePath, string sheetName)
+        {
+            return ReadFromFile(new FileInfo(filePath), sheetName);
+        }
+
         /// <summary>
         ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
         ///     with sublists to be written in successive rows. Rows and columns are
@@ -297,6 +309,7 @@ namespace DSOffice
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
         #region Helper methods
@@ -427,6 +440,7 @@ namespace DSOffice
 
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkBook
     {
         /// <summary>

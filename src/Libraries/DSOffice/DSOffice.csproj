@@ -61,7 +61,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DSOffice_DynamoCustomization.xml" />
+    <Content Include="DSOffice.Migrations.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="DSOffice_DynamoCustomization.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

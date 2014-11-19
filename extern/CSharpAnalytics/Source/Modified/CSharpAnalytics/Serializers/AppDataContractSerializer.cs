@@ -39,7 +39,7 @@ namespace CSharpAnalytics.Serializers
         /// <param name="filename">Optional filename to use, name of the class if not provided.</param>
         /// <param name="deleteBadData">Optional boolean on whether delete the existing file if deserialization fails, defaults to false.</param>
         /// <returns>Task that holds the deserialized object once complete.</returns>
-        public static T Restore<T>(string filename = null, bool deleteBadData = false)
+        public static T Restore<T>(string filename = null, bool deleteBadData = true)
         {
             var serializer = new DataContractSerializer(typeof(T), new[] { typeof(DateTimeOffset) });
 
@@ -74,7 +74,7 @@ namespace CSharpAnalytics.Serializers
                 {
                     if (deleteBadData)
                         File.Delete(file);
-                    throw;
+                    return default(T);
                 }
             }
             catch (FileNotFoundException)

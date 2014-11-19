@@ -1248,9 +1248,12 @@ namespace ProtoCore.AST.AssociativeAST
     public class ClassAttributes 
     {
         public bool HiddenInLibrary { get; protected set; }
-        public ClassAttributes() 
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+        public ClassAttributes(string msg = "")
         {
-            HiddenInLibrary = false;
+            ObsoleteMessage = msg;
+            HiddenInLibrary = IsObsolete;
         }
     }
 
@@ -1265,10 +1268,13 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
         protected List<string> returnKeys;
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
         
-        public MethodAttributes(bool hiddenInLibrary = false)
+        public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
+            ObsoleteMessage = msg;
         }
     }
 

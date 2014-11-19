@@ -96,6 +96,7 @@ namespace SamplesLibraryUI
         /// DelegateCommand objects allow you to bind
         /// UI interaction to methods on your data context.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public DelegateCommand MessageCommand { get; set; }
 
         #endregion
@@ -155,6 +156,7 @@ namespace SamplesLibraryUI
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             // When you create your own UI node you are responsible
@@ -197,6 +199,7 @@ namespace SamplesLibraryUI
         /// properties on this node as the DataContext.
         /// </summary>
         /// <param name="view">The view representing the node in the graph.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public void SetupCustomUIElements(dynNodeView view)
         {
             // The view variable is a reference to the node's view.

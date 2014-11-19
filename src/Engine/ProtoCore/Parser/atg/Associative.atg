@@ -162,9 +162,12 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =  SYNC                     (. if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); .)
                             (. node = null; .)
 (
-    
-	IF(IsFunctionCallStatement())
+	IF(IsNonAssignmentStatement())
+		Associative_NonAssignmentStatement<out node>
+	|
+    IF(IsFunctionCallStatement())
 		Associative_FunctionCallStatement<out node>
+
 	|
         Associative_FunctionalStatement<out node>
     |      
@@ -1094,6 +1097,47 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
     (
         Associative_IdentifierList<out node>
     )
+)
+.
+
+//------------------------------------------------------------------------
+Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+  SYNC                       (.
+								 node = null; 
+								 ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
+						     .)
+(
+	(
+		Associative_Expression<out rightNode>
+					(.
+                        //Try to make a false binary expression node.					    
+						ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+						ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+						leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+
+						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+						leftNode.datatype = unknownType;
+						leftNode.line = rightNode.line;
+						leftNode.col = rightNode.col;
+						leftNode.endLine = rightNode.endLine;
+						leftNode.endCol = rightNode.endCol;
+
+						expressionNode.LeftNode = leftNode;
+						expressionNode.RightNode = rightNode;
+						expressionNode.Optr = Operator.assign;
+						NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
+						node = expressionNode;
+					.)			
+                    
+                    (. 
+                        if (la.val != ";")
+                            SynErr("';' is expected.");  
+                    .)
+		endline				
+					(. NodeUtils.SetNodeEndLocation(node, t); .)
+
+	)
 )
 .
 

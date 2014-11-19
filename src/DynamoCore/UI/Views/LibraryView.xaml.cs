@@ -43,13 +43,13 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private void OnClassButtonMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
-            if (classButton == null) return;
+            if ((classButton == null) || !classButton.IsSelected) return;
 
-            classButton.IsSelected = !classButton.IsSelected;
-            classButton.BringIntoView();
+            classButton.IsSelected = false;
+            e.Handled = true;
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
@@ -90,7 +90,8 @@ namespace Dynamo.UI.Views
             if (wrapPanels.Count == 0)
                 return;
 
-            var selectedClass = (e.OriginalSource as FrameworkElement).DataContext as BrowserInternalElement;
+            var selectedElement = e.OriginalSource as FrameworkElement;
+            var selectedClass = selectedElement.DataContext as BrowserInternalElement;
             // Continue work with real class: not null, child of BrowserInternalElementForClasses.
             if (selectedClass == null || selectedClass is NodeSearchElement ||
                 !(selectedClass.Parent is BrowserInternalElementForClasses))
@@ -102,8 +103,16 @@ namespace Dynamo.UI.Views
             foreach (var wrapPanel in wrapPanels)
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
+                {
                     e.Handled = true;
+                    selectedElement.BringIntoView();
+                }
             }
+        }
+
+        private void OnImportAddonButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Import add-on button is clicked");
         }
     }
 }
