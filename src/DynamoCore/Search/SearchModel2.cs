@@ -10,64 +10,55 @@ using System.Linq;
 namespace Dynamo.Search
 {
     /// <summary>
-    /// TODO
-    /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    public interface ISource<out TItem>
-    {
-        event Action<TItem> ItemProduced;
-    }
-
-    /// <summary>
-    /// TODO
+    ///     Has a collection of strings that can be used to identifiy the instance
+    ///     in a search.
     /// </summary>
     public interface ISearchEntry
     {
-        IEnumerable<string> SearchTags { get; }
+        ICollection<string> SearchTags { get; }
     }
 
     /// <summary>
-    /// TODO
+    ///     
     /// </summary>
     /// <typeparam name="TEntry"></typeparam>
     /// <typeparam name="TItem"></typeparam>
-    public class SearchLibrary<TEntry, TItem> : LogSourceBase, ISource<TItem>
-        where TEntry : ISource<TItem>, ISearchEntry
+    public class SearchLibrary<TEntry, TItem> : LogSourceBase, ISource<TItem> 
+        where TEntry : ISearchEntry, ISource<TItem>
     {
         private readonly SearchDictionary<TEntry> searchDictionary = new SearchDictionary<TEntry>();
-        private readonly HashSet<TEntry> entries = new HashSet<TEntry>(); 
 
+        public SearchLibrary()
+        {
+            searchDictionary.EntryAdded += SearchDictionaryOnEntryAdded;
+            searchDictionary.EntryRemoved += SearchDictionaryOnEntryRemoved;
+        }
+
+        private void SearchDictionaryOnEntryRemoved(TEntry tEntry)
+        {
+            tEntry.ItemProduced -= OnItemProduced;
+        }
+
+        private void SearchDictionaryOnEntryAdded(TEntry tEntry)
+        {
+            tEntry.ItemProduced += OnItemProduced;
+        }
+        
         public event Action<TItem> ItemProduced;
-
         protected virtual void OnItemProduced(TItem item)
         {
             var handler = ItemProduced;
             if (handler != null) handler(item);
         }
 
-        public IEnumerable<TEntry> Search(string query)
-        {
-            return string.IsNullOrWhiteSpace(query)
-                ? entries
-                : searchDictionary.Search(query);
-        }
-
         public void AddToLibrary(TEntry entry)
         {
-            entries.Add(entry);
-            entry.ItemProduced += OnItemProduced;
             searchDictionary.Add(entry, entry.SearchTags);
         }
 
         public bool RemoveFromLibrary(TEntry entry)
         {
-            if (entries.Remove(entry))
-            {
-                searchDictionary.Remove(entry);
-                entry.ItemProduced -= OnItemProduced;
-                return true;
-            }
-            return false;
+            return searchDictionary.Remove(entry);
         }
     }
 
@@ -120,14 +111,15 @@ namespace Dynamo.Search
             OnItemProduced(ConstructNewNodeModel());
         }
 
-        IEnumerable<string> ISearchEntry.SearchTags
+        ICollection<string> ISearchEntry.SearchTags
         {
             get
             {
                 return
                     SearchKeywords.Concat(Name.AsSingleton())
                         .SelectMany(baseName => new[] { baseName, PrependCategory(baseName) })
-                        .Concat(Description.AsSingleton());
+                        .Concat(Description.AsSingleton())
+                        .ToList();
             }
         }
     }

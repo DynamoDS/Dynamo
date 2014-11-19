@@ -14,9 +14,14 @@ namespace Dynamo.Search
     {
         private readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
-        
+
         /// <summary>
-        ///     The number of tags in the dicitionary
+        ///     All the current entries in search.
+        /// </summary>
+        public IEnumerable<V> SearchEntries { get { return entryDictionary.Keys; } } 
+
+        /// <summary>
+        ///     The number of tags in the dictionary
         /// </summary>
         public int NumTags
         {
@@ -24,7 +29,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     The number of elements in the dicitionary
+        ///     The number of elements in the dictionary
         /// </summary>
         public int NumElements
         {
@@ -32,6 +37,20 @@ namespace Dynamo.Search
             {
                 return entryDictionary.Count;
             }
+        }
+
+        public event Action<V> EntryAdded;
+        protected virtual void OnEntryAdded(V entry)
+        {
+            var handler = EntryAdded;
+            if (handler != null) handler(entry);
+        }
+
+        public event Action<V> EntryRemoved;
+        protected virtual void OnEntryRemoved(V entry)
+        {
+            var handler = EntryRemoved;
+            if (handler != null) handler(entry);
         }
 
         /// <summary>
@@ -73,6 +92,7 @@ namespace Dynamo.Search
             }
             foreach (string tag in tags.Select(x => x.ToLower()))
                 keys[tag] = weight;
+            OnEntryAdded(value);
         }
 
         /// <summary>
@@ -96,7 +116,8 @@ namespace Dynamo.Search
         public bool Remove(V value, string tag)
         {
             Dictionary<string, double> keys;
-            return entryDictionary.TryGetValue(value, out keys) && keys.Remove(tag);
+            return entryDictionary.TryGetValue(value, out keys) && keys.Remove(tag)
+                && (keys.Any() || Remove(value));
         }
 
         /// <summary>
@@ -105,7 +126,10 @@ namespace Dynamo.Search
         /// <param name="value"> The object to remove </param>
         public bool Remove(V value)
         {
-            return entryDictionary.Remove(value);
+            if (!entryDictionary.Remove(value)) 
+                return false;
+            OnEntryRemoved(value);
+            return true;
         }
 
         /// <summary>
@@ -116,7 +140,7 @@ namespace Dynamo.Search
         {
             var removals = entryDictionary.Keys.Where(removeCondition).ToList();
             foreach (V ele in removals)
-                entryDictionary.Remove(ele);
+                Remove(ele);
             return removals.Count;
         }
 
@@ -139,7 +163,7 @@ namespace Dynamo.Search
                     count++;
                 }
                 if (!removal.Value.Any())
-                    entryDictionary.Remove(removal.Key);
+                    Remove(removal.Key);
             }
             return count;
         }
@@ -152,7 +176,13 @@ namespace Dynamo.Search
         public int Remove(V value, IEnumerable<string> tags)
         {
             Dictionary<string, double> keys;
-            return entryDictionary.TryGetValue(value, out keys) ? tags.Count(tag => keys.Remove(tag)) : 0;
+            if (!entryDictionary.TryGetValue(value, out keys)) 
+                return 0;
+            
+            var count = tags.Count(tag => keys.Remove(tag));
+            if (!keys.Any())
+                Remove(value);
+            return count;
         }
 
         /// <summary>
@@ -222,11 +252,11 @@ namespace Dynamo.Search
             string query)
         {
             yield return kv => kv.Contains(query);
-            if (ContainsSpecialCharacters(query))
-            {
-                var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
-                yield return kv => MatchWithQuerystring(kv, regexPattern);
-            }
+            
+            if (!ContainsSpecialCharacters(query)) 
+                yield break;
+            var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
+            yield return kv => MatchWithQuerystring(kv, regexPattern);
         }
 
         /// <summary>
@@ -291,111 +321,107 @@ namespace Dynamo.Search
             {
                 const double prefixAdustmentScale = 0.1;
 
-                if ((firstWord != null) && (secondWord != null))
-                {
-                    double dist = GetJaroDistance(firstWord, secondWord);
-                    int prefixLength = GetPrefixLength(firstWord, secondWord);
-                    return dist + prefixLength * prefixAdustmentScale * (1.0 - dist);
-                }
-                return 0.0;
+                if ((firstWord == null) || (secondWord == null)) 
+                    return 0.0;
+
+                double dist = GetJaroDistance(firstWord, secondWord);
+                int prefixLength = GetPrefixLength(firstWord, secondWord);
+                return dist + prefixLength * prefixAdustmentScale * (1.0 - dist);
             }
 
             private static double GetJaroDistance(string firstWord, string secondWord)
             {
                 const double defaultMismatchScore = 0;
 
-                if ((firstWord != null) && (secondWord != null))
+                if ((firstWord == null) || (secondWord == null)) 
+                    return defaultMismatchScore;
+
+                //get half the length of the string rounded up 
+                //(this is the distance used for acceptable transpositions)
+                int halflen = Math.Min(firstWord.Length, secondWord.Length) / 2 + 1;
+
+                //get common characters
+                StringBuilder common1 = GetCommonCharacters(firstWord, secondWord, halflen);
+                int commonMatches = common1.Length;
+
+                //check for zero in common
+                if (commonMatches == 0)
                 {
-                    //get half the length of the string rounded up 
-                    //(this is the distance used for acceptable transpositions)
-                    int halflen = Math.Min(firstWord.Length, secondWord.Length) / 2 + 1;
-
-                    //get common characters
-                    StringBuilder common1 = GetCommonCharacters(firstWord, secondWord, halflen);
-                    int commonMatches = common1.Length;
-
-                    //check for zero in common
-                    if (commonMatches == 0)
-                    {
-                        return defaultMismatchScore;
-                    }
-
-                    StringBuilder common2 = GetCommonCharacters(secondWord, firstWord, halflen);
-
-                    //check for same length common strings returning 0.0f is not the same
-                    if (commonMatches != common2.Length)
-                    {
-                        return defaultMismatchScore;
-                    }
-
-                    //get the number of transpositions
-                    int transpositions = 0;
-                    for (int i = 0; i < commonMatches; i++)
-                    {
-                        if (common1[i] != common2[i])
-                        {
-                            transpositions++;
-                        }
-                    }
-
-                    //calculate jaro metric
-                    transpositions /= 2;
-                    double tmp1 = commonMatches / (3.0 * firstWord.Length)
-                        + commonMatches / (3.0 * secondWord.Length)
-                        + (commonMatches - transpositions) / (3.0 * commonMatches);
-                    return tmp1;
+                    return defaultMismatchScore;
                 }
-                return defaultMismatchScore;
+
+                StringBuilder common2 = GetCommonCharacters(secondWord, firstWord, halflen);
+
+                //check for same length common strings returning 0.0f is not the same
+                if (commonMatches != common2.Length)
+                {
+                    return defaultMismatchScore;
+                }
+
+                //get the number of transpositions
+                int transpositions = 0;
+                for (int i = 0; i < commonMatches; i++)
+                {
+                    if (common1[i] != common2[i])
+                    {
+                        transpositions++;
+                    }
+                }
+
+                //calculate jaro metric
+                transpositions /= 2;
+                double tmp1 = commonMatches / (3.0 * firstWord.Length)
+                    + commonMatches / (3.0 * secondWord.Length)
+                    + (commonMatches - transpositions) / (3.0 * commonMatches);
+                return tmp1;
             }
 
             private static StringBuilder GetCommonCharacters(string firstWord, string secondWord, int distanceSep)
             {
-                if ((firstWord != null) && (secondWord != null))
-                {
-                    var returnCommons = new StringBuilder();
-                    var copy = new StringBuilder(secondWord);
-                    for (int i = 0; i < firstWord.Length; i++)
-                    {
-                        char ch = firstWord[i];
-                        bool foundIt = false;
-                        for (int j = Math.Max(0, i - distanceSep);
-                             !foundIt && j < Math.Min(i + distanceSep, secondWord.Length);
-                             j++)
-                        {
-                            if (copy[j] == ch)
-                            {
-                                foundIt = true;
-                                returnCommons.Append(ch);
-                                copy[j] = '#';
-                            }
-                        }
-                    }
+                if ((firstWord == null) || (secondWord == null)) 
+                    return null;
 
-                    return returnCommons;
+                var returnCommons = new StringBuilder();
+                var copy = new StringBuilder(secondWord);
+                for (int i = 0; i < firstWord.Length; i++)
+                {
+                    char ch = firstWord[i];
+                    bool foundIt = false;
+                    for (int j = Math.Max(0, i - distanceSep);
+                         !foundIt && j < Math.Min(i + distanceSep, secondWord.Length);
+                         j++)
+                    {
+                        if (copy[j] != ch)
+                            continue;
+
+                        foundIt = true;
+                        returnCommons.Append(ch);
+                        copy[j] = '#';
+                    }
                 }
-                return null;
+
+                return returnCommons;
             }
 
             private static int GetPrefixLength(string firstWord, string secondWord)
             {
                 const int minPrefixTestLength = 4;
 
-                if ((firstWord != null) && (secondWord != null))
+                if ((firstWord == null) || (secondWord == null)) 
+                    return minPrefixTestLength;
+                
+                int n =
+                    Math.Min(
+                        minPrefixTestLength,
+                        Math.Min(firstWord.Length, secondWord.Length));
+
+                for (int i = 0; i < n; i++)
                 {
-                    int n =
-                        Math.Min(
-                            minPrefixTestLength,
-                            Math.Min(firstWord.Length, secondWord.Length));
-
-                    for (int i = 0; i < n; i++)
-                    {
-                        if (firstWord[i] != secondWord[i])
-                            return i;
-                    }
-
-                    return n;
+                    if (firstWord[i] != secondWord[i])
+                        return i;
                 }
-                return minPrefixTestLength;
+
+                return n;
             }
         }
     }
