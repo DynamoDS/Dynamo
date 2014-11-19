@@ -524,7 +524,6 @@ namespace Dynamo.Search
                 // Second node with the same GUID should rewrite the original node. 
                 // Original node is removed from tree.
                 return this.Refactor(nodeInfo);
-
             }
 
             nodeEle.ElementType = nodeInfo.ElementType;
