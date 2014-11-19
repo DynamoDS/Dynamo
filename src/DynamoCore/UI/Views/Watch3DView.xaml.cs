@@ -90,7 +90,7 @@ namespace Dynamo.Controls
 
         public MeshGeometry3D MeshSelected { get; set; }
 
-        //public List<BillboardTextItem> Text { get; set; }
+        public BillboardText3D Text { get; set; }
 
         public Viewport3DX View
         {
@@ -190,6 +190,8 @@ namespace Dynamo.Controls
 
             Points = InitPointGeometry();
             PointsSelected = InitPointGeometry();
+
+            Text = InitText3D();
 
             DrawGrid();
         }
@@ -437,25 +439,22 @@ namespace Dynamo.Controls
             var blueLines = new LineGeometry3D();
 
             //pre-size the text collection
-            var textCount = e.Packages.Count(x => x.DisplayLabels);
-            var text = new List<BillboardTextItem>(textCount);
+            var text = InitText3D(); 
 
             var mesh = InitMeshGeometry();
             var meshSel = InitMeshGeometry();
 
             foreach (var package in packages)
             {
-                ConvertPoints(package, points);
-                ConvertLines(package, lines);
+                ConvertPoints(package, points, text);
+                ConvertLines(package, lines, text);
                 ConvertMeshes(package, mesh);
             }
 
             foreach (var package in selPackages)
             {
-                ConvertPoints(package, pointsSelected);
-
-                ConvertLines(package, linesSel);
-
+                ConvertPoints(package, pointsSelected, text);
+                ConvertLines(package, linesSel, text);
                 ConvertMeshes(package, meshSel);
             }
 
@@ -471,7 +470,8 @@ namespace Dynamo.Controls
                 LineGeometry3D,
                 LineGeometry3D,
                 HelixToolkit.Wpf.SharpDX.MeshGeometry3D,
-                HelixToolkit.Wpf.SharpDX.MeshGeometry3D>(SendGraphicsToView), DispatcherPriority.Render,
+                HelixToolkit.Wpf.SharpDX.MeshGeometry3D, 
+                BillboardText3D>(SendGraphicsToView), DispatcherPriority.Render,
                                new object[] {
                                    points, 
                                    pointsSelected, 
@@ -481,7 +481,7 @@ namespace Dynamo.Controls
                                    greenLines, 
                                    blueLines, 
                                    mesh, 
-                                   meshSel});
+                                   meshSel, text});
         }
 
         private static LineGeometry3D InitLineGeometry()
@@ -545,6 +545,14 @@ namespace Dynamo.Controls
             return mesh;
         }
 
+        private static BillboardText3D InitText3D()
+        {
+            var text3D = new BillboardText3D();
+            var ti = new TextInfo("o", new Vector3());
+            text3D.TextInfo.Add(ti);
+            return text3D;
+        }
+
         private void SendGraphicsToView(
             PointGeometry3D points,
             PointGeometry3D pointsSelected,
@@ -554,7 +562,8 @@ namespace Dynamo.Controls
             LineGeometry3D greenLines,
             LineGeometry3D blueLines, 
             HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh,
-            HelixToolkit.Wpf.SharpDX.MeshGeometry3D meshSel)
+            HelixToolkit.Wpf.SharpDX.MeshGeometry3D meshSel,
+            BillboardText3D text)
         {
             Points = points;
             PointsSelected = pointsSelected;
@@ -565,7 +574,7 @@ namespace Dynamo.Controls
             //ZAxes = blueLines;
             Mesh = mesh;
             MeshSelected = meshSel;
-            //Text = text;
+            Text = text;
 
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
@@ -677,7 +686,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertPoints(RenderPackage p, PointGeometry3D points)
+        private void ConvertPoints(RenderPackage p, PointGeometry3D points, BillboardText3D text)
         {
             int color_idx = 0;
 
@@ -690,10 +699,10 @@ namespace Dynamo.Controls
                 // DirectX convention - Y Up
                 var pt = new Vector3(x, z, y);
 
-                //if (i == 0 && outerCount == 0 && p.DisplayLabels)
-                //{
-                //    //text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
-                //}
+                if (i == 0 && p.DisplayLabels)
+                {
+                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
+                }
 
                 var ptColor = new SharpDX.Color4(
                                         (float)(p.PointVertexColors[color_idx] / 255),
@@ -708,7 +717,7 @@ namespace Dynamo.Controls
 
         }
 
-        private void ConvertLines(RenderPackage p, LineGeometry3D geom)
+        private void ConvertLines(RenderPackage p, LineGeometry3D geom, BillboardText3D text)
         {
             int color_idx = 0;
             var idx = geom.Indices.Count;
@@ -722,10 +731,10 @@ namespace Dynamo.Controls
                 // DirectX convention - Y Up
                 var ptA = new Vector3(x,z,y);
 
-                //if (i == 0 && outerCount == 0 && p.DisplayLabels)
-                //{
-                //    //text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
-                //}
+                if (i == 0 && p.DisplayLabels)
+                {
+                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), ptA));
+                }
 
                 var startColor = new SharpDX.Color4(
                                         (float)(p.LineStripVertexColors[color_idx] / 255),

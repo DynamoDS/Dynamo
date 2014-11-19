@@ -112,6 +112,7 @@
             </hx:Viewport3DX.InputBindings>-->
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
+
             
             <hx:MeshGeometryModel3D x:Name="mesh" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding RedMaterial}" IsHitTestVisible="False" />
             <hx:MeshGeometryModel3D x:Name="meshSelected" Geometry="{Binding MeshSelected}" Transform = "{Binding Model1Transform}" Material="{Binding CyanMaterial}"  IsHitTestVisible="False"  />
@@ -124,6 +125,9 @@
             <hx:LineGeometryModel3D x:Name="grid" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.DarkGray}" Thickness="0.1"/>
             <hx:PointGeometryModel3D x:Name="points" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.Black}"/>
             <hx:PointGeometryModel3D x:Name="pointsSelected" Geometry="{Binding PointsSelected}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.Cyan}"/>
+            <hx:BillboardTextModel3D x:Name="text" Geometry="{Binding Text}" Transform="{Binding Model1Transform}"/>
+            
+            
         </hx:Viewport3DX>
         
         <!--<HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
