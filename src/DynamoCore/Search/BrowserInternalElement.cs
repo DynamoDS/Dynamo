@@ -55,7 +55,7 @@ namespace Dynamo.Nodes.Search
         /// and CustomNode.
         /// TODO: implement as design clarifications are provided. 
         /// </summary>
-        public SearchModel.ElementType LibraryType { get; set; }
+        public SearchModel.ElementType ElementType { get; set; }
 
         private ClassInformation classDetails;
         public ClassInformation ClassDetails

@@ -2016,7 +2016,7 @@ namespace Dynamo.Controls
                     return "CTGRY";
                 default:
                     return "NIL";
-                    //TODO: as logic of specifying BrowserRootElement.LibraryType is implemented
+                    //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
                     //      next line should be used.
                     //throw new Exception("Incorrect value provided to converter");
             }

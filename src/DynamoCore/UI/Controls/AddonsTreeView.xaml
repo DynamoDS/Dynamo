@@ -512,7 +512,7 @@
                                Margin="10,0,10,0"
                                Foreground="#989898">
                         <TextBlock.Text>
-                            <Binding Path="LibraryType"
+                            <Binding Path="ElementType"
                                      Converter="{StaticResource ElementTypeToAddonShortcutConverter}" />
                         </TextBlock.Text>
                     </TextBlock>
