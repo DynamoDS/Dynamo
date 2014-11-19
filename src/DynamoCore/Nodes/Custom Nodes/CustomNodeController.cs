@@ -37,8 +37,11 @@ namespace Dynamo.Nodes
 
             if (Definition.Parameters == null) return;
 
-            foreach (string arg in Definition.Parameters)
-                model.InPortData.Add(new PortData(arg, "parameter"));
+            var paramTypePairs = Definition.Parameters.Zip(Definition.ParameterTypes, (p, t) => Tuple.Create(p, t));
+            foreach (var pair in paramTypePairs)
+            {
+                model.InPortData.Add(new PortData(pair.Item1, pair.Item2.ToString()));
+            }
         }
 
         protected override void InitializeOutputs(NodeModel model)

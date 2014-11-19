@@ -341,11 +341,12 @@ namespace Dynamo.Nodes
                 IdentifierNode identifierNode = new IdentifierNode();
                 if (TryParseInputSymbol(inputSymbol, out identifierNode))
                 {
-                    VariableName = identifier.Value;
+                    VariableName = identifierNode.Value;
                     Type = identifierNode.datatype;
                 }
                 else
                 {
+                    VariableName = inputSymbol.Split(':').First();
                     Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
                 }
         
@@ -409,7 +410,7 @@ namespace Dynamo.Nodes
                 if (node != null)
                 {
                     identifier = node.LeftNode as IdentifierNode;
-                    return identifier == null;
+                    return identifier != null;
                 }
             }
 
