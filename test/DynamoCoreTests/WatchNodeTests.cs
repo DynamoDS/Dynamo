@@ -185,5 +185,23 @@ namespace Dynamo.Tests
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
             }
         }
+        [Test]
+        public void WatchFunctionObject_collection_5033()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5033
+            // Watch value for a partially-applied function should say "function" and not "null"
+            
+            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject_2.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.Model.RunExpression();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue,
+               ViewModel.Model.EngineController.LiveRunnerCore,
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+
+            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+        }
     }
 }
