@@ -136,6 +136,7 @@ limitations under the License.
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
+    <Compile Include="Search\SearchModel2.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />

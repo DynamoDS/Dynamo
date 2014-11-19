@@ -1,230 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
+﻿using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynamo.Search
 {
-    public static class JaroWinkler
-    {
-        public static double StringDistance(string firstWord, string secondWord)
-        {
-            const double prefixAdustmentScale = 0.1;
-
-            if ((firstWord != null) && (secondWord != null))
-            {
-                double dist = GetJaroDistance(firstWord, secondWord);
-                int prefixLength = GetPrefixLength(firstWord, secondWord);
-                return dist + prefixLength * prefixAdustmentScale * (1.0 - dist);
-            }
-            return 0.0;
-        }
-
-        private static double GetJaroDistance(string firstWord, string secondWord)
-        {
-            const double defaultMismatchScore = 0;
-
-            if ((firstWord != null) && (secondWord != null))
-            {
-                //get half the length of the string rounded up 
-                //(this is the distance used for acceptable transpositions)
-                int halflen = Math.Min(firstWord.Length, secondWord.Length) / 2 + 1;
-
-                //get common characters
-                StringBuilder common1 = GetCommonCharacters(firstWord, secondWord, halflen);
-                int commonMatches = common1.Length;
-
-                //check for zero in common
-                if (commonMatches == 0)
-                {
-                    return defaultMismatchScore;
-                }
-
-                StringBuilder common2 = GetCommonCharacters(secondWord, firstWord, halflen);
-
-                //check for same length common strings returning 0.0f is not the same
-                if (commonMatches != common2.Length)
-                {
-                    return defaultMismatchScore;
-                }
-
-                //get the number of transpositions
-                int transpositions = 0;
-                for (int i = 0; i < commonMatches; i++)
-                {
-                    if (common1[i] != common2[i])
-                    {
-                        transpositions++;
-                    }
-                }
-
-                //calculate jaro metric
-                transpositions /= 2;
-                double tmp1 = commonMatches / (3.0 * firstWord.Length)
-                    + commonMatches / (3.0 * secondWord.Length)
-                    + (commonMatches - transpositions) / (3.0 * commonMatches);
-                return tmp1;
-            }
-            return defaultMismatchScore;
-        }
-
-        private static StringBuilder GetCommonCharacters(string firstWord, string secondWord, int distanceSep)
-        {
-            if ((firstWord != null) && (secondWord != null))
-            {
-                var returnCommons = new StringBuilder();
-                var copy = new StringBuilder(secondWord);
-                for (int i = 0; i < firstWord.Length; i++)
-                {
-                    char ch = firstWord[i];
-                    bool foundIt = false;
-                    for (int j = Math.Max(0, i - distanceSep);
-                         !foundIt && j < Math.Min(i + distanceSep, secondWord.Length);
-                         j++)
-                    {
-                        if (copy[j] == ch)
-                        {
-                            foundIt = true;
-                            returnCommons.Append(ch);
-                            copy[j] = '#';
-                        }
-                    }
-                }
-
-                return returnCommons;
-            }
-            return null;
-        }
-
-        private static int GetPrefixLength(string firstWord, string secondWord)
-        {
-            const int minPrefixTestLength = 4;
-
-            if ((firstWord != null) && (secondWord != null))
-            {
-                int n =
-                    Math.Min(
-                        minPrefixTestLength,
-                        Math.Min(firstWord.Length, secondWord.Length));
-
-                for (int i = 0; i < n; i++)
-                {
-                    if (firstWord[i] != secondWord[i])
-                        return i;
-                }
-
-                return n;
-            }
-            return minPrefixTestLength;
-        }
-    }
-
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
     public interface ISource<out TItem>
     {
         event Action<TItem> ItemProduced;
     }
 
-    public struct SearchResult<TItem>
+    /// <summary>
+    /// TODO
+    /// </summary>
+    public interface ISearchEntry
     {
-        public ISearchEntry<TItem> Result;
-        public double SearchDistance;
+        IEnumerable<string> SearchTags { get; }
     }
 
-    public interface ISearchEntry<TItem>
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="TEntry"></typeparam>
+    /// <typeparam name="TItem"></typeparam>
+    public class SearchLibrary<TEntry, TItem> : LogSourceBase, ISource<TItem>
+        where TEntry : ISource<TItem>, ISearchEntry
     {
-        IEnumerable<SearchResult<TItem>> Search(string query);
-    }
-    
-    public abstract class SearchCategory<TEntry, TCategoryKey, TCategory, TItem> : ISearchEntry<TItem>
-        where TEntry : ISearchEntry<TItem>
-        where TCategory : SearchCategory<TEntry, TCategoryKey, TCategory, TItem>, new()
-    {
-        private readonly Dictionary<TCategoryKey, TCategory> categories =
-            new Dictionary<TCategoryKey, TCategory>();
-        private readonly List<TEntry> entries = new List<TEntry>();
-
-        public IEnumerable<ISearchEntry<TItem>> Entries
-        {
-            get
-            {
-                return
-                    Enumerable.Concat(
-                        categories.Values,
-                        entries.Cast<ISearchEntry<TItem>>());
-            }
-        }
-
-        public void AddToSearch(
-            TEntry entry, Stack<TCategoryKey> categoryKeys)
-        {
-            if (!categoryKeys.Any())
-                entries.Add(entry);
-            else
-            {
-                var key = categoryKeys.Pop();
-                TCategory category;
-                if (!categories.TryGetValue(key, out category))
-                {
-                    category = new TCategory();
-                    categories[key] = category;
-                }
-                category.AddToSearch(entry, categoryKeys);
-            }
-        }
-
-        public abstract IEnumerable<SearchResult<TItem>> Search(string query);
-    }
-
-    public abstract class SearchModel2<TEntry, TCategoryKey, TCategory, TItem> 
-        : LogSourceBase, ISource<TItem>
-        where TEntry : ISearchEntry<TItem>, ISource<TItem> 
-        where TCategory : SearchCategory<TEntry, TCategoryKey, TCategory, TItem>, new()
-    {
-        private readonly TCategory rootCategory = new TCategory();
-
-        protected abstract IEnumerable<TCategoryKey> GetCategoryKeysForEntry(TEntry entry);
-
-        public virtual void AddToSearch(TEntry entry)
-        {
-            var keys = new Stack<TCategoryKey>(GetCategoryKeysForEntry(entry));
-            rootCategory.AddToSearch(entry, keys);
-        }
+        private readonly SearchDictionary<TEntry> searchDictionary = new SearchDictionary<TEntry>();
+        private readonly HashSet<TEntry> entries = new HashSet<TEntry>(); 
 
         public event Action<TItem> ItemProduced;
-        protected virtual void OnItemProduced(TItem obj)
+
+        protected virtual void OnItemProduced(TItem item)
         {
             var handler = ItemProduced;
-            if (handler != null) handler(obj);
+            if (handler != null) handler(item);
         }
 
-        public IEnumerable<ISearchEntry<TItem>> Search(string query)
+        public IEnumerable<TEntry> Search(string query)
         {
-            return rootCategory.Search(query)
-                .OrderByDescending(x => x.SearchDistance)
-                .Select(x => x.Result);
+            return string.IsNullOrWhiteSpace(query)
+                ? entries
+                : searchDictionary.Search(query);
         }
-    }
 
-    public class NodeSearchModel : SearchModel2<NodeSearchElement, string, NodeSearchCategory, NodeModel>
-    {
-        public override void AddToSearch(NodeSearchElement entry)
+        public void AddToLibrary(TEntry entry)
         {
-            base.AddToSearch(entry);
+            entries.Add(entry);
             entry.ItemProduced += OnItemProduced;
+            searchDictionary.Add(entry, entry.SearchTags);
         }
 
-        protected override IEnumerable<string> GetCategoryKeysForEntry(NodeSearchElement entry)
+        public bool RemoveFromLibrary(TEntry entry)
         {
-            return entry.Categories;
+            if (entries.Remove(entry))
+            {
+                searchDictionary.Remove(entry);
+                entry.ItemProduced -= OnItemProduced;
+                return true;
+            }
+            return false;
         }
     }
 
-    public abstract class NodeSearchElement : ISearchEntry<NodeModel>, ISource<NodeModel>
+    /// <summary>
+    /// TODO
+    /// </summary>
+    public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel> { }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
     {
         public IEnumerable<string> Categories { get; set; }
 
@@ -240,6 +95,7 @@ namespace Dynamo.Search
         {
             get { return keywords; }
         }
+
         private readonly HashSet<string> keywords = new HashSet<string>();
 
         public string Description { get; set; }
@@ -250,21 +106,6 @@ namespace Dynamo.Search
         {
             var handler = ItemProduced;
             if (handler != null) handler(obj);
-        }
-
-        public IEnumerable<SearchResult<NodeModel>> Search(string query)
-        {
-            return
-                SearchKeywords.Concat(Name.AsSingleton())
-                    .SelectMany(baseName => new[] { baseName, PrependCategory(baseName) })
-                    .Concat(Description.AsSingleton())
-                    .Select(
-                        word =>
-                            new SearchResult<NodeModel>
-                            {
-                                Result = this,
-                                SearchDistance = JaroWinkler.StringDistance(word, query)
-                            });
         }
 
         private string PrependCategory(string name)
@@ -278,8 +119,22 @@ namespace Dynamo.Search
         {
             OnItemProduced(ConstructNewNodeModel());
         }
+
+        IEnumerable<string> ISearchEntry.SearchTags
+        {
+            get
+            {
+                return
+                    SearchKeywords.Concat(Name.AsSingleton())
+                        .SelectMany(baseName => new[] { baseName, PrependCategory(baseName) })
+                        .Concat(Description.AsSingleton());
+            }
+        }
     }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
     public class NodeModelSearchElement : NodeSearchElement
     {
         private readonly Func<NodeModel> constructor; 
@@ -301,6 +156,9 @@ namespace Dynamo.Search
         }
     }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
     public class ZeroTouchSearchElement : NodeSearchElement
     {
         private readonly FunctionDescriptor functionDescriptor;
@@ -328,6 +186,9 @@ namespace Dynamo.Search
         }
     }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
     public class CustomNodeSearchElement : NodeSearchElement
     {
         private readonly CustomNodeManager customNodeManager;
@@ -345,14 +206,6 @@ namespace Dynamo.Search
         protected override NodeModel ConstructNewNodeModel()
         {
             return customNodeManager.CreateCustomNodeInstance(id);
-        }
-    }
-
-    public class NodeSearchCategory : SearchCategory<NodeSearchElement, string, NodeSearchCategory, NodeModel>
-    {
-        public override IEnumerable<SearchResult<NodeModel>> Search(string query)
-        {
-            return Entries.SelectMany(e => e.Search(query));
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Dynamo.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -12,18 +12,15 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
-        private readonly Dictionary<V, HashSet<string>> _symbolDictionary = new Dictionary<V, HashSet<string>>();
-        private readonly Dictionary<string, HashSet<V>> _tagDictionary = new Dictionary<string, HashSet<V>>();
-
+        private readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
+            new Dictionary<V, Dictionary<string, double>>();
+        
         /// <summary>
         ///     The number of tags in the dicitionary
         /// </summary>
         public int NumTags
         {
-            get
-            {
-                return _tagDictionary.Count;
-            }
+            get { return entryDictionary.Values.SelectMany(x => x.Keys).Count(); }
         }
 
         /// <summary>
@@ -33,7 +30,7 @@ namespace Dynamo.Search
         {
             get
             {
-                return _symbolDictionary.Count;
+                return entryDictionary.Count;
             }
         }
 
@@ -42,19 +39,10 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to add  </param>
         /// <param name="tag"> The string to identify it in search </param>
-        public void Add(V value, string tag)
+        /// <param name="weight"></param>
+        public void Add(V value, string tag, double weight=1)
         {
-            tag = tag.ToLower();
-
-            if (_tagDictionary.ContainsKey(tag))
-                _tagDictionary[tag].Add(value);
-            else
-                _tagDictionary[tag] = new HashSet<V> {value};
-
-            if (_symbolDictionary.ContainsKey(value))
-                _symbolDictionary[value].Add(tag);
-            else
-                _symbolDictionary[value] = new HashSet<string> {tag};
+            Add(value, tag.AsSingleton(), weight);
         }
 
         /// <summary>
@@ -62,22 +50,11 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="values"> List of objects to add  </param>
         /// <param name="tag"> The string to identify it in search </param>
-        public void Add(IEnumerable<V> values, string tag)
+        /// <param name="weight"></param>
+        public void Add(IEnumerable<V> values, string tag, double weight=1)
         {
-            tag = tag.ToLower();
-
-            if (_tagDictionary.ContainsKey(tag))
-                _tagDictionary[tag].UnionWith(values);
-            else
-                _tagDictionary[tag] = new HashSet<V>(values);
-
-            foreach (V val in values)
-            {
-                if (_symbolDictionary.ContainsKey(val))
-                    _symbolDictionary[val].Add(tag);
-                else
-                    _symbolDictionary[val] = new HashSet<string> {tag};
-            }
+            foreach (var value in values)
+                Add(value, tag, weight);
         }
 
         /// <summary>
@@ -85,12 +62,17 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to add  </param>
         /// <param name="tags"> The list of strings to identify it in search </param>
-        public void Add(V value, IEnumerable<string> tags)
+        /// <param name="weight"></param>
+        public void Add(V value, IEnumerable<string> tags, double weight=1)
         {
-            tags = tags.Select(x => x.ToLower());
-
-            foreach (string tag in tags)
-                Add(value, tag);
+            Dictionary<string, double> keys;
+            if (!entryDictionary.TryGetValue(value, out keys))
+            {
+                keys = new Dictionary<string, double>();
+                entryDictionary[value] = keys;
+            }
+            foreach (string tag in tags.Select(x => x.ToLower()))
+                keys[tag] = weight;
         }
 
         /// <summary>
@@ -98,81 +80,68 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="values"> The objects to add. Must have the same cardinality as the second parameter</param>
         /// <param name="tags"> The list of strings to identify it in search. Must have the same cardinality as the first parameter </param>
-        public void Add(IEnumerable<V> values, IEnumerable<string> tags)
+        /// <param name="weight"></param>
+        public void Add(IEnumerable<V> values, IEnumerable<string> tags, double weight=1)
         {
-            tags = tags.Select(x => x.ToLower());
-
-            foreach (string tag in tags)
-                Add(values, tag);
+            var tagList = tags as IList<string> ?? tags.ToList();
+            foreach (var value in values)
+                Add(value, tagList, weight);
         }
 
         /// <summary>
         ///     Remove an element from the search
         /// </summary>
         /// <param name="value"> The object to remove </param>
-        /// <param name="tag"> The tags to remove for the given value </param>
-        public void Remove(V value, string tag)
+        /// <param name="tag">The tag to remove for the given value </param>
+        public bool Remove(V value, string tag)
         {
-            tag = tag.ToLower();
-
-            _tagDictionary[tag].Remove(value);
-            _symbolDictionary[value].Remove(tag);
+            Dictionary<string, double> keys;
+            return entryDictionary.TryGetValue(value, out keys) && keys.Remove(tag);
         }
 
         /// <summary>
         ///     Remove an element from the search
         /// </summary>
         /// <param name="value"> The object to remove </param>
-        public void Remove(V value)
+        public bool Remove(V value)
         {
-            _symbolDictionary.Remove(value);
-            
-            foreach (var set in _tagDictionary)
-            {
-                set.Value.Remove(value);
-            }
-        }
-
-        /// <summary>
-        ///     Remove an element from the search
-        /// </summary>
-        /// <param name="tag"> The tag for which to remove elements </param>
-        public void Remove(string tag)
-        {
-            tag = tag.ToLower();
-
-            if (_tagDictionary.ContainsKey(tag))
-            {
-                HashSet<V> elems = _tagDictionary[tag];
-                _tagDictionary.Remove(tag);
-                foreach (V elem in elems)
-                {
-                    _symbolDictionary[elem].Remove(tag);
-                }
-            }
+            return entryDictionary.Remove(value);
         }
 
         /// <summary>
         ///     Remove elements from search based on a predicate
         /// </summary>
         /// <param name="removeCondition"> The predicate with which to test.  True results in removal. </param>
-        public void Remove(Predicate<V> removeCondition)
+        public int Remove(Func<V, bool> removeCondition)
         {
-            var removeSet = new HashSet<V>();
-            // remove from _tagDictionary and keep track of which elements were removed
-            foreach (var pair in _tagDictionary)
+            var removals = entryDictionary.Keys.Where(removeCondition).ToList();
+            foreach (V ele in removals)
+                entryDictionary.Remove(ele);
+            return removals.Count;
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="valueCondition"></param>
+        /// <param name="removeTagCondition"></param>
+        /// <returns></returns>
+        public int Remove(Func<V, bool> valueCondition, Func<string, bool> removeTagCondition)
+        {
+            var count = 0;
+            var removals = entryDictionary.Where(kv => valueCondition(kv.Key)).ToList();
+            foreach (var removal in removals)
             {
-                foreach (V ele in pair.Value)
+                var tagRemovals = removal.Value.Keys.Where(removeTagCondition).ToList();
+                foreach (var tagRemoval in tagRemovals)
                 {
-                    if (removeCondition(ele)) removeSet.Add(ele);
+                    removal.Value.Remove(tagRemoval);
+                    count++;
                 }
-                pair.Value.RemoveWhere(removeCondition);
+                if (!removal.Value.Any())
+                    entryDictionary.Remove(removal.Key);
             }
-            // remove from symbol dictionary
-            foreach (V ele in removeSet)
-            {
-                _symbolDictionary.Remove(ele);
-            }
+            return count;
         }
 
         /// <summary>
@@ -180,12 +149,10 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to remove </param>
         /// <param name="tags"> The list of tags to remove. </param>
-        public void Remove(V value, IEnumerable<string> tags)
+        public int Remove(V value, IEnumerable<string> tags)
         {
-            tags = tags.Select(x => x.ToLower());
-
-            foreach (string tag in tags)
-                Remove(value, tag);
+            Dictionary<string, double> keys;
+            return entryDictionary.TryGetValue(value, out keys) ? tags.Count(tag => keys.Remove(tag)) : 0;
         }
 
         /// <summary>
@@ -193,40 +160,22 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="tag"> The tag to match </param>
         /// <returns> The elements with the given tag </returns>
-        public HashSet<V> ByTag(string tag)
+        public IEnumerable<V> ByTag(string tag)
         {
-            tag = tag.ToLower();
-
-            return _tagDictionary[tag];
-        }
-
-        public bool Contains(V a)
-        {
-            return this._symbolDictionary.Keys.Any(x => x.Equals(a));
+            return entryDictionary.Where(kv => kv.Value.ContainsKey(tag)).Select(kv => kv.Key);
         }
 
         /// <summary>
-        ///     Filter the elements in the SearchDictionary, based on whether there is a string
-        ///     in the tag matching the query
+        /// TODO
         /// </summary>
-        /// <param name="query"> The query </param>
-        public HashSet<V> Filter(string query)
+        /// <param name="a"></param>
+        /// <returns></returns>
+        public bool Contains(V a)
         {
-            query = query.ToLower();
-
-            var result = new HashSet<V>();
-
-            foreach (var pair in _tagDictionary)
-            {
-                if (pair.Key.Contains(query))
-                {
-                    result.UnionWith(pair.Value);
-                }
-            }
-
-            return result;
+            return entryDictionary.Keys.Any(x => Equals(x, a));
         }
 
+        #region Regex Searching
         /// <summary>
         /// Check if key matches with query string. The query string could
         /// contains multiple sub query strings which are seperated with 
@@ -238,12 +187,12 @@ namespace Dynamo.Search
         /// <param name="key"></param>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private bool MatchWithQuerystring(string key, string pattern)
+        private static bool MatchWithQuerystring(string key, Regex pattern)
         {
-            return Regex.IsMatch(key, pattern);
+            return pattern.IsMatch(key);
         }
 
-        private string SanitizeQuery(string query)
+        private static string SanitizeQuery(string query)
         {
             return query.Trim()
                         .Replace("\\", "\\\\")
@@ -251,90 +200,203 @@ namespace Dynamo.Search
                         .Replace("*", "\\*");
         }
 
-        private string[] SplitOnWhiteSpace(string s)
+        private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
         }
 
-        private string MakePattern(string[] subPatterns)
+        private static Regex MakePattern(string[] subPatterns)
         {
-            return "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
+            var pattern = "(.*)" + string.Join("(.*)", subPatterns) + "(.*)";
+            return new Regex(pattern);
         }
 
-        private bool ContainsSpecialCharacters(string element)
+        private static bool ContainsSpecialCharacters(string element)
         {
             return element.Contains("*") || element.Contains(".") || element.Contains(" ")
                 || element.Contains("\\");
+        }
+        #endregion
+
+        private static IEnumerable<Func<string, bool>> SearchMethodsForQuery(
+            string query)
+        {
+            yield return kv => kv.Contains(query);
+            if (ContainsSpecialCharacters(query))
+            {
+                var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
+                yield return kv => MatchWithQuerystring(kv, regexPattern);
+            }
         }
 
         /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
-        /// <param name="query"> The query </param>
-        /// <param name="numResults"> The max number of results to return </param>
-        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        public IEnumerable<V> Search(string query, int numResults = 10, int minResultsForTolerantSearch = 0)
+        /// <param name="query">The query</param>
+        public IEnumerable<V> Search(string query)
         {
-            var searchDict = new Dictionary<V, double>();
+            return //Begin the search by "flattening" the entryDictionary.
+                entryDictionary.AsParallel()
+                    .SelectMany(
+                        entryAndTags =>
+                            //For each entry in the entry dictionary, get all the tag/weight pairs.
+                            entryAndTags.Value.AsParallel().Select(
+                                //Package together the search tag, the weight associated with the tag, and the entry.
+                                tagAndWeight =>
+                                    new
+                                    {
+                                        Tag = tagAndWeight.Key,
+                                        Weight = tagAndWeight.Value,
+                                        Entry = entryAndTags.Key
+                                    }))
 
-
-            query = query.ToLower();
-
-            // do containment check
-            foreach (var pair in _tagDictionary.Where(x => x.Key.Contains(query)))
-            {
-                ComputeWeightAndAddToDictionary(query, pair, searchDict );
-            }
-
-            // if you don't have enough results and the query contains special characters, do fuzzy search
-            if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
-            {
-                var regexPattern = MakePattern( SplitOnWhiteSpace( SanitizeQuery(query) ) );
-
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, regexPattern)))
-                {
-                    ComputeWeightAndAddToDictionary( query, pair, searchDict );
-                }
-            }
-
-            return searchDict
-                .OrderByDescending(x => x.Value)
-                .Select(x => x.Key)
-                .Take(Math.Min(numResults, searchDict.Count));
+                    //Start by grouping together matching search tags. Each search tag now has an enumerable sequence of entries and associated weight
+                    .GroupBy(
+                        tagWeightAndEntry => tagWeightAndEntry.Tag,
+                        tagWeightAndEntry => new { tagWeightAndEntry.Entry, tagWeightAndEntry.Weight })
+                    .Select(
+                        tagAndEntries =>
+                            //For each grouping, we calculate a "match closeness" based on the difference between the search tag and the query
+                            new
+                            {
+                                MatchCloseness = JaroWinkler.StringDistance(tagAndEntries.Key, query),
+                                EntriesAndWeights = tagAndEntries
+                            })
+                    .SelectMany(
+                        closenessAndEntries =>
+                            closenessAndEntries.EntriesAndWeights.Select(
+                                entryAndWeight =>
+                                    //We combine the match closeness with each individual weight to calculate the total weight associated with each entry.
+                                    new
+                                    {
+                                        entryAndWeight.Entry,
+                                        Weight = entryAndWeight.Weight*closenessAndEntries.MatchCloseness
+                                    }))
+                    //Filter out all entries with a weight of approximately zero
+                    .Where(entryAndWeight => !(Math.Abs(entryAndWeight.Weight) < double.Epsilon))
+                    //Group together all results consisting of the same entry.
+                    .GroupBy(entryAndWeight => entryAndWeight.Entry, entryAndWeight => entryAndWeight.Weight)
+                    //We remove all duplicates, using the largest available weight
+                    .Select(
+                        entryAndWeights => new { Entry = entryAndWeights.Key, Weight = entryAndWeights.Max() })
+                    //Sort results in descending order by weight.
+                    .OrderByDescending(entryAndWeight => entryAndWeight.Weight)
+                    //Select only the entries, stripping out the weights.
+                    .Select(entryAndWeight => entryAndWeight.Entry);
         }
 
-        private static void ComputeWeightAndAddToDictionary(string query, 
-            KeyValuePair<string, HashSet<V>> pair, Dictionary<V, double> searchDict )
+        public static class JaroWinkler
         {
-            // it has a match, how close is it to matching the entire string?
-            double matchCloseness = ((double)query.Length) / pair.Key.Length;
-
-            foreach (V ele in pair.Value)
+            public static double StringDistance(string firstWord, string secondWord)
             {
-                double weight = matchCloseness;
-                // search elements have a weight associated with them
-                var @base = ele as SearchElementBase;
+                const double prefixAdustmentScale = 0.1;
 
-                // ignore elements which should not be search for
-                if (@base.Searchable == false)
-                    continue;
-
-                if (@base != null)
-                    weight *= @base.Weight;
-
-                // we may have seen V before
-                if (searchDict.ContainsKey(ele))
+                if ((firstWord != null) && (secondWord != null))
                 {
-                    // if we have, update its weight if better than the current one
-                    if (searchDict[ele] < weight) searchDict[ele] = weight;
+                    double dist = GetJaroDistance(firstWord, secondWord);
+                    int prefixLength = GetPrefixLength(firstWord, secondWord);
+                    return dist + prefixLength * prefixAdustmentScale * (1.0 - dist);
                 }
-                else
+                return 0.0;
+            }
+
+            private static double GetJaroDistance(string firstWord, string secondWord)
+            {
+                const double defaultMismatchScore = 0;
+
+                if ((firstWord != null) && (secondWord != null))
                 {
-                    // if we haven't seen it, add it to the dictionary for this search
-                    searchDict.Add(ele, weight);
+                    //get half the length of the string rounded up 
+                    //(this is the distance used for acceptable transpositions)
+                    int halflen = Math.Min(firstWord.Length, secondWord.Length) / 2 + 1;
+
+                    //get common characters
+                    StringBuilder common1 = GetCommonCharacters(firstWord, secondWord, halflen);
+                    int commonMatches = common1.Length;
+
+                    //check for zero in common
+                    if (commonMatches == 0)
+                    {
+                        return defaultMismatchScore;
+                    }
+
+                    StringBuilder common2 = GetCommonCharacters(secondWord, firstWord, halflen);
+
+                    //check for same length common strings returning 0.0f is not the same
+                    if (commonMatches != common2.Length)
+                    {
+                        return defaultMismatchScore;
+                    }
+
+                    //get the number of transpositions
+                    int transpositions = 0;
+                    for (int i = 0; i < commonMatches; i++)
+                    {
+                        if (common1[i] != common2[i])
+                        {
+                            transpositions++;
+                        }
+                    }
+
+                    //calculate jaro metric
+                    transpositions /= 2;
+                    double tmp1 = commonMatches / (3.0 * firstWord.Length)
+                        + commonMatches / (3.0 * secondWord.Length)
+                        + (commonMatches - transpositions) / (3.0 * commonMatches);
+                    return tmp1;
                 }
+                return defaultMismatchScore;
+            }
+
+            private static StringBuilder GetCommonCharacters(string firstWord, string secondWord, int distanceSep)
+            {
+                if ((firstWord != null) && (secondWord != null))
+                {
+                    var returnCommons = new StringBuilder();
+                    var copy = new StringBuilder(secondWord);
+                    for (int i = 0; i < firstWord.Length; i++)
+                    {
+                        char ch = firstWord[i];
+                        bool foundIt = false;
+                        for (int j = Math.Max(0, i - distanceSep);
+                             !foundIt && j < Math.Min(i + distanceSep, secondWord.Length);
+                             j++)
+                        {
+                            if (copy[j] == ch)
+                            {
+                                foundIt = true;
+                                returnCommons.Append(ch);
+                                copy[j] = '#';
+                            }
+                        }
+                    }
+
+                    return returnCommons;
+                }
+                return null;
+            }
+
+            private static int GetPrefixLength(string firstWord, string secondWord)
+            {
+                const int minPrefixTestLength = 4;
+
+                if ((firstWord != null) && (secondWord != null))
+                {
+                    int n =
+                        Math.Min(
+                            minPrefixTestLength,
+                            Math.Min(firstWord.Length, secondWord.Length));
+
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (firstWord[i] != secondWord[i])
+                            return i;
+                    }
+
+                    return n;
+                }
+                return minPrefixTestLength;
             }
         }
-
     }
 }
