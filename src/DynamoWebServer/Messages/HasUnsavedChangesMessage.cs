@@ -7,7 +7,7 @@ using System.Text;
 namespace DynamoWebServer.Messages
 {
     [DataContract]
-    public class UnsavedChangesPresenceMessage : Message
+    public class HasUnsavedChangesMessage : Message
     {
         #region Class Data Members
 

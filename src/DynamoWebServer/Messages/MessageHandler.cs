@@ -130,12 +130,12 @@ namespace DynamoWebServer.Messages
             {
                 UpdateCoordinates(message as SetModelPositionMessage);
             }
-            else if (message is UnsavedChangesPresenceMessage)
+            else if (message is HasUnsavedChangesMessage)
             {
-                var guid = (message as UnsavedChangesPresenceMessage).WorkspaceGuid;
+                var guid = (message as HasUnsavedChangesMessage).WorkspaceGuid;
                 var workspace = GetWorkspaceByGuid(guid);
 
-                OnResultReady(this, new ResultReadyEventArgs(new UnsavedChangesPresenceResponse
+                OnResultReady(this, new ResultReadyEventArgs(new HasUnsavedChangesResponse
                 {
                     Guid = guid,
                     HasUnsavedChanges = workspace.HasUnsavedChanges

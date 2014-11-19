@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DynamoWebServer.Responses
 {
-    public class UnsavedChangesPresenceResponse : Response
+    public class HasUnsavedChangesResponse : Response
     {
         /// <summary>
         /// Guid of the specified workspace.
@@ -14,7 +14,14 @@ namespace DynamoWebServer.Responses
         public string Guid
         {
             get { return guid; }
-            set { guid = value != null ? value : string.Empty; }
+            set
+            {
+                System.Guid guidValue;
+                if (System.Guid.TryParse(value, out guidValue))
+                    guid = value;
+                else
+                    guid = string.Empty;
+            }
         }
 
         string guid;
