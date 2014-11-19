@@ -394,6 +394,9 @@ namespace Dynamo.Search
 
         internal void MoveElementChildren(BrowserItem source, BrowserItem destination)
         {
+            if (source == null || destination == null) return;
+            if (source.Equals(destination)) return;
+
             while (source.Items.Count != 0)
             {
                 destination.Items.Add(source.Items[0]);
