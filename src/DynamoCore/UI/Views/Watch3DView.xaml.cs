@@ -484,7 +484,7 @@ namespace Dynamo.Controls
             if (!lines.Positions.Any())
                 lines = null;
 
-            if (!text.Positions.Any())
+            if (!text.TextInfo.Any())
                 text = null;
 
             if (!mesh.Positions.Any())
