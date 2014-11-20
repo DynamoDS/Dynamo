@@ -1,6 +1,7 @@
 ﻿using Dynamo.DSEngine;
 using Dynamo.Tests;
 using NUnit.Framework;
+using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +41,21 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed -= OnLibraryLoadFailed;
         }
 
+        public static void OnLibraryLoaded(object sender, EventArgs e)
+        {
+            LibraryLoaded = true;
+        }
+
+        public static void OnLibraryLoadFailed(object sender, EventArgs e)
+        {
+            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
+            if (null != a)
+                Assert.Fail("Failed to load library: " + a.LibraryPath);
+            else
+                Assert.Fail("Failed to load library");
+        }
+
+        #region Test cases
         [Test]
         [Category("UnitTests")]
         public void TestLoadNoNamespaceClass()
@@ -74,23 +90,9 @@ namespace Dynamo.Tests
             }
         }
 
-        public static void OnLibraryLoaded(object sender, EventArgs e)
-        {
-            LibraryLoaded = true;
-        }
-
-        public static void OnLibraryLoadFailed(object sender, EventArgs e)
-        {
-            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
-            if (null != a)
-                Assert.Fail("Failed to load library: " + a.LibraryPath);
-            else
-                Assert.Fail("Failed to load library");
-        }
-
         [Test]
         [Category("UnitTests")]
-        public void TestZeroTouchMigrationNoFileFound() 
+        public void TestZeroTouchMigrationNoFileFound()
         {
             LibraryLoaded = false;
 
@@ -175,5 +177,48 @@ namespace Dynamo.Tests
             Assert.IsTrue(LibraryLoaded);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void MethodWithRefOutParams_NoLoad()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.ClassWithRefParams"));
+
+            Assert.IsTrue(functions.Select(x => x.Name).Contains("ClassWithRefParams"));
+
+            foreach (var function in functions)
+            {
+                string functionName = function.Name;
+                Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
+            }
+
+            string ffiTargetClass = "ClassWithRefParams";
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
+
+            var members = type.GetMembers();
+
+            var expected = new string[] { "ClassWithRefParams" };
+
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
+            Assert.AreEqual(expected, actual);
+        }
+        #endregion
     }
 }
