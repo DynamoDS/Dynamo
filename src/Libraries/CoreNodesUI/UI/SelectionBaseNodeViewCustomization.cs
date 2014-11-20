@@ -5,6 +5,9 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Nodes
 {
+    // Note: Because this is a generic class, it can't be a NodeViewCustomization!
+    //       We have to supply a non-generic implementation for NodeViewCustomization
+    //       to work.
     public abstract class SelectionBaseNodeViewCustomization<TSelection, TResult>
         : INodeViewCustomization<SelectionBase<TSelection, TResult>>
     {

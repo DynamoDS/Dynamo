@@ -1,0 +1,68 @@
+<Workspace Version="0.7.4.3235" X="527.754064529156" Y="-207.804504590832" zoom="0.863178495873639" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b8c2a62f-f1ce-4327-8d98-c4e0cc0ebed4" nickname="Watch" x="544.626511206001" y="-117.84458592285" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="6869c998-b819-4686-8849-6f36162c4182" nickname="Watch 3D" x="497.497159885356" y="16.8967114358596" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="230" height="389">
+        <camera pos_x="11.8916123134232" pos_y="16.1529801551941" pos_z="14.9863976832475" look_x="-11.8916123134232" look_y="-16.1529801551941" look_z="-14.9873976832475" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.WatchImageCore type="Dynamo.Nodes.WatchImageCore" guid="9dedd5c5-c8b1-4fbe-baea-28194fd38c9a" nickname="Watch Image" x="746.349800187011" y="14.1753573958093" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="93b86b38-110e-4acd-9230-cc7f4ffee515" nickname="ok" x="-38.3625413745859" y="-31.2238214132485" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="71f4e1c2-9481-4b92-9cd1-a26aaeb925f3" />
+      <Name value="ok" />
+      <Description value="ok" />
+      <Inputs>
+        <Input value="23" />
+      </Inputs>
+      <Outputs>
+        <Output value="23" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="85b95961-5ac1-482f-b520-82d5dc115e97" nickname="Number" x="-129.287615063103" y="162.753054028716" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="12" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="11e9fa26-4da9-48aa-be99-abb8d31d589e" nickname="Code Block" x="-0.176321486394954" y="178.530327802893" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 5;" ShouldFocus="false" />
+    <DSCoreNodesUI.ColorRange type="DSCoreNodesUI.ColorRange" guid="80fd6b19-2cdf-492a-84b9-b4269521efab" nickname="Color Range" x="-294.166331719272" y="599.338526293466" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="8820644a-ba01-4118-8f04-26ebf58c11cc" nickname="Double Slider" x="-706.306473669945" y="-27.5307020199299" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>0</System.Double>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="d0fa1feb-ec0e-4cee-a86a-34077f5a870a" nickname="Integer Slider" x="-700.480584105079" y="105.493776377858" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>41</System.Int32>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.IntegerSlider>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="32013fd9-f925-4510-b449-3e0b3d8a5887" nickname="File Path" x="-651.388132910739" y="363.87134823702" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>No file selected.</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.Directory type="DSCore.File.Directory" guid="4e50a79d-783f-4c54-9961-c0a9ee3214e1" nickname="Directory Path" x="-651.810733895356" y="482.678386862914" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>No file selected.</System.String>
+    </DSCore.File.Directory>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="3d436f17-cc3d-4b84-afd9-fc71ff538b3b" nickname="String" x="-132.59767613985" y="60.7321552304713" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.StringInput>
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="5792b7bc-a30c-4bda-bf55-a5888a73a08b" nickname="Boolean" x="4.39785361094289" y="94.9810376681696" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>False</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <UnitsUI.LengthFromString type="UnitsUI.LengthFromString" guid="41a95cc4-1224-4390-be2a-09968143db7c" nickname="Length From String" x="-172.625782319603" y="302.385964926853" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </UnitsUI.LengthFromString>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="23aaaf18-2c93-4b78-85f9-6f348a932e75" nickname="Python Script" x="186.822639066729" y="439.325959218322" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script>import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </DSIronPythonNode.PythonNode>
+    <DSIronPythonNode.PythonStringNode type="DSIronPythonNode.PythonStringNode" guid="895bcbe1-430f-4105-895a-a686c7cff8aa" nickname="Python Script From String" x="169.013220199125" y="558.512070101512" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <UnitsUI.VolumeFromString type="UnitsUI.VolumeFromString" guid="0b0a7eda-f487-4582-90bc-d75f1871627c" nickname="Volume From String" x="-179.947306448584" y="424.407519947571" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </UnitsUI.VolumeFromString>
+  </Elements>
+  <Connectors />
+  <Notes>
+    <Dynamo.Models.NoteModel text="This is a Note!" x="-294.337850359238" y="-40.907245972204" />
+  </Notes>
+</Workspace>

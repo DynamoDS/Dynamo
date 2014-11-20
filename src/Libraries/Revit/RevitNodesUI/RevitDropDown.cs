@@ -8,11 +8,9 @@ using DSCore;
 using DSCoreNodesUI;
 
 using Dynamo.Applications.Models;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -545,7 +543,6 @@ namespace DSRevitNodesUI
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
-
 
     [NodeName("Structural Framing Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]

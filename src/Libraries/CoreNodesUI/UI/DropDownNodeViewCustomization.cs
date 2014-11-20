@@ -10,7 +10,7 @@ using Dynamo.Wpf;
 
 namespace DSCoreNodesUI
 {
-    public abstract class DropDownNodeViewCustomization : INodeViewCustomization<DSDropDownBase>
+    public class DropDownNodeViewCustomization : INodeViewCustomization<DSDropDownBase>
     {
         private DSDropDownBase model;
 

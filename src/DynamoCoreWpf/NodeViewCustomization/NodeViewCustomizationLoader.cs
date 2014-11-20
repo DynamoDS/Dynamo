@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
@@ -17,9 +18,7 @@ namespace Dynamo.Wpf
             var types = new Dictionary<Type, IEnumerable<Type>>();
 
             var customizerType = typeof(INodeViewCustomization<>);
-
-            var customizerImps0 = assem.GetTypes();
-            var customizerImps  = customizerImps0.Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+            var customizerImps  =  assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
 
             foreach (var customizerImp in customizerImps)
             {
@@ -42,13 +41,44 @@ namespace Dynamo.Wpf
 
         private static Type GetCustomizerTypeParameters(Type toCheck)
         {
+            var types = toCheck.GetInterfaces().Where(
+                    x =>
+                        x.IsGenericType &&
+                        x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>))
+                    .Select(x => x.GetGenericArguments()[0]);
+
+            var mostDerived = MostDerivedCommonBase(types);
+
+            if (mostDerived == null) return null;
+
             var ints = toCheck.GetInterfaces().FirstOrDefault(
                 x =>
                     x.IsGenericType &&
-                    x.GetGenericTypeDefinition() == typeof (INodeViewCustomization<>) &&
-                    !x.GetGenericArguments()[0].IsAbstract);
+                    x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>) &&
+                    x.GetGenericArguments()[0] == mostDerived);
 
             return ints != null ? ints.GetGenericArguments()[0] : null;
+        }
+
+        public static IEnumerable<Type> TypeHierarchy(this Type type)
+        {
+            do
+            {
+                yield return type;
+                type = type.BaseType;
+            } while (type != null);
+        }
+
+        public static Type MostDerivedCommonBase(IEnumerable<Type> types)
+        {
+            if (!types.Any()) return null;
+
+            var counts = types.SelectMany(t => t.TypeHierarchy())
+                              .GroupBy(t => t)
+                              .ToDictionary(g => g.Key, g => g.Count());
+
+            var total = counts[typeof(object)]; // optimization instead of types.Count()
+            return types.First().TypeHierarchy().First(t => counts[t] == total);
         }
 
         private static bool ImplementsGeneric(Type generic, Type toCheck)

@@ -77,19 +77,19 @@ namespace Dynamo.Wpf
 
             // var c = new NodeViewCustomizer();
             var custLam = Expression.Lambda(Expression.New(customizerType));
-            InvocationExpression custExp = Expression.Invoke(custLam);
+            var custExp = Expression.Invoke(custLam);
             var varExp = Expression.Variable(customizerType);
             var assignExp = Expression.Assign(varExp, custExp);
 
             // c.CustomizeView( model as NodeModelType, view );
-            UnaryExpression castModelExp = Expression.TypeAs(modelParam, nodeModelType);
+            var castModelExp = Expression.TypeAs(modelParam, nodeModelType);
             var invokeExp = Expression.Call(varExp, customizeViewMethodInfo, castModelExp, viewParam);
 
             // new OnceDisposable(c);
             var onceDispConstInfo = typeof(OnceDisposable).GetConstructor(new[] { typeof(IDisposable) });
             if (onceDispConstInfo == null) throw new Exception("Could not obtain OnceDisposable constructor!");
             var onceDisp = Expression.Lambda(Expression.New(onceDispConstInfo, varExp));
-            InvocationExpression onceDispExp = Expression.Invoke(onceDisp);
+            var onceDispExp = Expression.Invoke(onceDisp);
 
             // make full block
             var block = Expression.Block(

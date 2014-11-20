@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-
+using Dynamo.Controls;
 using Dynamo.Interfaces;
 
 using Dynamo.Models;
-
+using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
 
 using Revit.Elements;
@@ -18,17 +17,20 @@ using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Interactivity;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
 
 using DividedSurface = Autodesk.Revit.DB.DividedSurface;
 using Element = Autodesk.Revit.DB.Element;
 using RevitDynamoModel = Dynamo.Applications.Models.RevitDynamoModel;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using String = System.String;
 using UV = Autodesk.DesignScript.Geometry.UV;
 
 namespace Dynamo.Nodes
 {
+
+    #region RevitSelection
+
     public abstract class RevitSelection<TSelection, TResult> : SelectionBase<TSelection, TResult>
     {
         protected Document SelectionOwner { get; private set; }
@@ -131,6 +133,10 @@ namespace Dynamo.Nodes
 
         #endregion
     }
+
+    #endregion
+
+    #region ElementSelection
 
     /// <summary>
     /// A selection type where the derived class specifies the type to select,
@@ -258,6 +264,10 @@ namespace Dynamo.Nodes
             yield return selection;
         }
     }
+
+    #endregion
+
+    #region ReferenceSelection
 
     /// <summary>
     /// A selection type for selecting reference objects in Revit (Faces, Edges, etc.)
@@ -413,6 +423,8 @@ namespace Dynamo.Nodes
             yield return selection;
         }
     }
+
+    #endregion
 
     [NodeName("Select Analysis Results"), NodeCategory(BuiltinNodeCategories.REVIT_SELECTION),
      NodeDescription("Select analysis results from the document."), IsDesignScriptCompatible,
