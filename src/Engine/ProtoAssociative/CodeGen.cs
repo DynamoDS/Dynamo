@@ -2377,6 +2377,7 @@ namespace ProtoAssociative
                     //
                     var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
                     rhsIdentList.LeftNode = leftNode;
+                    ProtoCore.Utils.CoreUtils.CopyDebugData(leftNode, node);
                 }
                 else if (classNames.Length > 0)
                 {
@@ -2465,7 +2466,6 @@ namespace ProtoAssociative
 
                 Validity.Assert(null != rnode);
                 rhsIdentList.RightNode = rnode;
-                ProtoCore.Utils.CoreUtils.CopyDebugData(rhsIdentList, rnode);
 
                 if (null == arrayDimension)
                 {
@@ -3281,101 +3281,92 @@ namespace ProtoAssociative
                 // 2. Associate the first pointer with each SSA temp
                 //
                 //=========================================================
-                if (astlist.Count == 1)
+                AssociativeNode prevNode = null;
+                for (int n = 0; n <= lastIndex; n++)
                 {
-                    // The identlist was not transformed
-                    // We only need to update the debug info
-                    ProtoCore.Utils.CoreUtils.CopyDebugData(firstBNode.LeftNode, firstBNode.RightNode);
-                }
-                else
-                {
-                    AssociativeNode prevNode = null;
-                    for (int n = 0; n <= lastIndex; n++)
+                    lastNode = astlist[n];
+
+                    BinaryExpressionNode bnode = lastNode as BinaryExpressionNode;
+                    Validity.Assert(bnode.Optr == Operator.assign);
+
+                    // Get the ssa temp name
+                    Validity.Assert(bnode.LeftNode is IdentifierNode);
+                    string ssaTempName = (bnode.LeftNode as IdentifierNode).Name;
+                    Validity.Assert(CoreUtils.IsSSATemp(ssaTempName));
+
+                    if (bnode.RightNode is IdentifierListNode)
                     {
-                        lastNode = astlist[n];
-
-                        BinaryExpressionNode bnode = lastNode as BinaryExpressionNode;
-                        Validity.Assert(bnode.Optr == Operator.assign);
-
-                        // Get the ssa temp name
-                        Validity.Assert(bnode.LeftNode is IdentifierNode);
-                        string ssaTempName = (bnode.LeftNode as IdentifierNode).Name;
-                        Validity.Assert(CoreUtils.IsSSATemp(ssaTempName));
-
-                        if (bnode.RightNode is IdentifierListNode)
+                        IdentifierListNode identList = bnode.RightNode as IdentifierListNode;
+                        if (identList.RightNode is IdentifierNode)
                         {
-                            IdentifierListNode identList = bnode.RightNode as IdentifierListNode;
-                            if (identList.RightNode is IdentifierNode)
+                            IdentifierNode identNode = identList.RightNode as IdentifierNode;
+
+                            ProtoCore.AST.AssociativeAST.FunctionCallNode rcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+                            rcall.Function = new IdentifierNode(identNode);
+                            rcall.Function.Name = ProtoCore.DSASM.Constants.kGetterPrefix + rcall.Function.Name;
+
+                            ProtoCore.Utils.CoreUtils.CopyDebugData(identList.LeftNode, lhsIdent);
+                            FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(identList.LeftNode, rcall, core);
+                            dotCall.isLastSSAIdentListFactor = identList.IsLastSSAIdentListFactor;
+                            bnode.RightNode = dotCall;
+                            ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
+
+                            //
+                            // Set the real lhs (first pointer) of this dot call
+                            // Do this only if the lhs of the ident list was an identifier
+                            //      A.b -> prev was 'A'. It is an identifier
+                            //      {A}.b -> prev was '{A}'. It is not an identifier
+                            //      A().b -> prev was 'A()'. It is not an identifier
+                            bool wasPreviousNodeAnIdentifier = prevNode is IdentifierNode;
+                            if (wasPreviousNodeAnIdentifier)
                             {
-                                IdentifierNode identNode = identList.RightNode as IdentifierNode;
-
-                                ProtoCore.AST.AssociativeAST.FunctionCallNode rcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-                                rcall.Function = new IdentifierNode(identNode);
-                                rcall.Function.Name = ProtoCore.DSASM.Constants.kGetterPrefix + rcall.Function.Name;
-
-                                ProtoCore.Utils.CoreUtils.CopyDebugData(identList.LeftNode, lhsIdent);
-                                FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(identList.LeftNode, rcall, core);
-                                dotCall.isLastSSAIdentListFactor = identList.IsLastSSAIdentListFactor;
-                                bnode.RightNode = dotCall;
-                                ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
-
-                                //
-                                // Set the real lhs (first pointer) of this dot call
-                                // Do this only if the lhs of the ident list was an identifier
-                                //      A.b -> prev was 'A'. It is an identifier
-                                //      {A}.b -> prev was '{A}'. It is not an identifier
-                                //      A().b -> prev was 'A()'. It is not an identifier
-                                bool wasPreviousNodeAnIdentifier = prevNode is IdentifierNode;
-                                if (wasPreviousNodeAnIdentifier)
-                                {
-                                    dotCall.StaticLHSIdent = firstPointer;
-                                }
-                                firstPointer = null;
-
-                                // Update the LHS of the next dotcall
-                                //      a = x.y.z
-                                //      t0 = x      
-                                //      t1 = t0.y   'y' is the lhs of the next dotcall (y.z)
-                                //      t2 = t1.z
-                                //      a = t2
-                                //
-                                Validity.Assert(rcall.Function is IdentifierNode);
-                                lhsIdent = rcall.Function as IdentifierNode;
-                            }
-                            else if (identList.RightNode is FunctionCallNode)
-                            {
-                                FunctionCallNode fCallNode = identList.RightNode as FunctionCallNode;
-
-
-                                ProtoCore.Utils.CoreUtils.CopyDebugData(identList.LeftNode, lhsIdent);
-                                FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(identList.LeftNode, fCallNode, core);
-                                dotCall.isLastSSAIdentListFactor = identList.IsLastSSAIdentListFactor;
-                                bnode.RightNode = dotCall;
-
-                                ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
-
-                                // Set the real lhs (first pointer) of this dot call
                                 dotCall.StaticLHSIdent = firstPointer;
-                                firstPointer = null;
-
-
-                                // Update the LHS of the next dotcall
-                                //      a = x.y.z
-                                //      t0 = x      
-                                //      t1 = t0.y   'y' is the lhs of the next dotcall (y.z)
-                                //      t2 = t1.z
-                                //      a = t2
-                                //
-                                Validity.Assert(fCallNode.Function is IdentifierNode);
-                                lhsIdent = fCallNode.Function as IdentifierNode;
                             }
-                            else
-                            {
-                                Validity.Assert(false);
-                            }
+                            firstPointer = null;
+
+                            // Update the LHS of the next dotcall
+                            //      a = x.y.z
+                            //      t0 = x      
+                            //      t1 = t0.y   'y' is the lhs of the next dotcall (y.z)
+                            //      t2 = t1.z
+                            //      a = t2
+                            //
+                            Validity.Assert(rcall.Function is IdentifierNode);
+                            lhsIdent = rcall.Function as IdentifierNode;
                         }
-                        prevNode = bnode.RightNode;
+                        else if (identList.RightNode is FunctionCallNode)
+                        {
+                            FunctionCallNode fCallNode = identList.RightNode as FunctionCallNode;
+
+
+                            ProtoCore.Utils.CoreUtils.CopyDebugData(identList.LeftNode, lhsIdent);
+                            FunctionDotCallNode dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(identList.LeftNode, fCallNode, core);
+                            dotCall.isLastSSAIdentListFactor = identList.IsLastSSAIdentListFactor;
+                            bnode.RightNode = dotCall;
+
+                            ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
+
+                            // Set the real lhs (first pointer) of this dot call
+                            dotCall.StaticLHSIdent = firstPointer;
+                            firstPointer = null;
+
+
+                            // Update the LHS of the next dotcall
+                            //      a = x.y.z
+                            //      t0 = x      
+                            //      t1 = t0.y   'y' is the lhs of the next dotcall (y.z)
+                            //      t2 = t1.z
+                            //      a = t2
+                            //
+                            Validity.Assert(fCallNode.Function is IdentifierNode);
+                            lhsIdent = fCallNode.Function as IdentifierNode;
+                        }
+                        else
+                        {
+                            Validity.Assert(false);
+                        }
                     }
+                    prevNode = bnode.RightNode;
                 }
             }
             else if (node is ExprListNode)
@@ -6654,8 +6645,8 @@ namespace ProtoAssociative
                                 name = fnode.StaticLHSIdent.Name;
                             }
                         }
-                        ci = core.ClassTable.IndexOf(name);
 #endif
+                        ci = core.ClassTable.IndexOf(name);
                         NodeUtils.SetNodeStartLocation(bnode, fnode.DotCall);
                     }
                     // Check if the right node of the modifierNode is a FunctionCall node
