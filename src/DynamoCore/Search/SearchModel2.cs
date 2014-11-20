@@ -19,51 +19,38 @@ namespace Dynamo.Search
     }
 
     /// <summary>
-    ///     
+    ///     Searchable library of item sources.
     /// </summary>
-    /// <typeparam name="TEntry"></typeparam>
-    /// <typeparam name="TItem"></typeparam>
-    public class SearchLibrary<TEntry, TItem> : LogSourceBase, ISource<TItem> 
+    /// <typeparam name="TEntry">Type of searchable elements.</typeparam>
+    /// <typeparam name="TItem">Type of items produced by searchable elements.</typeparam>
+    public class SearchLibrary<TEntry, TItem> : SearchDictionary<TEntry>, ISource<TItem> 
         where TEntry : ISearchEntry, ISource<TItem>
     {
-        private readonly SearchDictionary<TEntry> searchDictionary = new SearchDictionary<TEntry>();
-
-        public SearchLibrary()
+        protected override void OnEntryRemoved(TEntry entry)
         {
-            searchDictionary.EntryAdded += SearchDictionaryOnEntryAdded;
-            searchDictionary.EntryRemoved += SearchDictionaryOnEntryRemoved;
+            base.OnEntryRemoved(entry);
+            entry.ItemProduced -= OnItemProduced;
         }
 
-        private void SearchDictionaryOnEntryRemoved(TEntry tEntry)
+        protected override void OnEntryAdded(TEntry entry)
         {
-            tEntry.ItemProduced -= OnItemProduced;
-        }
-
-        private void SearchDictionaryOnEntryAdded(TEntry tEntry)
-        {
-            tEntry.ItemProduced += OnItemProduced;
+            base.OnEntryAdded(entry);
+            entry.ItemProduced += OnItemProduced;
         }
         
+        /// <summary>
+        ///     Produces an item whenever a search element produces an item.
+        /// </summary>
         public event Action<TItem> ItemProduced;
         protected virtual void OnItemProduced(TItem item)
         {
             var handler = ItemProduced;
             if (handler != null) handler(item);
         }
-
-        public void AddToLibrary(TEntry entry)
-        {
-            searchDictionary.Add(entry, entry.SearchTags);
-        }
-
-        public bool RemoveFromLibrary(TEntry entry)
-        {
-            return searchDictionary.Remove(entry);
-        }
     }
 
     /// <summary>
-    /// TODO
+    ///     Searchable library of NodeSearchElements that can produce NodeModels.
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel> { }
 

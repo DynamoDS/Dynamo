@@ -90,7 +90,7 @@ namespace Dynamo.Search
                 keys = new Dictionary<string, double>();
                 entryDictionary[value] = keys;
             }
-            foreach (string tag in tags.Select(x => x.ToLower()))
+            foreach (var tag in tags.Select(x => x.ToLower()))
                 keys[tag] = weight;
             OnEntryAdded(value);
         }
@@ -139,7 +139,7 @@ namespace Dynamo.Search
         public int Remove(Func<V, bool> removeCondition)
         {
             var removals = entryDictionary.Keys.Where(removeCondition).ToList();
-            foreach (V ele in removals)
+            foreach (var ele in removals)
                 Remove(ele);
             return removals.Count;
         }
@@ -260,13 +260,15 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Search for elements in the dictionary based on the query
+        ///     Search for elements in the dictionary.
         /// </summary>
-        /// <param name="query">The query</param>
+        /// <param name="query">The search query</param>
         public IEnumerable<V> Search(string query)
         {
-            return //Begin the search by "flattening" the entryDictionary.
+            return 
                 entryDictionary.AsParallel()
+                    
+                    //Begin the search by "flattening" the entryDictionary.
                     .SelectMany(
                         entryAndTags =>
                             //For each entry in the entry dictionary, get all the tag/weight pairs.
@@ -280,43 +282,57 @@ namespace Dynamo.Search
                                         Entry = entryAndTags.Key
                                     }))
 
-                    //Start by grouping together matching search tags. Each search tag now has an enumerable sequence of entries and associated weight
+                    //Group together matching search tags. Each search tag now has an enumerable sequence of entries and associated weight
                     .GroupBy(
                         tagWeightAndEntry => tagWeightAndEntry.Tag,
                         tagWeightAndEntry => new { tagWeightAndEntry.Entry, tagWeightAndEntry.Weight })
+
+                    //For each grouping, we calculate a "match closeness" based on the difference between the search tag and the query
                     .Select(
                         tagAndEntries =>
-                            //For each grouping, we calculate a "match closeness" based on the difference between the search tag and the query
                             new
                             {
                                 MatchCloseness = JaroWinkler.StringDistance(tagAndEntries.Key, query),
                                 EntriesAndWeights = tagAndEntries
                             })
+                    
+                    //We combine the match closeness with each individual weight to calculate the total weight associated with each entry.
                     .SelectMany(
                         closenessAndEntries =>
                             closenessAndEntries.EntriesAndWeights.Select(
                                 entryAndWeight =>
-                                    //We combine the match closeness with each individual weight to calculate the total weight associated with each entry.
                                     new
                                     {
                                         entryAndWeight.Entry,
                                         Weight = entryAndWeight.Weight*closenessAndEntries.MatchCloseness
                                     }))
+                    
                     //Filter out all entries with a weight of approximately zero
-                    .Where(entryAndWeight => !(Math.Abs(entryAndWeight.Weight) < double.Epsilon))
+                    .Where(entryAndWeight => Math.Abs(entryAndWeight.Weight) >= double.Epsilon)
+                    
                     //Group together all results consisting of the same entry.
                     .GroupBy(entryAndWeight => entryAndWeight.Entry, entryAndWeight => entryAndWeight.Weight)
+                    
                     //We remove all duplicates, using the largest available weight
                     .Select(
                         entryAndWeights => new { Entry = entryAndWeights.Key, Weight = entryAndWeights.Max() })
+                    
                     //Sort results in descending order by weight.
                     .OrderByDescending(entryAndWeight => entryAndWeight.Weight)
+                    
                     //Select only the entries, stripping out the weights.
                     .Select(entryAndWeight => entryAndWeight.Entry);
         }
 
         public static class JaroWinkler
         {
+            /// <summary>
+            ///     Calculates a distance metric between two strings, on a scale of [0, 1]. 0 indicates
+            ///     that there is no similarity between the strings, 1 indicates that there is an exact
+            ///     match.
+            /// </summary>
+            /// <param name="firstWord"></param>
+            /// <param name="secondWord"></param>
             public static double StringDistance(string firstWord, string secondWord)
             {
                 const double prefixAdustmentScale = 0.1;
