@@ -20,9 +20,11 @@
                                    FontFamily="Consolas"
                                    WordWrap="False"
                                    Foreground="#444"
-                                   Padding="3 0 0 0"
+                                   Padding="3 3 0 0"
                                    Background="#88FFFFFF"
                                    MaxWidth="500"
+                                   Height="24"
+                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
     </Grid>
