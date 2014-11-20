@@ -182,10 +182,6 @@ namespace Dynamo.UI.Controls
                 bool hasInputType = input.Contains(':');
 
                 string type = input.Split(':').Last();
-                if (string.IsNullOrEmpty(type))
-                {
-                    return;
-                }
                 type = type.Trim();
                 
                 if (hasInputType)

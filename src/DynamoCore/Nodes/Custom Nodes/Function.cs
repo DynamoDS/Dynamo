@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using ProtoCore;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {
@@ -308,7 +309,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes")]
+    [NodeDescription("A function parameter, use with custom nodes. \n\nYou can specify the type for parameter through adding an optional ':' and type. E.g.,\n\ninput : var[]..[]")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -316,6 +317,8 @@ namespace Dynamo.Nodes
     public partial class Symbol : NodeModel
     {
         private string inputSymbol = string.Empty;
+        private const string CannotFindType = "Cannot find type '{0}'";
+        private const string InvalidFormat = "Invalid input.\n\nThe parameter should start with alphabetic character and followed by an optional ':' and type.\n\nE.g., input : var[]..[]";
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -331,16 +334,25 @@ namespace Dynamo.Nodes
             get { return inputSymbol; }
             set
             {
-                inputSymbol = value;
+                ClearRuntimeError();
 
+                inputSymbol = value;
                 IdentifierNode identifierNode = new IdentifierNode();
                 if (TryParseInputSymbol(inputSymbol, out identifierNode))
                 {
                     VariableName = identifierNode.Value;
-                    Type = identifierNode.datatype;
+                    if (identifierNode.datatype.UID == Constants.kInvalidIndex)
+                    {
+                        this.Warning(String.Format(CannotFindType, identifierNode.datatype.Name));
+                    }
+                    else
+                    {
+                        Type = identifierNode.datatype;
+                    }
                 }
                 else
                 {
+                    this.Warning(InvalidFormat);
                     VariableName = inputSymbol.Split(':').First();
                     Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
                 }
