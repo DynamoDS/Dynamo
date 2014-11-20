@@ -57,9 +57,13 @@ namespace Dynamo.UI.Views
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
             var expanderContent = (sender as FrameworkElement);
+            expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
+
             var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent, "");
             if (buttons != null)
                 buttons.UnselectAll();
+
+            e.Handled = true;
         }
 
         private void OnSubCategoryListViewPreviewKeyDown(object sender, KeyEventArgs e)
