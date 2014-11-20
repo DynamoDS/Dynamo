@@ -17,16 +17,24 @@ namespace DynamoWebServer.Responses
         /// Guid of the workspace that custom nodes belong to.
         /// If it's home workspace the value is empty
         /// </summary>
-        public string WorkspaceId { get; set; }
+        public string WorkspaceId { get; private set; }
         
         /// <summary>
         /// Guid of the custom node workspace that was loaded
         /// </summary>
-        public string CustomNodeId { get; set; }
+        public string CustomNodeId { get; private set; }
         
         /// <summary>
         /// Guids of nodes that are not proxy anymore
         /// </summary>
-        public IEnumerable<string> NodesIds { get; set; }
+        public IEnumerable<string> NodesIds { get; private set; }
+
+        public UpdateProxyNodesResponse(string workspaceId, string customNodeId,
+            IEnumerable<string> nodesIds)
+        {
+            this.WorkspaceId = workspaceId;
+            this.CustomNodeId = customNodeId;
+            this.NodesIds = nodesIds;
+        }
     }
 }

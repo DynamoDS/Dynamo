@@ -105,10 +105,9 @@ namespace DynamoWebServer.Messages
             }
             else if (message is GetLibraryItemsMessage)
             {
-                OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
-                {
-                    LibraryItems = dynamo.SearchModel.GetAllLibraryItemsByCategory()
-                }, sessionId));
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new LibraryItemsListResponse(dynamo.SearchModel.GetAllLibraryItemsByCategory()),
+                    sessionId));
             }
             else if (message is SaveFileMessage)
             {
@@ -135,11 +134,8 @@ namespace DynamoWebServer.Messages
                 var guid = (message as HasUnsavedChangesMessage).WorkspaceGuid;
                 var workspace = GetWorkspaceByGuid(guid);
 
-                OnResultReady(this, new ResultReadyEventArgs(new HasUnsavedChangesResponse
-                {
-                    Guid = guid,
-                    HasUnsavedChanges = workspace.HasUnsavedChanges
-                }, sessionId));
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new HasUnsavedChangesResponse(guid, workspace.HasUnsavedChanges), sessionId));
             }
         }
 
@@ -196,10 +192,7 @@ namespace DynamoWebServer.Messages
             if (nodes == null || !nodes.Any())
                 return;
 
-            OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
-            {
-                Nodes = nodes
-            }, sessionId));
+            OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse(nodes), sessionId));
         }
 
         /// <summary>
@@ -227,11 +220,8 @@ namespace DynamoWebServer.Messages
             }
             else
             {
-                OnResultReady(this, new ResultReadyEventArgs(new UploadFileResponse
-                {
-                    Status = ResponceStatuses.Error,
-                    StatusMessage = "Bad file request"
-                }, sessionId));
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new UploadFileResponse(ResponceStatuses.Error, "Bad file request"), sessionId));
             }
         }
 
@@ -286,21 +276,15 @@ namespace DynamoWebServer.Messages
                     File.Delete(filePath);
 
                     // Send to the Flood the file as byte array and its name
-                    OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
-                    {
-                        Status = ResponceStatuses.Success,
-                        FileContent = fileContent,
-                        FileName = fileName
-                    }, sessionId));
+                    OnResultReady(this, new ResultReadyEventArgs(
+                        new SavedFileResponse(fileName, fileContent), sessionId));
                 }
             }
             catch
             {
                 // If there was something wrong
-                OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
-                {
-                    Status = ResponceStatuses.Error
-                }, sessionId));
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new SavedFileResponse(ResponceStatuses.Error), sessionId));
             }
         }
 
@@ -386,13 +370,8 @@ namespace DynamoWebServer.Messages
             }
 
 
-            var response = new NodeCreationDataResponse
-            {
-                Nodes = uploader.NodesToCreate,
-                Connections = uploader.ConnectorsToCreate,
-                NodesResult = nodes,
-                WorkspaceName = currentWorkspace.Name
-            };
+            var response = new NodeCreationDataResponse(currentWorkspace.Name,
+                uploader.NodesToCreate, uploader.ConnectorsToCreate, nodes);
 
             var proxyNodesResponses = new List<UpdateProxyNodesResponse>();
             if (uploader.IsCustomNode)
@@ -422,12 +401,7 @@ namespace DynamoWebServer.Messages
                     // if there are updated nodes add the response data
                     if (nodeIds.Any())
                     {
-                        proxyNodesResponses.Add(new UpdateProxyNodesResponse()
-                        {
-                            WorkspaceId = wsId,
-                            NodesIds = nodeIds,
-                            CustomNodeId = response.WorkspaceId
-                        });
+                        proxyNodesResponses.Add(new UpdateProxyNodesResponse(wsId, response.WorkspaceId, nodeIds));
                     }
                 }
             }
@@ -441,11 +415,7 @@ namespace DynamoWebServer.Messages
 
             if (respondWithPath)
             {
-                var wsResponse = new WorkspacePathResponse()
-                {
-                    Guid = response.WorkspaceId,
-                    Path = currentWorkspace.FileName
-                };
+                var wsResponse = new WorkspacePathResponse(response.WorkspaceId, currentWorkspace.FileName);
                 OnResultReady(this, new ResultReadyEventArgs(wsResponse, sessionId));
             }
         }
@@ -553,10 +523,8 @@ namespace DynamoWebServer.Messages
             {
                 NodeModel model = nodeMap[guid];
 
-                OnResultReady(this, new ResultReadyEventArgs(new GeometryDataResponse
-                {
-                    GeometryData = new GeometryData(nodeId, model.RenderPackages)
-                }, sessionId));
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
             }
         }
 
