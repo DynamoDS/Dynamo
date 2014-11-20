@@ -13,17 +13,6 @@ namespace DSCore
     public static class String
     {
         /// <summary>
-        ///     Converts an object to a string representation.
-        /// </summary>
-        /// <param name="obj">Object to serialize.</param>
-        /// <returns name="str">String representation of the object.</returns>
-        /// <search>tostring,2string,number2string,numbertostring</search>
-        public static string FromObject(object obj)
-        {
-            return obj.ToString();
-        }
-
-        /// <summary>
         ///     Converts a string to an integer or a double.
         /// </summary>
         /// <param name="str">String to be converted.</param>

@@ -2393,7 +2393,14 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            XmlElement string2ObjectNode = MigrationManager.CreateNode(data.Document,
+                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String.FromObject");
+
+            migratedData.AppendNode(string2ObjectNode);
+            return migratedData;
         }
     }
 
@@ -2411,7 +2418,14 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            XmlElement string2ObjectNode = MigrationManager.CreateNode(data.Document,
+                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String.FromObject");
+
+            migratedData.AppendNode(string2ObjectNode);
+            return migratedData;
         }
     }
 

@@ -58,7 +58,8 @@ namespace ProtoCore.Lang
             kReorder,
             kRangeExpression,
             kSum,
-            kToString,
+            kToStringFromObject,
+            kToStringFromArray,
             kTranspose,
             kUnion,
             kInlineConditional,
@@ -121,7 +122,8 @@ namespace ProtoCore.Lang
             "Reorder",                  // kReorder
             Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
-            "ToString",                 // kToString
+            "__ToStringFromObject",     // kToStringFromObject
+            "__ToStringFromArray",      // kToStringFromArray
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
@@ -132,7 +134,7 @@ namespace ProtoCore.Lang
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
-            Constants.kNodeAstFailed   // kNodeAstFailed
+            Constants.kNodeAstFailed    // kNodeAstFailed
         };
 
         public static string GetMethodName(MethodID id)
@@ -808,9 +810,20 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kToString
+                    ID = BuiltInMethods.MethodID.kToStringFromObject,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+
+                    Parameters = new [] 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                    }.ToList(),
+                    ID = BuiltInMethods.MethodID.kToStringFromArray
                 },
 
                 new BuiltInMethod

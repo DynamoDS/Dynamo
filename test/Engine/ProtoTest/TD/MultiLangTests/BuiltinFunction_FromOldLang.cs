@@ -73,7 +73,7 @@ class TestClass
 	def testToString()
 	{
 		a = {true,{false,false},true};
-		b = ToString(a);
+		b = __ToStringFromArray(a);
 		return = b;
 	}
 	def testTranspose()
@@ -199,7 +199,7 @@ class TestClass
 		
 		b6 = SomeTrue(a);
 		
-		b7 = ToString(a);
+		b7 = __ToStringFromArray(a);
 		
 		a1 = {{3,-4},{4,5}};
 		
