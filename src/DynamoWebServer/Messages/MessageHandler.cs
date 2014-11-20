@@ -122,11 +122,22 @@ namespace DynamoWebServer.Messages
             }
             else if (message is ClearWorkspaceMessage)
             {
-                ClearWorkspace();
+                ClearWorkspace((message as ClearWorkspaceMessage).ClearOnlyHome);
             }
             else if (message is SetModelPositionMessage)
             {
                 UpdateCoordinates(message as SetModelPositionMessage);
+            }
+            else if (message is HasUnsavedChangesMessage)
+            {
+                var guid = (message as HasUnsavedChangesMessage).WorkspaceGuid;
+                var workspace = GetWorkspaceByGuid(guid);
+
+                OnResultReady(this, new ResultReadyEventArgs(new HasUnsavedChangesResponse
+                {
+                    Guid = guid,
+                    HasUnsavedChanges = workspace.HasUnsavedChanges
+                }, sessionId));
             }
         }
 
@@ -136,7 +147,8 @@ namespace DynamoWebServer.Messages
             if (workspaceToUpdate == null)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(message.WorkspaceName))
+            if (!string.IsNullOrWhiteSpace(message.WorkspaceName) 
+                && !(workspaceToUpdate is HomeWorkspaceModel))
                 workspaceToUpdate.Name = message.WorkspaceName;
 
             NodeModel node;
@@ -549,31 +561,34 @@ namespace DynamoWebServer.Messages
         /// <summary>
         /// Cleanup workspace
         /// </summary>
-        private void ClearWorkspace()
+        private void ClearWorkspace(bool clearOnlyHome)
         {
-            var customNodeManager = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoModel.SearchModel;
-            var nodeInfos = customNodeManager.NodeInfos;
-
             dynamoModel.Home(null);
 
-            foreach (var guid in nodeInfos.Keys)
+            if (!clearOnlyHome)
             {
+                var customNodeManager = dynamoModel.CustomNodeManager;
+                var searchModel = dynamoModel.SearchModel;
+                var nodeInfos = customNodeManager.NodeInfos;
 
-                searchModel.RemoveNodeAndEmptyParentCategory(guid);
-
-                var name = nodeInfos[guid].Name;
-                dynamoModel.Workspaces.RemoveAll(elem =>
+                foreach (var guid in nodeInfos.Keys)
                 {
-                    // To avoid deleting home workspace 
-                    // because of coincidence in the names
-                    return elem != dynamoModel.HomeSpace && elem.Name == name;
-                });
+                    searchModel.RemoveNodeAndEmptyParentCategory(guid);
 
-                customNodeManager.LoadedCustomNodes.Remove(guid);
+                    var name = nodeInfos[guid].Name;
+                    dynamoModel.Workspaces.RemoveAll(elem =>
+                    {
+                        // To avoid deleting home workspace 
+                        // because of coincidence in the names
+                        return elem != dynamoModel.HomeSpace && elem.Name == name;
+                    });
+
+                    customNodeManager.LoadedCustomNodes.Remove(guid);
+                }
+
+                nodeInfos.Clear();
             }
 
-            nodeInfos.Clear();
             dynamoModel.Clear(null);
         }
 
