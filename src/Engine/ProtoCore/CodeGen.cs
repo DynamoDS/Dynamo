@@ -2756,6 +2756,7 @@ namespace ProtoCore
             bool isFirstIdent = true;
 
 
+#if __SSA_IDENT_LIST
             // Handle static calls to reflect the original call
             if (resolveStatic)
             {
@@ -2774,7 +2775,7 @@ namespace ProtoCore
                     ssaPointerList.Clear();
                 }
             }
-
+#endif
             BuildSSADependency(node, graphNode);
             if (core.Options.GenerateSSA)
             {
