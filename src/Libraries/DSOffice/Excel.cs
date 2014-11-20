@@ -362,6 +362,10 @@ namespace DSOffice
                         {
                             output[i, j] = ((float)item).ToString(CultureInfo.InvariantCulture);
                         }
+                        else if (item is DateTime)
+                        {
+                            output[i, j] = ((DateTime)item).ToString(CultureInfo.InvariantCulture);
+                        }
                         else
                         {
                             output[i, j] = item.ToString();
