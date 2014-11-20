@@ -2397,7 +2397,9 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement string2ObjectNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String.FromObject");
+                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String from Object");
+
+            string2ObjectNode.SetAttribute("guid", oldNode.GetAttribute("guid"));
 
             migratedData.AppendNode(string2ObjectNode);
             return migratedData;
@@ -2422,7 +2424,9 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement string2ObjectNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String.FromObject");
+                oldNode, 0, "DSCoreNodesUI.StringNodes.FromObject", "String from Object");
+
+            string2ObjectNode.SetAttribute("guid", oldNode.GetAttribute("guid"));
 
             migratedData.AppendNode(string2ObjectNode);
             return migratedData;
