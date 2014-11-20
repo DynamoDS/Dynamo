@@ -56,7 +56,7 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("FromObject")]
-    [NodeDescription("Convert an object to a string representation.\n\n__ToStringFromObject(obj:var):string")]
+    [NodeDescription("Convert an object to a string representation.")]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("string.fromobject", "tostring", "2string", "number2string", "numbertostring")]
     [IsDesignScriptCompatible]
@@ -74,7 +74,7 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("FromArray")]
-    [NodeDescription("Convert an array to a string representation.\n\n__ToStringFromArray(arr:var[]..[]):string")]
+    [NodeDescription("Convert an array to a string representation.")]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("string.fromarray", "tostring", "2string", "list2string", "listtostring", "array2string", "arraytostring")]
     [IsDesignScriptCompatible]
