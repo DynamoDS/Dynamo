@@ -3311,6 +3311,7 @@ namespace ProtoAssociative
                             bnode.RightNode = dotCall;
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
+#if SSA_IDENT_LIST
                             //
                             // Set the real lhs (first pointer) of this dot call
                             // Do this only if the lhs of the ident list was an identifier
@@ -3323,7 +3324,7 @@ namespace ProtoAssociative
                                 dotCall.StaticLHSIdent = firstPointer;
                             }
                             firstPointer = null;
-
+#endif
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
                             //      t0 = x      
@@ -3346,10 +3347,11 @@ namespace ProtoAssociative
 
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
+#if SSA_IDENT_LIST
                             // Set the real lhs (first pointer) of this dot call
                             dotCall.StaticLHSIdent = firstPointer;
                             firstPointer = null;
-
+#endif
 
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
@@ -8347,6 +8349,8 @@ namespace ProtoAssociative
                            end
                         */
 
+                        
+#if __SSA_IDENT_LIST
                         if (bnode.RightNode is IdentifierNode)
                         {
                             // This is the first ssa statement of the transformed identifier list call
@@ -8370,7 +8374,7 @@ namespace ProtoAssociative
                                 }
                             }
                         }
-
+#endif
                         //if (bnode.RightNode is FunctionDotCallNode)
                         //{
                         //    string identName = (bnode.RightNode as FunctionDotCallNode).FunctionCall.Function.Name;

@@ -1,3 +1,4 @@
+//#define __SSA_IDENT_LIST
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -96,7 +97,10 @@ namespace ProtoCore
 
         // These variables hold data when backtracking static SSA'd calls
         protected string staticClass = null;
+
+#if __SSA_IDENT_LIST
         protected bool resolveStatic = false;
+#endif
 
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
