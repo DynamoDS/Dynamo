@@ -239,7 +239,7 @@ namespace Dynamo.Tests
 
             // The input is a function object "String Length" unconnected to any input
             // To assert that the watch node is not displaying something such as "Pointer, opdata = 10, metaData = 58"
-            StringAssert.DoesNotContain("Pointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+            StringAssert.Contains("String.Length", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                 "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.ToString());
         }
 
