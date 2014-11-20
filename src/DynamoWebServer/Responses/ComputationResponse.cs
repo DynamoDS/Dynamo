@@ -9,7 +9,7 @@ namespace DynamoWebServer.Responses
 
         public ComputationResponse(IEnumerable<ExecutedNode> nodes)
         {
-            Nodes = nodes;
+            this.Nodes = nodes;
         }
     }
 }
