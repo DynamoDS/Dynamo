@@ -816,7 +816,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.kToString,
-                    MethodAttributes = new MethodAttributes(true),
+                    MethodAttributes = new MethodAttributes(true, "This node is obsolete, please use \"String from Object\""),
                 },
 
                 new BuiltInMethod

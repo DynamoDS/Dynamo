@@ -14,7 +14,7 @@ namespace DSCore
     {
         // It has been moved to String.FromObject UI node, which is compiled 
         // to built-in function __ToStringFromObject().
-        [Obsolete]
+        [Obsolete("This node is obsolete, please use \"String from Object\"")]
         public static string FromObject(object obj)
         {
             return obj.ToString();
