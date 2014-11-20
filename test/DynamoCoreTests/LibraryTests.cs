@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Dynamo.Search;
 
 namespace Dynamo.Tests
 {
@@ -52,7 +53,7 @@ namespace Dynamo.Tests
             // at some point, so if it's already thre, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
                 Assert.IsTrue(LibraryLoaded);
             }
 
@@ -103,7 +104,7 @@ namespace Dynamo.Tests
 
             File.Copy(libraryPath, tempLibraryPath);
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -136,7 +137,7 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it's badly formatted
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -170,7 +171,7 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it has errors
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
 
             Assert.IsTrue(LibraryLoaded);
         }

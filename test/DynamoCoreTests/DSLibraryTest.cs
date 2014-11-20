@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.DSEngine;
+using Dynamo.Search;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -35,7 +36,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
 
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
-            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
             Assert.IsTrue(libraryLoaded);
 
             var functions = libraryServices.GetFunctionGroups(libraryPath);
@@ -52,7 +53,7 @@ namespace Dynamo.Tests
 
             // library should be able to load
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Test.ds");
-            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger, SearchModel.ElementType.CustomDll);
             Assert.IsTrue(libraryLoaded);
 
             // open dyn file which uses node in that library

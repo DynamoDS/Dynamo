@@ -255,8 +255,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library, ILogger logger, 
-            SearchModel.ElementType elementType = SearchModel.ElementType.CustomDll)
+        public void ImportLibrary(string library, ILogger logger, SearchModel.ElementType elementType)
         {
             if (null == library)
                 throw new ArgumentNullException();
