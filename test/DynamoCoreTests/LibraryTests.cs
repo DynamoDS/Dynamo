@@ -1,7 +1,6 @@
 ﻿using Dynamo.DSEngine;
 using Dynamo.Tests;
 using NUnit.Framework;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -206,18 +205,6 @@ namespace Dynamo.Tests
                 Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
             }
 
-            string ffiTargetClass = "ClassWithRefParams";
-
-            // Assert that the class name is indeed a class
-            ClassMirror type = null;
-            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
-
-            var members = type.GetMembers();
-
-            var expected = new string[] { "ClassWithRefParams" };
-
-            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
-            Assert.AreEqual(expected, actual);
         }
         #endregion
     }

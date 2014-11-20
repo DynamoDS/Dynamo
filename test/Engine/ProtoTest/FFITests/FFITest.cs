@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
+using ProtoCore.Mirror;
 namespace ProtoTest.TD.FFI
 {
     class FFITest
@@ -2538,6 +2540,28 @@ o2 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
             thisTest.Verify("o1", 3);
             thisTest.Verify("o2", 3);
 
+        }
+
+        [Test]
+        public void MethodWithRefOutParams_NoLoad()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string ffiTargetClass = "ClassWithRefParams";
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, thisTest.GetTestCore()));
+
+            var members = type.GetMembers();
+
+            var expected = new string[] { "ClassWithRefParams" };
+
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
+            Assert.AreEqual(expected, actual);
         }
 
     }
