@@ -197,9 +197,11 @@ namespace Dynamo.UI.Views
             target = PresentationSource.FromVisual(HighlightedItem);
             if (target == null)
             {
-                // HighlightedItem is {DisconnectedItem}.
-                // It means he is not a part of DataContext collection now.
-                // We should get HighlightedItem again.
+                // During search, backing data collections typically get updated frequently.
+                // This may result in corresponding BrowserInternalElement being removed or 
+                // updated. When that happens, the visual element 'HighlightedItem' that gets 
+                // bound to the original BrowserInternalElement then becomes DisconnectedItem.
+                // In such cases, we will reset the HighlightedItem to 'topResultListBox'.
                 HighlightedItem = WPF.FindChild<ListBox>(this, "");
                 target = PresentationSource.FromVisual(HighlightedItem);
             }
