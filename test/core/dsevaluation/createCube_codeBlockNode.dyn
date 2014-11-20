@@ -1,0 +1,16 @@
+<Workspace Version="0.7.4.3101" X="-1866.68457277717" Y="-1620.21008275207" zoom="0.998328843087185" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="06eb7ca7-3e9c-4011-a7eb-08e47cef9671" nickname="Code Block" x="1954.10062862083" y="2097.3977868134" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="3669d05c-c741-44f9-87ab-8961e7f5f112" nickname="Code Block" x="2145.05331785436" y="1988.12187308034" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="pln = Plane.ByOriginNormal(ctrPt,Vector.ZAxis());&#xA;rect = Rectangle.ByWidthHeight(pln,x,x);&#xA;p1 = Point.Origin();&#xA;p2 = Point.ByCoordinates(0,0,(ctrPt.X+x));&#xA;path = Line.ByStartPointEndPoint(p1,p2);&#xA;s = Solid.BySweep(rect,path);&#xA;s.Area;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="efafb62b-e09f-4850-a0c3-5c14b6d6e66d" nickname="Point.ByCoordinates" x="1948.05240595467" y="1905.37528613162" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="06eb7ca7-3e9c-4011-a7eb-08e47cef9671" start_index="0" end="3669d05c-c741-44f9-87ab-8961e7f5f112" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="efafb62b-e09f-4850-a0c3-5c14b6d6e66d" start_index="0" end="3669d05c-c741-44f9-87ab-8961e7f5f112" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
