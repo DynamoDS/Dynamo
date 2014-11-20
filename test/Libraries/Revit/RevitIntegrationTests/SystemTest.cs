@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
-
+using Autodesk.Revit.DB;
 using DynamoUtilities;
-
 using RevitServices.Persistence;
 
 using RevitTestServices;
@@ -51,5 +51,44 @@ namespace RevitSystemTests
                 emptyModelPath1 = Path.Combine(workingDirectory, "empty1.rfa");
             }
         }
+
+        public void OpenModel(string relativeFilePath)
+        {
+            string samplePath = Path.Combine(samplesPath, relativeFilePath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+        }
+
+        /// <summary>
+        /// This function gets all the family instances in the current Revit document
+        /// </summary>
+        /// <param name="startNewTransaction">whether do the filtering in a new transaction</param>
+        /// <returns>the family instances</returns>
+        protected static IList<Element> GetAllFamilyInstances(bool startNewTransaction)
+        {
+            if (startNewTransaction)
+            {
+                using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "FilteringElements"))
+                {
+                    trans.Start();
+
+                    ElementClassFilter ef = new ElementClassFilter(typeof(FamilyInstance));
+                    FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+                    fec.WherePasses(ef);
+
+                    trans.Commit();
+                    return fec.ToElements();
+                }
+            }
+            else
+            {
+                ElementClassFilter ef = new ElementClassFilter(typeof(FamilyInstance));
+                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+                fec.WherePasses(ef);
+                return fec.ToElements();
+            }
+        }
+
     }
 }

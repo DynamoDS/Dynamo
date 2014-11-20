@@ -544,7 +544,7 @@ m = m+n;
         public void TV_ADD_StringInt()
         {
             String code =
-                @"                a = ""["" + ToString(1)+""]"";                    ";
+                @"                a = ""["" + __ToStringFromObject(1)+""]"";                    ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1]");
         }
@@ -625,7 +625,7 @@ m = m+n;
         public void TV_ADD_StringArr()
         {
             String code =
-                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + ToString(arr1);                b2 = ""a"" + ToString(arr2);                ";
+                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + __ToStringFromArray(arr1);                b2 = ""a"" + __ToStringFromArray(arr2);                ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
             thisTest.Verify("b1", "a{1,2}");

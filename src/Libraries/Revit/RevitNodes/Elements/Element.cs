@@ -55,7 +55,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Name of the Element
         /// </summary>
-        internal string Name
+        public string Name
         {
             get
             {
@@ -92,7 +92,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Element Unique Id for this element
         /// </summary>
-        internal string UniqueId
+        public string UniqueId
         {
             get
             {
@@ -176,6 +176,34 @@ namespace Revit.Elements
         public override string ToString()
         {
             return GetType().Name;
+        }
+
+        /// <summary>
+        /// Implement Equals() method. 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override bool Equals(object obj)
+        {
+            Element otherElement = obj as Element;
+            if (otherElement == null)
+            {
+                return false;
+            }
+
+            return UniqueId.Equals(otherElement.UniqueId);
+        }
+
+        /// <summary>
+        /// Get hash code.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override int GetHashCode()
+        {
+            return UniqueId.GetHashCode();
         }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)

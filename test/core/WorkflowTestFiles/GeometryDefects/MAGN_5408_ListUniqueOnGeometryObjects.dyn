@@ -1,0 +1,14 @@
+<Workspace Version="0.7.4.3161" X="33" Y="-91" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8e85a3c2-1e27-49ce-9673-3a2f1e53c534" nickname="Code Block" x="6" y="164" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="p1 = Point.ByCoordinates(0,0,0);&#xA;p2 = Point.Origin();&#xA;p3 = Point.ByCoordinates(1,0,0);&#xA;&#xA;{p1,p2,p3};&#xA;&#xA;l1 = Line.ByStartPointEndPoint(p1, p3);&#xA;l2 = l1;&#xA;l3 = Line.ByStartPointDirectionLength(p1, Vector.YAxis(), 1);&#xA;&#xA;{l1,l2,l3};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="de1cd6bd-6afd-4fc5-aefe-ecec6be87a7c" nickname="List.UniqueItems" x="704" y="291.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.UniqueItems@var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ec1eb012-3ed1-4269-b32b-04034d7bf2c3" nickname="Code Block" x="703" y="86" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="pts;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ca34f933-8431-4c52-b2db-a3e096a6269e" nickname="List.UniqueItems" x="697" y="495.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.UniqueItems@var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8e85a3c2-1e27-49ce-9673-3a2f1e53c534" start_index="3" end="de1cd6bd-6afd-4fc5-aefe-ecec6be87a7c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e85a3c2-1e27-49ce-9673-3a2f1e53c534" start_index="3" end="ec1eb012-3ed1-4269-b32b-04034d7bf2c3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e85a3c2-1e27-49ce-9673-3a2f1e53c534" start_index="7" end="ca34f933-8431-4c52-b2db-a3e096a6269e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

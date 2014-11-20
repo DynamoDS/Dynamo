@@ -532,6 +532,26 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void Parse_TypedVariableDeclaration()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "a : int;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            code = "a : int  = 2;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
         #region CodeBlockUtils Specific Tests
 
         [Test]
