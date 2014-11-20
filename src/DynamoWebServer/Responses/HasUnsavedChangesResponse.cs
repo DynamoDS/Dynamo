@@ -14,7 +14,7 @@ namespace DynamoWebServer.Responses
         public string Guid
         {
             get { return guid; }
-            set
+            private set
             {
                 System.Guid guidValue;
                 if (System.Guid.TryParse(value, out guidValue))
@@ -29,6 +29,12 @@ namespace DynamoWebServer.Responses
         /// <summary>
         /// Path where the workspace is saved
         /// </summary>
-        public bool HasUnsavedChanges { get; set; }
+        public bool HasUnsavedChanges { get; private set; }
+
+        public HasUnsavedChangesResponse(string guid, bool hasUnsavedChanges)
+        {
+            Guid = guid;
+            HasUnsavedChanges = hasUnsavedChanges;
+        }
     }
 }

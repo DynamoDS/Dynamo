@@ -8,7 +8,17 @@
 
     public abstract class Response
     {
-        public ResponceStatuses Status { get; set; }
+        public ResponceStatuses Status { get; private set; }
+
+        public Response(ResponceStatuses status)
+        {
+            Status = status;
+        }
+
+        public Response() 
+        {
+            Status = ResponceStatuses.Success;
+        }
     }
 
     public interface IWebServer
