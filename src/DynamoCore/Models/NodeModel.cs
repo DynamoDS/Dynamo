@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -420,7 +420,7 @@ namespace Dynamo.Models
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
-        internal IdentifierNode AstIdentifierForPreview
+        public IdentifierNode AstIdentifierForPreview
         {
             get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
         }
@@ -1395,6 +1395,15 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "ArgumentLacing")
+            {
+                LacingStrategy strategy = LacingStrategy.Disabled;
+                if (!Enum.TryParse(value, out strategy))
+                    strategy = LacingStrategy.Disabled;
+                this.ArgumentLacing = strategy;
                 return true;
             }
 
