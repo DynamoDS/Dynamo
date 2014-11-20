@@ -55,8 +55,8 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName("FromObject")]
-    [NodeDescription("Convert an object to a string representation.\n\n__ToStringFromObject(obj:var):string")]
+    [NodeName("String from Object")]
+    [NodeDescription("Convert an object to a string representation.")]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("string.fromobject", "tostring", "2string", "number2string", "numbertostring")]
     [IsDesignScriptCompatible]
@@ -65,7 +65,6 @@ namespace DSCoreNodesUI.StringNodes
         public FromObject(WorkspaceModel workspace)
             : base(workspace, "__ToStringFromObject")
         {
-            NickName = "String.FromObject";
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("obj", "Object to be serialized"));
             OutPortData.Add(new PortData("str", "String representation of the object"));
@@ -73,8 +72,8 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName("FromArray")]
-    [NodeDescription("Convert an array to a string representation.\n\n__ToStringFromArray(arr:var[]..[]):string")]
+    [NodeName("String from Array")]
+    [NodeDescription("Convert an array to a string representation.")]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("string.fromarray", "tostring", "2string", "list2string", "listtostring", "array2string", "arraytostring")]
     [IsDesignScriptCompatible]
@@ -83,7 +82,6 @@ namespace DSCoreNodesUI.StringNodes
         public FromArray(WorkspaceModel workspace)
             : base(workspace, "__ToStringFromArray")
         {
-            NickName = "String.FromArray";
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("arr", "The array of object to be serialized"));
             OutPortData.Add(new PortData("str", "String representation of the array"));
