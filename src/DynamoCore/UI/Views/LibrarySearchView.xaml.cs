@@ -192,7 +192,8 @@ namespace Dynamo.UI.Views
             PresentationSource target;
             // For the first time set top result as HighlightedItem. 
             if (HighlightedItem == null)
-                HighlightedItem = WPF.FindChild<ListBoxItem>(topResultListBox, "");
+                HighlightedItem = GetSelectedListBoxItemFromListBox(topResultListBox);
+            if (HighlightedItem == null) return;
 
             target = PresentationSource.FromVisual(HighlightedItem);
             if (target == null)
@@ -202,16 +203,29 @@ namespace Dynamo.UI.Views
                 // updated. When that happens, the visual element 'HighlightedItem' that gets 
                 // bound to the original BrowserInternalElement then becomes DisconnectedItem.
                 // In such cases, we will reset the HighlightedItem to 'topResultListBox'.
-                HighlightedItem = WPF.FindChild<ListBoxItem>(topResultListBox, "");
+                HighlightedItem = GetSelectedListBoxItemFromListBox(topResultListBox);
+                if (HighlightedItem == null) return;
+
                 target = PresentationSource.FromVisual(HighlightedItem);
             }
 
             var routedEvent = Keyboard.KeyDownEvent; // Event to send
 
+
+
             HighlightedItem.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
                                                                             target,
                                                                             0,
                                                                             key) { RoutedEvent = routedEvent });
+        }
+
+        private FrameworkElement GetSelectedListBoxItemFromListBox(ListBox listbox)
+        {
+            ListBoxItem result = null;
+            if (topResultListBox.HasItems)
+                result = listbox.ItemContainerGenerator.ContainerFromItem(topResultListBox.SelectedItem) as ListBoxItem;
+
+            return result;
         }
 
         // This event is used to move inside members.
