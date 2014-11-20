@@ -486,6 +486,32 @@ namespace RevitSystemTests
             var refPlane = GetPreviewValue("85c1f8c5-00da-4a7e-94c7-655140e39f6a") as Plane;
             Assert.IsNotNull(refPlane);
         }
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\empty.rfa")]
+        public void RevitNodes_ThroughCBN_2451()
+        {
+          
+            // Access the Revit related nodes from code block nodes.Due to namespace class the error was thrown.
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2451 - 
+            // Description in the bug - Improve error reporting to user when there is a namespace collision
+            
+            var model = ViewModel.Model;
+
+            string samplePath = Path.Combine(workingDirectory,
+                                        @".\Bugs\Revitnodes_ThroughCBN_2451.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            var refPoint = GetPreviewValue("eb2244c2-e1d9-40c9-adea-4e94ed87795d") as ReferencePoint;
+            Assert.IsNotNull(refPoint);
+
+        }
 
     }
 }
