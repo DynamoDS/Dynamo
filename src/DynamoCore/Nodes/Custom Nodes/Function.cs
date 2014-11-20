@@ -316,9 +316,10 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
-        private string inputSymbol = string.Empty;
+        private string inputSymbol = "";
+        private const char Seperator = ':';
         private const string CannotFindType = "Cannot find type '{0}'";
-        private const string InvalidFormat = "Invalid input.\n\nThe parameter should start with alphabetic character and followed by an optional ':' and type.\n\nE.g., input : var[]..[]";
+        private const string InvalidFormat = "Invalid input.\n\nThe name of parameter should start with alphabetic character. You can specify its type by adding a ':' and type.\n\nE.g., input : var[]..[]";
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -334,29 +335,42 @@ namespace Dynamo.Nodes
             get { return inputSymbol; }
             set
             {
-                ClearRuntimeError();
-
                 inputSymbol = value;
-                IdentifierNode identifierNode = new IdentifierNode();
-                if (TryParseInputSymbol(inputSymbol, out identifierNode))
+
+                ClearRuntimeError();
+                var substrings = inputSymbol.Split(Seperator);
+
+                VariableName = substrings[0].Trim();
+                Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+
+                if (substrings.Count() == 2)
                 {
-                    VariableName = identifierNode.Value;
-                    if (identifierNode.datatype.UID == Constants.kInvalidIndex)
+                    IdentifierNode identifierNode = new IdentifierNode();
+                    if (TryParseInputSymbol(inputSymbol, out identifierNode))
                     {
-                        this.Warning(String.Format(CannotFindType, identifierNode.datatype.Name));
+                        if (identifierNode.datatype.UID == Constants.kInvalidIndex)
+                        {
+                            this.Warning(String.Format(CannotFindType, identifierNode.datatype.Name));
+                        }
+                        else
+                        {
+                            Type = identifierNode.datatype;
+                        }
                     }
                     else
                     {
-                        Type = identifierNode.datatype;
+                        this.Warning(InvalidFormat);
                     }
+                }
+                else if (substrings.Count() > 2)
+                {
+                    this.Warning(InvalidFormat);
                 }
                 else
                 {
-                    this.Warning(InvalidFormat);
-                    VariableName = inputSymbol.Split(':').First();
-                    Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                    // valid input, even the input symbol is empty.
                 }
-        
+       
                 ReportModification();
                 RaisePropertyChanged("InputSymbol");
             }
