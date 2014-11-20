@@ -19,7 +19,6 @@ using System.Xml;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.CodeCompletion;
 
 namespace Dynamo.Nodes
 {

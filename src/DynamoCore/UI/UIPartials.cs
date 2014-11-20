@@ -524,7 +524,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name.Equals("InputSymbol"))
+            if (name == "InputSymbol")
             {
                 InputSymbol = value;
                 return true; // UpdateValueCore handled.
