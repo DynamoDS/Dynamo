@@ -416,7 +416,7 @@ namespace DSCore.IO
                 csvDataList.Select(
                     row =>
                         row.data
-                            .Concat(Enumerable.Repeat(null as object, numCols - row.count))
+                            .Concat(Enumerable.Repeat("", numCols - row.count))
                             .ToArray())
                     .ToArray();
             return resultArray;
