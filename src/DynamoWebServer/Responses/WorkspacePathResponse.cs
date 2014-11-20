@@ -26,8 +26,8 @@ namespace DynamoWebServer.Responses
 
         public WorkspacePathResponse(string guid, string path)
         {
-            Guid = guid;
-            Path = path;
+            this.Guid = guid;
+            this.Path = path;
         }
     }
 }
