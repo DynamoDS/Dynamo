@@ -192,7 +192,7 @@ namespace Dynamo.UI.Views
             PresentationSource target;
             // For the first time set top result as HighlightedItem. 
             if (HighlightedItem == null)
-                HighlightedItem = WPF.FindChild<ListBoxItem>(this, "");
+                HighlightedItem = WPF.FindChild<ListBoxItem>(topResultListBox, "");
 
             target = PresentationSource.FromVisual(HighlightedItem);
             if (target == null)
@@ -202,7 +202,7 @@ namespace Dynamo.UI.Views
                 // updated. When that happens, the visual element 'HighlightedItem' that gets 
                 // bound to the original BrowserInternalElement then becomes DisconnectedItem.
                 // In such cases, we will reset the HighlightedItem to 'topResultListBox'.
-                HighlightedItem = WPF.FindChild<ListBoxItem>(this, "");
+                HighlightedItem = WPF.FindChild<ListBoxItem>(topResultListBox, "");
                 target = PresentationSource.FromVisual(HighlightedItem);
             }
 
