@@ -199,12 +199,16 @@ namespace Dynamo.Search.SearchElements
         public struct PortInfo
         {
             /// <summary>
-            /// Node name
+            /// This property represents displayed name of the port.
             /// </summary>
             public string Name { get; set; }
 
             /// <summary>
-            /// Node type
+            /// This property represents the type of the port. It can contain type name such
+            /// as 'String', 'Point', 'Vertex' and other.
+            /// It doesn't care about exact type, value can be 'Autodesk.DesignScript.Geometry.Point'
+            /// or just 'Point' as well.
+            /// This property only help users to understand what kind of value does the port expects.
             /// </summary>
             public string Type { get; set; }
 
