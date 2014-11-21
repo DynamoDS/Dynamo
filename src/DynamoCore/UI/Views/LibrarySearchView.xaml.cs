@@ -1,14 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Dynamo.Search.SearchElements;
-using Dynamo.ViewModels;
-using Dynamo.Search;
-using Dynamo.Utilities;
-using Dynamo.Nodes.Search;
-using Dynamo.Controls;
-using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
+using Dynamo.Nodes.Search;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -17,7 +15,7 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
-        private FrameworkElement HighlightedItem;
+        private ListBoxItem HighlightedItem;
 
         public LibrarySearchView()
         {
@@ -192,7 +190,7 @@ namespace Dynamo.UI.Views
             PresentationSource target;
             // For the first time set top result as HighlightedItem. 
             if (HighlightedItem == null)
-                HighlightedItem = GetSelectedListBoxItemFromListBox(topResultListBox);
+                HighlightedItem = GetSelectedListBoxItem(topResultListBox);
             if (HighlightedItem == null) return;
 
             target = PresentationSource.FromVisual(HighlightedItem);
@@ -203,7 +201,7 @@ namespace Dynamo.UI.Views
                 // updated. When that happens, the visual element 'HighlightedItem' that gets 
                 // bound to the original BrowserInternalElement then becomes DisconnectedItem.
                 // In such cases, we will reset the HighlightedItem to 'topResultListBox'.
-                HighlightedItem = GetSelectedListBoxItemFromListBox(topResultListBox);
+                HighlightedItem = GetSelectedListBoxItem(topResultListBox);
                 if (HighlightedItem == null) return;
 
                 target = PresentationSource.FromVisual(HighlightedItem);
@@ -219,13 +217,13 @@ namespace Dynamo.UI.Views
                                                                             key) { RoutedEvent = routedEvent });
         }
 
-        private FrameworkElement GetSelectedListBoxItemFromListBox(ListBox listbox)
+        private ListBoxItem GetSelectedListBoxItem(ListBox listbox)
         {
-            ListBoxItem result = null;
-            if (topResultListBox.HasItems)
-                result = listbox.ItemContainerGenerator.ContainerFromItem(topResultListBox.SelectedItem) as ListBoxItem;
+            if (!listbox.HasItems || (listbox.SelectedIndex == -1))
+                return null;
 
-            return result;
+            var generator = listbox.ItemContainerGenerator;
+            return generator.ContainerFromItem(listbox.SelectedItem) as ListBoxItem;
         }
 
         // This event is used to move inside members.
