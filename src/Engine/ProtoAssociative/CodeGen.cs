@@ -3236,6 +3236,7 @@ namespace ProtoAssociative
                 firstBNode.isSSAFirstAssignment = true;
 
 
+                //
                 // Get the first pointer
                 // The first pointer is the lhs of the next dotcall
                 //
@@ -3246,11 +3247,6 @@ namespace ProtoAssociative
                 //      t1 = t0.y
                 //      t2 = t1.z
                 //      a = t2
-                //
-                // In the case of a static call or constructor call:
-                //      p = A.B()
-                // the lhsIdent will be A.B
-                //
 
                 IdentifierNode lhsIdent = null;
                 if (firstBNode.RightNode is IdentifierNode)
@@ -3311,7 +3307,7 @@ namespace ProtoAssociative
                             bnode.RightNode = dotCall;
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
-#if SSA_IDENT_LIST
+#if __SSA_IDENT_LIST
                             //
                             // Set the real lhs (first pointer) of this dot call
                             // Do this only if the lhs of the ident list was an identifier

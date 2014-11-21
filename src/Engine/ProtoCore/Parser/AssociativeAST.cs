@@ -1,4 +1,4 @@
-//#define SSA_IDENT_LIST
+//#define __SSA_IDENT_LIST
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -873,7 +873,7 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class FunctionDotCallNode : AssociativeNode
     {
-#if SSA_IDENT_LIST
+#if __SSA_IDENT_LIST
         public IdentifierNode StaticLHSIdent { get; set; }
 #endif
         public FunctionCallNode DotCall { get; set; }
@@ -888,7 +888,7 @@ namespace ProtoCore.AST.AssociativeAST
             FunctionCall = callNode;
             lhsName = string.Empty;
             isLastSSAIdentListFactor = false;
-#if SSA_IDENT_LIST
+#if __SSA_IDENT_LIST
             StaticLHSIdent = null;
 #endif
         }
@@ -898,7 +898,7 @@ namespace ProtoCore.AST.AssociativeAST
             this.lhsName = lhsName;
             FunctionCall = callNode;
             isLastSSAIdentListFactor = false;
-#if SSA_IDENT_LIST
+#if __SSA_IDENT_LIST
             StaticLHSIdent = null;
 #endif
         }
@@ -909,7 +909,7 @@ namespace ProtoCore.AST.AssociativeAST
             FunctionCall = new FunctionCallNode(rhs.FunctionCall);
             lhsName = rhs.lhsName;
             isLastSSAIdentListFactor = rhs.isLastSSAIdentListFactor;
-#if SSA_IDENT_LIST
+#if __SSA_IDENT_LIST
             StaticLHSIdent = rhs.StaticLHSIdent;
 #endif
         }
