@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
+
+using SystemTestServices;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -15,7 +17,7 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class CoreUserInterfaceTests : DynamoTestUIBase
+    public class CoreUserInterfaceTests : SystemTestBase
     {
         #region SaveImageCommand
 
