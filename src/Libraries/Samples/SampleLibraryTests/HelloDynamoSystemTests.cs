@@ -4,6 +4,8 @@ using System.Text;
 
 using SystemTestServices;
 
+using Dynamo.Tests;
+
 using NUnit.Framework;
 
 namespace SamplesLibraryUI
@@ -38,6 +40,12 @@ namespace SamplesLibraryUI
             // a relative path from the dynamo core directory (the working directory).
 
             OpenAndRunDynamoDefinition(@".\HelloDynamoSystemTest.dyn");
+
+            // Ensure that the graph opened without any "dummy nodes".
+            // Dummy nodes would appear if your graph had a node that
+            // could not be found in the library.
+
+            AssertNoDummyNodes();
         }
     }
 }
