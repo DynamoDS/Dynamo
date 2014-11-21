@@ -1131,11 +1131,11 @@ namespace Dynamo.Models
 
                 portDataDict[port] = pd;
                 count++;
-                port.SnapRegion = new Thickness(-25, 3, 0, 3);
-                if(count - 1 == 0) //first port
-                    port.SnapRegion = new Thickness(-25, -10, 0, 3);
-                if(count == InPortData.Count ) //last port
-                    port.SnapRegion = new Thickness(-25, 3, 0, -10);
+                //port.SnapRegion = new Thickness(-25, 3, 0, 3);
+                //if(count - 1 == 0) //first port
+                //    port.SnapRegion = new Thickness(-25, -10, 0, 3);
+                //if(count == InPortData.Count ) //last port
+                //    port.SnapRegion = new Thickness(-25, 3, 0, -10);
             }
 
             if (inPorts.Count > count)
@@ -1171,11 +1171,11 @@ namespace Dynamo.Models
 
                 portDataDict[port] = pd;
                 count++;
-                port.SnapRegion = new Thickness(0, 3, -25, 3);
-                if (count - 1 == 0) //first port
-                    port.SnapRegion = new Thickness(0, -10, -25, 3);
-                if (count == OutPortData.Count) //last port
-                    port.SnapRegion = new Thickness(0, 3, -25, -10);
+                //port.SnapRegion = new Thickness(0, 3, -25, 3);
+                //if (count - 1 == 0) //first port
+                //    port.SnapRegion = new Thickness(0, -10, -25, 3);
+                //if (count == OutPortData.Count) //last port
+                //    port.SnapRegion = new Thickness(0, 3, -25, -10);
             }
 
             if (outPorts.Count > count)
@@ -1925,6 +1925,14 @@ namespace Dynamo.Models
         MouseEnter,
         MouseLeave,
         MouseLeftButtonDown
+    };
+
+    public enum PortPosition
+    {
+        First,
+        Top,
+        Middle,
+        Last
     }
 
 

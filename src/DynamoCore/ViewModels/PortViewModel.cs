@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.ViewModels
 {
@@ -85,15 +87,44 @@ namespace Dynamo.ViewModels
         public Thickness MarginThickness
         {
             get { return _port.MarginThickness; }
+            set { _port.MarginThickness = value; }
         }
 
         public PortEventType EventType { get; set; }
-
-        public Thickness SnapRegion
+      
+        public PortPosition Position
         {
-            get { return _port.SnapRegion; }          
-        }
+            get
+            {
+                if (PortType == PortType.INPUT)
+                {
+                    if (_node.InPorts.Count > 1)
+                    {
+                        int pos = _node.InPorts.IndexOf(this);
+                        if (pos == 0) //first port 
+                            return PortPosition.Top;
+                        if (pos == _node.InPorts.Count - 1)
+                            return PortPosition.Last;
+                        return PortPosition.Middle;
+                    }
+                }
 
+                if (PortType == PortType.OUTPUT)
+                {
+                    if (_node.OutPorts.Count > 1)
+                    {
+                        int pos = _node.OutPorts.IndexOf(this);                      
+                        if (pos == 0) //first port 
+                            return PortPosition.Top;
+                        if (pos == _node.OutPorts.Count - 1)
+                            return PortPosition.Last;
+                        return PortPosition.Middle;
+                    }
+                }
+
+                return PortPosition.First;
+            }
+        }
         #endregion
 
         #region events
@@ -108,9 +139,9 @@ namespace Dynamo.ViewModels
         {
             _node = node;
             _port = port;
-
+           
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;            
+            _node.PropertyChanged += _node_PropertyChanged;          
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -266,6 +266,63 @@ namespace Dynamo.Controls
         }
     }
 
+    public class SnapRegionMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            Thickness thickness = new Thickness(0,0,0,0);
+            PortType type = (PortType) values[0];            
+            PortPosition position = (PortPosition)values[1];
+
+            switch (type)
+            {
+                case PortType.INPUT:
+                    switch (position)
+                    {
+                        case PortPosition.First:
+                            thickness = new Thickness(-25, -10, -25, -10);
+                            break;
+                        case PortPosition.Top:
+                            thickness = new Thickness(-25, -10, 0, 3);
+                            break;
+                        case PortPosition.Middle:
+                            thickness = new Thickness(-25, 3, 0, 3);
+                            break;
+                        case PortPosition.Last:
+                            thickness = new Thickness(-25, 3, 0, -10);
+                            break;
+                    }
+                    break;
+
+                case PortType.OUTPUT:
+                    switch (position)
+                    {
+                        case PortPosition.First:
+                            thickness = new Thickness(0, -10, -25, -10);
+                            break;
+                        case PortPosition.Top:
+                            thickness = new Thickness(-25, -10, 0, 3);
+                            break;
+                        case PortPosition.Middle:
+                            thickness = new Thickness(0, 3, -25, 3);
+                            break;
+                        case PortPosition.Last:
+                            thickness = new Thickness(0, 3, -25, -10);
+                            break;
+                    }
+                    break;
+
+            }           
+            return thickness;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+   
+
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
