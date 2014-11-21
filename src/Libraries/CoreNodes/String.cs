@@ -12,12 +12,9 @@ namespace DSCore
     /// </summary>
     public static class String
     {
-        /// <summary>
-        ///     Converts an object to a string representation.
-        /// </summary>
-        /// <param name="obj">Object to serialize.</param>
-        /// <returns name="str">String representation of the object.</returns>
-        /// <search>tostring,2string,number2string,numbertostring</search>
+        // It has been moved to String.FromObject UI node, which is compiled 
+        // to built-in function __ToStringFromObject().
+        [Obsolete("This node is obsolete, please use \"String from Object\"")]
         public static string FromObject(object obj)
         {
             return obj.ToString();

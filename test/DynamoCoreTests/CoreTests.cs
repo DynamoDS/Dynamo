@@ -584,10 +584,6 @@ namespace Dynamo.Tests
             models.Add(null);
             workspace.RecordAndDeleteModels(models);
             Assert.AreEqual(false, workspace.CanUndo);
-
-            NodeModel node = ViewModel.Model.Nodes[0];
-            
-
         }
 
         [Test]

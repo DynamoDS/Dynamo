@@ -45,41 +45,5 @@ namespace Dynamo.Tests
             return model.Nodes.FirstOrDefault(node => node is Dynamo.Nodes.DSFunction &&
                 node.NickName == nodeName);
         }
-
-        //public static double GetDoubleFromFSchemeValue(this FScheme.Value value)
-        //{
-        //    var doubleWatchVal = 0.0;
-        //    Assert.IsTrue(Utils.Convert(value, ref doubleWatchVal));
-        //    return doubleWatchVal;
-        //}
-
-        //public static string GetStringFromFSchemeValue(this FScheme.Value value)
-        //{
-        //    string stringValue = string.Empty;
-        //    Assert.IsTrue(Utils.Convert(value, ref stringValue));
-        //    return stringValue;
-        //}
-
-        //public static FSharpList<FScheme.Value> GetListFromFSchemeValue(this FScheme.Value value)
-        //{
-        //    FSharpList<FScheme.Value> listWatchVal = null;
-        //    Assert.IsTrue(Utils.Convert(value, ref listWatchVal));
-        //    return listWatchVal;
-        //}
-
-        //public static T GetObjectFromFSchemeValue<T>(this FScheme.Value value)
-        //{
-        //    Assert.IsInstanceOf<FScheme.Value.Container>(value);
-        //    var o = (value as FScheme.Value.Container).Item;
-        //    Assert.IsInstanceOf<T>(o);
-        //    return (T)o;
-        //}
-
-        //public static dynamic UnwrapFSchemeValue(this FScheme.Value value)
-        //{
-        //    return value.IsList
-        //        ? (value as FScheme.Value.List).Item.Select(UnwrapFSchemeValue).ToFSharpList()
-        //        : (value as dynamic).Item;
-        //}
     }
 }
