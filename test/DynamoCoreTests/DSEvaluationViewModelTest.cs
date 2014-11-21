@@ -1221,21 +1221,7 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-        [Test]
-        public void CBN_Variable_Type_5480()
-        {
-            
-            //  Defect in parsing typed identifiers in code block node
-            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5480
-
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\CBN_Variable_Type_5480.dyn");
-
-            RunModel(dynFilePath);
-
-            AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
-
-          
-        }
+       
        
     }
 }
