@@ -3,45 +3,54 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Dynamo.Applications;
-using Dynamo.Applications.Models;
-using Dynamo.Core.Threading;
-using Dynamo.Interfaces;
+using System.Threading;
+
+using Dynamo;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Tests;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
+
 using ProtoCore.Mirror;
-using RevitNodesTests;
-using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
 
-namespace RevitTestServices
+using TestServices;
+
+namespace SystemTestServices
 {
-    public class TestSchedulerThread : ISchedulerThread
-    {
-        public void Initialize(DynamoScheduler owningScheduler)
-        {
-
-        }
-
-        public void Shutdown()
-        {
-
-        }
-    }
-
-    [TestFixture]
+    /// <summary>
+    /// SystemTestBase is the base class for all 
+    /// Dynamo system tests.
+    /// </summary>
     public abstract class SystemTestBase
     {
-        protected DynamoViewModel ViewModel;
         protected string workingDirectory;
 
+        #region protected properties
+
+        protected DynamoViewModel ViewModel { get; set; }
+
+        protected DynamoView View { get; set; }
+
+        protected DynamoModel Model { get; set; }
+
+        protected string ExecutingDirectory
+        {
+            get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
+        }
+
+        protected string TempFolder { get; private set; }
+
+        #endregion
+
+        #region public methods
+
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             AssemblyResolver.Setup();
 
@@ -52,63 +61,70 @@ namespace RevitTestServices
                 workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             }
 
-            StartDynamo();
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
-            DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+            CreateTemporaryFolder();
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            StartDynamo();
         }
 
-        /// <summary>
-        /// Implement this method to do any setup neceessary for your tests.
-        /// </summary>
-        protected virtual void SetupCore()
+        public virtual void SetupCore()
         {
-            
+
+        }
+
+        public virtual void StartDynamo()
+        {
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            View.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TearDown]
-        public void TearDown()
+        public virtual void TearDown()
         {
-            // Automatic transaction strategy requires that we 
-            // close the transaction if it hasn't been closed by 
-            // by the end of an evaluation. It is possible to 
-            // run the test framework without running Dynamo, so
-            // we ensure that the transaction is closed here.
-            TransactionManager.Instance.ForceCloseTransaction();
-        }
+            //Ensure that we leave the workspace marked as
+            //not having changes.
+            Model.HomeSpace.HasUnsavedChanges = false;
 
-        protected void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
-        {
-            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
-        }
+            if (View.IsLoaded)
+                View.Close();
 
-        protected void StartDynamo()
-        {
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(false, false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+                ViewModel = null;
+            }
+
+            View = null;
+            Model = null;
+
+            GC.Collect();
+
             try
             {
-                // create the transaction manager object
-                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
-
-                DynamoRevit.InitializeUnits();
-
-                DynamoRevit.RevitDynamoModel = RevitDynamoModel.Start(
-                    new RevitDynamoModel.StartConfiguration()
-                    {
-                        StartInTestMode = true,
-                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\"),
-                        Context = "Revit 2014",
-                        SchedulerThread = new TestSchedulerThread()
-                    });
-
-                this.ViewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        DynamoModel = DynamoRevit.RevitDynamoModel,
-                    });
-
-                // Because the test framework does not work in the idle thread. 
-                // We need to trick Dynamo into believing that it's in the idle
-                // thread already.
-                IdlePromise.InIdleThread = true;
+                var directory = new DirectoryInfo(TempFolder);
+                directory.Delete(true);
             }
             catch (Exception ex)
             {
@@ -116,86 +132,58 @@ namespace RevitTestServices
             }
         }
 
-        /// <summary>
-        /// Creates two model curves separated in Z.
-        /// </summary>
-        /// <param name="mc1"></param>
-        /// <param name="mc2"></param>
-        protected void CreateTwoModelCurves(out ModelCurve mc1, out ModelCurve mc2)
+        [TestFixtureTearDown]
+        public virtual void FinalTearDown()
         {
-            //create two model curves 
-            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateTwoModelCurves"))
-            {
-                trans.Start();
-
-                var p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
-                var p2 = new Plane(XYZ.BasisZ, new XYZ(0, 0, 5));
-
-                SketchPlane sp1 = SketchPlane.Create(DocumentManager.Instance.CurrentDBDocument, p1);
-                SketchPlane sp2 = SketchPlane.Create(DocumentManager.Instance.CurrentDBDocument, p2);
-                Curve c1 = Line.CreateBound(XYZ.Zero, new XYZ(1, 0, 0));
-                Curve c2 = Line.CreateBound(new XYZ(0, 0, 5), new XYZ(1, 0, 5));
-                mc1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c1, sp1);
-                mc2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c2, sp2);
-
-                trans.Commit();
-            }
+            // Fix for COM exception on close
+            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
+            //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         /// <summary>
-        /// Creates one model curve on a plane with an origin at 0,0,0
+        /// Open and run a Dynamo definition given a relative
+        /// path from the working directory.
         /// </summary>
-        /// <param name="mc1"></param>
-        protected void CreateOneModelCurve(out ModelCurve mc1)
+        /// <param name="subPath"></param>
+        protected void OpenAndRunDynamoDefinition(string subPath)
         {
-            //create two model curves 
-            using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "CreateTwoModelCurves"))
-            {
-                trans.Start();
-
-                var p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
-
-                SketchPlane sp1 = SketchPlane.Create(DocumentManager.Instance.CurrentDBDocument, p1);
-                Curve c1 = Line.CreateBound(XYZ.Zero, new XYZ(1, 0, 0));
-                mc1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c1, sp1);
-
-                trans.Commit();
-            }
+            OpenDynamoDefinition(subPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         /// <summary>
-        /// Opens and activates a new model.
+        /// Open a Dynamo definition given a relative
+        /// path from the working directory
         /// </summary>
-        /// <param name="modelPath"></param>
-        protected UIDocument OpenAndActivateNewModel(string modelPath)
+        /// <param name="relativeFilePath"></param>
+        public void OpenDynamoDefinition(string relativeFilePath)
         {
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
-            return DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
-        }
-
-        /// <summary>
-        /// Opens and activates a new model, and closes the old model.
-        /// </summary>
-        protected void SwapCurrentModel(string modelPath)
-        {
-            Document initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document;
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
-            initialDoc.Close(false);
-        }
-
-        protected void OpenAndRun(string subPath)
-        {
-            string samplePath = Path.Combine(workingDirectory, subPath);
+            string samplePath = Path.Combine(workingDirectory, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);
 
             Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
 
             ViewModel.OpenCommand.Execute(testPath);
-
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
-        #region Revit unit test helper methods
+        #endregion
+
+        #region Utility functions
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+        }
+
+        protected void CreateTemporaryFolder()
+        {
+            string tempPath = Path.GetTempPath();
+            TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
+
+            if (!Directory.Exists(TempFolder))
+                Directory.CreateDirectory(TempFolder);
+        }
 
         public void RunCurrentModel()
         {
@@ -292,7 +280,7 @@ namespace RevitTestServices
             if (data == null) return null;
             if (!data.IsCollection)
             {
-                return data.Data == null ? new List<object>() : new List<object>(){data.Data};
+                return data.Data == null ? new List<object>() : new List<object>() { data.Data };
             }
             var elements = data.GetElements();
 
@@ -316,7 +304,7 @@ namespace RevitTestServices
                 }
             }
             return objects;
-        } 
+        }
 
         public void AssertClassName(string guid, string className)
         {
@@ -357,6 +345,5 @@ namespace RevitTestServices
         }
 
         #endregion
-
     }
 }
