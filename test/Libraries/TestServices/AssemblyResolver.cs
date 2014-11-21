@@ -7,7 +7,7 @@ using Dynamo.Utilities;
 
 using DynamoUtilities;
 
-namespace RevitNodesTests
+namespace TestServices
 {
     public static class AssemblyResolver
     {

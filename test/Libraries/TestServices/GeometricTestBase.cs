@@ -9,8 +9,6 @@ using DynamoUtilities;
 
 using NUnit.Framework;
 
-using RevitNodesTests;
-
 namespace TestServices
 {
     public class GeometricTestBase

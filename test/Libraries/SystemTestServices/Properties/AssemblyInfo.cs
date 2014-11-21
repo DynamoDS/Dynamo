@@ -4,6 +4,6 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TestServices")]
+[assembly: AssemblyTitle("SystemTestServices")]
 [assembly: AssemblyCulture("")]
-[assembly: Guid("84280c9f-ab6c-4e6f-86f8-8bd49f8e3443")]
+[assembly: Guid("93906b16-5bb7-43cb-92d8-3672f94e0496")]
