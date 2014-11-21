@@ -288,9 +288,9 @@ namespace Dynamo.Utilities
                             {
                                 var parameter = parameters[inputReceiverData];
 
-                                if (!String.IsNullOrEmpty(parameter.Type))
+                                if (!String.IsNullOrEmpty(parameter.DisplayTypeName))
                                 {
-                                    node.InputSymbol += ": " + parameter.Type.Split('.').Last();
+                                    node.InputSymbol += ": " + parameter.DisplayTypeName;
                                 }
                             }
                         }
