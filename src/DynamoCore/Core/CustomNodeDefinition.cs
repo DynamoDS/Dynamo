@@ -52,6 +52,11 @@ namespace Dynamo
         public IEnumerable<ProtoCore.Type> ParameterTypes { get; internal set; }
 
         /// <summary>
+        ///     Default value for parameters
+        /// </summary>
+        public IEnumerable<object> DefaultValues { get; internal set; }
+
+        /// <summary>
         ///     If the function returns a dictionary, it specifies all keys in
         ///     that dictionary.
         /// </summary>

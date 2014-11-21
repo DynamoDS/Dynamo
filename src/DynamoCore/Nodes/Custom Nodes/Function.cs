@@ -309,7 +309,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes. \n\nYou can specify the type for parameter through adding an optional ':' and type. E.g.,\n\ninput : var[]..[]")]
+    [NodeDescription("A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -319,7 +319,7 @@ namespace Dynamo.Nodes
         private string inputSymbol = "";
         private const char Seperator = ':';
         private const string CannotFindType = "Cannot find type '{0}'";
-        private const string InvalidFormat = "Invalid input.\n\nThe name of parameter should start with alphabetic character. You can specify its type by adding a ':' and type.\n\nE.g., input : var[]..[]";
+        private const string InvalidFormat = "Invalid input.\n\nThe name of parameter should start with alphabetic character. You can specify its type and default value.\n\nE.g., input : var[]..[]\nvalue: bool = false";
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -343,10 +343,20 @@ namespace Dynamo.Nodes
                 VariableName = substrings[0].Trim();
                 Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
 
-                if (substrings.Count() == 2)
+                if (substrings.Count() > 2)
+                {
+                    this.Warning(InvalidFormat);
+                }
+                else if (substrings.Count() >= 1 && !string.IsNullOrEmpty(substrings[0]))
                 {
                     IdentifierNode identifierNode = new IdentifierNode();
-                    if (TryParseInputSymbol(inputSymbol, out identifierNode))
+                    AssociativeNode defaultValueNode = null;
+
+                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
+                    {
+                        this.Warning(InvalidFormat);
+                    }
+                    else
                     {
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
@@ -354,21 +364,30 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
+                            VariableName = identifierNode.Value;
                             Type = identifierNode.datatype;
                         }
+
+                        if (defaultValueNode != null)
+                        {
+                            if (defaultValueNode is IntNode)
+                            {
+                                DefaultValue = (defaultValueNode as IntNode).Value;
+                            }
+                            else if (defaultValueNode is DoubleNode)
+                            {
+                                DefaultValue = (defaultValueNode as DoubleNode).Value;
+                            }
+                            else if (defaultValueNode is BooleanNode)
+                            {
+                                DefaultValue = (defaultValueNode as BooleanNode).Value;
+                            }
+                            else if (defaultValueNode is StringNode)
+                            {
+                                DefaultValue = (defaultValueNode as StringNode).value;
+                            }
+                        }
                     }
-                    else
-                    {
-                        this.Warning(InvalidFormat);
-                    }
-                }
-                else if (substrings.Count() > 2)
-                {
-                    this.Warning(InvalidFormat);
-                }
-                else
-                {
-                    // valid input, even the input symbol is empty.
                 }
        
                 ReportModification();
@@ -383,6 +402,12 @@ namespace Dynamo.Nodes
         }
 
         public ProtoCore.Type Type
+        {
+            get;
+            private set;
+        }
+
+        public object DefaultValue
         {
             get;
             private set;
@@ -415,13 +440,29 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        private bool TryParseInputSymbol(string inputSymbol, out IdentifierNode identifier)
+        private bool TryParseInputSymbol(string inputSymbol, 
+                                         out IdentifierNode identifier, 
+                                         out AssociativeNode defaultValue)
         {
             identifier = null;
+            defaultValue = null;
             // workaround: there is an issue in parsing "x:int" format unless 
             // we create the other parser specially for it. We change it to 
             // "x:int = dummy;" for parsing. 
-            ParseParam parseParam = new ParseParam(this.GUID, inputSymbol + "=dummy;");
+
+            var parseString = InputSymbol;
+
+            // default value
+            if (InputSymbol.Contains("="))
+            {
+                parseString += ";";
+            }
+            else
+            {
+                parseString += "=dummy;";
+            }
+
+            ParseParam parseParam = new ParseParam(this.GUID, parseString);
 
             if (this.Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam) &&
                 parseParam.ParsedNodes != null &&
@@ -431,6 +472,9 @@ namespace Dynamo.Nodes
                 if (node != null)
                 {
                     identifier = node.LeftNode as IdentifierNode;
+                    if (inputSymbol.Contains('='))
+                        defaultValue = node.RightNode;
+
                     return identifier != null;
                 }
             }
