@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 using SystemTestServices;
@@ -16,7 +15,6 @@ using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-using ProtoCore.Mirror;
 
 using RevitServices.Persistence;
 using RevitServices.Threading;
