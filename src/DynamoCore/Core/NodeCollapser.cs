@@ -275,7 +275,25 @@ namespace Dynamo.Utilities
                         inConnectors.Add(Tuple.Create(inputNode, inputData));
 
                         node = newNodeWorkspace.AddNode<Symbol>();
+
                         node.InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName;
+
+                        var dsFunctionNode = inputReceiverNode as DSFunctionBase;
+                        if (dsFunctionNode != null)
+                        {
+                            var definition = dsFunctionNode.Controller.Definition;
+                            var parameters = definition.Parameters.ToList();
+
+                            if (inputReceiverData < parameters.Count())
+                            {
+                                var parameter = parameters[inputReceiverData];
+
+                                if (!String.IsNullOrEmpty(parameter.Type))
+                                {
+                                    node.InputSymbol += ": " + parameter.Type.Split('.').Last();
+                                }
+                            }
+                        }
 
                         node.SetNickNameFromAttribute();
 

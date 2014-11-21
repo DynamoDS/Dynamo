@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             var paramTypePairs = Definition.Parameters.Zip(Definition.ParameterTypes, (p, t) => Tuple.Create(p, t));
             foreach (var pair in paramTypePairs)
             {
-                model.InPortData.Add(new PortData(pair.Item1, pair.Item2.ToString()));
+                model.InPortData.Add(new PortData(pair.Item1, pair.Item2.ToString().Split('.').Last()));
             }
         }
 
@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
                                 model.InPortData.Select(p => p.NickName))))
                     && (Definition.ParameterTypes == null 
                         || (Definition.ParameterTypes.Count() == model.InPortData.Count()
-                            && Definition.ParameterTypes.Select(t => t.ToString()).SequenceEqual(
+                            && Definition.ParameterTypes.Select(t => t.ToString().Split('.').Last()).SequenceEqual(
                                 model.InPortData.Select(p => p.ToolTipString))))
                     && (Definition.ReturnKeys == null
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()
