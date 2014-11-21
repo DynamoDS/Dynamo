@@ -19,8 +19,8 @@ namespace Dynamo.Library
         public TypedParameter(
             FunctionDescriptor function, string name, string type, object defaultValue = null)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException();
+            if (name == null) 
+                throw new ArgumentNullException();
             Name = name;
 
             if (null == type)

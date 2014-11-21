@@ -35,12 +35,14 @@ namespace Dynamo.Nodes
         {
             model.InPortData.Clear();
 
-            if (Definition.Parameters == null) return;
-
-            var paramTypePairs = Definition.Parameters.Zip(Definition.ParameterTypes, (p, t) => Tuple.Create(p, t));
-            foreach (var pair in paramTypePairs)
+            if (Definition.Parameters == null)
             {
-                model.InPortData.Add(new PortData(pair.Item1, pair.Item2.ToShortString()));
+                return;
+            }
+
+            foreach (var p in Definition.Parameters)
+            {
+                model.InPortData.Add(new PortData(p.Name, p.Type.ToShortString(), p.DefaultValue));
             }
         }
 
@@ -181,16 +183,14 @@ namespace Dynamo.Nodes
             return Definition != null
                     && ((Definition.Parameters == null
                         || (Definition.Parameters.Count() == model.InPortData.Count()
-                            && Definition.Parameters.SequenceEqual(
-                                model.InPortData.Select(p => p.NickName))))
-                    && (Definition.ParameterTypes == null 
-                        || (Definition.ParameterTypes.Count() == model.InPortData.Count()
-                            && Definition.ParameterTypes.Select(t => t.ToShortString()).SequenceEqual(
+                            && Definition.Parameters.Select(p => p.Name).SequenceEqual(
+                                model.InPortData.Select(p => p.NickName)))
+                            && Definition.Parameters.Select(p => p.Type.ToShortString()).SequenceEqual(
                                 model.InPortData.Select(p => p.ToolTipString))))
                     && (Definition.ReturnKeys == null
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()
                             && Definition.ReturnKeys.SequenceEqual(
-                                model.OutPortData.Select(p => p.NickName))));
+                                model.OutPortData.Select(p => p.NickName)));
         }
 
         private bool VerifyFuncId(ref Guid funcId, string nickname)

@@ -317,6 +317,7 @@ namespace Dynamo.Nodes
     public partial class Symbol : NodeModel
     {
         private string inputSymbol = "";
+        private string nickName = "";
         private const char Seperator = ':';
         private const string CannotFindType = "Cannot find type '{0}'";
         private const string InvalidFormat = "Invalid input.\n\nThe name of parameter should start with alphabetic character. You can specify its type and default value.\n\nE.g., input : var[]..[]\nvalue: bool = false";
@@ -340,8 +341,9 @@ namespace Dynamo.Nodes
                 ClearRuntimeError();
                 var substrings = inputSymbol.Split(Seperator);
 
-                VariableName = substrings[0].Trim();
-                Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                nickName = substrings[0].Trim();
+                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                object defaultValue = null;
 
                 if (substrings.Count() > 2)
                 {
@@ -364,50 +366,40 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            VariableName = identifierNode.Value;
-                            Type = identifierNode.datatype;
+                            nickName = identifierNode.Value;
+                            type = identifierNode.datatype;
                         }
 
                         if (defaultValueNode != null)
                         {
                             if (defaultValueNode is IntNode)
                             {
-                                DefaultValue = (defaultValueNode as IntNode).Value;
+                                defaultValue = (defaultValueNode as IntNode).Value;
                             }
                             else if (defaultValueNode is DoubleNode)
                             {
-                                DefaultValue = (defaultValueNode as DoubleNode).Value;
+                                defaultValue = (defaultValueNode as DoubleNode).Value;
                             }
                             else if (defaultValueNode is BooleanNode)
                             {
-                                DefaultValue = (defaultValueNode as BooleanNode).Value;
+                                defaultValue = (defaultValueNode as BooleanNode).Value;
                             }
                             else if (defaultValueNode is StringNode)
                             {
-                                DefaultValue = (defaultValueNode as StringNode).value;
+                                defaultValue = (defaultValueNode as StringNode).value;
                             }
                         }
                     }
                 }
-       
+
+                Parameter = new CustomNodeParameter(nickName, type, defaultValue);
+
                 ReportModification();
                 RaisePropertyChanged("InputSymbol");
             }
         }
 
-        public string VariableName
-        {
-            get;
-            private set;
-        }
-
-        public ProtoCore.Type Type
-        {
-            get;
-            private set;
-        }
-
-        public object DefaultValue
+        public CustomNodeParameter Parameter
         {
             get;
             private set;
@@ -417,7 +409,7 @@ namespace Dynamo.Nodes
         {
             return
                 AstFactory.BuildIdentifier(
-                    VariableName == null ? AstIdentifierBase : VariableName + "__" + AstIdentifierBase);
+                    nickName == null ? AstIdentifierBase : nickName + "__" + AstIdentifierBase);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

@@ -13,6 +13,31 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
+    public class CustomNodeParameter
+    {
+        public CustomNodeParameter(string name, ProtoCore.Type type, object defaultValue = null)
+        {
+            Name = name;
+            Type = type;
+            DefaultValue = defaultValue;
+        }
+
+        public string Name 
+        {
+            get; private set;
+        }
+
+        public ProtoCore.Type Type
+        {
+            get; private set;
+        }
+
+        public object DefaultValue
+        {
+            get; private set;
+        }
+    }
+
     public class CustomNodeDefinition : IFunctionDescriptor
     {
         internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
@@ -44,17 +69,7 @@ namespace Dynamo
         /// <summary>
         ///     Function parameters
         /// </summary>
-        public IEnumerable<string> Parameters { get; internal set; }
-
-        /// <summary>
-        ///     Types of function parameters
-        /// </summary>
-        public IEnumerable<ProtoCore.Type> ParameterTypes { get; internal set; }
-
-        /// <summary>
-        ///     Default value for parameters
-        /// </summary>
-        public IEnumerable<object> DefaultValues { get; internal set; }
+        public IEnumerable<CustomNodeParameter> Parameters { get; internal set; }
 
         /// <summary>
         ///     If the function returns a dictionary, it specifies all keys in
@@ -225,10 +240,8 @@ namespace Dynamo
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
-            var types = inputNodes.Select(x => x.Type);
-            Parameters = inputNodes.Select(x => x.VariableName);
-            ParameterTypes = types;
-            var paramList = parameters.Zip(types, (p, t) => Tuple.Create(p, t));
+            Parameters = inputNodes.Select(x => x.Parameter);
+            var paramList = parameters.Zip(Parameters, (p, P) => Tuple.Create(p, P.Type));
 
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynamoModel.AllNodes
