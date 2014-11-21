@@ -10,7 +10,6 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
@@ -230,9 +229,6 @@ namespace Dynamo.Search
         {
             foreach (NodeSearchElement node in nodes)
             {
-                if (node.ElementType != SearchModel.ElementType.Regular)
-                    continue;
-
                 var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
@@ -272,11 +268,7 @@ namespace Dynamo.Search
             // When create category, give not only category name, 
             // but also assembly, where icon for category could be found.
 
-            BrowserItem cat;
-            if (nodeType == ElementType.Regular)
-                cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
-            else
-                cat = addonCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
+            BrowserItem cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
 
             cat.AddChild(item);
 
@@ -389,8 +381,6 @@ namespace Dynamo.Search
 
                     // Rename category (except for custom nodes, imported libraries).
                     string category = ProcessNodeCategory(function.Category, ref group);
-                    if (functionGroup.ElementType != ElementType.Regular)
-                        category = function.Category;
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -445,10 +435,7 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                // Rename category (except for custom nodes, imported libraries).
                 cat = ProcessNodeCategory(catCandidate, ref group);
-                if (nodeType != ElementType.Regular)
-                    cat = catCandidate;
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -520,7 +507,7 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var group = SearchElementGroup.None;
-            ProcessNodeCategory(nodeInfo.Category, ref group);
+            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             if (SearchDictionary.Contains(nodeEle))
