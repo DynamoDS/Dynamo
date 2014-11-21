@@ -41,21 +41,16 @@ namespace Dynamo.Wpf
 
         private static Type GetCustomizerTypeParameters(Type toCheck)
         {
-            var types = toCheck.GetInterfaces().Where(
-                    x =>
-                        x.IsGenericType &&
-                        x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>))
-                    .Select(x => x.GetGenericArguments()[0]);
-
-            var mostDerived = MostDerivedCommonBase(types);
-
-            if (mostDerived == null) return null;
-
-            var ints = toCheck.GetInterfaces().FirstOrDefault(
+            var customizerInterfaces = toCheck.GetInterfaces().Where(
                 x =>
                     x.IsGenericType &&
-                    x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>) &&
-                    x.GetGenericArguments()[0] == mostDerived);
+                    x.GetGenericTypeDefinition() == typeof (INodeViewCustomization<>)).ToList();
+
+            var customizerTypeArgs = customizerInterfaces.Select(x => x.GetGenericArguments()[0]);
+            var mostDerived = MostDerivedCommonBase(customizerTypeArgs);
+            if (mostDerived == null) return null;
+
+            var ints = customizerInterfaces.FirstOrDefault(x => x.GetGenericArguments()[0] == mostDerived);
 
             return ints != null ? ints.GetGenericArguments()[0] : null;
         }
