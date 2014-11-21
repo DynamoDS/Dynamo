@@ -7,6 +7,7 @@
     <DYNAMO_HARVEST_PATH Condition=" '$(DYNAMO_HARVEST_PATH)' == '' ">$(MSBuildProjectDirectory)\harvest</DYNAMO_HARVEST_PATH>
     <DYNAMO_MIGRATION_NODES_PATH Condition=" '$(DYNAMO_MIGRATION_NODES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\migration_nodes</DYNAMO_MIGRATION_NODES_PATH>
 	<DYNAMO_CORE_TEST_PATH Condition=" '$(DYNAMO_CORE_TEST_PATH)' == '' ">$(DYNAMO_BASE_PATH)\test\core</DYNAMO_CORE_TEST_PATH>
+	<DYNAMO_TEST_REVIT_PATH Condition=" '$(DYNAMO_TEST_REVIT_PATH)' == '' ">$(DYNAMO_BASE_PATH)\test\System\revit</DYNAMO_TEST_REVIT_PATH>
     <DYNAMO_SAMPLES_PATH Condition=" '$(DYNAMO_SAMPLES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\Samples</DYNAMO_SAMPLES_PATH>
     <DYNAMO_REVIT_SIGN_TOOLS Condition=" '$(DYNAMO_REVIT_SIGN_TOOLS)' == '' ">$(MSBuildProjectDirectory)\sign</DYNAMO_REVIT_SIGN_TOOLS>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
@@ -24,6 +25,7 @@
     <DYNAMO_HARVEST_PATH Condition=" '$(DYNAMO_HARVEST_PATH)' == '' ">$(MSBuildProjectDirectory)\harvest</DYNAMO_HARVEST_PATH>
     <DYNAMO_MIGRATION_NODES_PATH Condition=" '$(DYNAMO_MIGRATION_NODES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\migration_nodes</DYNAMO_MIGRATION_NODES_PATH>
 	<DYNAMO_CORE_TEST_PATH Condition=" '$(DYNAMO_CORE_TEST_PATH)' == '' ">$(DYNAMO_BASE_PATH)\test\core</DYNAMO_CORE_TEST_PATH>
+	<DYNAMO_TEST_REVIT_PATH Condition=" '$(DYNAMO_TEST_REVIT_PATH)' == '' ">$(DYNAMO_BASE_PATH)\test\System\revit</DYNAMO_TEST_REVIT_PATH>
     <DYNAMO_SAMPLES_PATH Condition=" '$(DYNAMO_SAMPLES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\Samples</DYNAMO_SAMPLES_PATH>
     <DYNAMO_REVIT_SIGN_TOOLS Condition=" '$(DYNAMO_REVIT_SIGN_TOOLS)' == '' ">$(MSBuildProjectDirectory)\sign</DYNAMO_REVIT_SIGN_TOOLS>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>

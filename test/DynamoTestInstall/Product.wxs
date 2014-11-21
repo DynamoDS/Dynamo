@@ -37,12 +37,9 @@
     <Feature Id="DYNAMOTEST_CORE_FEATURE"
              Title="Dynamo test"
              Level="1">
-      <Feature Id="DYNAMO_CORE_TEST"
-             Title="Test Content"
-             Level="1" >
-        <ComponentGroupRef Id="TEST"/>
-      </Feature>
+      <ComponentGroupRef Id="TEST"/>
       <ComponentGroupRef Id="RELEASE"/>
+      <ComponentGroupRef Id="TESTREVIT"/>
     </Feature>
     
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
@@ -55,7 +52,20 @@
       <Directory Id="ProgramMenuFolder">
       </Directory>
       <Directory Id="DYNAMO_INSTALLDIR">
-        <Directory Id="DYNAMO_CORE_TEST" Name="Core"/>
+        <Directory Id="DYNAMO_CORE_TEST_BIN" Name="bin">
+          <Directory Id="DYNAMO_CORE_TEST_ANYCPU" Name="AnyCPU">
+            <Directory Id="DYNAMO_CORE_TESTDIR" Name="Release">
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="DYNAMO_CORE_TEST_WORKING" Name="test">
+          <Directory Id="DYNAMO_CORE_TEST" Name="core">
+          </Directory>
+          <Directory Id="DYNAMO_CORE_TEST_SYSTEM" Name="System">
+            <Directory Id="DYNAMO_CORE_TEST_REVIT" Name="revit">
+            </Directory>
+          </Directory>
+        </Directory>
       </Directory>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="ADESK_DATA" Name="Autodesk">
