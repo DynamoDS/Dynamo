@@ -2959,6 +2959,15 @@ namespace ProtoAssociative
             else if (node is IdentifierListNode)
             {
                 // TODO Handle LHS ssa for identifier lists
+
+                // For LHS idenlist, resolve them to the fully qualified name
+                IdentifierListNode identList = node as IdentifierListNode;
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
+                if (classNames.Length == 1)
+                {
+                    identList.LeftNode.Name = classNames[0];
+                    (identList.LeftNode as IdentifierNode).Value = classNames[0];
+                }
             }
         }
 
