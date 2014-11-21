@@ -262,7 +262,7 @@ namespace Dynamo.Nodes
             Workspace.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
-        void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public override void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

@@ -250,13 +250,13 @@ namespace Revit.Elements
                     switch (param.Definition.ParameterType)
                     {
                         case ParameterType.Length:
-                            result = Length.FromFeet(param.AsDouble());
+                            result = Length.FromFeet(param.AsDouble()).ValueInDynamoUIUnits();
                             break;
                         case ParameterType.Area:
-                            result = Area.FromSquareFeet(param.AsDouble());
+                            result = Area.FromSquareFeet(param.AsDouble()).ValueInDynamoUIUnits();
                             break;
                         case ParameterType.Volume:
-                            result = Volume.FromCubicFeet(param.AsDouble());
+                            result = Volume.FromCubicFeet(param.AsDouble()).ValueInDynamoUIUnits();
                             break;
                         default:
                             result = param.AsDouble();
@@ -322,7 +322,7 @@ namespace Revit.Elements
             if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
 
-            param.Set(value);
+            SetNumericParameterValue(param, value);
         }
 
         private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, Element value)
@@ -338,7 +338,7 @@ namespace Revit.Elements
             if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
 
-            param.Set(value);
+            SetNumericParameterValue(param, value);
         }
 
         private static void SetParameterValue(Autodesk.Revit.DB.Parameter param, string value)
@@ -363,6 +363,24 @@ namespace Revit.Elements
                 throw new Exception("The parameter's storage type is not an integer.");
 
             param.Set(value.ConvertToHostUnits());
+        }
+
+        /// <summary>
+        /// If the type of the parameter is Length, Area or Volume, the value will be converted to host units
+        /// and then set.
+        /// </summary>
+        /// <param name="param">The parameter</param>
+        /// <param name="value">The value</param>
+        private static void SetNumericParameterValue(Autodesk.Revit.DB.Parameter param, double value)
+        {
+            if (param.Definition.ParameterType == ParameterType.Length)
+                param.Set(Length.FromDoubleInUIUnit(value).ConvertToHostUnits());
+            else if (param.Definition.ParameterType == ParameterType.Area)
+                param.Set(Area.FromDoubleInUiUnit(value).ConvertToHostUnits());
+            else if (param.Definition.ParameterType == ParameterType.Volume)
+                param.Set(Volume.FromDoubleInUiUnit(value).ConvertToHostUnits());
+            else
+                param.Set(value);
         }
 
         #endregion

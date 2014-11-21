@@ -677,9 +677,9 @@ namespace Dynamo.Tests
         [Test]
         public void CanMapOverUnits()
         {
-            var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
-            var area = Enumerable.Range(1, 5).Select(x => Area.FromDouble(x)).ToList();
-            var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDouble(x)).ToList();
+            var length = Enumerable.Range(1, 5).Select(x => Length.FromDoubleInUIUnit(x)).ToList();
+            var area = Enumerable.Range(1, 5).Select(x => Area.FromDoubleInUiUnit(x)).ToList();
+            var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDoubleInUiUnit(x)).ToList();
 
             RunModel(@"core\units\map-numbers-to-units.dyn");
 
