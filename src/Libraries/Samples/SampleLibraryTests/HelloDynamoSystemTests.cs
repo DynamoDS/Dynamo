@@ -4,6 +4,7 @@ using System.Text;
 
 using SystemTestServices;
 
+using Dynamo.Nodes;
 using Dynamo.Tests;
 
 using NUnit.Framework;
@@ -46,6 +47,17 @@ namespace SamplesLibraryUI
             // could not be found in the library.
 
             AssertNoDummyNodes();
+
+            // Get the first node of a certain type from the workspace.
+            // DSFunction nodes are a type of node which wrap built-in functions
+            // like the '+' function, which is what we're looking for.
+
+            var addNode = Model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+            Assert.NotNull(addNode);
+
+            // Ensure that the value of that node after evaluation is
+            // the value that we are looking for.
+            Assert.AreEqual(addNode.GetValue(0).Data, 42);
         }
     }
 }

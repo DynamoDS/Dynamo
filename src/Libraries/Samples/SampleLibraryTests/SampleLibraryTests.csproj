@@ -79,6 +79,10 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SampleLibraryZeroTouch\SampleLibraryZeroTouch.csproj">
       <Project>{bd13c4dc-9045-4e49-b637-b6182b0e3a7f}</Project>
       <Name>SampleLibraryZeroTouch</Name>
