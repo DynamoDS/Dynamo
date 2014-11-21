@@ -25,7 +25,7 @@ namespace RevitSystemTests
             // a reference to the initial document
             var initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
-            var newDoc = OpenAndActivateNewModel(_emptyModelPath1);
+            var newDoc = OpenAndActivateNewModel(emptyModelPath1);
 
             // Assert that the active UI document is
             // still the initial document
@@ -39,7 +39,7 @@ namespace RevitSystemTests
             // empty.rfa will be open at test start
             // swap documents and ensure that 
             var initialDoc = DocumentManager.Instance.CurrentUIDocument;
-            var newDoc = OpenAndActivateNewModel(_emptyModelPath1);
+            var newDoc = OpenAndActivateNewModel(emptyModelPath1);
 
             Assert.False(ViewModel.RunEnabled);
         }
@@ -56,7 +56,7 @@ namespace RevitSystemTests
             // Then you need to swap back because the journal's ID_FLUSH_UNDO
             // is disabled in perspective as well
 
-            SwapCurrentModel(_emptyModelPath);
+            SwapCurrentModel(emptyModelPath);
         }
 
         [Test, Ignore]

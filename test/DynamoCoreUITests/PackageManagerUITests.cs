@@ -2,15 +2,18 @@
 using System.Linq;
 using System.Threading;
 using System.Windows;
+
+using SystemTestServices;
+
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-using Dynamo.Utilities;
+
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class PackageManagerUITests : DynamoTestUIBase
+    public class PackageManagerUITests : SystemTestBase
     {
         #region Utility functions
 

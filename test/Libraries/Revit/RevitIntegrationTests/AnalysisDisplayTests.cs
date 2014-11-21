@@ -18,7 +18,7 @@ namespace RevitSystemTests
         public void PointAnalysisDisplay_ByViewAndPointAnalysisData()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\PointAnalysisDisplay_ByViewAndPointAnalysisData.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\PointAnalysisDisplay_ByViewAndPointAnalysisData.dyn");
             VerifySpatialFieldManagerAndValues("DynamoPoints");
         }
 
@@ -27,7 +27,7 @@ namespace RevitSystemTests
         public void PointAnalysisDisplay_ByViewPointsValues()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\PointAnalysisDisplay_ByViewPointsValues.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\PointAnalysisDisplay_ByViewPointsValues.dyn");
             VerifySpatialFieldManagerAndValues("DynamoPoints");
         }
 
@@ -36,7 +36,7 @@ namespace RevitSystemTests
         public void SurfaceAnalysisDisplay_ByViewAndPointAnalysisData()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointAnalysisData.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointAnalysisData.dyn");
             VerifySpatialFieldManagerAndValues("DynamoSurfaces");
         }
 
@@ -45,7 +45,7 @@ namespace RevitSystemTests
         public void SurfaceAnalysisDisplay_ByViewAndPointsAndValues()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointsAndValues.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointsAndValues.dyn");
             VerifySpatialFieldManagerAndValues("DynamoSurfaces");
         }
 
@@ -54,7 +54,7 @@ namespace RevitSystemTests
         public void VectorAnalysisDisplay_ByViewAndVectorAnalysisData()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\VectorAnalysisDisplay_ByViewAndVectorAnalysisData.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\VectorAnalysisDisplay_ByViewAndVectorAnalysisData.dyn");
             VerifySpatialFieldManagerAndValues("DynamoVectors");
         }
 
@@ -63,7 +63,7 @@ namespace RevitSystemTests
         public void VectorAnalysisDisplay_ByViewPointsAndValues()
         {
             VerifyNoSpatialFieldManager();
-            OpenAndRun(@".\AnalysisDisplay\VectorAnalysisDisplay_ByViewPointsAndValues.dyn");
+            OpenAndRunDynamoDefinition(@".\AnalysisDisplay\VectorAnalysisDisplay_ByViewPointsAndValues.dyn");
             VerifySpatialFieldManagerAndValues("DynamoVectors");
         }
 

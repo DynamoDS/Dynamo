@@ -23,7 +23,7 @@ namespace RevitSystemTests
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
         public void StructuralFraming_Beam()
         {
-            OpenAndRun(@".\StructuralFraming\Beam.dyn");
+            OpenAndRunDynamoDefinition(@".\StructuralFraming\Beam.dyn");
 
             CompareStructuralTypeAgainstElements();
             CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming,10);
@@ -33,7 +33,7 @@ namespace RevitSystemTests
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
         public void StructuralFraming_Brace()
         {
-            OpenAndRun(@".\StructuralFraming\Brace.dyn");
+            OpenAndRunDynamoDefinition(@".\StructuralFraming\Brace.dyn");
 
             CompareStructuralTypeAgainstElements();
             CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralFraming, 10);
@@ -43,7 +43,7 @@ namespace RevitSystemTests
         [Test, TestModel(@".\StructuralFraming\StructuralFraming.rvt")]
         public void StructuralFraming_Column()
         {
-            OpenAndRun(@".\StructuralFraming\Column.dyn");
+            OpenAndRunDynamoDefinition(@".\StructuralFraming\Column.dyn");
 
             CompareStructuralTypeAgainstElements();
             CompareSliderCountAndMemberCount(BuiltInCategory.OST_StructuralColumns, 10);
