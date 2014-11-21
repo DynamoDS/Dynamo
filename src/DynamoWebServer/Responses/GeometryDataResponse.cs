@@ -4,6 +4,11 @@ namespace DynamoWebServer.Responses
 {
     class GeometryDataResponse : Response
     {
-        public GeometryData GeometryData { get; set; }
+        public GeometryData GeometryData { get; private set; }
+
+        public GeometryDataResponse(GeometryData geometryData)
+        {
+            GeometryData = geometryData;
+        }
     }
 }
