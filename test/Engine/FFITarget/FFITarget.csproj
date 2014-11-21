@@ -51,6 +51,7 @@
     </Compile>
     <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="ClassFunctionality.cs" />
+    <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
     <Compile Include="DummyMath.cs" />
     <Compile Include="GlobalClass.cs">
