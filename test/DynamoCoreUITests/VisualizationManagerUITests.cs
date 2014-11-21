@@ -6,11 +6,30 @@ using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
+using Dynamo.Utilities;
+using Dynamo.Views;
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
 {
+    public static class UIExtensions
+    {
+        public static IEnumerable<dynNodeView> OfNodeModelType<T>(this IEnumerable<dynNodeView> nodeViews) where T : NodeModel
+        {
+            return nodeViews.Where(x => x.ViewModel.NodeModel as T != null);
+        }
+
+        public static IEnumerable<dynNodeView> ChildNodeViews(this dynWorkspaceView nodeViews)
+        {
+            return nodeViews.ChildrenOfType<dynNodeView>();
+        }
+
+        public static IEnumerable<dynNodeView> NodeViewsFromFirstWorkspace(this DynamoView dynamoView)
+        {
+            return dynamoView.WorkspaceTabs.ChildrenOfType<dynWorkspaceView>().First().ChildNodeViews();
+        }
+    }
+
     [TestFixture]
     public class VisualizationManagerUITests : DynamoTestUIBase
     {
@@ -135,38 +154,40 @@ namespace DynamoCoreUITests
         [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
-            //TODO(Peter): Not sure  
-            Assert.Inconclusive("Cannot extract view data from ");
+            var model = ViewModel.Model;
 
-            //var model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
 
-            //string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            //ViewModel.OpenCommand.Execute(openPath);
+            // run the expression
+            ViewModel.Model.RunExpression();
 
-            //// run the expression
-            //ViewModel.Model.RunExpression();
+            //we start with all previews disabled
+            //the graph is two points feeding into a line
 
-            ////we start with all previews disabled
-            ////the graph is two points feeding into a line
+            //ensure that visulations match our expectations
+            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
-            ////ensure that visulations match our expectations
-            //Assert.AreEqual(7, BackgroundPreview.Points.Count);
-            //Assert.AreEqual(12, BackgroundPreview.Lines.Count);
-            //Assert.AreEqual(0, BackgroundPreview.MeshCount);
+            //flip off the line node's preview upstream
+            var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            l1.IsUpstreamVisible = false;
 
-            ////flip off the line node's preview upstream
-            //var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            //l1.IsUpstreamVisible = false;
+            //ensure that the watch 3d is not showing the upstream
+            //the render descriptions will still be around for those
+            //nodes, but watch 3D will not be showing them
+            var watch3D =
+                model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
 
-            ////ensure that the watch 3d is not showing the upstream
-            ////the render descriptions will still be around for those
-            ////nodes, but watch 3D will not be showing them
-            //var watch3D =
-            //    model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
+            var nodeViews = View.NodeViewsFromFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
+            
+            Assert.AreEqual(1, nodeViews.Count());
 
-            //// we need to find the watch 3d view
-            //var watchView = watch3D.View;
-            //Assert.AreEqual(0, watchView.Points.Count);
+            var watch3DNodeView = nodeViews.First();
+            var watchView = watch3DNodeView.ChildrenOfType<Watch3DView>().First();
+
+            Assert.AreEqual(0, watchView.Points.Count);
         }
 
         [Test]

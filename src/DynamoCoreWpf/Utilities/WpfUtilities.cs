@@ -1,9 +1,13 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
+using System.Xml;
+using Dynamo.Controls;
 
 namespace Dynamo.Utilities
 {
-    class WpfUtilities
+    static class WpfUtilities
     {
         // walk up the visual tree to find object of type T, starting from initial object
         public static T FindUpVisualTree<T>(DependencyObject initial) where T : DependencyObject
@@ -26,7 +30,7 @@ namespace Dynamo.Utilities
         /// <returns>The first parent item that matches the submitted type parameter. 
         /// If not matching item can be found, 
         /// a null parent is being returned.</returns>
-        public static T FindChild<T>(DependencyObject parent, string childName)
+        public static T FindChild<T>(this DependencyObject parent, string childName)
            where T : DependencyObject
         {
             // Confirm parent and childName are valid. 
@@ -69,6 +73,31 @@ namespace Dynamo.Utilities
 
             return foundChild;
         }
+
+        public static IEnumerable<DependencyObject> Children(this DependencyObject parent)
+        {
+            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (var i = 0; i < childrenCount; i++) 
+                yield return VisualTreeHelper.GetChild(parent, i);
+        } 
+
+        public static IEnumerable<T> ChildrenOfType<T>(this DependencyObject parent)
+          where T : DependencyObject
+        {
+            foreach(var child in parent.Children())
+            {
+                var childType = child as T;
+                if (childType == null)
+                {
+                    foreach (var ele in ChildrenOfType<T>(child)) yield return ele;
+                }
+                else
+                {
+                    yield return childType;
+                }
+            }
+        }
+
 
     }
 }
