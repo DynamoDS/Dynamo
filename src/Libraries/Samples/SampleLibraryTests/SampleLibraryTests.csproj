@@ -46,6 +46,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="HelloDynamoSystemTests.cs" />
     <Compile Include="HelloDynamoZeroTouchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
