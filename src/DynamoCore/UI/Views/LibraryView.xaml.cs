@@ -19,8 +19,8 @@ namespace Dynamo.UI.Views
         // The reason is "CategoryTreeView" does not show full content because it is too
         // big. On category clicking WPF makes autoscroll and doesn't expand content of 
         // category. We are counting count of calling BringIntoViewCount() functions.        
-        private uint bringIntoViewCount;
-        private uint BringIntoViewCount
+        private int bringIntoViewCount;
+        private int BringIntoViewCount
         {
             get
             {
@@ -28,7 +28,7 @@ namespace Dynamo.UI.Views
             }
             set
             {
-                bringIntoViewCount = value >= 2u ? 2u : value;
+                bringIntoViewCount = value >= 2 ? 2 : value;
             }
         }
 
