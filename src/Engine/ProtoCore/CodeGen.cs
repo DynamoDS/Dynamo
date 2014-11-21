@@ -1,4 +1,4 @@
-//#define __SSA_IDENT_LIST
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -97,10 +97,6 @@ namespace ProtoCore
 
         // These variables hold data when backtracking static SSA'd calls
         protected string staticClass = null;
-
-#if __SSA_IDENT_LIST
-        protected bool resolveStatic = false;
-#endif
 
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
@@ -2759,27 +2755,6 @@ namespace ProtoCore
             ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
             bool isFirstIdent = true;
 
-
-#if __SSA_IDENT_LIST
-            // Handle static calls to reflect the original call
-            if (resolveStatic)
-            {
-                ProtoCore.AST.AssociativeAST.IdentifierListNode identList = node as ProtoCore.AST.AssociativeAST.IdentifierListNode;
-                Validity.Assert(identList.LeftNode is ProtoCore.AST.AssociativeAST.IdentifierNode);
-
-                ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = identList.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                if (leftNode.Name != ProtoCore.DSDefinitions.Keyword.This)
-                {
-                    Validity.Assert(!string.IsNullOrEmpty(staticClass));
-                    identList.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode(staticClass);
-
-                    staticClass = null;
-                    resolveStatic = false;
-
-                    ssaPointerList.Clear();
-                }
-            }
-#endif
             BuildSSADependency(node, graphNode);
             if (core.Options.GenerateSSA)
             {

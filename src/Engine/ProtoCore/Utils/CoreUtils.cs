@@ -1,4 +1,4 @@
-﻿//#define __SSA_IDENT_LIST
+﻿
 using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
@@ -761,27 +761,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
         {
-#if __SSA_IDENT_LIST
-            string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
-
-            // Failed to find the first time
-            // Attempt to remove identifiers in the identifierlist until we find a class or not
-            while (0 == classNames.Length)
-            {
-                // Move to the left node
-                AssociativeNode leftNode = identList.LeftNode;
-                if (leftNode is IdentifierListNode)
-                {
-                    identList = leftNode as IdentifierListNode;
-                    classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return classNames;
-#else
             string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
 
             // Failed to find the first time
@@ -807,7 +786,6 @@ namespace ProtoCore.Utils
                 }
             }
             return classNames;
-#endif
         }
 
         /// <summary>

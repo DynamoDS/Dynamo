@@ -1,5 +1,4 @@
 //#define ENABLE_INC_DEC_FIX
-//#define __SSA_IDENT_LIST
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -2223,143 +2222,6 @@ namespace ProtoAssociative
             }
             else if (node is IdentifierListNode)
             {
-
-#if  __SSA_IDENT_LIST
-                IdentifierListNode identList = node as IdentifierListNode;
-
-                //Check if the LeftNode for given IdentifierList represents a class.
-                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
-                if (classNames.Length > 1)
-                {
-                    // There is a namespace conflict
-
-                    // TODO Jun: Move this warning handler to after the SSA transform
-                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
-                }
-                else if (classNames.Length == 1)
-                {
-                    // A matching class has been found
-                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
-                    SSAIdentList(leftNode, ref ssaStack, ref astlist);
-                }
-                else
-                {
-                    // There is no matching class name, continue traversing the identlist
-
-                    // Check if the lhs is an identifier and if it has any namespace conflicts
-                    // We want to handle this here because we know ident lists can potentially contain namespace resolving
-                    var ident = identList.LeftNode as IdentifierNode;
-
-                    // Check if this is the last ident in the identlist
-                    if (ident != null)
-                    {
-                        // TODO Jun: Move this warning handler to after the SSA transform
-                        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                        classNames = core.ClassTable.GetAllMatchingClasses(ident.Value);
-                        if (classNames.Length > 1)
-                        {
-                            // There is a namespace conflict
-                            buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
-
-                            // Continue traversing the expression even after a namespace conflict
-                            // TODO: Determine if we want to terminate traversal of this identlist
-                            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-
-                        }
-                    }
-
-                    // Recursively traversse the left of the ident list
-                    SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
-                }
-
-                // Build the rhs identifier list containing the temp pointer
-                IdentifierListNode rhsIdentList = new IdentifierListNode();
-                rhsIdentList.Optr = Operator.dot;
-
-                AssociativeNode lhsNode = ssaStack.Pop();
-                if (lhsNode is BinaryExpressionNode)
-                {
-                    rhsIdentList.LeftNode = (lhsNode as BinaryExpressionNode).LeftNode;
-                }
-                else
-                {
-                    rhsIdentList.LeftNode = lhsNode;
-                }
-
-                ArrayNode arrayDimension = null;
-
-                AssociativeNode rnode = null;
-                if (identList.RightNode is IdentifierNode)
-                {
-                    IdentifierNode identNode = identList.RightNode as IdentifierNode;
-                    arrayDimension = identNode.ArrayDimensions;
-                    rnode = identNode;
-                }
-                else if (identList.RightNode is FunctionCallNode)
-                {
-                    FunctionCallNode fcNode = new FunctionCallNode(identList.RightNode as FunctionCallNode);
-                    arrayDimension = fcNode.ArrayDimensions;
-
-                    List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
-                    for (int idx = 0; idx < fcNode.FormalArguments.Count; idx++)
-                    {
-                        AssociativeNode arg = fcNode.FormalArguments[idx];
-                        var replicationGuides = GetReplicationGuides(arg);
-                        if (replicationGuides == null)
-                        {
-                            replicationGuides = new List<AssociativeNode> { };
-                        }
-                        else
-                        {
-                            RemoveReplicationGuides(arg);
-                        }
-
-                        DFSEmitSSA_AST(arg, ssaStack, ref astlistArgs);
-
-                        var argNode = ssaStack.Pop();
-                        var argBinaryExpr = argNode as BinaryExpressionNode;
-                        if (argBinaryExpr != null)
-                        {
-                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode);
-                            (newArgNode as IdentifierNode).ReplicationGuides = replicationGuides;
-                            fcNode.FormalArguments[idx] = newArgNode;
-                        }
-                        else
-                        {
-                            fcNode.FormalArguments[idx] = argNode;
-                        }
-                        astlist.AddRange(astlistArgs);
-                        astlistArgs.Clear();
-                    }
-
-                    astlist.AddRange(astlistArgs);
-                    rnode = fcNode;
-                }
-                else
-                {
-                    Validity.Assert(false);
-                }
-
-                Validity.Assert(null != rnode);
-                rhsIdentList.RightNode = rnode;
-
-                if (null == arrayDimension)
-                {
-                    // New SSA expr for the current dot call
-                    string ssatemp = ProtoCore.Utils.CoreUtils.BuildSSATemp(core);
-                    var tmpIdent = nodeBuilder.BuildIdentfier(ssatemp);
-                    BinaryExpressionNode bnode = new BinaryExpressionNode(tmpIdent, rhsIdentList, Operator.assign);
-                    bnode.isSSAPointerAssignment = true;
-                    astlist.Add(bnode);
-                    //ssaStack.Push(tmpIdent);
-                    ssaStack.Push(bnode);
-                }
-                else
-                {
-                    EmitSSAArrayIndex(rhsIdentList, ssaStack, ref astlist, true);
-                }
-#else
                 IdentifierListNode identList = node as IdentifierListNode;
 
                 // Build the rhs identifier list containing the temp pointer
@@ -2482,8 +2344,6 @@ namespace ProtoAssociative
                 {
                     EmitSSAArrayIndex(rhsIdentList, ssaStack, ref astlist, true);
                 }
-
-#endif 
             }
         }
 
@@ -3316,20 +3176,6 @@ namespace ProtoAssociative
                             bnode.RightNode = dotCall;
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
-#if __SSA_IDENT_LIST
-                            //
-                            // Set the real lhs (first pointer) of this dot call
-                            // Do this only if the lhs of the ident list was an identifier
-                            //      A.b -> prev was 'A'. It is an identifier
-                            //      {A}.b -> prev was '{A}'. It is not an identifier
-                            //      A().b -> prev was 'A()'. It is not an identifier
-                            bool wasPreviousNodeAnIdentifier = prevNode is IdentifierNode;
-                            if (wasPreviousNodeAnIdentifier)
-                            {
-                                dotCall.StaticLHSIdent = firstPointer;
-                            }
-                            firstPointer = null;
-#endif
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
                             //      t0 = x      
@@ -6480,52 +6326,6 @@ namespace ProtoAssociative
                 }
             }
 
-            
-#if __SSA_IDENT_LIST
-            if (node is FunctionDotCallNode)
-            {
-                FunctionDotCallNode dotcall = node as FunctionDotCallNode;
-                Validity.Assert(null != dotcall.DotCall);
-                if (null != dotcall.StaticLHSIdent)
-                {
-                    string identName = dotcall.StaticLHSIdent.Name;
-                    string fullClassName;
-                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                    if (isClassName)
-                    {
-                        ProtoCore.DSASM.SymbolNode symbolnode = null;
-                        bool isAccessible = false;
-                        bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                        bool isRHSConstructor = false;
-                        int classIndex = core.ClassTable.IndexOf(identName);
-                        if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        {
-
-                            string functionName = dotcall.FunctionCall.Function.Name;
-                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunctionBy(functionName);
-                            if (null != callNode)
-                            {
-                                isRHSConstructor = callNode.isConstructor;
-                            }
-                        }
-
-                        bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
-                        if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
-                        {
-                            ssaPointerList.Clear();
-
-                            dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
-
-                            staticClass = null;
-                            resolveStatic = false;
-
-                            ssaPointerList.Clear();
-                        }
-                    }
-                }
-            }
-#endif
             ProtoCore.DSASM.ProcedureNode procNode = TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, subPass, parentNode);
 
             emitReplicationGuide = emitReplicationGuideFlag;
@@ -6643,16 +6443,6 @@ namespace ProtoAssociative
                             name = ident.Value;
                         }
 
-#if __SSA_IDENT_LIST
-                        if (core.Options.GenerateSSA)
-                        {
-                            // For SSA'd ident lists, the lhs (class name) is stored in fnode.StaticLHSIdent
-                            if (null != fnode.StaticLHSIdent)
-                            {
-                                name = fnode.StaticLHSIdent.Name;
-                            }
-                        }
-#endif
                         ci = core.ClassTable.IndexOf(name);
                         NodeUtils.SetNodeStartLocation(bnode, fnode.DotCall);
                     }
@@ -8304,10 +8094,7 @@ namespace ProtoAssociative
                                 }
                                 else
                                 {
-#if __SSA_IDENT_LIST
 
-                                    ssaPointerList.Add(dotcall.FunctionCall);
-#else
                                     string className = dotcall.DotCall.FormalArguments[0].Name;
                                     string fullyQualifiedClassName = string.Empty;
                                     bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
@@ -8317,7 +8104,6 @@ namespace ProtoAssociative
                                         // This function is a member function, store the functioncall node
                                         ssaPointerList.Add(dotcall.FunctionCall);
                                     }
-#endif
                                 }
                             }
                             else if (bnode.RightNode is FunctionCallNode)
@@ -8331,65 +8117,6 @@ namespace ProtoAssociative
                                 Validity.Assert(false);
                             }
                         }
-
-                        /*
-                           The following functions on codegen will perform the static call backtracking:
-
-                           string staticClass = null
-                           bool resolveStatic = false
-
-                           proc EmitBinaryExpr(node)
-                               if node.right is identifier
-                                   if node.right is a class
-                                       staticClass = node.right.name
-                                       resolveStatic = true
-                                   end
-                               end	
-                           end
-
-                           proc EmitIdentifierList(node, graphnode)
-                               if resolveStatic
-                                   node.left = new IdentifierNode(staticClass)	
-                               end	
-                           end
-                        */
-
-                        
-#if __SSA_IDENT_LIST
-                        if (bnode.RightNode is IdentifierNode)
-                        {
-                            // This is the first ssa statement of the transformed identifier list call
-                            // The rhs is either a pointer or a classname
-                            string identName = (bnode.RightNode as IdentifierNode).Name;
-                            string fullClassName;
-                            bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                            if (isClassName)
-                            {
-                                ProtoCore.DSASM.SymbolNode symbolnode = null;
-                                bool isAccessible = false;
-                                bool isAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                                // If the identifier is non-allocated then it is a constructor call
-                                if (!isAllocatedVariable)
-                                {
-                                    ssaPointerList.Clear();
-                                    staticClass = identName;
-                                    resolveStatic = true;
-                                    return;
-                                }
-                            }
-                        }
-#endif
-                        //if (bnode.RightNode is FunctionDotCallNode)
-                        //{
-                        //    string identName = (bnode.RightNode as FunctionDotCallNode).FunctionCall.Function.Name;
-                        //    if (core.ClassTable.DoesExist(identName))
-                        //    {
-                        //        ssaPointerList.Clear();
-                        //        staticClass = identName;
-                        //        resolveStatic = true;
-                        //    }
-                        //}
                     }
                     
 
