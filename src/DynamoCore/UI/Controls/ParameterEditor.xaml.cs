@@ -19,24 +19,13 @@ using DynCmd = Dynamo.Models.DynamoModel;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
+    /// Auto-completion control for input parameter.
     /// </summary>
     public partial class ParameterEditor : UserControl
     {
         private NodeViewModel nodeViewModel;
         private DynamoViewModel dynamoViewModel;
-        private Symbol nodeModel = null;
-        private CompletionWindow completionWindow = null;
-
-        internal ParameterEditor(DynamoViewModel dynamoViewModel)
-        {
-            this.dynamoViewModel = dynamoViewModel;
-            InitializeComponent();
-        }
-
-        public ParameterEditor()
-        {
-            InitializeComponent();
-        }
+        private CompletionWindow completionWindow;
 
         public ParameterEditor(NodeViewModel nodeViewModel)
         {
@@ -45,36 +34,29 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
-            this.nodeModel = nodeViewModel.NodeModel as Symbol;
 
-            // Register text editing events
-            this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
-
-            // Register auto-completion callbacks
+            this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
             InitializeSyntaxHighlighter();
         }
 
-        internal IEnumerable<ICompletionData> SearchAllTypes(string stringToComplete, Guid guid)
+        /// <summary>
+        /// Get all types that matched with partial name
+        /// </summary>
+        /// <param name="partialName"></param>
+        /// <returns></returns>
+        private IEnumerable<ICompletionData> GetMatchedTypes(string partialName)
         {
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            return engineController.CodeCompletionServices.SearchTypes(stringToComplete, guid).
-                Select(x => new CodeBlockCompletionData(x));
+            return engineController.CodeCompletionServices
+                                   .SearchTypes(partialName)
+                                   .Select(x => new CodeBlockCompletionData(x));
         }
 
-        internal string GetDescription()
-        {
-            return "";
-        }
-
-        #region Generic Properties
-        internal TextEditor InternalEditor
-        {
-            get { return this.InnerTextEditor; }
-        }
+        #region Properties
 
         public string Parameter
         {
@@ -84,7 +66,7 @@ namespace Dynamo.UI.Controls
             }
             set
             {
-                this.InnerTextEditor.Text = value;
+                InnerTextEditor.Text = value;
             }
         }
         #endregion
@@ -106,11 +88,11 @@ namespace Dynamo.UI.Controls
             var stream = GetType().Assembly.GetManifestResourceStream(
                 "Dynamo.UI.Resources." + Configurations.HighlightingFile);
 
-            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
+            InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
 
             // Highlighting Digits
-            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
+            var rules = InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
 
             rules.Add(CreateClassHighlightRule());
         }
@@ -124,8 +106,7 @@ namespace Dynamo.UI.Controls
                 Foreground = new CustomizedBrush(color)
             };
 
-            var engineController = this.dynamoViewModel.Model.EngineController;
-
+            var engineController = dynamoViewModel.Model.EngineController;
             var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
@@ -135,17 +116,12 @@ namespace Dynamo.UI.Controls
 
         #endregion
 
-        #region Auto-complete event handlers
+        #region Event handlers
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
         {
-            try
+            if (e.Text.Length > 0)
             {
-                if (e.Text.Length == 0)
-                {
-                    return;
-                }
-
                 char currentChar = e.Text[0];
                 if (completionWindow == null)
                 {
@@ -166,40 +142,71 @@ namespace Dynamo.UI.Controls
                     }
                 }
             }
-            catch (System.Exception ex)
-            {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
-                this.dynamoViewModel.Model.Logger.Log(ex.Message);
-                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
-            }
         }
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {
-            try
+            if (InnerTextEditor.Text.Contains(':'))
             {
-                string input = this.InnerTextEditor.Text;
-                bool hasInputType = input.Contains(':');
+                string type = InnerTextEditor.Text.Split(':').Last().Trim();
+                var types = this.GetMatchedTypes(type);
 
-                string type = input.Split(':').Last();
-                type = type.Trim();
-                
-                if (hasInputType)
+                if (types != null && types.Any())
                 {
-                    var types = this.SearchAllTypes(type, nodeModel.GUID);
-                    if (types != null && types.Any())
-                    {
-                        ShowCompletionWindow(types, type.Length);
-                    }
+                    ShowCompletionWindow(types, type.Length);
                 }
             }
-            catch (System.Exception ex)
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnTextAreaLostFocus(object sender, RoutedEventArgs e)
+        {
+            InnerTextEditor.TextArea.ClearSelection();
+
+            nodeViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    nodeViewModel.NodeModel.GUID, "InputSymbol",
+                    InnerTextEditor.Text));
+
+        }
+
+        /// <summary>
+        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
+        /// and sets them when pressed/released
+        /// </summary>        
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
-                this.dynamoViewModel.Model.Logger.Log(ex.Message);
-                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+                if (e.Key == Key.Enter || e.Key == Key.Return)
+                {
+                    dynamoViewModel.ReturnFocusToSearch();
+                }
+            }
+            else if (e.Key == Key.Escape)
+            {
+                if (completionWindow != null)
+                {
+                    completionWindow.Close();
+                    return;
+                }
+
+                var text = this.InnerTextEditor.Text;
+                var input = DataContext as Symbol;
+                if (input == null || input.InputSymbol != null && text.Equals(input.InputSymbol))
+                {
+                    dynamoViewModel.ReturnFocusToSearch();
+                }
+                else
+                {
+                    this.InnerTextEditor.Text = (DataContext as Symbol).InputSymbol;
+                }
             }
         }
+        #endregion
 
         private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, int replaceLength)
         {
@@ -229,74 +236,5 @@ namespace Dynamo.UI.Controls
 
             completionWindow.Show();
         }
-
-        #endregion
-
-        #region Generic Event Handlers
-        /// <summary>
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TextArea_LostFocus(object sender, RoutedEventArgs e)
-        {
-            this.InnerTextEditor.TextArea.ClearSelection();
-            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "InputSymbol", this.InnerTextEditor.Text));
-            
-        }
-        #endregion
-
-        #region Private Helper Methods
-
-        private void OnRequestReturnFocusToSearch()
-        {
-            dynamoViewModel.ReturnFocusToSearch();
-        }
-
-        private void HandleEscape()
-        {
-            if (completionWindow != null)
-            {
-                completionWindow.Close();
-                return;
-            }
-
-            var text = this.InnerTextEditor.Text;
-            var input = DataContext as Symbol;
-            if (input == null || input.InputSymbol != null && text.Equals(input.InputSymbol))
-            {
-                OnRequestReturnFocusToSearch();
-            }
-            else
-            {
-                this.InnerTextEditor.Text = (DataContext as Symbol).InputSymbol;
-            }
-        }
-        #endregion
-
-        #region Key Press Event Handlers
-        /// <summary>
-        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
-        /// and sets them when pressed/released
-        /// </summary>        
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
-            {
-                if (e.Key == Key.Enter || e.Key == Key.Return)
-                {
-                    OnRequestReturnFocusToSearch();
-                }
-            }
-            else if (e.Key == Key.Escape)
-            {
-                HandleEscape();
-            }
-        }
-
-        #endregion
     }
-
-
 }

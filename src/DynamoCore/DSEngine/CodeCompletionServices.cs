@@ -130,9 +130,8 @@ namespace Dynamo.DSEngine.CodeCompletion
         ///  Matches the completion string with classes, including primitive types.
         /// </summary>
         /// <param name="stringToComplete"></param>
-        /// <param name="guid"></param>
         /// <returns></returns>
-        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete, Guid guid)
+        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete)
         {
             List<CompletionData> completions = new List<CompletionData>();
 
