@@ -55,6 +55,7 @@ limitations under the License.
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
@@ -97,6 +98,7 @@ limitations under the License.
     <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
