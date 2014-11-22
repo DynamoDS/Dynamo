@@ -62,6 +62,10 @@ namespace ProtoCore
             return typename + RankString;
         }
 
+        /// <summary>
+        /// To its string representation, but using unqualified class class name.
+        /// </summary>
+        /// <returns></returns>
         public string ToShortString()
         {
             if (!string.IsNullOrEmpty(Name) && Name.Contains("."))

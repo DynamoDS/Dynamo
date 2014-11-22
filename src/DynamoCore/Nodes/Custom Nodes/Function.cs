@@ -438,13 +438,13 @@ namespace Dynamo.Nodes
         {
             identifier = null;
             defaultValue = null;
+
             // workaround: there is an issue in parsing "x:int" format unless 
             // we create the other parser specially for it. We change it to 
             // "x:int = dummy;" for parsing. 
-
             var parseString = InputSymbol;
 
-            // default value
+            // if it has default value, then append ';'
             if (InputSymbol.Contains("="))
             {
                 parseString += ";";

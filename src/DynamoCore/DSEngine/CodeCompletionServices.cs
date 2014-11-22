@@ -133,26 +133,25 @@ namespace Dynamo.DSEngine.CodeCompletion
         /// <returns></returns>
         internal IEnumerable<CompletionData> SearchTypes(string stringToComplete)
         {
-            List<CompletionData> completions = new List<CompletionData>();
+            var completions = new List<CompletionData>();
+            var partialName = stringToComplete.ToLower();
 
             // Add matching Classes
-            var groups = StaticMirror.GetAllTypes(core)
-                                     .Where(x => x.Alias.ToLower().StartsWith(stringToComplete.ToLower()))
-                                     .GroupBy(x => x.Alias);
+            var classMirrorGroups = 
+                    StaticMirror.GetAllTypes(core)
+                                .Where(x => !x.IsHiddenInLibrary && x.Alias.ToLower().StartsWith(partialName))
+                                .GroupBy(x => x.Alias);
 
-            // For those class names that have collisions, list their fully qualified names in completion window
-            foreach (var group in groups)
+            // For those class names that have collisions (same alias), list 
+            // their fully qualified names in completion window.
+            foreach (var classMirrorGroup in classMirrorGroups)
             {
-                if (group.Count() > 1)
+                bool useFullyQualifiedName = classMirrorGroup.Count() > 1;
+                foreach (var classMirror in classMirrorGroup)
                 {
-                    completions.AddRange(group.
-                        Where(x => !x.IsHiddenInLibrary).
-                        Select(x => CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true)));
+                    var completionData = CompletionData.ConvertMirrorToCompletionData(classMirror, useFullyQualifiedName);
+                    completions.Add(completionData);
                 }
-                else
-                    completions.AddRange(group.
-                        Where(x => !x.IsHiddenInLibrary).
-                        Select(x => CompletionData.ConvertMirrorToCompletionData(x)));
             }
 
             return completions;
