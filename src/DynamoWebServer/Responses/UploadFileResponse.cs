@@ -8,6 +8,12 @@ namespace DynamoWebServer.Responses
 {
     public class UploadFileResponse:Response
     {
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; private set; }
+
+        public UploadFileResponse(ResponceStatuses status, string message)
+            : base(status)
+        {
+            StatusMessage = message;
+        }
     }
 }
