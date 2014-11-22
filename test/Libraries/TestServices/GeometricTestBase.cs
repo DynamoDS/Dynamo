@@ -17,7 +17,7 @@ namespace TestServices
         TestExecutionSession session = new TestExecutionSession();
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             AssemblyResolver.Setup();
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
