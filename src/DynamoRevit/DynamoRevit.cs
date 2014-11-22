@@ -54,11 +54,24 @@ namespace RevitServices.Threading
             set { idle = value; }
         }
 
-        public static void ExecuteOnIdleAsync(Action p)
+        /// <summary>
+        /// Call this method to schedule a DelegateBasedAsyncTask for execution.
+        /// </summary>
+        /// <param name="p">The delegate to execute on the idle thread.</param>
+        /// <param name="completionHandler">Event handler that will be invoked 
+        /// when the scheduled DelegateBasedAsyncTask is completed. This parameter
+        /// is optional.</param>
+        /// 
+        internal static void ExecuteOnIdleAsync(Action p,
+            AsyncTaskCompletedHandler completionHandler = null)
         {
             var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler);
+
             task.Initialize(p);
+            if (completionHandler != null)
+                task.Completed += completionHandler;
+
             scheduler.ScheduleForExecution(task);
         }
     }
@@ -396,9 +409,6 @@ namespace Dynamo.Applications
             finally
             {
                 args.Handled = true;
-
-                // KILLDYNSETTINGS - this is suspect
-                revitDynamoModel.Logger.Dispose();
                 DynamoRevitApp.DynamoButton.Enabled = true;
             }
         }

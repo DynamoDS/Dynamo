@@ -590,11 +590,25 @@ namespace ProtoFFI
             object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
-            if (method != null && getterAttributes != null)
+            if (method != null)
             {
-                Attribute[] propAtts = null;
-                if(getterAttributes.TryGetValue(method, out propAtts))
-                    atts = propAtts;
+                // Skip importing methods that have out and ref parameters
+                // as these are not supported currently: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5460
+                ParameterInfo[] parameters = method.GetParameters();
+                foreach (var parameter in parameters)
+                {
+                    if (parameter.ParameterType.IsByRef == true)
+                        return true;
+                }
+
+                // If method is a getter accessor belonging to a property
+                // retrieve its attributes from its corresponding property
+                if(getterAttributes != null)
+                {
+                    Attribute[] propAtts = null;
+                    if(getterAttributes.TryGetValue(method, out propAtts))
+                        atts = propAtts;
+                }
             }
 
             foreach (var item in atts)
@@ -1215,6 +1229,13 @@ namespace ProtoFFI
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
             }
         }
     }
@@ -1237,30 +1258,29 @@ namespace ProtoFFI
 
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
+            if (method == null)
+                throw new ArgumentNullException("method");
+
+            FFIClassAttributes baseAttributes = null;
+            Type type = method.DeclaringType;
+            if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
+            {
+                baseAttributes = new FFIClassAttributes(type);
+                CLRModuleType.SetTypeAttributes(type, baseAttributes);
+            }
+
+            if (null != baseAttributes)
+            {
+                HiddenInLibrary = baseAttributes.HiddenInLibrary;
+            }
+
             Attribute[] atts = null;
             if (getterAttributes.TryGetValue(method, out atts))
             {
                 attributes = atts;
             }
             else
-            {
-
-                if (method == null)
-                    throw new ArgumentNullException("method");
-
-                FFIClassAttributes baseAttributes = null;
-                Type type = method.DeclaringType;
-                if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
-                {
-                    baseAttributes = new FFIClassAttributes(type);
-                    CLRModuleType.SetTypeAttributes(type, baseAttributes);
-                }
-
-                if (null != baseAttributes)
-                {
-                    HiddenInLibrary = baseAttributes.HiddenInLibrary;
-                }
-
+            {   
                 attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             }
             
@@ -1283,6 +1303,13 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
+                }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
                 }
             }
         }

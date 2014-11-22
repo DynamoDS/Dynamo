@@ -374,6 +374,7 @@ namespace Dynamo.ViewModels
                             var nodeViewModel = new NodeViewModel(this, node);
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
+                            nodeViewModel.UpdateBubbleContent();
                         }
                     }
                     break;

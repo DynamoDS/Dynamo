@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Runtime;
+﻿using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
 using Revit.Elements.Views;
 using View3D = Revit.Elements.Views.View3D;
 
@@ -15,7 +9,8 @@ namespace Revit.Elements
     /// Element wrapper supplies tools for wrapping Autodesk.Revit.DB.Element types
     /// in their associated Revit.Elements.Element wrapper
     /// </summary>
-    internal static class ElementWrapper
+    [SupressImportIntoVM]
+    public static class ElementWrapper
     {
         /// <summary>
         /// If possible, wrap the element in a DS type

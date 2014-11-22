@@ -41,7 +41,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -73,16 +72,6 @@
     <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreNodesUI\CoreNodesUI.csproj">
-      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

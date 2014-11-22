@@ -305,6 +305,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
             ErrorBubble = new InfoBubbleViewModel(this.DynamoViewModel);
+            UpdateBubbleContent();
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -458,7 +459,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UpdateBubbleContent()
+        public void UpdateBubbleContent()
         {
             if (ErrorBubble == null || DynamoViewModel == null)
                 return;
@@ -536,18 +537,11 @@ namespace Dynamo.ViewModels
         }
 
         private void SetLacingType(object param)
-        {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
-
-            LacingStrategy strategy = LacingStrategy.Disabled;
-            if (!Enum.TryParse(param.ToString(), out strategy))
-                strategy = LacingStrategy.Disabled;
-
-            NodeLogic.ArgumentLacing = strategy;
-
-            RaisePropertyChanged("ArgumentLacing");
+        {           
+            this.DynamoViewModel.ExecuteCommand(
+              new DynamoModel.UpdateModelValueCommand(
+                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
+          
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
