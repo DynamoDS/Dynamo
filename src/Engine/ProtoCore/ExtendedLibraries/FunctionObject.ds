@@ -594,3 +594,15 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
         }
     };
 }
+
+def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (__Apply(continueWhile, init))
+		{
+			init = __Apply(loopBody, init);
+		}
+		return = init;
+	};
+}
