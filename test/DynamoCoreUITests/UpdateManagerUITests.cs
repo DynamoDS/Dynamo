@@ -5,6 +5,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
+using SystemTestServices;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
@@ -20,7 +22,7 @@ using Moq;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class UpdateManagerUITests : DynamoTestUIBase
+    public class UpdateManagerUITests : SystemTestBase
     {
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
@@ -73,7 +75,7 @@ namespace DynamoCoreUITests
         }
 
         [SetUp]
-        public override void Start()
+        public override void Setup()
         {
             //override this to avoid the typical startup behavior
         }

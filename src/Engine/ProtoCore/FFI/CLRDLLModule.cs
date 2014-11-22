@@ -590,11 +590,25 @@ namespace ProtoFFI
             object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
-            if (method != null && getterAttributes != null)
+            if (method != null)
             {
-                Attribute[] propAtts = null;
-                if(getterAttributes.TryGetValue(method, out propAtts))
-                    atts = propAtts;
+                // Skip importing methods that have out and ref parameters
+                // as these are not supported currently: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5460
+                ParameterInfo[] parameters = method.GetParameters();
+                foreach (var parameter in parameters)
+                {
+                    if (parameter.ParameterType.IsByRef == true)
+                        return true;
+                }
+
+                // If method is a getter accessor belonging to a property
+                // retrieve its attributes from its corresponding property
+                if(getterAttributes != null)
+                {
+                    Attribute[] propAtts = null;
+                    if(getterAttributes.TryGetValue(method, out propAtts))
+                        atts = propAtts;
+                }
             }
 
             foreach (var item in atts)

@@ -191,6 +191,9 @@ COMPILER DesignScriptParser
 		if (core.ParsingMode != ParseMode.AllowNonAssignment)
             return false;
 
+		if (IsTypedVariable())
+            return false;
+
         Token pt = la;
         while (pt.kind != _EOF)
         {

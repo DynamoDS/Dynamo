@@ -77,6 +77,11 @@ namespace DSCoreNodesUI.Logic
             return portIndex == 1 || portIndex == 2;
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return AstIdentifierForPreview;
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
         {
             // This function will compile IF node to the following format:
@@ -139,6 +144,7 @@ namespace DSCoreNodesUI.Logic
                     Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode> { ifelseStatement }
                 }
             };
+
             var thisVariable = GetAstIdentifierForOutputIndex(0);
             var assignment = AstFactory.BuildAssignment(thisVariable, outerBlock);
 
