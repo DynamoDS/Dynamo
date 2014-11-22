@@ -275,22 +275,40 @@ namespace Dynamo.Utilities
                         inConnectors.Add(Tuple.Create(inputNode, inputData));
 
                         node = newNodeWorkspace.AddNode<Symbol>();
-
                         node.InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName;
 
-                        var dsFunctionNode = inputReceiverNode as DSFunctionBase;
-                        if (dsFunctionNode != null)
+                        // Try to figure out the type of input of custom node 
+                        // from the type of input of selected node. There are
+                        // two kinds of nodes whose input type are available:
+                        // function node and custom node. In the long term, we
+                        // may add type information to all nodes. 
+                        var functionCallNode = inputReceiverNode as FunctionCallBase;
+                        if (functionCallNode != null)
                         {
-                            var definition = dsFunctionNode.Controller.Definition;
-                            var parameters = definition.Parameters.ToList();
+                            var paramTypes = new List<string>(); 
+                            var controller = functionCallNode.Controller;
 
-                            if (inputReceiverData < parameters.Count())
+                            if (controller is CustomNodeController)
                             {
-                                var parameter = parameters[inputReceiverData];
+                                var customController = controller as CustomNodeController;
+                                var definition = customController.Definition;
+                                paramTypes = definition.Parameters.Select(p => p.Type.ToShortString()).ToList();
+                            }
+                            else if (controller is ZeroTouchNodeController)
+                            {
+                                var zeroTouchController = controller as ZeroTouchNodeController;
+                                var definition = zeroTouchController.Definition;
+                                paramTypes = definition.Parameters.Select(p => p.DisplayTypeName).ToList();
+                            }
 
-                                if (!String.IsNullOrEmpty(parameter.DisplayTypeName))
+                            // so the input of custom node has format 
+                            //    input_var_name : type
+                            if (paramTypes.Count() > inputReceiverData)
+                            {
+                                var typeName = paramTypes[inputReceiverData];
+                                if (!string.IsNullOrEmpty(typeName))
                                 {
-                                    node.InputSymbol += ": " + parameter.DisplayTypeName;
+                                    node.InputSymbol += " : " + typeName;
                                 }
                             }
                         }
