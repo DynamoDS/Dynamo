@@ -80,6 +80,7 @@ namespace DynamoWebServer.Messages
                 topNode = xmlDoc.GetElementsByTagName("dynWorkspace");
             }
 
+            bool hasID = false;
             // find workspace name
             foreach (XmlNode node in topNode)
             {
@@ -88,10 +89,11 @@ namespace DynamoWebServer.Messages
                     if (att.Name.Equals("Name"))
                         name = att.Value;
                     else if (att.Name.Equals("ID"))
-                        IsCustomNode = !string.IsNullOrEmpty(att.Value);
+                        hasID = !string.IsNullOrEmpty(att.Value);
                 }
             }
 
+            IsCustomNode = hasID || name != "Home";
             if (!IsCustomNode)
                 return "Home.dyn";
             else
