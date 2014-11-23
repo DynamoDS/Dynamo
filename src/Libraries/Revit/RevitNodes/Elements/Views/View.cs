@@ -27,15 +27,20 @@ namespace Revit.Elements.Views
         /// Export the view as an image to the given path - defaults to png, but you can override 
         /// the file type but supplying a path with the appropriate extension
         /// </summary>
-        /// <param name="fullPath">A valid path for the image</param>
+        /// <param name="path">A valid path for the image</param>
         /// <returns>The image</returns>
-        public Bitmap ExportAsImage(string fullPath)
+        public Bitmap ExportAsImage(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(Resource1.View_ExportAsImage_Path_Invalid, "path");
+            }
+
             var fileType = ImageFileType.PNG;
             string extension = ".png";
-            if (Path.HasExtension(fullPath))
+            if (Path.HasExtension(path))
             {
-                extension = Path.GetExtension(fullPath);
+                extension = Path.GetExtension(path);
                 switch (extension.ToLower())
                 {
                     case ".jpg":
@@ -59,7 +64,7 @@ namespace Revit.Elements.Views
             var options = new ImageExportOptions
             {
                 ExportRange = ExportRange.SetOfViews,
-                FilePath = fullPath,
+                FilePath = path,
                 FitDirection = FitDirectionType.Horizontal,
                 HLRandWFViewsFileType = fileType,
                 ImageResolution = ImageResolution.DPI_150,
@@ -75,8 +80,8 @@ namespace Revit.Elements.Views
             Document.ExportImage(options);
 
             var pathName = Path.Combine(
-                            Path.GetDirectoryName(fullPath),
-                            Path.GetFileNameWithoutExtension(fullPath));
+                            Path.GetDirectoryName(path),
+                            Path.GetFileNameWithoutExtension(path));
 
             // Revit outputs file with a bunch of crap in the file name, let's construct that
             var actualFn = string.Format("{0} - {1} - {2}{3}", pathName, ViewTypeString(InternalView.ViewType),
