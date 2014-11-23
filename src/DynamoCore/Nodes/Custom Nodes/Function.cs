@@ -349,8 +349,13 @@ namespace Dynamo.Nodes
                 {
                     this.Warning(InvalidFormat);
                 }
-                else if (substrings.Count() >= 1 && !string.IsNullOrEmpty(substrings[0]))
+                else if (!string.IsNullOrEmpty(nickName) &&
+                         (substrings.Count() == 2 || InputSymbol.Contains("=")))
                 {
+                    // three cases:
+                    //    x = default_value
+                    //    x : type
+                    //    x : type = default_value
                     IdentifierNode identifierNode = new IdentifierNode();
                     AssociativeNode defaultValueNode = null;
 
