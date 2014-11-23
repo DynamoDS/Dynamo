@@ -15,7 +15,7 @@
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="012fb834-8bdf-48a4-a6ff-ce6f875c1d3f" nickname="Code Block" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{0,1};" ShouldFocus="false" />
     <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7ae20dec-8913-4051-8d0c-c71243100a20" nickname="LastItemLessThan" x="185.649244154549" y="126.78714099216" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="bd92d09f-2cad-4b2a-aacc-9b3d4f777f1e" />
-      <Name value="LastItemLessThan" />
+      <Name value="CountLessThan" />
       <Description value="" />
       <Inputs>
         <Input value="lessThan" />
