@@ -47,7 +47,7 @@ namespace RevitSystemTests
         }
 
         [Test, TestModel(@".\Empty.rvt")]
-        public void ExportImage()
+        public void ExportAsImage()
         {
             string samplePath = Path.Combine(workingDirectory, @".\View\ExportImage.dyn");
             string testPath = Path.GetFullPath(samplePath);
