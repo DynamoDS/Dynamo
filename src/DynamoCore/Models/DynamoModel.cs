@@ -104,6 +104,7 @@ namespace Dynamo.Models
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
         private Visibility processingImageVisible = Visibility.Hidden;
+        private Visibility runButtonContentVisible = Visibility.Visible;
         #endregion
 
         #region Static properties
@@ -257,6 +258,16 @@ namespace Dynamo.Models
             {
                 processingImageVisible = value;
                 RaisePropertyChanged("ProcessingImageEnabled");
+            }
+        }
+
+        public Visibility RunButtonContentVisible
+        {
+            get { return runButtonContentVisible; }
+            set
+            {
+                runButtonContentVisible = value;
+                RaisePropertyChanged("RunButtonContentVisible");
             }
         }
 
@@ -561,7 +572,8 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, HomeSpace))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunEnabled = false; // Disable 'Run' button.
+                RunButtonContentVisible = Visibility.Collapsed;
+                RunEnabled = false; // Disable 'Run' button.               
                 ProcessingImageEnabled = Visibility.Visible;
                 scheduler.ScheduleForExecution(task);
             }
@@ -632,7 +644,7 @@ namespace Dynamo.Models
             }
 
             // Notify listeners (optional) of completion.
-            RunEnabled = true; // Re-enable 'Run' button.
+            //RunEnabled = true; // Re-enable 'Run' button.
            // ProcessingImageEnabled = Visibility.Hidden;
             
             // Notify handlers that evaluation took place.

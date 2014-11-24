@@ -81,6 +81,15 @@ namespace Dynamo.ViewModels
             set { model.ProcessingImageEnabled = value; }
         }
 
+        public Visibility RunButtonContentVisible
+        {
+            get { return model.RunButtonContentVisible; }
+            set
+            {
+                model.RunButtonContentVisible = value;               
+            }
+        }
+
         public virtual bool CanRunDynamically
         {
             get

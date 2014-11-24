@@ -15,39 +15,39 @@
             <Ellipse x:Name="C0" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="1.0"/>
+                     Fill="#A1DBFF" Opacity="1.0"/>
             <Ellipse x:Name="C1" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.9"/>
+                     Fill="#A1DBFF" Opacity="0.9"/>
             <Ellipse x:Name="C2" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.8"/>
+                     Fill="#A1DBFF" Opacity="0.8"/>
             <Ellipse x:Name="C3" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.7"/>
+                     Fill="#A1DBFF" Opacity="0.7"/>
             <Ellipse x:Name="C4" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.6"/>
+                     Fill="#A1DBFF" Opacity="0.6"/>
             <Ellipse x:Name="C5" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.5"/>
+                     Fill="#A1DBFF" Opacity="0.5"/>
             <Ellipse x:Name="C6" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.4"/>
+                     Fill="#A1DBFF" Opacity="0.4"/>
             <Ellipse x:Name="C7" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.3"/>
+                     Fill="#A1DBFF" Opacity="0.3"/>
             <Ellipse x:Name="C8" Width="20" Height="20"
                      Canvas.Left="0"
                      Canvas.Top="0" Stretch="Fill"
-                     Fill="Red" Opacity="0.2"/>
+                     Fill="#A1DBFF" Opacity="0.2"/>
             <Canvas.RenderTransform>
                 <RotateTransform x:Name="SpinnerRotate"
                      Angle="0" />
