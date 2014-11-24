@@ -1,10 +1,12 @@
 ﻿using System;
 
+using Autodesk.DesignScript.Geometry;
+
 using NUnit.Framework;
 
 using TestServices;
 
-namespace SampleLibraryZeroTouch
+namespace SampleLibraryTests
 {
     // --------------------------------------------------
     // NOTES ON GEOMETRY TESTING:
@@ -38,23 +40,18 @@ namespace SampleLibraryZeroTouch
     class HelloDynamoZeroTouchTests : GeometricTestBase
     {
         [Test]
-        public void ConstructHelloDynamoZeroTouchObject_DefaultArgs()
+        public void PassingTest()
         {
-            var myObject = HelloDynamoZeroTouch.ByCoordinates();
+            var myObject = Point.ByCoordinates(5, 5, 5);
             Assert.NotNull(myObject);
         }
 
         [Test]
-        public void ConstructHelloDynamoZeroTouchObject_ValidArgs()
+        public void FailingTest()
         {
-            var myObject = HelloDynamoZeroTouch.ByCoordinates(5, 5, 5);
-            Assert.NotNull(myObject);
-        }
-
-        [Test]
-        public void ConstructHelloDynamoZeroTouchObject_BadArgs()
-        {
-            Assert.Throws<ArgumentException>(()=>HelloDynamoZeroTouch.ByCoordinates(-5, -5, -5));
+            var p1 = Point.ByCoordinates(0, 0, 0);
+            var p2 = Point.ByCoordinates(0, 0, 0);
+            Assert.Throws<ApplicationException>(()=>Line.ByStartPointEndPoint(p1,p2));
         }
     }
 }

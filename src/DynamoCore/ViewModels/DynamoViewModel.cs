@@ -1946,14 +1946,14 @@ namespace Dynamo.ViewModels
         /// It exposes several properties to control the way shutdown process goes.
         /// </summary>
         /// 
-        internal struct ShutdownParams
+        public struct ShutdownParams
         {
-            internal ShutdownParams(
+            public ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation)
                 : this(shutdownHost, allowCancellation, true) { }
 
-            internal ShutdownParams(
+            public ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation,
                 bool closeDynamoView) : this()
@@ -1999,7 +1999,7 @@ namespace Dynamo.ViewModels
         /// otherwise (i.e. when user chooses not to proceed with shutting down 
         /// Dynamo).</returns>
         /// 
-        internal bool PerformShutdownSequence(ShutdownParams shutdownParams)
+        public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
             if (shutdownSequenceInitiated)
             {

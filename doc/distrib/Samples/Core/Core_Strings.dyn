@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.40046" X="1799.44315343568" Y="1397.29698964757" zoom="0.338593165897733" Description="" Category="" Name="Home">
+<Workspace Version="0.7.5.3233" X="6456.57617371657" Y="4082.06275200997" zoom="1.33410334333159" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0ee345d4-329b-4586-8cb7-ae60bf8b9584" nickname="Code Block" x="-5134.65638540748" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Few things are harder to put up with than a good example.&quot;;" ShouldFocus="false" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d78216bf-d28d-4b15-b605-0b6a66f603c9" nickname="String.Contains" x="-3483.7063016736" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Contains@string,string,bool">
@@ -9,7 +9,6 @@
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9d13d66a-ab7a-478c-b773-36bf75e139de" nickname="String.Replace" x="-3720.82916115738" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Replace@string,string,string" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f6075d25-ce19-4b67-88bb-5136e24d7a9d" nickname="String.ToUpper" x="-4812.83579587146" y="-3369.66465642126" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.ToUpper@string" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="adc04e4b-242a-4c53-8f93-0388a433f0de" nickname="String.FromObject" x="-4740.47033888281" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="782c9962-8376-4ae4-a632-a0d79d4f59f9" nickname="Circle.ByCenterPointRadius" x="-4964.25388096853" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
@@ -21,7 +20,7 @@
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="096da02f-e07d-4398-be38-ee2da441c907" nickname="Code Block" x="-5080.84922679333" y="-2565.90783040916" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="ecef7d27-2400-4cdc-b505-874084b033e1" nickname="Watch" x="-4574.31286903702" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e2d50800-150e-42a0-a29b-d346924592a3" nickname="Watch" x="-3892.40947525866" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="d6f44def-a992-41a5-9c3c-05c8f8244a83" nickname="String.Split" x="-4097.133358656" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="6" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="d6f44def-a992-41a5-9c3c-05c8f8244a83" nickname="String.Split" x="-4097.133358656" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="6" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="600f854f-c01f-4e11-8974-5962b8503672" nickname="Code Block" x="-4229.36683254676" y="-2589.76160226801" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;(&quot;;&#xA;&quot;)&quot;;&#xA;&quot; &quot;;&#xA;&quot;=&quot;;&#xA;&quot;,&quot;;" ShouldFocus="false" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f110be86-666d-4301-9647-5d4c8ad9249d" nickname="Watch" x="-3275.93411204151" y="-2667.5309118881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="2c2e8bd1-e19d-4cbf-a934-a864aa469874" nickname="Code Block" x="-3627.23708503953" y="-2574.58733626818" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;.&quot;;" ShouldFocus="false" />
@@ -35,7 +34,7 @@
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6e31c451-ea7e-41bf-8d2a-789205f6a423" nickname="Watch" x="-2818.71244684341" y="-3196.01038891092" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="bf4a5bc6-4f08-402f-b5fd-0c013cdc194d" nickname="Code Block" x="-3873.25920382601" y="-3410.00643746656" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;come&quot;;" ShouldFocus="false" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="5588405b-6ca1-4e23-bb57-ef0d51bf93b1" nickname="Watch" x="-4661.01462841052" y="-3370.75178196514" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="1be63e27-bd8e-4742-b962-7d8e12737cd3" nickname="String.Concat" x="-4464.60355584005" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="1be63e27-bd8e-4742-b962-7d8e12737cd3" nickname="String.Concat" x="-4464.60355584005" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" inputcount="2" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e4546396-7391-4df0-809b-f24c18aeb866" nickname="Watch" x="-4279.61102777674" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="eca983a7-09d3-43a0-95d6-f4624911314f" nickname="Code Block" x="-3128.63378192595" y="-3120.04017780848" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot; to&quot;;" ShouldFocus="false" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6a34a52a-a23f-4962-bb0a-971ffd5cd6be" nickname="String.Remove" x="-2485.87143613582" y="-3564.04641883213" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Remove@string,int,int" />
@@ -46,6 +45,7 @@
     <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="ab4ceae0-0793-416e-830e-41aa52c0d1df" nickname="String" x="-4984.86504280042" y="-3364.26883924974" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value=" - Mark Twain" />
     </Dynamo.Nodes.StringInput>
+    <DSCoreNodesUI.StringNodes.FromObject type="DSCoreNodesUI.StringNodes.FromObject" guid="0ae80375-b5e3-4e54-bfc1-93fb0952f941" nickname="String from Object" x="-4741.75148399836" y="-2667.68920423772" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="0ee345d4-329b-4586-8cb7-ae60bf8b9584" start_index="0" end="1be63e27-bd8e-4742-b962-7d8e12737cd3" end_index="0" portType="0" />
@@ -53,8 +53,7 @@
     <Dynamo.Models.ConnectorModel start="a93dc4ad-9f2a-4158-b994-363ce737a070" start_index="0" end="3acfa219-01dc-4505-94c3-e7dfe125c591" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="9d13d66a-ab7a-478c-b773-36bf75e139de" start_index="0" end="03252d85-f7d0-423d-9e36-8fe4208a0210" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="f6075d25-ce19-4b67-88bb-5136e24d7a9d" start_index="0" end="5588405b-6ca1-4e23-bb57-ef0d51bf93b1" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="adc04e4b-242a-4c53-8f93-0388a433f0de" start_index="0" end="ecef7d27-2400-4cdc-b505-874084b033e1" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="782c9962-8376-4ae4-a632-a0d79d4f59f9" start_index="0" end="adc04e4b-242a-4c53-8f93-0388a433f0de" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="782c9962-8376-4ae4-a632-a0d79d4f59f9" start_index="0" end="0ae80375-b5e3-4e54-bfc1-93fb0952f941" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="67b47d9a-ecff-4142-b59d-ee4b2ff9315d" start_index="0" end="782c9962-8376-4ae4-a632-a0d79d4f59f9" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="096da02f-e07d-4398-be38-ee2da441c907" start_index="0" end="782c9962-8376-4ae4-a632-a0d79d4f59f9" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="ecef7d27-2400-4cdc-b505-874084b033e1" start_index="0" end="d6f44def-a992-41a5-9c3c-05c8f8244a83" end_index="0" portType="0" />
@@ -85,6 +84,7 @@
     <Dynamo.Models.ConnectorModel start="15feece7-b122-4514-a00e-f031136e336f" start_index="0" end="6a34a52a-a23f-4962-bb0a-971ffd5cd6be" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="28b87b8c-b25a-4f4e-8954-e2452bb0588f" start_index="0" end="a93dc4ad-9f2a-4158-b994-363ce737a070" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="ab4ceae0-0793-416e-830e-41aa52c0d1df" start_index="0" end="f6075d25-ce19-4b67-88bb-5136e24d7a9d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0ae80375-b5e3-4e54-bfc1-93fb0952f941" start_index="0" end="ecef7d27-2400-4cdc-b505-874084b033e1" end_index="0" portType="0" />
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Convert an object to a string decription of itself." x="-4793.96442835757" y="-2718.84427428101" />

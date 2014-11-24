@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using SystemTestServices;
+
 using DSCoreNodesUI;
 
 using Dynamo.Nodes;
@@ -8,7 +10,7 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class DropDownTests : DynamoTestUIBase
+    public class DropDownTests : SystemTestBase
     {
         [Test]
         public void Save_NothingSelected()
