@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
@@ -168,10 +168,10 @@
 	  <HintPath>$(DYNAMOTESTAPI)\SystemTestServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="TestServices">
+    <Reference Include="TestServices">
       <HintPath>$(DYNAMOTESTAPI)\TestServices.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
+    </Reference>
     <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
       <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
       <Name>RevitNodesTests</Name>
