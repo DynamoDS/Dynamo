@@ -197,6 +197,7 @@ namespace DynamoCoreUITests
         }
 
         // TODO(Peter) Watch tests
+        // TODO(Peter) CustomNode tests
         // TODO(Peter) WatchImage tests
     }
 }
