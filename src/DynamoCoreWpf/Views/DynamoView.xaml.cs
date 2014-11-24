@@ -540,7 +540,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                var control = WpfUtilities.FindChild<DragCanvas>(this, null);
+                var control = WpfUtilities.ChildOfType<DragCanvas>(this, null);
 
                 double width = 1;
                 double height = 1;

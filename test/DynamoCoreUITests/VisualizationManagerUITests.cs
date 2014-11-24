@@ -7,29 +7,11 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.Views;
+using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
 {
-    public static class UIExtensions
-    {
-        public static IEnumerable<dynNodeView> OfNodeModelType<T>(this IEnumerable<dynNodeView> nodeViews) where T : NodeModel
-        {
-            return nodeViews.Where(x => x.ViewModel.NodeModel as T != null);
-        }
-
-        public static IEnumerable<dynNodeView> ChildNodeViews(this dynWorkspaceView nodeViews)
-        {
-            return nodeViews.ChildrenOfType<dynNodeView>();
-        }
-
-        public static IEnumerable<dynNodeView> NodeViewsFromFirstWorkspace(this DynamoView dynamoView)
-        {
-            return dynamoView.WorkspaceTabs.ChildrenOfType<dynWorkspaceView>().First().ChildNodeViews();
-        }
-    }
-
     [TestFixture]
     public class VisualizationManagerUITests : DynamoTestUIBase
     {
@@ -177,10 +159,7 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-            var watch3D =
-                model.Nodes.First(x => x.GUID.ToString() == "eb39be19-caad-41f7-ac76-aa6c908a4e96") as Watch3D;
-
-            var nodeViews = View.NodeViewsFromFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
+            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
             
             Assert.AreEqual(1, nodeViews.Count());
 
