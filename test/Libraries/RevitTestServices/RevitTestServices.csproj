@@ -92,12 +92,8 @@
       <HintPath>$(DYNAMOAPI)\nodes\DSCoreNodesUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DynamoUnits">
+    <Reference Include="Units">
       <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
-    <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
-      <Private>False</Private>
     </Reference>
     <ProjectReference Include="$(SolutionDir)Libraries\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
@@ -112,16 +108,14 @@
       <HintPath>$(DYNAMOTESTAPI)\DynamoCoreTests.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="..\..\SystemTestServices\SystemTestServices.csproj">
-      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
-      <Name>SystemTestServices</Name>
+    <Reference Include="SystemTestServices">
+      <HintPath>$(DYNAMOTESTAPI)\SystemTestServices.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
+    </Reference>
+    <Reference Include="TestServices">
+      <HintPath>$(DYNAMOTESTAPI)\TestServices.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

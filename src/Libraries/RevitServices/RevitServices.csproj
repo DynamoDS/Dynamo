@@ -49,7 +49,8 @@ limitations under the License.
   <ItemGroup>
 	<Reference Include="Microsoft.Practices.Prism">
       <HintPath>$(DYNAMOAPI)\Microsoft.Practices.Prism.dll</HintPath>
-    <Reference Include="Microsoft.Practices.Prism">
+    </Reference>
+	<Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -71,7 +72,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
@@ -91,16 +92,6 @@ limitations under the License.
     </Reference>
     <Reference Include="DSNodeServices">
       <HintPath>$(DYNAMOAPI)\ProtoCore.dll</HintPath>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
-      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
-      <Name>NodeServices</Name>
-      <Private>False</Private>
     </Reference>
     <Reference Include="DSNodeServices">
       <HintPath>$(DYNAMOAPI)\DSNodeServices.dll</HintPath>
