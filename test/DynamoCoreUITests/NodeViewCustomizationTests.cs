@@ -22,12 +22,12 @@ namespace DynamoCoreUITests
     {
         public dynNodeView NodeViewOf<T>() where T : NodeModel
         {
-            var nodeViews0 = View.NodeViewsInFirstWorkspace();
+            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<T>();
 
-            var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
-
-            var nodeViews = nodeViews0.OfNodeModelType<T>();
             Assert.AreEqual(1, nodeViews.Count(), "Expected a single NodeView of provided type in the workspace!");
+
+            //var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
+            //var nodeViews = nodeViews0;
 
             return nodeViews.First();
         }
