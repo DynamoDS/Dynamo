@@ -5403,6 +5403,88 @@ v = foo(t);
             AssertValue("v", 120);
         }
 
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution11()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+
+    f = 60;
+"
+,
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+",
+
+@"
+    f = 60;
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
+            // Modify the CBN to remove the last line
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+
+            // Create a new CBN to add the removed line
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, added, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
+        }
+
         [Test]
         public void RegressMagn4659()
         {
