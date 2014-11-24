@@ -329,6 +329,8 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            InputSymbol = "";
         }
 
         public string InputSymbol
