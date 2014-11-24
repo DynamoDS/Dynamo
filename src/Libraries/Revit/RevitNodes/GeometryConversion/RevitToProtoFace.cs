@@ -37,10 +37,18 @@ namespace Revit.GeometryConversion
                 // convert the underrlying surface
                 var dyFace = (dynamic)revitFace;
                 Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
-                if (untrimmedSrf == null) throw new Exception("Failed to extract surface");
+                if (untrimmedSrf == null)
+                {
+                    edgeLoops.ForEach(x => x.Dispose());
+                    edgeLoops.Clear();
+                    throw new Exception("Failed to extract surface");
+                }
 
                 // trim the surface
                 Surface converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+                edgeLoops.ForEach(x => x.Dispose());
+                edgeLoops.Clear();
+                untrimmedSrf.Dispose();
 
                 // perform unit conversion if necessary
                 converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
@@ -58,10 +66,15 @@ namespace Revit.GeometryConversion
         private static List<PolyCurve> EdgeLoopsAsPolyCurves(Face face, 
             IEnumerable<IEnumerable<Edge>> edgeLoops)
         {
-            return edgeLoops
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)))
-                .Select(PolyCurve.ByJoinedCurves)
-                .ToList();
+            var curveLoops = edgeLoops
+                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)));
+            var result = curveLoops.Select(PolyCurve.ByJoinedCurves).ToList();
+            foreach (var curveLoop in curveLoops)
+            {
+                foreach (var curve in curveLoop)
+                    curve.Dispose();
+            }
+            return result;
         }
 
     }

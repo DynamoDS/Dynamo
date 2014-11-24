@@ -24,6 +24,8 @@ namespace Revit.GeometryConversion
         {
             var srfs = solid.Faces.Cast<Autodesk.Revit.DB.Face>().SelectMany(x => x.ToProtoType(false));
             var converted = Solid.ByJoinedSurfaces( srfs );
+            foreach (var srf in srfs)
+                srf.Dispose();
 
             return performHostUnitConversion ? converted.InDynamoUnits() : converted;
         }
