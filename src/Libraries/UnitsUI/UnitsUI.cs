@@ -39,7 +39,7 @@ namespace UnitsUI
 
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem()
+            var editWindowItem = new MenuItem()
             {
                 Header = "Edit...",
                 IsCheckable = false,
@@ -48,7 +48,7 @@ namespace UnitsUI
 
             nodeView.MainContextMenu.Items.Add(editWindowItem);
 
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += editWindowItem_Click;
 
             //add a text box to the input grid of the control
             this.tb = new DynamoTextBox();
@@ -60,7 +60,7 @@ namespace UnitsUI
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = model;
-            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new MeasureConverter(),
@@ -91,7 +91,7 @@ namespace UnitsUI
         {
             var viewModel = this.dynamoViewModel;
             var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
-            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            editWindow.BindToProperty(null, new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new MeasureConverter(),
