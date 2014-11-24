@@ -232,8 +232,11 @@ namespace Revit.GeometryConversion
               return resultArc;
            }
            curves.ForEach(x => x.Dispose());
-   
-           return Convert(crvCurve.ToNurbsCurve());
+
+           using (var nc = crvCurve.ToNurbsCurve())
+           {
+               return Convert(nc);
+           }
         }
 
         #endregion
