@@ -45,9 +45,13 @@ namespace Revit.GeometryConversion
 
             foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
             {
-                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType(false);
+                var nc = curve.ToNurbsCurve();
+                Autodesk.Revit.DB.Curve converted = nc.ToRevitType(false);
                 cl.Append(converted);
+                nc.Dispose();
             }
+
+            crvs.ForEach(x => x.Dispose());
 
             return cl;
         }
@@ -78,12 +82,14 @@ namespace Revit.GeometryConversion
             {
                 var converted = NurbsUtils.ElevateBezierDegree(crv, 3);
 
-                return Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
-                    converted.Weights(),
-                    converted.Knots(),
-                    converted.Degree,
-                    converted.IsClosed,
-                    converted.IsRational);
+                var result = Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
+                                converted.Weights(),
+                                converted.Knots(),
+                                converted.Degree,
+                                converted.IsClosed,
+                                converted.IsRational);
+                converted.Dispose();
+                return result;
             }
 
             // degree 2 curve
@@ -99,12 +105,14 @@ namespace Revit.GeometryConversion
 
                 var resampledCrv = NurbsCurve.ByPointsTangents( pts, tstart.Normalized(), tend.Normalized());
 
-                return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
-                    resampledCrv.Weights(),
-                    resampledCrv.Knots(),
-                    resampledCrv.Degree,
-                    resampledCrv.IsClosed,
-                    resampledCrv.IsRational);
+                var result =  Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
+                                resampledCrv.Weights(),
+                                resampledCrv.Knots(),
+                                resampledCrv.Degree,
+                                resampledCrv.IsClosed,
+                                resampledCrv.IsRational);
+                resampledCrv.Dispose();
+                return result;
             }
 
             // general implementation
@@ -206,14 +214,24 @@ namespace Revit.GeometryConversion
               {
                  var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(point0, point1);
                  if (pointMid.DistanceTo(line) < 1e-7)
-                    return Convert(line);
+                 {
+                     var result = Convert(line);
+                     line.Dispose();
+                     curves[0].Dispose();
+                     return result;
+                 }
+                 line.Dispose();
               }
               //then arc
               if (point0.DistanceTo(point1) < 1e-7)
                  point1 = crvCurve.PointAtParameter(0.9);
               var arc = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(point0, pointMid, point1);
-              return Convert(arc);
+              var resultArc = Convert(arc);
+              arc.Dispose();
+              curves[0].Dispose();
+              return resultArc;
            }
+           curves.ForEach(x => x.Dispose());
    
            return Convert(crvCurve.ToNurbsCurve());
         }

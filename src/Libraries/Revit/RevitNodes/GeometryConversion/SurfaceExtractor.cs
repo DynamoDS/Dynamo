@@ -70,7 +70,10 @@ namespace Revit.GeometryConversion
             var c1 = Circle.ByPlaneRadius(pl1, rad);
 
             // extrude the cylindrical surface - again using the conservative maxLength
-            return c1.Extrude(axis.Scale(4*maxLength));
+            var result = c1.Extrude(axis.Scale(4*maxLength));
+            pl1.Dispose();
+            c1.Dispose();
+            return result;
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.ConicalFace face, IEnumerable<PolyCurve> edgeLoops)
