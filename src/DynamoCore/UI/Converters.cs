@@ -266,62 +266,52 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SnapRegionMarginConverter : IMultiValueConverter
+    public class SnapRegionMarginConverter : IValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
-            Thickness thickness = new Thickness(0,0,0,0);
-            PortType type = (PortType) values[0];            
-            PortPosition position = (PortPosition)values[1];
-
-            switch (type)
+            Thickness thickness = new Thickness(0, 0, 0, 0);
+            PortModel port = value as PortModel;
+            if (port != null)
             {
-                case PortType.INPUT:
-                    switch (position)
-                    {
-                        case PortPosition.First:
-                            thickness = new Thickness(-25, -10, -25, -10);
-                            break;
-                        case PortPosition.Top:
-                            thickness = new Thickness(-25, -10, 0, 3);
-                            break;
-                        case PortPosition.Middle:
-                            thickness = new Thickness(-25, 3, 0, 3);
-                            break;
-                        case PortPosition.Last:
-                            thickness = new Thickness(-25, 3, 0, -10);
-                            break;
-                    }
-                    break;
+                PortType type = port.PortType;
+                double left = port.MarginThickness.Left;
+                double top = port.MarginThickness.Top;
+                double right = port.MarginThickness.Right;
+                double bottom = port.MarginThickness.Bottom;
+                switch (type)
+                {
+                    case PortType.INPUT:
+                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                        if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left - 25, top - 10, right - 25, bottom - 10);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
+                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                        break;
 
-                case PortType.OUTPUT:
-                    switch (position)
-                    {
-                        case PortPosition.First:
-                            thickness = new Thickness(0, -10, -25, -10);
-                            break;
-                        case PortPosition.Top:
-                            thickness = new Thickness(-25, -10, 0, 3);
-                            break;
-                        case PortPosition.Middle:
-                            thickness = new Thickness(0, 3, -25, 3);
-                            break;
-                        case PortPosition.Last:
-                            thickness = new Thickness(0, 3, -25, -10);
-                            break;
-                    }
-                    break;
-
-            }           
+                    case PortType.OUTPUT:
+                        thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
+                        if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
+                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
+                        break;
+                }
+            }
             return thickness;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter,
+         CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
-   
 
     public class MarginConverter : IValueConverter
     {
