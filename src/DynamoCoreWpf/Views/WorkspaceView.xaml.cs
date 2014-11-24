@@ -17,10 +17,10 @@ using ZoomEventArgs = Dynamo.Models.DynamoModel.ZoomEventArgs;
 namespace Dynamo.Views
 {
     /// <summary>
-    /// Interaction logic for dynWorkspaceView.xaml
+    /// Interaction logic for WorkspaceView.xaml
     /// </summary>
     /// 
-    public partial class dynWorkspaceView : UserControl
+    public partial class WorkspaceView : UserControl
     {
         public enum CursorState
         {
@@ -66,7 +66,7 @@ namespace Dynamo.Views
             }
         }
 
-        public dynWorkspaceView()
+        public WorkspaceView()
         {
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
@@ -468,7 +468,7 @@ namespace Dynamo.Views
             vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
         }
 
-        private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
+        private void WorkspaceView_KeyDown(object sender, KeyEventArgs e)
         {
             Button source = e.Source as Button;
 
@@ -480,7 +480,7 @@ namespace Dynamo.Views
 
         }
 
-        private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
+        private void WorkspaceView_KeyUp(object sender, KeyEventArgs e)
         {
         }
 

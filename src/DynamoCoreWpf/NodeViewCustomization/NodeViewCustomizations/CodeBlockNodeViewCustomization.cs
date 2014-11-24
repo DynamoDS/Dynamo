@@ -12,7 +12,7 @@ namespace Dynamo.Wpf
 {
     public class CodeBlockNodeViewCustomization : INodeViewCustomization<CodeBlockNodeModel>
     {
-        public void CustomizeView(CodeBlockNodeModel model, dynNodeView nodeView)
+        public void CustomizeView(CodeBlockNodeModel model, NodeView nodeView)
         {
             var cbe = new CodeBlockEditor(nodeView.ViewModel);
 

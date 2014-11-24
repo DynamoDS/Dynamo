@@ -9,7 +9,7 @@ namespace DSCore.File
     {
         private Filename model;
 
-        public void CustomizeView(Filename nodeModel, Dynamo.Controls.dynNodeView nodeView)
+        public void CustomizeView(Filename nodeModel, Dynamo.Controls.NodeView nodeView)
         {
             base.CustomizeView(nodeModel, nodeView);
             this.model = nodeModel;

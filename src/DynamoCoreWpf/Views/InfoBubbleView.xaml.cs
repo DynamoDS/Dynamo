@@ -86,8 +86,8 @@ namespace Dynamo.Controls
         private double preview_LastMaxWidth;
         private double preview_LastMaxHeight;
 
-        // When a NodeModel is removed, WPF places the dynNodeView into a "disconnected"
-        // state (i.e. dynNodeView.DataContext becomes "DisconnectedItem") before 
+        // When a NodeModel is removed, WPF places the NodeView into a "disconnected"
+        // state (i.e. NodeView.DataContext becomes "DisconnectedItem") before 
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
@@ -102,7 +102,7 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Used to present useful/important information to user
-        /// Known usages (when this summary is written): DynamoView and dynNodeView (via DataTemplates.xaml)
+        /// Known usages (when this summary is written): DynamoView and NodeView (via DataTemplates.xaml)
         /// Till date there are 5 major types of info bubble
         /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
         /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node

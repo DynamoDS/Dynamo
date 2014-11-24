@@ -11,11 +11,11 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Nodes
 {
-    public partial class dynNoteView : IViewModelView<NoteViewModel>
+    public partial class NoteView : IViewModelView<NoteViewModel>
     {
         public NoteViewModel ViewModel { get; private set; }
 
-        public dynNoteView()
+        public NoteView()
         {
             InitializeComponent();
 

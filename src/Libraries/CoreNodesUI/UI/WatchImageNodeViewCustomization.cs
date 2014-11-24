@@ -20,9 +20,9 @@ namespace Dynamo.Wpf
     {
         private Image image;
         private NodeModel nodeModel;
-        private dynNodeView nodeView;
+        private NodeView nodeView;
 
-        public void CustomizeView(Nodes.WatchImageCore nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.WatchImageCore nodeModel, NodeView nodeView)
         {
             this.nodeModel = nodeModel;
 

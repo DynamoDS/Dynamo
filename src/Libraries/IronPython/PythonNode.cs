@@ -23,7 +23,7 @@ namespace DSIronPythonNode
         private DynamoViewModel dynamoViewModel;
         private PythonNode model;
 
-        public void CustomizeView(PythonNode nodeModel, dynNodeView nodeView)
+        public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
             base.CustomizeView(nodeModel, nodeView);
 

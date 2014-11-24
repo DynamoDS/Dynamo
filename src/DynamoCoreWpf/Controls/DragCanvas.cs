@@ -19,7 +19,7 @@ namespace Dynamo.Controls
         #region Data
 
         // The owning workspace for this DragCanvas
-        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
+        public Dynamo.Views.WorkspaceView owningWorkspace = null;
 
         #endregion // Data
 

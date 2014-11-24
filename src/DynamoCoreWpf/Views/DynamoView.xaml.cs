@@ -123,7 +123,7 @@ namespace Dynamo.Controls
 
         private void ApplyNodeViewCustomization(object nodeView, EventArgs args)
         {
-            var nodeViewImp = nodeView as dynNodeView;
+            var nodeViewImp = nodeView as NodeView;
             if (nodeViewImp != null)
             {
                 this.nodeViewCustomizationLibrary.Apply(nodeViewImp);

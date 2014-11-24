@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
     {
         private DSDropDownBase model;
 
-        public void CustomizeView(DSDropDownBase model, dynNodeView nodeView)
+        public void CustomizeView(DSDropDownBase model, NodeView nodeView)
         {
             this.model = model;
 

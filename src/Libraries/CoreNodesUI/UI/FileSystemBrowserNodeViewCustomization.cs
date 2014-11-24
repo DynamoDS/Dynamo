@@ -12,7 +12,7 @@ namespace DSCore.File
 {
     public abstract class FileSystemBrowserNodeViewCustomization : INodeViewCustomization<FileSystemBrowser>
     {
-        public void CustomizeView(FileSystemBrowser model, dynNodeView nodeView)
+        public void CustomizeView(FileSystemBrowser model, NodeView nodeView)
         {
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton

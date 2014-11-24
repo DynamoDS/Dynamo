@@ -20,7 +20,7 @@ using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
 {
-    public partial class dynNodeView : IViewModelView<NodeViewModel>
+    public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
@@ -28,7 +28,7 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
-        public dynNodeView TopControl
+        public NodeView TopControl
         {
             get { return topControl; }
         }
@@ -61,7 +61,7 @@ namespace Dynamo.Controls
 
         #region constructors
 
-        public dynNodeView()
+        public NodeView()
         {
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
@@ -115,17 +115,17 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// This event handler is called soon as the NodeViewModel is bound to this 
-        /// dynNodeView, which happens way before OnNodeViewLoaded event is sent. 
+        /// NodeView, which happens way before OnNodeViewLoaded event is sent. 
         /// There is a known bug in WPF 4.0 where DataContext becomes DisconnectedItem 
         /// when actions such as tab switching happens (that is when the View becomes 
         /// disconnected from the underlying ViewModel/Model that it was bound to). So 
-        /// it is more reliable for dynNodeView to cache the NodeViewModel it is bound 
+        /// it is more reliable for NodeView to cache the NodeViewModel it is bound 
         /// to when it first becomes available, and refer to the cached value at a later
         /// time.
         /// </summary>
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // If this is the first time dynNodeView is bound to the NodeViewModel, 
+            // If this is the first time NodeView is bound to the NodeViewModel, 
             // cache the DataContext (i.e. NodeViewModel) locally and start 
             // referecing it from this point onwards. Note that this notification 
             // can be sent as a result of DataContext becoming DisconnectedItem too,

@@ -8,7 +8,7 @@ namespace DSCoreNodesUI
 {
     public class DummyNodeNodeViewCustomization : INodeViewCustomization<DummyNode>
     {
-        public void CustomizeView(DummyNode model, Dynamo.Controls.dynNodeView nodeView)
+        public void CustomizeView(DummyNode model, Dynamo.Controls.NodeView nodeView)
         {
             var fileName = "DeprecatedNode.png";
             if (model.NodeNature == DummyNode.Nature.Unresolved)

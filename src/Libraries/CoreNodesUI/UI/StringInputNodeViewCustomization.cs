@@ -17,7 +17,7 @@ namespace Dynamo.Wpf
         private StringInput nodeModel;
         private MenuItem editWindowItem;
 
-        public void CustomizeView(StringInput stringInput, dynNodeView nodeView)
+        public void CustomizeView(StringInput stringInput, NodeView nodeView)
         {
             this.nodeModel = stringInput;
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;

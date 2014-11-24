@@ -471,11 +471,11 @@ namespace Dynamo.ViewModels
         }
 
         internal event EventHandler NodeViewReady;
-        internal void OnNodeViewReady(object dynNodeView)
+        internal void OnNodeViewReady(object nodeView)
         {
             if (NodeViewReady != null)
             {
-                this.NodeViewReady(dynNodeView, new EventArgs());
+                this.NodeViewReady(nodeView, new EventArgs());
             }
         }
 

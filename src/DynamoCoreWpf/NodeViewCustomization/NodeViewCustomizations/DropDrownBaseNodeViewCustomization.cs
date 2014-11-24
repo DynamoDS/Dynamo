@@ -14,7 +14,7 @@ namespace Dynamo.Wpf
     {
         private Nodes.DropDrownBase dropDownNodeModel;
 
-        public void CustomizeView(Nodes.DropDrownBase nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.DropDrownBase nodeModel, NodeView nodeView)
         {
             dropDownNodeModel = nodeModel;
 

@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
         private Watch3D watch3dModel;
         public Watch3DView View { get; private set; }
 
-        public void CustomizeView(Watch3D model, dynNodeView nodeView)
+        public void CustomizeView(Watch3D model, NodeView nodeView)
         {
             model.ViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch3dModel = model;

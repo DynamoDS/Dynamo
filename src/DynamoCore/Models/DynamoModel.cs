@@ -1359,17 +1359,14 @@ namespace Dynamo.Models
 
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
-                //MVVM : selection and clipboard now hold view model objects
-                //UIElement el = sel as UIElement;
-                ModelBase el = sel as ModelBase;
+                var el = sel as ModelBase;
                 if (el != null)
                 {
                     if (!this.ClipBoard.Contains(el))
                     {
                         this.ClipBoard.Add(el);
 
-                        //dynNodeView n = el as dynNodeView;
-                        NodeModel n = el as NodeModel;
+                        var n = el as NodeModel;
                         if (n != null)
                         {
                             var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
@@ -1407,7 +1404,7 @@ namespace Dynamo.Models
 
             var connectors = this.ClipBoard.OfType<ConnectorModel>();
 
-            foreach (NodeModel node in nodes)
+            foreach (var node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();

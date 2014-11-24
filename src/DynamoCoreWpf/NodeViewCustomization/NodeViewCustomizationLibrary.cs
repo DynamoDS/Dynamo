@@ -11,7 +11,7 @@ namespace Dynamo.Wpf
         private Dictionary<Type, List<InternalNodeViewCustomization>> lookupDict =
             new Dictionary<Type, List<InternalNodeViewCustomization>>();
 
-        internal void Apply(dynNodeView view)
+        internal void Apply(NodeView view)
         {
             var model = view.ViewModel.NodeModel;
 

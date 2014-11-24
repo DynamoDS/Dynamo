@@ -9,7 +9,7 @@ namespace DSCore.File
     {
         private Directory model;
 
-        public void CustomizeView(Directory model, Dynamo.Controls.dynNodeView nodeView)
+        public void CustomizeView(Directory model, Dynamo.Controls.NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
             this.model = model;

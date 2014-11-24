@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {
-        public void CustomizeView(ColorRange model, dynNodeView nodeView)
+        public void CustomizeView(ColorRange model, NodeView nodeView)
         {
             var drawPlane = new Image
             {

@@ -15,7 +15,7 @@ namespace Dynamo.Wpf
         private Dynamo.Nodes.Sublists sublistsNodeModel;
         private DynamoTextBox tb;
 
-        public void CustomizeView(Dynamo.Nodes.Sublists element, dynNodeView nodeView)
+        public void CustomizeView(Dynamo.Nodes.Sublists element, NodeView nodeView)
         {
             this.sublistsNodeModel = element;
 

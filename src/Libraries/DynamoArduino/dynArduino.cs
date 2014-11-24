@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
         MenuItem lastComItem;
         private Arduino arduinoModel;
 
-        public void CustomizeView(Arduino model, dynNodeView nodeView)
+        public void CustomizeView(Arduino model, NodeView nodeView)
         {
             string[] serialPortNames = SerialPort.GetPortNames();
 

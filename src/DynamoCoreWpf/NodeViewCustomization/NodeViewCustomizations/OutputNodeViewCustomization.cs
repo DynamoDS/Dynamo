@@ -10,7 +10,7 @@ namespace Dynamo.Wpf
 {
     public class OutputNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Output>
     {
-        public void CustomizeView(Nodes.Output outputNodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.Output outputNodeModel, NodeView nodeView)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(outputNodeModel.Symbol)

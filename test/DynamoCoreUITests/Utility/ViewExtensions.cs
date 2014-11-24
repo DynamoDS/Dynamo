@@ -9,19 +9,19 @@ namespace DynamoCoreUITests.Utility
 {
     public static class ViewExtensions
     {
-        public static IEnumerable<dynNodeView> OfNodeModelType<T>(this IEnumerable<dynNodeView> nodeViews) where T : NodeModel
+        public static IEnumerable<NodeView> OfNodeModelType<T>(this IEnumerable<NodeView> nodeViews) where T : NodeModel
         {
             return nodeViews.Where(x => x.ViewModel.NodeModel as T != null);
         }
 
-        public static IEnumerable<dynNodeView> ChildNodeViews(this dynWorkspaceView nodeViews)
+        public static IEnumerable<NodeView> ChildNodeViews(this WorkspaceView nodeViews)
         {
-            return nodeViews.ChildrenOfType<dynNodeView>();
+            return nodeViews.ChildrenOfType<NodeView>();
         }
 
-        public static IEnumerable<dynNodeView> NodeViewsInFirstWorkspace(this DynamoView dynamoView)
+        public static IEnumerable<NodeView> NodeViewsInFirstWorkspace(this DynamoView dynamoView)
         {
-            return dynamoView.WorkspaceTabs.ChildrenOfType<dynWorkspaceView>().First().ChildNodeViews();
+            return dynamoView.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().ChildNodeViews();
         }
     }
 }

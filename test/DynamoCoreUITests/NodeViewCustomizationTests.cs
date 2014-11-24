@@ -20,7 +20,7 @@ namespace DynamoCoreUITests
 {
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
-        public dynNodeView NodeViewOf<T>() where T : NodeModel
+        public NodeView NodeViewOf<T>() where T : NodeModel
         {
             var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<T>();
 

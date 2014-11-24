@@ -19,7 +19,7 @@ namespace DSCoreNodesUI
             dynamoViewModel.ReturnFocusToSearch();
         }
 
-        public void CustomizeView(BoolSelector model, dynNodeView nodeView)
+        public void CustomizeView(BoolSelector model, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 

@@ -1045,7 +1045,7 @@
 
                     <TabControl.ContentTemplate>
                         <DataTemplate>
-                            <views:dynWorkspaceView></views:dynWorkspaceView>
+                            <views:WorkspaceView></views:WorkspaceView>
                         </DataTemplate>
                     </TabControl.ContentTemplate>
 

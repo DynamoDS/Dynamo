@@ -296,7 +296,7 @@
     <Style x:Key="SZoomFadeText"
            TargetType="{x:Type TextBlock}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
                          Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
@@ -323,7 +323,7 @@
     <Style x:Key="SZoomFadeTextBox"
            TargetType="{x:Type TextBox}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
                          Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>

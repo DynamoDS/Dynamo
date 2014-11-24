@@ -32,7 +32,7 @@ namespace UnitsUI
         private DynamoViewModel dynamoViewModel;
         private DynamoTextBox tb;
 
-        public void CustomizeView(MeasurementInputBase model, dynNodeView nodeView)
+        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
         {
             this.mesBaseModel = model;
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
@@ -188,7 +188,7 @@ namespace UnitsUI
     public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                          INodeViewCustomization<LengthFromString>
     {
-        public void CustomizeView(LengthFromString model, dynNodeView nodeView)
+        public void CustomizeView(LengthFromString model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }
@@ -237,7 +237,7 @@ namespace UnitsUI
     public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                      INodeViewCustomization<AreaFromString>
     {
-        public void CustomizeView(AreaFromString model, dynNodeView nodeView)
+        public void CustomizeView(AreaFromString model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }
@@ -268,7 +268,7 @@ namespace UnitsUI
     public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                  INodeViewCustomization<VolumeFromString>
     {
-        public void CustomizeView(VolumeFromString model, dynNodeView nodeView)
+        public void CustomizeView(VolumeFromString model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }

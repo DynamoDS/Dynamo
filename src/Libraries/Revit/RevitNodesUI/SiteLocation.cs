@@ -16,7 +16,7 @@ namespace DSRevitNodesUI
 {
     public class SiteLocationNodeViewCustomization : INodeViewCustomization<SiteLocation>
     {
-        public void CustomizeView(SiteLocation model, dynNodeView nodeView)
+        public void CustomizeView(SiteLocation model, NodeView nodeView)
         {
             var locCtrl = new LocationControl { DataContext = this };
             nodeView.inputGrid.Children.Add(locCtrl);

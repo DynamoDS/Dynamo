@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
 {
     public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
     {
-        public void CustomizeView(IntegerSlider model, dynNodeView nodeView)
+        public void CustomizeView(IntegerSlider model, NodeView nodeView)
         {
             DoubleSliderNodeViewCustomization.BuildSliderUI(
                 nodeView, 

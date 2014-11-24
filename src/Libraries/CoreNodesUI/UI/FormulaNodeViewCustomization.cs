@@ -11,7 +11,7 @@ namespace DSCoreNodesUI
 {
     public class FormulaNodeViewCustomization : INodeViewCustomization<Formula>
     {
-        public void CustomizeView(Formula model, dynNodeView nodeView)
+        public void CustomizeView(Formula model, NodeView nodeView)
         {
             var tb = new DynamoTextBox(model.FormulaString)
             {

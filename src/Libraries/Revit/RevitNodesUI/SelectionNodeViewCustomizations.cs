@@ -19,7 +19,7 @@ namespace DSRevitNodesUI
         SelectionBaseNodeViewCustomization<Element, Element>,
         INodeViewCustomization<ElementSelection<Element>>
     {
-        public void CustomizeView(ElementSelection<Element> model, dynNodeView nodeView)
+        public void CustomizeView(ElementSelection<Element> model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }
@@ -29,7 +29,7 @@ namespace DSRevitNodesUI
         SelectionBaseNodeViewCustomization<DividedSurface, Element>,
         INodeViewCustomization<ElementSelection<DividedSurface>>
     {
-        public void CustomizeView(ElementSelection<DividedSurface> model, dynNodeView nodeView)
+        public void CustomizeView(ElementSelection<DividedSurface> model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }
@@ -39,7 +39,7 @@ namespace DSRevitNodesUI
         SelectionBaseNodeViewCustomization<Reference, Reference>,
         INodeViewCustomization<ReferenceSelection>
     {
-        public void CustomizeView(ReferenceSelection model, dynNodeView nodeView)
+        public void CustomizeView(ReferenceSelection model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
         }
