@@ -96,7 +96,7 @@ limitations under the License.
     </Reference>
     <Reference Include="ProtoCore">
       <HintPath>$(DYNAMOAPI)\ProtoCore.dll</HintPath>
-	  <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DSNodeServices">
       <HintPath>$(DYNAMOAPI)\DSNodeServices.dll</HintPath>
