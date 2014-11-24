@@ -728,9 +728,9 @@ namespace Dynamo.DSEngine
 
         #endregion
 
-        public bool TryParseCode(ref ParseParam parseParam)
+        public bool TryParseCode(ref ParseParam parseParam, ElementResolver elementResolver)
         {
-            return CompilerUtils.PreCompileCodeBlock(libraryCore, ref parseParam);
+            return CompilerUtils.PreCompileCodeBlock(libraryCore, ref parseParam, elementResolver);
         }
     }
 }

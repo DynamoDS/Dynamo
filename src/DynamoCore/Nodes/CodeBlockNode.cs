@@ -30,6 +30,7 @@ namespace Dynamo.Nodes
         private bool shouldFocus = true;
         public bool ShouldFocus { get { return shouldFocus; } }
         private readonly DynamoLogger logger;
+        private ProtoCore.ElementResolver elementResolver = null;
 
         private struct Formatting
         {
@@ -225,6 +226,8 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
+
+            // TODO: Serialize elementResolver as strings of partial class name vs. fully resolved name
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
@@ -233,6 +236,9 @@ namespace Dynamo.Nodes
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
+            
+            // TODO: Read namespace cache if available and initialize 
+            // new instance of ElementResolver
             ProcessCodeDirect();
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
@@ -409,7 +415,7 @@ namespace Dynamo.Nodes
             try
             {
                 ParseParam parseParam = new ParseParam(this.GUID, code);
-                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
+                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam, elementResolver))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

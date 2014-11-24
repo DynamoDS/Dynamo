@@ -23,7 +23,7 @@ namespace ProtoTest.GraphCompiler
                             c = 1 + 2 * 3;";
 
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, null));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);

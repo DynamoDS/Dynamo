@@ -183,7 +183,7 @@ namespace ProtoCore.Utils
         #endregion
     }
 
-    public class CompilerUtils
+    public static class CompilerUtils
     {
         /// <summary>
         /// Does the first pass of compilation and returns a list of wanrnings in compilation
@@ -255,7 +255,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="parseParams"></param>
         /// <returns></returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ElementResolver elementResolver)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -274,10 +274,10 @@ namespace ProtoCore.Utils
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams);
+            return CompileCodeBlockAST(core, parseParams, elementResolver);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver elementResolver)
         {
             Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
             IEnumerable<BuildData.WarningEntry> warnings = null;
@@ -303,6 +303,14 @@ namespace ProtoCore.Utils
                 core.IsParsingCodeBlockNode = true;
 
                 core.ResetForPrecompilation();
+
+                // Read Namespace cache in ElementResolver to substitute 
+                // partial classnames with their fully qualified names in ASTs
+                // before passing them for pre-compilation. If partial class is not found in cache, 
+                // update namespace cache in ElementResolver with fully resolved name from compiler.
+                if(elementResolver != null)
+                    elementResolver.ResolveClassNamespace(core.ClassTable, codeblock);
+
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
