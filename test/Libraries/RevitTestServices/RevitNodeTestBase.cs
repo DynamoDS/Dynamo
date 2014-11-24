@@ -2,8 +2,6 @@ using DynamoUnits;
 
 using NUnit.Framework;
 
-using RevitNodesTests;
-
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 

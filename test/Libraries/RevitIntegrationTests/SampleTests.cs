@@ -613,12 +613,12 @@ namespace RevitSystemTests
 
             var model = ViewModel.Model;
             // look at the sample folder and one directory up to get the distrib folder and combine with defs folder
-            string customNodePath = Path.Combine(Path.Combine(_samplesPath, @"..\\"), @".\
+            string customNodePath = Path.Combine(Path.Combine(samplesPath, @"..\\"), @".\
 \Dynamo Sample Custom Nodes\dyf\");
             // get the full path to the distrib folder and def folder
             string fullCustomNodePath = Path.GetFullPath(customNodePath);
 
-            string samplePath = Path.Combine(_samplesPath, @".\25 Rendering\hill_climbing_simple.dyn");
+            string samplePath = Path.Combine(samplesPath, @".\25 Rendering\hill_climbing_simple.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             // make sure that the two custom nodes we need exist
@@ -1135,7 +1135,7 @@ namespace RevitSystemTests
         public void Geometry_Solids()
         {
             var model = ViewModel.Model;
-            OpenModel(@".\Geometry\Geometry_Solids.dyn");
+            OpenDynamoDefinition(@".\Samples\Geometry_Solids.dyn");
 
             AssertNoDummyNodes();
 
@@ -1167,7 +1167,7 @@ namespace RevitSystemTests
         public void Geometry_Surfaces()
         {
             var model = ViewModel.Model;
-            OpenModel(@".\Geometry\Geometry_Surfaces.dyn");
+            OpenDynamoDefinition(@".\Samples\Geometry_Surfaces.dyn");
 
             AssertNoDummyNodes();
 
