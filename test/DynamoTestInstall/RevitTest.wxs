@@ -1,0 +1,932 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="DYNAMO_CORE_TEST_REVIT">
+            <Directory Id="dir7A10E37A20673A2A76F70D368DF85CA2" Name="AdaptiveComponent" />
+            <Directory Id="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Name="AnalysisDisplay" />
+            <Directory Id="dirEE6D77FB14AD5FBC9120D3537733ADA8" Name="Bugs" />
+            <Directory Id="dir6A9D23A2B31FDE39E8472526D50CA9BD" Name="Core" />
+            <Directory Id="dir5880478D497E63E65504617CEFA975B3" Name="Curve" />
+            <Directory Id="dir1AEC8D9652C2C3F8B27F7BB8AD1E2CC0" Name="DividedCurve" />
+            <Directory Id="dir69033523A964E88E627F9337CE066975" Name="DividedSurface" />
+            <Directory Id="dirB5166503418E55EDF57B5622A4FEC28E" Name="ElementBinding" />
+            <Directory Id="dir5252BEE063054AA6E5CC3F4682DA31D2" Name="Face" />
+            <Directory Id="dir6CB1A7E58D9D6F1C07535EAB20C54843" Name="Family" />
+            <Directory Id="dir273394D72F76D4F3435BBA33A2FB2861" Name="Geometry" />
+            <Directory Id="dir904A3528B79A915C6A50C7C49A696E34" Name="ImportInstance" />
+            <Directory Id="dirBADECAB85FBD775D3BC511FB8028C6A1" Name="Intersect" />
+            <Directory Id="dir1F302FF4219B48861B869B26F5347BB0" Name="Length" />
+            <Directory Id="dir163E39686E02F6C2F1C88ACC5D778F78" Name="Level" />
+            <Directory Id="dirA43AD26BA366DB4C0B0947DE0C0C66BF" Name="Material" />
+            <Directory Id="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Name="Migration" />
+            <Directory Id="dir611567803F8C2A0D400CB4BD0B3B0C40" Name="ModelCurve" />
+            <Directory Id="dirA91A111C844F72DF33B8AB3A5F3892A0" Name="ModelText" />
+            <Directory Id="dirF66795670C207A025B5C31E71B33C830" Name="Python" />
+            <Directory Id="dirBF120BD7F33F839DB1D4AEF2F0E86B3A" Name="RayBounce" />
+            <Directory Id="dir32B5DC4971D474FC29AE8A737DA2921C" Name="ReferenceCurve" />
+            <Directory Id="dir1F35200423735C43192FDB092734B2B8" Name="ReferencePlane" />
+            <Directory Id="dir56E73A98DD199CEC487AC64CEA2DA67E" Name="ReferencePoint" />
+            <Directory Id="dirAEE3DA89926EF4FA7204937D68AD8845" Name="regression" />
+            <Directory Id="dir8B9BDEB8BFEADAB83735642F5C571FF6" Name="Samples" />
+            <Directory Id="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Name="Selection" />
+            <Directory Id="dirD2327A59A3F583456D2FCD09825F10E8" Name="SiteLocation" />
+            <Directory Id="dir5E71CCD79DDD3490DC808C5B9A9C2243" Name="Solid" />
+            <Directory Id="dir6EDEEDBFEDE777D39582D4E4503DC1EB" Name="StructuralFraming" />
+            <Directory Id="dir9D9E81BAF1684A73A0143776A2C5E519" Name="SunSettings" />
+            <Directory Id="dirE74AAFBBD34DEF31DF21B456A9DDD5D9" Name="Topography" />
+            <Directory Id="dir12F672D5601743F0E483E5941747A3D1" Name="Transform" />
+            <Directory Id="dir57A5469B8CC02C3E6A3041396BECED53" Name="UV" />
+            <Directory Id="dir635111A80BF6C2ABE64C63958A1C51B5" Name="View" />
+            <Directory Id="dir02DE74D872959BB1F5DCC3CBE997CEDB" Name="XYZ" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="TESTREVIT">
+            <Component Id="cmpBFC25295901133DE09D73670E7D38D56" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{98A1F496-6507-4B2E-B17F-B438FAA50A99}">
+                <File Id="fil7577C9450BB009F412BD856164A7B4DF" KeyPath="yes" Source="$(var.testrevit)\.gitignore" />
+            </Component>
+            <Component Id="cmp4166592A94402657C7ACD7170D236DCC" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{6C954D2E-6AFE-4A88-9718-D426BB869242}">
+                <File Id="filDACCD328B3EAC2D08CE4A0852B18E130" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponents.rfa" />
+            </Component>
+            <Component Id="cmpD55881E7D1C88845DF03BA122A2A706F" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{E5B0FBFE-503F-49B7-9DD3-3E18BEB1B6CD}">
+                <File Id="fil0E1711997E96D0FA00590CA64C86DFF6" KeyPath="yes" Source="$(var.testrevit)\block.rfa" />
+            </Component>
+            <Component Id="cmp4E381581D3FBE2456247ECC12D2FF72D" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{38A4AA24-B230-4680-B09E-1FDBDB298C8A}">
+                <File Id="filBAA483E88623564FE2FAFC64023EB007" KeyPath="yes" Source="$(var.testrevit)\blockAlone.rfa" />
+            </Component>
+            <Component Id="cmp6DB0F631FDF94D9DFE13C9EF721F4CC2" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{4DEF328D-CA59-4DB7-8A10-5CA06FA897F4}">
+                <File Id="fil97D6F4F816858653AB01FF4B194D5024" KeyPath="yes" Source="$(var.testrevit)\ColumnFamilyInstance.rvt" />
+            </Component>
+            <Component Id="cmp544610BF239BFA77E452CF99DB0C04E8" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{022809A2-555D-4B21-8382-DB277FE1FFFD}">
+                <File Id="filE6CE34258D12AA75578734EBBC85EA8E" KeyPath="yes" Source="$(var.testrevit)\cutWalls.rvt" />
+            </Component>
+            <Component Id="cmp9195A7A894C99B0C3E0A14E60028B463" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{0611CF7A-34F7-4F04-8ECA-786FC7118F24}">
+                <File Id="filA171EE4686B113631AA71C0CCFD9947E" KeyPath="yes" Source="$(var.testrevit)\EllipseArc.rfa" />
+            </Component>
+            <Component Id="cmpD3FA4D4328A4C7D4FB03DC61A9032D14" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{05AB1F99-3C7F-4588-8121-E8DADD9ECFDF}">
+                <File Id="fil68E0C33C0B6F588A37FB9321116F85DF" KeyPath="yes" Source="$(var.testrevit)\empty.rfa" />
+            </Component>
+            <Component Id="cmp24CEDC98F6F466DB8745E6650F628AFE" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{1F11CDE4-BDE2-45D3-AEA1-744B2B2BAF88}">
+                <File Id="fil5FFB90BE490AEBC60AC4C7056954EA57" KeyPath="yes" Source="$(var.testrevit)\empty.rvt" />
+            </Component>
+            <Component Id="cmp8FEB746520AD5D81198D928187FB9339" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{9EEB882B-F387-4FFE-9816-BE23FCF3BAFA}">
+                <File Id="filB3EF0AFD7E52CB80419CE5983BA9608B" KeyPath="yes" Source="$(var.testrevit)\empty1.rfa" />
+            </Component>
+            <Component Id="cmp911BA0B5CC1DA928D83185CFC744CCDB" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{2167687D-A4A5-4082-9A3B-364144ADA125}">
+                <File Id="fil1FC38ED566F35A7D572C11BCE303185B" KeyPath="yes" Source="$(var.testrevit)\empty2013.rfa" />
+            </Component>
+            <Component Id="cmp655492A5C931C8F8F5F95B3B5700AF3C" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{E5A88EF7-B697-47F4-AD00-95212931204B}">
+                <File Id="filBB21C1285D9297AE4F6669755E3BE797" KeyPath="yes" Source="$(var.testrevit)\empty2013A.rfa" />
+            </Component>
+            <Component Id="cmp5D43FBE8F826B30168390BC337440B91" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{B98DEFC7-ED05-48C4-B890-74C1B039CDF8}">
+                <File Id="fil5CDE93DDE7629B056563B8D0ED9B7C93" KeyPath="yes" Source="$(var.testrevit)\emptyV.rfa" />
+            </Component>
+            <Component Id="cmp030B431D8916D940762E175A53B6FEE2" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{54AA5109-7BBB-453E-8E94-5C3EEECAFC4E}">
+                <File Id="filB9D20ECF97C35D991E2514AE886E1EDC" KeyPath="yes" Source="$(var.testrevit)\emptyV1.rfa" />
+            </Component>
+            <Component Id="cmpD4630B3DBB0B6401E6806E13EC54C6D8" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{8F06DF6F-4A70-4051-849F-87AFFE8E63EF}">
+                <File Id="fil100854A2754177F7A33DF5615C5AD8CA" KeyPath="yes" Source="$(var.testrevit)\familyWithNonSharedAdaptiveComponent.rfa" />
+            </Component>
+            <Component Id="cmp023A733B6FC2581F47116747F3B03B47" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{9DC8884E-C6C6-474C-A54D-6E3AC4BCBD05}">
+                <File Id="fil3E14A78E1D33131DB0AA23B86899DA60" KeyPath="yes" Source="$(var.testrevit)\GetCurvesFromFamilyInstance.rfa" />
+            </Component>
+            <Component Id="cmp8AD4BED9E65F46A72C866EEFFB63BDDD" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{D4CDE5DF-2842-4F03-B632-21EB4B5C006A}">
+                <File Id="fil915D0E05A435308073485F0A2A6AC353" KeyPath="yes" Source="$(var.testrevit)\MassWithBoxAndCone.rfa" />
+            </Component>
+            <Component Id="cmp4D7C580E95C39319E778069F07FCD0AF" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{F8016C6B-AA8D-47C5-8BF0-669441860436}">
+                <File Id="fil91C7CF4E39270A4005DBE3337A8FBBE9" KeyPath="yes" Source="$(var.testrevit)\materials.rvt" />
+            </Component>
+            <Component Id="cmp4F1F717E5C12D30CF30FFA3E6A45D525" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{7A35CA5D-6ACE-4E3F-8F5B-EB80B4E497C2}">
+                <File Id="filEB152EFF319DA108A034AC60B975470E" KeyPath="yes" Source="$(var.testrevit)\modelLines.rfa" />
+            </Component>
+            <Component Id="cmpF75D20EFD6294DD7960CE3F3871DEE61" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{6FBD1FC1-1D73-4C3F-ACE5-EA931D74CD30}">
+                <File Id="fil657BC85008DD69A06518D81D4BE5C113" KeyPath="yes" Source="$(var.testrevit)\model_with_box.rvt" />
+            </Component>
+            <Component Id="cmp6D6936FB346182CE9A1E0FD9CFA9E4FC" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{8440A689-1E27-45A9-8410-A5D588695F6A}">
+                <File Id="fil9A43369A1D5B5F9CAB5C3FAF76C4A849" KeyPath="yes" Source="$(var.testrevit)\MoreSolids.rfa" />
+            </Component>
+            <Component Id="cmp756CF889CD0C089A6F6AC3FBFFF999A0" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{3380B2BF-980A-4F7D-A092-83F30665E0DC}">
+                <File Id="fil377DAC798F8D235F1D47317A2F9673FF" KeyPath="yes" Source="$(var.testrevit)\nonSharedAdaptiveComponent.rfa" />
+            </Component>
+            <Component Id="cmp60B8FAD66A92E15ACE8C0791D21F0EB4" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{21C8168F-4046-4B0E-AE5C-27B9F27F3226}">
+                <File Id="fil2D32F379CFC1F07C95975490FB8407CD" KeyPath="yes" Source="$(var.testrevit)\projectWithNestedNonSharedAdaptiveComponent.rvt" />
+            </Component>
+            <Component Id="cmp298AC3E5F78608BE7DFE4881D12B10A5" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{64DC1E71-9262-4FB5-B102-047CB4E162AE}">
+                <File Id="fil7C0159C27A612DEB006B759BC4435816" KeyPath="yes" Source="$(var.testrevit)\Revolve.rfa" />
+            </Component>
+            <Component Id="cmp4EBA1E6D5EC75F131B17C49FA6CC1113" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{7638434A-5870-4994-83CA-0846828726FF}">
+                <File Id="fil88ACB2A8BACBDB47B882F8313AFB6BA4" KeyPath="yes" Source="$(var.testrevit)\shell.rfa" />
+            </Component>
+            <Component Id="cmp5E1B52393117B3CF1B077550A9B92822" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{4E3E48DC-5F46-4F96-9D11-3C7BFC2C4B39}">
+                <File Id="fil3F11417637CE99DF90EF3FB53D09544F" KeyPath="yes" Source="$(var.testrevit)\Solids.rfa" />
+            </Component>
+            <Component Id="cmpE29A4F072A0C6AE252437A6B7CBD2D2B" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{927DF1D9-DA61-44F0-A77D-6AEF8B349328}">
+                <File Id="filAFBB2A7CD707AFC0B854B6C21BFA138B" KeyPath="yes" Source="$(var.testrevit)\StructuralFramingLocationTest.rvt" />
+            </Component>
+            <Component Id="cmpA8CEC2C9249EAE679597332A6903EF12" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{B5DBB973-C542-42FC-A72D-93F6D04B37EB}">
+                <File Id="fil17E198D567D94A1C79A8AD1518A0A85D" KeyPath="yes" Source="$(var.testrevit)\topography.rvt" />
+            </Component>
+            <Component Id="cmp1858E24C1EC004ADFC4B47F4E9CFE1D0" Directory="DYNAMO_CORE_TEST_REVIT" Guid="{6F977CE4-95CD-4C98-972F-05277173E618}">
+                <File Id="fil33154F249802B4332CEE26736C069149" KeyPath="yes" Source="$(var.testrevit)\withModelText.rfa" />
+            </Component>
+            <Component Id="cmpE753CA75E8E90EF1172D881C1A622341" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{93542284-1DA2-48AC-BB53-DD50BAB391D0}">
+                <File Id="filFAC87173ECBD182AB7027DC1A153BFD0" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponent.0001.rfa" />
+            </Component>
+            <Component Id="cmpC6B6B8C133FC25FEBD43E8AD81BE6357" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{40B5DBD8-9440-4FFE-9AAB-DC029347BA01}">
+                <File Id="fil667F69ED9833797B9F94C0DCE803A676" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponent.0002.rfa" />
+            </Component>
+            <Component Id="cmp1ECA14062547366BEF480CC1232ADBD4" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{9E2BAF06-ED1F-43F3-ABDE-CB1BE4D38264}">
+                <File Id="filD06C73AF97FBF0283018F044A62BF0A9" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponent.dyn" />
+            </Component>
+            <Component Id="cmp167B926DCA24BC4BD68590B157EE092B" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{718AE56C-0425-4A19-A103-921407662B4B}">
+                <File Id="filF613F894EE7D800AD04ED87243B61AD7" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponent.rfa" />
+            </Component>
+            <Component Id="cmp8DE6788268EF752F81F85553D2108163" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{36134596-27D3-4012-834E-FA1F4078DCC2}">
+                <File Id="fil3BAAABF0FA827E643D36E562603B04B3" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponentByCurve.dyn" />
+            </Component>
+            <Component Id="cmp634AB011BCB925A0D348254D5C971775" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{B3986CB5-8D1A-41EC-B701-F6A3732BFDD7}">
+                <File Id="filA1F3B9C68262F0B7496D512FA8FF5758" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponentByCurve.rfa" />
+            </Component>
+            <Component Id="cmp3B6167A5FCF68F0E4302B0361DF03479" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{FEB996CF-562F-48C5-877D-40025CE805CA}">
+                <File Id="filAF0D535A2D03411AD3AA228063CC873F" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponentByFace.dyn" />
+            </Component>
+            <Component Id="cmp304E4209990BA5B565AADDD822670A0C" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{FD08B2BB-E030-46F3-9A6A-61D61CB17F72}">
+                <File Id="filD435CA444CA7575058A8864BDB5DB3BD" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\AdaptiveComponentByFace.rfa" />
+            </Component>
+            <Component Id="cmp02016DA1B3EDEFBC56B6A7F2F25DB98C" Directory="dir7A10E37A20673A2A76F70D368DF85CA2" Guid="{E1076D01-C087-4FEA-B942-8C49BA4A2213}">
+                <File Id="fil8ED5E97C0AD486780CADCAA4E11E9422" KeyPath="yes" Source="$(var.testrevit)\AdaptiveComponent\surfaces.rvt" />
+            </Component>
+            <Component Id="cmpF674A889369D1E9B9365ED7FECFCB1F3" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{ED6D6E3E-0320-4B78-A7DF-7304E15E5E5A}">
+                <File Id="fil82B0C31A851FA106CA3529817FF1C3B8" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\PointAnalysisDisplay_ByViewAndPointAnalysisData.dyn" />
+            </Component>
+            <Component Id="cmp91F4EC9A02A93BF672010E01B07D829D" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{CCD19A79-5949-4039-A56D-71CFF1D21369}">
+                <File Id="filA82AB95533E8D39C839CB31955F30E16" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\PointAnalysisDisplay_ByViewPointsValues.dyn" />
+            </Component>
+            <Component Id="cmp12D6A9089F4C0C4A4A3765E10F3D20D4" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{360BDE8F-76FC-4508-B02B-492B287401FF}">
+                <File Id="fil3445F7156FA5ED7A14D7092A941E6B1D" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointAnalysisData.dyn" />
+            </Component>
+            <Component Id="cmp89801379FF5C37EB70D42E0A7F42E5D6" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{A6528296-2931-4BB2-8A42-EB7DD26D0E45}">
+                <File Id="filFEB343AF878B40179925ECCA95E565E4" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\SurfaceAnalysisDisplay_ByViewAndPointsAndValues.dyn" />
+            </Component>
+            <Component Id="cmpEAFDD8B6337FC2DC428FEC580B723155" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{0026EF7A-B8FE-4F2D-A918-830214C16042}">
+                <File Id="fil1B3A1EC2615263942DB187969C17D3DE" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\Surfaces.rvt" />
+            </Component>
+            <Component Id="cmpDAE2D883C8574D051FFC739104F551EB" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{D4EFF2E8-CB3A-430A-9A2A-8F12DFA5CF1A}">
+                <File Id="fil0892296D48E19FDF7F7E6AF937359BFF" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\VectorAnalysisDisplay_ByViewAndVectorAnalysisData.dyn" />
+            </Component>
+            <Component Id="cmpD9165F9E2C19D62C335CCA3B46EFA0A0" Directory="dir60EA6CAAB55AFB85F3FE1F5239A28AE3" Guid="{3543559D-ACA4-40A4-B4AF-A5644423501F}">
+                <File Id="fil192456B13CA911B6EB3A78067D38736D" KeyPath="yes" Source="$(var.testrevit)\AnalysisDisplay\VectorAnalysisDisplay_ByViewPointsAndValues.dyn" />
+            </Component>
+            <Component Id="cmp31F7F673F3609E4C0E297C406A5EC21A" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{673E9332-93CA-4F74-8184-0AB925A51A5E}">
+                <File Id="fil92F3755ED4E7038B8E6ED75B53057EBF" KeyPath="yes" Source="$(var.testrevit)\Bugs\CheckIfStartsWithM.dyf" />
+            </Component>
+            <Component Id="cmp196C058A9B0DE46D596ABD43F01E8CF4" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{EF1B73BE-4932-4E40-A2D5-D3FCDB04F7CF}">
+                <File Id="fil8D248680047A4061040A37002A59C0A7" KeyPath="yes" Source="$(var.testrevit)\Bugs\Defect_MAGN_2576.dyn" />
+            </Component>
+            <Component Id="cmp131E076918398618281E8C860D91AD8F" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{150C8291-018C-4D17-A2E7-47F7EBF25A2A}">
+                <File Id="fil41C6DD4A6B4FE74CD1ED386D77E1801B" KeyPath="yes" Source="$(var.testrevit)\Bugs\getCoordinates.dyf" />
+            </Component>
+            <Component Id="cmpFEDDF8EE5435DE31923E633BD76B3434" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{B9D4B472-84AB-482F-A5FC-1F6FA1250F14}">
+                <File Id="filC5E46C033FBBEA5D3AE9A75DF58A5FEC" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt" />
+            </Component>
+            <Component Id="cmpF4EE0B0CDC5C6D10AD105F60680BBA42" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{05B5B9F4-CA57-4A27-AB8A-C6A879F81A1C}">
+                <File Id="fil86CE1E3610FFB03C33845A865E860E5B" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN-3620_Elementgeometry.dyn" />
+            </Component>
+            <Component Id="cmp3FA4FC11DD2E555D605C1EBF236140B7" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{2575D221-B2BE-47AF-B1D7-6D3FD4D4A380}">
+                <File Id="fil1003272739F9A4A7987589587DD21238" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN-3620_topo.rvt" />
+            </Component>
+            <Component Id="cmp6AE6F2393CF168BA4C8341E8AF9E1649" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{D160EB37-3EEF-4C9E-8E3E-CF308E586FFC}">
+                <File Id="filB15ED1A8193368FE77E16E1E3EAF0579" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN-438_structuralFraming_simple.dyn" />
+            </Component>
+            <Component Id="cmp737AAB17ED6F1F87677DD3968F33FC3F" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{AB053EF6-1A1A-478A-8E39-6B63EF2502D6}">
+                <File Id="filC78C37C51F9999A0B426C1147F66D216" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN-438_structuralFraming_simple.rvt" />
+            </Component>
+            <Component Id="cmpC406FFCAFA108323A01DEC88A2576826" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{3A52FACB-FB2D-4988-8495-363DC82DA1B9}">
+                <File Id="filE7E570134BA8CFE78F8287C7ECA2A9BA" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_102_projectPointsToFace_selfContained.dyn" />
+            </Component>
+            <Component Id="cmp7F60A93245E78C6FC4C54E561D4E53AC" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{EA0A5F50-D416-4130-93F0-70D271F0641A}">
+                <File Id="fil18AD9481E6EBD46AC3C422AA14DBE27F" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_122_wallsAndFloorsAndLevels.dyn" />
+            </Component>
+            <Component Id="cmpB7C2E300C9AB71BE0C3B9331FA5C9D30" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{8A91A791-23C3-4F5F-99AF-EBB166A1085C}">
+                <File Id="filD2F06A996347B5BBF834E9AD05FFEB2C" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_2576_DataImport.rvt" />
+            </Component>
+            <Component Id="cmp109548FF7D9B9B0145CDE9D4F1CAC65A" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{DBE843A9-2ED4-406E-9AB0-918492BF06E5}">
+                <File Id="fil8582881F786DFE68C150CEB5BCE289D1" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_2589.dyn" />
+            </Component>
+            <Component Id="cmpDA1A4EFAF085EC3EB22C4AF8A01BB9E3" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{74C839EE-3F4E-4A28-AF6D-529EBC986FFD}">
+                <File Id="filDAB2F08410E387D4EAAFADC7BE6E3FDA" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_2589.rvt" />
+            </Component>
+            <Component Id="cmp5DAB1B60F9CF1ADBC39F6D65870FE60D" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{E0909D98-3927-4104-87A7-980C7666E17D}">
+                <File Id="fil4A900CF3C518F1C7FEAC4A667BEB5FE7" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_3408.dyn" />
+            </Component>
+            <Component Id="cmp5FD0DECE76986DC24869D8F974862C1D" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{D7CEF887-4412-49F8-953A-CAC2649FE334}">
+                <File Id="fil1793010625609F6A4279BB1A3DDB70BD" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_3408.rvt" />
+            </Component>
+            <Component Id="cmp88E83370DB88C82BD2866771500A022D" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{40B490E6-D8CD-47BE-AD0C-6A05AB0970FB}">
+                <File Id="fil749000A9AD56B855BD5D33C1BC26A27D" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_3784.dyn" />
+            </Component>
+            <Component Id="cmp9006F42E9E8A2840D0606323D4E5BA2E" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{F48F0230-1262-42E3-883D-208BD3BBAB78}">
+                <File Id="fil5B7240E27ECC5F64E497D1C92940807A" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_4511_NullInputToForm.ByLoftCrossSections.dyn" />
+            </Component>
+            <Component Id="cmpF8C83E23949FCD626A323076D815C8BB" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{8102A5B5-FE1E-4CC7-BB3D-624EB0BA6768}">
+                <File Id="fil57E1963742A89C8456FBF5AD42297346" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_4566.dyn" />
+            </Component>
+            <Component Id="cmp05F2AF5986A65CC22D3C4FD61729B552" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{DC006FE8-FB54-4377-A529-94040ECFFD75}">
+                <File Id="filAA0C6D10365A72A9FF87F85CE2390BEE" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_4737_ReferencePlaneInWatchNode.dyn" />
+            </Component>
+            <Component Id="cmpF6F24651169CE66B071026BB82B1F3E4" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{ED7DB56A-AA46-460E-8B35-2B4A8879BFAB}">
+                <File Id="filBCBFDD7529C9E509751C789FA90EF472" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_529_GetFamilyInstanceLocation.dyn" />
+            </Component>
+            <Component Id="cmp57529E3212A7E1913C0C503817276125" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{58008950-F1D7-499F-B077-DC953881A37B}">
+                <File Id="fil4196A74FBAEBBCEB39F8D5943408A56C" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_529_GetFamilyInstanceLocation.rfa" />
+            </Component>
+            <Component Id="cmp381547D7D7393ACE19FEB63AAAC94A7C" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{31CD7FD8-8039-493D-9CE2-ECA412A4A4F8}">
+                <File Id="fil61B2343FA78B5446B030DF08BEE03A4F" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_66.dyn" />
+            </Component>
+            <Component Id="cmp065C6A07D1B2A197BCA96FCC7FA7A069" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{E4148F1C-0CEB-4DBD-9858-54AAD89E026B}">
+                <File Id="fil4A09D0865698099B5134AA8339B9B3AF" KeyPath="yes" Source="$(var.testrevit)\Bugs\MAGN_66.rfa" />
+            </Component>
+            <Component Id="cmp0C29287DAFF9C715B16D3CAEDA86436F" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{0D394465-DB27-4C7B-9CDC-C5A98A29AD75}">
+                <File Id="fil247F8A3F89AD80C685A6A6761BEDD253" KeyPath="yes" Source="$(var.testrevit)\Bugs\MarkerData.dyn" />
+            </Component>
+            <Component Id="cmp904454ECD6C6CF21A90B04EE9A5531B2" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{4188966A-6F18-4617-9C8F-8999AC5F8992}">
+                <File Id="fil4B78EA59B068F38FECD73C276338D92C" KeyPath="yes" Source="$(var.testrevit)\Bugs\mobius.dyn" />
+            </Component>
+            <Component Id="cmpAD2383589D9A109B219232C3ADCA82D3" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{538A3E01-17AF-4667-A9E9-D5247AB785D2}">
+                <File Id="fil5E23F774A7FCCAD7C4326BA5DD7136DA" KeyPath="yes" Source="$(var.testrevit)\Bugs\mobius2.dyn" />
+            </Component>
+            <Component Id="cmpC8384CC4A1608C899B8A02E4DF8A824C" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{593E4CA2-0939-4BBF-A566-B98F2A33D4C5}">
+                <File Id="fil818EEBB2D894F1BF7272F26913EA3638" KeyPath="yes" Source="$(var.testrevit)\Bugs\PlotData.csv" />
+            </Component>
+            <Component Id="cmpE98659A165E04DE4D8F514A3B4596F93" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{3A7D938A-213F-48DC-A1F8-267452E7D021}">
+                <File Id="fil5D0B618E7DF85E0180A4D888D3F797DB" KeyPath="yes" Source="$(var.testrevit)\Bugs\Revitnodes_ThroughCBN_2451.dyn" />
+            </Component>
+            <Component Id="cmp3005390862FCF585976DD712E910CBE9" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{569483E8-1FDB-4916-ACE4-BDB20139BC20}">
+                <File Id="fil25610BE206F99A63609C15B163BC7005" KeyPath="yes" Source="$(var.testrevit)\Bugs\SurfaceNew.dyn" />
+            </Component>
+            <Component Id="cmp1AC29C33AEA968AF2FEB1F0B1806E8E9" Directory="dirEE6D77FB14AD5FBC9120D3537733ADA8" Guid="{A96A4C82-F2C5-4E83-BC70-9C325D3E3AC2}">
+                <File Id="filDB1E7BA23756FA264D347C91FD92205C" KeyPath="yes" Source="$(var.testrevit)\Bugs\SurfaceNew.rfa" />
+            </Component>
+            <Component Id="cmp4C92BD6BCADAE845792C1DB921BAB41F" Directory="dir6A9D23A2B31FDE39E8472526D50CA9BD" Guid="{3F266FA9-B9D2-4D3E-A0AB-ADA66FF4FF2D}">
+                <File Id="fil4B274B7229E113B61FA9B3B9A47C4960" KeyPath="yes" Source="$(var.testrevit)\Core\LacingTest.dyn" />
+            </Component>
+            <Component Id="cmpE19B913390D98DB04046E14B977A2BA3" Directory="dir6A9D23A2B31FDE39E8472526D50CA9BD" Guid="{01EA2A16-7304-4F18-8CEF-98606ADDF8E3}">
+                <File Id="filBF14E70392A1DC9143D324D705A0A994" KeyPath="yes" Source="$(var.testrevit)\Core\SanityCheck.dyn" />
+            </Component>
+            <Component Id="cmp63351BAEA4FAA282E60DF5C5F6DB3E1F" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{8045298D-3419-4EE3-A6C3-01E03AC36A1A}">
+                <File Id="fil3DD3A5277B4A1E123B0D588427E20048" KeyPath="yes" Source="$(var.testrevit)\Curve\ClosedCurve.dyn" />
+            </Component>
+            <Component Id="cmp799510FF191E5A8A3BF7F38DDC21D62A" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{2572D965-DA9A-4D77-9621-65E0858A9F8F}">
+                <File Id="fil718D084EFBE425A6C918FF7D2FA33216" KeyPath="yes" Source="$(var.testrevit)\Curve\CurveByPoints.dyn" />
+            </Component>
+            <Component Id="cmpFB4B3D6A56CF588F87A17F2969D425D5" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{F9D32D4D-9564-4135-BFB8-5B6CF47527C2}">
+                <File Id="fil4D35C3C6F2C405ECD4C9AA5684FD644C" KeyPath="yes" Source="$(var.testrevit)\Curve\CurvebyPointsArc.dyn" />
+            </Component>
+            <Component Id="cmpDBE179D304B75878A91E67B6C1B1D029" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{AE2A7945-D6D7-426F-B6CE-1D39AB867EA7}">
+                <File Id="fil1DFEF51F2E73F7AD305A796FB742A99D" KeyPath="yes" Source="$(var.testrevit)\Curve\CurveByPointsByLine.dyn" />
+            </Component>
+            <Component Id="cmpC2BDD4A396EBBDFFFAD7E4C409F371F9" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{4816EEFB-2A2E-405D-938C-498826BC9C92}">
+                <File Id="filDD334DAC746DDEC564F8A43E84CBE829" KeyPath="yes" Source="$(var.testrevit)\Curve\CurvebyPointsEllipse.dyn" />
+            </Component>
+            <Component Id="cmp77633AE3D78975C535CB60BFBC2F8BF1" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{11EAE49A-94D3-4DC1-A811-9EF3F4B96D11}">
+                <File Id="filAF139933E638E8AA3DD23439E60808C7" KeyPath="yes" Source="$(var.testrevit)\Curve\CurveLoop.dyn" />
+            </Component>
+            <Component Id="cmp8AFAE28BA7E72D24C4A88BACECBF17BA" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{C76B897A-4A78-4CD4-91A2-E8FFC69E5B94}">
+                <File Id="filB07D1BA4FFA64F1AE5663A25C3C792B5" KeyPath="yes" Source="$(var.testrevit)\Curve\GetCurveDomain.dyn" />
+            </Component>
+            <Component Id="cmpDC9CCD192D8C4CFB963B7BDD37F226D8" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{3DBE4D63-0732-4A43-A43D-FB247329B469}">
+                <File Id="fil901AC7371639B4C49E6AB51C50BCC1B1" KeyPath="yes" Source="$(var.testrevit)\Curve\GetCurveDomain.rfa" />
+            </Component>
+            <Component Id="cmp7FFA678BE9CA0FDD9AC90193DBEE5EF9" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{700D14BF-8692-4DCB-BABA-C3FF5F86083A}">
+                <File Id="filD76F596C6C0952A0CCF2BDD51F05FC3E" KeyPath="yes" Source="$(var.testrevit)\Curve\OffsetCurve.dyn" />
+            </Component>
+            <Component Id="cmp4387122A0B5B42426512A8148D6117E3" Directory="dir5880478D497E63E65504617CEFA975B3" Guid="{4816D495-0FD8-4B77-B8A8-CC0EBD674683}">
+                <File Id="fil97FDA1120F7A31552DED16B6EDD97ED3" KeyPath="yes" Source="$(var.testrevit)\Curve\ThickenCurve.dyn" />
+            </Component>
+            <Component Id="cmpAF1D31F40682AD2025986CFF3BF0A918" Directory="dir1AEC8D9652C2C3F8B27F7BB8AD1E2CC0" Guid="{637380E6-CED0-43F3-B21B-5E5EA3490580}">
+                <File Id="fil60CC5DDFE71A3C81EF480836AACB82E6" KeyPath="yes" Source="$(var.testrevit)\DividedCurve\DividedCurve.dyn" />
+            </Component>
+            <Component Id="cmp17B1C6CB48894E369B39033222BEC22B" Directory="dir1AEC8D9652C2C3F8B27F7BB8AD1E2CC0" Guid="{04D7EEA6-8F58-4ED1-8815-4F77B248A54F}">
+                <File Id="filABD73698C87EC0BFF0E3DA26341CA2FB" KeyPath="yes" Source="$(var.testrevit)\DividedCurve\DividedCurve.rfa" />
+            </Component>
+            <Component Id="cmp7EE756C0CF67C2B3B386A12202E13856" Directory="dir69033523A964E88E627F9337CE066975" Guid="{867D4E39-E20E-4893-9A12-97A2E69CF70B}">
+                <File Id="filBA1AA4CE55DCFD4AE8A8A4FA2D616ACE" KeyPath="yes" Source="$(var.testrevit)\DividedSurface\DividedSurface.dyn" />
+            </Component>
+            <Component Id="cmpEB7FD77CE4319E0B0B1BF5EA9B3EC6FA" Directory="dir69033523A964E88E627F9337CE066975" Guid="{2642AAA3-6E27-4B7F-BBAC-88937112CFDB}">
+                <File Id="fil180E5AFDAF04427FDD8FAE6CA3366C51" KeyPath="yes" Source="$(var.testrevit)\DividedSurface\DividedSurface.rfa" />
+            </Component>
+            <Component Id="cmp03389910B8E023E38D5A3A78324FB0AF" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{9E905046-C716-41B6-A287-AAE515043BF5}">
+                <File Id="fil61A9C247D267216B093B61B58669C15F" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\BindingCloseReopen.dyn" />
+            </Component>
+            <Component Id="cmp943C19BC0F8BE4E882563BEE10446118" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{DD8E5F86-7C40-4267-A0D6-84769CFC2B64}">
+                <File Id="filC2454A7273E294A46B7B961031E2B55C" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\BindingCloseReopen.rvt" />
+            </Component>
+            <Component Id="cmp9D8CEE13ED03ADACEC597177F00B3D11" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{3AEA5B14-C10E-4371-9E49-778BF8553DE0}">
+                <File Id="fil646040B283D806FA8C7649DEC1CD7851" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\CreateDifferentNumberOfPoints.dyn" />
+            </Component>
+            <Component Id="cmpAE3C89B8E37E7FA2EB96E578C187F038" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{023A0E6E-CC39-4C53-9571-01A3A9F13F1B}">
+                <File Id="fil0AD6E2B6BA764D32FC0DA25B844F5714" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\CreateInDynamo.dyn" />
+            </Component>
+            <Component Id="cmp29CBFD99E5F4C5B92791C58DECA0E16A" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{A7E7A84D-9F61-4861-B578-C40B24CC9D5C}">
+                <File Id="filAE4FCDF5DE1ED77E74AFB35C87876E7E" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\CreateOneReferencePoint.dyn" />
+            </Component>
+            <Component Id="cmp00E6A7401622A4CB9890D7B8A8FBD9F2" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{C8D7824B-4829-415A-979A-C15341CF89FD}">
+                <File Id="fil0B9F3603C7B720EB54F6712FC9F2B8AC" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\CreateWallInDynamo.dyn" />
+            </Component>
+            <Component Id="cmp03CC0F6B6FB9A8B716FDD4767A6CB146" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{40EF91BB-2C29-439E-A189-C42C39973719}">
+                <File Id="fil486E294AEF2EB806B32DA12E3A2719F2" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\CreateWallInDynamo.rvt" />
+            </Component>
+            <Component Id="cmpA12617C18D44E5F8991F5D2E440F81FD" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{DA834660-B7C9-45B5-8DF9-071BD1982B78}">
+                <File Id="filD9B1D9DA1F1B1F6136452F18FDDD6916" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\ErrorToNormal.dyn" />
+            </Component>
+            <Component Id="cmpEAD41F39AD63B23476531B27D1E2249D" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{65B39B9E-E952-462C-9A0D-5A2967878A15}">
+                <File Id="fil85F21B1357367BC2A21E794522152502" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\magn-2523.dyn" />
+            </Component>
+            <Component Id="cmp8D272D24BCB81C2CB969F37140FFB1DA" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{897E5591-F825-4AD1-999B-179E36EBA1DF}">
+                <File Id="fil04D3A0146BDAAFC6BEFBACBE563FCA99" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\magn-2523.rfa" />
+            </Component>
+            <Component Id="cmp7959553EB43789EA21D0EA4F2B643ACD" Directory="dirB5166503418E55EDF57B5622A4FEC28E" Guid="{F9035214-9199-4710-921F-3682630A7661}">
+                <File Id="fil5C23740C931ECC77EA6B87C7DCFFEDE2" KeyPath="yes" Source="$(var.testrevit)\ElementBinding\SelectInDynamo.dyn" />
+            </Component>
+            <Component Id="cmpA6F64A9CD88AAE873C9380300926937B" Directory="dir5252BEE063054AA6E5CC3F4682DA31D2" Guid="{D23499B1-8644-4D47-A484-2030C02538BA}">
+                <File Id="fil0D6268563A15E878F83F5140ABB6B9B3" KeyPath="yes" Source="$(var.testrevit)\Face\FaceDomains.rfa" />
+            </Component>
+            <Component Id="cmpEBA9C832695F8895ADAD9F74BC912316" Directory="dir5252BEE063054AA6E5CC3F4682DA31D2" Guid="{40DC1ADC-DFFF-4458-99E6-17EAF1E780CA}">
+                <File Id="fil8B3A5974A8D55D3E9DF041A0A41F9748" KeyPath="yes" Source="$(var.testrevit)\Face\GetSurfaceDomain.dyn" />
+            </Component>
+            <Component Id="cmpB95C630269537ECBF706706F14231C94" Directory="dir5252BEE063054AA6E5CC3F4682DA31D2" Guid="{B1A6D8CF-1052-414C-BF88-8702F1336811}">
+                <File Id="filBD075C44C1DF97EBB0F5E710510EC71E" KeyPath="yes" Source="$(var.testrevit)\Face\GetSurfaceDomain.rvt" />
+            </Component>
+            <Component Id="cmp505F62F840F289EF0491CDB9559D932B" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{4EAB543D-DCFE-40BA-9123-240A261BA2DB}">
+                <File Id="filD5E5C19A02F207823E7794123F8053EE" KeyPath="yes" Source="$(var.testrevit)\Family\AC_locationInDividedSurface.dyn" />
+            </Component>
+            <Component Id="cmpE1C48EAA0DCB7CC9F457AE9F0B4086B1" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{F2AA598A-2AFD-4982-BDB9-B528756EBDDC}">
+                <File Id="filECD77E7C7D326FE9431C2A58DA22FC28" KeyPath="yes" Source="$(var.testrevit)\Family\AC_locationInDividedSurface.rfa" />
+            </Component>
+            <Component Id="cmpCBA57F434B54DE6CE0B9355258FE0418" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{144008A7-7290-43C7-BBB3-1437D58048F5}">
+                <File Id="filFFD8DDBF21C1E2648296AB150F9945BF" KeyPath="yes" Source="$(var.testrevit)\Family\AC_locationStandAlone.dyn" />
+            </Component>
+            <Component Id="cmp807FF2A5F47BCCCBB44CA04D9CACA777" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{D4BC8D93-670D-41DD-B68D-B575F98F9E38}">
+                <File Id="filC0EAD83A95CDEDE9B2165742F120F9A6" KeyPath="yes" Source="$(var.testrevit)\Family\AC_locationStandAlone.rfa" />
+            </Component>
+            <Component Id="cmp70F5469484E97F9A40D2941C086A894D" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{BDA1D93F-167C-4BC1-A1A2-E7C8A8E141B5}">
+                <File Id="filD16C477E8316F0DC285AC8D43A7A1A88" KeyPath="yes" Source="$(var.testrevit)\Family\AC_placementPoints.dyn" />
+            </Component>
+            <Component Id="cmpB969AA828CB17A227089103D57FC0B61" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{171D4D41-C610-4879-A2E5-28E989138251}">
+                <File Id="fil96DF24D0B7D504C845462E469D1B9A87" KeyPath="yes" Source="$(var.testrevit)\Family\AC_placementPoints.rfa" />
+            </Component>
+            <Component Id="cmp2682960DEFE21AFBB8FD3EEE15F4D227" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{20F6ACC9-4FF5-4E04-8122-FF868AD8E6A9}">
+                <File Id="fil8678EE7726C146694B15C06F84F83917" KeyPath="yes" Source="$(var.testrevit)\Family\GetFamilyInstanceLocation.dyn" />
+            </Component>
+            <Component Id="cmp1B150FDA58277352C601BAAF833F4C56" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{C0D6A63C-6DDB-4453-8EBA-11F6D9CB4336}">
+                <File Id="fil2893E77A54712A48CC092F99E19C00E4" KeyPath="yes" Source="$(var.testrevit)\Family\GetFamilyInstanceLocation.rvt" />
+            </Component>
+            <Component Id="cmp3ECD1FA8828628EB5CEE66181FC5EAC1" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{5642DD13-3A2D-4630-A500-9C130FB6806A}">
+                <File Id="fil8283E11667BA19FCFF571691CE5FEB6A" KeyPath="yes" Source="$(var.testrevit)\Family\GetFamilyInstancesByType.dyn" />
+            </Component>
+            <Component Id="cmp7392BEECE5C665BC35EC15F8FF4F1DEE" Directory="dir6CB1A7E58D9D6F1C07535EAB20C54843" Guid="{20ACDDAD-C003-4AA7-8266-1A6F7A6A9ED0}">
+                <File Id="filA796C53C3B66F8E71887D40A3C6C2E1C" KeyPath="yes" Source="$(var.testrevit)\Family\GetFamilyInstancesByType.rvt" />
+            </Component>
+            <Component Id="cmp1630215A603D5CA33484986B7DD386C0" Directory="dir273394D72F76D4F3435BBA33A2FB2861" Guid="{1CAB704F-8B1A-46FC-8AB5-EF19F217DB23}">
+                <File Id="filB7096897B34E3AD0F379C34FF45761FA" KeyPath="yes" Source="$(var.testrevit)\Geometry\GeometryCalibration.dyn" />
+            </Component>
+            <Component Id="cmp4B17989941E1694C017D3E5B3EB66434" Directory="dir273394D72F76D4F3435BBA33A2FB2861" Guid="{3FDE82D5-8D16-4792-AC3B-A70B0ED636AA}">
+                <File Id="filF3FA00ED2F7BC1FC1425C197A6A717C6" KeyPath="yes" Source="$(var.testrevit)\Geometry\GeometryCalibration.rvt" />
+            </Component>
+            <Component Id="cmp9A45B6FCFA2428CDF53E9C401445DDA7" Directory="dir904A3528B79A915C6A50C7C49A696E34" Guid="{BA24FAA3-A10E-45FB-98DA-39C1563EE49F}">
+                <File Id="filDA29DF868AD94B443BDC0580EF12224A" KeyPath="yes" Source="$(var.testrevit)\ImportInstance\ImportInstance.dyn" />
+            </Component>
+            <Component Id="cmp33AC00F9987961157E2102710953937E" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{C2BD32E8-E593-4B86-AC6B-0F9A9F932840}">
+                <File Id="fil50F09B9A677BD7E072627B60CA5675D0" KeyPath="yes" Source="$(var.testrevit)\Intersect\CurveCurveIntersection.dyn" />
+            </Component>
+            <Component Id="cmp3B34717339A8031A108BEAA8978B7951" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{96ABB73A-CC49-4430-9D6A-20597DB004C3}">
+                <File Id="filAEA3E42B30B9EE68128E5E3867B156CB" KeyPath="yes" Source="$(var.testrevit)\Intersect\CurveCurveIntersection.rfa" />
+            </Component>
+            <Component Id="cmpBC6173C831A01A1E433DBFBE35EE5D85" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{D8D711AC-18C6-43FB-9A2C-2EBFFBFE9333}">
+                <File Id="fil27BA7FC801734D8AA65728C11553C728" KeyPath="yes" Source="$(var.testrevit)\Intersect\CurveFaceIntersection.dyn" />
+            </Component>
+            <Component Id="cmp9C6B7BBA5EB6E2EF4ED50E6BFB47FCF2" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{24E3D344-9EE6-42DB-A9C4-7E03850C02F7}">
+                <File Id="fil2DAA517E03757ED55A5E85FDC4DE6BB2" KeyPath="yes" Source="$(var.testrevit)\Intersect\CurveFaceIntersection.rfa" />
+            </Component>
+            <Component Id="cmpD88802C1A011DAC0F37036DE81B036F2" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{36014685-2AB4-441A-B3F9-AABD516EE72D}">
+                <File Id="filFCC48F95C4C1BE847AC9D766E8E21FF2" KeyPath="yes" Source="$(var.testrevit)\Intersect\EdgePlaneIntersection.dyn" />
+            </Component>
+            <Component Id="cmp1C7CE4BB7ED384711334EE7D35F68C8F" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{1B24931B-9321-495A-BD74-7752B8CA144C}">
+                <File Id="fil81CE60E5E5548B03244A00C3F1854003" KeyPath="yes" Source="$(var.testrevit)\Intersect\EdgePlaneIntersection.rfa" />
+            </Component>
+            <Component Id="cmp9898866AB6E60B7B87618C73E49B9406" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{E4A09B84-CB08-4828-8C18-6C7A9FDF8222}">
+                <File Id="fil267978B76B498D86B055ABB8AC86D9E4" KeyPath="yes" Source="$(var.testrevit)\Intersect\FaceFaceIntersection.dyn" />
+            </Component>
+            <Component Id="cmp5D273AF266D87FE2EEB0D5C034E887BA" Directory="dirBADECAB85FBD775D3BC511FB8028C6A1" Guid="{21CFD9C1-3A0D-43E0-B267-8B05DA45A5E9}">
+                <File Id="filF8A6A89BA8F27E711D475E8136DA6DB0" KeyPath="yes" Source="$(var.testrevit)\Intersect\FaceFaceIntersection.rfa" />
+            </Component>
+            <Component Id="cmp59F5DEAE9027EAF08D9D8EB4C4A6B9CF" Directory="dir1F302FF4219B48861B869B26F5347BB0" Guid="{6EB7CD29-7EE0-4EBF-977B-2D1CEA2A4E1E}">
+                <File Id="fil2A6F6B6BA257F06E73348B2F4E9F5056" KeyPath="yes" Source="$(var.testrevit)\Length\Length.dyn" />
+            </Component>
+            <Component Id="cmpC6CE6C85C47DDDDD698F6A598A1E7CED" Directory="dir163E39686E02F6C2F1C88ACC5D778F78" Guid="{223E0837-901F-4686-9191-79ABB0B7BB01}">
+                <File Id="fil40F1707A897BB6A1CE34460DDEA93B79" KeyPath="yes" Source="$(var.testrevit)\Level\Level.dyn" />
+            </Component>
+            <Component Id="cmpA3C8622CD2656C7C87864F50B8520787" Directory="dir163E39686E02F6C2F1C88ACC5D778F78" Guid="{5D6856DC-5D7D-458D-B626-A6098ED4E316}">
+                <File Id="fil1D606FBFA887C74FD44AF07B9349969B" KeyPath="yes" Source="$(var.testrevit)\Level\Level.rvt" />
+            </Component>
+            <Component Id="cmpEFBC85A984ED91D649964D85C94C2294" Directory="dir163E39686E02F6C2F1C88ACC5D778F78" Guid="{2261D49A-66A7-4B54-9BBC-40909FA8E306}">
+                <File Id="fil522076B09282024FB3F7E64DAEFB518E" KeyPath="yes" Source="$(var.testrevit)\Level\Levels.dyn" />
+            </Component>
+            <Component Id="cmp470FA20175CE5B39B8AC2227499C5673" Directory="dirA43AD26BA366DB4C0B0947DE0C0C66BF" Guid="{599ED7DC-17BA-4969-BFAB-CF14B031F4D3}">
+                <File Id="filFA196F1C17612E7D6331D01FC7A2E05D" KeyPath="yes" Source="$(var.testrevit)\Material\GetMaterialByName.dyn" />
+            </Component>
+            <Component Id="cmp4DB6B68725BEFB7420C244D0122163C9" Directory="dirA43AD26BA366DB4C0B0947DE0C0C66BF" Guid="{978C868F-B2C4-4EAD-B881-FB2199314E99}">
+                <File Id="fil97F32A8FA308CCA1F20619951B4D5A82" KeyPath="yes" Source="$(var.testrevit)\Material\GetMaterialByName.rfa" />
+            </Component>
+            <Component Id="cmpC11C6C1923736288F4F8CA9A4DF0D7D3" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{D8196DEC-932D-43DD-800B-68E2336562D0}">
+                <File Id="fil01DB63874A7AE53FE526788141701863" KeyPath="yes" Source="$(var.testrevit)\Migration\BoundingBoxXYZ.dyf" />
+            </Component>
+            <Component Id="cmpE6E8143967258DA42307894F2B40A6BC" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{121B990A-12B7-40BB-B01E-AD591BADA400}">
+                <File Id="filC228D15F6C565C641AD0F2346F8B6068" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Analyze_Daylighting.dyn" />
+            </Component>
+            <Component Id="cmp2EBE7C080AFD7651D71D37E731D2427E" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{401FFC44-64BD-48FF-A6F3-AE38BB3973E4}">
+                <File Id="fil099213785C1A54D003BBD9DC64507702" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Analyze_Display.dyn" />
+            </Component>
+            <Component Id="cmpBA51A0EB49D677E3927AE7BDA816115C" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{8966F3A9-1DAF-411B-B416-251D708A05A9}">
+                <File Id="fil80B6CBB881D4CE9517185A1A417C17A9" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Analyze_Measure.dyn" />
+            </Component>
+            <Component Id="cmp8BB1DD1FE581ABCB3AC5CE2A02A7D8DC" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{078C618F-525E-4EE3-98CF-282EF1FD1CCB}">
+                <File Id="fil6779C340D1E66109E4A97D84A8E3DA33" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Analyze_Render.dyn" />
+            </Component>
+            <Component Id="cmpD4E2CE652098E8D2E89B3B1659FE9B9C" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{A9194E3E-1CB3-450C-9BCC-0CD067C01CBD}">
+                <File Id="fil1F435E1EE263CC279FB6090D8D31D698" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Analyze_Solar.dyn" />
+            </Component>
+            <Component Id="cmpC9ADE61E7016E18E8C1DCC4B1B3F9DAA" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{94B5EBBE-D091-4629-AD9D-72EFE89409A7}">
+                <File Id="fil167209166884566CBEF235CDB0B7CBA2" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Curve.dyn" />
+            </Component>
+            <Component Id="cmpDD823758CA4ED12C9033F41E7B5C02C6" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{2B4EE2A3-2A7B-4D28-9691-59283E7D06EF}">
+                <File Id="filDD736EA75A3A865EC41E286C85A1CD78" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Experimental.dyn" />
+            </Component>
+            <Component Id="cmp24751FAB090C0AA4E1EE4A8EBDECA2AC" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{DA3A6BC3-26AF-4024-990D-8AA2EF1D1622}">
+                <File Id="fil23DED4B82CF114830732648868B9A13D" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Intersect.dyn" />
+            </Component>
+            <Component Id="cmp81434A5FE1D606AE9EA79975995B4B2F" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{4F40EFA1-4D30-42A7-90B4-EE55037A1F8C}">
+                <File Id="filEA5A941D92A0FEB29ED8254AFB041C46" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Point.dyn" />
+            </Component>
+            <Component Id="cmp91E83991F59BA4B8D014E88F96DCD180" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{59B0F208-BD5D-44BE-AD46-848CBA377569}">
+                <File Id="fil181E7F18180EC10AB031090A1B41AC83" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Solid.dyn" />
+            </Component>
+            <Component Id="cmp8B05310DE25219DD40B838F9A1600D36" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{300C4C17-AB1E-4B68-8721-5F487134EFCB}">
+                <File Id="filBFF6F3E671C041EEDDE5238942D71E23" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Surface.dyn" />
+            </Component>
+            <Component Id="cmp1800127F3A83A767769E894184496D9D" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{F890CA2B-D759-41E1-92AC-FA9267FE7898}">
+                <File Id="fil58815717F77922DEAFC74AC73C668836" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Geometry_Transform.dyn" />
+            </Component>
+            <Component Id="cmp15B863B05AF4E958B2175748D0CDE27A" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{7FF3286D-75D1-4DA3-BEC6-7B60D0382B17}">
+                <File Id="filC42B4F530D804A44635B131DB85C456A" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_API.dyn" />
+            </Component>
+            <Component Id="cmp03B91DEB4F147BC53817400ADE6416F8" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{69758987-54B3-4250-B934-322495FF00B0}">
+                <File Id="fil37A85917E9318721499B88D3EC48E4B7" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Bake.dyn" />
+            </Component>
+            <Component Id="cmp8FFFCDED56E1BDDD266950ED22050B1B" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{19361308-2F91-4847-8599-82D81520E3DE}">
+                <File Id="fil066D394AFD180C7490FD7FEE4A0EA870" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Datums.dyn" />
+            </Component>
+            <Component Id="cmp5AF5740DE808C7998EC73CF0412AE4F6" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{0021B5D4-A0BD-4D47-BBB2-DCF321180046}">
+                <File Id="fil3D0C20D3FF48CF0A99DA36255393979D" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Document.dyn" />
+            </Component>
+            <Component Id="cmp2786B3B455F1FC6E80C373C84E7CFD25" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{8D4CD591-B50D-4651-8A6E-9739A932CA0E}">
+                <File Id="fil7EE36711B6371916EFC110E0AEE17340" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Families.dyn" />
+            </Component>
+            <Component Id="cmp3A60B54BEE091044CB00A490DF572B87" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{D03C3E62-F489-4297-8FEA-5BA8CEC86410}">
+                <File Id="fil141EE2A171028456B5EE9AF6F31D5DA7" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Referemce.dyn" />
+            </Component>
+            <Component Id="cmpF5F099AEFD86D14CAF5364D705050399" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{17A0E057-FA17-411E-9BEC-10132223F444}">
+                <File Id="fil60E017D97A43BF48586D93F31312D44B" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_Selection.dyn" />
+            </Component>
+            <Component Id="cmpF9EA2089EE10D104DA86A71E6A8B4315" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{348C3F60-2B03-49B4-8756-6C8F1336FE5E}">
+                <File Id="fil8473440205B8D0EA6C017B0EE1746D1E" KeyPath="yes" Source="$(var.testrevit)\Migration\TestMigration_Revit_View.dyn" />
+            </Component>
+            <Component Id="cmp4887B8727003F1BB1E843B3F0BD01EA5" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{46AE8CCE-EF03-4EEC-9AB5-E63E76591804}">
+                <File Id="fil884B6E6C8A994712585B938468812870" KeyPath="yes" Source="$(var.testrevit)\Migration\XyzFromListOfNumbers.dyf" />
+            </Component>
+            <Component Id="cmp530CD28E3389FA3FF349F201FE50F937" Directory="dirC7ADA1DCEB3F57BED3E48AF7D3580687" Guid="{5BF30ECD-0A6D-430D-AF44-C52A0D72DEB5}">
+                <File Id="fil6053FB8F97E2623ED6C2F1C46646C751" KeyPath="yes" Source="$(var.testrevit)\Migration\XyzGrid.dyf" />
+            </Component>
+            <Component Id="cmpAFE3D3EE1FF70DF63B43B8B8E5C82D62" Directory="dir611567803F8C2A0D400CB4BD0B3B0C40" Guid="{B4137F73-2BBD-4C83-BD97-4ED97A378C42}">
+                <File Id="filDD1230EA85B24FB7E2CFB6D15307DFCE" KeyPath="yes" Source="$(var.testrevit)\ModelCurve\ModelCurve.dyn" />
+            </Component>
+            <Component Id="cmp7E722D3BEEB4A9B91BF22DD0F8C3FACC" Directory="dirA91A111C844F72DF33B8AB3A5F3892A0" Guid="{4DDE99BA-015A-4AA5-A389-67D32CC4FA4A}">
+                <File Id="filFD37192A578607E63038FFD820A4BE6E" KeyPath="yes" Source="$(var.testrevit)\ModelText\ModelText.dyn" />
+            </Component>
+            <Component Id="cmp5E0A2C75D9DDDA0BA552EEE9F38BA35E" Directory="dirA91A111C844F72DF33B8AB3A5F3892A0" Guid="{CCD66639-4B4E-4A14-B9A0-6368286C419A}">
+                <File Id="filB14DFC4ADF039DD5CDEE509D26D74E81" KeyPath="yes" Source="$(var.testrevit)\ModelText\ModelText.rfa" />
+            </Component>
+            <Component Id="cmpD89A4337FB7AECDA2D193F34B8C84D31" Directory="dirF66795670C207A025B5C31E71B33C830" Guid="{7E0A5C31-617E-4EBC-936B-3A5381367D17}">
+                <File Id="filF7B2EA13C658EB696C5CD6C22786D56B" KeyPath="yes" Source="$(var.testrevit)\Python\Python_add.dyn" />
+            </Component>
+            <Component Id="cmpB98FAF03CD96973A5928518AABAB788F" Directory="dirBF120BD7F33F839DB1D4AEF2F0E86B3A" Guid="{D71AAA53-BD07-4C5B-8EA4-F0B9CAA479A7}">
+                <File Id="fil42F3A564299949C4466E471EE06134F8" KeyPath="yes" Source="$(var.testrevit)\RayBounce\RayBounce.dyn" />
+            </Component>
+            <Component Id="cmpEED1B4AFBFE39A3B98C83341322C2177" Directory="dirBF120BD7F33F839DB1D4AEF2F0E86B3A" Guid="{6A20A862-71F5-4042-A6B9-A578504522E7}">
+                <File Id="fil47FCDEB69EC41F8B39890A96FA3638A6" KeyPath="yes" Source="$(var.testrevit)\RayBounce\RayBounce.rvt" />
+            </Component>
+            <Component Id="cmpF78EA04BC820EB1C1A91C36552D81C26" Directory="dir32B5DC4971D474FC29AE8A737DA2921C" Guid="{91639760-805D-4699-80B3-5C116ABDBA59}">
+                <File Id="fil89C6DE9A1EE024843EC38D1F101A8059" KeyPath="yes" Source="$(var.testrevit)\ReferenceCurve\ReferenceCurve.dyn" />
+            </Component>
+            <Component Id="cmpF1FA029D88BF05084CC77A13622DB4F4" Directory="dir1F35200423735C43192FDB092734B2B8" Guid="{72E58369-FBFB-44A9-A0CC-143F8D2D8EC2}">
+                <File Id="filB1BDBD5C2A80DA5D92CBFF1239F51E3F" KeyPath="yes" Source="$(var.testrevit)\ReferencePlane\ReferencePlane.dyn" />
+            </Component>
+            <Component Id="cmp363CCF83FF2E5253C3A0184554892866" Directory="dir1F35200423735C43192FDB092734B2B8" Guid="{F1F5158C-9EC2-4503-9FB9-44FC2B66F086}">
+                <File Id="fil18A741B3963CF1B53E01EB9FB8A660AA" KeyPath="yes" Source="$(var.testrevit)\ReferencePlane\ReferencePlane.rfa" />
+            </Component>
+            <Component Id="cmp781C822C1591512CF68A0F9F94EC5356" Directory="dir56E73A98DD199CEC487AC64CEA2DA67E" Guid="{1AFDE2B3-7BEF-4326-81F4-00904E08A74A}">
+                <File Id="filADE4EEF84849203CBDB0DA0FB6FF7846" KeyPath="yes" Source="$(var.testrevit)\ReferencePoint\DSReferencePoint.dyn" />
+            </Component>
+            <Component Id="cmp308C53F94780EAA93A9A273467EF7471" Directory="dir56E73A98DD199CEC487AC64CEA2DA67E" Guid="{B60A4F54-C095-4F8D-B67C-58EEA967F635}">
+                <File Id="filBBE8DCDFB65A42A65CC7CA688428C690" KeyPath="yes" Source="$(var.testrevit)\ReferencePoint\ReferencePoint.dyn" />
+            </Component>
+            <Component Id="cmp0DC34CF0A545404C91C02C927FAF8991" Directory="dir123AE08C385C6F861610B77B1FAC283E" Guid="{E0D0C89B-7909-4CEA-A6CE-3C95E8C73FD6}">
+                <File Id="fil22C0CE5DE6C4E80EE1D786CF8513565A" KeyPath="yes" Source="$(var.testrevit)\regression\BasicRegressionTest\BasicRegressionTest.dyn" />
+            </Component>
+            <Component Id="cmp5BE317333F776727B4B2AA3E9D16C960" Directory="dir123AE08C385C6F861610B77B1FAC283E" Guid="{ED3E410B-0FA7-4A4D-8D49-F88083FBB7CC}">
+                <File Id="fil16452B932E463F91267BD0C1CE377D43" KeyPath="yes" Source="$(var.testrevit)\regression\BasicRegressionTest\BasicRegressionTest.rfa" />
+            </Component>
+            <Component Id="cmp001DBCEC8C68F729D0DF3EEB8018D84B" Directory="dir5DB88E52DFCF0A6DD9B0E33CA9F01056" Guid="{2492D65F-7BCE-4B07-AB7B-5F64BB81F57B}">
+                <File Id="filF7D7322407F800FABD021D1F1698797E" KeyPath="yes" Source="$(var.testrevit)\regression\MAGN-3488\MAGN-3488.dyn" />
+            </Component>
+            <Component Id="cmpCEC2981229EA50C2676D751351E3880B" Directory="dir5DB88E52DFCF0A6DD9B0E33CA9F01056" Guid="{CE8C763A-AA34-4458-8BAE-600CD354C282}">
+                <File Id="fil6DF6CB526130A583540C6A6E1192084A" KeyPath="yes" Source="$(var.testrevit)\regression\MAGN-3488\MAGN-3488.rvt" />
+            </Component>
+            <Component Id="cmpA066E59171925AB5389AF73E899FB9DA" Directory="dir0084AECE9D60D1C93C433FDB24B5D78F" Guid="{6688AAC0-E42F-4B50-ABF4-13F4DDA5497E}">
+                <File Id="filE21FFC3A0E7837C5D51B51F2B84E8C94" KeyPath="yes" Source="$(var.testrevit)\regression\MAGN-3489\MAGN-3489.dyn" />
+            </Component>
+            <Component Id="cmp45292ED5365A3BAC2CEE10A73C4C103F" Directory="dir0084AECE9D60D1C93C433FDB24B5D78F" Guid="{4995F6C6-49FE-476E-8A1B-3CC6B1A9FF5D}">
+                <File Id="filB1F354EC4EF5A1819C3D2A788AFEBCF5" KeyPath="yes" Source="$(var.testrevit)\regression\MAGN-3489\MAGN-3489.rvt" />
+            </Component>
+            <Component Id="cmp8CDB186AD3E893F3B1BD9B1F68D404EE" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{7DE7F30F-10F6-4A82-B030-D01E80A8F8EB}">
+                <File Id="fil3EA54413E130408D7EF151C2763AAC62" KeyPath="yes" Source="$(var.testrevit)\Samples\2dDomain.dyn" />
+            </Component>
+            <Component Id="cmpB84641801C4A91268A9361FD285C4516" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{847D5993-E079-4E2B-98C0-2B7793663DC8}">
+                <File Id="fil30181903A9B79CEDCF3A8A2A80F96734" KeyPath="yes" Source="$(var.testrevit)\Samples\all curve test model curve.dyn" />
+            </Component>
+            <Component Id="cmp76C81B38FBEC213FC0A58814C50F19FD" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B23E58A9-30C1-4006-8AA6-5701C3B63D61}">
+                <File Id="fil3A512181F03097EB2B539635D8B27E3B" KeyPath="yes" Source="$(var.testrevit)\Samples\all curve test.dyn" />
+            </Component>
+            <Component Id="cmpADE78D3DB49FDD594C0D54F66D60DC46" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{F4CD38FE-9A5A-4038-8FC3-3D543A37619A}">
+                <File Id="filCE58226F3817762AA1765A63A598D3AA" KeyPath="yes" Source="$(var.testrevit)\Samples\AllCurves.0007.rfa" />
+            </Component>
+            <Component Id="cmpB4F02CE65EC8850518C8F442AA5856BD" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B45347DD-BF34-483C-A6E2-3CE2796F8BF2}">
+                <File Id="fil8BAE4F607531496E81DB1F560E817DF2" KeyPath="yes" Source="$(var.testrevit)\Samples\AllCurves.0008.rfa" />
+            </Component>
+            <Component Id="cmp06FE490C0F4F760BE45D3F2E854A7EC8" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{7DB533C4-6100-47B6-ADC2-78E993F5F8BA}">
+                <File Id="fil945156C3D56D529A655B789564E3EFF1" KeyPath="yes" Source="$(var.testrevit)\Samples\AllCurves.rfa" />
+            </Component>
+            <Component Id="cmpC54FBA544C174B9CAFA4DD6B3FEDEA7C" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{5CE3D247-062A-47D4-8D49-EFE8B637A249}">
+                <File Id="fil6CCDBDEDD8BBD1E9FECE4A5AC34906CB" KeyPath="yes" Source="$(var.testrevit)\Samples\Arc and Line from Ref Points.dyn" />
+            </Component>
+            <Component Id="cmpC7C12026112BC2A07032A056B44CAA6B" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{7AFF77CD-A394-4D04-B36E-4575D9E07F13}">
+                <File Id="fil6F8841A7561A10B783F21CD1199CA4DF" KeyPath="yes" Source="$(var.testrevit)\Samples\Arc and Line.dyn" />
+            </Component>
+            <Component Id="cmp7EAB19F8D9E22BD7D777E8F52E4EBAFC" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{AC83D330-EF09-4B01-874C-D0097231CED0}">
+                <File Id="filFDE380B98E0E3AFBF4DB3586E5FC7855" KeyPath="yes" Source="$(var.testrevit)\Samples\Arc from Ref Points.dyn" />
+            </Component>
+            <Component Id="cmp30ACD8B8979CAE616163692238112763" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{76EA2D32-1BC7-4B86-A91F-771650855FAC}">
+                <File Id="filBD77951B24F34982AE7C3F5F0F04B887" KeyPath="yes" Source="$(var.testrevit)\Samples\Arc.dyn" />
+            </Component>
+            <Component Id="cmp84D9D600B8DAB5E128DA0E090644599B" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{0FF0B3DE-C181-48F3-9481-A045D3998738}">
+                <File Id="filB931988578B64A77CFB54A82771FD92C" KeyPath="yes" Source="$(var.testrevit)\Samples\AttractorLogic_End.dyn" />
+            </Component>
+            <Component Id="cmp48E586DE265A41F9EE4FAE8A52CF2476" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B6D945CB-EA74-46E3-8BD8-435A802A71C4}">
+                <File Id="filE1D39DC9D3C90CCEE9D44427171DB25A" KeyPath="yes" Source="$(var.testrevit)\Samples\AttractorLogic_Start.dyn" />
+            </Component>
+            <Component Id="cmp8EA300F24E6510F55CA1F78D789A0BBB" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{9E29A8A0-A440-4709-8D32-1BB3F039063C}">
+                <File Id="fil2CBF19974970EA76DFE1DCE9EB1E0AFB" KeyPath="yes" Source="$(var.testrevit)\Samples\circle.dyn" />
+            </Component>
+            <Component Id="cmp188A5B1C31895E1B8001FDC0AB6C7DCD" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{C4444AAA-688B-4DFF-9185-1B52D4DC7543}">
+                <File Id="filEF35B6CBA1E9BC9D0E7DB1105C6E9344" KeyPath="yes" Source="$(var.testrevit)\Samples\connect two point arrays without python.dyn" />
+            </Component>
+            <Component Id="cmp2D35299EFA3583C31E5A91FC87B9C871" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{2DA2F96C-053E-43AC-B5DC-EA80AEE2E1C2}">
+                <File Id="fil6814BAEFB064802794B1BE2E550D2F91" KeyPath="yes" Source="$(var.testrevit)\Samples\connect two point arrays.dyn" />
+            </Component>
+            <Component Id="cmp43533A9FD09D36FC7BEC2E2F3553FAFD" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{3D009B2D-A8B9-437D-BE9F-1B3F31A43A8A}">
+                <File Id="fil650BCA083CF246C917F6372CBEBA08DE" KeyPath="yes" Source="$(var.testrevit)\Samples\create sine wave from selected curve.dyn" />
+            </Component>
+            <Component Id="cmp1AF2403B6B35E63688ED9A9E919BD839" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{F8297169-E165-4E52-9303-2575DEB6AB13}">
+                <File Id="fil9D58D861D8859538165DD2BB0B9FFF55" KeyPath="yes" Source="$(var.testrevit)\Samples\create sine wave from selected points.dyn" />
+            </Component>
+            <Component Id="cmp55A35BFCB16C46A20C92A45A6849344E" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{7713FED1-D865-4FE9-8D80-E599D53AD160}">
+                <File Id="filC28EF66A6B0071912A4D3F7297019E1F" KeyPath="yes" Source="$(var.testrevit)\Samples\createpoint-end.dyn" />
+            </Component>
+            <Component Id="cmpF7FF9D5378AE326B7725C974D4364735" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{71FFE9CB-34E9-438B-89A4-A1A942A2B381}">
+                <File Id="fil8E8F3E4C88D8360D3E4C3A262BA5DF53" KeyPath="yes" Source="$(var.testrevit)\Samples\createpointend.dyn" />
+            </Component>
+            <Component Id="cmp4371487224FA4CC63B06CA22398D8EA8" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{A3A21721-4D57-4DC5-83F6-9A8FA1EE3F99}">
+                <File Id="filA510AD1ECD047EB817FE49EBF4B9167D" KeyPath="yes" Source="$(var.testrevit)\Samples\createpoint_sequence.dyn" />
+            </Component>
+            <Component Id="cmpC29C8C081CD7F758C189FF9FDFBBBF6F" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{915D8D65-2FB0-4B71-9C0A-0678A7F098D4}">
+                <File Id="fil1B9AB919FD555D8A72665D55A7799532" KeyPath="yes" Source="$(var.testrevit)\Samples\CSVtoStuff.dyn" />
+            </Component>
+            <Component Id="cmp2825A152CF6FBFFC0BA9BD161FA841B2" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B6BD3009-C1E7-4D28-A5ED-32CFF100D778}">
+                <File Id="filF614B8024EE02FF8A1832C7AA046D1E6" KeyPath="yes" Source="$(var.testrevit)\Samples\DaylightingExtractingData.dyn" />
+            </Component>
+            <Component Id="cmpB6420B592967F5042510459F9FEDAFD2" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{2FA97649-7E02-43D4-8824-252DC34853A8}">
+                <File Id="filDEEFFA5C75383576D4529A394855ABBA" KeyPath="yes" Source="$(var.testrevit)\Samples\DaylightingMinimal.dyn" />
+            </Component>
+            <Component Id="cmp5139A8E75E8A98F8F0038682B76B34B9" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{D9FDEB13-6800-4CFD-992A-546D1053DDA2}">
+                <File Id="filB626E19427A83EF3D7CEF0B91A6D178F" KeyPath="yes" Source="$(var.testrevit)\Samples\divideselectedcurve.dyn" />
+            </Component>
+            <Component Id="cmp5C35B9D49EEB4F780AF5823C8B5EEFF0" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{DD7DEEDE-0CF5-4355-AAD8-777EFAECC97B}">
+                <File Id="filAF7C34DE63A75DFFD5CF7F6CF68E6F35" KeyPath="yes" Source="$(var.testrevit)\Samples\DivideSelectedCurve.rfa" />
+            </Component>
+            <Component Id="cmp7048E04906F9E7C8A4954294386BE1EF" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{03E93EC7-1898-4E7F-A117-0302F9049EC1}">
+                <File Id="fil3E65BD4B7C5C48B6EDB60D4E1448A7A5" KeyPath="yes" Source="$(var.testrevit)\Samples\DynamoSample.rvt" />
+            </Component>
+            <Component Id="cmpC7F38C8EFE3D413C5914FF158E528FC3" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{C21B6563-D43F-4929-8363-2E307BAF2433}">
+                <File Id="fil5811D4400CABEAB8332611019E05DE45" KeyPath="yes" Source="$(var.testrevit)\Samples\ellipse.dyn" />
+            </Component>
+            <Component Id="cmp13C1036BC14D664BB70DA0F829DA0EA2" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{A0FE4CE9-3330-4047-B6CB-1AEAEA2E0965}">
+                <File Id="filF6B9DDCC103E8589EB814A2CB42610DD" KeyPath="yes" Source="$(var.testrevit)\Samples\ExceltoStuff.dyn" />
+            </Component>
+            <Component Id="cmp0B43CD795106BC85953095A42A5CECE2" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{BE63E8BB-24DD-4216-8BD5-38C59986D1A7}">
+                <File Id="fil82A02BBB7AD35A5F825EC8F8C14E551F" KeyPath="yes" Source="$(var.testrevit)\Samples\FormFromCurveSelection.dyn" />
+            </Component>
+            <Component Id="cmp6BD9AAA917009E0EF00133BE66F79319" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{45A1AF10-7F74-4A4C-BA8B-0A59F0C69CD4}">
+                <File Id="filFCE497729743C9849A68F48F80BB0BF7" KeyPath="yes" Source="$(var.testrevit)\Samples\FormulaCurve.dyn" />
+            </Component>
+            <Component Id="cmpCC7FD22FF52DA76B86FD674C61004E82" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{EADE04FB-8B87-464E-B119-232874EE13C1}">
+                <File Id="filA0E2591E2590A338DEF7EE66A3F33AAC" KeyPath="yes" Source="$(var.testrevit)\Samples\Geometry_Curves.dyn" />
+            </Component>
+            <Component Id="cmpC8B2C26A53109627EA9D3911C67A2E01" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{8310DF05-E34B-47B8-B21D-A3AEC3AD7D3B}">
+                <File Id="filE9D91A91844B3084CF4082A2A7BD323D" KeyPath="yes" Source="$(var.testrevit)\Samples\Geometry_Points.dyn" />
+            </Component>
+            <Component Id="cmp236F4498D39DE64F9499FCC4D18C27BC" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{EC1AC4F7-67AD-43D4-98C4-BD9D5BED98ED}">
+                <File Id="filF15E180F98C8F18D9B4CD75A36788911" KeyPath="yes" Source="$(var.testrevit)\Samples\graphfunctionandconnectpoints.dyn" />
+            </Component>
+            <Component Id="cmpF6511D6E264CE2D8F11DCA321EB9A39B" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{8BC1AB39-18FA-4534-9C7C-F62E69D6B21E}">
+                <File Id="fil583570536EF728E0E14E1492279DA688" KeyPath="yes" Source="$(var.testrevit)\Samples\helix.csv" />
+            </Component>
+            <Component Id="cmp5F03192BAA539ECDCA8E75B5E63A9C85" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{F60C1157-A5A3-468C-B541-16027ADE0417}">
+                <File Id="filB8AFAD491A26EC3528EFDB7AC7EBC90A" KeyPath="yes" Source="$(var.testrevit)\Samples\helix.xlsx" />
+            </Component>
+            <Component Id="cmpB57EDDDC2844C3447971943005A44975" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{2E8A6F2A-07D1-41DF-A4FF-3A3EC668D18C}">
+                <File Id="filC5672A1096E4A274D8C175D40E415F68" KeyPath="yes" Source="$(var.testrevit)\Samples\helix_smaller.csv" />
+            </Component>
+            <Component Id="cmpC2094E89894D9C972114E3D563D4335E" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{F1BFB369-2314-498C-9720-1EF2F0EDA045}">
+                <File Id="filA1BD080D48824712C22546F62DB3C282" KeyPath="yes" Source="$(var.testrevit)\Samples\icosohedron_points.csv" />
+            </Component>
+            <Component Id="cmpE900FF65FC1954A3FCBB6F409B103EE7" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B1C62A09-B222-4BC5-BD04-54D4CD34D5AD}">
+                <File Id="filE7A6EA2B80C83640E1D0D88028B31EB5" KeyPath="yes" Source="$(var.testrevit)\Samples\IndexedFamilyInstances.dyn" />
+            </Component>
+            <Component Id="cmpC5577D065B72E44A0421177CE45800D1" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{478DDB25-D133-4BD1-B8F0-FA4D449D0504}">
+                <File Id="fil04B548AE68AAB14A79F3C43BC8D9D596" KeyPath="yes" Source="$(var.testrevit)\Samples\IndexedFamilyInstances.rfa" />
+            </Component>
+            <Component Id="cmp9E469C3E15F3437556CFCAF21211051D" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{F2823ACD-588D-4237-9F63-8BA10726CCB4}">
+                <File Id="fil010AD133F6BA8F4F24522070D70B38E4" KeyPath="yes" Source="$(var.testrevit)\Samples\instparam.dyn" />
+            </Component>
+            <Component Id="cmp2170785F2832C3458023391588E9CF61" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{BA3832B2-B031-4878-BA9D-0D25A5C8A42F}">
+                <File Id="fil6B2F52B9CFA5F5E260CE651EC0F0F041" KeyPath="yes" Source="$(var.testrevit)\Samples\instparam.rvt" />
+            </Component>
+            <Component Id="cmp563D45874C89DFE0127BE562DD99A98E" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{9561BE4A-8A2F-4127-83EC-E2DC43936E8E}">
+                <File Id="fil5F5E9F0481ED3BC36C60A060CA3E4472" KeyPath="yes" Source="$(var.testrevit)\Samples\instparam2masses.dyn" />
+            </Component>
+            <Component Id="cmp9C804BBA430455D2908A5F2C36898DA2" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{5DAA59E4-AB87-4E67-8B49-396EF7DE098F}">
+                <File Id="filECAD2E4A534F8974765FF729906DE0A0" KeyPath="yes" Source="$(var.testrevit)\Samples\instparammassfamilies.rvt" />
+            </Component>
+            <Component Id="cmp386783C0DD7C0B84FCFAABBCAAD39A52" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{61D3B634-A12E-4064-8E49-F288CCCA6557}">
+                <File Id="filDC17EA37E14235A2A6B412874BFB189F" KeyPath="yes" Source="$(var.testrevit)\Samples\refgridsliders.dyn" />
+            </Component>
+            <Component Id="cmp5CCED92FC730121169FD45FE3C39A525" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{D03FDDDC-2898-414B-9CD1-B9607FD354F3}">
+                <File Id="filFA4A71481FA1A2020209F913B40FD013" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_Adaptive Component Placement.dyn" />
+            </Component>
+            <Component Id="cmp7450DCF17D5CF8719702DD1F87EEB4F7" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{6467A594-8868-484A-BEAA-74878CEBF9CB}">
+                <File Id="fil5D83ED0E1BB2D04F3A221724248F0290" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_Color.dyn" />
+            </Component>
+            <Component Id="cmpFDC2443B499CF841A9D6465E1CCA8570" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{3AEEE734-1EE5-4AD6-B689-768930EE6D61}">
+                <File Id="fil042CC41A1FDB7AB09BFF478933EC033D" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_Floors and Framing.dyn" />
+            </Component>
+            <Component Id="cmpD35F3FFB7B07A214BF5F7C270C7A4CD1" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{CB62372F-49A8-4111-95C3-CB7769E0767E}">
+                <File Id="filA57E7994718C82E3C6EB78B042CF355B" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_ImportSolid.dyn" />
+            </Component>
+            <Component Id="cmp7347BA184F078903EA7F4120C4789948" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{B2B0FA05-50F3-40CC-B2E8-52E3F6A0CD08}">
+                <File Id="fil12912D648F0F1A892B2833FA5CA27203" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_PlaceFamiliesByLevel_Set Parameters.dyn" />
+            </Component>
+            <Component Id="cmpDA98736FFDE174851C2AF073D11F6983" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{CE593BDB-494D-42A8-8478-7FCDBA83BCDE}">
+                <File Id="fil9ED83D2B2B288FBD5E78224864CD1F3C" KeyPath="yes" Source="$(var.testrevit)\Samples\Revit_StructuralFraming.dyn" />
+            </Component>
+            <Component Id="cmp804A7010374C1C31DFE98F251E170463" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{04118F93-B4DC-4F82-A91D-2F1C1F8B1670}">
+                <File Id="fil31A8CD49880998E8642BA162B1C04FCE" KeyPath="yes" Source="$(var.testrevit)\Samples\ScalableCircle.dyn" />
+            </Component>
+            <Component Id="cmpF4E58F64886DFB37C2719D45A10BD9DA" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{750FA021-E11E-41BE-B451-AA9E4803253E}">
+                <File Id="fil63486ADC0275004C738B73CF2552E299" KeyPath="yes" Source="$(var.testrevit)\Samples\scalablegraphfunction.dyn" />
+            </Component>
+            <Component Id="cmp2BBF7CA5E618B03B167A3C3BDF2158DD" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{DE6857DD-153D-4D0C-97A5-55038A8942B7}">
+                <File Id="fil8494DF4E844619AB00FF6216B691F0AC" KeyPath="yes" Source="$(var.testrevit)\Samples\SimpleCloudRender.dyn" />
+            </Component>
+            <Component Id="cmpF6F5DB44E4834BAB52E27024610815F8" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{27BB55FB-DDEE-44D4-BDF4-42E394F89DE0}">
+                <File Id="fil9EF265DEAC0AECB2F27293526020F7ED" KeyPath="yes" Source="$(var.testrevit)\Samples\sphere.csv" />
+            </Component>
+            <Component Id="cmp5A4A27F259700FC9FB10956C99C43C7A" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{6989B78E-BB1C-44B4-8EB7-E5ACA906B3EF}">
+                <File Id="fil61094826735D222F14ECF8183F680432" KeyPath="yes" Source="$(var.testrevit)\Samples\tesselation.dyn" />
+            </Component>
+            <Component Id="cmpE9841B158425ED1E83EB6C2684D9E900" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{1E5329B2-8BA3-4C92-A662-86D8844F4D4A}">
+                <File Id="fil45D574E1D7E02D6B699F0DA09BCF5582" KeyPath="yes" Source="$(var.testrevit)\Samples\tesselation.rfa" />
+            </Component>
+            <Component Id="cmpEF4E729D815FFA9AB5D6C82F34CFB382" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{5AF76BDF-A21C-450B-B6E0-084272D52462}">
+                <File Id="fil3518143015DF25E0921F46C5BAD6A3AB" KeyPath="yes" Source="$(var.testrevit)\Samples\tesselationwithcoincidentgrids.dyn" />
+            </Component>
+            <Component Id="cmpB24F7575B69C216DC389742304F1635D" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{9C5BCB4D-8C25-4563-A77B-19F5B6B9456C}">
+                <File Id="fil69BC61C0FD6F412908F90345FD92D831" KeyPath="yes" Source="$(var.testrevit)\Samples\tesselation_types.dyn" />
+            </Component>
+            <Component Id="cmp033623C38E845EB63A38DF4A7E460D5F" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{2FF297EE-F048-4B9E-9FE1-CFDD18102035}">
+                <File Id="fil9380C2C74A035E9DAC5DC8A7B8B653C5" KeyPath="yes" Source="$(var.testrevit)\Samples\TranslateandRotate.dyn" />
+            </Component>
+            <Component Id="cmpFDAB41A7EFEFDA12BAFE8C31CF90702A" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{5A2C8647-6FAF-41BA-93CF-A623446BF7F8}">
+                <File Id="filD1AA372245B9520A6248A86E0E4484A8" KeyPath="yes" Source="$(var.testrevit)\Samples\TranslateandRotatesequence.dyn" />
+            </Component>
+            <Component Id="cmpE899A007D02EA70BC6D185A07DCD757C" Directory="dir8B9BDEB8BFEADAB83735642F5C571FF6" Guid="{3AE8A88F-55EE-4969-9CC8-03D292D862D9}">
+                <File Id="fil7127E6616BF640BB2A5A1747AF1C1607" KeyPath="yes" Source="$(var.testrevit)\Samples\XyzGrid.dyf" />
+            </Component>
+            <Component Id="cmpBC78168A83A3D95DF9275B36331AC7A2" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{37DF5D58-5606-41C5-9453-F60EA88A6C9B}">
+                <File Id="fil3CEC1842D657A6D36376BFD0D70DB450" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectAndMultiSelect.dyn" />
+            </Component>
+            <Component Id="cmpB471DEF119691F09B0BA3EC59F829989" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{86986306-47F1-4DF5-BE7F-919DA9AA78EF}">
+                <File Id="filA317B368DDCBBDFBDE3B2BAFE7B9340F" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectAndUpdate.dyn" />
+            </Component>
+            <Component Id="cmpFCAE94CA5C5CA537439BC90FB5C46F26" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{D14839CC-B2B4-4756-A27C-E0AF6A16D899}">
+                <File Id="filE15630EB2D9A23F84A574682E53C3D9E" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectDividedSurfaceFamilies.dyn" />
+            </Component>
+            <Component Id="cmp5FE2F5945AED2B780F8CA92730F248E4" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{5690C68A-ABE2-410E-8849-39F9B7325300}">
+                <File Id="fil135B69F8C5FF8300B81E69ABBAD0CD11" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectEdge.dyn" />
+            </Component>
+            <Component Id="cmp34F9FE49A57FCC798CCED0B31DC209F8" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{3B6DA2F4-AF1F-49B0-8687-7AB5794A6C1D}">
+                <File Id="fil1045E1E1F3C36D8E46343752D96E4AB0" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectFace.dyn" />
+            </Component>
+            <Component Id="cmp5798D0862768D931978927D71C2EC09F" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{6B5909E6-5A43-4B37-B0D0-CAE47E3C9790}">
+                <File Id="fil8D693147E898DA14DD345F3609C1B742" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectFaces.dyn" />
+            </Component>
+            <Component Id="cmpA72263BA9BB28443E2970E2D5B4BB578" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{A02AEEF1-5A1E-4B89-807D-B964B3BFF18A}">
+                <File Id="filC5EA3027E13B1C8764638D65874F2D47" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectFamily.dyn" />
+            </Component>
+            <Component Id="cmpEC5538838C00CC69AB8314898527A253" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{3365583A-031E-4558-AC75-5D1BB370BC9F}">
+                <File Id="filB88E3BD1285FC561B802E86C58532DB1" KeyPath="yes" Source="$(var.testrevit)\Selection\Selection.0001.rfa" />
+            </Component>
+            <Component Id="cmp3D59F725D1753C49AB386F7B45212A64" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{118E5AAA-A0CB-4707-AC36-A742A3F56E1F}">
+                <File Id="fil3AC86E7275F36768BD92B4B12055C7A9" KeyPath="yes" Source="$(var.testrevit)\Selection\Selection.0002.rfa" />
+            </Component>
+            <Component Id="cmpDD908414DB46C61DF6500B0D343385AC" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{1818E1F9-A206-4C6F-AFDA-770BD2110E02}">
+                <File Id="filEEA623F228A47A5F9E58FEDCD83C4F11" KeyPath="yes" Source="$(var.testrevit)\Selection\Selection.dyn" />
+            </Component>
+            <Component Id="cmpFE935633B7CBD7BE0F3F398F80333D5D" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{FD5F5825-9F76-4E8D-A2B3-BC110C3D3D0F}">
+                <File Id="fil0F9B61F423CFC0F2A42D6742A9FA9E52" KeyPath="yes" Source="$(var.testrevit)\Selection\Selection.rfa" />
+            </Component>
+            <Component Id="cmp3E48968E565D253D1C1A0CFCC0F6923F" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{99D5B1CE-F920-461B-A71C-210CB7DAF549}">
+                <File Id="filFEC9252161631EB283CAB8B911E86299" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectionSync.rvt" />
+            </Component>
+            <Component Id="cmpDC4AE6DEC027D9497009D74F98F549AF" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{2C458422-4C44-4355-8178-9DDDC02A8840}">
+                <File Id="fil4C75BACF9526A3AE93389F515490E10B" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectionSyncElements.dyn" />
+            </Component>
+            <Component Id="cmpF8994AE962A362C84537D441B8703B65" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{ADD30F28-8A16-4B1E-96B8-1CF4ABE01666}">
+                <File Id="fil9FBD8B4CD89BCA825E1D1963D2D687D6" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectionSyncReferences.dyn" />
+            </Component>
+            <Component Id="cmp9FDE1ED197F3B19910661D77300CD4C2" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{996E5616-5183-416F-B956-5310E86F533E}">
+                <File Id="filE604775BED3E72BA12B3B335D3D037A4" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectModelElement.dyn" />
+            </Component>
+            <Component Id="cmpC89CD27C76BF4166E2BD5B6122895F3B" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{B35A1CFD-AD80-4579-85BB-478186272402}">
+                <File Id="fil4AEBAD5F0C69CB0F13C60989C9847E46" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectModelElements.dyn" />
+            </Component>
+            <Component Id="cmp0280D355B580599B972CC1AE6738816D" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{30FCA6D8-A9CD-4866-8A0A-A3B0550623D8}">
+                <File Id="filAF24E2AED2FED9FC310AB20570D46D46" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectPointOnFace.dyn" />
+            </Component>
+            <Component Id="cmpED8A02DE4DFAA6FAA0055DA78B0EB9D7" Directory="dirB33E0F6BB2D0FCC98B6AC7A73F2F1185" Guid="{7646B2D9-37F5-4377-8D22-E08F83DD69EE}">
+                <File Id="filACC053611DA42FAA211442EA86BCF184" KeyPath="yes" Source="$(var.testrevit)\Selection\SelectUVOnFace.dyn" />
+            </Component>
+            <Component Id="cmpC2FECF59B3D448F134E1B41FC4F5B516" Directory="dirD2327A59A3F583456D2FCD09825F10E8" Guid="{B5B91D52-2243-4650-8B6D-7BD4EE469D9D}">
+                <File Id="filDC824DF9E16B39CDDDD0938C319C3FF9" KeyPath="yes" Source="$(var.testrevit)\SiteLocation\SiteLocation.dyn" />
+            </Component>
+            <Component Id="cmp83610971D9F8EFF4D626284E63C9D602" Directory="dirD2327A59A3F583456D2FCD09825F10E8" Guid="{9B3DC604-0DDB-4D6B-9A89-550C1620BD2D}">
+                <File Id="fil7F77A32B1C1AF797412A1B84F0D31AED" KeyPath="yes" Source="$(var.testrevit)\SiteLocation\SiteLocation.rvt" />
+            </Component>
+            <Component Id="cmpFD393B33FFDE7EBCFACBFBA8CA0328A1" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{0145615B-E471-4B52-AB6A-FB8EA1E30133}">
+                <File Id="filE114FB3B74E99400C0B61FED8D671E7C" KeyPath="yes" Source="$(var.testrevit)\Solid\BlendSolid.dyn" />
+            </Component>
+            <Component Id="cmp96E5BF9D5AA1040A1E9815D06EE10FD1" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{7FDCEA4F-CE85-4DEA-8417-1EC9530DB5C1}">
+                <File Id="filAAF0B3851499B89913EC47B109AB44FC" KeyPath="yes" Source="$(var.testrevit)\Solid\BoxByCenterAndDimensions.dyn" />
+            </Component>
+            <Component Id="cmpCB5C48F2732BBEAC56035652D933BD72" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{30635E66-D373-413B-B6A3-A79965A3B760}">
+                <File Id="fil68D3A6FAD57933F77A504F6C5540232C" KeyPath="yes" Source="$(var.testrevit)\Solid\BoxByTwoCorners.dyn" />
+            </Component>
+            <Component Id="cmp629153FB70BA4D8CE68C337E5B04AF2C" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{65AC02A2-082D-432D-B007-EC57321D93A2}">
+                <File Id="filF92E5A9119DFB3C93A64FF24AB836E3C" KeyPath="yes" Source="$(var.testrevit)\Solid\ExtrudeMultiple.dyn" />
+            </Component>
+            <Component Id="cmpB3D5220DD8D1073BDE59B0206D07EB00" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{531BF29F-0DFB-4CFE-871F-347C91D257D7}">
+                <File Id="filDBA86970814D8F21C65C7CC96CF87C88" KeyPath="yes" Source="$(var.testrevit)\Solid\Extrusion.dyn" />
+            </Component>
+            <Component Id="cmp4FAFEC6E9417B89E72F855605C82823C" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{9237A072-9B00-4EFB-9D43-131215F3343F}">
+                <File Id="fil0DD4A8360FA1018B2CFE29DB11B720F8" KeyPath="yes" Source="$(var.testrevit)\Solid\Loft.dyn" />
+            </Component>
+            <Component Id="cmpA4C0B1970C7160ED7A14273EB4C5B56E" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{D04CB6B8-8154-4448-B3F3-53D8A2772AE7}">
+                <File Id="fil8BC290FED095853A310DCFFAE902EE6F" KeyPath="yes" Source="$(var.testrevit)\Solid\RevolveSolid.dyn" />
+            </Component>
+            <Component Id="cmp689C07113DDA754B4F02B3A649AF4EEA" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{0454E161-587D-429F-9D01-7FD0DD210B57}">
+                <File Id="fil9FC1CE2BBD3585C1F0B7CF333EC880EF" KeyPath="yes" Source="$(var.testrevit)\Solid\SolidBySkeleton.dyn" />
+            </Component>
+            <Component Id="cmpFA406E072F159D56D674DA28FD90A083" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{B57D22EC-FDC8-473C-9125-633827113E09}">
+                <File Id="filFB20DE2889D91EF7CA412888669238B5" KeyPath="yes" Source="$(var.testrevit)\Solid\SweepToMakeSolid.dyn" />
+            </Component>
+            <Component Id="cmpEECC2C307AA651F24044FB4A611B5F13" Directory="dir5E71CCD79DDD3490DC808C5B9A9C2243" Guid="{7BFC7810-AEFB-453D-805E-D688E57F342D}">
+                <File Id="fil12A39534E93C7340F1164655A8293467" KeyPath="yes" Source="$(var.testrevit)\Solid\SweptBlend.dyn" />
+            </Component>
+            <Component Id="cmp5E4E9990FE04D600788F9A695A49868A" Directory="dir6EDEEDBFEDE777D39582D4E4503DC1EB" Guid="{D7A5EE9A-3E4C-4064-80B2-25A2A7CA304A}">
+                <File Id="fil550B6F84582515FE1D60F29B8DBFA65E" KeyPath="yes" Source="$(var.testrevit)\StructuralFraming\Beam.dyn" />
+            </Component>
+            <Component Id="cmp35A534D57485ADFE0F8E0B3500ED9455" Directory="dir6EDEEDBFEDE777D39582D4E4503DC1EB" Guid="{C88AED17-BB4E-438B-898C-D75933C2F063}">
+                <File Id="fil6EF6C2B7617677D31AB2037FC544D791" KeyPath="yes" Source="$(var.testrevit)\StructuralFraming\Brace.dyn" />
+            </Component>
+            <Component Id="cmp9FED4678A4609365B2823DA0CBF09EE1" Directory="dir6EDEEDBFEDE777D39582D4E4503DC1EB" Guid="{7BE73FEC-0CD8-4638-A3AA-795EDCA72F0C}">
+                <File Id="filE2B7166F4597F3D3870153505B953FF6" KeyPath="yes" Source="$(var.testrevit)\StructuralFraming\Column.dyn" />
+            </Component>
+            <Component Id="cmp179B6983759F2CA51472B13AA9828EA3" Directory="dir6EDEEDBFEDE777D39582D4E4503DC1EB" Guid="{284AB64F-B827-4543-8786-9DBC8EEB137B}">
+                <File Id="filB1E7EF9967A9FCB834BCD305AFF4B81F" KeyPath="yes" Source="$(var.testrevit)\StructuralFraming\StructuralFraming.rvt" />
+            </Component>
+            <Component Id="cmp941AEEB3336646F18B8A267790B1B3D6" Directory="dir9D9E81BAF1684A73A0143776A2C5E519" Guid="{684B5214-FB59-4727-83FC-94E4B676168E}">
+                <File Id="filE44BC239A4F117896293167BCD34C18C" KeyPath="yes" Source="$(var.testrevit)\SunSettings\SunSettings.dyn" />
+            </Component>
+            <Component Id="cmpC5063C99E2E683DB335C7D31830D1C5F" Directory="dir9D9E81BAF1684A73A0143776A2C5E519" Guid="{6DE159E4-7AE3-4EB7-99D5-1F4BCE456326}">
+                <File Id="filB6137A5ED6CAFAE583C09F376583EC25" KeyPath="yes" Source="$(var.testrevit)\SunSettings\SunSettings.rvt" />
+            </Component>
+            <Component Id="cmp978FC32C556917D7FEAFDF6416EC4C31" Directory="dirE74AAFBBD34DEF31DF21B456A9DDD5D9" Guid="{0685F259-8930-4C4E-A3E8-DD1715353F18}">
+                <File Id="filA0FE6A97646E8918EC7E992CC1BE8848" KeyPath="yes" Source="$(var.testrevit)\Topography\PointsFromTopography.dyn" />
+            </Component>
+            <Component Id="cmp3FDA5D128F09823E6CA9F577B929D45A" Directory="dirE74AAFBBD34DEF31DF21B456A9DDD5D9" Guid="{0BBBB78F-E8DF-4F2C-AB77-264B1AA90C45}">
+                <File Id="fil45AEDDE88BE48D9C2FA391991218D1B5" KeyPath="yes" Source="$(var.testrevit)\Topography\Topography.rvt" />
+            </Component>
+            <Component Id="cmpF87D0E3D1919AD12A5C51D975E244AE8" Directory="dirE74AAFBBD34DEF31DF21B456A9DDD5D9" Guid="{72B70FE7-32D5-4D65-87A7-9C66142D0380}">
+                <File Id="fil15BDD5FB44D3B3136D24DC8ABAD297FA" KeyPath="yes" Source="$(var.testrevit)\Topography\TopographyFromPoints.dyn" />
+            </Component>
+            <Component Id="cmpC82117AF8C2E2D7A8B4DAD3608D7D396" Directory="dir12F672D5601743F0E483E5941747A3D1" Guid="{BC54404B-612F-41DC-A0C3-FD2CA6959F3A}">
+                <File Id="fil1DCE46E75003C7D6C1C653239D56A3F3" KeyPath="yes" Source="$(var.testrevit)\Transform\BasisX.dyn" />
+            </Component>
+            <Component Id="cmpDF4727FB249143864EA905C7D106B707" Directory="dir12F672D5601743F0E483E5941747A3D1" Guid="{5136E426-3391-413F-AD79-A2ABA363BC95}">
+                <File Id="fil9735C6A58E12C7720FA8C0EA749F49AF" KeyPath="yes" Source="$(var.testrevit)\Transform\BasisY.dyn" />
+            </Component>
+            <Component Id="cmp94077D3F522E226862D05FB321540FF5" Directory="dir12F672D5601743F0E483E5941747A3D1" Guid="{B43AEE3E-F0E5-411B-BC6F-59AD407A80BA}">
+                <File Id="filDF35CC3C666966196A5860D1C81A18E3" KeyPath="yes" Source="$(var.testrevit)\Transform\BasisZ.dyn" />
+            </Component>
+            <Component Id="cmp3A52E43D7EA531FD1184D411072A6515" Directory="dir57A5469B8CC02C3E6A3041396BECED53" Guid="{EE29C186-36CF-403A-822D-C47163DEA095}">
+                <File Id="fil2F287393ECDA2D4F53741EA59AE7B506" KeyPath="yes" Source="$(var.testrevit)\UV\UVRandom.dyn" />
+            </Component>
+            <Component Id="cmp4A278FEFEF1449DFFA1A285E8AD966F6" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{02A64D3D-C6D4-4F5B-A375-8014965BB53C}">
+                <File Id="filB02F50C68733CE385F02B821B5F30615" KeyPath="yes" Source="$(var.testrevit)\View\AxonometricView.dyn" />
+            </Component>
+            <Component Id="cmpCF65F5BDE14E4F165C650F902C2138DB" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{6A3AAF12-BA27-406A-8AB5-B56BD8494099}">
+                <File Id="fil5F9B369DB0582FE055A9A58584BC0C0F" KeyPath="yes" Source="$(var.testrevit)\View\AxonometricView.rfa" />
+            </Component>
+            <Component Id="cmp00CE86E410AD0446383799EB69ACEDD5" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{AD83E68A-F5BD-4DF3-9A65-ADA2A954F3A4}">
+                <File Id="fil6CFF4A246972C00199C98504481AC698" KeyPath="yes" Source="$(var.testrevit)\View\DraftingView.dyn" />
+            </Component>
+            <Component Id="cmp68BEA81A7E610C080B3BA421D1730D20" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{8D244DF4-46F9-4E2E-975E-E589AC8EB722}">
+                <File Id="fil358031E6C52B7CA1CC2D25D3219C21AE" KeyPath="yes" Source="$(var.testrevit)\View\OverrideElementColorInView.dyn" />
+            </Component>
+            <Component Id="cmp2B4656838D15D743EDDBD04367E83FF9" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{644E2B85-3B3B-40AB-90B9-3D733B30769C}">
+                <File Id="fil74D567DA692C5CD5954A55F2F893C322" KeyPath="yes" Source="$(var.testrevit)\View\OverrideElementColorInView.rvt" />
+            </Component>
+            <Component Id="cmpE7A8D865327A9CFD7166FEE9421F6236" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{1E9CD0C3-2AE2-443B-A0D5-5966342D7884}">
+                <File Id="fil523CE36F96742C9E94DA155A13545BB0" KeyPath="yes" Source="$(var.testrevit)\View\PerspectiveView.dyn" />
+            </Component>
+            <Component Id="cmp3EFD4D0F19105DD900CFCF19EE3FFF65" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{B1F23AE6-7AD9-44C1-97BE-B60D5519F309}">
+                <File Id="filA7B95CB39679B75441668F7EA731FCC2" KeyPath="yes" Source="$(var.testrevit)\View\PerspectiveView.rfa" />
+            </Component>
+            <Component Id="cmp112E5CAE68F6A3DC2EF70D9ADC391B92" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{57D90326-4633-42E3-974A-3E5D737EC8BB}">
+                <File Id="fil266518620CEA6272719A05A31065C8F7" KeyPath="yes" Source="$(var.testrevit)\View\ViewSheet.dyn" />
+            </Component>
+            <Component Id="cmpEF253B91392A5F0AF465DA77930850AD" Directory="dir635111A80BF6C2ABE64C63958A1C51B5" Guid="{8A847B53-8213-48DD-8B6F-2113B11715CC}">
+                <File Id="fil0462404AEE80C1B86644ED7DCBCFA1E2" KeyPath="yes" Source="$(var.testrevit)\View\ViewSheet.rvt" />
+            </Component>
+            <Component Id="cmpDEA7E691E1207FC1F594B7EB90DC7257" Directory="dir02DE74D872959BB1F5DCC3CBE997CEDB" Guid="{978DAFE2-0499-4392-B4C9-DCF40EA20C53}">
+                <File Id="filCD36E0F727AB4DDD250E45631035A2E6" KeyPath="yes" Source="$(var.testrevit)\XYZ\XYZByPolar.dyn" />
+            </Component>
+            <Component Id="cmp5073F89862723EDE9BDC27C22A0D68E9" Directory="dir02DE74D872959BB1F5DCC3CBE997CEDB" Guid="{58C65FAA-40D9-49F4-800A-96963C0AC5FF}">
+                <File Id="filA40D7B2A89782F83EBF8247F3DA595CA" KeyPath="yes" Source="$(var.testrevit)\XYZ\XYZBySphericalCoordinates.dyn" />
+            </Component>
+            <Component Id="cmp29ACBE5AB4385FC030104906D0B615D8" Directory="dir02DE74D872959BB1F5DCC3CBE997CEDB" Guid="{470949D9-4B5D-49E8-817D-75A2405A8C2C}">
+                <File Id="filF0A830AF76AF3E852E29172570783232" KeyPath="yes" Source="$(var.testrevit)\XYZ\XYZFromReferencePoint.dyn" />
+            </Component>
+            <Component Id="cmpB1C5DD1C3079BB3982029215B776D5F3" Directory="dir02DE74D872959BB1F5DCC3CBE997CEDB" Guid="{7189E5F6-99E9-4CED-9E60-86D0E61AB6A6}">
+                <File Id="filF0148078CEBCD8F264412919F1632C0A" KeyPath="yes" Source="$(var.testrevit)\XYZ\XYZToPolarCoordinates.dyn" />
+            </Component>
+            <Component Id="cmp3A8C20339D77FE467916B218E803BF0B" Directory="dir02DE74D872959BB1F5DCC3CBE997CEDB" Guid="{091B201C-76D3-46A0-B81E-A0C5A2062FF9}">
+                <File Id="fil1B4DFEE750463B04BC4B83E7F9A317CF" KeyPath="yes" Source="$(var.testrevit)\XYZ\XYZToSphericalCoordinates.dyn" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirAEE3DA89926EF4FA7204937D68AD8845">
+            <Directory Id="dir0084AECE9D60D1C93C433FDB24B5D78F" Name="MAGN-3489" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirAEE3DA89926EF4FA7204937D68AD8845">
+            <Directory Id="dir123AE08C385C6F861610B77B1FAC283E" Name="BasicRegressionTest" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirAEE3DA89926EF4FA7204937D68AD8845">
+            <Directory Id="dir5DB88E52DFCF0A6DD9B0E33CA9F01056" Name="MAGN-3488" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>

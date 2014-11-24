@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)../../src/Config/Install.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.8</ProductVersion>
+    <ProjectGuid>6430b80d-f2e6-4b20-8e8f-4e0f6174356c</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>DynamoTestInstall</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug;base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);test=$(DYNAMO_CORE_TEST_PATH);testrevit=$(DYNAMO_TEST_REVIT_PATH)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>TRACE;base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);test=$(DYNAMO_CORE_TEST_PATH);testrevit=$(DYNAMO_TEST_REVIT_PATH)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="Release.wxs" />
+    <Compile Include="RevitTest.wxs" />
+    <Compile Include="Test.wxs" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <PropertyGroup>
+    <PreBuildEvent>robocopy $(DYNAMO_BASE_PATH)\bin\test\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF -e -XD int
+
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_CORE_TEST_PATH) -cg TEST -gg -scom -sreg -srd -dr DYNAMO_CORE_TEST -var var.test -t "$(ProjectDir)Test.xsl" -out "$(ProjectDir)Test.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_CORE_TESTDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_TEST_REVIT_PATH) -cg TESTREVIT -gg -scom -sreg -srd -dr DYNAMO_CORE_TEST_REVIT -var var.testrevit -t "$(ProjectDir)RevitTest.xsl" -out "$(ProjectDir)RevitTest.wxs"</PreBuildEvent>
+  </PropertyGroup>
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>

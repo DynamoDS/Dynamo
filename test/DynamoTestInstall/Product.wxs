@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="DF52056C-2B57-4590-A96A-904FBC32BD5D"
+           Name="Dynamo Test 0.7.5"
+           Language="1033"
+           Version="0.7.5"
+           Manufacturer="Dynamo"
+           UpgradeCode="b012edd3-49d1-43dc-9306-aee0070402f8">
+
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64"/>
+
+    <MajorUpgrade
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id='ARPNOMODIFY'>1</Property>
+
+    <Property Id="DYNAMOINSTALLED">
+      <DirectorySearch Id="DynamoFolderVersion" Path="[ProgramFiles64Folder]\Dynamo 0.7">
+        <FileSearch Name="DynamoSandbox.exe" MinVersion="0.7.0.0"/>
+      </DirectorySearch>
+    </Property>
+
+    <Condition Message="The computer needs to install DynamoCore first.">
+      <![CDATA[Installed OR DYNAMOINSTALLED]]>
+    </Condition>
+
+    <Property Id='DYNAMO_INSTALLDIR'></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo Test 0.7" After="LaunchConditions"></SetProperty>
+
+    <Feature Id="DYNAMOTEST_CORE_FEATURE"
+             Title="Dynamo test"
+             Level="1">
+      <ComponentGroupRef Id="TEST"/>
+      <ComponentGroupRef Id="RELEASE"/>
+      <ComponentGroupRef Id="TESTREVIT"/>
+    </Feature>
+    
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+      </Directory>
+      <Directory Id="DYNAMO_INSTALLDIR">
+        <Directory Id="DYNAMO_CORE_TEST_BIN" Name="bin">
+          <Directory Id="DYNAMO_CORE_TEST_ANYCPU" Name="AnyCPU">
+            <Directory Id="DYNAMO_CORE_TESTDIR" Name="Release">
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="DYNAMO_CORE_TEST_WORKING" Name="test">
+          <Directory Id="DYNAMO_CORE_TEST" Name="core">
+          </Directory>
+          <Directory Id="DYNAMO_CORE_TEST_SYSTEM" Name="System">
+            <Directory Id="DYNAMO_CORE_TEST_REVIT" Name="revit">
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="ADESK_DATA" Name="Autodesk">
+        </Directory>
+        <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
+          <Directory Id="PROGDATA_07" Name="0.7"/>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+</Wix>
