@@ -92,8 +92,9 @@
       <HintPath>$(DYNAMOAPI)\nodes\DSCoreNodesUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Units">
+    <Reference Include="DynamoUnits">
       <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <ProjectReference Include="$(SolutionDir)Libraries\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
