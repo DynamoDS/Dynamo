@@ -489,13 +489,50 @@ namespace RevitSystemTests
         [Test]
         [Category("RegressionTests")]
         [TestModel(@".\empty.rfa")]
+        public void WorkflowDefect_4797()
+        {
+            //Dynamo throws exception on top of Revit but works in standalone mode.
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4797
+            //Open attached dyn file and run, it will create Polygons and points in standalone mode
+            
+            string samplePath = Path.Combine(workingDirectory, @".\Bugs\MarkerData.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            
+            AssertNoDummyNodes();
+            
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+        }
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\empty.rfa")]
+        public void RunAutomatic_5066()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5066
+            // FailedToObtain this object "DesignScriptEntity.Dispose " if run automatically on while moving from to next file
+
+            string samplePath = Path.Combine(workingDirectory, @".\Bugs\mobius.dyn");
+            string samplePath2 = Path.Combine(workingDirectory, @".\Bugs\mobius2.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            string testPath2 = Path.GetFullPath(samplePath2);
+
+            AssertNoDummyNodes();
+
+            ViewModel.OpenCommand.Execute(testPath);
+            ViewModel.DynamicRunEnabled = true;
+            ViewModel.OpenCommand.Execute(testPath2);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+        }
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\empty.rfa")]
         public void RevitNodes_ThroughCBN_2451()
         {
-          
+
             // Access the Revit related nodes from code block nodes.Due to namespace class the error was thrown.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2451 - 
             // Description in the bug - Improve error reporting to user when there is a namespace collision
-            
+
             var model = ViewModel.Model;
 
             string samplePath = Path.Combine(workingDirectory,
@@ -512,6 +549,9 @@ namespace RevitSystemTests
             Assert.IsNotNull(refPoint);
 
         }
+
+       
+
 
     }
 }
