@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SystemTestServices;
+﻿using SystemTestServices;
 
 using Dynamo.Nodes;
 using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace SamplesLibraryUI
+namespace SampleLibraryTests
 {
     /// <summary>
     /// HelloDynamoSystemTests is a test fixture that contains
