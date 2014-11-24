@@ -167,7 +167,6 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)..\test\Libraries\RevitNodesTests\RevitNodesTests.csproj">
     <Reference Include="SystemTestServices">
 	  <HintPath>$(DYNAMOTESTAPI)\SystemTestServices.dll</HintPath>
       <Private>False</Private>
