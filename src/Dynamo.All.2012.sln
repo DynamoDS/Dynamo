@@ -205,6 +205,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Config.xml = Config.xml
 	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryTests", "Libraries\Samples\SampleLibraryTests\SampleLibraryTests.csproj", "{933B8108-4E74-470A-86C7-4B7F633115B9}"
