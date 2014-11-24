@@ -178,6 +178,7 @@ namespace Revit.Elements
 
                 translation = solid.Centroid().AsVector();
                 var tranGeo = solid.Translate(translation.Reverse());
+                solid.Dispose();
 
                 geometry = tranGeo;
             }
@@ -186,19 +187,26 @@ namespace Revit.Elements
         /// <summary>
         /// This method contains workarounds for increasing the robustness of input geometry
         /// </summary>
-        /// <param name="geometry"></param>
+        /// <param name="geometries"></param>
         /// <param name="translation"></param>
-        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometry,
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometries,
             ref Autodesk.DesignScript.Geometry.Vector translation)
         {
             // translate all geom to centroid of bbox, then translate back
-            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometry);
+            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometries);
 
             // get center of bbox
             var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
 
             // translate all geom so that it is centered by bb
-            geometry = geometry.Select(x => x.Translate(trans)).ToArray();
+            List<Geometry> newGeometries = new List<Geometry>();
+            int count = geometries.Length;
+            for (int i = 0; i < count; ++i)
+            {
+                var oldGeometry = geometries[i];
+                geometries[i] = oldGeometry.Translate(trans);
+                oldGeometry.Dispose();
+            }
 
             // so that we can move it all back
             translation = trans.Reverse();
