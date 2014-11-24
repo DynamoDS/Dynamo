@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Xml;
 
@@ -192,7 +193,8 @@ namespace Dynamo.Models
             }
         }
 
-        
+        public SnapExtensionEdges extensionEdges { get; set; }        
+    
         #endregion
 
         public PortModel(PortType portType, NodeModel owner, PortData data)

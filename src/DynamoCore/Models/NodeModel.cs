@@ -1125,17 +1125,12 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.INPUT, pd, count);
-               
+                
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
-                //port.SnapRegion = new Thickness(-25, 3, 0, 3);
-                //if(count - 1 == 0) //first port
-                //    port.SnapRegion = new Thickness(-25, -10, 0, 3);
-                //if(count == InPortData.Count ) //last port
-                //    port.SnapRegion = new Thickness(-25, 3, 0, -10);
+                count++;            
             }
 
             if (inPorts.Count > count)
@@ -1149,6 +1144,9 @@ namespace Dynamo.Models
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
             }
+
+            //Configure Snap Edges
+            ConfigureSnapEdges(inPorts);
         }
 
         /// <summary>
@@ -1170,12 +1168,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
-                //port.SnapRegion = new Thickness(0, 3, -25, 3);
-                //if (count - 1 == 0) //first port
-                //    port.SnapRegion = new Thickness(0, -10, -25, 3);
-                //if (count == OutPortData.Count) //last port
-                //    port.SnapRegion = new Thickness(0, 3, -25, -10);
+                count++;              
             }
 
             if (outPorts.Count > count)
@@ -1188,6 +1181,34 @@ namespace Dynamo.Models
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
+
+            //configure snap edges
+            ConfigureSnapEdges(outPorts);
+        }
+
+        /// <summary>
+        /// Configures the snap edges.
+        /// </summary>
+        /// <param name="ports">The ports.</param>
+        private void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        {
+            if (ports.Count == 1) //only one port
+                ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
+            else if (ports.Count == 2) //has two ports
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[1].extensionEdges = SnapExtensionEdges.Bottom;
+            }
+            else if (ports.Count > 1)
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
+                foreach (PortModel port in ports)
+                {
+                    if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                        port.extensionEdges = SnapExtensionEdges.None;
+                }
+            } 
         }
 
         /// <summary>
@@ -1933,6 +1954,13 @@ namespace Dynamo.Models
         Top,
         Middle,
         Last
+    }
+    [Flags]
+    public enum SnapExtensionEdges
+    {
+        None,
+        Top = 0x1,
+        Bottom = 0x2
     }
 
 
