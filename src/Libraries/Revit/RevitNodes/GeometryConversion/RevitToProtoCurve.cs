@@ -209,11 +209,10 @@ namespace Revit.GeometryConversion
                 startParam = crv.GetEndParameter(0).ToDegrees() + 90;
             }
 
-            var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis);
-
-            var result = EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
-            pl.Dispose();
-            return result;
+            using (var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis))
+            {
+                return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
+            }
         }
 
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)
