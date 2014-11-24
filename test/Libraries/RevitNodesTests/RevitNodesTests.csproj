@@ -139,7 +139,7 @@
       <HintPath>$(DYNAMOTESTAPI)\TestServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="$(SolutionDir)..\test\Libraries\RevitTestServices\RevitTestServices.csproj">
+    <ProjectReference Include="..\RevitTestServices\RevitTestServices.csproj">
       <Project>{589f14d7-2937-479c-834a-d44197cb1930}</Project>
       <Name>RevitTestServices</Name>
       <Private>False</Private>

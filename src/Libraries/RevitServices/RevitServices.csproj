@@ -52,9 +52,6 @@ limitations under the License.
   <ItemGroup>
 	<Reference Include="Microsoft.Practices.Prism">
       <HintPath>$(DYNAMOAPI)\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-	<Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
