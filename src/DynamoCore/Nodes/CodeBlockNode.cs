@@ -519,7 +519,6 @@ namespace Dynamo.Nodes
             // instead of the full expression with array indexers.
             // 
             previewVariable = duplicatedNode.Value;
-            this.identifier = null; // Reset preview identifier for regeneration.
         }
 
         /// <summary>
@@ -808,7 +807,7 @@ namespace Dynamo.Nodes
                 var ident = identNode.Value;
                 if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
                     && !tempVariables.Contains(ident)
-                    && !identNode.Equals(this.identifier))
+                    && !identNode.Equals(this.AstIdentifierForPreview))
                 {
                     identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }
