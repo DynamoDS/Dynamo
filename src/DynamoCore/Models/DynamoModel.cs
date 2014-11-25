@@ -934,6 +934,8 @@ namespace Dynamo.Models
             File.Delete(fullFileName);
 
             this.SearchModel.DumpLibraryToXml(fullFileName);
+
+            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
