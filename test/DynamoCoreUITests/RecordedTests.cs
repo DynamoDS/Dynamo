@@ -648,7 +648,8 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            TestResourceConfig testResourceConfiguration=TestResourceConfig.GetSettings();
+            string commandFilePath = testResourceConfiguration.DynamoCoreTestPath;
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 

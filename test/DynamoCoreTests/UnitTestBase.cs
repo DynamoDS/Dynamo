@@ -11,10 +11,12 @@ namespace Dynamo
 
         protected string ExecutingDirectory { get; set; }
         protected string TempFolder { get; private set; }
+        protected TestResourceConfig testResourceConfiguration;
 
         [SetUp]
         public virtual void Init()
         {
+            testResourceConfiguration = TestResourceConfig.GetSettings();
             SetupDirectories();
         }
 
@@ -37,23 +39,20 @@ namespace Dynamo
             var guid = Guid.NewGuid().ToString();
             return Path.Combine(
                 TempFolder,
-                string.IsNullOrWhiteSpace(fileExtension) 
-                    ? guid 
+                string.IsNullOrWhiteSpace(fileExtension)
+                    ? guid
                     : Path.ChangeExtension(guid, fileExtension));
         }
 
         public string GetTestDirectory()
         {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+            var pathToTestFolder = testResourceConfiguration.DynamoCoreTestPath;
+            return pathToTestFolder;
         }
 
         public string GetSampleDirectory()
         {
-            var directory = new FileInfo(ExecutingDirectory);
-            string assemblyDir = directory.DirectoryName;
-            string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
-            string samplePath = Path.GetFullPath(sampleLocation);
+            string samplePath = testResourceConfiguration.SamplePath;
 
             return samplePath;
 
