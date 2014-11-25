@@ -45,7 +45,19 @@ namespace Revit.GeometryConversion
                 }
 
                 // trim the surface
-                Surface converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+                Surface converted;
+                try
+                {
+                    converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+                }
+                catch (Exception e)
+                {
+                    edgeLoops.ForEach(x => x.Dispose());
+                    edgeLoops.Clear();
+                    untrimmedSrf.Dispose();
+                    throw e;
+                }
+
                 edgeLoops.ForEach(x => x.Dispose());
                 edgeLoops.Clear();
                 untrimmedSrf.Dispose();
@@ -66,13 +78,19 @@ namespace Revit.GeometryConversion
         private static List<PolyCurve> EdgeLoopsAsPolyCurves(Face face, 
             IEnumerable<IEnumerable<Edge>> edgeLoops)
         {
-            var curveLoops = edgeLoops
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)));
-            var result = curveLoops.Select(PolyCurve.ByJoinedCurves).ToList();
-            foreach (var curveLoop in curveLoops)
+            List<PolyCurve> result = new List<PolyCurve>();
+            foreach (var edgeLoop in edgeLoops)
             {
-                foreach (var curve in curveLoop)
-                    curve.Dispose();
+                List<Autodesk.DesignScript.Geometry.Curve> curves = 
+                    new List<Autodesk.DesignScript.Geometry.Curve>();
+                foreach (var edge in edgeLoop)
+                {
+                    var dbCurve = edge.AsCurveFollowingFace(face);
+                    curves.Add(dbCurve.ToProtoType(false));
+                }
+                result.Add(PolyCurve.ByJoinedCurves(curves));
+                curves.ForEach(x => x.Dispose());
+                curves.Clear();
             }
             return result;
         }
