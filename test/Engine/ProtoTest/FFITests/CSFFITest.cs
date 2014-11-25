@@ -1838,7 +1838,6 @@ p11;
         }
 
         [Test]
-        [Category("Failure")]
         public void TestNamespaceClassResolution()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
