@@ -83,8 +83,9 @@ namespace Dynamo.Models
                 return null;
             }
 
+            var tld = Nodes.Utilities.GetDataForType(dynamoModel, typeof(Function));
             // create an instance of Function node 
-            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
+            Function result = CreateNodeInstance(tld, nickName, null, id) as Function;
             // create its definition and add inputs and outputs
             result.LoadNode(guid, inputs, outputs);
             return result;
