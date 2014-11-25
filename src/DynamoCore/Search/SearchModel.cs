@@ -10,6 +10,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
 using Microsoft.Practices.Prism.ViewModel;
+using System.IO;
+using System.Xml;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -763,6 +766,41 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = new XmlDocument();
+            document.InsertBefore(document.CreateXmlDeclaration("1.0", "UTF-8", null), document.DocumentElement);
+            document.AppendChild(document.CreateElement("LibraryTree"));
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString(), null);
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildren(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            document.Save(fileName);
+        }
+
+        private void AddChildren(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString(), null);
+                XmlHelper.AddAttribute(element, "Name", child.Name);
+
+                AddChildren(element, child.Items);
+
+                parent.AppendChild(element);
+            }
+        }
     }
 }
 

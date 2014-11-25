@@ -777,6 +777,12 @@ namespace Dynamo.Models
             this.SearchModel.RemoveEmptyCategories();
             this.SearchModel.SortCategoryChildren();
 
+            string directory = Path.GetDirectoryName(Logger.LogPath);
+            string fileName = Path.Combine(directory, "library_dump.xml");
+            File.Delete(fileName);
+
+            this.SearchModel.DumpLibraryToXml(fileName);
+
             Logger.Log("Welcome to Dynamo!");
         }
 
