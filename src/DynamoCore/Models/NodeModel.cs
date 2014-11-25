@@ -815,11 +815,6 @@ namespace Dynamo.Models
 
         #region Input and Output Connections
 
-        public IEnumerable<int> GetConnectedInputs()
-        {
-            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
-        }
-
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
