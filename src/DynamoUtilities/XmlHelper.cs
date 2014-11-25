@@ -4,9 +4,18 @@ namespace DynamoUtilities
 {
     public class XmlHelper
     {
-        public static XmlNode AddNode(XmlNode parent, string tagName, string value)
+        public static XmlDocument CreateDocument(string rootName)
         {
-            XmlElement element = parent.OwnerDocument.CreateElement(tagName);
+            var document = new XmlDocument();
+            document.InsertBefore(document.CreateXmlDeclaration("1.0", "UTF-8", null), document.DocumentElement);
+            document.AppendChild(document.CreateElement(rootName));
+
+            return document;
+        }
+
+        public static XmlNode AddNode(XmlNode parent, string name, string value)
+        {
+            XmlElement element = parent.OwnerDocument.CreateElement(name);
 
             if (!string.IsNullOrEmpty(value))
             {

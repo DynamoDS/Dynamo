@@ -772,9 +772,7 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(fileName))
                 return;
 
-            var document = new XmlDocument();
-            document.InsertBefore(document.CreateXmlDeclaration("1.0", "UTF-8", null), document.DocumentElement);
-            document.AppendChild(document.CreateElement("LibraryTree"));
+            var document = XmlHelper.CreateDocument("LibraryTree");
 
             foreach (var category in BrowserRootCategories)
             {
