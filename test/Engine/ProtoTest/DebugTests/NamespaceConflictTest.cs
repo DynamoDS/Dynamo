@@ -14,7 +14,6 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("Trace")]
-        [Category("Failure")]
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
