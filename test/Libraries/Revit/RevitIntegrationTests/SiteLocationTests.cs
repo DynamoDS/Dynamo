@@ -25,7 +25,7 @@ namespace RevitSystemTests
         {
             var doc = DocumentManager.Instance.CurrentDBDocument;
 
-            OpenAndRun(@".\SiteLocation\SiteLocation.dyn");
+            OpenAndRunDynamoDefinition(@".\SiteLocation\SiteLocation.dyn");
 
             var locNode = ViewModel.Model.Nodes.FirstOrDefault(x => x is SiteLocation);
 

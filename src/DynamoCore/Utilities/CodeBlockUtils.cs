@@ -1,7 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using System;
@@ -428,7 +427,7 @@ namespace Dynamo.Utilities
 
         #endregion
 
-        public CodeCompletionParser(string text)
+        private CodeCompletionParser(string text)
         {
             this.text = text;
         }

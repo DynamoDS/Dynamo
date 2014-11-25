@@ -239,7 +239,7 @@ namespace Dynamo.Tests
 
             // The input is a function object "String Length" unconnected to any input
             // To assert that the watch node is not displaying something such as "Pointer, opdata = 10, metaData = 58"
-            StringAssert.DoesNotContain("Pointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+            StringAssert.Contains("String.Length", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                 "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.ToString());
         }
 
@@ -889,5 +889,17 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Test obsolete string functions ToString and String.FromObject
+        [Test]
+        public void TestObsoleteStringFunctions()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestObsoleteStringFunctions.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("88ecf13c-40dc-42c2-89b3-375c2773f5b1", 42);
+            AssertPreviewValue("257aaba5-5e11-4646-a25f-6cd17eb8d200", 42);
+        }
+        #endregion
     }
 }

@@ -319,10 +319,21 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null || 
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
+                {
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -330,7 +341,7 @@ namespace ProtoCore.DSASM
                     if (!core.Options.IsDeltaExecution)
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc);
+                        SetupGraphEntryPoint(pc, isGlobalScope);
                     }
                     else
                     {
@@ -341,7 +352,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            SetupGraphEntryPoint(pc);
+                            SetupGraphEntryPoint(pc, isGlobalScope);
                         }
                     }
                 }
@@ -1419,16 +1430,16 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void SetupGraphEntryPoint(int entrypoint)
+        private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
-            if (core.Options.ApplyUpdate)
+            if (core.Options.ApplyUpdate && isGlobalScope)
             {
-                // Getting the entry point only graphnodes at the global scope
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
 
-                // Set the default entry point on ApplyUpdate  is the first graphNode
                 Validity.Assert(graphNodeList.Count > 0);
+
+                // The default entry point on ApplyUpdate is the first graphNode
                 entrypoint = graphNodeList[0].updateBlock.startpc;
             }
             else
@@ -2556,10 +2567,21 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null ||
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
+                {
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -2568,7 +2590,7 @@ namespace ProtoCore.DSASM
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
                     }
-                    SetupGraphEntryPoint(pc);
+                    SetupGraphEntryPoint(pc, isGlobalScope);
                 }
             }
 

@@ -132,10 +132,8 @@ namespace DynamoWebServer
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
             LogInfo("Web socket: received [" + message + "]");
-            SendResponse(new ContentResponse
-            {
-                Message = DateTime.Now.ToShortDateString() + " Message received"
-            }, session.SessionID);
+            SendResponse(new ContentResponse(DateTime.Now.ToShortDateString() + " Message received"), 
+                session.SessionID);
 
             try
             {
@@ -144,10 +142,8 @@ namespace DynamoWebServer
             }
             catch (Exception ex)
             {
-                SendResponse(new ContentResponse
-                {
-                    Message = "Received command was not executed, reason: " + ex.Message
-                }, session.SessionID);
+                SendResponse(new ContentResponse("Received command was not executed, reason: " + ex.Message),
+                    session.SessionID);
             }
         }
 
@@ -160,10 +156,8 @@ namespace DynamoWebServer
             }
             catch (Exception ex)
             {
-                SendResponse(new ContentResponse()
-                {
-                    Message = "Received file was incorrect: " + ex.Message
-                }, session.SessionID);
+                SendResponse(new ContentResponse("Received file was incorrect: " + ex.Message),
+                    session.SessionID);
             }
         }
 

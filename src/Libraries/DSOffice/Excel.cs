@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -168,6 +169,12 @@ namespace DSOffice
             return WorkBook.ReadExcelFile(file.FullName);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook ReadExcelFile(string file)
+        {
+            return WorkBook.ReadExcelFile(file);
+        }
+
         /// <summary>
         /// Returns a list of all the worksheets present in the given Excel workbook
         /// </summary>
@@ -272,6 +279,12 @@ namespace DSOffice
             return ws.Data;
         }
 
+        [Obsolete("Use Excel.ReadFromFile node instead.")]
+        public static object[][] Read(string filePath, string sheetName)
+        {
+            return ReadFromFile(new FileInfo(filePath), sheetName);
+        }
+
         /// <summary>
         ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
         ///     with sublists to be written in successive rows. Rows and columns are
@@ -297,6 +310,7 @@ namespace DSOffice
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
         #region Helper methods
@@ -334,10 +348,30 @@ namespace DSOffice
             {
                 for (int j = 0; j < cols; j++)
                 {
+                    var item = input[i][j];
+
                     if (j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
-                        output[i, j] = input[i][j].ToString();
+                    {
+                        if (item is double)
+                        {
+                            output[i, j] = ((double)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is float)
+                        {
+                            output[i, j] = ((float)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is DateTime)
+                        {
+                            output[i, j] = ((DateTime)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            output[i, j] = item.ToString();
+                        }
+                    }
+                        
                 }
             }
 
@@ -427,6 +461,7 @@ namespace DSOffice
 
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkBook
     {
         /// <summary>

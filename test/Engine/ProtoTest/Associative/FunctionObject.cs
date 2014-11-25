@@ -14,6 +14,22 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        public void LoopWhile01()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def add1(x) { return = x + 1; }
+def lt10(x) { return = x < 10; }
+add1fo = _SingleFunctionObject(add1, 1, {}, {null}, true);
+lt10fo = _SingleFunctionObject(lt10, 1, {}, {null}, true);
+r = LoopWhile(0, lt10fo, add1fo);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 10);
+        }
+
+        [Test]
         public void TestApply01()
         {
             string code =
@@ -336,11 +352,12 @@ t4 = __Map(getPointKey, r6);
             thisTest.Verify("t4", new object[] { 6, 9});
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestGroupByKey()
         {
             string code =
     @"
+import (""DsCoreNodes.dll"");
 import (""FunctionObject.ds"");
 class Point
 {
@@ -416,6 +433,48 @@ v2 = __Reduce(acc2, 0, 1..10);
             thisTest.RunScriptSource(code);
             thisTest.Verify("v1", 3628800);
             thisTest.Verify("v2", 55);
+        }
+
+        [Test]
+        public void TestGroupByKeyByString()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+class A 
+{
+    name: string;
+    x: int;
+    
+    constructor(x_, name_)
+    {
+        x = x_;
+        name = name_;
+    }
+}
+
+def getName(f)
+{
+    return = f.name;
+}
+
+so = _SingleFunctionObject(getName, 1, { }, { }, true);
+
+a1 = A(1, ""foo"");
+a2 = A(2, ""foo"");
+a3 = A(3, ""bar""); 
+a4 = A(4, ""bar""); 
+as = {a1, a2, a3, a4};
+ls = GroupByKey(as, so);
+
+foos = ls[0].x;
+bars = ls[1].x;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("foos", new object[] {1, 2});
+            thisTest.Verify("bars", new object[] {3, 4});
         }
     }
 }

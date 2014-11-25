@@ -2,6 +2,11 @@
 {
     public class ContentResponse : Response
     {
-        public string Message { get; set; }
+        public string Message { get; private set; }
+
+        public ContentResponse(string message)
+        {
+            Message = message;
+        }
     }
 }

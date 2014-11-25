@@ -26,27 +26,28 @@ namespace DynamoWebServer.Messages
             connectorsToCreate = new List<ConnectorToCreate>();
         }
 
-        internal ProcessResult ProcessFileData(UploadFileMessage uploadFileMessage, DynamoModel dynamoViewModel)
+        internal ProcessResult ProcessFileData(UploadFileMessage uploadFileMessage, DynamoModel dynamoModel)
         {
             try
             {
-                IsCustomNode = uploadFileMessage.IsCustomNode;
                 var result = ProcessResult.Succeeded;
 
                 // if path was specified it means NWK is used
                 if (!string.IsNullOrEmpty(uploadFileMessage.Path))
                 {
-                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(uploadFileMessage.Path));
+                    dynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(uploadFileMessage.Path));
                     result = ProcessResult.RespondWithPath;
+                    IsCustomNode = dynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel;
                 }
                 else
                 {
+                    IsCustomNode = uploadFileMessage.IsCustomNode;
                     var content = uploadFileMessage.FileContent;
                     var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
                     
                     File.WriteAllBytes(filePath, content);
 
-                    dynamoViewModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
+                    dynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
 
                     File.Delete(filePath);
                 }

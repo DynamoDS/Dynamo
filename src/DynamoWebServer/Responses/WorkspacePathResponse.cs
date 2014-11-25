@@ -14,7 +14,7 @@ namespace DynamoWebServer.Responses
         public string Guid
         {
             get { return guid; }
-            set { guid = value != null ? value : string.Empty; }
+            private set { guid = value != null ? value : string.Empty; }
         }
 
         string guid;
@@ -22,6 +22,12 @@ namespace DynamoWebServer.Responses
         /// <summary>
         /// Path where the workspace is saved
         /// </summary>
-        public string Path { get; set; }
+        public string Path { get; private set; }
+
+        public WorkspacePathResponse(string guid, string path)
+        {
+            this.Guid = guid;
+            this.Path = path;
+        }
     }
 }

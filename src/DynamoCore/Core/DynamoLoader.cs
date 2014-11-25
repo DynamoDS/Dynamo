@@ -1,4 +1,5 @@
 ﻿//#define __NO_SAMPLES_MENU
+//#define DEBUG_LIBRARY
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
+using System.Text;
 
 namespace Dynamo.Utilities
 {
@@ -121,7 +123,12 @@ namespace Dynamo.Utilities
                 }
             }
 
-            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
+            var functionGroups = dynamoModel.EngineController.GetFunctionGroups();
+            dynamoModel.SearchModel.Add(functionGroups);
+
+#if DEBUG_LIBRARY
+            DumpLibrarySnapshot(functionGroups);
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
@@ -138,9 +145,44 @@ namespace Dynamo.Utilities
                    t.IsSubclassOf(typeof(NodeModel));
         }
 
+        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var functionGroup in functionGroups)
+            {
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                foreach (var function in functions)
+                {
+                    //Don't add the functions that are not visible in library.
+                    if (!function.IsVisibleInLibrary)
+                        continue;
+
+                    var displayString = function.UserFriendlyName;
+                
+                    // do not add GetType method names to search
+                    if (displayString.Contains("GetType"))
+                    {
+                        continue;
+                    }
+
+                    var nameSpace = string.IsNullOrEmpty(function.Namespace) ? "" : function.Namespace + ".";
+                    var description = nameSpace + function.Signature + "\n";
+
+                    sb.Append(description + "\n");
+                }
+            }
+            dynamoModel.Logger.Log(sb.ToString(), LogLevel.File);
+        }
+
         internal bool ContainsNodeModelSubType(Assembly assem)
         {
-            return assem.GetTypes().Any(IsNodeSubType);
+            return assem.GetTypes().Any(Nodes.Utilities.IsNodeSubType);
         }
 
         /// <summary>
@@ -166,43 +208,32 @@ namespace Dynamo.Utilities
                 {
                     try
                     {
-                        //only load types that are in the right namespace, are not abstract
-                        //and have the elementname attribute
+                        var data = Nodes.Utilities.GetDataForType(dynamoModel, t);
+
+                        if (data == null)
+                            continue;
+
                         var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         bool isHidden = false;
-                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Any())
+                        if (data.IsObsolete)
+                            isHidden = true;
+                        else
                         {
-                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
-                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                            var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                            if (null != attrs && attrs.Any())
                             {
-                                isHidden = true;
+                                var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                                if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                                {
+                                    isHidden = true;
+                                }
                             }
                         }
 
-                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
-                            continue;
-
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(Context.NONE))
-                        {
-
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
-                            {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the Model
-                                //then skip loading this type.
-                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
-                                    continue;
-                            }
-                        }
                         string typeName;
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
@@ -214,8 +245,6 @@ namespace Dynamo.Utilities
                             typeName = t.Name;
 
                         AssemblyPathToTypesLoaded[assembly.Location].Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
 
                         if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
                             dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
@@ -288,8 +317,7 @@ namespace Dynamo.Utilities
             var searchModel = dynamoModel.SearchModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            customNodeLoader.AddDirectoryToSearchPath(path);
-
+            
             // add nodes to search
             loadedNodes.ForEach(x => searchModel.Add(x));
 
