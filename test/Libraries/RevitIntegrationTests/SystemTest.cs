@@ -26,7 +26,7 @@ namespace RevitSystemTests
             string assDir = fi.DirectoryName;
 
             //get the test path
-            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\");
             workingDirectory = Path.GetFullPath(testsLoc);
 
             //get the samples path

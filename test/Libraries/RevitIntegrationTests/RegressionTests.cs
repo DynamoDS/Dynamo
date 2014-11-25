@@ -107,7 +107,7 @@ namespace RevitSystemTests
             //fixture, so the initfixture method is not called.
 
             //get the test path
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path
@@ -186,7 +186,7 @@ namespace RevitSystemTests
 
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\Regression\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\Regression\");
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
