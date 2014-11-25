@@ -122,7 +122,10 @@
         <KeyBinding Key="F4"
                 Modifiers="Alt"
                                 Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        
+        <KeyBinding Key="D"
+                    Modifiers="Ctrl+Alt"
+                    Command="{Binding Path=DataContext.DumpLibraryToXmlCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"

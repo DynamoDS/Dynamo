@@ -777,13 +777,6 @@ namespace Dynamo.Models
             this.SearchModel.RemoveEmptyCategories();
             this.SearchModel.SortCategoryChildren();
 
-            string directory = Path.GetDirectoryName(Logger.LogPath);
-            string fileName = Path.GetFileNameWithoutExtension(Logger.LogPath) + "_ld.xml";
-            string fullFileName = Path.Combine(directory, fileName);
-            File.Delete(fullFileName);
-
-            this.SearchModel.DumpLibraryToXml(fullFileName);
-
             Logger.Log("Welcome to Dynamo!");
         }
 
@@ -931,6 +924,21 @@ namespace Dynamo.Models
         internal bool CanGoHome(object parameter)
         {
             return CurrentWorkspace != HomeSpace;
+        }
+
+        internal void DumpLibraryToXml(object parameter)
+        {
+            string directory = Path.GetDirectoryName(Logger.LogPath);
+            string fileName = Path.GetFileNameWithoutExtension(Logger.LogPath) + "_ld.xml";
+            string fullFileName = Path.Combine(directory, fileName);
+            File.Delete(fullFileName);
+
+            this.SearchModel.DumpLibraryToXml(fullFileName);
+        }
+
+        internal bool CanDumpLibraryToXml(object obj)
+        {
+            return true;
         }
 
         #endregion
