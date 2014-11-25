@@ -208,10 +208,13 @@ namespace Revit.GeometryConversion
             var globalCs = CoordinateSystem.ByOriginVectors(o.AsPoint(), x, y);
 
             var crvTrf = (Autodesk.DesignScript.Geometry.Curve)crv.Transform(revolveCs, globalCs);
+            crv.Dispose();
 
-            var srf =
-                Surface.ByRevolve(crvTrf, o.AsPoint(), axis.Normalized(), 0, 360)
-                    .FlipNormalDirection();
+            var srf0 =
+                Surface.ByRevolve(crvTrf, o.AsPoint(), axis.Normalized(), 0, 360);
+            var srf = srf0.FlipNormalDirection();
+            srf0.Dispose();
+            crvTrf.Dispose();
 
             var ptOnSrf = srf.PointAtParameter(0.5, 0.5);
             var projRes = face.Project(ptOnSrf.ToXyz());
@@ -224,7 +227,12 @@ namespace Revit.GeometryConversion
             var normOnSrf = srf.NormalAtParameter(0.5, 0.5);
 
             // if the normal is reversed, reverse the surface
-            if (normOnFace.Dot(normOnSrf) < 0) return srf.FlipNormalDirection();
+            if (normOnFace.Dot(normOnSrf) < 0)
+            {
+                var srf1 = srf.FlipNormalDirection();
+                srf.Dispose();
+                return srf1;
+            }
 
             return srf;
 
@@ -235,7 +243,10 @@ namespace Revit.GeometryConversion
             var c0 = face.get_Curve(0).ToProtoType(false);
             var c1 = face.get_Curve(1).ToProtoType(false);
 
-            return Surface.ByLoft(new[] {c0, c1});
+            var result = Surface.ByLoft(new[] {c0, c1});
+            c0.Dispose();
+            c1.Dispose();
+            return result;
         }
     }
 }

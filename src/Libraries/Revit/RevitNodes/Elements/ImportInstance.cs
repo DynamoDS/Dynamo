@@ -197,6 +197,7 @@ namespace Revit.Elements
 
             // get center of bbox
             var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
+            bb.Dispose();
 
             // translate all geom so that it is centered by bb
             List<Geometry> newGeometries = new List<Geometry>();
