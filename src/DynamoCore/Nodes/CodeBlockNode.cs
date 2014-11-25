@@ -144,9 +144,6 @@ namespace Dynamo.Nodes
         {
             get
             {
-                if (State == ElementState.Error)
-                    return null;
-
                 return previewVariable ?? base.AstIdentifierBase;
             }
         }
