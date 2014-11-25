@@ -10,13 +10,13 @@ namespace ProtoCore
     // Responsible for resolving a partial class name to its fully resolved name
     public class ElementResolver
     {
-        private Dictionary<AssociativeNode, IdentifierListNode> namespaceCache;
+        private Dictionary<string, string> namespaceCache;
 
 
         /// <summary>
         /// Maintains a table of partial class IdentifierList vs. its fully qualified IdentifierList 
         /// </summary>
-        public Dictionary<AssociativeNode, IdentifierListNode> NamespaceCache
+        public Dictionary<string, string> NamespaceCache
         {
             get { return namespaceCache; }
         }
@@ -26,12 +26,12 @@ namespace ProtoCore
 
         public ElementResolver(string[] namespaceList)
         {
-            namespaceCache = new Dictionary<AssociativeNode,IdentifierListNode>();
+            namespaceCache = new Dictionary<string, string>();
             InitializeNamespaceCache(namespaceList);
         }
 
 
-        public void ResolveClassNamespace(ClassTable classTable, CodeBlockNode codeBlockNode)
+        public void ResolveClassNamespace(ClassTable classTable, ref CodeBlockNode codeBlockNode)
         {
             var body = codeBlockNode.Body;
             for (int i = 0; i < body.Count; ++i)
@@ -46,26 +46,26 @@ namespace ProtoCore
         private void UpdateASTWithFullyQualifiedName(ClassTable classTable, ref AssociativeNode astNode)
         {
             // Get partial class identifier/identifier lists
-            IEnumerable<AssociativeNode> classIdentifierNodes = GetClassIdentifiers(astNode);
+            IEnumerable<string> classIdentifiers = GetClassIdentifiers(astNode);
 
-            foreach (var partialNode in classIdentifierNodes)
+            foreach (var partialName in classIdentifiers)
             {
-                if (namespaceCache != null)
-                    namespaceCache = new Dictionary<AssociativeNode, IdentifierListNode>();
+                if (namespaceCache == null)
+                    namespaceCache = new Dictionary<string, string>();
 
-                IdentifierListNode fullNode = null;
-                if (namespaceCache.TryGetValue(partialNode, out fullNode))
+                string resolvedName;
+                if (namespaceCache.TryGetValue(partialName, out resolvedName))
                 {
-                    ReplacePartialWithFullNode(ref astNode, partialNode, fullNode);
+                    ReplacePartialWithFullNode(ref astNode, partialName, resolvedName);
                 }
                 else
                 {
                     // If cache does not contain entry for partial name, 
                     // back up on compiler to resolve the namespace from partial name
-                    fullNode = GetResolvedClassName(classTable, partialNode);
+                    resolvedName = GetResolvedClassName(classTable, partialName);
                     
-                    namespaceCache.Add(partialNode, fullNode);
-                    ReplacePartialWithFullNode(ref astNode, partialNode, fullNode);
+                    namespaceCache.Add(partialName, resolvedName);
+                    ReplacePartialWithFullNode(ref astNode, partialName, resolvedName);
                 }
             }
         }
@@ -74,9 +74,9 @@ namespace ProtoCore
         /// Get fully resolved name as identifier list from class table
         /// </summary>
         /// <param name="classTable"> class table in Core </param>
-        /// <param name="partialNode"> partial class name as identifier/identifier list </param>
+        /// <param name="partialName"> partial class name </param>
         /// <returns> fully resolved name as Identifier list </returns>
-        private static IdentifierListNode GetResolvedClassName(ClassTable classTable, AssociativeNode partialNode)
+        private static string GetResolvedClassName(ClassTable classTable, string partialName)
         {
             throw new NotImplementedException();
         }
@@ -86,9 +86,9 @@ namespace ProtoCore
         /// This is the same AST that is also passed to the VM for execution
         /// </summary>
         /// <param name="astNode"></param>
-        /// <param name="partialNode"> partial class name identifier </param>
-        /// <param name="fullNode"> fully qualified class identifier list node </param>
-        private static void ReplacePartialWithFullNode(ref AssociativeNode astNode, AssociativeNode partialNode, IdentifierListNode fullNode)
+        /// <param name="partialName"> partial class name identifier </param>
+        /// <param name="resolvedName"> fully qualified class identifier list </param>
+        private static void ReplacePartialWithFullNode(ref AssociativeNode astNode, string partialName, string resolvedName)
         {
             throw new NotImplementedException();
         }
@@ -98,14 +98,14 @@ namespace ProtoCore
         /// </summary>
         /// <param name="astNode"> input AST node </param>
         /// <returns> list of IdentifierNode/IdentifierListNode of Class identifiers </returns>
-        private static IEnumerable<AssociativeNode> GetClassIdentifiers(AST.Node astNode)
+        private static IEnumerable<string> GetClassIdentifiers(AST.Node astNode)
         {
             throw new NotImplementedException();
         }
 
 
-        // Given an input fully resolved class name, convert it into an Identifier/IdentifierListNode
-        private AssociativeNode InitializeNamespaceCache(string[] namespaceList)
+        // Given a fully resolved class name, convert it into an Identifier/IdentifierListNode
+        private void InitializeNamespaceCache(string[] namespaceList)
         {
             throw new NotImplementedException();
         }

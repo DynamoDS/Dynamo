@@ -309,7 +309,7 @@ namespace ProtoCore.Utils
                 // before passing them for pre-compilation. If partial class is not found in cache, 
                 // update namespace cache in ElementResolver with fully resolved name from compiler.
                 if(elementResolver != null)
-                    elementResolver.ResolveClassNamespace(core.ClassTable, codeblock);
+                    elementResolver.ResolveClassNamespace(core.ClassTable, ref codeblock);
 
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 
