@@ -776,7 +776,7 @@ namespace Dynamo.Search
 
             foreach (var category in BrowserRootCategories)
             {
-                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString(), null);
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
                 XmlHelper.AddAttribute(element, "Name", category.Name);
 
                 AddChildrenToXml(element, category.Items);
@@ -791,7 +791,7 @@ namespace Dynamo.Search
         {
             foreach (var child in children)
             {
-                var element = XmlHelper.AddNode(parent, child.GetType().ToString(), null);
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
 
                 if (child is NodeSearchElement)
                 {
