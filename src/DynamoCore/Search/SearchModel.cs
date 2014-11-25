@@ -781,7 +781,7 @@ namespace Dynamo.Search
                 var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString(), null);
                 XmlHelper.AddAttribute(element, "Name", category.Name);
 
-                AddChildren(element, category.Items);
+                AddChildrenToXml(element, category.Items);
 
                 document.DocumentElement.AppendChild(element);
             }
@@ -789,14 +789,25 @@ namespace Dynamo.Search
             document.Save(fileName);
         }
 
-        private void AddChildren(XmlNode parent, ObservableCollection<BrowserItem> children)
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
         {
             foreach (var child in children)
             {
                 var element = XmlHelper.AddNode(parent, child.GetType().ToString(), null);
-                XmlHelper.AddAttribute(element, "Name", child.Name);
 
-                AddChildren(element, child.Items);
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
 
                 parent.AppendChild(element);
             }

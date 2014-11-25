@@ -7,8 +7,12 @@ namespace DynamoUtilities
         public static XmlNode AddNode(XmlNode parent, string tagName, string value)
         {
             XmlElement element = parent.OwnerDocument.CreateElement(tagName);
+
             if (!string.IsNullOrEmpty(value))
-                element.Value = value;
+            {
+                XmlText text = parent.OwnerDocument.CreateTextNode(value);
+                element.AppendChild(text);
+            }
 
             return parent.AppendChild(element);
         }

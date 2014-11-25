@@ -778,10 +778,11 @@ namespace Dynamo.Models
             this.SearchModel.SortCategoryChildren();
 
             string directory = Path.GetDirectoryName(Logger.LogPath);
-            string fileName = Path.Combine(directory, "library_dump.xml");
-            File.Delete(fileName);
+            string fileName = Path.GetFileNameWithoutExtension(Logger.LogPath) + "_ld.xml";
+            string fullFileName = Path.Combine(directory, fileName);
+            File.Delete(fullFileName);
 
-            this.SearchModel.DumpLibraryToXml(fileName);
+            this.SearchModel.DumpLibraryToXml(fullFileName);
 
             Logger.Log("Welcome to Dynamo!");
         }
