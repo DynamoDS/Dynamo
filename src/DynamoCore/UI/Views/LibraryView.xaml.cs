@@ -14,6 +14,24 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
+        // This property is used to prevent a bug.
+        // When user clicks on category it scrolls instead of category content expanding.
+        // The reason is "CategoryTreeView" does not show full content because it is too
+        // big. On category clicking WPF makes autoscroll and doesn't expand content of 
+        // category. We are counting count of calling BringIntoViewCount() functions.        
+        private int bringIntoViewCount;
+        private int BringIntoViewCount
+        {
+            get
+            {
+                return bringIntoViewCount;
+            }
+            set
+            {
+                bringIntoViewCount = value >= 2 ? 2 : value;
+            }
+        }
+
         public LibraryView()
         {
             InitializeComponent();
@@ -56,10 +74,15 @@ namespace Dynamo.UI.Views
         /// list is cleared. As a result any visible StandardPanel will be hidden.
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
+            BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
+            expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
+
             var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent, "");
             if (buttons != null)
                 buttons.UnselectAll();
+
+            e.Handled = true;
         }
 
         private void OnSubCategoryListViewPreviewKeyDown(object sender, KeyEventArgs e)
@@ -113,6 +136,14 @@ namespace Dynamo.UI.Views
         private void OnImportAddonButtonClick(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Import add-on button is clicked");
+        }
+
+        private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            // Because of bug we mark event as handled for all automatic requests 
+            // until count of our requests less than 1. First request is done for
+            // opened top category when dynamo starts.
+            e.Handled = BringIntoViewCount < 2;
         }
     }
 }
