@@ -56,7 +56,7 @@ namespace RevitSystemTests
 #if DEBUG
                 else
                 {
-                    config.SetDefaultValues();
+                    config.SetDefaultValuesToUninitializedProperties();
                     config.Save(configPath);
                 }
 #endif
@@ -66,11 +66,11 @@ namespace RevitSystemTests
                 Debug.Print(ex.Message);
             }
 
-            config.SetDefaultValues();
+            config.SetDefaultValuesToUninitializedProperties();
             return config;
         }
 
-        private void SetDefaultValues()
+        private void SetDefaultValuesToUninitializedProperties()
         {
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
