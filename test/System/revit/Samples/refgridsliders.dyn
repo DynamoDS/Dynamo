@@ -16,7 +16,7 @@
       <System.Double value="19" min="0" max="50" />
     </Dynamo.Nodes.DoubleSliderInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7d3d4aa4-7a1e-458d-90b1-03f818f3e409" nickname="Number" x="220.636882430989" y="384.161111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0" />
+      <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.ReferencePtGrid type="Dynamo.Nodes.ReferencePtGrid" guid="28eeac51-501c-406e-a2ee-a38d9998f4f9" nickname="XYZ Grid" x="448.761111111111" y="92.2222222222223" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.ReferencePointByXyz type="Dynamo.Nodes.ReferencePointByXyz" guid="69dcdcdc-941f-46f9-8e8b-242b61e74e80" nickname="Reference Point" x="699.866666666667" y="92.2222222222223" isVisible="true" isUpstreamVisible="true" lacing="Longest">

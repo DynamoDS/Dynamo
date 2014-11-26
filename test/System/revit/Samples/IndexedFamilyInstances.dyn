@@ -101,7 +101,7 @@
     </Dynamo.Nodes.FamilyInstanceParameterSetter>
     <Dynamo.Nodes.NumberSeq type="Dynamo.Nodes.NumberSeq" guid="da400b3b-2122-489a-a118-3e8e1e0802f7" nickname="Number Sequence" x="1008.38888888889" y="122.663809523809" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="620de1b6-f21e-468e-84e1-3b6d9ce8debf" nickname="Number" x="838.388888888888" y="122.663809523809" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0" />
+      <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="904effa9-e182-4fc8-a070-54fceb9a8ac0" nickname="XYZ" x="1148.38888888889" y="122.663809523809" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <PortInfo index="0" default="True" />
