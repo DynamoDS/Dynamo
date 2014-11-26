@@ -407,6 +407,10 @@
                                   IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
                         <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
                                       IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
+                        <MenuItem Focusable="False"
+                                  Header="Dump Library"
+                                  Command="{Binding DumpLibraryToXmlCommand}"
+                                  IsEnabled="True" />
                     </MenuItem>
                 </Menu>
 
