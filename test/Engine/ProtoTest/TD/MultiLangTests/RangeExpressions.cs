@@ -1883,6 +1883,7 @@ d1;d2;d3;d4;d5;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void TestStepZero()
         {
             string src = @"
