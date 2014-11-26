@@ -300,7 +300,8 @@ namespace Dynamo.Utilities
             // code does not end with a closing curly bracket (in which case a 
             // trailing semi-colon is not required).
             // 
-            if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
+            if (!string.IsNullOrEmpty(inputCode) && 
+                !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
                 if (inputCode.EndsWith(";") == false)
                     inputCode = inputCode + ";";
