@@ -10,6 +10,9 @@ namespace Dynamo.Models
 {
     public class CustomNodeWorkspaceModel : WorkspaceModel
     {
+        [Obsolete("No longer supported.", true)]
+        private DynamoModel dynamoModel;
+
         #region Contructors
         
         public CustomNodeWorkspaceModel(
@@ -50,7 +53,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this);
+                return new CustomNodeDefinition()
             }
         }
 
@@ -100,7 +103,7 @@ namespace Dynamo.Models
 
             if (originalPath == null)
             {
-                CustomNodeDefinition.AddToSearch(this.DynamoModel.SearchModel);
+                CustomNodeDefinition.AddToSearch(dynamoModel.SearchModel);
                 dynamoModel.SearchModel.OnRequestSync();
                 CustomNodeDefinition.UpdateCustomNodeManager(dynamoModel.CustomNodeManager);
             }

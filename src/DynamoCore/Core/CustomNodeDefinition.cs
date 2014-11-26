@@ -14,11 +14,9 @@ namespace Dynamo
 {
     public class CustomNodeDefinition : IFunctionDescriptor
     {
-        internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
-
-        internal CustomNodeDefinition(Guid id)
+        public CustomNodeDefinition(Guid functionId)
         {
-            FunctionId = id;
+            FunctionId = functionId;
         }
 
         /// <summary>
@@ -33,23 +31,18 @@ namespace Dynamo
         /// <summary>
         ///     Function unique ID.
         /// </summary>
-        public Guid FunctionId { get; internal set; }
-
-        /// <summary>
-        ///     Custom node definition's workspace model. 
-        /// </summary>
-        public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
+        public Guid FunctionId { get; private set; }
 
         /// <summary>
         ///     Function parameters
         /// </summary>
-        public IEnumerable<string> Parameters { get; internal set; }
+        public IEnumerable<string> Parameters { get; private set; }
 
         /// <summary>
         ///     If the function returns a dictionary, it specifies all keys in
         ///     that dictionary.
         /// </summary>
-        public IEnumerable<string> ReturnKeys { get; internal set; }
+        public IEnumerable<string> ReturnKeys { get; private set; }
 
         /// <summary>
         ///    A definition is a proxy definition if we are not able to load
@@ -57,37 +50,37 @@ namespace Dynamo
         ///    point to proxy custom node definition will be in error state 
         ///    until .dyf file loaded properly.
         /// </summary>
+        [Obsolete("No longer supported.", true)]
         public bool IsProxy { get; set; }
 
         /// <summary>
         ///     User friendly name on UI.
         /// </summary>
-        public string DisplayName
-        {
-            get { return WorkspaceModel.Name; }
-        }
+        [Obsolete("Get from CustomNodeInfo", true)]
+        public string DisplayName { get; private set; }
 
         /// <summary>
         ///     If need to rebuild ast nodes.
         /// </summary>
+        [Obsolete("No longer supported.", true)]
         public bool RequiresRecalc { get; internal set; }
+
+        /// <summary>
+        ///     Custom node definition's workspace model. 
+        /// </summary>
+        [Obsolete("Workspace is no longer stored on CustomNodeDefinition.", true)]
+        public CustomNodeWorkspaceModel Workspace { get; internal set; }
 
         #region Dependencies
 
         public IEnumerable<CustomNodeDefinition> Dependencies
         {
-            get
-            {
-                return FindAllDependencies(new HashSet<CustomNodeDefinition>());
-            }
+            get { return FindAllDependencies(new HashSet<CustomNodeDefinition>()); }
         }
 
-        public IEnumerable<CustomNodeDefinition> DirectDependencies
-        {
-            get
-            {
-                return FindDirectDependencies();
-            }
+        public IEnumerable<CustomNodeDefinition> DirectDependencies { get; private set; //{
+            //    return FindDirectDependencies();
+            //}
         }
 
         public bool IsBeingLoaded { get; set; }
@@ -105,9 +98,10 @@ namespace Dynamo
             }
         }
 
+        //TODO(Steve): This should exist somewhere else and operate on WorkspaceModel
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
-            return WorkspaceModel.Nodes
+            return Workspace.Nodes
                 .OfType<Function>()
                 .Select(node => node.Definition)
                 .Where(def => def != this)
@@ -142,7 +136,7 @@ namespace Dynamo
             #region Find outputs
 
             // Find output elements for the node
-            List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
+            List<Output> outputs = Workspace.Nodes.OfType<Output>().ToList();
  
             var topMost = new List<Tuple<int, NodeModel>>();
 
@@ -162,7 +156,7 @@ namespace Dynamo
 
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as the output
-                IEnumerable<NodeModel> topMostNodes = WorkspaceModel.GetTopMostNodes();
+                IEnumerable<NodeModel> topMostNodes = Workspace.GetTopMostNodes();
 
                 var rtnPorts =
                     //Grab multiple returns from each node
@@ -219,7 +213,7 @@ namespace Dynamo
             #endregion
 
             //Find function entry point, and then compile
-            var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
+            var inputNodes = Workspace.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
@@ -227,7 +221,7 @@ namespace Dynamo
             OnUpdated();
 
             //Call OnSave for all saved elements
-            foreach (var node in WorkspaceModel.Nodes)
+            foreach (var node in Workspace.Nodes)
                 node.OnSave();
 
             #endregion
@@ -240,7 +234,7 @@ namespace Dynamo
 
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
-                WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
+                Workspace.Nodes.Where(x => !(x is Symbol)),
                 outputNodes,
                 parameters);
 
@@ -257,26 +251,26 @@ namespace Dynamo
         {
             return
                 search.Add(new CustomNodeInfo(  FunctionId, 
-                                                WorkspaceModel.Name,
-                                                WorkspaceModel.Category,
-                                                WorkspaceModel.Description,
-                                                WorkspaceModel.FileName ));
+                                                Workspace.Name,
+                                                Workspace.Category,
+                                                Workspace.Description,
+                                                Workspace.FileName ));
         }
 
         public void UpdateCustomNodeManager(CustomNodeManager customNodeManager)
         {
             customNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
-                                                                WorkspaceModel.Name,
-                                                                WorkspaceModel.Category,
-                                                                WorkspaceModel.Description,
-                                                                WorkspaceModel.FileName));
+                                                                Workspace.Name,
+                                                                Workspace.Category,
+                                                                Workspace.Description,
+                                                                Workspace.FileName));
         }
 
         public bool SyncWithWorkspace(DynamoModel dynamoModel, bool addToSearch, bool compileFunction)
         {
 
             // Get the internal nodes for the function
-            var functionWorkspace = WorkspaceModel;
+            var functionWorkspace = Workspace;
 
             try
             {
@@ -290,7 +284,7 @@ namespace Dynamo
                 }
 
                 var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                                              functionWorkspace.Description, WorkspaceModel.FileName);
+                                              functionWorkspace.Description, Workspace.FileName);
 
                 dynamoModel.CustomNodeManager.SetNodeInfo(info);
                 Compile(dynamoModel.EngineController);
@@ -306,5 +300,26 @@ namespace Dynamo
         }
 
         #endregion
+    }
+    
+    /// <summary>
+    /// A simple class to keep track of custom nodes.
+    /// </summary>
+    public class CustomNodeInfo
+    {
+        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        {
+            Guid = guid;
+            Name = name;
+            Category = category;
+            Description = description;
+            Path = path;
+        }
+
+        public Guid Guid { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string Description { get; set; }
+        public string Path { get; set; }
     }
 }

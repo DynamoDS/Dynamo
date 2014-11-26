@@ -155,6 +155,9 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
+            //This is now handled via NodeGraph.LoadConnectorFromXml
+
+            /*
             var helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
@@ -175,7 +178,7 @@ namespace Dynamo.Models
                 endPort = endNode.InPorts[endIndex];
 
             pStart.Connect(this);
-            Connect(endPort);
+            Connect(endPort);*/
         }
 
         #endregion

@@ -81,8 +81,8 @@ namespace Dynamo.PackageManager
                 
             defList.ForEach( func =>
                     {
-                        var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.WorkspaceModel.FileName));
-                        func.WorkspaceModel.FileName = newPath;
+                        var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.Workspace.FileName));
+                        func.Workspace.FileName = newPath;
                         customNodeManager.SetNodePath(func.FunctionId, newPath);
                     });
         }

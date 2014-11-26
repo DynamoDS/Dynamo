@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Web;
 using System.Xml;
 
 using Autodesk.DesignScript.Interfaces;
@@ -26,10 +27,11 @@ namespace Dynamo.Models
     {
         #region private members
 
+        private bool forceReExec;
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        private bool interactionEnabled = true;
+        [Obsolete("No longer supported", true)] private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
@@ -37,7 +39,6 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private bool saveResult;
         private string description;
-
 
         // Data caching related class members.
         private bool isUpdated;
@@ -376,6 +377,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Is UI interaction enabled for this Node?
         /// </summary>
+        [Obsolete("No longer supported", true)]
         public bool InteractionEnabled
         {
             get { return interactionEnabled; }
@@ -604,6 +606,7 @@ namespace Dynamo.Models
         /// <param name="xmlDoc">Overall XmlDocument representing the entire Workspace being saved.</param>
         /// <param name="dynEl">The XmlElement representing this node in the Workspace.</param>
         /// <param name="context">The context of this save operation.</param>
+        [Obsolete("Use Serialize() method instead.", true)]
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             SaveBasicData(dynEl);
@@ -624,6 +627,7 @@ namespace Dynamo.Models
             }
         }
 
+        [Obsolete("Use Serialize() method instead.", true)]
         private void SaveBasicData(XmlElement dynEl)
         {
             //set the type attribute
@@ -642,8 +646,10 @@ namespace Dynamo.Models
         ///     SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
+        [Obsolete("Use Deserialize() method instead.", true)]
         protected virtual void LoadNode(XmlElement nodeElement) { }
 
+        [Obsolete("Use Deserialize() method instead.", true)]
         private void ReadBasicData(XmlNode elNode)
         {
             XmlAttribute guidAttrib = elNode.Attributes["guid"];
@@ -713,6 +719,7 @@ namespace Dynamo.Models
             IsUpstreamVisible = isUpstreamVisible;
         }
 
+        [Obsolete("Use Deserialize() method instead.", true)]
         public void Load(XmlElement elNode)
         {
             ReadBasicData(elNode);
@@ -994,12 +1001,13 @@ namespace Dynamo.Models
 
         #region Interaction
 
+        [Obsolete("No longer supported", true)]
         internal void DisableInteraction()
         {
             State = ElementState.Dead;
             InteractionEnabled = false;
         }
-
+        [Obsolete("No longer supported", true)]
         internal void EnableInteraction()
         {
             ValidateConnections();
@@ -1402,7 +1410,7 @@ namespace Dynamo.Models
             var helper = new XmlElementHelper(element);
 
             // Set the type attribute
-            helper.SetAttribute("type", GetType().ToString());
+            helper.SetAttribute("type", GetType());
             helper.SetAttribute("guid", GUID);
             helper.SetAttribute("nickname", NickName);
             helper.SetAttribute("x", X);
@@ -1411,12 +1419,28 @@ namespace Dynamo.Models
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
 
+            var portsWithDefaultValues =
+                inPorts.Select((port, index) => new { port, index })
+                   .Where(x => x.port.UsingDefaultValue);
+
+            //write port information
+            foreach (var port in portsWithDefaultValues)
+            {
+                XmlElement portInfo = element.OwnerDocument.CreateElement("PortInfo");
+                portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
+                portInfo.SetAttribute("default", true.ToString());
+                element.AppendChild(portInfo);
+            }
+
+            // Fix: MAGN-159 (nodes are not editable after undo/redo).
             if (context == SaveContext.Undo)
             {
-                // Fix: MAGN-159 (nodes are not editable after undo/redo).
-                helper.SetAttribute("interactionEnabled", interactionEnabled);
+                //helper.SetAttribute("interactionEnabled", interactionEnabled);
                 helper.SetAttribute("nodeState", state.ToString());
             }
+
+            if (context == SaveContext.File)
+                OnSave();
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -1443,10 +1467,30 @@ namespace Dynamo.Models
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
 
+            var portInfoProcessed = new HashSet<int>();
+
+            //read port information
+            foreach (XmlNode subNode in element.ChildNodes)
+            {
+                if (subNode.Name == "PortInfo")
+                {
+                    int index = int.Parse(subNode.Attributes["index"].Value);
+                    portInfoProcessed.Add(index);
+                    bool def = bool.Parse(subNode.Attributes["default"].Value);
+                    inPorts[index].UsingDefaultValue = def;
+                }
+            }
+
+            //set defaults
+            foreach (
+                var port in
+                    inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+                port.x.UsingDefaultValue = false;
+
             if (context == SaveContext.Undo)
             {
                 // Fix: MAGN-159 (nodes are not editable after undo/redo).
-                interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
+                //interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
                 state = helper.ReadEnum("nodeState", ElementState.Active);
 
                 // We only notify property changes in an undo/redo operation. Normal
@@ -1494,7 +1538,6 @@ namespace Dynamo.Models
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
-        [Obsolete("Call OnModified() instead", true)]
         public virtual bool ForceReExecuteOfNode
         {
             get
@@ -1535,8 +1578,8 @@ namespace Dynamo.Models
         /// 
         public void RequestVisualUpdateAsync(int maxTesselationDivisions)
         {
-            if (Workspace.DynamoModel == null)
-                return;
+            //if (Workspace.DynamoModel == null)
+            //    return;
 
             // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
             // called in quick succession from the UI thread -- the first task may 
@@ -1552,7 +1595,7 @@ namespace Dynamo.Models
 
             // If a node is in either of the following states, then it will not 
             // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
+            if ((State == ElementState.Error) || !IsVisible)// || CachedValue == null)
                 return;
 
             RequestVisualUpdateAsyncCore(maxTesselationDivisions);
@@ -1602,9 +1645,9 @@ namespace Dynamo.Models
             lock (RenderPackagesMutex)
             {
                 var task = asyncTask as UpdateRenderPackageAsyncTask;
-                _renderPackages.Clear();
-                _renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = _renderPackages.Any();
+                renderPackages.Clear();
+                renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = renderPackages.Any();
             }
         }
 

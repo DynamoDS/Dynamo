@@ -57,7 +57,7 @@ namespace Dynamo.Wpf
 
         private void EditCustomNodeProperties()
         {
-            var workspace = functionNodeModel.Definition.WorkspaceModel;
+            var workspace = functionNodeModel.Definition.Workspace;
 
             // copy these strings
             var newName = workspace.Name.Substring(0);

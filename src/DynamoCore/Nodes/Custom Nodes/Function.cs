@@ -29,10 +29,10 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get { return Definition == null ? string.Empty : Definition.WorkspaceModel.Description; }
+            get { return Definition == null ? string.Empty : Definition.Workspace.Description; }
             set
             {
-                Definition.WorkspaceModel.Description = value;
+                Definition.Workspace.Description = value;
                 RaisePropertyChanged("Description");
             }
         }

@@ -104,7 +104,7 @@ namespace Dynamo.Models
             FunctionDescriptor functionItem = engineController.GetFunctionDescriptor(name);
             if (functionItem != null)
                 node = GetDSFunctionFromFunctionItem(functionItem);
-            else if (!GetNodeModelInstanceByName(name, null, out node))
+            else if (!GetNodeModelInstanceByName(name, null, default(SaveContext), out node))
                 node = GetCustomNodeByName(manager, name);
 
             return node;
@@ -174,7 +174,7 @@ namespace Dynamo.Models
             {
                 return new Function(def)
                 {
-                    NickName = def.WorkspaceModel.Name
+                    NickName = def.Workspace.Name
                 };
             }
 
@@ -193,7 +193,7 @@ namespace Dynamo.Models
             return false;
         }
 
-        private bool GetNodeModelInstanceByName(string name, XmlElement elNode, out NodeModel node)
+        private bool GetNodeModelInstanceByName(string name, XmlElement elNode, SaveContext context, out NodeModel node)
         {
             Type type;
             if (!ResolveType(name, out type))
@@ -210,7 +210,7 @@ namespace Dynamo.Models
             }
 
             node = data.CreateNodeFromXml(elNode);
-            node.Load(elNode);
+            node.Deserialize(elNode, context);
             return true;
         }
 
@@ -233,23 +233,26 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         /// <param name="elNode"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public NodeModel CreateNodeFromXml(XmlElement elNode)
+        public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
             XmlAttribute typeAttrib = elNode.Attributes["type"];
             string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
 
             NodeModel node;
-            if (!GetNodeModelInstanceByName(typeName, elNode, out node))
+            if (!GetNodeModelInstanceByName(typeName, elNode, context, out node))
             {
+                //TODO(Steve): Create Dummy node directly
+
                 // If a given function is not found during file load, then convert the 
                 // function node into a dummy node (instead of crashing the workflow).
                 var dummyElement = MigrationManager.CreateMissingNode(elNode, 1, 1);
 
                 // The new type representing the dummy node.
                 typeName = dummyElement.GetAttribute("type");
-                GetNodeModelInstanceByName(typeName, dummyElement, out node);
-                node.Load(dummyElement);
+                GetNodeModelInstanceByName(typeName, dummyElement, context, out node);
+                node.Deserialize(dummyElement, context);
             }
             return node;
 

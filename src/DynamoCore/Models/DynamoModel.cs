@@ -297,7 +297,7 @@ namespace Dynamo.Models
                     .Concat(
                         CustomNodeManager.GetLoadedDefinitions().Aggregate(
                             (IEnumerable<NodeModel>)new List<NodeModel>(),
-                            (a, x) => a.Concat(x.WorkspaceModel.Nodes)
+                            (a, x) => a.Concat(x.Workspace.Nodes)
                             ));
             }
         }
@@ -465,9 +465,9 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
+            //TODO(Steve): Need a way to hide input/output nodes in home workspaces...
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced += AddNodeToCurrentWorkspace;
-            CurrentWorkspaceChanged += SearchModel.RevealWorkspaceSpecificNodes;
 
             InitializeCurrentWorkspace();
 
@@ -484,11 +484,12 @@ namespace Dynamo.Models
 
             EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
 
-            LibraryServices.Instance.MessageLogged += LogMessage;
+            EngineController.LibraryServices.MessageLogged += LogMessage;
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
-            NodeFactory.AddLoader(new ZeroTouchNodeLoader());
+            //TODO(Steve): Ensure this is safe when EngineController is re-created
+            NodeFactory.AddLoader(new ZeroTouchNodeLoader(EngineController.LibraryServices));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
@@ -529,20 +530,16 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             foreach (var funcGroup in EngineController.GetFunctionGroups())
-            {
                 AddZeroTouchNodeToSearch(funcGroup);
-            }
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
             //TODO(Steve): This will need refactoring
-            PackageLoader.LoadPackagesIntoDynamo(preferences, Loader);
+            PackageLoader.LoadPackagesIntoDynamo(preferences, TODO);
 
             // Load local custom nodes
             foreach (var custNodeDef in CustomNodeManager.ScanSearchPaths())
-            {
                 AddCustomNodeToSearch(custNodeDef);
-            }
         }
 
         private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
@@ -553,7 +550,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            SearchModel.AddToSearch(new NodeModelSearchElement(typeLoadData));
+            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
         }
 
         private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
@@ -568,13 +565,13 @@ namespace Dynamo.Models
         {
             if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
             {
-                SearchModel.AddToSearch(new ZeroTouchSearchElement(functionDescriptor));
+                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
         }
 
         private void AddCustomNodeToSearch(CustomNodeInfo info)
         {
-            SearchModel.AddToSearch(new CustomNodeSearchElement(CustomNodeManager, info));
+            SearchModel.Add(new CustomNodeSearchElement(CustomNodeManager, info));
         }
 
         public void Dispose()
@@ -588,10 +585,9 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             Loader.MessageLogged -= LogMessage;
             PackageLoader.MessageLogged -= LogMessage;
-            LibraryServices.Instance.MessageLogged -= LogMessage;
+            EngineController.LibraryServices.MessageLogged -= LogMessage;
 
             SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
-            CurrentWorkspaceChanged -= SearchModel.RevealWorkspaceSpecificNodes;
 
             if (PreferenceSettings != null)
             {
@@ -667,7 +663,8 @@ namespace Dynamo.Models
 
             foreach (var node in CurrentWorkspace.Nodes)
             {
-                node.RequiresRecalc = true; //TODO(Steve): Update place where we're tracking modifications, no need to call each individual node.
+                //TODO(Steve): Update place where we're tracking modifications, no need to call each individual node.
+                node.RequiresRecalc = true; 
             }
         }
 
@@ -696,7 +693,7 @@ namespace Dynamo.Models
             }
 
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            EngineController = new EngineController(geomFactory);
+            EngineController = new EngineController(this, geomFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
@@ -983,7 +980,7 @@ namespace Dynamo.Models
             funcDef.AddToSearch(SearchModel);
 
             //TODO(Steve): Handle at load time?
-            var ws = funcDef.WorkspaceModel;
+            var ws = funcDef.Workspace;
             ws.Zoom = workspaceHeader.Zoom;
             ws.HasUnsavedChanges = false;
 
@@ -1034,7 +1031,6 @@ namespace Dynamo.Models
         //TODO(Steve): We shouldn't have to handle post-activation stuff in the model, this stuff can probably go somewhere else.
         internal void PostUIActivation(object parameter)
         {
-
             Logger.Log("Welcome to Dynamo!");
         }
 
@@ -1600,7 +1596,7 @@ namespace Dynamo.Models
 
             Workspaces.Add(workSpace);
 
-            var functionDefinition = new CustomNodeDefinition(id) { WorkspaceModel = workSpace };
+            var functionDefinition = new CustomNodeDefinition(id) { Workspace = workSpace };
 
             functionDefinition.SyncWithWorkspace(this, true, true);
 

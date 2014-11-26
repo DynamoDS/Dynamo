@@ -58,7 +58,7 @@ namespace Dynamo.Utilities
 
                 var newNodeDefinition = new CustomNodeDefinition(Guid.NewGuid())
                 {
-                    WorkspaceModel = newNodeWorkspace
+                    Workspace = newNodeWorkspace
                 };
 
                 currentWorkspace.DisableReporting();

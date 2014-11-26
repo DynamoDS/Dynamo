@@ -137,7 +137,7 @@ namespace Dynamo.PackageManager.UI
             {
                 if (DependencyType == DependencyType.CustomNode)
                 {
-                    return Definition.WorkspaceModel.Name;
+                    return Definition.Workspace.Name;
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {

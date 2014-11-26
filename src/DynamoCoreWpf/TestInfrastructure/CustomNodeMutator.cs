@@ -46,7 +46,7 @@ namespace Dynamo.TestInfrastructure
 
             string customNodeFilePath = string.Empty;
             if (node is Function)
-                customNodeFilePath = ((Function)node).Definition.WorkspaceModel.FileName;
+                customNodeFilePath = ((Function)node).Definition.Workspace.FileName;
 
             var workspaces = DynamoViewModel.Model.Workspaces;
 
@@ -63,7 +63,7 @@ namespace Dynamo.TestInfrastructure
 
                 var nodesInCustomNodeBeforeMutation = workspaces.FirstOrDefault((t) => 
                     {
-                        return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                        return (t.Name == ((Function)node).Definition.Workspace.Name);
                     }).Nodes.ToList();
 
                 var customNodeStructureBeforeMutation = 
@@ -110,7 +110,7 @@ namespace Dynamo.TestInfrastructure
 
                 var nodesInCustomNodeAfterMutation = workspaces.FirstOrDefault((t) =>
                     {
-                        return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                        return (t.Name == ((Function)node).Definition.Workspace.Name);
                     }).Nodes.ToList();
 
                 var customNodeStructureAfterMutation = 
@@ -236,7 +236,7 @@ namespace Dynamo.TestInfrastructure
             var workspaces = DynamoModel.Workspaces;
             var outputsInCustomNode = workspaces.FirstOrDefault((t) =>
                 {
-                    return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                    return (t.Name == ((Function)node).Definition.Workspace.Name);
                 }).Nodes.Where(t => t.GetType() == typeof(Output)).ToList();
 
             Guid numberGuid = Guid.NewGuid();

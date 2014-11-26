@@ -1115,13 +1115,13 @@ namespace Dynamo.ViewModels
             {
                 var customNodeWorkspace = model.CurrentWorkspace as CustomNodeWorkspaceModel;
                 if (customNodeWorkspace.CustomNodeDefinition.FunctionId
-                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
+                    == symbol.Workspace.CustomNodeDefinition.FunctionId)
                 {
                     return;
                 }
             }
 
-            var newWs = symbol.WorkspaceModel;
+            var newWs = symbol.Workspace;
 
             if (!this.model.Workspaces.Contains(newWs))
                 this.model.Workspaces.Add(newWs);
@@ -1153,7 +1153,7 @@ namespace Dynamo.ViewModels
                     foreach (CustomNodeDefinition funcDef in 
                         model.CustomNodeManager.GetLoadedDefinitions())
                     {
-                        if (funcDef.WorkspaceModel.Nodes.Contains(e))
+                        if (funcDef.Workspace.Nodes.Contains(e))
                         {
                             FocusCustomNodeWorkspace(funcDef);
                             break;

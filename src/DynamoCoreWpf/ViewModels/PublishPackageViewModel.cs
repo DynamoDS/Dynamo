@@ -417,7 +417,7 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                this.Name = CustomNodeDefinitions[0].WorkspaceModel.Name;
+                this.Name = CustomNodeDefinitions[0].Workspace.Name;
                 this.UpdateDependencies();
             }
         }
@@ -609,7 +609,7 @@ namespace Dynamo.PackageManager
             var allFuncs = AllFuncDefs().ToList();
 
             // all workspaces
-            var workspaces = allFuncs.Select(def => def.WorkspaceModel).ToList();
+            var workspaces = allFuncs.Select(def => def.Workspace).ToList();
 
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
@@ -622,7 +622,7 @@ namespace Dynamo.PackageManager
 
             // omit files currently already under package control
             var files =
-                allFuncs.Select(f => f.WorkspaceModel.FileName)
+                allFuncs.Select(f => f.Workspace.FileName)
                         .Where(p =>
                                 (this.dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p) &&
                                 (this.dynamoViewModel.Model.Loader.PackageLoader.GetOwnerPackage(p).Name == this.Name) ||
@@ -648,7 +648,7 @@ namespace Dynamo.PackageManager
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
                 AllDependentFuncDefs()
-                    .Select(x => x.WorkspaceModel.FileName)
+                    .Select(x => x.Workspace.FileName)
                     .Union(AdditionalFiles)
                     .Where(pkgLoader.IsUnderPackageControl)
                     .Select(pkgLoader.GetOwnerPackage)
@@ -659,7 +659,7 @@ namespace Dynamo.PackageManager
 
             // get all of the dependencies from types
             var allTypePackages = AllFuncDefs()
-                .Select(x => x.WorkspaceModel.Nodes)
+                .Select(x => x.Workspace.Nodes)
                 .SelectMany(x => x)
                 .Select(x => x.GetType())
                 .Where(pkgLoader.IsUnderPackageControl)
@@ -670,7 +670,7 @@ namespace Dynamo.PackageManager
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 
             var dsFunctionPackages = AllFuncDefs()
-                .Select(x => x.WorkspaceModel.Nodes)
+                .Select(x => x.Workspace.Nodes)
                 .SelectMany(x => x)
                 .OfType<DSFunctionBase>()
                 .Select(x => x.Controller.Definition.Assembly)
@@ -695,7 +695,7 @@ namespace Dynamo.PackageManager
                     .Where(p =>
                                 (pkgLoader.IsUnderPackageControl(p) &&
                                 pkgLoader.GetOwnerPackage(p).Name == this.Name) || !dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p))
-                        .Select(x => new Tuple<string, string>(x.WorkspaceModel.Name, !String.IsNullOrEmpty(x.WorkspaceModel.Description) ? x.WorkspaceModel.Description : "No description provided"));
+                        .Select(x => new Tuple<string, string>(x.Workspace.Name, !String.IsNullOrEmpty(x.Workspace.Description) ? x.Workspace.Description : "No description provided"));
         }
 
         private string _errorString = "";

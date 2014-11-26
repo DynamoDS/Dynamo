@@ -52,7 +52,13 @@ namespace Dynamo.Search
     /// <summary>
     ///     Searchable library of NodeSearchElements that can produce NodeModels.
     /// </summary>
-    public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel> { }
+    public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
+    {
+        public void Add(NodeSearchElement entry)
+        {
+            Add(entry, entry.SearchKeywords);
+        }
+    }
 
     /// <summary>
     /// TODO
@@ -171,11 +177,16 @@ namespace Dynamo.Search
     public class CustomNodeSearchElement : NodeSearchElement
     {
         private readonly CustomNodeManager customNodeManager;
-        private readonly Guid id;
+        private Guid id;
 
         public CustomNodeSearchElement(CustomNodeManager customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
+            SyncWithCustomNodeInfo(info);
+        }
+
+        public void SyncWithCustomNodeInfo(CustomNodeInfo info)
+        {
             id = info.Guid;
             Name = info.Name;
             Categories = info.Category.AsSingleton();
@@ -188,4 +199,3 @@ namespace Dynamo.Search
         }
     }
 }
-

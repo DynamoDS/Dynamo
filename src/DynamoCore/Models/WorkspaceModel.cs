@@ -455,7 +455,6 @@ namespace Dynamo.Models
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="logger"></param>
         /// <param name="core"></param>
         public virtual bool SaveAs(string newPath, ProtoCore.Core core)
         {
@@ -489,7 +488,8 @@ namespace Dynamo.Models
         [Obsolete("Use AddNode(NodeModel)", true)]
         public T AddNode<T>(NodeFactory factory) where T : NodeModel
         {
-            var node = factory.CreateNodeInstance<T>();
+            var node = (T)factory.CreateNodeInstance(null, null, null); 
+            //var node = factory.CreateNodeInstance<T>();
             if (node == null) throw new Exception("The supplied node Type was invalid!");
 
             nodes.Add(node);
@@ -621,7 +621,7 @@ namespace Dynamo.Models
         {
             try
             {
-                var c = ConnectorModel.Make(this, start, end, startIndex, endIndex, portType );
+                var c = ConnectorModel.Make(start, end, startIndex, endIndex, portType );
 
                 if (c != null)
                     Connectors.Add(c);
@@ -646,7 +646,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(this, xPos, yPos) { GUID = id };
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? "New Note" : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -656,10 +656,6 @@ namespace Dynamo.Models
                 var args = new ModelEventArgs(noteModel, true);
                 OnRequestNodeCentered(this, args);
             }
-
-            noteModel.Text = "New Note";
-            if (!string.IsNullOrEmpty(text))
-                noteModel.Text = text;
 
             Notes.Add(noteModel);
             return noteModel;
@@ -792,11 +788,8 @@ namespace Dynamo.Models
 
                 foreach (var el in Nodes)
                 {
-                    var typeName = el.GetType().ToString();
-
-                    var dynEl = xmlDoc.CreateElement(typeName);
+                    var dynEl = el.Serialize(xmlDoc, SaveContext.File);
                     elementList.AppendChild(dynEl);
-                    el.Save(xmlDoc, dynEl, SaveContext.File);
                 }
 
                 //write only the output connectors
@@ -1208,10 +1201,11 @@ namespace Dynamo.Models
 
         private static bool ShouldProceedWithRecording(List<ModelBase> models)
         {
-            if (null != models)
-                models.RemoveAll(x => (x == null));
-
-            return (null != models && (models.Count > 0));
+            if (null == models) 
+                return false;
+            
+            models.RemoveAll(x => x == null);
+            return models.Count > 0;
         }
 
         private static bool ShouldProceedWithRecording(
@@ -1270,6 +1264,7 @@ namespace Dynamo.Models
                 }
             }
 
+            /*
             if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
                 typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
             {
@@ -1279,23 +1274,27 @@ namespace Dynamo.Models
                 // 
                 typeName = modelData.Attributes["name"].Value;
             }
+            */
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                ConnectorModel connector = ConnectorModel.Make(this);
-                connector.Deserialize(modelData, SaveContext.Undo);
-                Connectors.Add(connector);
+                ConnectorModel connector;
+                var loaded = NodeGraph.LoadConnectorFromXml(
+                    modelData,
+                    Nodes.ToDictionary(node => node.GUID),
+                    out connector);
+                
+                if (loaded)
+                    Connectors.Add(connector);
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
-                var noteModel = new NoteModel(this, 0.0, 0.0);
-                noteModel.Deserialize(modelData, SaveContext.Undo);
+                var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 Notes.Add(noteModel);
             }
             else // Other node types.
             {
-                NodeModel nodeModel = factory.CreateNodeInstance(typeName, engine, manager);
-                nodeModel.Deserialize(modelData, SaveContext.Undo);
+                NodeModel nodeModel = factory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }
         }

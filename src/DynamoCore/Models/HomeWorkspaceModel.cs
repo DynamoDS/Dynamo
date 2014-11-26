@@ -16,10 +16,7 @@ namespace Dynamo.Models
         {
             get
             {
-                if (runExpressionTimer == null)
-                    return false;
-
-                return runExpressionTimer.IsEnabled;
+                return runExpressionTimer != null && runExpressionTimer.IsEnabled;
             }
         }
 

@@ -20,27 +20,6 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
-    /// <summary>
-    /// A simple class to keep track of custom nodes.
-    /// </summary>
-    public class CustomNodeInfo
-    {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
-        {
-            Guid = guid;
-            Name = name;
-            Category = category;
-            Description = description;
-            Path = path;
-        }
-
-        public Guid Guid { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Path { get; set; }
-    }
-
     public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
     
     /// <summary>
@@ -614,7 +593,7 @@ namespace Dynamo.Utilities
         /// <returns>A valid function definition if the CustomNodeDefinition is already loaded, otherwise null. </returns>
         public CustomNodeDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
         {
-            return LoadedCustomNodes.Values.Cast<CustomNodeDefinition>().FirstOrDefault((def) => def.WorkspaceModel == workspace);
+            return LoadedCustomNodes.Values.Cast<CustomNodeDefinition>().FirstOrDefault((def) => def.Workspace == workspace);
         }
 
         /// <summary>
@@ -747,7 +726,7 @@ namespace Dynamo.Utilities
 
                 def = new CustomNodeDefinition(Guid.Parse(id))
                 {
-                    WorkspaceModel = ws,
+                    Workspace = ws,
                     IsBeingLoaded = true
                 };
 
