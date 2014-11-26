@@ -572,7 +572,7 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, HomeSpace))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunButtonContentVisible = Visibility.Collapsed;
+                RunButtonContentVisible = Visibility.Hidden;
                 RunEnabled = false; // Disable 'Run' button.               
                 ProcessingImageEnabled = Visibility.Visible;
                 scheduler.ScheduleForExecution(task);
@@ -644,8 +644,9 @@ namespace Dynamo.Models
             }
 
             // Notify listeners (optional) of completion.
-            //RunEnabled = true; // Re-enable 'Run' button.
-           // ProcessingImageEnabled = Visibility.Hidden;
+            RunEnabled = true; // Re-enable 'Run' button.
+            ProcessingImageEnabled = Visibility.Hidden;
+            RunButtonContentVisible = Visibility.Visible;
             
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);

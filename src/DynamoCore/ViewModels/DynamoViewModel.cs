@@ -776,6 +776,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("RunEnabled");
             else if (e.PropertyName == "ProcessingImageEnabled")
                 RaisePropertyChanged("ProcessingImageEnabled");
+            else if (e.PropertyName == "RunButtonContentVisible")
+                RaisePropertyChanged("RunButtonContentVisible");
         }
 
         private void CleanUp(DynamoModel dynamoModel)

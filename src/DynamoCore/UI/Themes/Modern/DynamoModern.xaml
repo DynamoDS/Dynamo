@@ -645,7 +645,7 @@
                                        Margin="10, 10, 10, 10"
                                        Foreground="#bbbbbb"
                                        FontSize="14px"  
-                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=RunButtonContentVisible, Mode = TwoWay}"
+                                       Visibility="{Binding Path=RunButtonContentVisible, Mode = TwoWay}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                             <Viewbox Width="50" 
                                      Margin="10" 
