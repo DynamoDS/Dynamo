@@ -1,14 +1,106 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Xml.Serialization;
 using Autodesk.Revit.DB;
 using DynamoUtilities;
 using RevitServices.Persistence;
-
 using RevitTestServices;
 
 namespace RevitSystemTests
 {
+    public class RevitTestConfiguration
+    {
+        /// <summary>
+        /// Directory where test files are kept
+        /// </summary>
+        public string WorkingDirectory { get; set; }
+
+        /// <summary>
+        /// Directory where Samples are kept
+        /// </summary>
+        public string SamplesPath { get; set; }
+
+        /// <summary>
+        /// Directory where custom node definitions are kept
+        /// </summary>
+        public string DefinitionsPath { get; set; }
+
+        /// <summary>
+        /// TestConfiguration file name
+        /// </summary>
+        private const string TEST_CONFIGURATION_FILE_S = "RevitTestConfigurations.xml";
+
+        /// <summary>
+        /// Loads configuration
+        /// </summary>
+        /// <returns></returns>
+        public static RevitTestConfiguration LoadConfiguration()
+        {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string assDir = fi.DirectoryName;
+            try
+            {
+                var configPath = Path.Combine(assDir, TEST_CONFIGURATION_FILE_S);
+                if (File.Exists(configPath))
+                {
+                    var serializer = new XmlSerializer(typeof(RevitTestConfiguration));
+                    using (var fs = new FileStream(configPath, FileMode.Open, FileAccess.Read))
+                    {
+                        return serializer.Deserialize(fs) as RevitTestConfiguration;
+                    }
+                }
+#if DEBUG
+                else
+                {
+                    var config = DefaultRevitTestConfiguration();
+                    config.Save(configPath);
+                }
+#endif
+            }
+            catch (Exception ex)
+            {
+                Debug.Print(ex.Message);
+            }
+
+            return DefaultRevitTestConfiguration();
+        }
+
+        private static RevitTestConfiguration DefaultRevitTestConfiguration()
+        {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string assDir = fi.DirectoryName;
+
+            var config = new RevitTestConfiguration();
+            //get the test path
+            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\");
+            config.WorkingDirectory = Path.GetFullPath(testsLoc);
+
+            //get the samples path
+            string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
+            config.SamplesPath = Path.GetFullPath(samplesLoc);
+
+            //set the custom node loader search path
+            string defsLoc = Path.Combine(
+                DynamoPathManager.Instance.Packages,
+                "Dynamo Sample Custom Nodes",
+                "dyf");
+            config.DefinitionsPath = Path.GetFullPath(defsLoc);
+            return config;
+        }
+
+        private void Save(string filePath)
+        {
+            var serializer = new XmlSerializer(typeof(RevitTestConfiguration));
+            using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                serializer.Serialize(fs, this);
+            }
+        }
+    }
+
     /// <summary>
     /// SystemTest is a Dynamo-specific subclass of the
     /// RevitSystemTestBase class. 
@@ -22,20 +114,16 @@ namespace RevitSystemTests
 
         public override void SetupCore()
         {
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string assDir = fi.DirectoryName;
+            var config = RevitTestConfiguration.LoadConfiguration();
 
             //get the test path
-            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\");
-            workingDirectory = Path.GetFullPath(testsLoc);
+            workingDirectory = config.WorkingDirectory;
 
             //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
-            samplesPath = Path.GetFullPath(samplesLoc);
+            samplesPath = config.SamplesPath;
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(DynamoPathManager.Instance.Packages, "Dynamo Sample Custom Nodes", "dyf");
-            defsPath = Path.GetFullPath(defsLoc);
+            defsPath = config.DefinitionsPath;
 
             emptyModelPath = Path.Combine(workingDirectory, "empty.rfa");
 
