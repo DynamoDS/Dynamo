@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        private void ProcessCodeDirect()
+        internal void ProcessCodeDirect()
         {
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;

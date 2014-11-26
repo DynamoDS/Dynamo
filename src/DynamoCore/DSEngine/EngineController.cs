@@ -586,10 +586,19 @@ namespace Dynamo.DSEngine
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
-            // Mark all nodes as dirty so that AST for the whole graph will be
-            // regenerated.
+            
             foreach (var node in dynamoModel.HomeSpace.Nodes)
             {
+                // All CBN's need to be pre-compiled again after a new library is loaded
+                // to warn for any new namespace conflicts that may arise.
+                CodeBlockNodeModel codeBlockNode = node as CodeBlockNodeModel;
+                if (codeBlockNode != null)
+                {
+                    codeBlockNode.ProcessCodeDirect();
+                }
+
+                // Mark all nodes as dirty so that AST for the whole graph will be
+                // regenerated.
                 node.RequiresRecalc = true;
             }
         }
