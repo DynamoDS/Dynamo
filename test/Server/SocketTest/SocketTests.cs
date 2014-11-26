@@ -7,6 +7,7 @@ using Dynamo.ViewModels;
 
 using DynamoWebServer;
 using DynamoWebServer.Messages;
+using DynamoWebServer.Responses;
 
 using Moq;
 
@@ -19,6 +20,7 @@ namespace Dynamo.Tests
     class SocketTests : DynamoViewModelUnitTest
     {
         private const string GUID = "b43c1f0e-d88f-bfd7-8dd8-dc5536c18390";
+        private const string codeBlockGuid = "1b7932f7-d840-be75-d9a0-0abae3282d25";
         private WebServer webServer;
         private Mock<IWebSocket> mock;
 
@@ -39,7 +41,7 @@ namespace Dynamo.Tests
         public void CanDeserialize()
         {
             var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
-            var commandPaths = Directory.GetFiles(testDir, "*.txt");
+            var commandPaths = Directory.GetFiles(testDir, "*Message.txt");
             var messageHandler = new MessageHandler(Model);
             Assert.NotNull(commandPaths);
             Assert.Greater(commandPaths.Length, 0);
@@ -68,7 +70,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanExecuteCreateCommand()
         {
-            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNodeMessage.txt");
             string createCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(createCommand, "", false);
@@ -81,7 +83,7 @@ namespace Dynamo.Tests
         {
             CanExecuteCreateCommand();
 
-            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNode.txt");
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNodeMessage.txt");
             string updateCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(updateCommand, "", false);
@@ -99,7 +101,7 @@ namespace Dynamo.Tests
         {
             CanExecuteCreateCommand();
 
-            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNode.txt");
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNodeMessage.txt");
             string deleteCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(deleteCommand, "", false);
@@ -113,7 +115,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(Model.Nodes.Any());
 
-            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\clearWorkspace.txt");
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\clearWorkspaceMessage.txt");
             string clearWorkspace = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(clearWorkspace, "", false);
@@ -124,7 +126,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanExecuteCreateCommandQueue()
         {
-            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNodeMessage.txt");
             string createCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(createCommand, "", true);
@@ -152,6 +154,40 @@ namespace Dynamo.Tests
             webServer.SendResponse(response, "TestId");
 
             mock.Verify(m => m.GetAppSessionById("TestId"));
+        }
+
+        [Test]
+        public void CanCreateCodeBlockNode() 
+        {
+            string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\codeBlockMessage.txt");
+            string createCommand = File.ReadAllText(commandPath);
+
+            webServer.ExecuteMessageFromSocket(createCommand, "", false);
+
+            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == codeBlockGuid));
+        }
+
+        [Test]
+        public void CanSendCodeBlockNodeUpdate()
+        {
+            var commandPath = Path.Combine(GetTestDirectory(), @"core\commands\codeBlockMessage.txt");
+            var createCommand = File.ReadAllText(commandPath);
+            var messageHandler = new MessageHandler(Model);
+            string actualResult = null;
+            messageHandler.ResultReady += (s, args) =>
+            {
+                Assert.IsTrue(args.Response is CodeBlockDataResponse, "Wrong response");
+                var response = args.Response as CodeBlockDataResponse;
+                actualResult = response.Data;
+            };
+
+            Message message = messageHandler.DeserializeMessage(createCommand);
+            messageHandler.Execute(Model, message, "");
+
+            var resultPath = Path.Combine(GetTestDirectory(), @"core\commands\codeBlockExpectedResult.txt");
+            var expectedResult = File.ReadAllText(resultPath);
+
+            Assert.AreEqual(expectedResult, actualResult, "Code block data is wrong");
         }
     }
 }

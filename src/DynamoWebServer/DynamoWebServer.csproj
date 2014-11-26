@@ -99,6 +99,7 @@
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Responses\CodeBlockDataResponse.cs" />
     <Compile Include="Responses\HasUnsavedChangesResponse.cs" />
     <Compile Include="Responses\GeometryDataResponse.cs" />
     <Compile Include="Responses\UpdateProxyNodesResponse.cs" />
