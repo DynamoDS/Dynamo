@@ -32,6 +32,34 @@ namespace RevitSystemTests
         protected static string _emptyModelPath;
         protected DynamoViewModel ViewModel;
 
+        static RegressionTest()
+        {
+            var config = RevitTestConfiguration.LoadConfiguration();
+
+            //get the test path
+            _testPath = config.WorkingDirectory;
+
+            //get the samples path
+            _samplesPath = config.SamplesPath;
+
+            //set the custom node loader search path
+            _defsPath = config.DefinitionsPath;
+
+            _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+
+            if (DocumentManager.Instance.CurrentUIApplication.Application.VersionNumber.Contains("2014") &&
+                DocumentManager.Instance.CurrentUIApplication.Application.VersionName.Contains("Vasari"))
+            {
+                _emptyModelPath = Path.Combine(_testPath, "emptyV.rfa");
+                _emptyModelPath1 = Path.Combine(_testPath, "emptyV1.rfa");
+            }
+            else
+            {
+                _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
+                _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
+            }
+        }
+
         /// <summary>
         /// Automated creation of regression test cases. Opens each workflow
         /// runs it, and checks for errors or warnings. Regression test cases should
@@ -101,39 +129,9 @@ namespace RevitSystemTests
             StartDynamo();
 
             DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
-
-            //it doesn't make sense to do these steps before every test
-            //but when running from the revit plugin we are not loading the 
-            //fixture, so the initfixture method is not called.
-
-            //get the test path
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\");
-            _testPath = Path.GetFullPath(testsLoc);
-
-            //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\..\doc\distrib\Samples\");
-            _samplesPath = Path.GetFullPath(samplesLoc);
-
-            //set the custom node loader search path
-            string defsLoc = Path.Combine(DynamoPathManager.Instance.Packages, "Dynamo Sample Custom Nodes", "dyf");
-            _defsPath = Path.GetFullPath(defsLoc);
-
-            _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
-
-            if (DocumentManager.Instance.CurrentUIApplication.Application.VersionNumber.Contains("2014") &&
-                DocumentManager.Instance.CurrentUIApplication.Application.VersionName.Contains("Vasari"))
-            {
-                _emptyModelPath = Path.Combine(_testPath, "emptyV.rfa");
-                _emptyModelPath1 = Path.Combine(_testPath, "emptyV1.rfa");
-            }
-            else
-            {
-                _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
-                _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
-            }
         }
 
-        private void Teardown()
+        private static void Teardown()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 
@@ -150,7 +148,7 @@ namespace RevitSystemTests
                 DynamoRevit.InitializeUnits();
 
                 var model = RevitDynamoModel.Start(
-                    new RevitDynamoModel.StartConfiguration()
+                    new DynamoModel.StartConfiguration()
                     {
                         StartInTestMode = true
                     });
@@ -180,13 +178,11 @@ namespace RevitSystemTests
         /// Populates the test cases based on file pairings in the regression tests folder.
         /// </summary>
         /// <returns></returns>
-        private List<RegressionTestData> SetupRevitRegressionTests()
+        private static List<RegressionTestData> SetupRevitRegressionTests()
         {
             var testParameters = new List<RegressionTestData>();
 
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\Regression\");
+            string testsLoc = Path.Combine(_testPath, "Regression");
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
@@ -222,7 +218,7 @@ namespace RevitSystemTests
             return testParameters;
         }
 
-        private void SwapCurrentModel(string modelPath)
+        private static void SwapCurrentModel(string modelPath)
         {
             Document initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document;
             DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
