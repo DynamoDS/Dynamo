@@ -173,7 +173,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"
                               MaxWidth="500"
-                              MinWidth="308"
+                              MinWidth="204"
                               Name="LibraryViewColumn"/>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto"/>
