@@ -143,7 +143,13 @@ namespace Dynamo.Nodes
 
         public override string AstIdentifierBase
         {
-            get { return (State == ElementState.Error) ? null : previewVariable; }
+            get
+            {
+                if (State == ElementState.Error)
+                    return null;
+
+                return previewVariable ?? base.AstIdentifierBase;
+            }
         }
 
         public string Code
@@ -379,7 +385,7 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        private void ProcessCodeDirect()
+        internal void ProcessCodeDirect()
         {
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;
