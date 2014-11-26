@@ -184,6 +184,9 @@ namespace Dynamo.Search.SearchElements
                 }
             }
 
+            if (newElement == null)
+                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
+
             Parameters = newElement.InPorts.Select(elem => new PortInfo
             {
                 Name = elem.PortName,
