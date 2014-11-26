@@ -129,22 +129,14 @@ namespace Dynamo.Search.SearchElements
         /// This property represents the list of node inputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<string> Parameters { get; private set; }
+        public IEnumerable<PortInfo> Parameters { get; private set; }
 
         /// <summary>
         /// This property represents the list of node outputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<string> ReturnKeys { get; private set; }
+        public IEnumerable<PortInfo> ReturnKeys { get; private set; }
 
-        /// <summary>
-        /// This property represents the default value for each of the input parameters.
-        /// It can potentially contain primitive value types such as 'int', 'double', 'bool'
-        /// and 'string'. If no default value is given to an input parameter, then it has 
-        /// the corresponding entry in 'DefaultValues' as 'null'.
-        /// </summary>
-        [DataMember]
-        public IEnumerable<object> DefaultValues { get; private set; }
 
         public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
         {
@@ -192,9 +184,44 @@ namespace Dynamo.Search.SearchElements
                 }
             }
 
-            Parameters = newElement.InPorts.Select(elem => elem.PortName);
-            ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-            DefaultValues = newElement.InPortData.Select(elem => elem.DefaultValue);
+            if (newElement == null)
+                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
+
+            Parameters = newElement.InPorts.Select(elem => new PortInfo
+            {
+                Name = elem.PortName,
+                Type = elem.ToolTipContent.Split('.').Last(),
+                DefaultValue = newElement.InPortData[elem.Index].DefaultValue
+            });
+            ReturnKeys = newElement.OutPorts.Select(elem => new PortInfo
+            {
+                Name = elem.PortName
+            });
+        }
+
+        public struct PortInfo
+        {
+            /// <summary>
+            /// This property represents displayed name of the port.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// This property represents the type of the port. It can contain type name such
+            /// as 'String', 'Point', 'Vertex' and other.
+            /// It doesn't care about exact type, value can be 'Autodesk.DesignScript.Geometry.Point'
+            /// or just 'Point' as well.
+            /// This property only help users to understand what kind of value does the port expects.
+            /// </summary>
+            public string Type { get; set; }
+
+            /// <summary>
+            /// This property represents the default value for each of the input parameters.
+            /// It can potentially contain primitive value types such as 'int', 'double', 'bool'
+            /// and 'string'. If no default value is given to an input parameter, then it has 
+            /// the corresponding entry in 'DefaultValues' as 'null'.
+            /// </summary>
+            public object DefaultValue { get; set; }
         }
     }
 }
