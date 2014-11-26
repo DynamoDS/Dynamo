@@ -1879,5 +1879,21 @@ d1;d2;d3;d4;d5;
             thisTest.Verify("x", new object[] { null, null });
             thisTest.VerifyRuntimeWarningCount(2);
         }
+
+
+        [Test]
+        [Category("SmokeTest")]
+        [Category("Failure")]
+        public void TestStepZero()
+        {
+            string src = @"
+a = 0;
+b = 0..10..a;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kInvalidArguments);
+            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.Verify("b", null);
+        }
     }
 }

@@ -2249,9 +2249,7 @@ namespace ProtoAssociative
                     // TODO Jun: Move this warning handler to after the SSA transform
                     // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
                     buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
-
-                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
-                    rhsIdentList.LeftNode = leftNode;
+                    rhsIdentList = identList;
                 }
                 else
                 {
@@ -3197,12 +3195,6 @@ namespace ProtoAssociative
                             bnode.RightNode = dotCall;
 
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
-
-#if SSA_IDENT_LIST
-                            // Set the real lhs (first pointer) of this dot call
-                            dotCall.StaticLHSIdent = firstPointer;
-                            firstPointer = null;
-#endif
 
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
