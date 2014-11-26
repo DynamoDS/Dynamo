@@ -41,6 +41,7 @@ namespace RevitSystemTests
         {
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
+            var config = new RevitTestConfiguration();
             try
             {
                 var configPath = Path.Combine(assDir, TEST_CONFIGURATION_FILE_S);
@@ -49,13 +50,13 @@ namespace RevitSystemTests
                     var serializer = new XmlSerializer(typeof(RevitTestConfiguration));
                     using (var fs = new FileStream(configPath, FileMode.Open, FileAccess.Read))
                     {
-                        return serializer.Deserialize(fs) as RevitTestConfiguration;
+                        config = serializer.Deserialize(fs) as RevitTestConfiguration;
                     }
                 }
 #if DEBUG
                 else
                 {
-                    var config = DefaultRevitTestConfiguration();
+                    config.SetDefaultValues();
                     config.Save(configPath);
                 }
 #endif
@@ -65,30 +66,38 @@ namespace RevitSystemTests
                 Debug.Print(ex.Message);
             }
 
-            return DefaultRevitTestConfiguration();
+            config.SetDefaultValues();
+            return config;
         }
 
-        private static RevitTestConfiguration DefaultRevitTestConfiguration()
+        private void SetDefaultValues()
         {
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
 
-            var config = new RevitTestConfiguration();
             //get the test path
-            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\");
-            config.WorkingDirectory = Path.GetFullPath(testsLoc);
+            if (string.IsNullOrEmpty(WorkingDirectory))
+            {
+                string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\");
+                WorkingDirectory = Path.GetFullPath(testsLoc);
+            }
 
             //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
-            config.SamplesPath = Path.GetFullPath(samplesLoc);
+            if (string.IsNullOrEmpty(SamplesPath))
+            {
+                string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
+                SamplesPath = Path.GetFullPath(samplesLoc);
+            }
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(
-                DynamoPathManager.Instance.Packages,
-                "Dynamo Sample Custom Nodes",
-                "dyf");
-            config.DefinitionsPath = Path.GetFullPath(defsLoc);
-            return config;
+            if (string.IsNullOrEmpty(DefinitionsPath))
+            {
+                string defsLoc = Path.Combine(
+                    DynamoPathManager.Instance.Packages,
+                    "Dynamo Sample Custom Nodes",
+                    "dyf");
+                DefinitionsPath = Path.GetFullPath(defsLoc);
+            }
         }
 
         private void Save(string filePath)
