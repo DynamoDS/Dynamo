@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
@@ -862,10 +864,7 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Revit_Adaptive Component Placement.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_Adaptive Component Placement.dyn");
 
             AssertNoDummyNodes();
 
@@ -910,10 +909,7 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Revit_Color.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_Color.dyn");
 
             AssertNoDummyNodes();
 
@@ -943,16 +939,13 @@ namespace RevitSystemTests
 
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Revit_Floors and Framing.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_Floors and Framing.dyn");
 
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(31, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(35, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(30, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(34, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
 
@@ -966,15 +959,13 @@ namespace RevitSystemTests
                 Assert.IsNotNull(floors);
             }
 
-            var structuralFraming = "205a479f-3b9e-4f4f-866e-6901fde3d9ca";
-            AssertPreviewCount(structuralFraming, 20);
+            var structuralFraming = "7e0d143c-9948-478b-ba2a-742362418299";
+            var levelCount = 5;
 
-            // get all Structural Framing elements
-            for (int i = 0; i <= 19; i++)
-            {
-                var framing = GetPreviewValueAtIndex(structuralFraming, i) as StructuralFraming;
-                Assert.IsNotNull(framing);
-            }
+            AssertPreviewCount(structuralFraming, levelCount);
+
+            var levelFraming = GetFlattenedPreviewValues(structuralFraming);
+            Assert.AreEqual(levelFraming.Count, levelCount * 4);
         }
 
         [Test, Category("SmokeTests")]
@@ -983,10 +974,7 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Revit_ImportSolid.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_ImportSolid.dyn");
 
             AssertNoDummyNodes();
 
@@ -1010,12 +998,7 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine
-                (workingDirectory, @".\Samples\Revit_PlaceFamiliesByLevel_Set Parameters.dyn");
-
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_PlaceFamiliesByLevel_Set Parameters.dyn");
 
             AssertNoDummyNodes();
 
@@ -1042,12 +1025,7 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine
-                (workingDirectory, @".\Samples\Revit_StructuralFraming.dyn");
-
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Revit\Revit_StructuralFraming.dyn");
 
             AssertNoDummyNodes();
 
@@ -1057,7 +1035,7 @@ namespace RevitSystemTests
 
             RunCurrentModel();
 
-            var familyInstance = "e98dab6a-e6bc-4da8-84b6-d756caee48fe";
+            var familyInstance = "caa240c5-4e05-486f-a621-ad27b2e0386c";
             AssertPreviewCount(familyInstance, 9);
 
             // get all Families.
@@ -1074,29 +1052,27 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Geometry_Curves.dyn");
-
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Geometry\Geometry_Curves.dyn");
 
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(20, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(22, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
 
-            // Validation for Model Curves.
-            var modelCurve = "e8fc9b8f-03ce-4351-8333-6ae47a62ac07";
-            AssertPreviewCount(modelCurve, 4);
+            var lineNode = "7979f6ce-63b6-4cfb-9872-9d05812a111c";
+            var nurbsNode = "d200379e-5c8c-4f8b-968d-2f0887223d68";
+            var polyCurveNode = "835b1ec2-52ca-4b63-9a1f-2a0dde80b497";
 
-            for (int i = 0; i <= 3; i++)
-            {
-                var curve = GetPreviewValueAtIndex(modelCurve, i) as ModelCurve;
-                Assert.IsNotNull(curve);
-            }
+            var line = GetPreviewValue(lineNode) as Line;
+            var nurbs = GetPreviewValue(nurbsNode) as NurbsCurve;
+            var polyCurve = GetPreviewValue(polyCurveNode) as PolyCurve;
+
+            Assert.NotNull(line);
+            Assert.NotNull(nurbs);
+            Assert.NotNull(polyCurve);
         }
 
         [Test, Category("SmokeTests")]
@@ -1105,27 +1081,24 @@ namespace RevitSystemTests
         {
             var model = ViewModel.Model;
 
-            string samplePath = Path.Combine(workingDirectory, @".\Samples\Geometry_Points.dyn");
-
-            string testPath = Path.GetFullPath(samplePath);
-
-            ViewModel.OpenCommand.Execute(testPath);
+            OpenSampleDefinition(@".\Geometry\Geometry_Points.dyn");
 
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
 
             // Validation for Reference Points.
-            var refPoints = "6e4226cf-674b-4c94-9c78-7818af53464e";
-            AssertPreviewCount(refPoints, 11);
+            var pointNodeGuid = "0aa5294e-af81-4a93-8b6a-14a8944d8478";
+
+            AssertPreviewCount(pointNodeGuid, 11);
 
             for (int i = 0; i <= 10; i++)
             {
-                var points = GetPreviewValueAtIndex(refPoints, i) as ReferencePoint;
+                var points = GetPreviewValueAtIndex(pointNodeGuid, i) as Point;
                 Assert.IsNotNull(points);
             }
         }
@@ -1135,7 +1108,8 @@ namespace RevitSystemTests
         public void Geometry_Solids()
         {
             var model = ViewModel.Model;
-            OpenDynamoDefinition(@".\Samples\Geometry_Solids.dyn");
+
+            OpenSampleDefinition(@".\Geometry\Geometry_Solids.dyn");
 
             AssertNoDummyNodes();
 
@@ -1167,7 +1141,8 @@ namespace RevitSystemTests
         public void Geometry_Surfaces()
         {
             var model = ViewModel.Model;
-            OpenDynamoDefinition(@".\Samples\Geometry_Surfaces.dyn");
+
+            OpenSampleDefinition(@".\Geometry\Geometry_Surfaces.dyn");
 
             AssertNoDummyNodes();
 
