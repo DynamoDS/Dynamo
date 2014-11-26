@@ -13,15 +13,9 @@
  string testDir = Path.Combine(basePath,"test");
  string workingDirectory = Path.Combine(testDir,"System");
 
- string docDir = Path.Combine(basePath,"doc");
- string distribDir = Path.Combine(basePath,"distrib");
- string samplesPath = Path.Combine(distribDir,"Samples");
-
- var dynVersion = "0.7";
- var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"Dynamo",dynVersion);
- var packagesPath = Path.Combine(appData,"packages");
- var dynSampleCustomNode = Path.Combine(packagesPath,"Dynamo Sample Custom Nodes");
- var defPath = Path.Combine(dynSampleCustomNode,"dyf");
+ string samplesPath = Path.Combine(basePath,"doc", "distrib", "Samples");
+ 
+ string defPath = Path.Combine(basePath,"doc", "distrib", "dynamo_packages","Dynamo Sample Custom Nodes", "dyf");
 #>
   <WorkingDirectory><#= workingDirectory #></WorkingDirectory>
   <SamplesPath><#= samplesPath #></SamplesPath>
