@@ -45,9 +45,14 @@ namespace Revit.GeometryConversion
 
             foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
             {
-                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType(false);
-                cl.Append(converted);
+                using (var nc = curve.ToNurbsCurve())
+                {
+                    Autodesk.Revit.DB.Curve converted = nc.ToRevitType(false);
+                    cl.Append(converted);
+                }
             }
+
+            crvs.ForEach(x => x.Dispose());
 
             return cl;
         }
@@ -76,14 +81,15 @@ namespace Revit.GeometryConversion
             // bezier
             if (crv.Degree == 2 && crv.ControlPoints().Count() == 3 && !crv.IsRational)
             {
-                var converted = NurbsUtils.ElevateBezierDegree(crv, 3);
-
-                return Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
-                    converted.Weights(),
-                    converted.Knots(),
-                    converted.Degree,
-                    converted.IsClosed,
-                    converted.IsRational);
+                using (var converted = NurbsUtils.ElevateBezierDegree(crv, 3))
+                {
+                    return Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
+                            converted.Weights(),
+                            converted.Knots(),
+                            converted.Degree,
+                            converted.IsClosed,
+                            converted.IsRational);
+                }
             }
 
             // degree 2 curve
@@ -97,14 +103,16 @@ namespace Revit.GeometryConversion
                 var tstart = crv.TangentAtParameter(0);
                 var tend = crv.TangentAtParameter(1);
 
-                var resampledCrv = NurbsCurve.ByPointsTangents( pts, tstart.Normalized(), tend.Normalized());
+                using (var resampledCrv = NurbsCurve.ByPointsTangents(pts, tstart.Normalized(), tend.Normalized()))
+                {
 
-                return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
-                    resampledCrv.Weights(),
-                    resampledCrv.Knots(),
-                    resampledCrv.Degree,
-                    resampledCrv.IsClosed,
-                    resampledCrv.IsRational);
+                    return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
+                            resampledCrv.Weights(),
+                            resampledCrv.Knots(),
+                            resampledCrv.Degree,
+                            resampledCrv.IsClosed,
+                            resampledCrv.IsRational);
+                }
             }
 
             // general implementation
@@ -204,18 +212,31 @@ namespace Revit.GeometryConversion
               var pointMid = crvCurve.PointAtParameter(0.5);
               if (point0.DistanceTo(point1) > 1e-7)
               {
-                 var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(point0, point1);
-                 if (pointMid.DistanceTo(line) < 1e-7)
-                    return Convert(line);
+                  using (var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(point0, point1))
+                  {
+                      if (pointMid.DistanceTo(line) < 1e-7)
+                      {
+                          var result = Convert(line);
+                          curves[0].Dispose();
+                          return result;
+                      }
+                  }
               }
               //then arc
               if (point0.DistanceTo(point1) < 1e-7)
                  point1 = crvCurve.PointAtParameter(0.9);
               var arc = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(point0, pointMid, point1);
-              return Convert(arc);
+              var resultArc = Convert(arc);
+              arc.Dispose();
+              curves[0].Dispose();
+              return resultArc;
            }
-   
-           return Convert(crvCurve.ToNurbsCurve());
+           curves.ForEach(x => x.Dispose());
+
+           using (var nc = crvCurve.ToNurbsCurve())
+           {
+               return Convert(nc);
+           }
         }
 
         #endregion
