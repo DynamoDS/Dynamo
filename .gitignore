@@ -67,3 +67,4 @@ extern/ASM/
 
 tools/CBNLanguageComparisonTests/GenerateTests.cs
 src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
+test/Libraries/RevitIntegrationTests/RevitTestConfiguration.xml
