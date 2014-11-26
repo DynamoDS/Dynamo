@@ -38,6 +38,7 @@ namespace Dynamo.Models
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
+        private bool enablePeriodicUpdate;
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
@@ -413,6 +414,16 @@ namespace Dynamo.Models
             {
                 interactionEnabled = value;
                 RaisePropertyChanged("InteractionEnabled");
+            }
+        }
+
+        public bool EnablePeriodicUpdate
+        {
+            get { return enablePeriodicUpdate; }
+            set
+            {
+                enablePeriodicUpdate = value;
+                RaisePropertyChanged("EnablePeriodicUpdate");
             }
         }
 
