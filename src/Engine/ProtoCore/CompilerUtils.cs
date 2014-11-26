@@ -253,8 +253,9 @@ namespace ProtoCore.Utils
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
-        /// <param name="parseParams"></param>
-        /// <returns></returns>
+        /// <param name="parseParams"> container for compilation related parameters </param>
+        /// <param name="elementResolver"> classname resolver </param>
+        /// <returns> true if code compilation succeeds, false otherwise </returns>
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ElementResolver elementResolver)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");

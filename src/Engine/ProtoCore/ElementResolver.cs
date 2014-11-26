@@ -7,7 +7,9 @@ using System.Text;
 
 namespace ProtoCore
 {
-    // Responsible for resolving a partial class name to its fully resolved name
+    /// <summary>
+    /// Responsible for resolving a partial class name to its fully resolved name
+    /// </summary>
     public class ElementResolver
     {
         private Dictionary<string, string> namespaceCache;
