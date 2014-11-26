@@ -1086,14 +1086,6 @@ namespace ProtoCore.Lang
                     WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
-            else if (hasStep 
-                    && (svStep.IsInteger && svStep.opdata == 0) || (svStep.IsDouble && svStep.opdata_d == 0.0))
-            {
-                core.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments,
-                    WarningMessage.kRangeExpressionWithStepSizeZero);
-                return StackValue.Null;
-            }
             else if (!svStep.IsNull && !svStep.IsNumeric)
             {
                 core.RuntimeStatus.LogWarning(
