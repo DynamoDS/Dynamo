@@ -505,7 +505,9 @@ namespace DynamoWebServer.Messages
                 }
 
                 stringBuilder.Append("\"Code\":\"");
-                stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
+                stringBuilder.Append(codeBlock.Code.
+                                     Replace("\n", "\\n").
+                                     Replace("\"", "\\\""));
                 stringBuilder.Append("\", ");
                 stringBuilder.Append("\"LineIndices\": [");
                 stringBuilder.Append(string.Join(", ", lineIndices.Select(x => x.ToString()).ToArray()));
