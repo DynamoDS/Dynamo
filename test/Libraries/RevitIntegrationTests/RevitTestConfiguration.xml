@@ -1,0 +1,6 @@
+﻿<?xml version="1.0"?>
+<RevitTestConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WorkingDirectory>C:\Users\t_anhp\Documents\GitHub\Dynamo\test\System</WorkingDirectory>
+  <SamplesPath>C:\Users\t_anhp\Documents\GitHub\Dynamo\distrib\Samples</SamplesPath>
+  <DefinitionsPath>C:\Users\t_anhp\AppData\Roaming\Dynamo\0.7\packages\Dynamo Sample Custom Nodes\dyf</DefinitionsPath>
+</RevitTestConfiguration>
