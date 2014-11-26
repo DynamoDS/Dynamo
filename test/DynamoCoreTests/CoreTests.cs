@@ -5,14 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-using System.Windows;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -763,6 +764,73 @@ namespace Dynamo.Tests
 
             degrees = Convert.ToDouble(converter.Convert("3,14159", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
             Assert.AreEqual(180.0, degrees, 0.01);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlCommandTest()
+        {
+            ViewModel.SearchViewModel.Model.Add(new CustomNodeInfo(Guid.NewGuid(),
+                "Some Custom Node",
+                "CustomTopCategory.SubCategory.ThePackage",
+                "It is CustomNode which make a good thing.", null));
+
+            ViewModel.DumpLibraryToXmlCommand.Execute(null);
+
+            string directory = Path.GetDirectoryName(ViewModel.Model.Logger.LogPath);
+            string fileName = Path.GetFileNameWithoutExtension(ViewModel.Model.Logger.LogPath) + "_ld.xml";
+            string fullFileName = Path.Combine(directory, fileName);
+
+            Assert.IsTrue(File.Exists(fullFileName));
+
+            var document = new XmlDocument();
+            document.Load(fullFileName);
+
+            Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
+
+            // It is supposed that "Core.Color.Create.Color Range" is part of nodes tree.
+            var node = document.SelectSingleNode(
+                "//Dynamo.Search.SearchElements.NodeSearchElement[Name='Color Range']");
+            Assert.IsNotNull(node);
+
+            var parentNode = node.ParentNode as XmlElement;
+            Assert.AreEqual("Dynamo.Nodes.Search.BrowserInternalElement", parentNode.Name);
+            Assert.AreEqual("Create", parentNode.GetAttribute("Name"));
+
+            parentNode = parentNode.ParentNode as XmlElement;
+            Assert.AreEqual("Dynamo.Nodes.Search.BrowserInternalElement", parentNode.Name);
+            Assert.AreEqual("Color", parentNode.GetAttribute("Name"));
+
+            parentNode = parentNode.ParentNode as XmlElement;
+            Assert.AreEqual("Dynamo.Nodes.Search.BrowserRootElement", parentNode.Name);
+            Assert.AreEqual("Core", parentNode.GetAttribute("Name"));
+
+            parentNode = parentNode.ParentNode as XmlElement;
+            Assert.AreEqual("LibraryTree", parentNode.Name);
+
+            // It is supposed that "Core.Color.Create.ByARGB" is part of nodes tree.
+            node = document.SelectSingleNode(
+                "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[Name='ByARGB']");
+            Assert.IsNotNull(node);
+
+            node = document.SelectSingleNode(
+                "//Dynamo.Search.SearchElements.CustomNodeSearchElement[Name='Some Custom Node']");
+            Assert.IsNotNull(node);
+
+            var subNode = node.SelectSingleNode("FullCategoryName");
+            Assert.IsNotNull(subNode.FirstChild);
+            Assert.AreEqual("CustomTopCategory.SubCategory.ThePackage", subNode.FirstChild.Value);
+
+            subNode = node.SelectSingleNode("FullName");
+            Assert.IsNotNull(subNode);
+
+            subNode = node.SelectSingleNode("Name");
+            Assert.IsNotNull(subNode.FirstChild);
+            Assert.AreEqual("Some Custom Node", subNode.FirstChild.Value);
+
+            subNode = node.SelectSingleNode("Description");
+            Assert.IsNotNull(subNode.FirstChild);
+            Assert.AreEqual("It is CustomNode which make a good thing.", subNode.FirstChild.Value);
         }
 
         [Test]
