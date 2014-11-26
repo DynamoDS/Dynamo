@@ -131,7 +131,7 @@ namespace RevitSystemTests
             DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
         }
 
-        private void Teardown()
+        private static void Teardown()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 
@@ -148,7 +148,7 @@ namespace RevitSystemTests
                 DynamoRevit.InitializeUnits();
 
                 var model = RevitDynamoModel.Start(
-                    new RevitDynamoModel.StartConfiguration()
+                    new DynamoModel.StartConfiguration()
                     {
                         StartInTestMode = true
                     });
@@ -218,7 +218,7 @@ namespace RevitSystemTests
             return testParameters;
         }
 
-        private void SwapCurrentModel(string modelPath)
+        private static void SwapCurrentModel(string modelPath)
         {
             Document initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document;
             DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);

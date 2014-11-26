@@ -73,6 +73,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -81,7 +82,7 @@
     </Compile>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
-	<Compile Include="RevitLibraryTests.cs" />
+    <Compile Include="RevitLibraryTests.cs" />
     <Compile Include="ImportInstanceTests.cs" />
     <Compile Include="SystemTest.cs" />
     <Compile Include="SiteLocationTests.cs" />
@@ -165,7 +166,7 @@
       <Private>False</Private>
     </ProjectReference>
     <Reference Include="SystemTestServices">
-	  <HintPath>$(DYNAMOTESTAPI)\SystemTestServices.dll</HintPath>
+      <HintPath>$(DYNAMOTESTAPI)\SystemTestServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="TestServices">
