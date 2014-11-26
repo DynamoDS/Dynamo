@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 using Dynamo.Core;
 using Dynamo.UI.Prompts;
@@ -113,6 +115,35 @@ namespace Dynamo.Models
             if (NodeAdded != null && node != null)
             {
                 NodeAdded(node);
+            }
+        }
+
+        private void OnNodeCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (NodeModel newItem in e.NewItems)
+                        newItem.PropertyChanged += OnNodePropertyChanged;
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (NodeModel oldItem in e.OldItems)
+                        oldItem.PropertyChanged -= OnNodePropertyChanged;
+                    break;
+            }
+
+            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+        }
+
+        private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "EnablePeriodicUpdate":
+                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+                    break;
             }
         }
 

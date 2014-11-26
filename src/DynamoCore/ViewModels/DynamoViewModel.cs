@@ -296,6 +296,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool HasNodeThatPeriodicallyUpdates
+        {
+            get { return model.HasNodeThatPeriodicallyUpdates; }
+        }
+
         public bool IsMouseDown { get; set; }
         public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
         public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
@@ -785,8 +790,14 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsPanning");
                 RaisePropertyChanged("IsOrbiting");
             }
-            else if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
+
+            switch (e.PropertyName)
+            {
+                case "RunEnabled":
+                case "HasNodeThatPeriodicallyUpdates":
+                    RaisePropertyChanged(e.PropertyName);
+                    break;
+            }
         }
 
         private void CleanUp(DynamoModel dynamoModel)

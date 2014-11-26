@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -204,6 +205,15 @@ namespace Dynamo.Models
             set
             {
                 this.PreferenceSettings.ShowConnector = value;
+            }
+        }
+
+        public bool HasNodeThatPeriodicallyUpdates
+        {
+            get
+            {
+                var nodes = HomeSpace.Nodes;
+                return nodes.Any(n => n.EnablePeriodicUpdate);
             }
         }
 
@@ -990,6 +1000,7 @@ namespace Dynamo.Models
             };
             HomeSpace = workspace;
             workspaces.Insert(0, workspace); // to front
+            workspace.Nodes.CollectionChanged += OnNodeCollectionChanged;
         }
 
         /// <summary>
