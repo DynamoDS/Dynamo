@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -56,6 +57,10 @@ namespace Revit.GeometryConversion
 
             var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType(false));
             var converted = PolyCurve.ByJoinedCurves(protoCurves.ToArray());
+            foreach (var curve in protoCurves)
+            {
+                curve.Dispose();
+            }
 
             if (converted == null)
             {
@@ -204,10 +209,10 @@ namespace Revit.GeometryConversion
                 startParam = crv.GetEndParameter(0).ToDegrees() + 90;
             }
 
-            var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis);
-
-            return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
-
+            using (var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis))
+            {
+                return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
+            }
         }
 
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)

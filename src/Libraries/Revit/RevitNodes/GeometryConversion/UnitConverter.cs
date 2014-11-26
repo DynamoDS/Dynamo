@@ -37,7 +37,9 @@ namespace Revit.GeometryConversion
                 throw new ArgumentNullException("geometry");
             }
 
-            return (T)geometry.Scale(HostToDynamoFactor);
+            var result = (T)geometry.Scale(HostToDynamoFactor);
+            geometry.Dispose();
+            return result;
         }
 
         /// <summary>
@@ -56,7 +58,9 @@ namespace Revit.GeometryConversion
                 throw new ArgumentNullException("geometry");
             }
 
-            return (T)geometry.Scale(DynamoToHostFactor);
+            var result = (T)geometry.Scale(DynamoToHostFactor);
+            geometry.Dispose();
+            return result;
         }
     }
 
