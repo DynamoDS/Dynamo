@@ -31,7 +31,7 @@ namespace RevitSystemTests
         /// <summary>
         /// TestConfiguration file name
         /// </summary>
-        private const string TEST_CONFIGURATION_FILE_S = "RevitTestConfigurations.xml";
+        private const string TEST_CONFIGURATION_FILE_S = "RevitTestConfiguration.xml";
 
         /// <summary>
         /// Loads configuration
