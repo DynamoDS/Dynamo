@@ -779,7 +779,7 @@ namespace Dynamo.Tests
             ViewModel.DumpLibraryToXmlCommand.Execute(null);
 
             string whereSearch = DynamoPathManager.Instance.Logs;
-            string fileName = "LibrarySnapshot$*";
+            string fileName = "LibrarySnapshot*";
             string fullFileName = Directory.EnumerateFiles(whereSearch, fileName).FirstOrDefault();
             Assert.IsFalse(string.IsNullOrEmpty(fullFileName));
 

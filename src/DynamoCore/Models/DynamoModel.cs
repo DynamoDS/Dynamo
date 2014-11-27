@@ -929,7 +929,7 @@ namespace Dynamo.Models
         internal void DumpLibraryToXml(object parameter)
         {
             string directory = DynamoPathManager.Instance.Logs;
-            string fileName = String.Format("LibrarySnapshot${0}.xml", Guid.NewGuid().ToString());
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(directory, fileName);
 
             this.SearchModel.DumpLibraryToXml(fullFileName);
