@@ -122,14 +122,16 @@ namespace Revit.Elements
             }
 
             // transform geometry from dynamo unit system (m) to revit (ft)
-            geometries = geometries.Select(x => x.InHostUnits()).ToArray();
+            var newGeometries = geometries.Select(x => x.InHostUnits()).ToArray();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
-            Robustify(ref geometries, ref translation);
+            Robustify(ref newGeometries, ref translation);
 
             // Export to temporary file
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
-            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn);
+            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(newGeometries, fn);
+
+            newGeometries.ForEach(x => x.Dispose());
 
             return new ImportInstance(exported_fn, translation.ToXyz());
         }
@@ -147,14 +149,15 @@ namespace Revit.Elements
             }
 
             // transform geometry from dynamo unit system (m) to revit (ft)
-            geometry = geometry.InHostUnits();
+            var newGeometry = geometry.InHostUnits();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
-            Robustify(ref geometry, ref translation);
+            Robustify(ref newGeometry, ref translation);
 
             // Export to temporary file
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
-            var exported_fn = geometry.ExportToSAT(fn);
+            var exported_fn = newGeometry.ExportToSAT(fn);
+            newGeometry.Dispose();
 
             return new ImportInstance(exported_fn, translation.ToXyz());
         }

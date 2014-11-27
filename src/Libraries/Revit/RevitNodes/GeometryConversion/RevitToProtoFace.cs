@@ -63,7 +63,7 @@ namespace Revit.GeometryConversion
                 untrimmedSrf.Dispose();
 
                 // perform unit conversion if necessary
-                converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+                UnitConverter.ConvertToDynamoUnits(ref converted, performHostUnitConversion);
 
                 // if possible, apply revit reference
                 var revitRef = referenceOverride ?? revitFace.Reference;
