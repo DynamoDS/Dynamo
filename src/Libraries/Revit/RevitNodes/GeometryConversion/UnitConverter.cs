@@ -63,45 +63,32 @@ namespace Revit.GeometryConversion
         
         /// <summary>
         /// Convert the geometry to Dynamo units if convert is true.
+        /// The input geometry will be disposed and a converted geometry
+        /// will be assigned to it.
         /// </summary>
         /// <param name="geometry"></param>
-        /// <param name="convert"></param>
         /// <returns></returns>
-        public static T ConvertToDynamoUnits<T>(ref T geometry, bool convert = true)
+        public static void ConvertToDynamoUnits<T>(ref T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
-            if (convert)
-            {
-                var result = geometry.InDynamoUnits();
-                geometry.Dispose();
-                geometry = result;
-                return result;
-            }
-            else
-            {
-                return geometry;
-            }
+            var result = geometry.InDynamoUnits();
+            geometry.Dispose();
+            geometry = result;
         }
 
         /// <summary>
         /// Convert the geometry to host units if convert is true.
+        /// The input geometry will be disposed and a converted geometry
+        /// will be assigned to it.
         /// </summary>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public static T ConvertToHostUnits<T>(ref T geometry, bool convert = true)
+        public static void ConvertToHostUnits<T>(ref T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
-            if (convert)
-            {
-                var result = geometry.InHostUnits();
-                geometry.Dispose();
-                geometry = result;
-                return result;
-            }
-            else
-            {
-                return geometry;
-            }
+            var result = geometry.InHostUnits();
+            geometry.Dispose();
+            geometry = result;
         }
     }
 

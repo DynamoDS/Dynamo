@@ -143,23 +143,10 @@ namespace Revit.Elements
         /// <returns></returns>
         public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
-            if (geometry == null)
-            {
-                throw new ArgumentNullException("geometry");
-            }
-
-            // transform geometry from dynamo unit system (m) to revit (ft)
-            var newGeometry = geometry.InHostUnits();
-
-            var translation = Vector.ByCoordinates(0, 0, 0);
-            Robustify(ref newGeometry, ref translation);
-
-            // Export to temporary file
-            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
-            var exported_fn = newGeometry.ExportToSAT(fn);
-            newGeometry.Dispose();
-
-            return new ImportInstance(exported_fn, translation.ToXyz());
+            List<Autodesk.DesignScript.Geometry.Geometry> geometries =
+                new List<Autodesk.DesignScript.Geometry.Geometry>();
+            geometries.Add(geometry);
+            return ByGeometries(geometries.ToArray());
         }
 
 

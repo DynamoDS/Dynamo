@@ -32,7 +32,10 @@ namespace Revit.GeometryConversion
             srfs.ForEach(x => x.Dispose());
             srfs.Clear();
 
-            return UnitConverter.ConvertToDynamoUnits(ref converted, performHostUnitConversion);
+            if (performHostUnitConversion)
+                UnitConverter.ConvertToDynamoUnits(ref converted);
+
+            return converted;
         }
     }
 }
