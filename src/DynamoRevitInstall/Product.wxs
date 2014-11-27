@@ -22,9 +22,8 @@
     <Property Id='ARPNOMODIFY'>1</Property>
 
     <Property Id="DYNAMOINSTALLED">
-      <DirectorySearch Id="DynamoFolderVersion" Path="[ProgramFiles64Folder]\Dynamo 0.7">
-        <FileSearch Name="DynamoSandbox.exe" MinVersion="0.7.0.0"/>
-      </DirectorySearch>
+      <RegistrySearch Id='DynamoRegistry_07' Type='raw' Win64='yes'
+        Root='HKCU' Key='Software\Microsoft\Dynamo_07' Name='installed' />
     </Property>
 
     <Condition Message="The computer needs to install DynamoCore first.">
