@@ -57,9 +57,9 @@ namespace Revit.GeometryConversion
             var rp = new RenderPackage();
             if (performHostUnitConversion)
             {
-                solid = solid.InHostUnits();
-                solid.Tessellate(rp);
-                solid.Dispose();
+                var newSolid = solid.InHostUnits();
+                newSolid.Tessellate(rp);
+                newSolid.Dispose();
             }
             else
             {
