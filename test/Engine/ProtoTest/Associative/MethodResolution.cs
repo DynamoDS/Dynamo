@@ -5,16 +5,16 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class MethodResolution
+    class MethodResolution : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
         }
 
         [Test]

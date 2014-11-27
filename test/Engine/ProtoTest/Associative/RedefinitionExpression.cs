@@ -5,19 +5,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class RedefinitionExpression
+    class RedefinitionExpression : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        public ProtoCore.Core core;
-        [SetUp]
-        public void Setup()
-        {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-
-
         [Test]
         public void RedefineWithFunctions01()
         {
