@@ -931,7 +931,7 @@ namespace Dynamo.Models
             string directory = DynamoPathManager.Instance.Logs;
             string fileName = String.Format("LibrarySnapshot${0}.xml", Guid.NewGuid().ToString());
             string fullFileName = Path.Combine(directory, fileName);
-            
+
             this.SearchModel.DumpLibraryToXml(fullFileName);
 
             Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));

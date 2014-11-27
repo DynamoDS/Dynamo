@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUtilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -777,11 +778,10 @@ namespace Dynamo.Tests
 
             ViewModel.DumpLibraryToXmlCommand.Execute(null);
 
-            string directory = Path.GetDirectoryName(ViewModel.Model.Logger.LogPath);
-            string fileName = Path.GetFileNameWithoutExtension(ViewModel.Model.Logger.LogPath) + "_ld.xml";
-            string fullFileName = Path.Combine(directory, fileName);
-
-            Assert.IsTrue(File.Exists(fullFileName));
+            string whereSearch = DynamoPathManager.Instance.Logs;
+            string fileName = "LibrarySnapshot$*";
+            string fullFileName = Directory.EnumerateFiles(whereSearch, fileName).FirstOrDefault();
+            Assert.IsFalse(string.IsNullOrEmpty(fullFileName));
 
             var document = new XmlDocument();
             document.Load(fullFileName);
