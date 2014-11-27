@@ -20,10 +20,10 @@ namespace Revit.GeometryConversion
             Autodesk.Revit.DB.Curve converted = null;
             if (performHostUnitConversion)
             {
-                crv = crv.InHostUnits();
-                dynamic dyCrv = crv;
+                var newCrv = crv.InHostUnits();
+                dynamic dyCrv = newCrv;
                 converted = ProtoToRevitCurve.Convert(dyCrv);
-                crv.Dispose();
+                newCrv.Dispose();
             }
             else
             {
