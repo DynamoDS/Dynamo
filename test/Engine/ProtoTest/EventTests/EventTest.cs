@@ -50,23 +50,17 @@ namespace ProtoTest.EventTests
         private static Foo theInstance_ = new Foo(100);
         private int id_;
     }
-    class PropertyChangedNotifyTest
+    class PropertyChangedNotifyTest : ProtoTestBase
     {
-        private ProtoCore.Core core_;
         private DebugRunner runner_;
         private ProtoScript.Config.RunConfiguration runconfig_;
-        [SetUp]
-        public void Setup()
+
+        public override void Setup()
         {
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core_ = new ProtoCore.Core(options);
-            core_.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core_));
-            core_.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core_));
+            base.Setup();
             runconfig_ = new ProtoScript.Config.RunConfiguration();
             runconfig_.IsParrallel = false;
-            runner_ = new DebugRunner(core_);
+            runner_ = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
@@ -88,7 +82,7 @@ namespace ProtoTest.EventTests
             DebugRunner.VMState vms = runner_.StepOver();
             vms = runner_.StepOver();
             vms = runner_.StepOver();
-            Obj val = GetWatchValue(core_, @"id");
+            Obj val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
             // As Foo implements INotifyPropertyChanged interface, the property
             // change notification should be propagated back to DS virtual
@@ -100,7 +94,7 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
             vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id");
+            val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -116,7 +110,7 @@ namespace ProtoTest.EventTests
             vms = runner_.StepOver();
             vms = runner_.StepOver(); // foo = Foo.GetInstance();
             vms = runner_.StepOver(); // id = foo.ID;
-            Obj val = GetWatchValue(core_, @"id");
+            Obj val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
             vms = runner_.Step();     // return = null;
             fooSingleton.ID = 202;
@@ -127,7 +121,7 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
             vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id");
+            val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -146,9 +140,9 @@ namespace ProtoTest.EventTests
             vms = runner_.StepOver(); // id1 = foo.ID;
             vms = runner_.StepOver(); // id2 = bar.ID;
             Obj val;
-            val = GetWatchValue(core_, @"id1");
+            val = GetWatchValue(core, @"id1");
             Assert.IsTrue((Int64)val.Payload == 101);
-            val = GetWatchValue(core_, @"id2");
+            val = GetWatchValue(core, @"id2");
             Assert.IsTrue((Int64)val.Payload == 101);
             fooSingleton.ID = 202;
             // expect to re-execute id1 = foo.ID
@@ -156,12 +150,12 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             vms = runner_.StepOver();
             vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id1");
+            val = GetWatchValue(core, @"id1");
             Assert.IsTrue((Int64)val.Payload == 202);
             // expect to re-execute id2 = bar.ID
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.LineNo);
             vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id2");
+            val = GetWatchValue(core, @"id2");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 

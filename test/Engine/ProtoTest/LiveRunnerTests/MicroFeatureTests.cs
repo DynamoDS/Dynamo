@@ -16,25 +16,22 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\GraphCompiler\\";
-        double tolerance = 0.000001;
-
         private ILiveRunner astLiveRunner = null;
         private Random randomGen = new Random();
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
         }
 
-        [TearDown]
-        public void CleanUp()
+        public override void TearDown()
         {
+            base.TearDown();
+            astLiveRunner.Core.Cleanup();
         }
 
         [Test]

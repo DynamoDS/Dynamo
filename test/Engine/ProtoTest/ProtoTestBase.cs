@@ -26,6 +26,5 @@ namespace ProtoTest
             core.Cleanup();
             thisTest.CleanUp();
         }
-
     }
 }

@@ -3,14 +3,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestImport
+    class TestImport : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         //This served as a sample test case include functionality

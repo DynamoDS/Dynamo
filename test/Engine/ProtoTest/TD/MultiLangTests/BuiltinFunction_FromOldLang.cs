@@ -9,15 +9,8 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class BuiltinFunction_FromOldLang
+    class BuiltinFunction_FromOldLang : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\BuiltinFunctionFromOldLang\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void T80580_BuiltinFunc_1()
         {

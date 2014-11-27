@@ -10,7 +10,7 @@ namespace ProtoFFITests
 {
     public abstract class FFITestSetup
     {
-        public ProtoCore.Core Setup()
+        private ProtoCore.Core Setup()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
