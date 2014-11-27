@@ -18,7 +18,7 @@ namespace ProtoTest.LiveRunner
 {
     class MicroFeatureTests : ProtoTestBase
     {
-        private ILiveRunner astLiveRunner = null;
+        private ProtoScript.Runners.LiveRunner astLiveRunner = null;
         private Random randomGen = new Random();
 
         public override void Setup()
@@ -31,7 +31,7 @@ namespace ProtoTest.LiveRunner
         public override void TearDown()
         {
             base.TearDown();
-            astLiveRunner.Core.Cleanup();
+            astLiveRunner.Dispose();
         }
 
         [Test]
@@ -4381,7 +4381,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             Random rand = new Random(876);
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 Console.WriteLine(i);
 

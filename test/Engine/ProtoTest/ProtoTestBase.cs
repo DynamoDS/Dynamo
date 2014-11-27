@@ -25,6 +25,7 @@ namespace ProtoTest
         {
             core.Cleanup();
             thisTest.CleanUp();
+            GC.Collect();
         }
     }
 }
