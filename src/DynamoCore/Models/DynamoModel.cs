@@ -928,11 +928,10 @@ namespace Dynamo.Models
 
         internal void DumpLibraryToXml(object parameter)
         {
-            string directory = Path.GetDirectoryName(Logger.LogPath);
-            string fileName = Path.GetFileNameWithoutExtension(Logger.LogPath) + "_ld.xml";
+            string directory = DynamoPathManager.Instance.Logs;
+            string fileName = String.Format("LibrarySnapshot${0}.xml", Guid.NewGuid().ToString());
             string fullFileName = Path.Combine(directory, fileName);
-            File.Delete(fullFileName);
-
+            
             this.SearchModel.DumpLibraryToXml(fullFileName);
 
             Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
