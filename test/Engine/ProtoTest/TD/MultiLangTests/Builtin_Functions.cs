@@ -3000,13 +3000,13 @@ d = { };
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void BIM53_RemoveDuplicates_geoemtry_1467447()
         {//1467446
             String code =
             @"
-            import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1, 1, 1);
+            import(""FFITarget.dll"");
+            pt = DummyPoint.ByCoordinates(1, 1, 1);
             input = { pt, pt};
             removeDuplicatesSetInsert = RemoveDuplicates(input);
             count = Count(removeDuplicatesSetInsert);
