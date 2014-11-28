@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 using Dynamo.Core.Threading;
@@ -117,9 +118,25 @@ namespace Dynamo.Core
 
         private void BeginRunExpression()
         {
+            // Here we know for a fact that the evaluation will begin at one 
+            // point in the near future. Mark it as in progress because from 
+            // this point till the evaluation takes place, the timer should 
+            // not cause another evaluation to be scheduled.
+            // 
             evaluationInProgress = true;
-            dynamoModel.OnRequestDispatcherBeginInvoke(
-                () => dynamoModel.RunExpression());            
+
+            dynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            {
+                // Dirty selective nodes so they get included for evaluation.
+                var nodes = dynamoModel.CurrentWorkspace.Nodes;
+                var nodesToUpdate = nodes.Where(n => n.EnablePeriodicUpdate);
+                foreach (var nodeToUpdate in nodesToUpdate)
+                {
+                    nodeToUpdate.RequiresRecalc = true;
+                }
+
+                dynamoModel.RunExpression();
+            });
         }
 
         #endregion
