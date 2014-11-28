@@ -95,7 +95,8 @@ namespace RevitSystemTests
         {
             var testParameters = new List<RegressionTestData>();
 
-            string testsLoc = Path.Combine(_testPath, "Regression");
+			var config = RevitTestConfiguration.LoadConfiguration();
+            string testsLoc = Path.Combine(config.WorkingDirectory, "Regression");
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
