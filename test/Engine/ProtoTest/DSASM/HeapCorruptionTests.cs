@@ -10,17 +10,13 @@ using ProtoScript.Runners;
 namespace ProtoTest.DSASM
 {
     [TestFixture]
-    public class HeapCorruptionTests
+    class HeapCorruptionTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void SetUp()
+        public override void Setup()
         {
-            core = thisTest.SetupTestCore();
+            base.Setup();
+            thisTest.SetupTestCore();
         }
-
 
         [Test]
         [Category("HeapCorruptionTests")]
@@ -29,7 +25,7 @@ namespace ProtoTest.DSASM
             string code = @"a = {10, 20, 30};";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(core.Heap.IsHeapCyclic());
+            Assert.IsFalse(thisTest.GetTestCore().Heap.IsHeapCyclic());
         }
 
 
@@ -51,13 +47,14 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
 ";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(core.Heap.IsHeapCyclic());
+            Assert.IsFalse(thisTest.GetTestCore().Heap.IsHeapCyclic());
         }
 
         [Test]
         [Category("HeapCorruptionTests")]
         public void TestBuildManualCyclicPointer01()
         {
+            var core = thisTest.GetTestCore();
             // Allocate a pointer
             StackValue ptr = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
 
@@ -66,7 +63,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
             core.Rmem.Heap.GetHeapElement(ptr).Stack[0] = ptr;
 
             // Verify the heap contains a cycle
-            Assert.IsTrue(core.Heap.IsHeapCyclic());
+            Assert.IsTrue(thisTest.GetTestCore().Heap.IsHeapCyclic());
         }
 
         [Test]
@@ -74,6 +71,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
         public void TestBuildManualCyclicPointer02()
         {
             // Allocate 2 pointers
+            var core = thisTest.GetTestCore();
             StackValue ptr1 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
             StackValue ptr2 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
 
@@ -93,6 +91,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
         [Test]
         public void TestCyclicPointer01()
         {
+            var core = thisTest.GetTestCore();
             DebugRunner fsr = new DebugRunner(core);
             // Execute and verify the main script in a debug session
             fsr.PreStart(

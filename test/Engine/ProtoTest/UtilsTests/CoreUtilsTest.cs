@@ -11,17 +11,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    public class CoreUtilsTest
+    class CoreUtilsTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void Setup()
-        {
-            core = thisTest.SetupTestCore();
-        }
-
         private bool Test_GetIdentifierStringUntilFirstParenthesis(string input, string expected)
         {
             List<AssociativeNode> astList = ProtoCore.Utils.CoreUtils.BuildASTList(core, input);

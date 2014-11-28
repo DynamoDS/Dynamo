@@ -16,19 +16,8 @@ using ProtoCore;
 
 namespace ProtoTest.LiveRunner
 {
-    public class PreviewChangeSetTests
+    class PreviewChangeSetTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void Setup()
-        {
-            var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
-            core = thisTest.CreateTestCore();
-        }
-
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;

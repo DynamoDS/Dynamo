@@ -4,19 +4,9 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.MultiLangTests
 {
-    class GCTest
+    class GCTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-            ProtoCore.Options options = new ProtoCore.Options();
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
 
         [Test]
         public void T01_TestGCArray()
