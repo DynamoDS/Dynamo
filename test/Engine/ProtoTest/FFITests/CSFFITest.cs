@@ -691,7 +691,6 @@ sum;
         public void TestDisposeForUpdate2()
         {
             string code = @"
-                            import(""FFITarget.dll"");
                             a = DummyDispose.DummyDispose(); //instance1
                             a = DummyVector.ByCoordinates(1,1,1); //instance2, instance1 will be freed
                             a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.
