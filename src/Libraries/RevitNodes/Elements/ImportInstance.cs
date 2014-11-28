@@ -122,14 +122,16 @@ namespace Revit.Elements
             }
 
             // transform geometry from dynamo unit system (m) to revit (ft)
-            geometries = geometries.Select(x => x.InHostUnits()).ToArray();
+            var newGeometries = geometries.Select(x => x.InHostUnits()).ToArray();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
-            Robustify(ref geometries, ref translation);
+            Robustify(ref newGeometries, ref translation);
 
             // Export to temporary file
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
-            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn);
+            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(newGeometries, fn);
+
+            newGeometries.ForEach(x => x.Dispose());
 
             return new ImportInstance(exported_fn, translation.ToXyz());
         }
@@ -141,22 +143,10 @@ namespace Revit.Elements
         /// <returns></returns>
         public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
-            if (geometry == null)
-            {
-                throw new ArgumentNullException("geometry");
-            }
-
-            // transform geometry from dynamo unit system (m) to revit (ft)
-            geometry = geometry.InHostUnits();
-
-            var translation = Vector.ByCoordinates(0, 0, 0);
-            Robustify(ref geometry, ref translation);
-
-            // Export to temporary file
-            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
-            var exported_fn = geometry.ExportToSAT(fn);
-
-            return new ImportInstance(exported_fn, translation.ToXyz());
+            List<Autodesk.DesignScript.Geometry.Geometry> geometries =
+                new List<Autodesk.DesignScript.Geometry.Geometry>();
+            geometries.Add(geometry);
+            return ByGeometries(geometries.ToArray());
         }
 
 
@@ -178,6 +168,7 @@ namespace Revit.Elements
 
                 translation = solid.Centroid().AsVector();
                 var tranGeo = solid.Translate(translation.Reverse());
+                solid.Dispose();
 
                 geometry = tranGeo;
             }
@@ -186,19 +177,27 @@ namespace Revit.Elements
         /// <summary>
         /// This method contains workarounds for increasing the robustness of input geometry
         /// </summary>
-        /// <param name="geometry"></param>
+        /// <param name="geometries"></param>
         /// <param name="translation"></param>
-        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometry,
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometries,
             ref Autodesk.DesignScript.Geometry.Vector translation)
         {
             // translate all geom to centroid of bbox, then translate back
-            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometry);
+            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometries);
 
             // get center of bbox
             var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
+            bb.Dispose();
 
             // translate all geom so that it is centered by bb
-            geometry = geometry.Select(x => x.Translate(trans)).ToArray();
+            List<Geometry> newGeometries = new List<Geometry>();
+            int count = geometries.Length;
+            for (int i = 0; i < count; ++i)
+            {
+                var oldGeometry = geometries[i];
+                geometries[i] = oldGeometry.Translate(trans);
+                oldGeometry.Dispose();
+            }
 
             // so that we can move it all back
             translation = trans.Reverse();

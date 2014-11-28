@@ -22,44 +22,8 @@ using RevitServices.Transactions;
 namespace RevitSystemTests
 {
     [TestFixture]
-    public class RegressionTest
+    public class RegressionTest : SystemTest
     {
-        protected static Transaction _trans;
-        protected static string _testPath;
-        protected static string _samplesPath;
-        protected static string _defsPath;
-        protected static string _emptyModelPath1;
-        protected static string _emptyModelPath;
-        protected DynamoViewModel ViewModel;
-
-        static RegressionTest()
-        {
-            var config = RevitTestConfiguration.LoadConfiguration();
-
-            //get the test path
-            _testPath = config.WorkingDirectory;
-
-            //get the samples path
-            _samplesPath = config.SamplesPath;
-
-            //set the custom node loader search path
-            _defsPath = config.DefinitionsPath;
-
-            _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
-
-            if (DocumentManager.Instance.CurrentUIApplication.Application.VersionNumber.Contains("2014") &&
-                DocumentManager.Instance.CurrentUIApplication.Application.VersionName.Contains("Vasari"))
-            {
-                _emptyModelPath = Path.Combine(_testPath, "emptyV.rfa");
-                _emptyModelPath1 = Path.Combine(_testPath, "emptyV1.rfa");
-            }
-            else
-            {
-                _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
-                _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
-            }
-        }
-
         /// <summary>
         /// Automated creation of regression test cases. Opens each workflow
         /// runs it, and checks for errors or warnings. Regression test cases should
@@ -78,8 +42,6 @@ namespace RevitSystemTests
                 var dynamoFilePath = testData.Arguments[0].ToString();
                 var revitFilePath = testData.Arguments[1].ToString();
 
-                Setup();
-
                 //ensure that the incoming arguments are not empty or null
                 //if a dyn file is found in the regression tests directory
                 //and there is no corresponding rfa or rvt, then an empty string
@@ -90,9 +52,15 @@ namespace RevitSystemTests
                 //open the revit model
                 SwapCurrentModel(revitFilePath);
 
+                //Setup should be called after swapping document, so that RevitDynamoModel 
+                //is now associated with swapped model.
+                Setup();
+
                 //open the dyn file
                 ViewModel.OpenCommand.Execute(dynamoFilePath);
-
+                Assert.IsTrue(ViewModel.Model.Nodes.Count > 0);
+                AssertNoDummyNodes();
+                
                 //run the expression and assert that it does not
                 //throw an error
                 Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
@@ -109,67 +77,12 @@ namespace RevitSystemTests
             {
                 ViewModel.Model.ShutDown(false);
                 ViewModel = null;
-                Teardown();
+                TearDown();
             }
 
             if (exception != null)
             {
                 Assert.Fail(exception.Message);
-            }
-        }
-
-        private void Setup()
-        {
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string assDir = fi.DirectoryName;
-
-            // Setup the core paths
-            DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
-
-            StartDynamo();
-
-            DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
-        }
-
-        private static void Teardown()
-        {
-            // Automatic transaction strategy requires that we 
-            // close the transaction if it hasn't been closed by 
-            // by the end of an evaluation. It is possible to 
-            // run the test framework without running Dynamo, so
-            // we ensure that the transaction is closed here.
-            TransactionManager.Instance.ForceCloseTransaction();
-        }
-
-        private void StartDynamo()
-        {
-            try
-            {
-                DynamoRevit.InitializeUnits();
-
-                var model = RevitDynamoModel.Start(
-                    new DynamoModel.StartConfiguration()
-                    {
-                        StartInTestMode = true
-                    });
-
-                this.ViewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        DynamoModel = model
-                    });
-
-                // create the transaction manager object
-                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
-
-                // Because the test framework does not work in the idle thread. 
-                // We need to trick Dynamo into believing that it's in the idle
-                // thread already.
-                IdlePromise.InIdleThread = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
             }
         }
 
@@ -182,7 +95,8 @@ namespace RevitSystemTests
         {
             var testParameters = new List<RegressionTestData>();
 
-            string testsLoc = Path.Combine(_testPath, "Regression");
+			var config = RevitTestConfiguration.LoadConfiguration();
+            string testsLoc = Path.Combine(config.WorkingDirectory, "Regression");
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
@@ -216,18 +130,6 @@ namespace RevitSystemTests
             
 
             return testParameters;
-        }
-
-        private static void SwapCurrentModel(string modelPath)
-        {
-            Document initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document;
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
-            initialDoc.Close(false);
-        }
-
-        void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
-        {
-            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
         }
     }
 
