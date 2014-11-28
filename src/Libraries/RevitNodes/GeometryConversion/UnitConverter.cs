@@ -38,7 +38,6 @@ namespace Revit.GeometryConversion
             }
 
             var result = (T)geometry.Scale(HostToDynamoFactor);
-            geometry.Dispose();
             return result;
         }
 
@@ -59,8 +58,37 @@ namespace Revit.GeometryConversion
             }
 
             var result = (T)geometry.Scale(DynamoToHostFactor);
-            geometry.Dispose();
             return result;
+        }
+        
+        /// <summary>
+        /// Convert the geometry to Dynamo units if convert is true.
+        /// The input geometry will be disposed and a converted geometry
+        /// will be assigned to it.
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <returns></returns>
+        public static void ConvertToDynamoUnits<T>(ref T geometry)
+            where T : Autodesk.DesignScript.Geometry.Geometry
+        {
+            var result = geometry.InDynamoUnits();
+            geometry.Dispose();
+            geometry = result;
+        }
+
+        /// <summary>
+        /// Convert the geometry to host units if convert is true.
+        /// The input geometry will be disposed and a converted geometry
+        /// will be assigned to it.
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <returns></returns>
+        public static void ConvertToHostUnits<T>(ref T geometry)
+            where T : Autodesk.DesignScript.Geometry.Geometry
+        {
+            var result = geometry.InHostUnits();
+            geometry.Dispose();
+            geometry = result;
         }
     }
 
