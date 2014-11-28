@@ -18,10 +18,17 @@ namespace Revit.GeometryConversion
         public static IList<GeometryObject> ToRevitType(this Autodesk.DesignScript.Geometry.Surface srf,
             bool performHostUnitConversion = true)
         {
-            srf = performHostUnitConversion ? srf.InHostUnits() : srf;
-
             var rp = new RenderPackage();
-            srf.Tessellate(rp);
+            if (performHostUnitConversion)
+            {
+                var newSrf = srf.InHostUnits();
+                newSrf.Tessellate(rp);
+                newSrf.Dispose();
+            }
+            else
+            {
+                srf.Tessellate(rp);
+            }
 
             var tsb = new TessellatedShapeBuilder();
             tsb.OpenConnectedFaceSet(false);
@@ -47,10 +54,17 @@ namespace Revit.GeometryConversion
         public static IList<GeometryObject> ToRevitType(
             this Autodesk.DesignScript.Geometry.Solid solid, bool performHostUnitConversion = true)
         {
-            solid = performHostUnitConversion ? solid.InHostUnits() : solid;
-
             var rp = new RenderPackage();
-            solid.Tessellate(rp);
+            if (performHostUnitConversion)
+            {
+                var newSolid = solid.InHostUnits();
+                newSolid.Tessellate(rp);
+                newSolid.Dispose();
+            }
+            else
+            {
+                solid.Tessellate(rp);
+            }
 
             var tsb = new TessellatedShapeBuilder();
             tsb.OpenConnectedFaceSet(false);
