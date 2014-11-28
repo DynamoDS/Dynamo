@@ -9,8 +9,8 @@ namespace ProtoTest
 {
     abstract class ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
+        protected ProtoCore.Core core;
+        protected TestFrameWork thisTest = new TestFrameWork();
 
         [SetUp]
         public virtual void Setup()
@@ -25,7 +25,6 @@ namespace ProtoTest
         {
             core.Cleanup();
             thisTest.CleanUp();
-            GC.Collect();
         }
     }
 }
