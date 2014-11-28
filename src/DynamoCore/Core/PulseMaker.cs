@@ -133,6 +133,7 @@ namespace Dynamo.Core
                 foreach (var nodeToUpdate in nodesToUpdate)
                 {
                     nodeToUpdate.RequiresRecalc = true;
+                    nodeToUpdate.ForceReExecuteOfNode = true;
                 }
 
                 dynamoModel.RunExpression();
