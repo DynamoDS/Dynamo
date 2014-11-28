@@ -7,7 +7,6 @@ namespace ProtoFFITests
 {
     public class CSFFIDataMarshalingTest : FFITestSetup
     {
-
         [Test]
         public void TestDoubles()
         {

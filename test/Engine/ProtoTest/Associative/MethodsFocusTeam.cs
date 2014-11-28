@@ -9,14 +9,8 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class MethodsFocusTeam
+    class MethodsFocusTeam : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void SimpleCtorResolution01()
         {

@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class TestClass
+    class TestClass : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Class_In_Various_Scopes()
@@ -2821,17 +2814,6 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
 
         }
-        /*
-         going in infinite loop due to defect 1467097
-        
-[Test]
-        [Category("SmokeTest")]
-        public void T53_Undefined_Class_As_Parameter_1463738_5()
-        {
-            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 9);
-        }*/
 
         [Test]
         [Category("SmokeTest")]

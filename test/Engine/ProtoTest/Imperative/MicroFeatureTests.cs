@@ -7,14 +7,9 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Imperative
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\imperative\MicroFeatureTests\");
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         public void TestAssignment01()
