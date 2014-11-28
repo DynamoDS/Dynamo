@@ -377,12 +377,11 @@ namespace ProtoCore.AssociativeEngine
                 return false;
             }
 
-            for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
+            // Check if the updateNodeRefList is equal for both graphnodes
+            // In code form, it checks if the LHS symbols of an assignment stmt are equal
+            if (!gnode.updateNodeRefList.SequenceEqual(executingNode.updateNodeRefList))
             {
-                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
