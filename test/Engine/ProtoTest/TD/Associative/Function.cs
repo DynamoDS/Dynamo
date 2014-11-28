@@ -504,6 +504,33 @@ a = function1({null,null});
             thisTest.Verify("a", v1);
         }
 
+        [Test]
+        public void TestCallFunctionReturningObjectMultipleTimes()
+        {
+            string code = @"
 
+class Obj
+{
+    constructor Obj(){}
+    def func()
+    {
+        return = 1;
+    }
+}
+
+def f()
+{
+    p = Obj.Obj();
+    p = p.func();
+    return = p;
+}
+
+x = f();
+y = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 1);
+        }
     }
 }

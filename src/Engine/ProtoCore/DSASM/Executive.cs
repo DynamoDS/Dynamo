@@ -1663,8 +1663,6 @@ namespace ProtoCore.DSASM
                     rmem.SetSymbolValue(symbol, StackValue.Null);
                 }
 #endif
-                gnode.dependentList.Clear();
-                gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
             return reachableGraphNodes.Count;
@@ -1893,7 +1891,7 @@ namespace ProtoCore.DSASM
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    graphNode.isDirty = true;
+                    graphNode.isActive = graphNode.isDirty = true;
                     if (!isFirstGraphSet)
                     {
                         // Get the first graphnode of this function
