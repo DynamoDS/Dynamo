@@ -16,19 +16,8 @@ using ProtoCore;
 
 namespace ProtoTest.LiveRunner
 {
-    public class ChangeSetComputerTests
+    class ChangeSetComputerTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void Setup()
-        {
-            var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
-            core = thisTest.CreateTestCore();
-        }
-
         private ProtoScript.Runners.LiveRunner CreateLiveRunner()
         {
             return new ProtoScript.Runners.LiveRunner();

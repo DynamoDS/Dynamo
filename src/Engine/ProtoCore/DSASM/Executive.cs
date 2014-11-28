@@ -1622,7 +1622,6 @@ namespace ProtoCore.DSASM
             {
                 gnode.isDirty = true;
             }
-             
 
             // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
@@ -1633,6 +1632,30 @@ namespace ProtoCore.DSASM
             Validity.Assert(redefinedNodes != null);
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
+                // GC all the temporaries associated with the redefined variable
+                // Given:
+                //      a = A.A()
+                //      a = 10
+                //
+                // Transforms to:
+                //        
+                //      t0 = A.A()
+                //      a = t0
+                //      a = 10      // Redefinition of 'a' will GC 't0'
+                //
+                // Another example 
+                // Given:
+                //      a = {A.A()}
+                //      a = 10
+                //
+                // Transforms to:
+                //        
+                //      t0 = A.A()
+                //      t1 = {t0}
+                //      a = t1
+                //      a = 10      // Redefinition of 'a' will GC t0 and t1
+                //
+
                 // Handle deactivated graphnodes
                 GCSymbols(gnode.symbolListWithinExpression);
 #if GC_MARK_AND_SWEEP
@@ -1641,7 +1664,6 @@ namespace ProtoCore.DSASM
                     rmem.SetSymbolValue(symbol, StackValue.Null);
                 }
 #endif
-                gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
             return reachableGraphNodes.Count;
@@ -1870,7 +1892,7 @@ namespace ProtoCore.DSASM
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    graphNode.isDirty = true;
+                    graphNode.isActive = graphNode.isDirty = true;
                     if (!isFirstGraphSet)
                     {
                         // Get the first graphnode of this function
