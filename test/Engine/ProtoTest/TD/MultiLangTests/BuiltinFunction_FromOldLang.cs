@@ -272,7 +272,7 @@ reordedCollection = Reorder(flattenedCollection, { 2, 0, 1 }); // (={3,1,2}
 indexByValue = SortIndexByValue(reordedCollection, true); // (={1,2,0}) not sure thsis is correct
 def sorterFunction(a:double, b:double)
 {
-    return = a < b ? 1 : 0;
+    return = a < b ? 1 : (a == b ? 0 : -1);
 }
 sort = Sort(sorterFunction, reordedCollection);  // (=null) something wrong here
 newArray = noramlisedDepthCollection;
