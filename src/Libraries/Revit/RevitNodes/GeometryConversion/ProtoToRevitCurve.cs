@@ -17,10 +17,19 @@ namespace Revit.GeometryConversion
         public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv,
             bool performHostUnitConversion = true)
         {
-            crv = performHostUnitConversion ? crv.InHostUnits() : crv;
-
-            dynamic dyCrv = crv;
-            Autodesk.Revit.DB.Curve converted = ProtoToRevitCurve.Convert(dyCrv);
+            Autodesk.Revit.DB.Curve converted = null;
+            if (performHostUnitConversion)
+            {
+                var newCrv = crv.InHostUnits();
+                dynamic dyCrv = newCrv;
+                converted = ProtoToRevitCurve.Convert(dyCrv);
+                newCrv.Dispose();
+            }
+            else
+            {
+                dynamic dyCrv = crv;
+                converted = ProtoToRevitCurve.Convert(dyCrv);
+            }
 
             if (converted == null)
             {
@@ -38,11 +47,19 @@ namespace Revit.GeometryConversion
                 throw new Exception("The input PolyCurve must be closed");
             }
 
-            pcrv = performHostUnitConversion ? pcrv.InHostUnits() : pcrv;
+            Autodesk.DesignScript.Geometry.Curve[] crvs = null;
+            if (performHostUnitConversion)
+            {
+                pcrv = pcrv.InHostUnits();
+                crvs = pcrv.Curves();
+                pcrv.Dispose();
+            }
+            else
+            {
+                crvs = pcrv.Curves();
+            }
 
             var cl = new CurveLoop();
-            var crvs = pcrv.Curves();
-
             foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
             {
                 using (var nc = curve.ToNurbsCurve())
