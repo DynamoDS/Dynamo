@@ -10,15 +10,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    public class ProtoASTExecutionTests
+    class ProtoASTExecutionTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void TestProtoASTExecute_Assign01()
         {

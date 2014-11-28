@@ -9,26 +9,24 @@ using ProtoTestFx.TD;
 using ProtoTestFx;
 namespace ProtoTest.TD
 {
-    public class Debugger
+    class Debugger : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void SetUp()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
