@@ -149,7 +149,7 @@ namespace RevitSystemTests
             }
         }
 
-        public void OpenModel(string relativeFilePath)
+        public void OpenSampleDefinition(string relativeFilePath)
         {
             string samplePath = Path.Combine(samplesPath, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);

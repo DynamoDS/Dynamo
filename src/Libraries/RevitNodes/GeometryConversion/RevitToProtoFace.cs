@@ -37,13 +37,34 @@ namespace Revit.GeometryConversion
                 // convert the underrlying surface
                 var dyFace = (dynamic)revitFace;
                 Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
-                if (untrimmedSrf == null) throw new Exception("Failed to extract surface");
+                if (untrimmedSrf == null)
+                {
+                    edgeLoops.ForEach(x => x.Dispose());
+                    edgeLoops.Clear();
+                    throw new Exception("Failed to extract surface");
+                }
 
                 // trim the surface
-                Surface converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+                Surface converted;
+                try
+                {
+                    converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+                }
+                catch (Exception e)
+                {
+                    edgeLoops.ForEach(x => x.Dispose());
+                    edgeLoops.Clear();
+                    untrimmedSrf.Dispose();
+                    throw e;
+                }
+
+                edgeLoops.ForEach(x => x.Dispose());
+                edgeLoops.Clear();
+                untrimmedSrf.Dispose();
 
                 // perform unit conversion if necessary
-                converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+                if (performHostUnitConversion)
+                    UnitConverter.ConvertToDynamoUnits(ref converted);
 
                 // if possible, apply revit reference
                 var revitRef = referenceOverride ?? revitFace.Reference;
@@ -58,10 +79,21 @@ namespace Revit.GeometryConversion
         private static List<PolyCurve> EdgeLoopsAsPolyCurves(Face face, 
             IEnumerable<IEnumerable<Edge>> edgeLoops)
         {
-            return edgeLoops
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)))
-                .Select(PolyCurve.ByJoinedCurves)
-                .ToList();
+            List<PolyCurve> result = new List<PolyCurve>();
+            foreach (var edgeLoop in edgeLoops)
+            {
+                List<Autodesk.DesignScript.Geometry.Curve> curves = 
+                    new List<Autodesk.DesignScript.Geometry.Curve>();
+                foreach (var edge in edgeLoop)
+                {
+                    var dbCurve = edge.AsCurveFollowingFace(face);
+                    curves.Add(dbCurve.ToProtoType(false));
+                }
+                result.Add(PolyCurve.ByJoinedCurves(curves));
+                curves.ForEach(x => x.Dispose());
+                curves.Clear();
+            }
+            return result;
         }
 
     }

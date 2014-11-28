@@ -100,6 +100,7 @@ namespace Revit.GeometryConversion
                 controlPoints.Last().ToPoint(false));
 
             var lineDir = line.Direction.Normalized().ToXyz(false);
+            line.Dispose();
 
             var tangents = crv.Tangents;
             var startTan = tangents.First().Normalize();
@@ -113,13 +114,14 @@ namespace Revit.GeometryConversion
         {
             if (points.Count == 2) return true;
 
-            var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
+            using (var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
                 points.First().ToPoint(false),
-                points.Last().ToPoint(false));
-
-            // Are any of the points distant from the line created by connecting the two
-            // end points?
-            return !points.Any(x => x.ToPoint(false).DistanceTo(line) > Tolerance);
+                points.Last().ToPoint(false)))
+            {
+                // Are any of the points distant from the line created by connecting the two
+                // end points?
+                return !points.Any(x => x.ToPoint(false).DistanceTo(line) > Tolerance);
+            }
         }
 
         #endregion
