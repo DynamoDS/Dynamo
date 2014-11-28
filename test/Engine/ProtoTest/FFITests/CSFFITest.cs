@@ -71,20 +71,6 @@ namespace ProtoFFITests
     }
     public class CSFFITest : FFITestSetup
     {
-        /*
-[Test]
-        public void TestMethodResolution()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               line1 = Line.ByStartPointEndPoint(Point.ByCoordinates(0,0,0), Point.ByCoordinates(2,2,0));
-                line2 = Line.ByStartPointEndPoint(Point.ByCoordinates(2,0,0), Point.ByCoordinates(0,2,0));
-               geom = line1.Intersect(line2);
-            ";
-            ValidationData[] data = { new ValidationData() { ValueName = "geom", ExpectedValue = (Int64)1, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }*/
         TestFrameWork thisTest = new TestFrameWork();
 
         [Test]
@@ -121,17 +107,17 @@ x;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestImportPointClass()
         {
             String code =
-            @"import(Point from ""ProtoGeometry.dll"");
+            @"import(DummyPoint from ""FFITarget.dll"");
 x;
 y;
 z;
              [Associative] 
              {
-               point = Point.ByCoordinates(1,2,3);
+               point = DummyPoint.ByCoordinates(1,2,3);
                x = point.X;
                y = point.Y;
                z = point.Z;
@@ -577,12 +563,12 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestInheritanceAcrossLangauges_CS_DS()
         {
             string code = @"
-                import (Vector from ""ProtoGeometry.dll"");
-                class Vector2 extends Vector
+                import (DummyVector from ""FFITarget.dll"");
+                class Vector2 extends DummyVector
                 {
                     public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)
                     {}
@@ -783,13 +769,13 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestPropertyAccessor()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
+               import(""FFITarget.dll"");
+               pt = DummyPoint.ByCoordinates(1,2,3);
                a = pt.X;
             ";
             double aa = 1;
@@ -798,13 +784,13 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestAssignmentSingleton()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
+               import(""FFITarget.dll"");
+               pt = DummyPoint.ByCoordinates(1,2,3);
                a = { pt.X};
             ";
             object[] aa = new object[] { 1.0 };
@@ -813,13 +799,13 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestAssignmentAsArray()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
+               import(""FFITarget.dll"");
+               pt = DummyPoint.ByCoordinates(1,2,3);
                a = { pt.X, pt.X};
                def test (pt : Point)
                {
@@ -833,15 +819,15 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestReturnFromFunctionSingle()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
+               import(""FFITarget.dll"");
+            pt = DummyPoint.ByCoordinates(1,2,3);
             a = { pt.X, pt.X};
-            def test (pt : Point)
+            def test (pt : DummyPoint)
             {
             return = {  pt.X};
             }
@@ -853,14 +839,14 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void Defect_1462300()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
-            def test (pt : Point)
+               import(""FFITarget.dll"");
+            pt = DummyPoint.ByCoordinates(1,2,3);
+            def test (pt : DummyPoint)
             {
             return = {  pt.X,pt.Y};
             }
@@ -872,21 +858,21 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryinClass()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               pt1=Point.ByCoordinates(1.0,1.0,1.0);
+               import(""FFITarget.dll"");
+               pt1=DummyPoint.ByCoordinates(1.0,1.0,1.0);
                class baseClass
                { 
-                    val1 : Point  ;
+                    val1 : DummyPoint  ;
                     a:int;
                     constructor baseClass()
                     {
                         a=1;
-                        val1=Point.ByCoordinates(1,1,1);
+                        val1=DummyPoint.ByCoordinates(1,1,1);
                     }           
                 }
                 instance1= baseClass.baseClass();
@@ -900,19 +886,19 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryArrayAssignment()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
               
-               pt1=Point.ByCoordinates(1,1,1);
-               pt2=Point.ByCoordinates(2,2,2);
-               pt3=Point.ByCoordinates(3,3,3);
-               pt4=Point.ByCoordinates(4,4,4);
-               pt5=Point.ByCoordinates(5,5,5);
-               pt6=Point.ByCoordinates(6,6,6);
+               pt1=DummyPoint.ByCoordinates(1,1,1);
+               pt2=DummyPoint.ByCoordinates(2,2,2);
+               pt3=DummyPoint.ByCoordinates(3,3,3);
+               pt4=DummyPoint.ByCoordinates(4,4,4);
+               pt5=DummyPoint.ByCoordinates(5,5,5);
+               pt6=DummyPoint.ByCoordinates(6,6,6);
 a11;
 a12;
 b11;
@@ -945,16 +931,16 @@ b12;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryForLoop()
         {
             String code =
             @"
-                import(""ProtoGeometry.dll"");
+                import(""FFITarget.dll"");
                 
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
-                pt3=Point.ByCoordinates(3,3,3);
+                pt1=DummyPoint.ByCoordinates(1,1,1);
+                pt2=DummyPoint.ByCoordinates(2,2,2);
+                pt3=DummyPoint.ByCoordinates(3,3,3);
 a11;
 a12;
                 [Imperative]
@@ -1045,15 +1031,14 @@ ptcoords;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryInlineConditional()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               WCS = CoordinateSystem.Identity();
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
+               import(""FFITarget.dll"");
+                pt1=DummyPoint.ByCoordinates(1,1,1);
+                pt2=DummyPoint.ByCoordinates(2,2,2);
 s11;
 l11;
                 [Imperative]
@@ -1080,12 +1065,12 @@ l11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryRangeExpression()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
                  
                     a=1;
 a12;
@@ -1095,7 +1080,7 @@ a12;
                     }
                     [Associative]
                     {
-                    pt=Point.ByCoordinates(a[0],0,0);
+                    pt=DummyPoint.ByCoordinates(a[0],0,0);
                     a12={pt.X,pt.Y,pt.Z};
                     }
         
@@ -1140,51 +1125,14 @@ a12;
                                     };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
         }
-        /*  
-[Test]
-          public void geometryUpdateAcrossMultipleLanguageBlocks()
-          {
-              String code =
-              @"
-                 import(""ProtoGeometry.dll"");
-                 
-                    pt=Point.ByCoordinates(0,0,0);
-                    pt11={pt.X,pt.Y,pt.Z};
-                 
-                    [Associative]
-                    {
-                          pt=Point.ByCoordinates(1,1,1);
-                          pt12={pt.X,pt.Y,pt.Z};
-                       
-                          [Imperative]
-                          {
-                              pt=Point.ByCoordinates(2,2,2);
-                              pt13={pt.X,pt.Y,pt.Z};
-                          }
-                          pt=Point.ByCoordinates(3,3,3);
-                          pt14={pt.X,pt.Y,pt.Z};
-                     }
-        
-              ";
-              object[] a = new object[] { 0.0, 0.0, 0.0 };
-              object[] b = new object[] { 1.0, 1.0, 1.0 };
-              object[] c = new object[] { 2.0, 2.0, 2.0 };
-              object[] d = new object[] { 3.0, 3.0, 3.0 };
-              ValidationData[] data = {   new ValidationData() { ValueName   = "p11", ExpectedValue = a, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p12", ExpectedValue = b, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p13", ExpectedValue = c, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p14", ExpectedValue = d, BlockIndex = 0 }
-                                        };
-              ExecuteAndVerify(code, data);
-          }*/
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void geometryWhileLoop()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
                pt={0,0,0,0,0,0};
 p11;
                [Imperative]
@@ -1194,7 +1142,7 @@ p11;
                     while( i <= 5 )
                     { 
                         i = i + 1;
-                        pt[i]=Point.ByCoordinates(i,1,1);
+                        pt[i]=DummyPoint.ByCoordinates(i,1,1);
                         p11={pt[i].X,pt[i].Y,pt[i].Z};
                     }
                     
@@ -1206,13 +1154,13 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void properties()
         {
             String code =
             @"
-              import(""ProtoGeometry.dll"");
-              pt1 = Point.ByCoordinates(10, 10, 10);
+              import(""FFITarget.dll"");
+              pt1 = DummyPoint.ByCoordinates(10, 10, 10);
               a=pt1.X;
             ";
             double a = 10.000000;
@@ -1222,13 +1170,13 @@ p11;
 
         [Test]
         [Category("Replication")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void coercion_notimplmented()
         {
             String code =
             @"
-               import (""ProtoGeometry.dll"");
-           vec =  Vector.ByCoordinates(1,0,0);
+               import (""FFITarget.dll"");
+           vec =  DummyVector.ByCoordinates(1,0,0);
            newVec=vec.Scale({1,null});//array
            prop = VecGuarantedProperties(newVec);
            def VecGuarantedProperties(vec :Vector)
@@ -1714,7 +1662,7 @@ p11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestNestedClass()
         {
             string code =
