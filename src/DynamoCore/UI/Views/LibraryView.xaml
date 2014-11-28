@@ -612,11 +612,11 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
-                                                                           Value="true" />
+                                                                           Value="True" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
                                                                                      Converter={StaticResource RootElementToBoolConverter}}"
-                                                                           Value="true" />
+                                                                           Value="True" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
@@ -628,11 +628,11 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
-                                                                           Value="true" />
+                                                                           Value="True" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
                                                                                      Converter={StaticResource RootElementToBoolConverter}}"
-                                                                           Value="false" />
+                                                                           Value="False" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
@@ -640,7 +640,7 @@
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
-                                                        <DataTrigger Value="true">
+                                                        <DataTrigger Value="True">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
                                                                          Path="DataContext"
@@ -711,7 +711,7 @@
                                     <Setter Property="Background"
                                             Value="#2F2F2F" />
                                     <Setter Property="Padding"
-                                            Value="0,0,0,10" />
+                                            Value="0,0,0,3" />
                                 </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

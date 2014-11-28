@@ -118,7 +118,7 @@
         <Binding Path="ClassDetailsVisibility"
                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
     </UserControl.Visibility>
-    <Border Padding="0,10,0,10">
+    <Border Padding="0,10,0,3">
         <Border.Background>
             <Binding Path="IsRootCategoryDetails"
                      Converter="{StaticResource BooleanToBrushConverter}" />
@@ -261,6 +261,10 @@
                      BorderBrush="Transparent"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <ListBox.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </ListBox.Visibility>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
