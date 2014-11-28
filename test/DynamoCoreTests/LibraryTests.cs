@@ -1,11 +1,13 @@
-﻿using Dynamo.DSEngine;
-using Dynamo.Tests;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
+using System.Xml;
+using Autodesk.DesignScript.Runtime;
+using Dynamo.DSEngine;
+using DynamoUtilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -206,6 +208,76 @@ namespace Dynamo.Tests
             }
 
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumplibraryToXmlZeroTouchTest()
+        {
+            string libraryPath = "DSOffice.dll";
+
+            var membersToCompare = LoadMembersZeroTouchLibrary(libraryPath);
+
+            LibraryLoaded = false;
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already here, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            ViewModel.DumpLibraryToXmlCommand.Execute(null);
+
+            string whereSearch = DynamoPathManager.Instance.Logs;
+            string fileName = "LibrarySnapshot*";
+            string fullFileName = Directory.EnumerateFiles(whereSearch, fileName).FirstOrDefault();
+            Assert.IsFalse(string.IsNullOrEmpty(fullFileName));
+
+            var document = new XmlDocument();
+            document.Load(fullFileName);
+
+            Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
+
+            XmlNode node;
+            foreach (var member in membersToCompare)
+            {
+                node = document.SelectSingleNode(string.Format(
+                "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[Name='{0}']", member.Name));
+                Assert.IsNotNull(node);
+            }
+        }
+
+        private List<MemberInfo> LoadMembersZeroTouchLibrary(string library)
+        {
+            Assert.IsTrue(File.Exists(library));
+
+            var resultList = new List<MemberInfo>();
+
+            var assembly = Assembly.LoadFrom(library);
+            var types = assembly.GetTypes().Where(t => t.IsPublic == true);
+            foreach (var t in types)
+            {
+                var members = t.GetMembers().Where(m => m.Name != "ToString" &&
+                                                        m.Name != "Equals" &&
+                                                        m.Name != "GetHashCode" &&
+                                                        m.Name != "GetType");
+                members = members.Where(m =>
+                {
+                    var isObsolete = m.GetCustomAttributes(typeof(ObsoleteAttribute), true).Any();
+                    if (isObsolete) return false;
+
+                    var attributes = m.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), false);
+                    return attributes.Length == 0 || (attributes[0] as IsVisibleInDynamoLibraryAttribute).Visible;
+                });
+
+                if (members.Any())
+                    resultList.AddRange(members);
+            }
+
+            return resultList;
+        }
+
         #endregion
     }
 }
