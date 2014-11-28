@@ -6,21 +6,8 @@ using ProtoCore.Lang;
 namespace ProtoTest
 {
     [TestFixture]
-    public class ModifierStackTests
+    class ModifierStackTests : ProtoTestBase
     {
-        private ProtoCore.Core core;
-        [SetUp]
-        public void Setup()
-        {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-        [TestFixtureTearDown]
-        public void TearDown()
-        {
-        }
         [Test]
         public void SimpleExpr()
         {

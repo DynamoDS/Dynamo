@@ -7,19 +7,8 @@ using ProtoTestFx.TD;
 using ProtoCore.Mirror;
 namespace ProtoTest.TD.FFI
 {
-    class FFITest
+    class FFITest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string FFIPath = "..\\..\\..\\Scripts\\TD\\FFI\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
-
-
-
         [Test]
         [Category("SmokeTest")]
         public void T003_ClassTest()

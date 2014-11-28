@@ -7,11 +7,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.DebugTests
 {
-    class NamespaceConflictTest
+    class NamespaceConflictTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-
         [Test]
         [Category("Trace")]
         [Category("Failure")]

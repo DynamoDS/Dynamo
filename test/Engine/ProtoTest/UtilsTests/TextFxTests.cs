@@ -8,13 +8,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    class TextFxTests
+    class TextFxTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
         [Test]
         [Category("TextFx Tests")]
         public void BasicRunAndVerify()
