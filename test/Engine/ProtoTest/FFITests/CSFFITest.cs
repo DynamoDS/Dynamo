@@ -82,8 +82,8 @@ namespace ProtoFFITests
                dummy = Dummy.Dummy();
                success = dummy.CallMethod();
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("success", true);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("success", true);
         }
 
         [Test]
@@ -101,8 +101,8 @@ x;
              }
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("x", 0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
@@ -122,10 +122,10 @@ z;
                z = point.Z;
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("x", 1.0);
-            mirror.Verify("y", 2.0);
-            mirror.Verify("z", 3.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1.0);
+            thisTest.Verify("y", 2.0);
+            thisTest.Verify("z", 3.0);
         }
 
         [Test]
@@ -142,10 +142,10 @@ z;
                py = p3.Y;
                pz = p3.Z;
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("px", 3.0);
-            mirror.Verify("py", 4.0);
-            mirror.Verify("pz", 5.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("px", 3.0);
+            thisTest.Verify("py", 4.0);
+            thisTest.Verify("pz", 5.0);
         }
 
         [Test]
@@ -162,10 +162,10 @@ z;
                vz = v.Z;
 
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("vx", 2.0);
-            mirror.Verify("vy", 2.0);
-            mirror.Verify("vz", 2.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("vx", 2.0);
+            thisTest.Verify("vy", 2.0);
+            thisTest.Verify("vz", 2.0);
         }
 
         [Test]
@@ -180,9 +180,9 @@ z;
             o = cf1.AddWithValueContainer(vc2);
             o2 = vc2.Square().SomeValue;
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("o", 3);
-            mirror.Verify("o2", 4);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("o", 3);
+            thisTest.Verify("o2", 4);
         }
 
         [Test]
@@ -196,9 +196,9 @@ z;
               v = cf1.IntVal;
               t = cf1.IsEqualTo(cf2);
            ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("v", 1);
-            mirror.Verify("t", false);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("v", 1);
+            thisTest.Verify("t", false);
         }
 
         [Test]
@@ -214,9 +214,9 @@ z;
               t = cf2.StaticProp;
               s = ClassFunctionality.StaticProp;
            ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("v", 42);
-            mirror.Verify("s", 42);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("v", 42);
+            thisTest.Verify("s", 42);
         }
 
 
@@ -225,14 +225,14 @@ z;
         {
             String code =
             @"
-               import (""FFITarget.dl"");
+               import (""FFITarget.dll"");
                dummy = Dummy.Dummy();
                arr = dummy.GetMixedObjects();
                value = arr[0].random123() - arr[1].GetNumber() + arr[2].Value + arr[3].Value;
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("value", 128.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("value", 128.0);
         }
 
         [Test]
@@ -241,7 +241,7 @@ z;
         {
             String code =
             @"
-               import (""FFITarget.dl"");
+               import (""FFITarget.dll"");
 
                def GetAt(index : int)
                {
@@ -257,8 +257,8 @@ z;
                value = a.random123() - b.GetNumber() + c.Value + d.Value;
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("value", 128.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("value", 128.0);
         }
 
         [Test]
@@ -266,7 +266,7 @@ z;
         {
             String code =
             @"
-             import (""FFITarget.dl"");
+             import (""FFITarget.dll"");
              sum;
              [Associative] 
              {
@@ -275,8 +275,8 @@ z;
                 sum = dummy.SumAll(arr);
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 55);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 55);
         }
 
         [Test]
@@ -284,7 +284,7 @@ z;
         {
             String code =
             @"
-             import (""FFITarget.dl"");
+             import (""FFITarget.dll"");
              sum;
              [Associative] 
              {
@@ -294,8 +294,8 @@ z;
                 sum = dummy.SumAll(arr_2);
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 110.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 110.0);
         }
 
         [Test]
@@ -303,7 +303,7 @@ z;
         {
             String code =
             @"
-             import (""FFITarget.dl"");
+             import (""FFITarget.dll"");
              sum;
              [Associative] 
              {
@@ -312,8 +312,8 @@ z;
                 sum = dummy.AddAll(arr);
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 55.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 55.0);
         }
 
         [Test]
@@ -330,8 +330,8 @@ z;
                 size = dummy.StackSize(stack);
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("size", 3);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("size", 3);
         }
 
         [Test]
@@ -355,8 +355,8 @@ z;
                 sum = dummy.SumAges(dictionary);
              }
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 45);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 45);
         }
 
         [Test]
@@ -374,8 +374,8 @@ z;
              }
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 55.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 55.0);
         }
 
         [Test]
@@ -388,8 +388,8 @@ z;
                num123 = dummy.random123();
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("num123", 123);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("num123", 123);
         }
 
         [Test]
@@ -402,8 +402,8 @@ z;
                value = dummy.CallMethod();
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("value", null);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("value", null);
         }
 
         [Test]
@@ -415,8 +415,8 @@ z;
                value = Dummy.Return100();
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("value", 100);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("value", 100);
         }
 
         [Test]
@@ -427,8 +427,8 @@ z;
                import (""FFITarget.dll"");
                value = Dummy.Return100();
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("value", 100); 
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("value", 100); 
         }
 
         [Test]
@@ -441,8 +441,8 @@ z;
                arr = 1..10.0;
                sum = dummy.SumAll(arr);
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 55.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 55.0);
         }
 
         [Test]
@@ -455,8 +455,8 @@ z;
                dummy = tempDerived.CreateDummy(true); //for now static methods are not supported.
                isBase = dummy.CallMethod();
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("isBase", false);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("isBase", false);
         }
 
         [Test]
@@ -469,8 +469,8 @@ z;
                dummy = tempDerived.CreateDummy(false); //for now static methods are not supported.
                isBase = dummy.CallMethod();
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("isBase", true);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("isBase", true);
         }
 
         [Test]
@@ -481,8 +481,8 @@ z;
                             b = Base.Create();
                             num = b.GetNumber();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("num", 10.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("num", 10.0);
         }
 
         [Test]
@@ -493,8 +493,8 @@ z;
                             derived = Derived1.Create();
                             num = derived.GetNumber();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("num", 20.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("num", 20.0);
         }
 
         [Test]
@@ -505,8 +505,8 @@ z;
                             b = Base.CreateDerived();
                             num = b.GetNumber();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("num", 20.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("num", 20.0);
         }
 
         [Test]
@@ -541,8 +541,8 @@ z;
                             neglect = a.Dispose();
                             val = a.Value;
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 15);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
         /// <summary>
         /// This is to test Dispose method on IDisposable object. Dispose method 
@@ -560,8 +560,8 @@ z;
                             val = a.Value;
                             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", null);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", null);
         }
         /// <summary>
         /// This is to test _Dispose method is added to all the classes.
@@ -577,8 +577,8 @@ z;
                             neglect = a._Dispose();
                             val = a.Value;
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", null);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", null);
         }
         /// <summary>
         /// This is to test Dispose method is not renamed to _Dispose if the
@@ -595,8 +595,8 @@ z;
                             neglect = a.Dispose();
                             val = a.Value;
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", -2);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", -2);
         }
         /// <summary>
         /// This test is to test for dispose due to update. When the same 
@@ -617,8 +617,8 @@ z;
                             val = a.Value;
                             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 20);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 20);
         }
         /// <summary>
         /// This test is to test for dispose due to update. When the same 
@@ -638,8 +638,8 @@ z;
                             a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.
                             val = a.Value;
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 20);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 20);
         }
         /// <summary>
         /// This is to test Dispose method renamed to _Dispose if the object
@@ -651,12 +651,12 @@ z;
         {
             string code = @"
                             import (""FFITarget.dll"");
-                            a = TestDisposeDerived.CreateDerived();
-                            neglect = AClass._Dispose();
-                            val = AClass.Value;
+                            a = AClass.CreateObject(42); 
+                            a._Dispose();
+                            val = DisposeVerify.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", null);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 42);
         }
 
         /// <summary>
@@ -674,8 +674,8 @@ z;
                sum = dummy.SumAll(arr);
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 7260.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 7260.0);
         }
 
         /// <summary>
@@ -694,8 +694,8 @@ z;
                arr = 1..Math.Factorial(5);
                sum = dummy.SumAll(arr);
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("sum", 7260.0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("sum", 7260.0);
         }
 
         [Test]
@@ -708,8 +708,8 @@ z;
                pt = DummyPoint.ByCoordinates(1,2,3);
                a = pt.X;
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a", 1);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
         }
 
         [Test]
@@ -722,8 +722,8 @@ z;
                pt = DummyPoint.ByCoordinates(1,2,3);
                a = { pt.X};
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a", new [] {1.0});
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", new [] {1.0});
         }
 
         [Test]
@@ -741,8 +741,8 @@ z;
                }
                c = test(pt);
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a", new [] {1.0, 1.0});
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", new [] {1.0, 1.0});
         }
 
         [Test]
@@ -760,8 +760,8 @@ z;
             }
             b = test(pt);
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("b", new [] {1.0});
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", new [] {1.0});
         }
 
         [Test]
@@ -779,8 +779,8 @@ z;
             b = test(pt);
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("b", new [] {1.0, 2.0});
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", new [] {1.0, 2.0});
         }
 
         [Test]
@@ -806,8 +806,9 @@ z;
                 b2=instance1.val1;
                 c2={b2.X,b2.Y,b2.Z};
             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("b", new [] {1.0, 1.0, 1.0});
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a2", 1);
+            thisTest.Verify("c2", new [] {1.0, 1.0, 1.0});
         }
 
         [Test]
@@ -844,15 +845,15 @@ b12;
                }
             ";
 
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] d = new object[] { 4.0, 4.0, 4.0 };
             object[] e = new object[] { 3.0, 3.0, 3.0 };
             object[] f = new object[] { 6.0, 6.0, 6.0 };
-            mirror.Verify("a11", c);
-            mirror.Verify("a12", f);
-            mirror.Verify("b11", c);
-            mirror.Verify("b12", e);
+            thisTest.Verify("a11", c);
+            thisTest.Verify("a12", f);
+            thisTest.Verify("b11", c);
+            thisTest.Verify("b12", e);
         }
 
         [Test]
@@ -886,9 +887,9 @@ a12;
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] e = new object[] { 3.0, 3.0, 3.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a11", c);
-            mirror.Verify("a12", e);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a11", c);
+            thisTest.Verify("a12", e);
         }
 
         [Test]
@@ -911,8 +912,8 @@ a11;
 }
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a11", c);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a11", c);
         }
 
         [Test]
@@ -949,9 +950,9 @@ ptcoords;
         
             ";
             object[] d = new object[] { 2.0, 2.0, 2.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a1", 1); 
-            mirror.Verify("ptcoords", d);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a1", 1); 
+            thisTest.Verify("ptcoords", d);
         }
 
         [Test]
@@ -983,9 +984,9 @@ l11;
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] d = new object[] { 2.0, 2.0, 2.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("s11", c);
-            mirror.Verify("l11", d);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("s11", c);
+            thisTest.Verify("l11", d);
         }
 
         [Test]
@@ -1010,8 +1011,8 @@ a12;
         
             ";
             object[] c = new object[] { 0.5, 0.0, 0.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a12", c);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a12", c);
         }
 
         [Test]
@@ -1026,8 +1027,8 @@ a12;
                             i = 5;
                             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 15);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
 
         [Test]
@@ -1040,10 +1041,10 @@ a12;
                             v123 = a.TestNullable(5, null);
                             v321 = a.TestNullable(null, 2);
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("v111", 111);
-            mirror.Verify("v123", 123);
-            mirror.Verify("v321", 321);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("v111", 111);
+            thisTest.Verify("v123", 123);
+            thisTest.Verify("v321", 321);
         }
 
         [Test]
@@ -1069,8 +1070,8 @@ p11;
                 }
             ";
             object[] a = new object[] { 6.0, 1.0, 1.0 };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("p11", a);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p11", a);
         }
 
         [Test]
@@ -1084,11 +1085,12 @@ p11;
               a=pt1.X;
             ";
             double a = 10.000000;
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a", a);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", a);
         }
 
         [Test]
+        [Ignore]
         [Category("Replication")]
         [Category("PortToCodeBlocks")]
         public void coercion_notimplmented()
@@ -1098,16 +1100,16 @@ p11;
                import (""FFITarget.dll"");
            vec =  DummyVector.ByCoordinates(1,0,0);
            newVec=vec.Scale({1,null});//array
-           prop = VecGuarantedProperties(newVec);
-           def VecGuarantedProperties(vec :Vector)
+           prop = VecGuarantedProperties(vec);
+           def VecGuarantedProperties(vec :DummyVector)
            {
-              return = {vec.Length };
+              return = {vec.GetLengthSquare() };
             }
         
             ";
-            object[] c = new object[] { new object[] { 1.0 }, new object[] { null } };
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("prop", c);
+            object[] c = new object[] { new object[] { 1.0 }, null };
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("prop", c);
         }
 
         [Test]
@@ -1123,8 +1125,8 @@ p11;
                             i = 5;
                             ";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 15);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
 
         [Test]
@@ -1138,8 +1140,8 @@ p11;
                             val = a.Value;
                             i = 5;
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("val", 15);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
 
         [Test]
@@ -1152,8 +1154,8 @@ p11;
                 cls.IntVal = 3;
                 readback = cls.IntVal;";
 
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("readback", (Int64)3);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("readback", (Int64)3);
         }
 
         [Test]
@@ -1166,8 +1168,8 @@ p11;
                 cls.IntVal = 3;
                 readback = cls.IntVal;
                 cls.IntVal = 4;";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("readback", (Int64)4);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("readback", (Int64)4);
         }
 
         [Test]
@@ -1185,10 +1187,10 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("m", 1); 
-            mirror.Verify("a", 3); 
-            mirror.Verify("b", 2); 
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("m", 1); 
+            thisTest.Verify("a", 3); 
+            thisTest.Verify("b", 2); 
         }
 
         [Test]
@@ -1211,9 +1213,9 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("m", 1);
-            mirror.Verify("c", 19);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("m", 1);
+            thisTest.Verify("c", 19);
         }
 
         [Test]
@@ -1244,9 +1246,9 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("a", 3);
-            mirror.Verify("b", 17);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 3);
+            thisTest.Verify("b", 17);
         }
 
         [Test]
@@ -1264,8 +1266,8 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("b", 1);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
         }
 
         [Test]
@@ -1284,8 +1286,8 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("c", 2);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 2);
         }
 
         [Test]
@@ -1302,11 +1304,11 @@ p11;
                             b = a1;    
                             v = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
             if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
             {
-                mirror.Verify("v", 10);
+                thisTest.Verify("v", 10);
             }
             // For mark and sweep, the order of object dispose is not defined,
             // so we are not sure if AClass objects or BClass objects will be
@@ -1350,18 +1352,18 @@ p11;
                             }
                             v3 = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             var gcStrategy =  thisTest.GetTestCore().Heap.GCStrategy;
             if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
             {
                 // For mark and sweep, it is straight, we only need to focus 
                 // on created objects. So the value = 3 + 10 + 20 + 30 = 63.
-                mirror.Verify("v3", 63);
+                thisTest.Verify("v3", 63);
             }
             else
             {
-                mirror.Verify("v1", 3); 
-                mirror.Verify("v2", 23);
+                thisTest.Verify("v1", 3); 
+                thisTest.Verify("v2", 23);
             }
         }
 
@@ -1410,20 +1412,20 @@ p11;
                             v4 = dv.GetValue();
                             ";
 
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             var gcStrategy = thisTest.GetTestCore().Heap.GCStrategy;
             if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
             {
                 // For mark and sweep, the last object is a2, se the expected
                 // value = 4. But it is very fragile because the order of
                 // disposing is not defined. 
-                mirror.Verify("v4", 4);
+                thisTest.Verify("v4", 4);
             }
             else
             {
-                mirror.Verify("v1", 3); 
-                mirror.Verify("v2", 3); 
-                mirror.Verify("v3", 16);
+                thisTest.Verify("v1", 3); 
+                thisTest.Verify("v2", 3); 
+                thisTest.Verify("v3", 16);
             }
         }
 
@@ -1443,10 +1445,10 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             object[] b = new object[] { 1, 2, 3 };
-            mirror.Verify("c", 2);
-            mirror.Verify("b", b);
+            thisTest.Verify("c", 2);
+            thisTest.Verify("b", b);
         }
 
         [Test]
@@ -1571,8 +1573,8 @@ p11;
                 t = NestedClass.GetType(5);
                 success = NestedClass.CheckType(t, 5);
                 ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("success", true);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("success", true);
         }
 
         [Test]
@@ -1584,8 +1586,8 @@ p11;
                 t5 = NestedClass_Type.Type(123);
                 success = t5.Equals(t);
                 ";
-            var mirror = thisTest.RunScriptSource(code);
-            mirror.Verify("success", true);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("success", true);
         }
 
  
@@ -1594,7 +1596,7 @@ p11;
         {
             string code =
                 @"import(Point from ""FFITarget.dll"");";
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
             string[] classes = thisTest.GetAllMatchingClasses("Point");
             Assert.True(classes.Length > 1, "More than one implementation of Point class expected");
@@ -1603,7 +1605,7 @@ p11;
         [Test]
         public void TestNamespaceFullResolution01()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest();
@@ -1611,13 +1613,13 @@ p11;
             "
             );
 
-            mirror.Verify("x", 0);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
         public void TestNamespaceFullResolution02()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest(1);
@@ -1625,13 +1627,13 @@ p11;
             "
             );
 
-            mirror.Verify("x", 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespaceFullResolution03()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
@@ -1639,13 +1641,13 @@ p11;
             "
             );
 
-            mirror.Verify("x", 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution01()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
@@ -1653,13 +1655,13 @@ p11;
             "
             );
 
-            mirror.Verify("x", 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution02()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest(1);
@@ -1667,13 +1669,13 @@ p11;
             "
             );
 
-            mirror.Verify("x", 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution03()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = B.NamespaceResolutionTargetTest();
@@ -1681,7 +1683,7 @@ p11;
             "
             );
 
-            mirror.Verify("x", 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
@@ -1703,7 +1705,7 @@ p11;
 
                     check = Equals(aDup.Prop,bDup.Prop);";
 
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("check", true);
             thisTest.Verify("Xo", 1);
 
@@ -1735,7 +1737,7 @@ p11;
                     check = Equals(bDup.Prop,cDup.Prop);
 ";
             string err = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
-            var mirror = thisTest.RunScriptSource(code, err);
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("check", true);
             thisTest.Verify("aReadback", 0);
             thisTest.Verify("bReadback", 1);
