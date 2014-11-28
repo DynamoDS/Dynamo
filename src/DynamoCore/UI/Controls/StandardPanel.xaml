@@ -16,7 +16,6 @@
         <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
                                                    NormalColor="Transparent"
                                                    ActiveColor="#222222" />
-        <controls:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
@@ -257,52 +256,6 @@
                             </MultiBinding>
                         </Button.Background>
                     </Button>
-                    <!--<Border.Visibility>
-                            <Binding Path="SecondaryHeaderLeftText"
-                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                        </Border.Visibility>-->
-                    <!--<TextBlock.TextDecorations>
-                            <TextDecoration PenOffset="2"
-                                            PenOffsetUnit="Pixel">
-                                <TextDecoration.Pen>
-                                    <Pen Brush="#777777">
-                                        <Pen.Thickness>
-                                            <MultiBinding Converter="{StaticResource DisplayModeToTextDecorationsConverter}"
-                                                          ConverterParameter="Action">
-                                                <Binding Path="CurrentDisplayMode" />
-                                                <Binding Path="IsSecondaryHeaderRightVisible" />
-                                            </MultiBinding>
-                                        </Pen.Thickness>
-                                    </Pen>
-                                </TextDecoration.Pen>
-                            </TextDecoration>
-                        </TextBlock.TextDecorations>-->
-                    <!--<Ellipse Fill="#777777"
-                             Height="3"
-                             Width="3"
-                             Margin="0,0,13.5,0">
-                        <Ellipse.Visibility>
-                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                <Binding Path="IsSecondaryHeaderRightVisible" />
-                                <Binding Path="IsSecondaryHeaderLeftVisible" />
-                            </MultiBinding>
-                        </Ellipse.Visibility>
-                    </Ellipse>-->
-                    <!--<Border Tag="Query"
-                            Style="{StaticResource secondaryMembersBorder}"
-                            PreviewMouseDown="OnHeaderMouseDown">
-                        <Border.Visibility>
-                            <Binding Path="IsSecondaryHeaderRightVisible"
-                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                        </Border.Visibility>
-                        <TextBlock x:Name="secondaryHeaderRight"
-                                   Style="{StaticResource secondaryMembersTextBlock}"
-                                   Text="{Binding SecondaryHeaderRightText}">
-                        </TextBlock>
-                    </Border>-->
-                    <!--<Button OverridesDefaultStyle="True"
-                                Foreground="White"
-                                Content="QUERY"></Button>-->
                 </StackPanel>
             </Border>
             <ListBox x:Name="secondaryMembers"
