@@ -13,7 +13,9 @@
     <UserControl.Resources>
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-        <controls:DisplayModeToTextDecorationsConverter x:Key="DisplayModeToTextDecorationsConverter" />
+        <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
+                                                   NormalColor="Transparent"
+                                                   ActiveColor="#222222" />
         <controls:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
@@ -126,6 +128,7 @@
         <ControlTemplate x:Key="HeaderButtonTemplate"
                          TargetType="{x:Type Button}">
             <Border x:Name="container"
+                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}"
                     Style="{StaticResource secondaryMembersBorder}">
                 <TextBlock x:Name="text"
                            Style="{StaticResource secondaryMembersTextBlock}"
@@ -220,13 +223,40 @@
                     Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal"
                             Margin="16,0,0,0">
-                    <Button Name="Action"
+                    <Button Tag="Action"
                             Margin="0,0,16,0"
                             Content="{Binding SecondaryHeaderLeftText}"
-                            Template="{StaticResource HeaderButtonTemplate}" />
-                    <Button Name="Query"
+                            Template="{StaticResource HeaderButtonTemplate}"
+                            Click="OnHeaderButtonClick">
+                        <Button.Visibility>
+                            <Binding Path="IsSecondaryHeaderLeftVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </Button.Visibility>
+                        <Button.Background>
+                            <MultiBinding Converter="{StaticResource DisplayModeToBackgroundConverter}"
+                                          ConverterParameter="Action">
+                                <Binding Path="CurrentDisplayMode" />
+                                <Binding Path="IsSecondaryHeaderRightVisible" />
+                            </MultiBinding>
+                        </Button.Background>
+                    </Button>
+
+                    <Button Tag="Query"
                             Content="{Binding SecondaryHeaderRightText}"
-                            Template="{StaticResource HeaderButtonTemplate}" />
+                            Template="{StaticResource HeaderButtonTemplate}"
+                            Click="OnHeaderButtonClick">
+                        <Button.Visibility>
+                            <Binding Path="IsSecondaryHeaderRightVisible"
+                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                        </Button.Visibility>
+                        <Button.Background>
+                            <MultiBinding Converter="{StaticResource DisplayModeToBackgroundConverter}"
+                                          ConverterParameter="Query">
+                                <Binding Path="CurrentDisplayMode" />
+                                <Binding Path="IsSecondaryHeaderRightVisible" />
+                            </MultiBinding>
+                        </Button.Background>
+                    </Button>
                     <!--<Border.Visibility>
                             <Binding Path="SecondaryHeaderLeftText"
                                      Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />

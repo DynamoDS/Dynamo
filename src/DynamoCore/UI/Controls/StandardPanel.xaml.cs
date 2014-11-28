@@ -36,7 +36,7 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
         }
 
-        private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
             // In this cases at addCetgoryList will be situated not more one
             // list. We don't need switch between lists.
@@ -281,8 +281,6 @@ namespace Dynamo.UI.Controls
                 (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
                 e.Handled = true;
             }
-
-
         }
     }
 }

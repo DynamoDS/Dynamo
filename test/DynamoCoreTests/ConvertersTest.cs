@@ -243,9 +243,9 @@ namespace Dynamo
         }
 
         [Test]
-        public void DisplayModeToTextDecorationsConverterTest()
+        public void DisplayModeToBackgroundConverterTest()
         {
-            DisplayModeToTextDecorationsConverter converter = new DisplayModeToTextDecorationsConverter();
+            DisplayModeToBackgroundConverter converter = new DisplayModeToBackgroundConverter();
             bool isSecondaryHeaderRightVisible = false;
             Dynamo.Nodes.Search.ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
             string parameter = "";
@@ -265,33 +265,33 @@ namespace Dynamo
 
             // 2 case
             result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 3 case
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 4 case
             array[0] = ClassInformation.DisplayMode.Query;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 5 case
             array[0] = ClassInformation.DisplayMode.Action;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 6 case
             parameter = "Action";
             isSecondaryHeaderRightVisible = true;
             array[1] = isSecondaryHeaderRightVisible;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 7 case
             parameter = "None";
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(converter.NormalColor, result);
         }
 
         [Test]
