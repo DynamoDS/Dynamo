@@ -550,8 +550,71 @@ namespace RevitSystemTests
 
         }
 
-       
 
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\Bugs\MAGN_3488.rvt")]
+        public void MAGN_3488_SelectModelElementDoesNotUpdate()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3488
+            // Select model element does not watch for changes
 
+            var model = ViewModel.Model;
+
+            string samplePath = Path.Combine(workingDirectory, @".\Bugs\MAGN_3488.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            var familyInstance = GetPreviewValue("9c7a7514-1565-42e6-9d43-7e8aa7f62dcb") as FamilyInstance;
+            Assert.IsNotNull(familyInstance);
+
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        [TestModel(@".\Bugs\MAGN_3489.rvt")]
+        public void MAGN_3489_FilterNotCorrectForFamilyType()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3408
+            // All elements of family type returns all families of the given category
+            var model = ViewModel.Model;
+
+            string samplePath = Path.Combine(workingDirectory, @".\Bugs\MAGN_3489.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Check for Family type
+            var familytype = "58ac38b3-32dc-40c6-bca0-f8aa36e640bb";
+            AssertPreviewCount(familytype, 2);
+
+            // get all families.
+            for (int i = 0; i <= 1; i++)
+            {
+                var allFamilies = GetPreviewValueAtIndex(familytype, i) as FamilyInstance;
+                Assert.IsNotNull(allFamilies);
+            }
+        }
     }
 }
