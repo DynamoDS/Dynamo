@@ -1357,9 +1357,9 @@ namespace ProtoFFITests
         {
             String code =
             @"        import (""FFITarget.dll"");class myPoint{    p :DummyPoint;	constructor create()    {        p =DummyPoint.ByCoordinates(0, 0, 0);    }}pt = myPoint.create();[Associative]{    a = pt.p;}c = pt.p;carr = {c.X,c.Y,c.Z};            ";
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             object[] a = new object[] { 0.0, 0.0, 0.0 };
-            mirror.Verify("carr", a);
+            thisTest.Verify("carr", a);
         }
 
 
