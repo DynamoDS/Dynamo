@@ -7,16 +7,6 @@ namespace ProtoTest.Associative
 {
     class MethodResolution : ProtoTestBase
     {
-        public override void Setup()
-        {
-            base.Setup();
-        }
-
-        public override void TearDown()
-        {
-            base.TearDown();
-        }
-
         [Test]
         public void SimpleCtorResolution01()
         {
