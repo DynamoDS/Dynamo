@@ -132,26 +132,27 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Border Padding="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Margin="16,0,0,0"
+                    Padding="8,3,8,3"
+                    Background="#393939">
                 <TextBlock x:Name="primaryHeader"
-                           Foreground="#777777"
+                           Foreground="#999999"
                            VerticalAlignment="Center"
                            FontSize="9"
-                           Margin="16,0,0,0"
                            Text="{Binding PrimaryHeaderText}">
                     <TextBlock.Visibility>
                         <Binding Path="IsPrimaryHeaderVisible"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </TextBlock.Visibility>
-                    <TextBlock.TextDecorations>
-                        <TextDecoration Location="Underline"
-                                        PenOffset="2"
-                                        PenOffsetUnit="Pixel" />
-                    </TextBlock.TextDecorations>
                 </TextBlock>
             </Border>
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
+                     Grid.ColumnSpan="2"
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
@@ -164,20 +165,19 @@
                                    VerticalAlignment="Center"
                                    Width="32"
                                    Source="{Binding SmallIcon}" />
-
                             <TextBlock HorizontalAlignment="Left"
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
                                        Foreground="#CCCCCC"
                                        FontSize="13" />
-
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <Border Padding="0,10,0,10"
-                    Grid.Row="2">
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2">
                 <Border.Visibility>
                     <Binding Path="IsSecondaryHeaderLeftVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -282,6 +282,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <Button Grid.Row="4"
+                    Grid.ColumnSpan="2"
                     Height="32"
                     Style="{StaticResource STextButton}"
                     Click="OnMoreButtonClick"
