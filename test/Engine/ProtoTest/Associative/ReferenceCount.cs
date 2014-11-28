@@ -8,10 +8,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class ReferenceCount
+    class ReferenceCount : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void TestReferenceCount_BaseCase01()
         {
