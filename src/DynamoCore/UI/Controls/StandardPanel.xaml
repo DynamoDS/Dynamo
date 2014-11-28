@@ -26,7 +26,6 @@
             <EventSetter Event="PreviewMouseWheel"
                          Handler="OnShiftMouseWheel" />
         </Style>
-
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="BorderBrush"
@@ -101,20 +100,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="secondaryMembersBorder"
-               TargetType="{x:Type Border}">
-            <Setter Property="Padding"
-                    Value="8,3,8,3" />
-            <Setter Property="BorderThickness"
-                    Value="1" />
-            <Setter Property="BorderBrush"
-                    Value="#494A4A" />
-            <Setter Property="CornerRadius"
-                    Value="2" />
-        </Style>
-
-        <Style x:Key="secondaryMembersTextBlock"
+        <Style x:Key="SecondaryMembersTextBlock"
                TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment"
                     Value="Center" />
@@ -124,13 +110,27 @@
                     Value="9" />
         </Style>
 
-        <ControlTemplate x:Key="HeaderButtonTemplate"
+        <ControlTemplate x:Key="PrimaryHeaderButtonTemplate"
                          TargetType="{x:Type Button}">
             <Border x:Name="container"
-                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}"
-                    Style="{StaticResource secondaryMembersBorder}">
+                    Padding="8,3,8,3"
+                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
                 <TextBlock x:Name="text"
-                           Style="{StaticResource secondaryMembersTextBlock}"
+                           Style="{StaticResource SecondaryMembersTextBlock}"
+                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
+                </TextBlock>
+            </Border>
+        </ControlTemplate>
+        <ControlTemplate x:Key="SecondaryHeaderButtonTemplate"
+                         TargetType="{x:Type Button}">
+            <Border x:Name="container"
+                    Padding="8,3,8,3"
+                    BorderThickness="1"
+                    BorderBrush="#494A4A"
+                    CornerRadius="2"
+                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
+                <TextBlock x:Name="text"
+                           Style="{StaticResource SecondaryMembersTextBlock}"
                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
                 </TextBlock>
             </Border>
@@ -155,7 +155,6 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="ClassDetailsVisibility"
@@ -179,19 +178,16 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border Margin="16,0,0,0"
-                    Padding="8,3,8,3"
-                    Background="#393939">
-                <Border.Visibility>
-                    <Binding Path="IsPrimaryHeaderVisible"
+
+            <Button Margin="16,0,0,0"
+                    Background="#393939"
+                    Content="{Binding PrimaryHeaderText}"
+                    Template="{StaticResource PrimaryHeaderButtonTemplate}">
+                <Button.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                </Border.Visibility>
-                <TextBlock x:Name="primaryHeader"
-                           Foreground="#999999"
-                           VerticalAlignment="Center"
-                           FontSize="9"
-                           Text="{Binding PrimaryHeaderText}" />
-            </Border>
+                </Button.Visibility>
+            </Button>
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.ColumnSpan="2"
@@ -225,7 +221,7 @@
                     <Button Tag="Action"
                             Margin="0,0,16,0"
                             Content="{Binding SecondaryHeaderLeftText}"
-                            Template="{StaticResource HeaderButtonTemplate}"
+                            Template="{StaticResource SecondaryHeaderButtonTemplate}"
                             Click="OnHeaderButtonClick">
                         <Button.Visibility>
                             <Binding Path="IsSecondaryHeaderLeftVisible"
@@ -242,7 +238,7 @@
 
                     <Button Tag="Query"
                             Content="{Binding SecondaryHeaderRightText}"
-                            Template="{StaticResource HeaderButtonTemplate}"
+                            Template="{StaticResource SecondaryHeaderButtonTemplate}"
                             Click="OnHeaderButtonClick">
                         <Button.Visibility>
                             <Binding Path="IsSecondaryHeaderRightVisible"
