@@ -179,9 +179,9 @@
                            Name="SmallIcon" />
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
                                Text="{Binding Name}"
-                               VerticalAlignment="Top"
-                               Margin="5,10,0,0"
+                               Margin="5,0,0,0"
                                Foreground="#999999"
                                FontSize="13" />
                     <StackPanel.Style>
@@ -658,7 +658,7 @@
                                                 Grid.Row="1"
                                                 Background="#2F2F2F">
                                             <ItemsPresenter x:Name="ItemsHost"
-                                                            Margin="0,10,0,0" />
+                                                            Margin="0,3,0,3" />
                                         </Border>
                                     </Grid>
                                     <Border.Style>
@@ -677,7 +677,7 @@
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
                                                     <Setter Property="Padding"
-                                                            Value="0,0,0,10" />
+                                                            Value="0,0,0,0" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
