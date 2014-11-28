@@ -10,7 +10,7 @@ namespace ProtoFFITests
 {
     public abstract class FFITestSetup
     {
-        public ProtoCore.Core Setup()
+        private ProtoCore.Core Setup()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -1745,12 +1745,12 @@ p11;
         public void TestNamespaceImport()
         {
             string code =
-                @"import(MicroFeatureTests from ""ProtoTest.dll"");";
+                @"import(Point from ""FFITarget.dll"");";
             TestFrameWork theTest = new TestFrameWork();
             var mirror = theTest.RunScriptSource(code);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
-            string[] classes = theTest.GetAllMatchingClasses("MicroFeatureTests");
-            Assert.True(classes.Length > 1, "More than one implementation of MicroFeatureTests class expected");
+            string[] classes = theTest.GetAllMatchingClasses("Point");
+            Assert.True(classes.Length > 1, "More than one implementation of Point class expected");
         }
 
         [Test]
