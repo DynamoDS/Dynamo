@@ -501,34 +501,28 @@ namespace Dynamo.Views
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
+       
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             this.snappedPort = null;
 
             bool mouseMessageHandled = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-
+            
             // If we are currently connecting and there is an active 
             // connector, redraw it to match the new mouse coordinates.
-            if (wvm.IsConnecting)
-            {
-                //Point mouse = e.GetPosition((UIElement)sender);
-                //this.snappedPort = GetSnappedPort(mouse);
-
-                // Check for nearby port to snap
-                //if (this.snappedPort != null)
-                //{
-                //    // Nearby port must be compatible for connection
-                //    if (wvm.CheckActiveConnectorCompatibility(this.snappedPort))
-                //    {
-                //        mouseMessageHandled = true;
-                //        wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
-                //    }
-                //    else
-                //        this.snappedPort = null; // remove non-compatible port
-                //}
-                //else
-                wvm.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+            if (wvm.IsSnapping)
+            {              
+                if (wvm.portViewModel != null)
+                {
+                    if (wvm.CheckActiveConnectorCompatibility(wvm.portViewModel))
+                    {
+                        mouseMessageHandled = true;
+                        wvm.HandleMouseMove(this.WorkBench, wvm.portViewModel.Center);
+                    }
+                }
+                else
+                    wvm.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
             }
 
             if (wvm.IsInIdleState)
