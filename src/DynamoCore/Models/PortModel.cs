@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Xml;
 
@@ -42,7 +41,7 @@ namespace Dynamo.Models
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
         private Thickness marginThickness;
-        
+
         #endregion
 
         #region public members
@@ -193,8 +192,6 @@ namespace Dynamo.Models
             }
         }
 
-        public SnapExtensionEdges extensionEdges { get; set; }        
-    
         #endregion
 
         public PortModel(PortType portType, NodeModel owner, PortData data)
@@ -206,7 +203,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-           
+
             if (data.Height == 0)
                 this.Height = Configurations.PortHeightInPixels;
             else
