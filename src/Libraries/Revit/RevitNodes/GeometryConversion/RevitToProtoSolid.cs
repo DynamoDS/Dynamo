@@ -22,10 +22,20 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.Solid ToProtoType(this Autodesk.Revit.DB.Solid solid, 
             bool performHostUnitConversion = true)
         {
-            var srfs = solid.Faces.Cast<Autodesk.Revit.DB.Face>().SelectMany(x => x.ToProtoType(false));
-            var converted = Solid.ByJoinedSurfaces( srfs );
+            var faces = solid.Faces;
+            var srfs = new List<Surface>();
+            foreach (Face face in faces)
+            {
+                srfs.AddRange(face.ToProtoType(false));
+            }
+            var converted = Solid.ByJoinedSurfaces(srfs);
+            srfs.ForEach(x => x.Dispose());
+            srfs.Clear();
 
-            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
+            if (performHostUnitConversion)
+                UnitConverter.ConvertToDynamoUnits(ref converted);
+
+            return converted;
         }
     }
 }

@@ -16,7 +16,6 @@ namespace ProtoFFITests
         readonly TestFrameWork thisTest = new TestFrameWork();
         private ILiveRunner astLiveRunner = null;
 
-
         [SetUp]
         public void Setup()
         {
@@ -25,6 +24,11 @@ namespace ProtoFFITests
             astLiveRunner = new LiveRunner();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            thisTest.CleanUp();
+        }
 
         [Test]
         public void Dispose01_NoFunctionCall()

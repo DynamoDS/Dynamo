@@ -107,4 +107,5 @@
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
     <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
 </ResourceDictionary>

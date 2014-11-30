@@ -38,6 +38,9 @@ REM Copy core
 copy %base%\DynamoCore.dll .\%ui%\lib\%framework%\DynamoCore.dll
 copy %base%\DynamoCore.dll .\%test%\lib\%framework%\DynamoCore.dll
 
+REM Copy Dynamo utilities
+copy %base%\DynamoUtilities.dll .\%test%\lib\%framework%\DynamoUtilities.dll
+
 REM Copy ProtoGeometry
 copy %base%\ProtoGeometry.dll .\%zt%\lib\%framework%\ProtoGeometry.dll
 copy %base%\ProtoGeometry.dll .\%test%\lib\%framework%\ProtoGeometry.dll

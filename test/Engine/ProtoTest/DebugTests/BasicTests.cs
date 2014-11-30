@@ -12,25 +12,16 @@ using ProtoTestFx.TD;
 namespace ProtoTest.DebugTests
 {
     [TestFixture]
-    public class BasicTests
+    class BasicTests : ProtoTestBase
     {
-        public ProtoCore.Core core;
         private DebugRunner fsr;
         private ProtoScript.Config.RunConfiguration runnerConfig;
         private string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            options.kDynamicCycleThreshold = 5;
-
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
+            core.Options.kDynamicCycleThreshold = 5;
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;

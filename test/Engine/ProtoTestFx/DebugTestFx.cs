@@ -28,23 +28,25 @@ namespace ProtoTestFx
                 Assert.Ignore("Ignored due to Exception from run: " + e.ToString());
             }
 
-
-
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
                 CompareCores(runCore, debugRunCore, defectID);
+                debugRunCore.Cleanup();
             }
+
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
                 CompareCores(runCore, stepOverCore, defectID);
+                stepOverCore.Cleanup();
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
                 CompareCores(runCore, stepInCore, defectID);
+                stepInCore.Cleanup();
             }
 
-            
+            runCore.Cleanup();
 
         }
 

@@ -4,14 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class UseCaseTesting
+    class UseCaseTesting : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
         [Category("SmokeTest")]
