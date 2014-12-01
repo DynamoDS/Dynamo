@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
                         DisableReporting();
 
                         using (Workspace.UndoRecorder.BeginActionGroup())
-                        {
+                        {                            
                             var inportConnections = new OrderedDictionary();
                             var outportConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
@@ -242,37 +242,31 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
+            //Empty code blocks are deleted only on Esc key press. The values are stored all the other times.
+            //This is helpful to Undo the deleted values from code block.
             if (name == "Code")
             {
                 //Remove the UpdateValue's recording
-                this.Workspace.UndoRecorder.PopFromUndoGroup();
-
-                //Since an empty Code Block Node should not exist, this checks for such instances.
-                // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-                // an empty Code Block Node should not be recorded, this method also checks and removes
-                // any unwanted recordings
+                this.Workspace.UndoRecorder.PopFromUndoGroup();              
                 value = CodeBlockUtils.FormatUserText(value);
+                if (!value.Equals(this.Code))
+                    Code = value;                               
+                return true;
+            }
+            //Since an empty Code Block Node should not exist, this checks for such instances.
+            // If an empty Code Block Node is found on an Esc key press, it is deleted. The empty code block is
+            // recorded and deleted.
+            if(name == "esc")
+            {
+                //this.Workspace.UndoRecorder.PopFromUndoGroup();
+                value = CodeBlockUtils.FormatUserText(value);
+
                 if (value == "")
                 {
-                    //since the empty code block will be removed only on "esc" key press, recording the deletion 
-                    //of empty code block.
-                    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
-                    //if (this.Code == "")
-                    //{
-                    //    this.Workspace.UndoRecorder.PopFromUndoGroup();
-                    //    Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                    //    this.Workspace.Nodes.Remove(this);
-                    //}
-                    //else
-                    //{
-                    //    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
-                    //}
-                }
-               
-                else
-                {
-                    if (!value.Equals(this.Code))
-                        Code = value;
+                    this.Workspace.UndoRecorder.PopFromUndoGroup();
+                    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });                 
+                    Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
+                    this.Workspace.Nodes.Remove(this);
                 }
                 return true;
             }

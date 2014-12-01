@@ -49,8 +49,7 @@ namespace Dynamo.UI.Controls
             this.DataContext = nodeViewModel.NodeModel;
             this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
-            // Register text editing events
-            this.InnerTextEditor.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
+            // Register text editing events            
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
 
@@ -375,13 +374,9 @@ namespace Dynamo.UI.Controls
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             this.InnerTextEditor.TextArea.ClearSelection();
-
-            if (this.InnerTextEditor.Text != "")
-            {
-                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
-            }
+            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.UpdateModelValueCommand(
+                       this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));           
         }
 
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
@@ -389,19 +384,7 @@ namespace Dynamo.UI.Controls
             if (WatermarkLabel.Visibility == Visibility.Visible)
                 WatermarkLabel.Visibility = System.Windows.Visibility.Collapsed;
 
-        }
-
-        void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (this.InnerTextEditor.Text == "" && e.Key == Key.Escape)
-            {
-                this.InnerTextEditor.TextArea.ClearSelection();
-                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(
-                    this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
-                e.Handled = true;
-            }
-        }
+        }       
         #endregion
 
         #region Private Helper Methods
@@ -421,11 +404,19 @@ namespace Dynamo.UI.Controls
 
             var text = this.InnerTextEditor.Text;
             var cb = DataContext as CodeBlockNodeModel;
-
+          
             if (cb == null || cb.Code != null && text.Equals(cb.Code))
                 OnRequestReturnFocusToSearch();
             else
                 this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
+
+            //Delete the empty code block node on esc press
+            if (text == "")
+            {
+                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        this.nodeViewModel.NodeModel.GUID, "esc", text));
+            }
         }
         #endregion
 
@@ -436,7 +427,6 @@ namespace Dynamo.UI.Controls
         /// </summary>        
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-
             if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
             {
                 if (e.Key == Key.Enter || e.Key == Key.Return)
