@@ -1084,7 +1084,19 @@ namespace Dynamo.Tests
             AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
         }
 
+        [Test]
+        public void TestDefaultValueInFunctionObject()
+        {
+            // Regression test case for
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueInFunctionObject.dyn");
 
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("4218d135-a2c4-4dee-8415-8f0bf1de671c", new[] { 1, 1 });
+
+
+        }
     }
 
     [Category("DSCustomNode")]
@@ -1221,7 +1233,5 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-       
-       
     }
 }

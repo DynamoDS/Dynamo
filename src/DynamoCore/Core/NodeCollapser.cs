@@ -227,6 +227,7 @@ namespace Dynamo.Utilities
                     // compiled to AST, literally it is still in global scope
                     // instead of in function scope.
                     ele.GUID = Guid.NewGuid();
+                    ele.RenderPackages.Clear();
                     ele.Workspace = newNodeWorkspace;
                 }
 
