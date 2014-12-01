@@ -449,8 +449,12 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        public void CustomNodeShouldnotHasPreview()
+        public void CustomNodeShouldNotHasGeometryPreview()
         {
+            // Regression test for defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5165
+            // To verify when some geometry nodes are converted to custom node,
+            // their render packages shouldn't be carried over to custom work
+            // space.
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
