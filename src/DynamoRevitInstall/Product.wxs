@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="6F1B7397-5DED-400D-90BE-135E05091DB3"
-           Name="Dynamo Revit 0.7.4"
+           Name="Dynamo Revit 0.7.5"
            Language="1033"
            Version="0.7.5"
            Manufacturer="Dynamo"
@@ -21,13 +21,13 @@
 
     <Property Id='ARPNOMODIFY'>1</Property>
 
-    <Property Id="DYNAMOINSTALLED">
+    <Property Id="DYNAMOLOCATION">
       <RegistrySearch Id='DynamoRegistry_07' Type='raw' Win64='yes'
-        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}' Name='DisplayName' />
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}' Name='InstallLocation' />
     </Property>
 
     <Condition Message="DynamoCore.msi is not installed on this system.">
-      <![CDATA[Installed OR DYNAMOINSTALLED]]>
+      <![CDATA[InstallLocation OR DYNAMOLOCATION]]>
     </Condition>
     
 
@@ -64,8 +64,8 @@
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
     </Property>
 
-    <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.7" After="LaunchConditions"></SetProperty>
+    <Property Id='DYNAMOREVIT_INSTALLDIR'></Property>
+    <SetProperty Id="DYNAMOREVIT_INSTALLDIR" Value="[DYNAMOLOCATION]" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMOREVIT_CORE_FEATURE"
              Title="Dynamo for Revit"
@@ -102,7 +102,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramMenuFolder">
       </Directory>
-      <Directory Id="DYNAMO_INSTALLDIR"/>
+      <Directory Id="DYNAMOREVIT_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="ADESK_DATA" Name="Autodesk">
           <Directory Id="REVIT_DATA" Name="Revit">
