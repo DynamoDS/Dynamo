@@ -44,7 +44,6 @@ namespace Dynamo.Models
         private bool saveResult;
         private string description;
         private const string FailureString = "Node evaluation failed";
-        protected IdentifierNode identifier;
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -422,7 +421,7 @@ namespace Dynamo.Models
         /// </summary>
         public IdentifierNode AstIdentifierForPreview
         {
-            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
+            get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
         }
 
         /// <summary>
