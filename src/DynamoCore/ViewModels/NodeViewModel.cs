@@ -612,7 +612,7 @@ namespace Dynamo.ViewModels
                 //is the one passed in
                 foreach (var item in e.OldItems)
                 {
-                    PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item)); ;                   
+                    PortViewModel portToRemove = UnSubscribePortEvents(InPorts.ToList().First(x => x.PortModel == item)); ;                   
                     InPorts.Remove(portToRemove);
                 }
             }
