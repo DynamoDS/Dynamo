@@ -1560,6 +1560,11 @@
                            VerticalAlignment="Stretch">
 
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.Visibility>
+                            <Binding Path="HasNodeThatPeriodicallyUpdates"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource InverseBoolToVisibilityCollapsedConverter}" />
+                        </StackPanel.Visibility>
                         <Button Name="RunButton"
                                 Width="100"
                                 Content="Run"
