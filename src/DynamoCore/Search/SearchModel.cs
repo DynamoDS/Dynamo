@@ -772,6 +772,12 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(fileName))
                 return;
 
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
             var document = XmlHelper.CreateDocument("LibraryTree");
 
             foreach (var category in BrowserRootCategories)
@@ -784,7 +790,7 @@ namespace Dynamo.Search
                 document.DocumentElement.AppendChild(element);
             }
 
-            document.Save(fileName);
+            return document;
         }
 
         private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
