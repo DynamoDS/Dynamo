@@ -23,7 +23,7 @@
 
     <Property Id="DYNAMOINSTALLED">
       <RegistrySearch Id='DynamoRegistry_07' Type='raw' Win64='yes'
-        Root='HKCU' Key='Software\Microsoft\Dynamo_07' Name='installed' />
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}' Name='DisplayName' />
     </Property>
 
     <Condition Message="DynamoCore.msi is not installed on this system.">
