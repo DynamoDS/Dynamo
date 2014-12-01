@@ -122,16 +122,6 @@ namespace ProtoCore.DSASM
                 (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
         }
 
-        /// <summary>
-        /// Determined in runtime is executing at the outer most language block
-        /// </summary>
-        /// <returns></returns>
-        private bool IsGlobalLanguageBlockScope()
-        {
-            Validity.Assert(core != null);
-            throw new NotImplementedException();
-        }
-
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
         {
             fepRun = false;
