@@ -323,11 +323,6 @@ namespace ProtoCore.DSASM
             {
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-
-                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                //bool isGlobalScope = rmem.CurrentStackFrame == null || 
-                //    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
                 bool isGlobalScope = IsGlobalScope();
                 if (!isGlobalScope) 
                 {
@@ -2588,11 +2583,6 @@ namespace ProtoCore.DSASM
             {
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-
-                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                //bool isGlobalScope = rmem.CurrentStackFrame == null ||
-                //    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
                 bool isGlobalScope = IsGlobalScope();
                 if (!isGlobalScope)
                 {
