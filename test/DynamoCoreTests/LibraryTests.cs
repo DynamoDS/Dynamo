@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DSEvaluationViewModelUnitTest
+    public class LibraryTests : DSEvaluationViewModelUnitTest
     {
         protected static bool LibraryLoaded { get; set; }
 
@@ -211,13 +211,11 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void DumplibraryToXmlZeroTouchTest()
+        public void DumpLibraryToXmlZeroTouchTest()
         {
-            string libraryPath = "DSOffice.dll";
-
-            var membersToCompare = LoadMembersZeroTouchLibrary(libraryPath);
-
             LibraryLoaded = false;
+
+            string libraryPath = "DSOffice.dll";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already here, don't try and reload it
@@ -227,24 +225,44 @@ namespace Dynamo.Tests
                 Assert.IsTrue(LibraryLoaded);
             }
 
-            ViewModel.DumpLibraryToXmlCommand.Execute(null);
+            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
 
-            string whereSearch = DynamoPathManager.Instance.Logs;
-            string fileName = "LibrarySnapshot*";
-            string fullFileName = Directory.EnumerateFiles(whereSearch, fileName).FirstOrDefault();
-            Assert.IsFalse(string.IsNullOrEmpty(fullFileName));
-
-            var document = new XmlDocument();
-            document.Load(fullFileName);
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
 
             Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
 
-            XmlNode node;
-            foreach (var member in membersToCompare)
+            XmlNode node, subNode;
+            foreach (var functionGroup in fgToCompare)
             {
-                node = document.SelectSingleNode(string.Format(
-                "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[Name='{0}']", member.Name));
-                Assert.IsNotNull(node);
+                foreach (var function in functionGroup.Functions)
+                {
+                    // Obsolete, not visible and "GetType" functions are not presented in UI tree.
+                    // So they are should not be presented in dump.
+                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.Name.Contains("GetType"))
+                        continue;
+
+                    node = document.SelectSingleNode(string.Format(
+                    "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullCategoryName='{0}' and Name='{1}']", function.Category, function.Name));
+                    Assert.IsNotNull(node);
+
+                    // 'FullCategoryName' is already checked.
+
+                    subNode = node.SelectSingleNode("FullName");
+                    Assert.IsNotNull(subNode);
+
+                    // 'Name' is already checked.
+
+                    subNode = node.SelectSingleNode("Description");
+                    Assert.IsNotNull(subNode.FirstChild);
+
+                    // No check Description on text equality because for some reason 
+                    // function.Descriptions are different in real executing Dynamo and
+                    // Dynamo started from tests.
+                    //
+                    // For example: 
+                    // tests  function.Description: Excel.ReadFromFile (file: FileInfo, sheetName: string): var[][]
+                    // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
+                }
             }
         }
 
