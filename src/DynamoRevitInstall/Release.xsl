@@ -15,7 +15,7 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="wix:DirectoryRef[@Id='DYNAMO_INSTALLDIR']/wix:Directory/@Name['Release']">
+    <xsl:template match="wix:DirectoryRef[@Id='DYNAMOREVIT_INSTALLDIR']/wix:Directory/@Name['Release']">
         <xsl:attribute name="Name">
             <xsl:value-of select="'Dynamo Revit'"/>
         </xsl:attribute>

@@ -4,7 +4,7 @@
     <RevitVersionNumber Condition=" '$(RevitVersionNumber)' == '' ">2014</RevitVersionNumber>
 	<REVIT_VERSION>Revit_$(RevitVersionNumber)</REVIT_VERSION>
 	<DYNAMOTESTAPI Condition=" '$(DYNAMOTESTAPI)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)</DYNAMOTESTAPI>
-	<OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)\$(REVIT_VERSION)</OutputPath>
+	<OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\..\Dynamo\bin\AnyCPU\$(Configuration)\$(REVIT_VERSION)</OutputPath>
     <DYNAMOAPI  Condition=" '$(DYNAMOAPI)' == '' ">$(SolutionDir)..\..\Dynamo\bin\$(Platform)\$(Configuration)</DYNAMOAPI>
 	<TestOutputPath Condition=" '$(TestOutputPath)' == '' ">$(OutputPath)</TestOutputPath>
   </PropertyGroup>
